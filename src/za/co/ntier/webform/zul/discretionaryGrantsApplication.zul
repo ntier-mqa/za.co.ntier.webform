@@ -1,0 +1,136 @@
+
+<hlayout
+        viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplication')"
+         vflex="1">
+
+ <vlayout spacing="15px" style="overflow-y:auto;" vflex="1">
+
+        <!-- Section C: Employer Info -->
+        <groupbox mold="3d" open="true">
+            <caption label="C. EMPLOYER/APPLICANT INFORMATION" />
+            <grid>
+                <rows>
+                    <row>
+                        <label value="Employer Name" width="300px" />
+                        <textbox value="@bind(vm.employerName)" width="400px" />
+                    </row>
+                    <row>
+                        <label value="Skills Development Levy (SDL) Number (Paying or Exempted)" width="300px" />
+                        <textbox value="@bind(vm.sdlNumber)" width="400px" />
+                    </row>
+                    <row>
+                        <label value="Site SDL Number (Paying levies - If applicable)" width="300px" />
+                        <textbox value="@bind(vm.siteSdlNumber)" width="400px" />
+                    </row>
+                    <row>
+                        <label value="Organisation Registration Number (If applicable)" width="300px" />
+                        <textbox value="@bind(vm.registrationNumber)" width="400px" />
+                    </row>
+                </rows>
+            </grid>
+        </groupbox>
+
+        <!-- Physical Address -->
+        <groupbox mold="3d" open="true">
+            <caption label="PHYSICAL ADDRESS" />
+            <grid>
+                <rows>
+                    <row>
+                        <label value="Street Name and Number" width="300px"/>
+                        <textbox value="@bind(vm.streetName)" width="400px"/>
+                    </row>
+                    <row>
+                        <label value="Area/Suburb" width="150px"/>
+                        <textbox value="@bind(vm.suburb)" width="200px"/>
+                        <label value="City/Town" width="100px"/>
+                        <textbox value="@bind(vm.city)" width="200px"/>
+                    </row>
+                    <row>
+                        <label value="Postal Code" width="150px"/>
+                        <textbox value="@bind(vm.postalCode)" width="200px"/>
+                        <label value="Province" width="100px"/>
+                        <textbox value="@bind(vm.province)" width="200px"/>
+                    </row>
+                    <row>
+                        <label value="District Municipalities" width="300px"/>
+                        <textbox value="@bind(vm.district)" width="400px"/>
+                    </row>
+                    <row>
+                        <label value="Local Municipalities" width="300px"/>
+                        <textbox value="@bind(vm.localMunicipality)" width="400px"/>
+                    </row>
+                    <row>
+                        <label value="Rural or Urban" width="300px"/>
+                        <textbox value="@bind(vm.ruralOrUrban)" width="400px"/>
+                    </row>
+                </rows>
+            </grid>
+        </groupbox>
+
+        <!-- Postal Address -->
+        <groupbox mold="3d" open="true">
+            <caption label="POSTAL ADDRESS" />
+            <grid>
+                <rows>
+                    <row>
+                        <label value="Post Address" width="300px"/>
+                        <textbox value="@bind(vm.postAddress)" width="400px"/>
+                    </row>
+                    <row>
+                        <label value="Area/Suburb" width="150px"/>
+                        <textbox value="@bind(vm.postSuburb)" width="200px"/>
+                        <label value="City/Town" width="100px"/>
+                        <textbox value="@bind(vm.postCity)" width="200px"/>
+                    </row>
+                    <row>
+                        <label value="Postal Code" width="150px"/>
+                        <textbox value="@bind(vm.postCode)" width="200px"/>
+                        <label value="Province" width="100px"/>
+                        <textbox value="@bind(vm.postProvince)" width="200px"/>
+                    </row>
+                </rows>
+            </grid>
+        </groupbox>
+
+        <!-- Organisation Size and Submission Status -->
+        <groupbox mold="3d" open="true">
+            <caption label="SIZE OF THE ORGANISATION (please select the correct option pertaining to the company size)" />
+            <grid>
+                <rows>
+                    <row>
+                        <label value="Size of the organisation"/>
+                        <radiogroup selectedItem="@bind(vm.size)">
+                            <radio label="Small (0–49)" value="Small"/>
+                            <radio label="Medium (50–149)" value="Medium"/>
+                            <radio label="Large (150+)" value="Large"/>
+                        </radiogroup>
+                    </row>
+                    <row>
+                        <label value="Has the organisation submitted the WSP/ATR in 2022?" />
+                        <radiogroup selectedItem="@bind(vm.submittedWsp)">
+                            <radio label="Yes" value="true"/>
+                            <radio label="No" value="false"/>
+                        </radiogroup>
+                    </row>
+                    <row>
+                        <label value="Has the organisation submitted the Pivotal Plan and Report in 2022?" />
+                        <radiogroup selectedItem="@bind(vm.submittedPivotal)">
+                            <radio label="Yes" value="true"/>
+                            <radio label="No" value="false"/>
+                        </radiogroup>
+                    </row>
+                    <row>
+                        <label value="Is the organisation workplace approved?" />
+                        <radiogroup selectedItem="@bind(vm.approvedWorkplace)">
+                            <radio label="Yes" value="true"/>
+                            <radio label="No" value="false"/>
+                        </radiogroup>
+                    </row>
+                </rows>
+            </grid>
+        </groupbox>
+
+    </vlayout>
+</hlayout>
+
+        
