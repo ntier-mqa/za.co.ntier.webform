@@ -6,6 +6,8 @@
     to scope the CSS rules specifically to this MVVM form.
 -->
 <?import za.co.ntier.webform.form.viewmodel.Discipline ?>
+<?import za.co.ntier.webform.form.viewmodel.Province ?>
+
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 
@@ -51,16 +53,16 @@
     <div sclass="container-fluid text-left">
     	<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Street Name and Number"/></div>
-    		<div sclass="col-sm-8"></div>
+    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
   		</div>
   		<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Area/Suburb"/></div>
     		<div sclass="col-sm-8 col-container">
     			<div sclass="container-fluid text-left">
     				<div sclass="row">
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     					<div sclass="col-sm-2 col-title"><label value="City/Town"/></div>
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     				</div>
     			</div>
     		</div>
@@ -70,9 +72,18 @@
     		<div sclass="col-sm-8 col-container">
     			<div sclass="container-fluid text-left">
     				<div sclass="row">
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     					<div sclass="col-sm-2 col-title"><label value="Province"/></div>
-    					<div sclass="col-sm-5"></div>
+    					    					
+    					<div sclass="col-sm-5 col-content-input-full">
+    						<listbox mold="select" sclass="form-control" 
+    							model="@load((Province.getProvincesWithoutTotal()))" selectedItem="@bind(vm.employerProvinceSelected)">
+							    <template name="model" var="item">
+							        <listitem label="@load(item.fullName)"/>
+							    </template>
+							</listbox>
+    					</div>
+    					
     				</div>
     			</div>
     		</div>
@@ -95,16 +106,16 @@
     <div sclass="container-fluid text-left">
     	<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Post Address"/></div>
-    		<div sclass="col-sm-8"></div>
+    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
   		</div>
   		<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Area/Suburb"/></div>
     		<div sclass="col-sm-8 col-container">
     			<div sclass="container-fluid text-left">
     				<div sclass="row">
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     					<div sclass="col-sm-2 col-title"><label value="City/Town"/></div>
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     				</div>
     			</div>
     		</div>
@@ -114,9 +125,18 @@
     		<div sclass="col-sm-8 col-container">
     			<div sclass="container-fluid text-left">
     				<div sclass="row">
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     					<div sclass="col-sm-2 col-title"><label value="Province"/></div>
-    					<div sclass="col-sm-5"></div>
+    					
+    					<div sclass="col-sm-5 col-content-input-full">
+    						<listbox mold="select" sclass="form-control" 
+    							model="@load((Province.getProvincesWithoutTotal()))" selectedItem="@bind(vm.employerProvinceSelected)">
+							    <template name="model" var="item">
+							        <listitem label="@load(item.fullName)"/>
+							    </template>
+							</listbox>
+    					</div>
+    					
     				</div>
     			</div>
     		</div>
@@ -192,7 +212,7 @@ applying should be based on."/></hlayout>
             		<div class="row">
             			<div class="col-sm col-title text-center">PROVINCES</div>
             		</div>
-            		<div class="row" children="@load((Discipline.getAllProvinces()))">
+            		<div class="row" children="@load((Province.getProvincesWithTotal()))">
             			<template name="children" var="province">
 			                <div class="col-sm text-center col-title">
 			                    <label value="@load(province.code)"/>
@@ -211,7 +231,7 @@ applying should be based on."/></hlayout>
     			<div class="col-sm-3 col-title"><label value="@load(discipline.name)"/></div>
     			<div class="col-sm col-container">
 	    			<div sclass="container-fluid">
-	            		<div class="row" children="@load((Discipline.getAllProvinces())) @template(each.isTotal() ? 'total' : 'checkbox')">
+	            		<div class="row" children="@load((Province.getProvincesWithTotal())) @template(each.isTotal() ? 'total' : 'checkbox')">
 	            			<template name="checkbox" var="province">
 				                <div class="col-sm col-content d-flex justify-content-center text-center">
 				                    <checkbox checked="@load(discipline.provinces.contains(province))"
@@ -237,20 +257,20 @@ applying should be based on."/></hlayout>
     <div sclass="container-fluid text-left">
     	<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Site Name"/></div>
-    		<div sclass="col-sm-8"></div>
+    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
   		</div>
   		<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Site Street Name and Number"/></div>
-    		<div sclass="col-sm-8"></div>
+    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
   		</div>
   		<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Area/Suburb"/></div>
     		<div sclass="col-sm-8 col-container">
     			<div sclass="container-fluid text-left">
     				<div sclass="row">
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     					<div sclass="col-sm-2 col-title"><label value="City/Town"/></div>
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     				</div>
     			</div>
     		</div>
@@ -260,36 +280,43 @@ applying should be based on."/></hlayout>
     		<div sclass="col-sm-8 col-container">
     			<div sclass="container-fluid text-left">
     				<div sclass="row">
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
     					<div sclass="col-sm-2 col-title"><label value="Province"/></div>
-    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-5 col-content-input-full">
+    						<listbox mold="select" sclass="form-control" 
+    							model="@load((Province.getProvincesWithoutTotal()))" selectedItem="@bind(vm.employerProvinceSelected)">
+							    <template name="model" var="item">
+							        <listitem label="@load(item.fullName)"/>
+							    </template>
+							</listbox>
+    					</div>
     				</div>
     			</div>
     		</div>
   		</div>
   		<div sclass="row">
     		<div sclass="col-sm-5 col-title"><label value="Name and Surname of Site Representative"/></div>
-    		<div sclass="col-sm-7"></div>
+    		<div sclass="col-sm-7 col-content-input-full"><textbox sclass="form-control" /></div>
   		</div>
   		<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Representative Designation"/></div>
-    		<div sclass="col-sm-8"></div>
+    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
   		</div>
   		<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="Tel Number"/></div>
     		<div sclass="col-sm-8 col-container">
     			<div sclass="container-fluid text-left">
     				<div sclass="row">
-    					<div sclass="col-sm-4"></div>
+    					<div sclass="col-sm-4 col-content-input-full"><textbox sclass="form-control" /></div>
     					<div sclass="col-sm-4 col-title"><label value="Alternative Number"/></div>
-    					<div sclass="col-sm-4"></div>
+    					<div sclass="col-sm-4 col-content-input-full"><textbox sclass="form-control" /></div>
     				</div>
     			</div>
     		</div>
   		</div>
   		<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="E-mail"/></div>
-    		<div sclass="col-sm-8"></div>
+    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
   		</div>
   	</div>
  </div>
