@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Import-Package: org.adempiere.base,
  org.adempiere.webui.factory,
  org.adempiere.webui.panel,
+ org.compiere.model,
  org.compiere.util,
  org.idempiere.ui.zk.annotation,
  org.zkoss.bind.annotation;version="[10.0.0,11.0.0)",

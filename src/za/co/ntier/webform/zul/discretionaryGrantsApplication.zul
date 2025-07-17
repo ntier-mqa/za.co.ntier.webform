@@ -1,136 +1,295 @@
+<!--
+    This ZUL file is designed to be included within another ZUL page.
+    The <zk> root tag has been removed.
 
-<hlayout
-        viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplication')"
-         vflex="1">
+    A unique 'sclass' (employer-mvvm-form) has been added to the root <window>
+    to scope the CSS rules specifically to this MVVM form.
+-->
+<?import za.co.ntier.webform.form.viewmodel.Discipline ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
- <vlayout spacing="15px" style="overflow-y:auto;" vflex="1">
 
-        <!-- Section C: Employer Info -->
-        <groupbox mold="3d" open="true">
-            <caption label="C. EMPLOYER/APPLICANT INFORMATION" />
-            <grid>
-                <rows>
-                    <row>
-                        <label value="Employer Name" width="300px" />
-                        <textbox value="@bind(vm.employerName)" width="400px" />
-                    </row>
-                    <row>
-                        <label value="Skills Development Levy (SDL) Number (Paying or Exempted)" width="300px" />
-                        <textbox value="@bind(vm.sdlNumber)" width="400px" />
-                    </row>
-                    <row>
-                        <label value="Site SDL Number (Paying levies - If applicable)" width="300px" />
-                        <textbox value="@bind(vm.siteSdlNumber)" width="400px" />
-                    </row>
-                    <row>
-                        <label value="Organisation Registration Number (If applicable)" width="300px" />
-                        <textbox value="@bind(vm.registrationNumber)" width="400px" />
-                    </row>
-                </rows>
-            </grid>
-        </groupbox>
+ <div viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplication')" >
+ 
+	<div sclass="companyHeader">
+  	 	<div sclass="companyInfo">
+          	<label value="@init(vm.companyInfo.companyName)" sclass="companyName"/>
+	        <label value="@init(vm.companyInfo.companyAddress)"/>
+	        <label value="@init(c:cat3(vm.companyInfo.companyTelTitle, ':', vm.companyInfo.companyTel))"/>
+          	<label value="@init(c:cat3(vm.companyInfo.companyEmailTitle, ':', vm.companyInfo.companyEmail))"/>
+          	<label value="@init(vm.companyInfo.companyWebsite)"/>
+      	</div>	        
+      	
+     	<image content="@init(vm.companyInfo.companyLogo)" sclass = "headerLogo" />
+ 	</div>
+ 		
+ 	<label sclass = "formCode" value="@init(vm.formInfo.formCode)"/>
+    <label sclass = "formHeader" value="@init(vm.formInfo.formHeader)"/>
+    
+    <hlayout><label sclass = "sectionHeader" value="C. EMPLOYER/APPLICANT INFORMATION"/></hlayout>
+    
+    <div sclass="container-fluid text-left">
+    	<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Employer Name"/></div>
+    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-7 col-title"><label value="Skills Development Levy (SDL) Number (Paying or Exempted)"/></div>
+    		<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-7 col-title"><label value="Site SDL Number (Paying levies If applicable)"/></div>
+    		<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-7 col-title"><label value="Organisation Registration Number (If applicable)"/></div>
+    		<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
+  		</div>
+    </div>
+    
+    <hlayout><label sclass = "subSectionHeader" value="PHYSICAL ADDRESS"/></hlayout>
+    <div sclass="container-fluid text-left">
+    	<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Street Name and Number"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Area/Suburb"/></div>
+    		<div sclass="col-sm-8 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-2 col-title"><label value="City/Town"/></div>
+    					<div sclass="col-sm-5"></div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Postal Code"/></div>
+    		<div sclass="col-sm-8 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-2 col-title"><label value="Province"/></div>
+    					<div sclass="col-sm-5"></div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="District Municipalities"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Local Municipalities"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Rural or Urban"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  	</div>
+  	
+  	<hlayout><label sclass = "subSectionHeader" value="POSTAL ADDRESS"/></hlayout>
+    <div sclass="container-fluid text-left">
+    	<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Post Address"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Area/Suburb"/></div>
+    		<div sclass="col-sm-8 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-2 col-title"><label value="City/Town"/></div>
+    					<div sclass="col-sm-5"></div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Postal Code"/></div>
+    		<div sclass="col-sm-8 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-2 col-title"><label value="Province"/></div>
+    					<div sclass="col-sm-5"></div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  	</div>
 
-        <!-- Physical Address -->
-        <groupbox mold="3d" open="true">
-            <caption label="PHYSICAL ADDRESS" />
-            <grid>
-                <rows>
-                    <row>
-                        <label value="Street Name and Number" width="300px"/>
-                        <textbox value="@bind(vm.streetName)" width="400px"/>
-                    </row>
-                    <row>
-                        <label value="Area/Suburb" width="150px"/>
-                        <textbox value="@bind(vm.suburb)" width="200px"/>
-                        <label value="City/Town" width="100px"/>
-                        <textbox value="@bind(vm.city)" width="200px"/>
-                    </row>
-                    <row>
-                        <label value="Postal Code" width="150px"/>
-                        <textbox value="@bind(vm.postalCode)" width="200px"/>
-                        <label value="Province" width="100px"/>
-                        <textbox value="@bind(vm.province)" width="200px"/>
-                    </row>
-                    <row>
-                        <label value="District Municipalities" width="300px"/>
-                        <textbox value="@bind(vm.district)" width="400px"/>
-                    </row>
-                    <row>
-                        <label value="Local Municipalities" width="300px"/>
-                        <textbox value="@bind(vm.localMunicipality)" width="400px"/>
-                    </row>
-                    <row>
-                        <label value="Rural or Urban" width="300px"/>
-                        <textbox value="@bind(vm.ruralOrUrban)" width="400px"/>
-                    </row>
-                </rows>
-            </grid>
-        </groupbox>
 
-        <!-- Postal Address -->
-        <groupbox mold="3d" open="true">
-            <caption label="POSTAL ADDRESS" />
-            <grid>
-                <rows>
-                    <row>
-                        <label value="Post Address" width="300px"/>
-                        <textbox value="@bind(vm.postAddress)" width="400px"/>
-                    </row>
-                    <row>
-                        <label value="Area/Suburb" width="150px"/>
-                        <textbox value="@bind(vm.postSuburb)" width="200px"/>
-                        <label value="City/Town" width="100px"/>
-                        <textbox value="@bind(vm.postCity)" width="200px"/>
-                    </row>
-                    <row>
-                        <label value="Postal Code" width="150px"/>
-                        <textbox value="@bind(vm.postCode)" width="200px"/>
-                        <label value="Province" width="100px"/>
-                        <textbox value="@bind(vm.postProvince)" width="200px"/>
-                    </row>
-                </rows>
-            </grid>
-        </groupbox>
-
-        <!-- Organisation Size and Submission Status -->
-        <groupbox mold="3d" open="true">
-            <caption label="SIZE OF THE ORGANISATION (please select the correct option pertaining to the company size)" />
-            <grid>
-                <rows>
-                    <row>
-                        <label value="Size of the organisation"/>
-                        <radiogroup selectedItem="@bind(vm.size)">
-                            <radio label="Small (0–49)" value="Small"/>
-                            <radio label="Medium (50–149)" value="Medium"/>
-                            <radio label="Large (150+)" value="Large"/>
-                        </radiogroup>
-                    </row>
-                    <row>
-                        <label value="Has the organisation submitted the WSP/ATR in 2022?" />
-                        <radiogroup selectedItem="@bind(vm.submittedWsp)">
-                            <radio label="Yes" value="true"/>
-                            <radio label="No" value="false"/>
-                        </radiogroup>
-                    </row>
-                    <row>
-                        <label value="Has the organisation submitted the Pivotal Plan and Report in 2022?" />
-                        <radiogroup selectedItem="@bind(vm.submittedPivotal)">
-                            <radio label="Yes" value="true"/>
-                            <radio label="No" value="false"/>
-                        </radiogroup>
-                    </row>
-                    <row>
-                        <label value="Is the organisation workplace approved?" />
-                        <radiogroup selectedItem="@bind(vm.approvedWorkplace)">
-                            <radio label="Yes" value="true"/>
-                            <radio label="No" value="false"/>
-                        </radiogroup>
-                    </row>
-                </rows>
-            </grid>
-        </groupbox>
-
-    </vlayout>
-</hlayout>
-
-        
+  	<hlayout><label sclass = "subSectionHeader" value="SIZE OF THE ORGANISATION"/><label value="(please select the correct option pertaining to the company size)"/></hlayout>
+  	<div sclass="container-fluid text-left">
+    	<div sclass="row">
+    		<div sclass="col-sm-8 col-title"><label value="Size of the organisation"/></div>
+    		<div sclass="col-sm-4 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-4 col-content">
+	    					<div sclass="text-center">
+							    <div class="mb-0">Small</div>
+							    <div>(0-49)</div>
+							</div>
+    					</div>
+    					<div sclass="col-sm-4 col-content">
+    						<div sclass="text-center">
+    							<div class="mb-0">Medium</div>
+							    <div>(50-149)</div>
+							</div>
+    					</div>
+    					<div sclass="col-sm-4 col-content">
+    						<div sclass="text-center">
+    							<div class="mb-0">Large</div>
+							    <div>(&lt;150)</div>
+							</div>
+    					</div>
+    				</div>
+    				<div sclass="row">
+    					<div sclass="col-sm-4 col-content-two d-flex justify-content-center">
+	    					<checkbox id="smallCheckbox" />
+    					</div>
+    					<div sclass="col-sm-4 col-content-two d-flex justify-content-center">
+    						<checkbox id="mediumCheckbox" />
+    					</div>
+    					<div sclass="col-sm-4 col-content-two d-flex justify-content-center">
+    						<checkbox id="largeCheckbox" />
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-8 col-title"><label value="Has the organisation submitted the WSP/ATR In 2022?"/></div>
+    		<div sclass="col-sm-4 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-3 col-content d-flex justify-content-center"><label value="YES"/></div>
+    					<div sclass="col-sm-3 col-content d-flex justify-content-center"><checkbox /></div>
+    					<div sclass="col-sm-3 col-content d-flex justify-content-center"><label value="NO"/></div>
+    					<div sclass="col-sm-3 col-content d-flex justify-content-center"><checkbox  /></div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  	</div>
+  	
+  	<hlayout><label sclass = "sectionHeader" value="D. CANDIDACY"/></hlayout>
+  	<hlayout><label value="List of disciplines supported for the HDSA Candidacy which the number of learners
+applying should be based on."/></hlayout>
+  	
+  	 <!-- CANDIDACY table header -->
+  	 <div sclass="container-fluid">
+        <div class="row font-weight-bold">
+            <div class="col-sm-3 col-title">Discipline</div>
+            <div class="col-sm col-container">
+            	<div sclass="container-fluid">
+            		<div class="row">
+            			<div class="col-sm col-title text-center">PROVINCES</div>
+            		</div>
+            		<div class="row" children="@load((Discipline.getAllProvinces()))">
+            			<template name="children" var="province">
+			                <div class="col-sm text-center col-title">
+			                    <label value="@load(province.code)"/>
+			                </div>
+			            </template>
+            		</div>
+            	</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CANDIDACY table detail -->
+    <div sclass="container-fluid" children="@load(vm.disciplines)">
+    	<template name="children" var="discipline">
+    		<div class="row font-weight-bold">
+    			<div class="col-sm-3 col-title"><label value="@load(discipline.name)"/></div>
+    			<div class="col-sm col-container">
+	    			<div sclass="container-fluid">
+	            		<div class="row" children="@load((Discipline.getAllProvinces())) @template(each.isTotal() ? 'total' : 'checkbox')">
+	            			<template name="checkbox" var="province">
+				                <div class="col-sm col-content d-flex justify-content-center text-center">
+				                    <checkbox checked="@load(discipline.provinces.contains(province))"
+                                  		onCheck="@command('toggleProvince', discipline=discipline, province=province, checked=self.checked)" />
+				                </div>
+				            </template>
+				            <template name="total" var="province">
+				                <div class="col-sm col-content d-flex justify-content-center text-center">
+				                    <label value="@load((discipline.provinces.size()))"/>
+				                </div>
+				            </template>
+	            		</div>
+	            	</div>
+    			
+    			</div>
+    		</div>
+    	</template>
+    </div>
+    
+    <hlayout><label sclass = "sectionHeader" value="Note:"/><label value=" All Employers/Organisations with multiple sites using one levy number must submit one"/></hlayout>
+    
+    <hlayout><label sclass = "subSectionHeader" value="Contact details of person responsible for CANDIDACY:"/></hlayout>
+    <div sclass="container-fluid text-left">
+    	<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Site Name"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Site Street Name and Number"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Area/Suburb"/></div>
+    		<div sclass="col-sm-8 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-2 col-title"><label value="City/Town"/></div>
+    					<div sclass="col-sm-5"></div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Postal Code"/></div>
+    		<div sclass="col-sm-8 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-5"></div>
+    					<div sclass="col-sm-2 col-title"><label value="Province"/></div>
+    					<div sclass="col-sm-5"></div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-5 col-title"><label value="Name and Surname of Site Representative"/></div>
+    		<div sclass="col-sm-7"></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Representative Designation"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="Tel Number"/></div>
+    		<div sclass="col-sm-8 col-container">
+    			<div sclass="container-fluid text-left">
+    				<div sclass="row">
+    					<div sclass="col-sm-4"></div>
+    					<div sclass="col-sm-4 col-title"><label value="Alternative Number"/></div>
+    					<div sclass="col-sm-4"></div>
+    				</div>
+    			</div>
+    		</div>
+  		</div>
+  		<div sclass="row">
+    		<div sclass="col-sm-4 col-title"><label value="E-mail"/></div>
+    		<div sclass="col-sm-8"></div>
+  		</div>
+  	</div>
+ </div>

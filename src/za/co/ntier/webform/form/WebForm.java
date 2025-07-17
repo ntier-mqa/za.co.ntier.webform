@@ -4,6 +4,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Div;
 
 @org.idempiere.ui.zk.annotation.Form(name = "za.co.ntier.webform.form.EmployerApplicationForm")
 public class WebForm extends ADForm{
@@ -30,7 +31,15 @@ public class WebForm extends ADForm{
 			Thread.currentThread().setContextClassLoader(cl);
 		}
 
-		this.appendChild(inc);
+		Div outterDiv = new Div();
+		this.appendChild(outterDiv);
+		outterDiv.setSclass("mqaWebForm");
+		
+		Div container = new	Div();
+		container.setSclass("container");
+		outterDiv.appendChild(container);
+		
+		container.appendChild(inc);
 	}
 	
 }
