@@ -1,6 +1,6 @@
-<zk xmlns:n="native" xmlns:c="client" xmlns:ca="custom-attributes" >
+<zk xmlns:n="native" xmlns:c="client" xmlns:ca="custom-attributes"  viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.VMWrapperCompanyHeader')">
 
-	<div sclass="companyHeader" viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.wrappers.CompanyHeader')">
+	<div sclass="companyHeader">
   	 	<div sclass="companyInfo">
           	<label value="@init(vm.companyInfo.companyName)" sclass="companyName"/>
 	        <label value="@init(vm.companyInfo.companyAddress)"/>

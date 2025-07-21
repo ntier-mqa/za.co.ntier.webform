@@ -1,11 +1,9 @@
-package za.co.ntier.webform.form.viewmodel.wrappers;
+package za.co.ntier.webform.form.viewmodel;
 
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
-import za.co.ntier.webform.form.viewmodel.CompanyInfo;
-
-public class CompanyHeader {
+public class VMWrapperCompanyHeader {
 	private CompanyInfo companyInfo;
 	
 	@Init
