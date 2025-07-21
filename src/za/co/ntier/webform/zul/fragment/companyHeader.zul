@@ -1,0 +1,14 @@
+<zk xmlns:n="native" xmlns:c="client" xmlns:ca="custom-attributes" >
+
+	<div sclass="companyHeader" viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.wrappers.CompanyHeader')">
+  	 	<div sclass="companyInfo">
+          	<label value="@init(vm.companyInfo.companyName)" sclass="companyName"/>
+	        <label value="@init(vm.companyInfo.companyAddress)"/>
+	        <label value="@init(c:cat3(vm.companyInfo.companyTelTitle, ':', vm.companyInfo.companyTel))"/>
+          	<label value="@init(c:cat3(vm.companyInfo.companyEmailTitle, ':', vm.companyInfo.companyEmail))"/>
+          	<label value="@init(vm.companyInfo.companyWebsite)"/>
+      	</div>	        
+      	
+     	<image content="@init(vm.companyInfo.companyLogo)" sclass = "headerLogo" />
+ 	</div>
+</zk>
