@@ -234,13 +234,10 @@ public class AddressInfoBase {
 	
 	public void setAddressCategory(AddressCategory addressCategory) {
 		this.addressCategory = addressCategory;
-		showMunicipalities = addressCategory == AddressCategory.PHYSICAL;
 	}
 	
-	private boolean showMunicipalities;
-	
 	public boolean isShowMunicipalities() {
-		return showMunicipalities;
+		return addressCategory == AddressCategory.PHYSICAL;
 	}
 	
 	public boolean isPostalAddress() {
@@ -248,11 +245,11 @@ public class AddressInfoBase {
 	}
 	
 	public boolean isNormalAddress() {
-		return addressCategory == AddressCategory.PHYSICAL;
+		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.CANDIDACY_CONTACT;
 	}
 	
-	public void setShowMunicipalities(boolean showMunicipalities) {
-		this.showMunicipalities = showMunicipalities;
+	public boolean isContact() {
+		return addressCategory == AddressCategory.CANDIDACY_CONTACT;
 	}
 	
 	public AddressInfoBase(AddressCategory addressCategory, Province selectedProvince) {
@@ -291,4 +288,187 @@ public class AddressInfoBase {
 	public void setMunicipalityTypeSelected(KeyNamePair municipalityTypeSelected) {
 		this.municipalityTypeSelected = municipalityTypeSelected;
 	}
+	
+
+	/**
+	 * @return the siteName
+	 */
+	public String getSiteName() {
+		return siteName;
+	}
+
+	/**
+	 * @param siteName the siteName to set
+	 */
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
+	}
+
+	/**
+	 * @return the siteNameTitle
+	 */
+	public String getSiteNameTitle() {
+		return siteNameTitle;
+	}
+
+	/**
+	 * @param siteNameTitle the siteNameTitle to set
+	 */
+	public void setSiteNameTitle(String siteNameTitle) {
+		this.siteNameTitle = siteNameTitle;
+	}
+
+	/**
+	 * @return the nameSiteRepresentative
+	 */
+	public String getNameSiteRepresentative() {
+		return nameSiteRepresentative;
+	}
+
+	/**
+	 * @param nameSiteRepresentative the nameSiteRepresentative to set
+	 */
+	public void setNameSiteRepresentative(String nameSiteRepresentative) {
+		this.nameSiteRepresentative = nameSiteRepresentative;
+	}
+
+	/**
+	 * @return the nameSiteRepresentativeTitle
+	 */
+	public String getNameSiteRepresentativeTitle() {
+		return nameSiteRepresentativeTitle;
+	}
+
+	/**
+	 * @param nameSiteRepresentativeTitle the nameSiteRepresentativeTitle to set
+	 */
+	public void setNameSiteRepresentativeTitle(String nameSiteRepresentativeTitle) {
+		this.nameSiteRepresentativeTitle = nameSiteRepresentativeTitle;
+	}
+
+	/**
+	 * @return the representativeDesignation
+	 */
+	public String getRepresentativeDesignation() {
+		return representativeDesignation;
+	}
+
+	/**
+	 * @param representativeDesignation the representativeDesignation to set
+	 */
+	public void setRepresentativeDesignation(String representativeDesignation) {
+		this.representativeDesignation = representativeDesignation;
+	}
+
+	/**
+	 * @return the representativeDesignationTitle
+	 */
+	public String getRepresentativeDesignationTitle() {
+		return representativeDesignationTitle;
+	}
+
+	/**
+	 * @param representativeDesignationTitle the representativeDesignationTitle to set
+	 */
+	public void setRepresentativeDesignationTitle(String representativeDesignationTitle) {
+		this.representativeDesignationTitle = representativeDesignationTitle;
+	}
+
+	/**
+	 * @return the mobileNumber
+	 */
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	/**
+	 * @param mobileNumber the mobileNumber to set
+	 */
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	/**
+	 * @return the mobileNumberTitle
+	 */
+	public String getMobileNumberTitle() {
+		return mobileNumberTitle;
+	}
+
+	/**
+	 * @param mobileNumberTitle the mobileNumberTitle to set
+	 */
+	public void setMobileNumberTitle(String mobileNumberTitle) {
+		this.mobileNumberTitle = mobileNumberTitle;
+	}
+
+	/**
+	 * @return the landlineNumber
+	 */
+	public String getLandlineNumber() {
+		return landlineNumber;
+	}
+
+	/**
+	 * @param landlineNumber the landlineNumber to set
+	 */
+	public void setLandlineNumber(String landlineNumber) {
+		this.landlineNumber = landlineNumber;
+	}
+
+	/**
+	 * @return the landlineNumberTitle
+	 */
+	public String getLandlineNumberTitle() {
+		return landlineNumberTitle;
+	}
+
+	/**
+	 * @param landlineNumberTitle the landlineNumberTitle to set
+	 */
+	public void setLandlineNumberTitle(String landlineNumberTitle) {
+		this.landlineNumberTitle = landlineNumberTitle;
+	}
+	
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * @return the emailTitle
+	 */
+	public String getEmailTitle() {
+		return emailTitle;
+	}
+
+	/**
+	 * @param emailTitle the emailTitle to set
+	 */
+	public void setEmailTitle(String emailTitle) {
+		this.emailTitle = emailTitle;
+	}
+
+	private String siteName;
+	private String siteNameTitle = "Site Name";
+	private String nameSiteRepresentative;
+	private String nameSiteRepresentativeTitle = "Name and Surname of Site Representative";
+	private String representativeDesignation;
+	private String representativeDesignationTitle = "Representative Designation";
+	private String mobileNumber;
+	private String mobileNumberTitle = "Tel Numbe";
+	private String landlineNumber;
+	private String landlineNumberTitle = "Alternative Number";;
+	private String email;
+	private String emailTitle = "E-mail";
+	
 }

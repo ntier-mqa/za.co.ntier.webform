@@ -15,13 +15,15 @@ public class DiscretionaryGrantsApplication {
 	private CompanyInfo companyInfo;
 	private FormInfo formInfo;
 	
+	private EmployerInfo employerInfo;
+	
 	private AddressInfoBase physicalAddressInfo;
 	
 	private AddressInfoBase postAddressInfo;
 	
 	private OrganisationSizeInfo orgSizeInfo;
 	
-	private EmployerInfo employerInfo;
+	private AddressInfoBase candidacyContact;
 	
 	private Province employerProvinceSelected;
 	
@@ -89,15 +91,18 @@ public class DiscretionaryGrantsApplication {
         setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
         setFormInfo(new FormInfo());
         
+        employerInfo = new EmployerInfo();
+        employerInfo.setEmployerName("Le Quy Hiep");
+        postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL, Province.KZN);
+        
         physicalAddressInfo = new AddressInfoBase(AddressCategory.PHYSICAL, Province.KZN);
         physicalAddressInfo.setDistrictMunicipalitySelected(MasterUtil.districtMunicipalities.get(2));
         physicalAddressInfo.setLocalMunicipalitySelected(MasterUtil.localMunicipalities.get(3));
         physicalAddressInfo.setMunicipalityTypeSelected(MasterUtil.municipalityTypes.get(1));
         
-        postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL, Province.KZN);
         orgSizeInfo = new OrganisationSizeInfo(MasterUtil.organisationSizes.get(2), false, true);
-        employerInfo = new EmployerInfo();
-        employerInfo.setEmployerName("Le Quy Hiep");
+        
+        candidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.WS);
     }
 
     // --- Getters and Setters for Data Binding ---
@@ -171,6 +176,18 @@ public class DiscretionaryGrantsApplication {
 	 */
 	public void setEmployerInfo(EmployerInfo employerInfo) {
 		this.employerInfo = employerInfo;
+	}
+	/**
+	 * @return the candidacyContact
+	 */
+	public AddressInfoBase getCandidacyContact() {
+		return candidacyContact;
+	}
+	/**
+	 * @param candidacyContact the candidacyContact to set
+	 */
+	public void setCandidacyContact(AddressInfoBase candidacyContact) {
+		this.candidacyContact = candidacyContact;
 	}
 
 	

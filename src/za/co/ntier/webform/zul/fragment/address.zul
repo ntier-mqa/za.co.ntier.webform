@@ -5,6 +5,17 @@
 	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.VMWrapperAddressInfo')">
 	
 		<div sclass="row"
+			if="${vmAddress.addressInfo.isContact()}">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmAddress.addressInfo.siteNameTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmAddress.addressInfo.siteName)" />
+			</div>
+		</div>
+		<div sclass="row"
 			if="${vmAddress.addressInfo.isNormalAddress()}">
 			<div sclass="col-sm-4 col-title">
 				<label
@@ -127,6 +138,66 @@
 						<listitem label="@load(item.name)" />
 					</template>
 				</listbox>
+			</div>
+		</div>
+		
+		<div sclass="row"
+			if="${vmAddress.addressInfo.isContact()}">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmAddress.addressInfo.nameSiteRepresentativeTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmAddress.addressInfo.nameSiteRepresentative)" />
+			</div>
+		</div>
+		
+		<div sclass="row"
+			if="${vmAddress.addressInfo.isContact()}">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmAddress.addressInfo.representativeDesignationTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmAddress.addressInfo.representativeDesignation)" />
+			</div>
+		</div>
+		
+		<div sclass="row"
+			if="${vmAddress.addressInfo.isContact()}">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmAddress.addressInfo.mobileNumber)" />
+			</div>
+		</div>
+		
+		<div sclass="row"
+			if="${vmAddress.addressInfo.isContact()}">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmAddress.addressInfo.landlineNumberTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmAddress.addressInfo.landlineNumber)" />
+			</div>
+		</div>
+		
+		<div sclass="row"
+			if="${vmAddress.addressInfo.isContact()}">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmAddress.addressInfo.emailTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmAddress.addressInfo.email)" />
 			</div>
 		</div>
 
