@@ -20,24 +20,7 @@
     
     <hlayout><label sclass = "sectionHeader" value="C. EMPLOYER/APPLICANT INFORMATION"/></hlayout>
     
-    <div sclass="container-fluid text-left">
-    	<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Employer Name"/></div>
-    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-7 col-title"><label value="Skills Development Levy (SDL) Number (Paying or Exempted)"/></div>
-    		<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-7 col-title"><label value="Site SDL Number (Paying levies If applicable)"/></div>
-    		<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-7 col-title"><label value="Organisation Registration Number (If applicable)"/></div>
-    		<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-  		</div>
-    </div>
+	<include employerInfo="@load(vm.employerInfo)" src="@load((WebForm.getBundleResourcePath('fragment/employerInfo.zul')))"/>
     
     <hlayout><label sclass = "subSectionHeader" value="PHYSICAL ADDRESS"/></hlayout>
     
