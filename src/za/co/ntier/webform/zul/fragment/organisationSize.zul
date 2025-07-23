@@ -1,0 +1,55 @@
+<?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
+
+<div sclass="container-fluid text-left"
+		viewModel="@id('vmOrgSize') @init('za.co.ntier.webform.form.viewmodel.VMWrapperOrganisationSize')">
+	<div sclass="row">
+		<div sclass="col-sm-8 col-title">
+			<label value="Size of the organisation" />
+		</div>
+		<div sclass="col-sm-4 col-container">
+			<div sclass="container-fluid text-left">
+				<div sclass="row" children="@load((MasterUtil.organisationSizes))">
+					<template name="children" var="orgSize">
+						<div sclass="col-sm-4 col-content">
+							<div sclass="text-center">
+								<div class="mb-0">${orgSize.label}</div>
+								<div>${orgSize.size}</div>
+							</div>
+						</div>
+					</template>
+				</div>
+
+				<div sclass="row" children="@load((MasterUtil.organisationSizes))">				
+					<template name="children" var="orgSize">
+					<div
+						sclass="col-sm-4 col-content-two d-flex justify-content-center">
+						<radio value="@load(orgSize)"  radiogroup="rdOrgSize"/>
+					</div>
+					</template>
+				</div>
+				<radiogroup id="rdOrgSize" selectedItem="@bind(vmOrgSize.orgSizeInfo.orgSizeSelected)"/>
+			</div>
+		</div>
+	</div>
+	<div sclass="row">
+		<div sclass="col-sm-8 col-title">
+			<label
+				value="Has the organisation submitted the WSP/ATR In 2022?" />
+		</div>
+		<div sclass="col-sm-4 col-title-center-white">
+			<label
+				value="@load((vmOrgSize.orgSizeInfo.submittedWSP?'YES':'NO'))" />
+		</div>
+	</div>
+	
+	<div sclass="row">
+		<div sclass="col-sm-8 col-title">
+			<label
+				value="Has the organisation submitted the Pivotal Plan and Report In 2022?" />
+		</div>
+		<div sclass="col-sm-4 col-title-center-white">
+			<label
+				value="@load((vmOrgSize.orgSizeInfo.submittedPivotal?'YES':'NO'))" />
+		</div>
+	</div>
+</div>

@@ -19,6 +19,8 @@ public class DiscretionaryGrantsApplication {
 	
 	private AddressInfoBase postAddressInfo;
 	
+	private OrganisationSizeInfo orgSizeInfo;
+	
 	private Province employerProvinceSelected;
 	
 	Map<String, List<String>> formData;
@@ -91,6 +93,7 @@ public class DiscretionaryGrantsApplication {
         physicalAddressInfo.setMunicipalityTypeSelected(MasterUtil.municipalityTypes.get(1));
         
         postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL, Province.KZN);
+        orgSizeInfo = new OrganisationSizeInfo(MasterUtil.organisationSizes.get(2), false, true);
     }
 
     // --- Getters and Setters for Data Binding ---
@@ -140,6 +143,18 @@ public class DiscretionaryGrantsApplication {
 	 */
 	public void setPostAddressInfo(AddressInfoBase postAddressInfo) {
 		this.postAddressInfo = postAddressInfo;
+	}
+	/**
+	 * @return the orgSizeInfo
+	 */
+	public OrganisationSizeInfo getOrgSizeInfo() {
+		return orgSizeInfo;
+	}
+	/**
+	 * @param orgSizeInfo the orgSizeInfo to set
+	 */
+	public void setOrgSizeInfo(OrganisationSizeInfo orgSizeInfo) {
+		this.orgSizeInfo = orgSizeInfo;
 	}
 
 	

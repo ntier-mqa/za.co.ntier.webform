@@ -48,59 +48,7 @@
   	<include addressInfo="@load(vm.postAddressInfo)" src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))"/>
 
   	<hlayout><label sclass = "subSectionHeader" value="SIZE OF THE ORGANISATION"/><label value="(please select the correct option pertaining to the company size)"/></hlayout>
-  	<div sclass="container-fluid text-left">
-    	<div sclass="row">
-    		<div sclass="col-sm-8 col-title"><label value="Size of the organisation"/></div>
-    		<div sclass="col-sm-4 col-container">
-    			<div sclass="container-fluid text-left">
-    				<div sclass="row">
-    					<div sclass="col-sm-4 col-content">
-	    					<div sclass="text-center">
-							    <div class="mb-0">Small</div>
-							    <div>(0-49)</div>
-							</div>
-    					</div>
-    					<div sclass="col-sm-4 col-content">
-    						<div sclass="text-center">
-    							<div class="mb-0">Medium</div>
-							    <div>(50-149)</div>
-							</div>
-    					</div>
-    					<div sclass="col-sm-4 col-content">
-    						<div sclass="text-center">
-    							<div class="mb-0">Large</div>
-							    <div>(&lt;150)</div>
-							</div>
-    					</div>
-    				</div>
-    				<div sclass="row">
-    					<div sclass="col-sm-4 col-content-two d-flex justify-content-center">
-	    					<checkbox id="smallCheckbox" />
-    					</div>
-    					<div sclass="col-sm-4 col-content-two d-flex justify-content-center">
-    						<checkbox id="mediumCheckbox" />
-    					</div>
-    					<div sclass="col-sm-4 col-content-two d-flex justify-content-center">
-    						<checkbox id="largeCheckbox" />
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-8 col-title"><label value="Has the organisation submitted the WSP/ATR In 2022?"/></div>
-    		<div sclass="col-sm-4 col-container">
-    			<div sclass="container-fluid text-left">
-    				<div sclass="row">
-    					<div sclass="col-sm-3 col-content d-flex justify-content-center"><label value="YES"/></div>
-    					<div sclass="col-sm-3 col-content d-flex justify-content-center"><checkbox /></div>
-    					<div sclass="col-sm-3 col-content d-flex justify-content-center"><label value="NO"/></div>
-    					<div sclass="col-sm-3 col-content d-flex justify-content-center"><checkbox  /></div>
-    				</div>
-    			</div>
-    		</div>
-  		</div>
-  	</div>
+  	<include orgSizeInfo="@load(vm.orgSizeInfo)" src="@load((WebForm.getBundleResourcePath('fragment/organisationSize.zul')))"/>
   	
   	<hlayout><label sclass = "sectionHeader" value="D. CANDIDACY"/></hlayout>
   	<hlayout><label value="List of disciplines supported for the HDSA Candidacy which the number of learners

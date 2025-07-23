@@ -90,7 +90,7 @@
 			</div>
 			<div sclass="col-sm-8 col-content-input-full">
 				<listbox mold="select" sclass="form-control "
-					model="@load((MasterUtil.getDistrictMunicipalities()))"
+					model="@load((MasterUtil.districtMunicipalities))"
 					selectedItem="@bind(vmAddress.addressInfo.districtMunicipalitySelected)">
 					<template name="model" var="item">
 						<listitem label="@load(item.name)" />

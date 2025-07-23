@@ -10,9 +10,11 @@ public class MasterUtil {
 	public static final List<KeyNamePair> districtMunicipalities;
 	public static final List<KeyNamePair> municipalityTypes;
 	
-	public static List<KeyNamePair> getDistrictMunicipalities(){
-		return districtMunicipalities;
-	}
+	public static final List<OrganisationSize> organisationSizes = Arrays.asList(
+			OrganisationSize.SMALL,
+			OrganisationSize.MEDIUM,
+			OrganisationSize.LARGE
+		);
 	
     static {
     	municipalityTypes = Arrays.asList(
