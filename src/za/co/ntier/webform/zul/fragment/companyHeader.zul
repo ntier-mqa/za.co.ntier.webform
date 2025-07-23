@@ -1,14 +1,15 @@
-<zk xmlns:n="native" xmlns:c="client" xmlns:ca="custom-attributes"  viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.VMWrapperCompanyHeader')">
+<zk xmlns:n="native" xmlns:c="client" xmlns:ca="custom-attributes">
 
-	<div sclass="companyHeader">
+	<div sclass="companyHeader" 
+			viewModel="@id('vmCompHeader') @init('za.co.ntier.webform.form.viewmodel.VMWrapperCompanyHeader')">
   	 	<div sclass="companyInfo">
-          	<label value="@init(vm.companyInfo.companyName)" sclass="companyName"/>
-	        <label value="@init(vm.companyInfo.companyAddress)"/>
-	        <label value="@init(c:cat3(vm.companyInfo.companyTelTitle, ':', vm.companyInfo.companyTel))"/>
-          	<label value="@init(c:cat3(vm.companyInfo.companyEmailTitle, ':', vm.companyInfo.companyEmail))"/>
-          	<label value="@init(vm.companyInfo.companyWebsite)"/>
+          	<label value="@init(vmCompHeader.companyInfo.companyName)" sclass="companyName"/>
+	        <label value="@init(vmCompHeader.companyInfo.companyAddress)"/>
+	        <label value="@init(c:cat3(vmCompHeader.companyInfo.companyTelTitle, ':', vmCompHeader.companyInfo.companyTel))"/>
+          	<label value="@init(c:cat3(vmCompHeader.companyInfo.companyEmailTitle, ':', vmCompHeader.companyInfo.companyEmail))"/>
+          	<label value="@init(vmCompHeader.companyInfo.companyWebsite)"/>
       	</div>	        
       	
-     	<image content="@init(vm.companyInfo.companyLogo)" sclass = "headerLogo" />
+     	<image content="@init(vmCompHeader.companyInfo.companyLogo)" sclass = "headerLogo" />
  	</div>
 </zk>

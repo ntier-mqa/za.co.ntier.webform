@@ -40,99 +40,12 @@
     </div>
     
     <hlayout><label sclass = "subSectionHeader" value="PHYSICAL ADDRESS"/></hlayout>
-    <div sclass="container-fluid text-left">
-    	<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Street Name and Number"/></div>
-    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Area/Suburb"/></div>
-    		<div sclass="col-sm-8 col-container">
-    			<div sclass="container-fluid text-left">
-    				<div sclass="row">
-    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-    					<div sclass="col-sm-2 col-title"><label value="City/Town"/></div>
-    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-    				</div>
-    			</div>
-    		</div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Postal Code"/></div>
-    		<div sclass="col-sm-8 col-container">
-    			<div sclass="container-fluid text-left">
-    				<div sclass="row">
-    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-    					<div sclass="col-sm-2 col-title"><label value="Province"/></div>
-    					    					
-    					<div sclass="col-sm-5 col-content-input-full">
-    						<listbox mold="select" sclass="form-control" 
-    							model="@load((Province.getProvincesWithoutTotal()))" selectedItem="@bind(vm.employerProvinceSelected)">
-							    <template name="model" var="item">
-							        <listitem label="@load(item.fullName)"/>
-							    </template>
-							</listbox>
-    					</div>
-    					
-    				</div>
-    			</div>
-    		</div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="District Municipalities"/></div>
-    		<div sclass="col-sm-8"></div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Local Municipalities"/></div>
-    		<div sclass="col-sm-8"></div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Rural or Urban"/></div>
-    		<div sclass="col-sm-8"></div>
-  		</div>
-  	</div>
+    
+    <include addressInfo="@load(vm.physicalAddressInfo)" src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))"/>
   	
   	<hlayout><label sclass = "subSectionHeader" value="POSTAL ADDRESS"/></hlayout>
-    <div sclass="container-fluid text-left">
-    	<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Post Address"/></div>
-    		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" /></div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Area/Suburb"/></div>
-    		<div sclass="col-sm-8 col-container">
-    			<div sclass="container-fluid text-left">
-    				<div sclass="row">
-    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-    					<div sclass="col-sm-2 col-title"><label value="City/Town"/></div>
-    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-    				</div>
-    			</div>
-    		</div>
-  		</div>
-  		<div sclass="row">
-    		<div sclass="col-sm-4 col-title"><label value="Postal Code"/></div>
-    		<div sclass="col-sm-8 col-container">
-    			<div sclass="container-fluid text-left">
-    				<div sclass="row">
-    					<div sclass="col-sm-5 col-content-input-full"><textbox sclass="form-control" /></div>
-    					<div sclass="col-sm-2 col-title"><label value="Province"/></div>
-    					
-    					<div sclass="col-sm-5 col-content-input-full">
-    						<listbox mold="select" sclass="form-control" 
-    							model="@load((Province.getProvincesWithoutTotal()))" selectedItem="@bind(vm.employerProvinceSelected)">
-							    <template name="model" var="item">
-							        <listitem label="@load(item.fullName)"/>
-							    </template>
-							</listbox>
-    					</div>
-    					
-    				</div>
-    			</div>
-    		</div>
-  		</div>
-  	</div>
-
+    
+  	<include addressInfo="@load(vm.postAddressInfo)" src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))"/>
 
   	<hlayout><label sclass = "subSectionHeader" value="SIZE OF THE ORGANISATION"/><label value="(please select the correct option pertaining to the company size)"/></hlayout>
   	<div sclass="container-fluid text-left">

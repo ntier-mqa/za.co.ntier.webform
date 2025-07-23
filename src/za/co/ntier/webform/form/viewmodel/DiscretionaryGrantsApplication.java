@@ -9,9 +9,15 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
+
 public class DiscretionaryGrantsApplication {
 	private CompanyInfo companyInfo;
 	private FormInfo formInfo;
+	
+	private AddressInfoBase physicalAddressInfo;
+	
+	private AddressInfoBase postAddressInfo;
 	
 	private Province employerProvinceSelected;
 	
@@ -78,6 +84,13 @@ public class DiscretionaryGrantsApplication {
         
         setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
         setFormInfo(new FormInfo());
+        
+        physicalAddressInfo = new AddressInfoBase(AddressCategory.PHYSICAL, Province.KZN);
+        physicalAddressInfo.setDistrictMunicipalitySelected(MasterUtil.districtMunicipalities.get(2));
+        physicalAddressInfo.setLocalMunicipalitySelected(MasterUtil.localMunicipalities.get(3));
+        physicalAddressInfo.setMunicipalityTypeSelected(MasterUtil.municipalityTypes.get(1));
+        
+        postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL, Province.KZN);
     }
 
     // --- Getters and Setters for Data Binding ---
@@ -103,6 +116,30 @@ public class DiscretionaryGrantsApplication {
 	 */
 	public void setEmployerProvinceSelected(Province employerProvinceSelected) {
 		this.employerProvinceSelected = employerProvinceSelected;
+	}
+	/**
+	 * @return the addressInfo
+	 */
+	public AddressInfoBase getPhysicalAddressInfo() {
+		return physicalAddressInfo;
+	}
+	/**
+	 * @param addressInfo the addressInfo to set
+	 */
+	public void setPhysicalAddressInfo(AddressInfoBase physicalAddressInfo) {
+		this.physicalAddressInfo = physicalAddressInfo;
+	}
+	/**
+	 * @return the postAddressInfo
+	 */
+	public AddressInfoBase getPostAddressInfo() {
+		return postAddressInfo;
+	}
+	/**
+	 * @param postAddressInfo the postAddressInfo to set
+	 */
+	public void setPostAddressInfo(AddressInfoBase postAddressInfo) {
+		this.postAddressInfo = postAddressInfo;
 	}
 
 	
