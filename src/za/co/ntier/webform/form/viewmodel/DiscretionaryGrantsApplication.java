@@ -1,11 +1,9 @@
 package za.co.ntier.webform.form.viewmodel;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 
@@ -23,40 +21,14 @@ public class DiscretionaryGrantsApplication {
 	
 	private OrganisationSizeInfo orgSizeInfo;
 	
+	private List<DisciplineHDSA> disciplineHDSAs;
+	
 	private AddressInfoBase candidacyContact;
 	
 	private Province employerProvinceSelected;
 	
 	Map<String, List<String>> formData;
-	private List<Discipline> disciplines = Arrays.asList(new Discipline[] {new Discipline("Electrical Engineering GCC"),
-			new Discipline("Mechanical Engineering GCC "),
-			new Discipline("Mine Managers Certificate of Competence MMC"),
-			new Discipline("Mine Survey GCC"),
-			new Discipline("Mine Overseer"),
-			new Discipline("Blasting Certificate")
-			});
-	
-	@Command("toggleProvince")
-	@NotifyChange("disciplines") // Notify ZK to update the 'disciplines' list
-	public void toggleProvince(@BindingParam("discipline") Discipline discipline, 
-			@BindingParam("province") Province province,
-			@BindingParam("checked") boolean checked) {
-		discipline.toggleProvince(province, checked);
-	}
-	/**
-	 * @return the disciplines
-	 */
-	public List<Discipline> getDisciplines() {
-		return disciplines;
-	}
-
-	/**
-	 * @param disciplines the disciplines to set
-	 */
-	public void setDisciplines(List<Discipline> disciplines) {
-		this.disciplines = disciplines;
-	}
-	
+		
     /**
 	 * @return the formInfo
 	 */
@@ -101,6 +73,16 @@ public class DiscretionaryGrantsApplication {
         physicalAddressInfo.setMunicipalityTypeSelected(MasterUtil.municipalityTypes.get(1));
         
         orgSizeInfo = new OrganisationSizeInfo(MasterUtil.organisationSizes.get(2), false, true);
+        
+        disciplineHDSAs =  List.of(
+        		new DisciplineHDSA("Electrical Engineering GCC", 10, "4000"),
+				new DisciplineHDSA("Mechanical Engineering GCC", 5, "5000"),
+				new DisciplineHDSA("Mine Managers Certificate of Competence MMC", 5, "5000"),
+				new DisciplineHDSA("Mine Survey GCC", 5, "5000"),
+				new DisciplineHDSA("Mine Overseer", 5, "5000"),
+				new DisciplineHDSA("Blasting Certificate", 5, "5000"));
+
+        disciplineHDSAs = new ArrayList<DisciplineHDSA>(disciplineHDSAs);
         
         candidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.WS);
     }
@@ -189,6 +171,19 @@ public class DiscretionaryGrantsApplication {
 	public void setCandidacyContact(AddressInfoBase candidacyContact) {
 		this.candidacyContact = candidacyContact;
 	}
+	/**
+	 * @return the disciplineHDSAs
+	 */
+	public List<DisciplineHDSA> getDisciplineHDSAs() {
+		return disciplineHDSAs;
+	}
+	/**
+	 * @param disciplineHDSAs the disciplineHDSAs to set
+	 */
+	public void setDisciplineHDSAs(List<DisciplineHDSA> disciplineHDSAs) {
+		this.disciplineHDSAs = disciplineHDSAs;
+	}
+	
 
 	
 }
