@@ -7,17 +7,17 @@ import za.co.ntier.webform.form.bean.EmployerInfo;
 
 public class EmployerInfoVMWrapper {
 	private EmployerInfo employerInfo;
-	
-	@Init
-    public void init(@ExecutionArgParam("employerInfo") EmployerInfo employerInfo) {
-		this.employerInfo = employerInfo;
-    }
 
 	/**
 	 * @return the employerInfo
 	 */
 	public EmployerInfo getEmployerInfo() {
 		return employerInfo;
+	}
+
+	@Init
+	public void init(@ExecutionArgParam("employerInfo") EmployerInfo employerInfo) {
+		this.employerInfo = employerInfo;
 	}
 
 	/**

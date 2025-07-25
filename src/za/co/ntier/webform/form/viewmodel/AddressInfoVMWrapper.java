@@ -7,17 +7,17 @@ import za.co.ntier.webform.form.bean.AddressInfoBase;
 
 public class AddressInfoVMWrapper {
 	private AddressInfoBase addressInfo;
-	
-	@Init
-    public void init(@ExecutionArgParam("addressInfo") AddressInfoBase addressInfo) {
-		this.addressInfo = addressInfo;
-    }
 
 	/**
 	 * @return the addressInfo
 	 */
 	public AddressInfoBase getAddressInfo() {
 		return addressInfo;
+	}
+
+	@Init
+	public void init(@ExecutionArgParam("addressInfo") AddressInfoBase addressInfo) {
+		this.addressInfo = addressInfo;
 	}
 
 	/**

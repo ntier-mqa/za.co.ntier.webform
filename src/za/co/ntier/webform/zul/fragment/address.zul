@@ -1,204 +1,186 @@
-<?import org.compiere.util.KeyNamePair ?>
-<?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
+<?xml version="1.0" encoding="UTF-8"?><?import org.compiere.util.KeyNamePair?>
+<?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
 
-<div sclass="container-fluid text-left" 
+<div sclass="container-fluid text-left"
 	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.AddressInfoVMWrapper')">
-	
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isContact()}">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.siteNameTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<textbox sclass="form-control"
-					value="@bind(vmAddress.addressInfo.siteName)" />
-			</div>
-		</div>
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isNormalAddress()}">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.addressLineTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<textbox sclass="form-control"
-					value="@bind(vmAddress.addressInfo.addressLine)" />
-			</div>
-		</div>
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isPostalAddress()}">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.postAddressTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<textbox sclass="form-control"
-					value="@bind(vmAddress.addressInfo.postAddress)" />
-			</div>
-		</div>
 
-		<div sclass="row">
-			<div sclass="col-sm-4 col-title">
-				<label value="@init(vmAddress.addressInfo.areaTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-container">
-				<div sclass="container-fluid text-left">
-					<div sclass="row">
-						<div sclass="col-sm-5 col-content-input-full">
-							<textbox sclass="form-control"
-								value="@bind(vmAddress.addressInfo.area)" />
-						</div>
-						<div sclass="col-sm-2 col-title">
-							<label
-								value="@init(vmAddress.addressInfo.cityTitle)" />
-						</div>
-						<div sclass="col-sm-5 col-content-input-full">
-							<textbox sclass="form-control"
-								value="@bind(vmAddress.addressInfo.city)" />
-						</div>
+	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="@init(vmAddress.addressInfo.siteNameTitle)" />
+		</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmAddress.addressInfo.siteName)" />
+		</div>
+	</div>
+	<div sclass="row" if="${vmAddress.addressInfo.isNormalAddress()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="@init(vmAddress.addressInfo.addressLineTitle)" />
+		</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmAddress.addressInfo.addressLine)" />
+		</div>
+	</div>
+	<div sclass="row" if="${vmAddress.addressInfo.isPostalAddress()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="@init(vmAddress.addressInfo.postAddressTitle)" />
+		</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmAddress.addressInfo.postAddress)" />
+		</div>
+	</div>
+
+	<div sclass="row">
+		<div sclass="col-sm-4 col-title">
+			<label value="@init(vmAddress.addressInfo.areaTitle)" />
+		</div>
+		<div sclass="col-sm-8 col-container">
+			<div sclass="container-fluid text-left">
+				<div sclass="row">
+					<div sclass="col-sm-5 col-content-input-full">
+						<textbox sclass="form-control"
+							value="@bind(vmAddress.addressInfo.area)" />
+					</div>
+					<div sclass="col-sm-2 col-title">
+						<label value="@init(vmAddress.addressInfo.cityTitle)" />
+					</div>
+					<div sclass="col-sm-5 col-content-input-full">
+						<textbox sclass="form-control"
+							value="@bind(vmAddress.addressInfo.city)" />
 					</div>
 				</div>
 			</div>
 		</div>
-		<div sclass="row">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.postalCodeTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-container">
-				<div sclass="container-fluid text-left">
-					<div sclass="row">
-						<div sclass="col-sm-5 col-content-input-full">
-							<textbox sclass="form-control"
-								value="@bind(vmAddress.addressInfo.postalCode)" />
-						</div>
-						<div sclass="col-sm-2 col-title">
-							<label
-								value="@init(vmAddress.addressInfo.provinceTitle)" />
-						</div>
-
-						<div sclass="col-sm-5 col-content-input-full">
-							<listbox mold="select" sclass="form-control"
-								model="@load((Province.getProvincesWithoutTotal()))"
-								selectedItem="@bind(vmAddress.addressInfo.provinceSelected)">
-								<template name="model" var="item">
-									<listitem
-										label="@load(item.fullName)" />
-								</template>
-							</listbox>
-						</div>
-
+	</div>
+	<div sclass="row">
+		<div sclass="col-sm-4 col-title">
+			<label value="@init(vmAddress.addressInfo.postalCodeTitle)" />
+		</div>
+		<div sclass="col-sm-8 col-container">
+			<div sclass="container-fluid text-left">
+				<div sclass="row">
+					<div sclass="col-sm-5 col-content-input-full">
+						<textbox sclass="form-control"
+							value="@bind(vmAddress.addressInfo.postalCode)" />
 					</div>
+					<div sclass="col-sm-2 col-title">
+						<label value="@init(vmAddress.addressInfo.provinceTitle)" />
+					</div>
+
+					<div sclass="col-sm-5 col-content-input-full">
+						<listbox mold="select" sclass="form-control"
+							model="@load((Province.getProvincesWithoutTotal()))"
+							selectedItem="@bind(vmAddress.addressInfo.provinceSelected)">
+							<template name="model" var="item">
+								<listitem label="@load(item.fullName)" />
+							</template>
+						</listbox>
+					</div>
+
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isShowMunicipalities()}">
-			<div sclass="col-sm-4 col-title">
-				<label value="District Municipalities" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<listbox mold="select" sclass="form-control "
-					model="@load((MasterUtil.districtMunicipalities))"
-					selectedItem="@bind(vmAddress.addressInfo.districtMunicipalitySelected)">
-					<template name="model" var="item">
-						<listitem label="@load(item.name)" />
-					</template>
-				</listbox>
+	<div sclass="row"
+		if="${vmAddress.addressInfo.isShowMunicipalities()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="District Municipalities" />
+		</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<listbox mold="select" sclass="form-control "
+				model="@load((MasterUtil.districtMunicipalities))"
+				selectedItem="@bind(vmAddress.addressInfo.districtMunicipalitySelected)">
+				<template name="model" var="item">
+					<listitem label="@load(item.name)" />
+				</template>
+			</listbox>
 
-			</div>
 		</div>
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isShowMunicipalities()}">
-			<div sclass="col-sm-4 col-title">
-				<label value="Local Municipalities" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<listbox mold="select" sclass="form-control "
-					model="@load((MasterUtil.localMunicipalities))"
-					selectedItem="@bind(vmAddress.addressInfo.localMunicipalitySelected)">
-					<template name="model" var="item">
-						<listitem label="@load(item.name)" />
-					</template>
-				</listbox>
-			</div>
+	</div>
+	<div sclass="row"
+		if="${vmAddress.addressInfo.isShowMunicipalities()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="Local Municipalities" />
 		</div>
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isShowMunicipalities()}">
-			<div sclass="col-sm-4 col-title">
-				<label value="Rural or Urban" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<listbox mold="select" sclass="form-control "
-					model="@load((MasterUtil.municipalityTypes))"
-					selectedItem="@bind(vmAddress.addressInfo.municipalityTypeSelected)">
-					<template name="model" var="item">
-						<listitem label="@load(item.name)" />
-					</template>
-				</listbox>
-			</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<listbox mold="select" sclass="form-control "
+				model="@load((MasterUtil.localMunicipalities))"
+				selectedItem="@bind(vmAddress.addressInfo.localMunicipalitySelected)">
+				<template name="model" var="item">
+					<listitem label="@load(item.name)" />
+				</template>
+			</listbox>
 		</div>
-		
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isContact()}">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.nameSiteRepresentativeTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<textbox sclass="form-control"
-					value="@bind(vmAddress.addressInfo.nameSiteRepresentative)" />
-			</div>
+	</div>
+	<div sclass="row"
+		if="${vmAddress.addressInfo.isShowMunicipalities()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="Rural or Urban" />
 		</div>
-		
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isContact()}">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.representativeDesignationTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<textbox sclass="form-control"
-					value="@bind(vmAddress.addressInfo.representativeDesignation)" />
-			</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<listbox mold="select" sclass="form-control "
+				model="@load((MasterUtil.municipalityTypes))"
+				selectedItem="@bind(vmAddress.addressInfo.municipalityTypeSelected)">
+				<template name="model" var="item">
+					<listitem label="@load(item.name)" />
+				</template>
+			</listbox>
 		</div>
-		
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isContact()}">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<textbox sclass="form-control"
-					value="@bind(vmAddress.addressInfo.mobileNumber)" />
-			</div>
+	</div>
+
+	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+		<div sclass="col-sm-4 col-title">
+			<label
+				value="@init(vmAddress.addressInfo.nameSiteRepresentativeTitle)" />
 		</div>
-		
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isContact()}">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.landlineNumberTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<textbox sclass="form-control"
-					value="@bind(vmAddress.addressInfo.landlineNumber)" />
-			</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmAddress.addressInfo.nameSiteRepresentative)" />
 		</div>
-		
-		<div sclass="row"
-			if="${vmAddress.addressInfo.isContact()}">
-			<div sclass="col-sm-4 col-title">
-				<label
-					value="@init(vmAddress.addressInfo.emailTitle)" />
-			</div>
-			<div sclass="col-sm-8 col-content-input-full">
-				<textbox sclass="form-control"
-					value="@bind(vmAddress.addressInfo.email)" />
-			</div>
+	</div>
+
+	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+		<div sclass="col-sm-4 col-title">
+			<label
+				value="@init(vmAddress.addressInfo.representativeDesignationTitle)" />
 		</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmAddress.addressInfo.representativeDesignation)" />
+		</div>
+	</div>
+
+	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
+		</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmAddress.addressInfo.mobileNumber)" />
+		</div>
+	</div>
+
+	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="@init(vmAddress.addressInfo.landlineNumberTitle)" />
+		</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmAddress.addressInfo.landlineNumber)" />
+		</div>
+	</div>
+
+	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+		<div sclass="col-sm-4 col-title">
+			<label value="@init(vmAddress.addressInfo.emailTitle)" />
+		</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmAddress.addressInfo.email)" />
+		</div>
+	</div>
 
 </div>

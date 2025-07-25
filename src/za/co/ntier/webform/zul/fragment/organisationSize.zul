@@ -1,14 +1,15 @@
-<?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
 
 <div sclass="container-fluid text-left"
-		viewModel="@id('vmOrgSize') @init('za.co.ntier.webform.form.viewmodel.OrganisationSizeVMWrapper')">
+	viewModel="@id('vmOrgSize') @init('za.co.ntier.webform.form.viewmodel.OrganisationSizeVMWrapper')">
 	<div sclass="row">
 		<div sclass="col-sm-8 col-title">
 			<label value="Size of the organisation" />
 		</div>
 		<div sclass="col-sm-4 col-container">
 			<div sclass="container-fluid text-left">
-				<div sclass="row" children="@load((MasterUtil.organisationSizes))">
+				<div sclass="row"
+					children="@load((MasterUtil.organisationSizes))">
 					<template name="children" var="orgSize">
 						<div sclass="col-sm-4 col-content">
 							<div sclass="text-center">
@@ -19,15 +20,17 @@
 					</template>
 				</div>
 
-				<div sclass="row" children="@load((MasterUtil.organisationSizes))">				
+				<div sclass="row"
+					children="@load((MasterUtil.organisationSizes))">
 					<template name="children" var="orgSize">
-					<div
-						sclass="col-sm-4 col-content-two d-flex justify-content-center">
-						<radio value="@load(orgSize)"  radiogroup="rdOrgSize"/>
-					</div>
+						<div
+							sclass="col-sm-4 col-content-two d-flex justify-content-center">
+							<radio value="@load(orgSize)" radiogroup="rdOrgSize" />
+						</div>
 					</template>
 				</div>
-				<radiogroup id="rdOrgSize" selectedItem="@bind(vmOrgSize.orgSizeInfo.orgSizeSelected)"/>
+				<radiogroup id="rdOrgSize"
+					selectedItem="@bind(vmOrgSize.orgSizeInfo.orgSizeSelected)" />
 			</div>
 		</div>
 	</div>
@@ -41,7 +44,7 @@
 				value="@load((vmOrgSize.orgSizeInfo.submittedWSP?'YES':'NO'))" />
 		</div>
 	</div>
-	
+
 	<div sclass="row">
 		<div sclass="col-sm-8 col-title">
 			<label

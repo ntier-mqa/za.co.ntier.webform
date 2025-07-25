@@ -1,40 +1,63 @@
-<!--
-    This ZUL file is designed to be included within another ZUL page.
-    The <zk> root tag has been removed.
-
-    A unique 'sclass' (employer-mvvm-form) has been added to the root <window>
-    to scope the CSS rules specifically to this MVVM form.
--->
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This ZUL file is designed to be 
+	included within another ZUL page. The <zk> root tag has been removed. A unique 
+	'sclass' (employer-mvvm-form) has been added to the root <window> to scope 
+	the CSS rules specifically to this MVVM form. -->
 <?import za.co.ntier.webform.form.bean.Province ?>
 <?import za.co.ntier.webform.form.WebForm ?>
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 
- <div viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationCandidacyVM')" >
- 
-	<include companyInfo="@load(vm.companyInfo)" src="@load((WebForm.getBundleResourcePath('fragment/companyHeader.zul')))"/>	 		
- 	<label sclass = "formCode" value="@init(vm.formInfo.formCode)"/>
-    <label sclass = "formHeader" value="@init(vm.formInfo.formHeader)"/>
-    
-    <hlayout><label sclass = "sectionHeader" value="C. EMPLOYER/APPLICANT INFORMATION"/></hlayout>
-    
-	<include employerInfo="@load(vm.employerInfo)" src="@load((WebForm.getBundleResourcePath('fragment/employerInfo.zul')))"/>
-    
-    <hlayout><label sclass = "subSectionHeader" value="PHYSICAL ADDRESS"/></hlayout>
-    
-    <include addressInfo="@load(vm.physicalAddressInfo)" src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))"/>
-  	
-  	<hlayout><label sclass = "subSectionHeader" value="POSTAL ADDRESS"/></hlayout>
-    
-  	<include addressInfo="@load(vm.postAddressInfo)" src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))"/>
+<div
+	viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationCandidacyVM')">
 
-  	<hlayout><label sclass = "subSectionHeader" value="SIZE OF THE ORGANISATION"/><label value="(please select the correct option pertaining to the company size)"/></hlayout>
-  	<include orgSizeInfo="@load(vm.orgSizeInfo)" src="@load((WebForm.getBundleResourcePath('fragment/organisationSize.zul')))"/>
-  	
-  	<hlayout><label sclass = "sectionHeader" value="D. CANDIDACY"/></hlayout>
-  	<include disciplineHDSAs="@load(vm.disciplineHDSAs)" src="@load((WebForm.getBundleResourcePath('fragment/disciplineHDSA.zul')))"/>
-  	
-    <hlayout><label sclass = "subSectionHeader" value="Contact details of person responsible for CANDIDACY:"/></hlayout>
-    <include addressInfo="@load(vm.candidacyContact)" src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))"/>
- </div>
+	<include companyInfo="@load(vm.companyInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/companyHeader.zul')))" />
+	<label sclass="formCode" value="@init(vm.formInfo.formCode)" />
+	<label sclass="formHeader" value="@init(vm.formInfo.formHeader)" />
+
+	<hlayout>
+		<label sclass="sectionHeader"
+			value="C. EMPLOYER/APPLICANT INFORMATION" />
+	</hlayout>
+
+	<include employerInfo="@load(vm.employerInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/employerInfo.zul')))" />
+
+	<hlayout>
+		<label sclass="subSectionHeader" value="PHYSICAL ADDRESS" />
+	</hlayout>
+
+	<include addressInfo="@load(vm.physicalAddressInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+
+	<hlayout>
+		<label sclass="subSectionHeader" value="POSTAL ADDRESS" />
+	</hlayout>
+
+	<include addressInfo="@load(vm.postAddressInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+
+	<hlayout>
+		<label sclass="subSectionHeader"
+			value="SIZE OF THE ORGANISATION" />
+		<label
+			value="(please select the correct option pertaining to the company size)" />
+	</hlayout>
+	<include orgSizeInfo="@load(vm.orgSizeInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/organisationSize.zul')))" />
+
+	<hlayout>
+		<label sclass="sectionHeader" value="D. CANDIDACY" />
+	</hlayout>
+	<include disciplineHDSAs="@load(vm.disciplineHDSAs)"
+		src="@load((WebForm.getBundleResourcePath('fragment/disciplineHDSA.zul')))" />
+
+	<hlayout>
+		<label sclass="subSectionHeader"
+			value="Contact details of person responsible for CANDIDACY:" />
+	</hlayout>
+	<include addressInfo="@load(vm.candidacyContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+</div>
