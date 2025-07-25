@@ -1,11 +1,16 @@
 package za.co.ntier.webform.form.bean;
 
+import org.zkoss.bind.BindUtils;
+import org.zkoss.util.media.Media;
+
 public class EmployerInfo {
 	private String employerName;
 	private String employerNameTitle = "Employer Name";
 	private String orgRegistrationNumber;
 	private String orgRegistrationNumberTitle = "Organisation Registration Number (if applicable)";
-
+	private String employerTaxNumber;
+	private String employerTaxNumberTitle = "VAT Number";
+	private String fileNameVATCer;
 	private String sdlNumber;
 	private String sdlNumberTitle = "Skills Development Levy (SDL) Number (Paying or Exempted)";
 	private String siteSDLNumber;
@@ -121,6 +126,54 @@ public class EmployerInfo {
 	 */
 	public void setSiteSDLNumberTitle(String siteSDLNumberTitle) {
 		this.siteSDLNumberTitle = siteSDLNumberTitle;
+	}
+	
+	public void uploadFile(Media media) {
+		setFileNameVATCer(media.getName());
+		
+	}
+
+	/**
+	 * @return the employerTaxNumber
+	 */
+	public String getEmployerTaxNumber() {
+		return employerTaxNumber;
+	}
+
+	/**
+	 * @param employerTaxNumber the employerTaxNumber to set
+	 */
+	public void setEmployerTaxNumber(String employerTaxNumber) {
+		this.employerTaxNumber = employerTaxNumber;
+	}
+
+	/**
+	 * @return the employerTaxNumberTitle
+	 */
+	public String getEmployerTaxNumberTitle() {
+		return employerTaxNumberTitle;
+	}
+
+	/**
+	 * @param employerTaxNumberTitle the employerTaxNumberTitle to set
+	 */
+	public void setEmployerTaxNumberTitle(String employerTaxNumberTitle) {
+		this.employerTaxNumberTitle = employerTaxNumberTitle;
+	}
+
+	/**
+	 * @return the fileNameVATCer
+	 */
+	public String getFileNameVATCer() {
+		return fileNameVATCer;
+	}
+
+	/**
+	 * @param fileNameVATCer the fileNameVATCer to set
+	 */
+	public void setFileNameVATCer(String fileNameVATCer) {
+		this.fileNameVATCer = fileNameVATCer;
+		BindUtils.postNotifyChange(this, "fileNameVATCer");
 	}
 
 }

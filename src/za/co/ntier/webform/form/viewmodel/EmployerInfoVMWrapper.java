@@ -1,7 +1,10 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import org.zkoss.bind.annotation.BindingParam;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.bean.EmployerInfo;
 
@@ -25,5 +28,10 @@ public class EmployerInfoVMWrapper {
 	 */
 	public void setEmployerInfo(EmployerInfo employerInfo) {
 		this.employerInfo = employerInfo;
+	}
+	
+	@Command
+	public void uploadFile(@BindingParam("media") Media media) {
+		employerInfo.uploadFile(media);
 	}
 }

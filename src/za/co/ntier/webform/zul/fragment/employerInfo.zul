@@ -33,13 +33,29 @@
 		</div>
 	</div>
 	<div sclass="row">
-		<div sclass="col-sm-7 col-title">
+		<div sclass="col-sm-4 col-title">
 			<label
 				value="@init(vmEmployerInfo.employerInfo.orgRegistrationNumberTitle)" />
 		</div>
-		<div sclass="col-sm-5 col-content-input-full">
+		<div sclass="col-sm-8 col-content-input-full">
 			<textbox sclass="form-control"
 				value="@bind(vmEmployerInfo.employerInfo.orgRegistrationNumber)" />
+		</div>
+	</div>
+	
+	<div sclass="row">
+		<div sclass="col-sm-4 col-title">
+			<label
+				value="@init(vmEmployerInfo.employerInfo.employerTaxNumberTitle)" />
+		</div>
+		<div sclass="col-sm-4 col-content-input-full">
+			<textbox sclass="form-control"
+				value="@bind(vmEmployerInfo.employerInfo.employerTaxNumber)" />
+		</div>
+		<div sclass="col-sm-4 col-content-input-full">
+			<fileupload label="Upload VAT Exemption Certificate"
+							onUpload="@command('uploadFile', media=event.media)" />
+						<label value="@load(vmEmployerInfo.employerInfo.fileNameVATCer)" />
 		</div>
 	</div>
 </div>

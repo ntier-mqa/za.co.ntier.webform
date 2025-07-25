@@ -42,10 +42,6 @@ public class DisciplineHDSAVMWrapper {
 	public void uploadFile(@BindingParam("media") Media media, @BindingParam("isDSA") boolean isDSA,
 			@BindingParam("discipline") DisciplineHDSA discipline, @BindingParam("index") int index) {
 		discipline.uploadFile(media, isDSA);
-		if (isDSA) {
-			discipline.setFileNameDSA(media.getName());
-		} else {
-			discipline.setFileNameHDSA(media.getName());
-		}
+		
 	}
 }
