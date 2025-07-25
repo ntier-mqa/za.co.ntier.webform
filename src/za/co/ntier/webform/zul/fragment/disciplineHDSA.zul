@@ -1,8 +1,8 @@
 <?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
-<?import za.co.ntier.webform.form.viewmodel.DisciplineHDSA ?>
+<?import za.co.ntier.webform.form.bean.DisciplineHDSA ?>
 
 <zk>
-	<div viewModel="@id('vmDisciplines') @init('za.co.ntier.webform.form.viewmodel.VMWrapperDisciplineHDSA')">
+	<div viewModel="@id('vmDisciplines') @init('za.co.ntier.webform.form.viewmodel.DisciplineHDSAVMWrapper')">
 		<hlayout>
 			<label
 				value="List of disciplines supported for the HDSA Candidacy which the number of learners

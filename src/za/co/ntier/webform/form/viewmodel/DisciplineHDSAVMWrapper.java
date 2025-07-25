@@ -8,7 +8,9 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.Media;
 
-public class VMWrapperDisciplineHDSA {
+import za.co.ntier.webform.form.bean.DisciplineHDSA;
+
+public class DisciplineHDSAVMWrapper {
 	private List<DisciplineHDSA> disciplineHDSAs;
 
 	@Init

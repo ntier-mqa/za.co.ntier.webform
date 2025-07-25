@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.bean;
 
 public enum AddressCategory {
 	POSTAL(),

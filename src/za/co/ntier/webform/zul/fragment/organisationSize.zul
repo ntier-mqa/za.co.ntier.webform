@@ -1,7 +1,7 @@
 <?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
 
 <div sclass="container-fluid text-left"
-		viewModel="@id('vmOrgSize') @init('za.co.ntier.webform.form.viewmodel.VMWrapperOrganisationSize')">
+		viewModel="@id('vmOrgSize') @init('za.co.ntier.webform.form.viewmodel.OrganisationSizeVMWrapper')">
 	<div sclass="row">
 		<div sclass="col-sm-8 col-title">
 			<label value="Size of the organisation" />

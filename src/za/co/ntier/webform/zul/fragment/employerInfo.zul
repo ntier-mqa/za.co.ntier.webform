@@ -1,7 +1,7 @@
 <?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
 
     <div sclass="container-fluid text-left"
-			viewModel="@id('vmEmployerInfo') @init('za.co.ntier.webform.form.viewmodel.VMWrapperEmployerInfo')">
+			viewModel="@id('vmEmployerInfo') @init('za.co.ntier.webform.form.viewmodel.EmployerInfoVMWrapper')">
     	<div sclass="row">
     		<div sclass="col-sm-4 col-title"><label value="@init(vmEmployerInfo.employerInfo.employerNameTitle)"/></div>
     		<div sclass="col-sm-8 col-content-input-full"><textbox sclass="form-control" value="@bind(vmEmployerInfo.employerInfo.employerName)"/></div>

@@ -7,9 +7,17 @@ import java.util.Map;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import za.co.ntier.webform.form.bean.AddressCategory;
+import za.co.ntier.webform.form.bean.AddressInfoBase;
+import za.co.ntier.webform.form.bean.CompanyInfo;
+import za.co.ntier.webform.form.bean.DisciplineHDSA;
+import za.co.ntier.webform.form.bean.EmployerInfo;
+import za.co.ntier.webform.form.bean.FormInfo;
+import za.co.ntier.webform.form.bean.OrganisationSizeInfo;
+import za.co.ntier.webform.form.bean.Province;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
-public class DiscretionaryGrantsApplicationCandidacy {
+public class DiscretionaryGrantsApplicationCandidacyVM {
 	private CompanyInfo companyInfo;
 	private FormInfo formInfo;
 	
@@ -57,7 +65,7 @@ public class DiscretionaryGrantsApplicationCandidacy {
 		this.companyInfo = companyInfo;
 	}
 
-	public DiscretionaryGrantsApplicationCandidacy() throws IOException {
+	public DiscretionaryGrantsApplicationCandidacyVM() throws IOException {
         // Initialize with default values if needed
         
         setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
@@ -67,7 +75,7 @@ public class DiscretionaryGrantsApplicationCandidacy {
         employerInfo.setEmployerName("Le Quy Hiep");
         postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL, Province.KZN);
         
-        physicalAddressInfo = new AddressInfoBase(AddressCategory.PHYSICAL, Province.KZN);
+        physicalAddressInfo = new AddressInfoBase(AddressCategory.PHYSICAL, Province.NC);
         physicalAddressInfo.setDistrictMunicipalitySelected(MasterUtil.districtMunicipalities.get(2));
         physicalAddressInfo.setLocalMunicipalitySelected(MasterUtil.localMunicipalities.get(3));
         physicalAddressInfo.setMunicipalityTypeSelected(MasterUtil.municipalityTypes.get(1));

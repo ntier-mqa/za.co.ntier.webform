@@ -3,7 +3,9 @@ package za.co.ntier.webform.form.viewmodel;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
-public class VMWrapperAddressInfo {
+import za.co.ntier.webform.form.bean.AddressInfoBase;
+
+public class AddressInfoVMWrapper {
 	private AddressInfoBase addressInfo;
 	
 	@Init

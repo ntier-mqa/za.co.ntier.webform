@@ -3,7 +3,9 @@ package za.co.ntier.webform.form.viewmodel;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
-public class VMWrapperCompanyHeader {
+import za.co.ntier.webform.form.bean.CompanyInfo;
+
+public class CompanyHeaderVMWrapper {
 	private CompanyInfo companyInfo;
 	
 	@Init

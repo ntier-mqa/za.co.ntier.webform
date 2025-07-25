@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.bean;
 
 import org.compiere.util.KeyNamePair;
 

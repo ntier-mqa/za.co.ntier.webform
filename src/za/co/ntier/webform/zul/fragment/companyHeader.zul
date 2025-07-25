@@ -1,7 +1,7 @@
 <zk xmlns:n="native" xmlns:c="client" xmlns:ca="custom-attributes">
 
 	<div sclass="companyHeader" 
-			viewModel="@id('vmCompHeader') @init('za.co.ntier.webform.form.viewmodel.VMWrapperCompanyHeader')">
+			viewModel="@id('vmCompHeader') @init('za.co.ntier.webform.form.viewmodel.CompanyHeaderVMWrapper')">
   	 	<div sclass="companyInfo">
           	<label value="@init(vmCompHeader.companyInfo.companyName)" sclass="companyName"/>
 	        <label value="@init(vmCompHeader.companyInfo.companyAddress)"/>

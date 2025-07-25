@@ -2,7 +2,7 @@
 <?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
 
 <div sclass="container-fluid text-left" 
-	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.VMWrapperAddressInfo')">
+	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.AddressInfoVMWrapper')">
 	
 		<div sclass="row"
 			if="${vmAddress.addressInfo.isContact()}">
