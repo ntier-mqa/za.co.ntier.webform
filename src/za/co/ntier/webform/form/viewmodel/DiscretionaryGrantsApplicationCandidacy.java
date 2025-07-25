@@ -9,7 +9,7 @@ import org.zkoss.bind.annotation.NotifyChange;
 
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
-public class DiscretionaryGrantsApplication {
+public class DiscretionaryGrantsApplicationCandidacy {
 	private CompanyInfo companyInfo;
 	private FormInfo formInfo;
 	
@@ -57,7 +57,7 @@ public class DiscretionaryGrantsApplication {
 		this.companyInfo = companyInfo;
 	}
 
-	public DiscretionaryGrantsApplication() throws IOException {
+	public DiscretionaryGrantsApplicationCandidacy() throws IOException {
         // Initialize with default values if needed
         
         setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
