@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.viewmodel.master;
 
+@Deprecated
 public enum OrganisationSize {
 	LARGE("Large", "(<150)", "large"), MEDIUM("Medium", "(50-149)", "medium"), SMALL("Small", "(0-49)", "small");
 

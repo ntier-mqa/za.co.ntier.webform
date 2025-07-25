@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
@@ -16,7 +17,6 @@ import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.form.bean.OrganisationSizeInfo;
 import za.co.ntier.webform.form.bean.Province;
-import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 public class DiscretionaryGrantsApplicationCandidacyVM {
 	private AddressInfoBase candidacyContact;
@@ -49,17 +49,14 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 		postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL, Province.KZN);
 
 		physicalAddressInfo = new AddressInfoBase(AddressCategory.PHYSICAL, Province.NC);
-		physicalAddressInfo.setDistrictMunicipalitySelected(MasterUtil.districtMunicipalities.get(2));
-		physicalAddressInfo.setLocalMunicipalitySelected(MasterUtil.localMunicipalities.get(3));
-		physicalAddressInfo.setMunicipalityTypeSelected(MasterUtil.municipalityTypes.get(1));
 
-		orgSizeInfo = new OrganisationSizeInfo(MasterUtil.organisationSizes.get(2), false, true);
+		orgSizeInfo = new OrganisationSizeInfo(new Random().nextInt(), false, true);
 
-		disciplineHDSAs = List.of(new DisciplineHDSA("Electrical Engineering GCC", 10, "4000"),
-				new DisciplineHDSA("Mechanical Engineering GCC", 5, "5000"),
-				new DisciplineHDSA("Mine Managers Certificate of Competence MMC", 5, "5000"),
-				new DisciplineHDSA("Mine Survey GCC", 5, "5000"), new DisciplineHDSA("Mine Overseer", 5, "5000"),
-				new DisciplineHDSA("Blasting Certificate", 5, "5000"));
+		disciplineHDSAs = List.of(new DisciplineHDSA("Electrical Engineering GCC", new Random().nextInt(), "4000"),
+				new DisciplineHDSA("Mechanical Engineering GCC", new Random().nextInt(), "5000"),
+				new DisciplineHDSA("Mine Managers Certificate of Competence MMC", new Random().nextInt(), "5000"),
+				new DisciplineHDSA("Mine Survey GCC", new Random().nextInt(), "5000"), new DisciplineHDSA("Mine Overseer", 5, "5000"),
+				new DisciplineHDSA("Blasting Certificate", new Random().nextInt(), "5000"));
 
 		disciplineHDSAs = new ArrayList<>(disciplineHDSAs);
 

@@ -4,40 +4,18 @@
 	viewModel="@id('vmOrgSize') @init('za.co.ntier.webform.form.viewmodel.OrganisationSizeVMWrapper')">
 	<div sclass="row">
 		<div sclass="col-sm-8 col-title">
-			<label value="Size of the organisation" />
+			<label value="@init(vmOrgSize.orgSizeInfo.numOfEmployerTitle)" />
 		</div>
-		<div sclass="col-sm-4 col-container">
-			<div sclass="container-fluid text-left">
-				<div sclass="row"
-					children="@load((MasterUtil.organisationSizes))">
-					<template name="children" var="orgSize">
-						<div sclass="col-sm-4 col-content">
-							<div sclass="text-center">
-								<div class="mb-0">${orgSize.label}</div>
-								<div>${orgSize.size}</div>
-							</div>
-						</div>
-					</template>
-				</div>
-
-				<div sclass="row"
-					children="@load((MasterUtil.organisationSizes))">
-					<template name="children" var="orgSize">
-						<div
-							sclass="col-sm-4 col-content-two d-flex justify-content-center">
-							<radio value="@load(orgSize)" radiogroup="rdOrgSize" />
-						</div>
-					</template>
-				</div>
-				<radiogroup id="rdOrgSize"
-					selectedItem="@bind(vmOrgSize.orgSizeInfo.orgSizeSelected)" />
-			</div>
+		<div sclass="col-sm-4 col-content-input-full">
+			<textbox
+                value="@bind(vmOrgSize.orgSizeInfo.numOfEmployer)"
+                sclass="form-control" />
 		</div>
 	</div>
 	<div sclass="row">
 		<div sclass="col-sm-8 col-title">
 			<label
-				value="Has the organisation submitted the WSP/ATR In 2022?" />
+				value="@init(vmOrgSize.orgSizeInfo.submittedWSPTitle)" />
 		</div>
 		<div sclass="col-sm-4 col-title-center-white">
 			<label
@@ -48,7 +26,7 @@
 	<div sclass="row">
 		<div sclass="col-sm-8 col-title">
 			<label
-				value="Has the organisation submitted the Pivotal Plan and Report In 2022?" />
+				value="@init(vmOrgSize.orgSizeInfo.submittedPivotalTitle)" />
 		</div>
 		<div sclass="col-sm-4 col-title-center-white">
 			<label

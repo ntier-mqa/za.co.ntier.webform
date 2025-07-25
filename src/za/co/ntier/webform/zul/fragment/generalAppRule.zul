@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
+
+<zk xmlns:n="native">
+	<n:ol sclass="generalAppRules">
+
+		<n:li forEach="${MasterUtil.generalAppRules}">
+			<label value="${each}" />
+		</n:li>
+
+	</n:ol>
+
+</zk>

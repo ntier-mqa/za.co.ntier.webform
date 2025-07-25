@@ -278,7 +278,7 @@ public class AddressInfoBase {
 	}
 
 	public boolean isShowMunicipalities() {
-		return addressCategory == AddressCategory.PHYSICAL;
+		return false;
 	}
 
 	public void setAddressCategory(AddressCategory addressCategory) {

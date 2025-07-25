@@ -1,21 +1,48 @@
 package za.co.ntier.webform.form.bean;
 
-import za.co.ntier.webform.form.viewmodel.master.OrganisationSize;
-
 public class OrganisationSizeInfo {
 	private boolean isSubmittedPivotal;
 	private boolean isSubmittedWSP;
-	private OrganisationSize orgSizeSelected;
+	private int numOfEmployer;
 
-	public OrganisationSizeInfo(OrganisationSize orgSizeSelected, boolean isSubmittedWSP, boolean isSubmittedPivotal) {
-		this.orgSizeSelected = orgSizeSelected;
+	private String numOfEmployerTitle = "Number of Employees";
+
+	private String submittedPivotalTitle = "Has the organisation submitted the Pivotal Plan and Report In 2022?";
+
+	private String submittedWSPTitle = "Has the organisation submitted the WSP/ATR In 2022?";
+
+	public OrganisationSizeInfo(int numOfEmployer, boolean isSubmittedWSP, boolean isSubmittedPivotal) {
 		this.setSubmittedWSP(isSubmittedWSP);
 		this.setSubmittedPivotal(isSubmittedPivotal);
-
+		setNumOfEmployer(numOfEmployer);
 	}
 
-	public OrganisationSize getOrgSizeSelected() {
-		return orgSizeSelected;
+	/**
+	 * @return the numOfEmployer
+	 */
+	public int getNumOfEmployer() {
+		return numOfEmployer;
+	}
+
+	/**
+	 * @return the numOfEmployerTitle
+	 */
+	public String getNumOfEmployerTitle() {
+		return numOfEmployerTitle;
+	}
+
+	/**
+	 * @return the submittedPivotalTitle
+	 */
+	public String getSubmittedPivotalTitle() {
+		return submittedPivotalTitle;
+	}
+
+	/**
+	 * @return the submittedWSPTitle
+	 */
+	public String getSubmittedWSPTitle() {
+		return submittedWSPTitle;
 	}
 
 	/**
@@ -32,8 +59,18 @@ public class OrganisationSizeInfo {
 		return isSubmittedWSP;
 	}
 
-	public void setOrgSizeSelected(OrganisationSize orgSizeSelected) {
-		this.orgSizeSelected = orgSizeSelected;
+	/**
+	 * @param numOfEmployer the numOfEmployer to set
+	 */
+	public void setNumOfEmployer(int numOfEmployer) {
+		this.numOfEmployer = numOfEmployer;
+	}
+
+	/**
+	 * @param numOfEmployerTitle the numOfEmployerTitle to set
+	 */
+	public void setNumOfEmployerTitle(String numOfEmployerTitle) {
+		this.numOfEmployerTitle = numOfEmployerTitle;
 	}
 
 	/**
@@ -44,9 +81,23 @@ public class OrganisationSizeInfo {
 	}
 
 	/**
+	 * @param submittedPivotalTitle the submittedPivotalTitle to set
+	 */
+	public void setSubmittedPivotalTitle(String submittedPivotalTitle) {
+		this.submittedPivotalTitle = submittedPivotalTitle;
+	}
+
+	/**
 	 * @param isSubmittedWSP the isSubmittedWSP to set
 	 */
 	public void setSubmittedWSP(boolean isSubmittedWSP) {
 		this.isSubmittedWSP = isSubmittedWSP;
+	}
+
+	/**
+	 * @param submittedWSPTitle the submittedWSPTitle to set
+	 */
+	public void setSubmittedWSPTitle(String submittedWSPTitle) {
+		this.submittedWSPTitle = submittedWSPTitle;
 	}
 }
