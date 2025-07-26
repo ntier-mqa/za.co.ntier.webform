@@ -20,6 +20,7 @@ import za.co.ntier.webform.form.bean.Province;
 
 public class DiscretionaryGrantsApplicationCandidacyVM {
 	private AddressInfoBase candidacyContact;
+	private AddressInfoBase alternateCandidacyContact;
 	private CompanyInfo companyInfo;
 
 	private List<DisciplineHDSA> disciplineHDSAs;
@@ -61,6 +62,7 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 		disciplineHDSAs = new ArrayList<>(disciplineHDSAs);
 
 		candidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.WS);
+		alternateCandidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.LIM);
 	}
 
 	/**
@@ -201,6 +203,20 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	 */
 	public void setPostAddressInfo(AddressInfoBase postAddressInfo) {
 		this.postAddressInfo = postAddressInfo;
+	}
+
+	/**
+	 * @return the alternateCandidacyContact
+	 */
+	public AddressInfoBase getAlternateCandidacyContact() {
+		return alternateCandidacyContact;
+	}
+
+	/**
+	 * @param alternateCandidacyContact the alternateCandidacyContact to set
+	 */
+	public void setAlternateCandidacyContact(AddressInfoBase alternateCandidacyContact) {
+		this.alternateCandidacyContact = alternateCandidacyContact;
 	}
 
 }

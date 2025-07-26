@@ -74,4 +74,13 @@
 	</hlayout>
 	<include addressInfo="@load(vm.candidacyContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+	
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle"
+			value="Alternate contact details of the person responsible for CANDIDACY:" />
+	</hlayout>
+	<include addressInfo="@load(vm.alternateCandidacyContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+		
+		
 </div>
