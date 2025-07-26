@@ -29,11 +29,11 @@ public class DisciplineHDSA {
 		return colSizes;
 	}
 
-	private Boolean attachAccreditation;
-	private Boolean attachWPA;
 	private String discipline;
-	private String fileNameDSA;
-	private String fileNameHDSA;
+	private String fileNameWPA;
+	private String uploadWPATitle = "Upload WPA";
+	private String uploadAccreditationTitle = "Upload Accreditation";
+	private String fileNameAccreditation;
 	private Integer noOfLearners;
 	private String sitePostalCode;
 	private String siteProvince;
@@ -46,20 +46,6 @@ public class DisciplineHDSA {
 	}
 
 	/**
-	 * @return the attachAccreditation
-	 */
-	public Boolean getAttachAccreditation() {
-		return attachAccreditation;
-	}
-
-	/**
-	 * @return the attachWPA
-	 */
-	public Boolean getAttachWPA() {
-		return attachWPA;
-	}
-
-	/**
 	 * @return the discipline
 	 */
 	public String getDiscipline() {
@@ -67,17 +53,17 @@ public class DisciplineHDSA {
 	}
 
 	/**
-	 * @return the fileNameDSA
+	 * @return the fileNameWPA
 	 */
-	public String getFileNameDSA() {
-		return fileNameDSA;
+	public String getFileNameWPA() {
+		return fileNameWPA;
 	}
 
 	/**
 	 * @return the fileNameHDSA
 	 */
-	public String getFileNameHDSA() {
-		return fileNameHDSA;
+	public String getFileNameAccreditation() {
+		return fileNameAccreditation;
 	}
 
 	/**
@@ -109,20 +95,6 @@ public class DisciplineHDSA {
 	}
 
 	/**
-	 * @param attachAccreditation the attachAccreditation to set
-	 */
-	public void setAttachAccreditation(Boolean attachAccreditation) {
-		this.attachAccreditation = attachAccreditation;
-	}
-
-	/**
-	 * @param attachWPA the attachWPA to set
-	 */
-	public void setAttachWPA(Boolean attachWPA) {
-		this.attachWPA = attachWPA;
-	}
-
-	/**
 	 * @param discipline the discipline to set
 	 */
 	public void setDiscipline(String discipline) {
@@ -130,22 +102,19 @@ public class DisciplineHDSA {
 	}
 
 	/**
-	 * @param fileNameDSA the fileNameDSA to set
+	 * @param fileNameWPA the fileNameWPA to set
 	 */
 
-	public void setFileNameDSA(String fileNameDSA) {
-		this.fileNameDSA = fileNameDSA;
+	public void setFileNameWPA(String fileNameWPA) {
+		this.fileNameWPA = fileNameWPA;
 
-		BindUtils.postNotifyChange(this, "fileNameDSA");
+		BindUtils.postNotifyChange(this, "fileNameWPA");
 	}
+	
+	public void setFileNameAccreditation(String fileNameAccreditation) {
+		this.fileNameAccreditation = fileNameAccreditation;
 
-	/**
-	 * @param fileNameHDSA the fileNameHDSA to set
-	 */
-
-	public void setFileNameHDSA(String fileNameHDSA) {
-		this.fileNameHDSA = fileNameHDSA;
-		BindUtils.postNotifyChange(this, "fileNameHDSA");
+		BindUtils.postNotifyChange(this, "fileNameAccreditation");
 	}
 
 	/**
@@ -188,9 +157,37 @@ public class DisciplineHDSA {
 
 	public void uploadFile(Media media, boolean isDSA) {
 		if (media != null && isDSA) {
-			setFileNameDSA(media.getName());
+			setFileNameWPA(media.getName());
 		} else if (media != null && !isDSA) {
-			setFileNameHDSA(media.getName());
+			setFileNameAccreditation(media.getName());
 		}
+	}
+
+	/**
+	 * @return the uploadWPATitle
+	 */
+	public String getUploadWPATitle() {
+		return uploadWPATitle;
+	}
+
+	/**
+	 * @param uploadWPATitle the uploadWPATitle to set
+	 */
+	public void setUploadWPATitle(String uploadWPATitle) {
+		this.uploadWPATitle = uploadWPATitle;
+	}
+
+	/**
+	 * @return the uploadAccreditationTitle
+	 */
+	public String getUploadAccreditationTitle() {
+		return uploadAccreditationTitle;
+	}
+
+	/**
+	 * @param uploadAccreditationTitle the uploadAccreditationTitle to set
+	 */
+	public void setUploadAccreditationTitle(String uploadAccreditationTitle) {
+		this.uploadAccreditationTitle = uploadAccreditationTitle;
 	}
 }
