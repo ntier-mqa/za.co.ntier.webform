@@ -1,5 +1,9 @@
 package za.co.ntier.webform.form.bean;
 
+import java.time.LocalDate;
+
+import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
+
 public class FormInfo {
 	private String approved;
 	private String approvedDate;
@@ -12,9 +16,10 @@ public class FormInfo {
 	private String revision;
 	private String revisionTitle;
 
-	public FormInfo() {
-		this.formCode = "DGAF01_2025/2026";
-		this.formHeader = "DISCRETIONARY GRANTS APPLICATION FORM 2025/2026 ";
+	public FormInfo(String formName, String formCode) {
+		LocalDate financialYear = MasterUtil.getcurrrentPeriodYear();
+		this.formCode = String.format("%s_%d/%d", formCode, financialYear.getYear(), financialYear.getYear() + 1);
+		this.formHeader = String.format("%s_%d/%d", formName, financialYear.getYear(), financialYear.getYear() + 1);
 		this.orgName = "COO";
 		this.revision = "02";
 		this.approved = "ACOO";
@@ -24,7 +29,7 @@ public class FormInfo {
 		this.approvedTitle = "Approved";
 		this.approvedDateTitle = "Date";
 	}
-
+	
 	/**
 	 * @return the approved
 	 */

@@ -47,7 +47,7 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 		// Initialize with default values if needed
 
 		setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
-		setFormInfo(new FormInfo());
+		setFormInfo(new FormInfo("DGA CANDIDACY", "DGAF01"));
 
 		employerInfo = new EmployerInfo();
 		employerInfo.setEmployerName("Le Quy Hiep");

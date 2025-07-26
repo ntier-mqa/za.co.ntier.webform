@@ -1,14 +1,23 @@
 package za.co.ntier.webform.form.viewmodel.master;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.compiere.model.MPeriod;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 public class MasterUtil {
 	public static final List<KeyNamePair> districtMunicipalities;
 	public static final List<KeyNamePair> localMunicipalities;
 	public static final List<KeyNamePair> municipalityTypes;
+	
+	public static LocalDate getcurrrentPeriodYear() {
+		MPeriod period = MPeriod.get(Env.getCtx(), Env.getContextAsDate(Env.getCtx(), "#Date"), 0, null);
+		return period.getStartDate().toLocalDateTime().toLocalDate();
+	}
 
 	public static final List<String> generalAppRules = Arrays.asList("The application form must be completed in full and submitted to the MQA to grants@mqa.org.za. application forms submitted to any other e-mail address at MQA will not be considered. Applications forms received after the due time and date will not be considered.",
 			"Applicants should submit their application/s form using the prescribed MQA Discretionary Grant Application Form for the relevant project.", 

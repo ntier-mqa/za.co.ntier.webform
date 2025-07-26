@@ -21,7 +21,7 @@ provided in this application is true and accurate" />
 				<label value="Date:" />
 			</div>
 			<div sclass="col-sm-2 col-content-input-full">
-				<datebox format="short " onCreate="self.value = new Date()" />
+				<datebox format="short"/>
 			</div>
 		</div>
 
