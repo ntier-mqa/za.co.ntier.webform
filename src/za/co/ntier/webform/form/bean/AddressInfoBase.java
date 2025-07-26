@@ -36,7 +36,7 @@ public class AddressInfoBase {
 
 	private String nameSiteRepresentative;
 
-	private String nameSiteRepresentativeTitle = "Name and Surname of Site Representative";
+	private String nameSiteRepresentativeTitle = "Name and Surname";
 
 	private String postAddress;
 
@@ -54,7 +54,7 @@ public class AddressInfoBase {
 
 	private String representativeDesignation;
 
-	private String representativeDesignationTitle = "Representative Designation";
+	private String representativeDesignationTitle = "Designation";
 
 	private String siteName;
 
@@ -265,19 +265,30 @@ public class AddressInfoBase {
 		return siteNameTitle;
 	}
 
-	public boolean isContact() {
+	public boolean showSiteName() {
 		return addressCategory == AddressCategory.CANDIDACY_CONTACT;
 	}
-
-	public boolean isNormalAddress() {
-		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.CANDIDACY_CONTACT;
+	
+	public boolean showContact() {
+		return addressCategory == AddressCategory.CANDIDACY_CONTACT ||
+				addressCategory == AddressCategory.ORG_CONTACT;
 	}
 
-	public boolean isPostalAddress() {
+	public boolean showLineAddress() {
+		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.CANDIDACY_CONTACT;
+	}
+	
+	public boolean showGeographicAddress() {
+		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.CANDIDACY_CONTACT
+				|| addressCategory == AddressCategory.POSTAL;
+	}
+	
+
+	public boolean showPostalAddress() {
 		return addressCategory == AddressCategory.POSTAL;
 	}
 
-	public boolean isShowMunicipalities() {
+	public boolean showMunicipalities() {
 		return false;
 	}
 

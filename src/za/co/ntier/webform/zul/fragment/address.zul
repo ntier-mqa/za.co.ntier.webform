@@ -4,7 +4,7 @@
 <div sclass="container-fluid text-left"
 	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.AddressInfoVMWrapper')">
 
-	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+	<div sclass="row" if="${vmAddress.addressInfo.showSiteName()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.siteNameTitle)" />
 		</div>
@@ -13,7 +13,8 @@
 				value="@bind(vmAddress.addressInfo.siteName)" />
 		</div>
 	</div>
-	<div sclass="row" if="${vmAddress.addressInfo.isNormalAddress()}">
+	
+	<div sclass="row" if="${vmAddress.addressInfo.showLineAddress()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.addressLineTitle)" />
 		</div>
@@ -22,7 +23,7 @@
 				value="@bind(vmAddress.addressInfo.addressLine)" />
 		</div>
 	</div>
-	<div sclass="row" if="${vmAddress.addressInfo.isPostalAddress()}">
+	<div sclass="row" if="${vmAddress.addressInfo.showPostalAddress()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.postAddressTitle)" />
 		</div>
@@ -32,7 +33,7 @@
 		</div>
 	</div>
 
-	<div sclass="row">
+	<div sclass="row" if="${vmAddress.addressInfo.showGeographicAddress()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.areaTitle)" />
 		</div>
@@ -54,7 +55,8 @@
 			</div>
 		</div>
 	</div>
-	<div sclass="row">
+	
+	<div sclass="row" if="${vmAddress.addressInfo.showGeographicAddress()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.postalCodeTitle)" />
 		</div>
@@ -85,7 +87,7 @@
 	</div>
 
 	<div sclass="row"
-		if="${vmAddress.addressInfo.isShowMunicipalities()}">
+		if="${vmAddress.addressInfo.showMunicipalities()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="District Municipalities" />
 		</div>
@@ -101,7 +103,7 @@
 		</div>
 	</div>
 	<div sclass="row"
-		if="${vmAddress.addressInfo.isShowMunicipalities()}">
+		if="${vmAddress.addressInfo.showMunicipalities()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="Local Municipalities" />
 		</div>
@@ -116,7 +118,7 @@
 		</div>
 	</div>
 	<div sclass="row"
-		if="${vmAddress.addressInfo.isShowMunicipalities()}">
+		if="${vmAddress.addressInfo.showMunicipalities()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="Rural or Urban" />
 		</div>
@@ -131,7 +133,7 @@
 		</div>
 	</div>
 
-	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+	<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
 		<div sclass="col-sm-4 col-title">
 			<label
 				value="@init(vmAddress.addressInfo.nameSiteRepresentativeTitle)" />
@@ -142,7 +144,7 @@
 		</div>
 	</div>
 
-	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+	<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
 		<div sclass="col-sm-4 col-title">
 			<label
 				value="@init(vmAddress.addressInfo.representativeDesignationTitle)" />
@@ -153,7 +155,7 @@
 		</div>
 	</div>
 
-	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+	<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
 		</div>
@@ -163,7 +165,7 @@
 		</div>
 	</div>
 
-	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+	<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.landlineNumberTitle)" />
 		</div>
@@ -173,7 +175,7 @@
 		</div>
 	</div>
 
-	<div sclass="row" if="${vmAddress.addressInfo.isContact()}">
+	<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.emailTitle)" />
 		</div>

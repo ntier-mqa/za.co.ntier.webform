@@ -61,6 +61,20 @@
 	</hlayout>
 	<include orgSizeInfo="@load(vm.orgSizeInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/organisationSize.zul')))" />
+		
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle" value="Primary Organisation Contact:" />
+	</hlayout>
+
+	<include addressInfo="@load(vm.orgContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle" value="Alternate Organisation Contact:" />
+	</hlayout>
+
+	<include addressInfo="@load(vm.alternateOrgContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 
 	<hlayout sclass="sectionHeader"> 
 		<label sclass="sectionHeaderTitle" value="D. CANDIDACY" />

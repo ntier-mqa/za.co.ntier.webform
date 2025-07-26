@@ -34,6 +34,10 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	private FormInfo formInfo;
 
 	private OrganisationSizeInfo orgSizeInfo;
+	
+	private AddressInfoBase orgContact;
+	
+	private AddressInfoBase alternateOrgContact;
 
 	private AddressInfoBase physicalAddressInfo;
 
@@ -63,6 +67,9 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 
 		candidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.WS);
 		alternateCandidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.LIM);
+		
+		orgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT, Province.NW);
+		alternateOrgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT, Province.EC);
 	}
 
 	/**
@@ -217,6 +224,34 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	 */
 	public void setAlternateCandidacyContact(AddressInfoBase alternateCandidacyContact) {
 		this.alternateCandidacyContact = alternateCandidacyContact;
+	}
+
+	/**
+	 * @return the orgContact
+	 */
+	public AddressInfoBase getOrgContact() {
+		return orgContact;
+	}
+
+	/**
+	 * @param orgContact the orgContact to set
+	 */
+	public void setOrgContact(AddressInfoBase orgContact) {
+		this.orgContact = orgContact;
+	}
+
+	/**
+	 * @return the alternateOrgContact
+	 */
+	public AddressInfoBase getAlternateOrgContact() {
+		return alternateOrgContact;
+	}
+
+	/**
+	 * @param alternateOrgContact the alternateOrgContact to set
+	 */
+	public void setAlternateOrgContact(AddressInfoBase alternateOrgContact) {
+		this.alternateOrgContact = alternateOrgContact;
 	}
 
 }
