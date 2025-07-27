@@ -14,7 +14,7 @@
 
 	<include companyInfo="@load(vm.companyInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/companyHeader.zul')))" />
-	<label sclass="formCode" value="@init(vm.formInfo.formCode)" />
+
 	<label sclass="formHeader" value="@init(vm.formInfo.formHeader)" />
 
 	<hlayout sclass="sectionHeader">

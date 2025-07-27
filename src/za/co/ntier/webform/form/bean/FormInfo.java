@@ -19,7 +19,7 @@ public class FormInfo {
 	public FormInfo(String formName, String formCode) {
 		LocalDate financialYear = MasterUtil.getcurrrentPeriodYear();
 		this.formCode = String.format("%s_%d/%d", formCode, financialYear.getYear(), financialYear.getYear() + 1);
-		this.formHeader = String.format("%s_%d/%d", formName, financialYear.getYear(), financialYear.getYear() + 1);
+		this.formHeader = String.format("%s - %d/%d", formName, financialYear.getYear(), financialYear.getYear() + 1);
 		this.orgName = "COO";
 		this.revision = "02";
 		this.approved = "ACOO";

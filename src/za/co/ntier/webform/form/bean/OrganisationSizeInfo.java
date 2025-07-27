@@ -7,9 +7,9 @@ public class OrganisationSizeInfo {
 
 	private String numOfEmployerTitle = "Number of Employees";
 
-	private String submittedPivotalTitle = "Has the organisation submitted the Pivotal Plan and Report In 2022?";
+	private String submittedPivotalTitle = "Has the organisation submitted the Pivotal Plan and Report In previous financial year?";
 
-	private String submittedWSPTitle = "Has the organisation submitted the WSP/ATR In 2022?";
+	private String submittedWSPTitle = "Has the organisation submitted the WSP/ATR In previous financial year?";
 
 	public OrganisationSizeInfo(int numOfEmployer, boolean isSubmittedWSP, boolean isSubmittedPivotal) {
 		this.setSubmittedWSP(isSubmittedWSP);

@@ -32,7 +32,7 @@ public class DisciplineHDSA {
 	private String discipline;
 	private String fileNameWPA;
 	private String uploadWPATitle = "Upload WPA";
-	private String uploadAccreditationTitle = "Upload Accreditation";
+	private String uploadAccreditationTitle = "Upload Accred./SLA";
 	private String fileNameAccreditation;
 	private Integer noOfLearners;
 	private String sitePostalCode;
