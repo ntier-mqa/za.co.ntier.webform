@@ -29,7 +29,8 @@ public class WebForm extends ADForm {
 		super.init(adFormId, formTitle);
 	}
 
-	public static final String programMasterDataKey = "+" + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
+	public static final String programMasterDataUUKey = "+" + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
+	public static final String programMasterDataIDKey = "programMasterDataID";
 	
 	@Override
 	protected void initForm() {
@@ -37,10 +38,10 @@ public class WebForm extends ADForm {
 
 		String zulPathRelative = WebForm.class.getResource(zulPath).toString();
 		
-		String programMasterDataUU = Env.getContext(Env.getCtx(), m_WindowNo, programMasterDataKey);
+		String programMasterDataUU = Env.getContext(Env.getCtx(), m_WindowNo, programMasterDataUUKey);
 		
 		Map<String, Object> args = new HashMap<>();
-		args.put(programMasterDataKey, programMasterDataUU);
+		args.put(programMasterDataUUKey, programMasterDataUU);
 		
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		// Set the context class loader to this bundle's class loader to ensure that

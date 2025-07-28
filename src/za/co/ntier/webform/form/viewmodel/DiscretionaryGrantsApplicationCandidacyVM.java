@@ -1,12 +1,10 @@
 package za.co.ntier.webform.form.viewmodel;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -22,10 +20,7 @@ import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.form.bean.OrganisationSizeInfo;
 import za.co.ntier.webform.form.bean.Province;
-import za.co.ntier.webform.model.I_ZZ_Disciplines;
-import za.co.ntier.webform.model.I_ZZ_Program_Disciplines;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
-import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
 import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
 public class DiscretionaryGrantsApplicationCandidacyVM {
@@ -53,6 +48,8 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 
 	private AddressInfoBase postAddressInfo;
 
+	private int programMasterDataID;
+	
 	public DiscretionaryGrantsApplicationCandidacyVM() throws IOException {
 		// Initialize with default values if needed
 
@@ -75,22 +72,10 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	}
 
 	@Init
-    public void init(@ExecutionArgParam(WebForm.programMasterDataKey) String programMasterDataKey) {
+    public void init(@ExecutionArgParam(WebForm.programMasterDataUUKey) String programMasterDataKey) {
         I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataKey, null);
         
-        List<X_ZZ_Program_Disciplines> programDisciplines = new Query(Env.getCtx(), I_ZZ_Program_Disciplines.Table_Name, 
-        		String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID), null)
-			.setParameters(masterData.getZZ_Program_Master_Data_ID())
-			.setClient_ID()
-			.list();
-        
-        disciplineHDSAs = new ArrayList<>();
-        
-        programDisciplines.stream().forEach((programDiscipline) -> {
-        	I_ZZ_Disciplines discipline = programDiscipline.getZZ_Disciplines();
-        	DisciplineHDSA disciplineHDSA = new DisciplineHDSA(discipline.getName(), programDiscipline.isZZ_WPA_Req(), programDiscipline.isZZ_Is_Accred_SLA_Req());
-        	disciplineHDSAs.add(disciplineHDSA);
-        });
+        setProgramMasterDataID(masterData.getZZ_Program_Master_Data_ID());
     }
 	
 	/**
@@ -273,6 +258,20 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	 */
 	public void setAlternateOrgContact(AddressInfoBase alternateOrgContact) {
 		this.alternateOrgContact = alternateOrgContact;
+	}
+
+	/**
+	 * @return the programMasterDataID
+	 */
+	public int getProgramMasterDataID() {
+		return programMasterDataID;
+	}
+
+	/**
+	 * @param programMasterDataID the programMasterDataID to set
+	 */
+	public void setProgramMasterDataID(int programMasterDataID) {
+		this.programMasterDataID = programMasterDataID;
 	}
 
 }

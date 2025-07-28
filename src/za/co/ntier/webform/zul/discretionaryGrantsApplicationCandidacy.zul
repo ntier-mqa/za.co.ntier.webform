@@ -79,7 +79,7 @@
 	<hlayout sclass="sectionHeader"> 
 		<label sclass="sectionHeaderTitle" value="D. CANDIDACY" />
 	</hlayout>
-	<include disciplineHDSAs="@load(vm.disciplineHDSAs)"
+	<include programMasterDataID="@load(vm.programMasterDataID)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineHDSA.zul')))" />
 
 	<hlayout sclass="subSectionHeader">
