@@ -28,7 +28,7 @@
 		<label sclass="sectionHeaderTitle"
 			value="B. GENERAL APPLICATION RULES" />
 	</hlayout>
-	<include
+	<include programMasterDataID="@load(vm.programMasterDataID)"
 		src="@load((WebForm.getBundleResourcePath('fragment/generalAppRule.zul')))" />
 
 	<hlayout sclass="sectionHeader">

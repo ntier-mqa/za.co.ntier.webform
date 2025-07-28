@@ -18,19 +18,6 @@ public class MasterUtil {
 		return period.getStartDate().toLocalDateTime().toLocalDate();
 	}
 
-	public static final List<String> generalAppRules = Arrays.asList("The application form must be completed in full and submitted to the MQA to grants@mqa.org.za. application forms submitted to any other e-mail address at MQA will not be considered. Applications forms received after the due time and date will not be considered.",
-			"Applicants should submit their application/s form using the prescribed MQA Discretionary Grant Application Form for the relevant project.", 
-			"The Application Form must be completed in full.",
-			"It is the responsibility of the applicant to ensure that their application is received by MQA.",
-			"It is the applicant’s responsibility to advise MQA on changes to contact person/s details.",
-			"All Employers/Organisations with multiple sites using one levy number must submit one consolidated application.",
-			"The Application Form may not be altered.",
-			"The application must be submitted by an Employer/Organisation registered with the MQA with accurate and complete company details",
-			"Employers/Applicants must only apply for Learners who will be registered during 01 April 2025 to 31 March 2026.",
-			"Employers/Organisations must be Workplace Approved by MQA or any SETA for the trade that they are applying for on the Artisan Internship Programme.",
-			"MQA reserves the right to conduct due diligence audit before or after allocation of discretionary grants (this may be desktop or physical).",
-			"When evaluating applications for employers/ organisation that have met the grants allocation requirements, when allocating the grants, priority will be given companies that have applied for Mining and Minerals core disciplines and hard-to-fill vacancies from the MQA Sectoral Priority Occupations and Interventions (SPOI) list as provided on the MQA website");
-
 	static {
 		municipalityTypes = Arrays.asList(new KeyNamePair(1, "Rural"), new KeyNamePair(2, "Urban"));
 
