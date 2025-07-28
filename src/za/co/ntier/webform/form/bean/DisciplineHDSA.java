@@ -32,6 +32,8 @@ public class DisciplineHDSA {
 	private String discipline;
 	private String fileNameWPA;
 	private String uploadWPATitle = "Upload WPA";
+	private boolean isUploadWPA = false;
+	private boolean isUploadAccreditation = false;
 	private String uploadAccreditationTitle = "Upload Accred./SLA";
 	private String fileNameAccreditation;
 	private Integer noOfLearners;
@@ -39,10 +41,10 @@ public class DisciplineHDSA {
 	private String siteProvince;
 	private String siteRuralUrban;
 
-	public DisciplineHDSA(String discipline, Integer noOfLearners, String sitePostalCode) {
-		this.discipline = discipline;
-		this.noOfLearners = noOfLearners;
-		setSitePostalCode(sitePostalCode);
+	public DisciplineHDSA(String discipline, boolean isUploadAccreditation, boolean isUploadWPA) {
+		setDiscipline(discipline);
+		setUploadAccreditation(isUploadAccreditation);
+		setUploadWPA(isUploadWPA);
 	}
 
 	/**
@@ -189,5 +191,33 @@ public class DisciplineHDSA {
 	 */
 	public void setUploadAccreditationTitle(String uploadAccreditationTitle) {
 		this.uploadAccreditationTitle = uploadAccreditationTitle;
+	}
+
+	/**
+	 * @return the isUploadWPA
+	 */
+	public boolean isUploadWPA() {
+		return isUploadWPA;
+	}
+
+	/**
+	 * @param isUploadWPA the isUploadWPA to set
+	 */
+	public void setUploadWPA(boolean isUploadWPA) {
+		this.isUploadWPA = isUploadWPA;
+	}
+
+	/**
+	 * @return the isUploadAccreditation
+	 */
+	public boolean isUploadAccreditation() {
+		return isUploadAccreditation;
+	}
+
+	/**
+	 * @param isUploadAccreditation the isUploadAccreditation to set
+	 */
+	public void setUploadAccreditation(boolean isUploadAccreditation) {
+		this.isUploadAccreditation = isUploadAccreditation;
 	}
 }

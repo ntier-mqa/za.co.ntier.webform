@@ -6,9 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.compiere.model.Query;
+import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ExecutionArgParam;
+import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.AddressCategory;
 import za.co.ntier.webform.form.bean.AddressInfoBase;
 import za.co.ntier.webform.form.bean.CompanyInfo;
@@ -17,6 +22,11 @@ import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.form.bean.OrganisationSizeInfo;
 import za.co.ntier.webform.form.bean.Province;
+import za.co.ntier.webform.model.I_ZZ_Disciplines;
+import za.co.ntier.webform.model.I_ZZ_Program_Disciplines;
+import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
+import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
 public class DiscretionaryGrantsApplicationCandidacyVM {
 	private AddressInfoBase candidacyContact;
@@ -57,14 +67,6 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 
 		orgSizeInfo = new OrganisationSizeInfo(new Random().nextInt(), false, true);
 
-		disciplineHDSAs = List.of(new DisciplineHDSA("Electrical Engineering GCC", new Random().nextInt(), "4000"),
-				new DisciplineHDSA("Mechanical Engineering GCC", new Random().nextInt(), "5000"),
-				new DisciplineHDSA("Mine Managers Certificate of Competence MMC", new Random().nextInt(), "5000"),
-				new DisciplineHDSA("Mine Survey GCC", new Random().nextInt(), "5000"), new DisciplineHDSA("Mine Overseer", 5, "5000"),
-				new DisciplineHDSA("Blasting Certificate", new Random().nextInt(), "5000"));
-
-		disciplineHDSAs = new ArrayList<>(disciplineHDSAs);
-
 		candidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.WS);
 		alternateCandidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.LIM);
 		
@@ -72,6 +74,25 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 		alternateOrgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT, Province.EC);
 	}
 
+	@Init
+    public void init(@ExecutionArgParam(WebForm.programMasterDataKey) String programMasterDataKey) {
+        I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataKey, null);
+        
+        List<X_ZZ_Program_Disciplines> programDisciplines = new Query(Env.getCtx(), I_ZZ_Program_Disciplines.Table_Name, 
+        		String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID), null)
+			.setParameters(masterData.getZZ_Program_Master_Data_ID())
+			.setClient_ID()
+			.list();
+        
+        disciplineHDSAs = new ArrayList<>();
+        
+        programDisciplines.stream().forEach((programDiscipline) -> {
+        	I_ZZ_Disciplines discipline = programDiscipline.getZZ_Disciplines();
+        	DisciplineHDSA disciplineHDSA = new DisciplineHDSA(discipline.getName(), programDiscipline.isZZ_WPA_Req(), programDiscipline.isZZ_Is_Accred_SLA_Req());
+        	disciplineHDSAs.add(disciplineHDSA);
+        });
+    }
+	
 	/**
 	 * @return the candidacyContact
 	 */

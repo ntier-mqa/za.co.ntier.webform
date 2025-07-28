@@ -59,16 +59,20 @@ applying should be based on." />
 
 					<div
 						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(5) += ' col-title' ))">
-						<fileupload label="@load(disciplineHDSA.uploadWPATitle)"
-							onUpload="@command('uploadFile', media=event.media, isDSA = true, discipline = disciplineHDSA, index = disciplineHDSAStatus.index)" />
-						<label value="@load(disciplineHDSA.fileNameWPA)" />
+						<div if="${disciplineHDSA.isUploadWPA()}">
+							<fileupload label="@load(disciplineHDSA.uploadWPATitle)"
+								onUpload="@command('uploadFile', media=event.media, isDSA = true, discipline = disciplineHDSA, index = disciplineHDSAStatus.index)" />
+							<label value="@load(disciplineHDSA.fileNameWPA)" />
+						</div>
 					</div>
 
 					<div
 						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(6) += ' col-title' ))">
-						<fileupload label="@load(disciplineHDSA.uploadAccreditationTitle)"
-							onUpload="@command('uploadFile', media=event.media, isDSA = false, discipline = disciplineHDSA, index = disciplineHDSAStatus.index)" />
-						<label value="@load(disciplineHDSA.fileNameAccreditation)" />
+						<div if="${disciplineHDSA.isUploadAccreditation()}">
+							<fileupload label="@load(disciplineHDSA.uploadAccreditationTitle)"
+								onUpload="@command('uploadFile', media=event.media, isDSA = false, discipline = disciplineHDSA, index = disciplineHDSAStatus.index)" />
+							<label value="@load(disciplineHDSA.fileNameAccreditation)" />
+						</div>
 					</div>
 				</div>
 			</template>

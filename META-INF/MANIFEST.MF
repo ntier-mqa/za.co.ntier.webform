@@ -26,5 +26,6 @@ Require-Bundle: org.idempiere.zk.extra;bundle-version="12.0.0",
 Bundle-Vendor: Ntier
 Automatic-Module-Name: za.co.ntier.webform
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Service-Component: OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationFormFactory.xml
+Service-Component: OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationFormFactory.xml,
+ OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationModelFactory.xml
 Bundle-ActivationPolicy: lazy
