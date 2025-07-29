@@ -9,6 +9,7 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.WebForm;
@@ -26,6 +27,7 @@ public class DisciplineHDSAVMWrapper {
 	private List<String> colHeaders;
 	private List<Integer> colSizes;
 	
+	private int totalLearners = 0;
 	/**
 	 * @return the disciplineHDSAs
 	 */
@@ -112,6 +114,18 @@ public class DisciplineHDSAVMWrapper {
 			@BindingParam("sitePostalCode") String sitePostalCode) {
 
 	}
+	
+	@NotifyChange("totalLearners")
+	@Command({ "noOfLearnerChange" })
+	public void noOfLearnerChange(@BindingParam("discipline") DisciplineHDSA discipline) {
+		
+		setTotalLearners(disciplineHDSAs.stream()
+				.filter(t -> t.getNoOfLearners() != null)
+				.mapToInt(DisciplineHDSA::getNoOfLearners)
+				.sum());
+	}
+	
+	
 
 	/**
 	 * @param disciplineHDSAs the disciplineHDSAs to set
@@ -153,5 +167,19 @@ public class DisciplineHDSAVMWrapper {
 	 */
 	public void setColSizes(List<Integer> colSizes) {
 		this.colSizes = colSizes;
+	}
+
+	/**
+	 * @return the totalLearners
+	 */
+	public int getTotalLearners() {
+		return totalLearners;
+	}
+
+	/**
+	 * @param totalLearners the totalLearners to set
+	 */
+	public void setTotalLearners(int totalLearners) {
+		this.totalLearners = totalLearners;
 	}
 }

@@ -1,13 +1,12 @@
 package za.co.ntier.webform.form.bean;
 
-import java.util.Random;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.util.DB;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
-
-import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 public class DisciplineHDSA {
 
@@ -114,12 +113,24 @@ public class DisciplineHDSA {
 	@NotifyChange({ "siteProvince", "siteRuralUrban" })
 	public void setSitePostalCode(String sitePostalCode) {
 		this.sitePostalCode = sitePostalCode;
+		List<Object> regionInfos = null;
+		
 		if (StringUtils.isNotBlank(sitePostalCode)) {
-			// Perform postal code lookup to set siteProvince and siteRuralUrban
-			// This is a placeholder for the actual implementation
-			this.siteProvince = Province.getProvincesWithoutTotal().get(new Random().nextInt(9)).getFullName();
-			this.siteRuralUrban = MasterUtil.municipalityTypes.get(new Random().nextInt(2)).getName();
-		} else {
+			String sql = """
+					SELECT 
+						r.name AS regionName, c.name AS cityName 
+					FROM 
+						C_City c INNER JOIN c_region r ON c.c_region_id = r.c_region_id
+					WHERE 
+						c.Postal = ?
+					""";
+			regionInfos = DB.getSQLValueObjectsEx(null, sql, sitePostalCode);
+		} 
+		
+		if (regionInfos != null) {
+			this.siteProvince = (String) regionInfos.get(0);
+			this.siteRuralUrban = (String) regionInfos.get(1);
+		}else{
 			this.siteProvince = null;
 			this.siteRuralUrban = null;
 		}
