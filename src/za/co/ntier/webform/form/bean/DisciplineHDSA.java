@@ -1,6 +1,5 @@
 package za.co.ntier.webform.form.bean;
 
-import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,23 +10,6 @@ import org.zkoss.util.media.Media;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 public class DisciplineHDSA {
-	public final static List<String> colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
-			"Site Province", "Site Rural/Urban", "Attach WPA", "Attach Accreditation");
-	public final static List<Integer> colSizes = List.of(3, 1, 1, 2, 1, 2, 2);
-
-	/**
-	 * @return the colheaders
-	 */
-	public static List<String> getColheaders() {
-		return colHeaders;
-	}
-
-	/**
-	 * @return the colsizes
-	 */
-	public static List<Integer> getColsizes() {
-		return colSizes;
-	}
 
 	private String discipline;
 	private String fileNameWPA;

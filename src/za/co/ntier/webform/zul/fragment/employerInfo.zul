@@ -52,8 +52,8 @@
 			<textbox sclass="form-control"
 				value="@bind(vmEmployerInfo.employerInfo.employerTaxNumber)" />
 		</div>
-		<div sclass="col-sm-4 col-content-input-full">
-			<fileupload label="Upload VAT Exemption Certificate"
+		<div sclass="col-sm-4 col-title">
+			<fileupload sclass="text-wrap w-100" label="Upload VAT Exemption Certificate"
 							onUpload="@command('uploadFile', media=event.media)" />
 						<label value="@load(vmEmployerInfo.employerInfo.fileNameVATCer)" />
 		</div>

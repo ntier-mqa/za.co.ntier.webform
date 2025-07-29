@@ -20,7 +20,7 @@ provided in this application is true and accurate" />
 			<div sclass="col-sm-1 col-title">
 				<label value="Date:" />
 			</div>
-			<div sclass="col-sm-2 col-content-input-full">
+			<div sclass="col-sm-2 d-flex align-items-center">
 				<datebox format="short"/>
 			</div>
 		</div>
@@ -29,8 +29,8 @@ provided in this application is true and accurate" />
 			<div sclass="col-sm-11 col-title-right">
 				<label value="Click here to acknowledge commitment" />
 			</div>
-			<div sclass="col-sm-1 col-content-input-full">
-				<checkbox sclass="form-control" />
+			<div sclass="col-sm-1 d-flex align-items-center">
+				<checkbox/>
 			</div>
 		</div>
 	</div>

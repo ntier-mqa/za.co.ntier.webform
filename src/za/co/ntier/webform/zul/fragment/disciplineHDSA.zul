@@ -13,10 +13,10 @@ applying should be based on." />
 		<!-- CANDIDACY table header -->
 		<div sclass="container-fluid">
 			<div class="row font-weight-bold"
-				children="@load((DisciplineHDSA.colHeaders))">
+				children="@load((vmDisciplines.colHeaders))">
 				<template name="children" var="colHeader">
 					<div
-						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(colHeaderStatus.index) += ' col-title' ))">
+						class="@init(('col-sm-' += vmDisciplines.colSizes.get(colHeaderStatus.index) += ' col-title' ))">
 						<label value="@init(colHeader)" />
 					</div>
 				</template>
@@ -30,46 +30,46 @@ applying should be based on." />
 				<div class="row font-weight-bold">
 
 					<div
-						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(0) += ' col-title' ))">
+						class="@init(('col-sm-' += vmDisciplines.colSizes.get(0) += ' col-title' ))">
 						<label value="@load(disciplineHDSA.discipline)" />
 					</div>
 
 					<div
-						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(1) += ' col-content-input-full' ))">
+						class="@init(('col-sm-' += vmDisciplines.colSizes.get(1) += ' col-content-input-full' ))">
 						<textbox sclass="form-control"
 							value="@bind(disciplineHDSA.noOfLearners)" />
 					</div>
 
 					<div
-						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(2) += ' col-content-input-full' ))">
+						class="@init(('col-sm-' += vmDisciplines.colSizes.get(2) += ' col-content-input-full' ))">
 						<textbox sclass="form-control"
 							value="@bind(disciplineHDSA.sitePostalCode)"
 							onChange="@command('postalCodeLookup', discipline = disciplineHDSA, sitePostalCode = disciplineHDSA.sitePostalCode)" />
 					</div>
 
 					<div
-						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(3) += ' col-title' ))">
+						class="@init(('col-sm-' += vmDisciplines.colSizes.get(3) += ' col-title' ))">
 						<label value="@load(disciplineHDSA.siteProvince)" />
 					</div>
 
 					<div
-						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(4) += ' col-title' ))">
+						class="@init(('col-sm-' += vmDisciplines.colSizes.get(4) += ' col-title' ))">
 						<label value="@load(disciplineHDSA.siteRuralUrban)" />
 					</div>
 
-					<div
-						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(5) += ' col-title' ))">
+					<div if="${vmDisciplines.hasWPAReq()}"
+						class="@init(('col-sm-' += vmDisciplines.colSizes.get(5) += ' col-title' ))">
 						<div if="${disciplineHDSA.isUploadWPA()}">
-							<fileupload label="@load(disciplineHDSA.uploadWPATitle)"
+							<fileupload sclass="text-wrap w-100" label="@load(disciplineHDSA.uploadWPATitle)"
 								onUpload="@command('uploadFile', media=event.media, isDSA = true, discipline = disciplineHDSA, index = disciplineHDSAStatus.index)" />
 							<label value="@load(disciplineHDSA.fileNameWPA)" />
 						</div>
 					</div>
 
-					<div
-						class="@init(('col-sm-' += DisciplineHDSA.colSizes.get(6) += ' col-title' ))">
+					<div if="${vmDisciplines.hasAccreditation()}"
+						class="@init(('col-sm-' += vmDisciplines.colSizes.get(vmDisciplines.colSizes.size() - 1) += ' col-title' ))">
 						<div if="${disciplineHDSA.isUploadAccreditation()}">
-							<fileupload label="@load(disciplineHDSA.uploadAccreditationTitle)"
+							<fileupload sclass="text-wrap w-100" label="@load(disciplineHDSA.uploadAccreditationTitle)"
 								onUpload="@command('uploadFile', media=event.media, isDSA = false, discipline = disciplineHDSA, index = disciplineHDSAStatus.index)" />
 							<label value="@load(disciplineHDSA.fileNameAccreditation)" />
 						</div>

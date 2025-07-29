@@ -20,7 +20,12 @@ import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
 
 public class DisciplineHDSAVMWrapper {
 	private List<DisciplineHDSA> disciplineHDSAs;
-
+	private boolean hasWPAReq = false;
+	private boolean hasAccreditation = false;
+	
+	private List<String> colHeaders;
+	private List<Integer> colSizes;
+	
 	/**
 	 * @return the disciplineHDSAs
 	 */
@@ -42,9 +47,64 @@ public class DisciplineHDSAVMWrapper {
         	I_ZZ_Disciplines discipline = programDiscipline.getZZ_Disciplines();
         	DisciplineHDSA disciplineHDSA = new DisciplineHDSA(discipline.getName(), programDiscipline.isZZ_WPA_Req(), programDiscipline.isZZ_Is_Accred_SLA_Req());
         	disciplineHDSAs.add(disciplineHDSA);
+        	
+        	if (disciplineHDSA.isUploadWPA()) {
+				hasWPAReq = true;
+			}
+        	
+        	if (disciplineHDSA.isUploadAccreditation()) {
+        		hasAccreditation = true;
+        	}
         });
         
         setDisciplineHDSAs(disciplineHDSAs);
+        
+        if (hasWPAReq && hasAccreditation) {
+        	colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
+        			"Site Province", "Site Rural/Urban", "Attach WPA", "Attach Accreditation");
+        	colSizes = List.of(3, 1, 1, 2, 1, 2, 2);
+        }else if (hasWPAReq) {
+			colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
+					"Site Province", "Site Rural/Urban", "Attach WPA");
+			colSizes = List.of(3, 1, 1, 2, 1, 4);
+		} else if (hasAccreditation) {
+			colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
+					"Site Province", "Site Rural/Urban", "Attach Accreditation");
+			colSizes = List.of(3, 1, 1, 2, 1, 4);
+		} else {
+			colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
+					"Site Province", "Site Rural/Urban");
+			colSizes = List.of(3, 2, 2, 3, 2);
+		}
+        
+	}
+
+	/**
+	 * @return the hasWPAReq
+	 */
+	public boolean hasWPAReq() {
+		return hasWPAReq;
+	}
+
+	/**
+	 * @param hasWPAReq the hasWPAReq to set
+	 */
+	public void setHasWPAReq(boolean hasWPAReq) {
+		this.hasWPAReq = hasWPAReq;
+	}
+
+	/**
+	 * @return the hasAccreditation
+	 */
+	public boolean hasAccreditation() {
+		return hasAccreditation;
+	}
+
+	/**
+	 * @param hasAccreditation the hasAccreditation to set
+	 */
+	public void setHasAccreditation(boolean hasAccreditation) {
+		this.hasAccreditation = hasAccreditation;
 	}
 
 	@Command({ "postalCodeLookup" })
@@ -65,5 +125,33 @@ public class DisciplineHDSAVMWrapper {
 			@BindingParam("discipline") DisciplineHDSA discipline, @BindingParam("index") int index) {
 		discipline.uploadFile(media, isDSA);
 		
+	}
+
+	/**
+	 * @return the colHeaders
+	 */
+	public List<String> getColHeaders() {
+		return colHeaders;
+	}
+
+	/**
+	 * @param colHeaders the colHeaders to set
+	 */
+	public void setColHeaders(List<String> colHeaders) {
+		this.colHeaders = colHeaders;
+	}
+
+	/**
+	 * @return the colSizes
+	 */
+	public List<Integer> getColSizes() {
+		return colSizes;
+	}
+
+	/**
+	 * @param colSizes the colSizes to set
+	 */
+	public void setColSizes(List<Integer> colSizes) {
+		this.colSizes = colSizes;
 	}
 }
