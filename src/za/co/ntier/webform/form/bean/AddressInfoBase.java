@@ -30,7 +30,7 @@ public class AddressInfoBase {
 	private KeyNamePair localMunicipalitySelected;
 
 	private String mobileNumber;
-	private String mobileNumberTitle = "Tel Numbe";
+	private String mobileNumberTitle = "Tel Number";
 
 	private KeyNamePair municipalityTypeSelected;
 
