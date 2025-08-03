@@ -4,7 +4,12 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.compiere.model.MCity;
+import org.compiere.model.MCountry;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MRegion;
+import org.compiere.model.Query;
+import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
@@ -65,5 +70,37 @@ public class MasterUtil {
 				// Western Cape
 				new KeyNamePair(39, "Central Karoo"), new KeyNamePair(40, "Cape Winelands"),
 				new KeyNamePair(41, "Eden"), new KeyNamePair(42, "Overberg"), new KeyNamePair(43, "West Coast"));
+	}
+	
+	private static CCache<Integer,List<MCity>> s_Cities =  new CCache<>(MCity.Table_Name + "_DisciplineHDSA", 1);
+	private static CCache<Integer,List<MRegion>> s_Regions =  new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
+	
+	public static List<MCity> getCities() {
+		if (s_Cities.isEmpty()) {
+			
+			Query citisQuery = new Query(Env.getCtx(), MCity.Table_Name, null, null);
+			citisQuery.addTableDirectJoin(MRegion.Table_Name);
+			citisQuery.addJoinClause(String.format("INNER JOIN %s ON (%s.%s = %s.%s AND %s.%s = ?)", MCountry.Table_Name, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID, MRegion.Table_Name, MRegion.COLUMNNAME_C_Country_ID, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID));
+			citisQuery.setParameters(305);// South Africa
+			citisQuery.setRecordstoSkip(20);
+			
+			List<MCity> cityInfos = citisQuery.list();
+			s_Cities.put(Integer.MIN_VALUE, cityInfos);
+		}
+		
+		return s_Cities.get(Integer.MIN_VALUE);
+	}
+	
+	public static List<MRegion> getRegions() {
+		if (s_Regions.isEmpty()) {
+			Query regionsQuery = new Query(Env.getCtx(), MRegion.Table_Name, MRegion.Table_Name + "." + MCountry.COLUMNNAME_C_Country_ID + " = ?", null);
+			regionsQuery.addTableDirectJoin(MCountry.Table_Name);
+			regionsQuery.setParameters(305);// South Africa
+			
+			List<MRegion> regionInfos = regionsQuery.list();
+			s_Regions.put(Integer.MIN_VALUE, regionInfos);
+		}
+		
+		return s_Regions.get(Integer.MIN_VALUE);
 	}
 }

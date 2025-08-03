@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.compiere.model.MRegion;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -19,7 +20,7 @@ import za.co.ntier.webform.form.bean.DisciplineHDSA;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.form.bean.OrganisationSizeInfo;
-import za.co.ntier.webform.form.bean.Province;
+import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
@@ -32,7 +33,7 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 
 	private EmployerInfo employerInfo;
 
-	private Province employerProvinceSelected;
+	private MRegion employerProvinceSelected;
 
 	Map<String, List<String>> formData;
 
@@ -58,17 +59,17 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 
 		employerInfo = new EmployerInfo();
 		employerInfo.setEmployerName("Le Quy Hiep");
-		postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL, Province.KZN);
+		postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL, MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		physicalAddressInfo = new AddressInfoBase(AddressCategory.PHYSICAL, Province.NC);
+		physicalAddressInfo = new AddressInfoBase(AddressCategory.PHYSICAL, MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
 		orgSizeInfo = new OrganisationSizeInfo(new Random().nextInt(), false, true);
 
-		candidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.WS);
-		alternateCandidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, Province.LIM);
+		candidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+		alternateCandidacyContact = new AddressInfoBase(AddressCategory.CANDIDACY_CONTACT, MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 		
-		orgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT, Province.NW);
-		alternateOrgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT, Province.EC);
+		orgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT, MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+		alternateOrgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT, MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 	}
 
 	@Init
@@ -111,7 +112,7 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	/**
 	 * @return the employerProvinceSelected
 	 */
-	public Province getEmployerProvinceSelected() {
+	public MRegion getEmployerProvinceSelected() {
 		return employerProvinceSelected;
 	}
 
@@ -186,7 +187,7 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	/**
 	 * @param employerProvinceSelected the employerProvinceSelected to set
 	 */
-	public void setEmployerProvinceSelected(Province employerProvinceSelected) {
+	public void setEmployerProvinceSelected(MRegion employerProvinceSelected) {
 		this.employerProvinceSelected = employerProvinceSelected;
 	}
 

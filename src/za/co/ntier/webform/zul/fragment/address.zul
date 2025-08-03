@@ -37,22 +37,14 @@
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.areaTitle)" />
 		</div>
-		<div sclass="col-sm-8 col-container">
-			<div sclass="container-fluid text-left">
-				<div sclass="row">
-					<div sclass="col-sm-5 col-content-input-full">
-						<textbox sclass="form-control"
-							value="@bind(vmAddress.addressInfo.area)" />
-					</div>
-					<div sclass="col-sm-2 col-title">
-						<label value="@init(vmAddress.addressInfo.cityTitle)" />
-					</div>
-					<div sclass="col-sm-5 col-content-input-full">
-						<textbox sclass="form-control"
-							value="@bind(vmAddress.addressInfo.city)" />
-					</div>
-				</div>
-			</div>
+		<div sclass="col-sm-8 col-content-input-full">
+			<listbox mold="select" sclass="form-control"
+				model="@load(vmAddress.addressInfo.areas)"
+				selectedItem="@bind(vmAddress.addressInfo.areaSelected)">
+				<template name="model" var="item">
+					<listitem label="@load(item.name)" />
+				</template>
+			</listbox>
 		</div>
 	</div>
 	
@@ -60,30 +52,24 @@
 		<div sclass="col-sm-4 col-title">
 			<label value="@init(vmAddress.addressInfo.postalCodeTitle)" />
 		</div>
-		<div sclass="col-sm-8 col-container">
-			<div sclass="container-fluid text-left">
-				<div sclass="row">
-					<div sclass="col-sm-5 col-content-input-full">
-						<textbox sclass="form-control"
+		<div sclass="col-sm-2 col-content-input-full">
+			<textbox sclass="form-control"
 							value="@bind(vmAddress.addressInfo.postalCode)" />
-					</div>
-					<div sclass="col-sm-2 col-title">
+		</div>
+		<div sclass="col-sm-3 col-title">
 						<label value="@init(vmAddress.addressInfo.provinceTitle)" />
 					</div>
+		
+		<div sclass="col-sm-3 col-content-input-full">
+			<listbox mold="select" sclass="form-control"
+				model="@load((MasterUtil.getRegions()))"
+				selectedItem="@bind(vmAddress.addressInfo.provinceSelected)">
+				<template name="model" var="item">
+					<listitem label="@load(item.name)" />
+				</template>
+			</listbox>
+		</div>				
 
-					<div sclass="col-sm-5 col-content-input-full">
-						<listbox mold="select" sclass="form-control"
-							model="@load((Province.getProvincesWithoutTotal()))"
-							selectedItem="@bind(vmAddress.addressInfo.provinceSelected)">
-							<template name="model" var="item">
-								<listitem label="@load(item.fullName)" />
-							</template>
-						</listbox>
-					</div>
-
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<div sclass="row"

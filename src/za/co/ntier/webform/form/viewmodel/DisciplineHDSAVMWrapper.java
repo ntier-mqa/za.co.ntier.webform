@@ -42,7 +42,7 @@ public class DisciplineHDSAVMWrapper {
 			.setParameters(programMasterDataID)
 			.setClient_ID()
 			.list();
-        
+        //TODO: handle order by line
 		List<DisciplineHDSA> disciplineHDSAs = new ArrayList<>();
         
         programDisciplines.stream().forEach((programDiscipline) -> {
@@ -63,19 +63,19 @@ public class DisciplineHDSAVMWrapper {
         
         if (hasWPAReq && hasAccreditation) {
         	colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
-        			"Site Province", "Site Rural/Urban", "Attach WPA", "Attach Accreditation");
+        			"Area/Suburb", "Site Province", "Attach WPA", "Attach Accreditation");
         	colSizes = List.of(3, 1, 1, 2, 1, 2, 2);
         }else if (hasWPAReq) {
 			colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
-					"Site Province", "Site Rural/Urban", "Attach WPA");
+					"Area/Suburb", "Site Province", "Attach WPA");
 			colSizes = List.of(3, 1, 1, 2, 1, 4);
 		} else if (hasAccreditation) {
 			colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
-					"Site Province", "Site Rural/Urban", "Attach Accreditation");
+					"Area/Suburb", "Site Province", "Attach Accreditation");
 			colSizes = List.of(3, 1, 1, 2, 1, 4);
 		} else {
 			colHeaders = List.of("Descipline", "No. of Learners", "Site Postal Code",
-					"Site Province", "Site Rural/Urban");
+					"Area/Suburb", "Site Province");
 			colSizes = List.of(3, 2, 2, 3, 2);
 		}
         
@@ -107,12 +107,6 @@ public class DisciplineHDSAVMWrapper {
 	 */
 	public void setHasAccreditation(boolean hasAccreditation) {
 		this.hasAccreditation = hasAccreditation;
-	}
-
-	@Command({ "postalCodeLookup" })
-	public void postalCodeLookup(@BindingParam("discipline") DisciplineHDSA discipline,
-			@BindingParam("sitePostalCode") String sitePostalCode) {
-
 	}
 	
 	@NotifyChange("totalLearners")

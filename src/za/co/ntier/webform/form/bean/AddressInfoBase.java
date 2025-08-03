@@ -1,6 +1,16 @@
 package za.co.ntier.webform.form.bean;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MCity;
+import org.compiere.model.MRegion;
 import org.compiere.util.KeyNamePair;
+import org.zkoss.bind.annotation.NotifyChange;
+
+import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 public class AddressInfoBase {
 	private AddressCategory addressCategory;
@@ -10,13 +20,11 @@ public class AddressInfoBase {
 
 	private String addressLineTitle = "Street Name and Number";
 
-	private String area;
+	private MCity areaSelected;
 
+	private Collection<MCity> areas;
+	
 	private String areaTitle = "Area/Suburb";
-
-	private String city;
-
-	private String cityTitle = "City/Town";
 
 	private KeyNamePair districtMunicipalitySelected;
 
@@ -46,9 +54,7 @@ public class AddressInfoBase {
 
 	private String postalCodeTitle = "Postal Code";
 
-	private String province;
-
-	private Province provinceSelected;
+	private MRegion provinceSelected;
 
 	private String provinceTitle = "Province";
 
@@ -60,9 +66,10 @@ public class AddressInfoBase {
 
 	private String siteNameTitle = "Site Name";
 
-	public AddressInfoBase(AddressCategory addressCategory, Province selectedProvince) {
+	public AddressInfoBase(AddressCategory addressCategory, MRegion provinceSelected) {
 		setAddressCategory(addressCategory);
-		setProvinceSelected(selectedProvince);
+		
+		setProvinceSelected(provinceSelected);
 	}
 
 	public AddressCategory getAddressCategory() {
@@ -84,10 +91,10 @@ public class AddressInfoBase {
 	}
 
 	/**
-	 * @return the area
+	 * @return the areaSelected
 	 */
-	public String getArea() {
-		return area;
+	public MCity getAreaSelected() {
+		return areaSelected;
 	}
 
 	/**
@@ -95,20 +102,6 @@ public class AddressInfoBase {
 	 */
 	public String getAreaTitle() {
 		return areaTitle;
-	}
-
-	/**
-	 * @return the city
-	 */
-	public String getCity() {
-		return city;
-	}
-
-	/**
-	 * @return the cityTitle
-	 */
-	public String getCityTitle() {
-		return cityTitle;
 	}
 
 	/**
@@ -217,16 +210,9 @@ public class AddressInfoBase {
 	}
 
 	/**
-	 * @return the province
-	 */
-	public String getProvince() {
-		return province;
-	}
-
-	/**
 	 * @return the provinceSelected
 	 */
-	public Province getProvinceSelected() {
+	public MRegion getProvinceSelected() {
 		return provinceSelected;
 	}
 
@@ -311,10 +297,18 @@ public class AddressInfoBase {
 	}
 
 	/**
-	 * @param area the area to set
+	 * @param areaSelected the areaSelected to set
 	 */
-	public void setArea(String area) {
-		this.area = area;
+	@NotifyChange({ "postalCode", "provinceSelected" })
+	public void setAreaSelected(MCity areaSelected) {
+		this.areaSelected = areaSelected;
+		if (areaSelected != null) {
+			postalCode = areaSelected.getPostal();
+			provinceSelected = MRegion.get(areaSelected.getC_Region_ID());
+		} else {
+			postalCode = null;
+			provinceSelected = null;
+		}
 	}
 
 	/**
@@ -322,20 +316,6 @@ public class AddressInfoBase {
 	 */
 	public void setAreaTitle(String areaTitle) {
 		this.areaTitle = areaTitle;
-	}
-
-	/**
-	 * @param city the city to set
-	 */
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	/**
-	 * @param cityTitle the cityTitle to set
-	 */
-	public void setCityTitle(String cityTitle) {
-		this.cityTitle = cityTitle;
 	}
 
 	/**
@@ -433,8 +413,35 @@ public class AddressInfoBase {
 	/**
 	 * @param postalCode the postalCode to set
 	 */
+	@NotifyChange({ "provinceSelected", "areas" })
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
+		
+		Collection<MCity> areaFilters = new ArrayList<>();
+		
+		if (StringUtils.isNotEmpty(postalCode)) {
+			MasterUtil.getCities().stream()
+			.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
+			.limit(10)
+			.forEach(city -> {
+				areaFilters.add(city);
+			});
+		}
+		
+		if (!areaFilters.isEmpty()) {
+			provinceSelected = MRegion.get(areaFilters.iterator().next().getC_Region_ID());
+		}else {
+			MasterUtil.getCities().stream()
+			.limit(10)
+			.forEach(city -> {
+				areaFilters.add(city);
+			});
+			
+			provinceSelected = null;
+		}
+		
+		areas = areaFilters;
+		areaSelected = null;
 	}
 
 	/**
@@ -445,17 +452,32 @@ public class AddressInfoBase {
 	}
 
 	/**
-	 * @param province the province to set
-	 */
-	public void setProvince(String province) {
-		this.province = province;
-	}
-
-	/**
 	 * @param provinceSelected the provinceSelected to set
 	 */
-	public void setProvinceSelected(Province provinceSelected) {
+	@NotifyChange({ "areas", "areaSelected", "postalCode" })
+	public void setProvinceSelected(MRegion provinceSelected) {
 		this.provinceSelected = provinceSelected;
+		
+		if (provinceSelected == null) {
+			areas = null;
+			areaSelected = null;
+			postalCode = null;
+		}else {
+			List<MCity> areaFilters = new ArrayList<>();
+			
+			MasterUtil.getCities().stream()
+				.filter(city -> city.getC_Region_ID() != provinceSelected.getC_Region_ID())
+				.limit(10)
+				.forEach(city -> {
+					areaFilters.add(city);
+				});
+			
+			areas = areaFilters;
+			if (!areas.isEmpty()) {
+				areaSelected = areas.iterator().next();
+				postalCode = areaSelected.getPostal();
+			}	
+		}
 	}
 
 	/**
@@ -492,6 +514,20 @@ public class AddressInfoBase {
 	 */
 	public void setSiteNameTitle(String siteNameTitle) {
 		this.siteNameTitle = siteNameTitle;
+	}
+
+	/**
+	 * @return the areas
+	 */
+	public Collection<MCity> getAreas() {
+		return areas;
+	}
+
+	/**
+	 * @param areas the areas to set
+	 */
+	public void setAreas(Collection<MCity> areas) {
+		this.areas = areas;
 	}
 
 }

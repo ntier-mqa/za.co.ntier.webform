@@ -1,15 +1,19 @@
 package za.co.ntier.webform.form.bean;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
-import org.compiere.util.DB;
+import org.compiere.model.MCity;
+import org.compiere.model.MRegion;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 
-public class DisciplineHDSA {
+import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
+public class DisciplineHDSA {	
+	
 	private String discipline;
 	private String fileNameWPA;
 	private String uploadWPATitle = "Upload WPA";
@@ -18,14 +22,16 @@ public class DisciplineHDSA {
 	private String uploadAccreditationTitle = "Upload Accred./SLA";
 	private String fileNameAccreditation;
 	private Integer noOfLearners;
-	private String sitePostalCode;
-	private String siteProvince;
-	private String siteRuralUrban;
-
+	private String postalCode;
+	private MRegion province;
+	private Collection<MCity> areas;
+	private MCity areaSelected;
+	
 	public DisciplineHDSA(String discipline, boolean isUploadAccreditation, boolean isUploadWPA) {
 		setDiscipline(discipline);
 		setUploadAccreditation(isUploadAccreditation);
 		setUploadWPA(isUploadWPA);
+		setAreas(MasterUtil.getCities().stream().limit(10).toList());
 	}
 
 	/**
@@ -57,25 +63,19 @@ public class DisciplineHDSA {
 	}
 
 	/**
-	 * @return the sitePostalCode
+	 * @return the postalCode
 	 */
-	public String getSitePostalCode() {
-		return sitePostalCode;
+	public String getPostalCode() {
+		return postalCode;
 	}
 
 	/**
-	 * @return the siteProvince
+	 * @return the province
 	 */
-	public String getSiteProvince() {
-		return siteProvince;
+	public MRegion getProvince() {
+		return province;
 	}
 
-	/**
-	 * @return the siteRuralUrban
-	 */
-	public String getSiteRuralUrban() {
-		return siteRuralUrban;
-	}
 
 	/**
 	 * @param discipline the discipline to set
@@ -108,46 +108,46 @@ public class DisciplineHDSA {
 	}
 
 	/**
-	 * @param sitePostalCode the sitePostalCode to set
+	 * @param postalCode the postalCode to set
 	 */
-	@NotifyChange({ "siteProvince", "siteRuralUrban" })
-	public void setSitePostalCode(String sitePostalCode) {
-		this.sitePostalCode = sitePostalCode;
-		List<Object> regionInfos = null;
+	@NotifyChange({ "province", "areas" })
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
 		
-		if (StringUtils.isNotBlank(sitePostalCode)) {
-			String sql = """
-					SELECT 
-						r.name AS regionName, c.name AS cityName 
-					FROM 
-						C_City c INNER JOIN c_region r ON c.c_region_id = r.c_region_id
-					WHERE 
-						c.Postal = ?
-					""";
-			regionInfos = DB.getSQLValueObjectsEx(null, sql, sitePostalCode);
-		} 
+		Collection<MCity> areaFilters = new ArrayList<>();
 		
-		if (regionInfos != null) {
-			this.siteProvince = (String) regionInfos.get(0);
-			this.siteRuralUrban = (String) regionInfos.get(1);
-		}else{
-			this.siteProvince = null;
-			this.siteRuralUrban = null;
+		if (StringUtils.isNotBlank(postalCode)) {
+			MasterUtil.getCities().stream()
+				.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
+				.limit(10)
+				.forEach(city -> {
+					areaFilters.add(city);
+				});
 		}
+		
+		if (!areaFilters.isEmpty()) {
+			province = MRegion.get(areaFilters.iterator().next().getC_Region_ID());
+			
+		}else {
+			MasterUtil.getCities().stream()
+			.limit(10)
+			.forEach(city -> {
+				areaFilters.add(city);
+			});
+			
+			province = null;
+		}
+		
+		areas = areaFilters;
+		areaSelected = null;
+		
 	}
 
 	/**
-	 * @param siteProvince the siteProvince to set
+	 * @param province the province to set
 	 */
-	public void setSiteProvince(String siteProvince) {
-		this.siteProvince = siteProvince;
-	}
-
-	/**
-	 * @param siteRuralUrban the siteRuralUrban to set
-	 */
-	public void setSiteRuralUrban(String siteRuralUrban) {
-		this.siteRuralUrban = siteRuralUrban;
+	public void setProvince(MRegion province) {
+		this.province = province;
 	}
 
 	public void uploadFile(Media media, boolean isDSA) {
@@ -212,5 +212,36 @@ public class DisciplineHDSA {
 	 */
 	public void setUploadAccreditation(boolean isUploadAccreditation) {
 		this.isUploadAccreditation = isUploadAccreditation;
+	}
+
+	/**
+	 * @return the areas
+	 */
+	public Collection<MCity> getAreas() {
+		return areas;
+	}
+
+	/**
+	 * @param areas the areas to set
+	 */
+	public void setAreas(Collection<MCity> areas) {
+		this.areas = areas;
+	}
+
+	/**
+	 * @return the areaSelected
+	 */
+	public MCity getAreaSelected() {
+		return areaSelected;
+	}
+
+	/**
+	 * @param areaSelected the areaSelected to set
+	 */
+	@NotifyChange({ "province", "postalCode" })
+	public void setAreaSelected(MCity areaSelected) {
+		this.areaSelected = areaSelected;
+		province = MRegion.get(areaSelected.getC_Region_ID());
+		postalCode = areaSelected.getPostal();
 	}
 }

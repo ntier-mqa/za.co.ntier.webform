@@ -3,7 +3,6 @@
 	included within another ZUL page. The <zk> root tag has been removed. A unique 
 	'sclass' (employer-mvvm-form) has been added to the root <window> to scope 
 	the CSS rules specifically to this MVVM form. -->
-<?import za.co.ntier.webform.form.bean.Province ?>
 <?import za.co.ntier.webform.form.WebForm ?>
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
