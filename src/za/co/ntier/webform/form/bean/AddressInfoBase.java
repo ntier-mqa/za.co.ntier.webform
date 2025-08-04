@@ -26,8 +26,6 @@ public class AddressInfoBase {
 	
 	private String areaTitle = "Area/Suburb";
 
-	private KeyNamePair districtMunicipalitySelected;
-
 	private String email;
 
 	private String emailTitle = "E-mail";
@@ -39,8 +37,6 @@ public class AddressInfoBase {
 
 	private String mobileNumber;
 	private String mobileNumberTitle = "Tel Number";
-
-	private KeyNamePair municipalityTypeSelected;
 
 	private String nameSiteRepresentative;
 
@@ -105,13 +101,6 @@ public class AddressInfoBase {
 	}
 
 	/**
-	 * @return the districtMunicipalitySelected
-	 */
-	public KeyNamePair getDistrictMunicipalitySelected() {
-		return districtMunicipalitySelected;
-	}
-
-	/**
 	 * @return the email
 	 */
 	public String getEmail() {
@@ -158,13 +147,6 @@ public class AddressInfoBase {
 	 */
 	public String getMobileNumberTitle() {
 		return mobileNumberTitle;
-	}
-
-	/**
-	 * @return the municipalityTypeSelected
-	 */
-	public KeyNamePair getMunicipalityTypeSelected() {
-		return municipalityTypeSelected;
 	}
 
 	/**
@@ -319,14 +301,6 @@ public class AddressInfoBase {
 	}
 
 	/**
-	 * @param districtMunicipalitySelected the districtMunicipalitySelected to set
-	 */
-	public void setDistrictMunicipalitySelected(KeyNamePair districtMunicipalitySelected) {
-		this.districtMunicipalitySelected = districtMunicipalitySelected;
-
-	}
-
-	/**
 	 * @param email the email to set
 	 */
 	public void setEmail(String email) {
@@ -373,13 +347,6 @@ public class AddressInfoBase {
 	 */
 	public void setMobileNumberTitle(String mobileNumberTitle) {
 		this.mobileNumberTitle = mobileNumberTitle;
-	}
-
-	/**
-	 * @param municipalityTypeSelected the municipalityTypeSelected to set
-	 */
-	public void setMunicipalityTypeSelected(KeyNamePair municipalityTypeSelected) {
-		this.municipalityTypeSelected = municipalityTypeSelected;
 	}
 
 	/**
