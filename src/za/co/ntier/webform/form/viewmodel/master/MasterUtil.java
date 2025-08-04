@@ -14,6 +14,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 public class MasterUtil {
+	public static final int limitItem = 30;
 	public static final List<KeyNamePair> districtMunicipalities;
 	public static final List<KeyNamePair> localMunicipalities;
 	public static final List<KeyNamePair> municipalityTypes;

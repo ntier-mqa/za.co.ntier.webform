@@ -54,12 +54,12 @@ public interface I_ZZ_Program_Master_Data
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
-	/** Set Organization.
+	/** Set Unit.
 	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
-	/** Get Organization.
+	/** Get Unit.
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
@@ -157,6 +157,19 @@ public interface I_ZZ_Program_Master_Data
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Title */
+    public static final String COLUMNNAME_Title = "Title";
+
+	/** Set Title.
+	  * Name this entity is referred to as
+	  */
+	public void setTitle (String Title);
+
+	/** Get Title.
+	  * Name this entity is referred to as
+	  */
+	public String getTitle();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

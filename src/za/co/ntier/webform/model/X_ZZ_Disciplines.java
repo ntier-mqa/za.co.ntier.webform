@@ -31,7 +31,7 @@ public class X_ZZ_Disciplines extends PO implements I_ZZ_Disciplines, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250728L;
+	private static final long serialVersionUID = 20250803L;
 
     /** Standard Constructor */
     public X_ZZ_Disciplines (Properties ctx, int ZZ_Disciplines_ID, String trxName)

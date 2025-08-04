@@ -31,7 +31,7 @@ public class X_ZZ_Program_Gen_Rules extends PO implements I_ZZ_Program_Gen_Rules
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250728L;
+	private static final long serialVersionUID = 20250803L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Gen_Rules (Properties ctx, int ZZ_Program_Gen_Rules_ID, String trxName)
@@ -110,7 +110,7 @@ public class X_ZZ_Program_Gen_Rules extends PO implements I_ZZ_Program_Gen_Rules
 	*/
 	public void setLine (int Line)
 	{
-		set_ValueNoCheck (COLUMNNAME_Line, Integer.valueOf(Line));
+		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
 	}
 
 	/** Get Line No.

@@ -31,7 +31,7 @@ public class X_ZZ_Program_Learnerships extends PO implements I_ZZ_Program_Learne
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250728L;
+	private static final long serialVersionUID = 20250803L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Learnerships (Properties ctx, int ZZ_Program_Learnerships_ID, String trxName)
@@ -131,6 +131,25 @@ public class X_ZZ_Program_Learnerships extends PO implements I_ZZ_Program_Learne
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Line No.
+		@param Line Unique line for this document
+	*/
+	public void setLine (int Line)
+	{
+		set_ValueNoCheck (COLUMNNAME_Line, Integer.valueOf(Line));
+	}
+
+	/** Get Line No.
+		@return Unique line for this document
+	  */
+	public int getLine()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Accred/SLA Req.

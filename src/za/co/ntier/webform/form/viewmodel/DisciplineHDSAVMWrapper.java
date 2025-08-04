@@ -41,8 +41,8 @@ public class DisciplineHDSAVMWrapper {
         		String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID), null)
 			.setParameters(programMasterDataID)
 			.setClient_ID()
+			.setOrderBy(I_ZZ_Program_Disciplines.COLUMNNAME_Line)
 			.list();
-        //TODO: handle order by line
 		List<DisciplineHDSA> disciplineHDSAs = new ArrayList<>();
         
         programDisciplines.stream().forEach((programDiscipline) -> {

@@ -31,7 +31,7 @@ public class X_ZZ_Program_Trade extends PO implements I_ZZ_Program_Trade, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250728L;
+	private static final long serialVersionUID = 20250803L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Trade (Properties ctx, int ZZ_Program_Trade_ID, String trxName)
@@ -124,6 +124,25 @@ public class X_ZZ_Program_Trade extends PO implements I_ZZ_Program_Trade, I_Pers
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Line No.
+		@param Line Unique line for this document
+	*/
+	public void setLine (int Line)
+	{
+		set_ValueNoCheck (COLUMNNAME_Line, Integer.valueOf(Line));
+	}
+
+	/** Get Line No.
+		@return Unique line for this document
+	  */
+	public int getLine()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Accred/SLA Req.
 		@param ZZ_Is_Accred_SLA_Req Accred/SLA Req

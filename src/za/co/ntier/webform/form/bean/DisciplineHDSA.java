@@ -31,7 +31,7 @@ public class DisciplineHDSA {
 		setDiscipline(discipline);
 		setUploadAccreditation(isUploadAccreditation);
 		setUploadWPA(isUploadWPA);
-		setAreas(MasterUtil.getCities().stream().limit(10).toList());
+		setAreas(MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList());
 	}
 
 	/**
@@ -119,18 +119,21 @@ public class DisciplineHDSA {
 		if (StringUtils.isNotBlank(postalCode)) {
 			MasterUtil.getCities().stream()
 				.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
-				.limit(10)
+				.limit(MasterUtil.limitItem)
 				.forEach(city -> {
 					areaFilters.add(city);
 				});
 		}
 		
+		areaSelected = null;
 		if (!areaFilters.isEmpty()) {
 			province = MRegion.get(areaFilters.iterator().next().getC_Region_ID());
-			
+			if (areaFilters.size() == 1) {
+				areaSelected = areaFilters.iterator().next();
+			}
 		}else {
 			MasterUtil.getCities().stream()
-			.limit(10)
+			.limit(MasterUtil.limitItem)
 			.forEach(city -> {
 				areaFilters.add(city);
 			});
@@ -139,7 +142,7 @@ public class DisciplineHDSA {
 		}
 		
 		areas = areaFilters;
-		areaSelected = null;
+		
 		
 	}
 

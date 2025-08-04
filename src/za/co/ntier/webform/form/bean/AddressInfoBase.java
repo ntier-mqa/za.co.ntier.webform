@@ -422,17 +422,22 @@ public class AddressInfoBase {
 		if (StringUtils.isNotEmpty(postalCode)) {
 			MasterUtil.getCities().stream()
 			.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
-			.limit(10)
+			.limit(MasterUtil.limitItem)
 			.forEach(city -> {
 				areaFilters.add(city);
 			});
 		}
 		
+		areaSelected = null;
+		
 		if (!areaFilters.isEmpty()) {
 			provinceSelected = MRegion.get(areaFilters.iterator().next().getC_Region_ID());
+			if (areaFilters.size() == 1) {
+				areaSelected = areaFilters.iterator().next();
+			}
 		}else {
 			MasterUtil.getCities().stream()
-			.limit(10)
+			.limit(MasterUtil.limitItem)
 			.forEach(city -> {
 				areaFilters.add(city);
 			});
@@ -441,7 +446,7 @@ public class AddressInfoBase {
 		}
 		
 		areas = areaFilters;
-		areaSelected = null;
+		
 	}
 
 	/**
@@ -458,26 +463,31 @@ public class AddressInfoBase {
 	public void setProvinceSelected(MRegion provinceSelected) {
 		this.provinceSelected = provinceSelected;
 		
+		areaSelected = null;
+		
 		if (provinceSelected == null) {
 			areas = null;
-			areaSelected = null;
 			postalCode = null;
 		}else {
 			List<MCity> areaFilters = new ArrayList<>();
 			
 			MasterUtil.getCities().stream()
-				.filter(city -> city.getC_Region_ID() != provinceSelected.getC_Region_ID())
-				.limit(10)
+				.filter(city -> city.getC_Region_ID() == provinceSelected.getC_Region_ID())
+				.limit(MasterUtil.limitItem)
 				.forEach(city -> {
 					areaFilters.add(city);
 				});
 			
 			areas = areaFilters;
 			if (!areas.isEmpty()) {
-				areaSelected = areas.iterator().next();
-				postalCode = areaSelected.getPostal();
-			}	
+				postalCode = areaFilters.iterator().next().getPostal();
+				if (areaFilters.size() == 1) {
+					areaSelected = areaFilters.iterator().next();
+				}
+			}
 		}
+		
+		
 	}
 
 	/**
