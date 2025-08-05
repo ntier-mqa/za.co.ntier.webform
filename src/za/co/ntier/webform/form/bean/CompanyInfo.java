@@ -40,8 +40,12 @@ public class CompanyInfo {
 		MClientInfo clientInfo = MClientInfo.get(Env.getAD_Client_ID(Env.getCtx()));
 		MImage logo = MImage.get(Env.getCtx(), clientInfo.getLogo_ID());
 
-		AImage logoMedia = new AImage("company logo", logo.getData());
-		setCompanyLogo(logoMedia);
+		AImage logoMedia = null;
+		byte [] data = logo.getData();
+		if (data != null) {
+			logoMedia =	new AImage("company logo", data);
+			setCompanyLogo(logoMedia);
+		}
 	}
 
 	/**
