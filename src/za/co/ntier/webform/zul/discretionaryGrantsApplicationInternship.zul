@@ -84,13 +84,7 @@
     <hlayout sclass="subSectionHeader">
 		<label value=" " />
 	</hlayout>
-		
-	<hlayout sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle"
-			value="List of disciplines supported for Artisan Internships which the number of learners applying should be based on. Preference will be given to the following trades that are hard to fill according MQA SPOI list, (Diesel Mechanic and Millwright)." />
-	</hlayout>
-		
-		
+			
 	<include programMasterDataID="@load(vm.programMasterDataID)"
 		src="@load((WebForm.getBundleResourcePath('fragment/tradeInternship.zul')))" />
 
