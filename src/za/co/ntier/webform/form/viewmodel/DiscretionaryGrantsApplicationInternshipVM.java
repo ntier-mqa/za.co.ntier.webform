@@ -20,6 +20,7 @@ import za.co.ntier.webform.form.bean.DisciplineHDSA;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.form.bean.OrganisationSizeInfo;
+import za.co.ntier.webform.form.bean.TradeHDSA;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
@@ -30,6 +31,8 @@ public class DiscretionaryGrantsApplicationInternshipVM {
     private CompanyInfo companyInfo;
 
     private List<DisciplineHDSA> disciplineHDSAs;
+    
+    private List<TradeHDSA> tradeHDSAs;
 
     private EmployerInfo employerInfo;
 
@@ -99,7 +102,15 @@ public class DiscretionaryGrantsApplicationInternshipVM {
         return disciplineHDSAs;
     }
 
-    /**
+    public List<TradeHDSA> getTradeHDSAs() {
+		return tradeHDSAs;
+	}
+
+	public void setTradeHDSAs(List<TradeHDSA> tradeHDSAs) {
+		this.tradeHDSAs = tradeHDSAs;
+	}
+
+	/**
      * @return the employerInfo
      */
     public EmployerInfo getEmployerInfo() {

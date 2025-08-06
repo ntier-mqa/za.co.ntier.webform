@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
+<?import za.co.ntier.webform.form.bean.TradeHDSA?>
+
+<zk>
+	<div
+		viewModel="@id('vmTrades') @init('za.co.ntier.webform.form.viewmodel.TradeHDSAVMWrapper')">
+		<hlayout>
+			<label
+				value="List of Trades supported for the HDSA Internship which the number of learners
+applying should be based on." />
+		</hlayout>
+
+		<!-- Trades table header -->
+		<div sclass="container-fluid">
+			<div class="row font-weight-bold"
+				children="@load((vmTrades.colHeaders))">
+				<template name="children" var="colHeader">
+					<div
+						class="@init(('col-sm-' += vmTrades.colSizes.get(colHeaderStatus.index) += ' col-title' ))">
+						<label value="@init(colHeader)" />
+					</div>
+				</template>
+			</div>
+		</div>
+
+		<!-- CANDIDACY table detail -->
+		<div sclass="container-fluid"
+			children="@load(vmTrades.tradeHDSAs)">
+			<template name="children" var="tradeHDSA">
+				<div class="row font-weight-bold">
+
+					<div
+						class="@init(('col-sm-' += vmTrades.colSizes.get(0) += ' col-title' ))">
+						<label value="@load(tradeHDSA.trade)" />
+					</div>
+
+					<div
+						class="@init(('col-sm-' += vmTrades.colSizes.get(1) += ' col-content-input-full' ))">
+						<textbox sclass="form-control"
+							value="@bind(tradeHDSA.noOfLearners)" 
+							onChange="@command('noOfLearnerChange', trade = tradeHDSA)" />
+					</div>
+
+					<div
+						class="@init(('col-sm-' += vmTrades.colSizes.get(2) += ' col-content-input-full' ))">
+						<textbox sclass="form-control"
+							value="@bind(tradeHDSA.postalCode)"/>
+					</div>
+
+					<div
+						class="@init(('col-sm-' += vmTrades.colSizes.get(3) += ' col-content-input-full' ))">
+						
+						<listbox mold="select" sclass="form-control"
+							model="@load(tradeHDSA.areas)"
+							selectedItem="@bind(tradeHDSA.areaSelected)">
+							<template name="model" var="item">
+								<listitem label="@load(item.name)" />
+							</template>
+						</listbox>
+					</div>
+					
+					<div
+						class="@init(('col-sm-' += vmTrades.colSizes.get(4) += ' col-title' ))">
+						<label value="@load(tradeHDSA.province.name)" />
+					</div>
+
+					<div if="${vmTrades.hasWPAReq()}"
+						class="@init(('col-sm-' += vmTrades.colSizes.get(5) += ' col-title' ))">
+						<div if="${tradeHDSA.isUploadWPA()}">
+							<fileupload sclass="text-wrap w-100" label="@load(tradeHDSA.uploadWPATitle)"
+								onUpload="@command('uploadFile', media=event.media, isDSA = true, trade = tradeHDSA, index = tradeHDSAStatus.index)" />
+							<label value="@load(tradeHDSA.fileNameWPA)" />
+						</div>
+					</div>
+
+					<div if="${vmTrades.hasAccreditation()}"
+						class="@init(('col-sm-' += vmTrades.colSizes.get(vmTrades.colSizes.size() - 1) += ' col-title' ))">
+						<div if="${tradeHDSA.isUploadAccreditation()}">
+							<fileupload sclass="text-wrap w-100" label="@load(tradeHDSA.uploadAccreditationTitle)"
+								onUpload="@command('uploadFile', media=event.media, isDSA = false, trade = tradeHDSA, index = tradeHDSAStatus.index)" />
+							<label value="@load(tradeHDSA.fileNameAccreditation)" />
+						</div>
+					</div>
+				</div>
+			</template>
+		</div>
+<!-- CANDIDACY total -->
+		<div sclass="container-fluid">
+			<div class="row font-weight-bold">
+				<div
+					class="@init(('col-sm-' += vmTrades.colSizes.get(0) += ' col-title' ))">
+					<label value="Total" />
+				</div>
+	
+				<div
+					class="@init(('col-sm-' += vmTrades.colSizes.get(1) += ' col-title' ))">
+					<label
+						value="@load(vmTrades.totalLearners)" />
+				</div>
+			</div>
+		</div>
+		<hlayout>
+			<label sclass="sectionHeader" value="Note:" />
+			<label
+				value=" All Employers/Organisations with multiple sites using one levy number must submit one" />
+		</hlayout>
+	</div>
+</zk>

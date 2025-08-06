@@ -80,6 +80,9 @@
 	</hlayout>
 	<include programMasterDataID="@load(vm.programMasterDataID)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineInternernship.zul')))" />
+		
+	<include programMasterDataID="@load(vm.programMasterDataID)"
+		src="@load((WebForm.getBundleResourcePath('fragment/tradeInternernship.zul')))" />
 
 	<hlayout sclass="subSectionHeader">
 		<label sclass="subSectionHeaderTitle"
