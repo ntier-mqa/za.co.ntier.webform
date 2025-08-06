@@ -4,11 +4,10 @@
 <zk>
 	<div
 		viewModel="@id('vmTrades') @init('za.co.ntier.webform.form.viewmodel.TradeHDSAVMWrapper')">
-		<hlayout>
-			<label
-				value="List of Trades supported for the HDSA Internship which the number of learners
-applying should be based on." />
-		</hlayout>
+		<hlayout sclass="subSectionHeader">
+			<label sclass="subSectionHeaderTitle"
+			value="List of disciplines supported for Artisan Internships which the number of learners applying should be based on. Preference will be given to the following trades that are hard to fill according MQA SPOI list, (Diesel Mechanic and Millwright)." />
+	    </hlayout>
 
 		<!-- Trades table header -->
 		<div sclass="container-fluid">
