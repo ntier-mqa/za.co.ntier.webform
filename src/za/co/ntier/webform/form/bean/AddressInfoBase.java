@@ -234,20 +234,20 @@ public class AddressInfoBase {
 	}
 
 	public boolean showSiteName() {
-		return addressCategory == AddressCategory.CANDIDACY_CONTACT;
+		return addressCategory == AddressCategory.PROGRAM_CONTACT;
 	}
 	
 	public boolean showContact() {
-		return addressCategory == AddressCategory.CANDIDACY_CONTACT ||
+		return addressCategory == AddressCategory.PROGRAM_CONTACT ||
 				addressCategory == AddressCategory.ORG_CONTACT;
 	}
 
 	public boolean showLineAddress() {
-		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.CANDIDACY_CONTACT;
+		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.PROGRAM_CONTACT;
 	}
 	
 	public boolean showGeographicAddress() {
-		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.CANDIDACY_CONTACT
+		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.PROGRAM_CONTACT
 				|| addressCategory == AddressCategory.POSTAL;
 	}
 	

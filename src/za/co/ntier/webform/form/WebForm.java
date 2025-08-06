@@ -30,6 +30,7 @@ public class WebForm extends ADForm {
 	}
 
 	public static final String programMasterDataUUKey = "+" + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
+	public static final String programType = "+programType";
 	public static final String programMasterDataIDKey = "programMasterDataID";
 	
 	@Override
@@ -42,6 +43,7 @@ public class WebForm extends ADForm {
 		
 		Map<String, Object> args = new HashMap<>();
 		args.put(programMasterDataUUKey, programMasterDataUU);
+		args.put(programType, Env.getContext(Env.getCtx(), m_WindowNo, programType));
 		
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		// Set the context class loader to this bundle's class loader to ensure that

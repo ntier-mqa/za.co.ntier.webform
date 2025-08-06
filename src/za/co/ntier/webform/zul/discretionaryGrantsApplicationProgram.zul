@@ -9,7 +9,7 @@
 
 
 <div
-	viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationCandidacyVM')">
+	viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM')">
 
 	<include companyInfo="@load(vm.companyInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/companyHeader.zul')))" />
@@ -25,7 +25,7 @@
 	<include employerInfo="@load(vm.employerInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/employerInfo.zul')))" />
 
-	<include candidacyInfo="@load(vm.candidacyInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/candidacyHDSA.zul')))" />
+	<include programInfo="@load(vm.programInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/programInfo.zul')))" />
 
 </div>

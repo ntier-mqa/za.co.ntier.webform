@@ -4,7 +4,7 @@ public enum AddressCategory {
 	AddressCategory() {
 
 	},
-	CANDIDACY_CONTACT(), PHYSICAL(),
+	PROGRAM_CONTACT(), PHYSICAL(),
 
 	POSTAL(), ORG_CONTACT()
 }

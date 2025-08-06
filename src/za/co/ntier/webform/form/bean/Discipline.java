@@ -11,10 +11,16 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
+import za.co.ntier.webform.model.I_ZZ_Disciplines;
+import za.co.ntier.webform.model.I_ZZ_Trade;
+import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
+import za.co.ntier.webform.model.X_ZZ_Program_Trade;
 
-public class DisciplineHDSA {	
+public class Discipline {	
+	private int disciplineID;
+	private String disciplineText;
+	private int programLineID;
 	
-	private String discipline;
 	private String fileNameWPA;
 	private String uploadWPATitle = "Upload WPA";
 	private boolean isUploadWPA = false;
@@ -27,19 +33,28 @@ public class DisciplineHDSA {
 	private Collection<MCity> areas;
 	private MCity areaSelected;
 	
-	public DisciplineHDSA(String discipline, boolean isUploadAccreditation, boolean isUploadWPA) {
-		setDiscipline(discipline);
-		setUploadAccreditation(isUploadAccreditation);
-		setUploadWPA(isUploadWPA);
+	public Discipline(X_ZZ_Program_Disciplines programLine, I_ZZ_Disciplines discipline) {
+		programLineID = programLine.getZZ_Program_Disciplines_ID();
+		disciplineID = discipline.getZZ_Disciplines_ID();
+		disciplineText = discipline.getName();
+		
+		this.isUploadAccreditation = programLine.isZZ_Is_Accred_SLA_Req();
+		this.isUploadWPA = programLine.isZZ_WPA_Req();
+		
+		setAreas(MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList());
+	}
+	
+	public Discipline(X_ZZ_Program_Trade programLine, I_ZZ_Trade discipline) {
+		programLineID = programLine.getZZ_Program_Trade_ID();
+		disciplineID = discipline.getZZ_Trade_ID();
+		disciplineText = discipline.getName();
+		
+		this.isUploadAccreditation = programLine.isZZ_Is_Accred_SLA_Req();
+		this.isUploadWPA = programLine.isZZ_WPA_Req();
+		
 		setAreas(MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList());
 	}
 
-	/**
-	 * @return the discipline
-	 */
-	public String getDiscipline() {
-		return discipline;
-	}
 
 	/**
 	 * @return the fileNameWPA
@@ -76,13 +91,6 @@ public class DisciplineHDSA {
 		return province;
 	}
 
-
-	/**
-	 * @param discipline the discipline to set
-	 */
-	public void setDiscipline(String discipline) {
-		this.discipline = discipline;
-	}
 
 	/**
 	 * @param fileNameWPA the fileNameWPA to set
@@ -246,5 +254,53 @@ public class DisciplineHDSA {
 		this.areaSelected = areaSelected;
 		province = MRegion.get(areaSelected.getC_Region_ID());
 		postalCode = areaSelected.getPostal();
+	}
+
+
+	/**
+	 * @return the disciplineID
+	 */
+	public int getDisciplineID() {
+		return disciplineID;
+	}
+
+
+	/**
+	 * @param disciplineID the disciplineID to set
+	 */
+	public void setDisciplineID(int disciplineID) {
+		this.disciplineID = disciplineID;
+	}
+
+
+	/**
+	 * @return the disciplineText
+	 */
+	public String getDisciplineText() {
+		return disciplineText;
+	}
+
+
+	/**
+	 * @param disciplineText the disciplineText to set
+	 */
+	public void setDisciplineText(String disciplineText) {
+		this.disciplineText = disciplineText;
+	}
+
+
+	/**
+	 * @return the programLineID
+	 */
+	public int getProgramLineID() {
+		return programLineID;
+	}
+
+
+	/**
+	 * @param programLineID the programLineID to set
+	 */
+	public void setProgramLineID(int programLineID) {
+		this.programLineID = programLineID;
 	}
 }

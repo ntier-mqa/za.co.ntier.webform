@@ -5,15 +5,15 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.WebForm;
-import za.co.ntier.webform.form.bean.CandidacyInfo;
+import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.CompanyInfo;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
-public class DiscretionaryGrantsApplicationCandidacyVM {
-	private CandidacyInfo candidacyInfo;
+public class DiscretionaryGrantsApplicationProgramVM {
+	private ProgramInfo programInfo;
 
 	private CompanyInfo companyInfo;
 
@@ -24,10 +24,10 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	private int programMasterDataID;
 
 	/**
-	 * @return the candidacyInfo
+	 * @return the programInfo
 	 */
-	public CandidacyInfo getCandidacyInfo() {
-		return candidacyInfo;
+	public ProgramInfo getProgramInfo() {
+		return programInfo;
 	}
 
 	/**
@@ -61,7 +61,8 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 	}
 
 	@Init
-	public void init(@ExecutionArgParam(WebForm.programMasterDataUUKey) String programMasterDataKey) {
+	public void init(@ExecutionArgParam(WebForm.programMasterDataUUKey) String programMasterDataKey,
+			@ExecutionArgParam(WebForm.programType) String programType) {
 		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataKey, null);
 
 		setProgramMasterDataID(masterData.getZZ_Program_Master_Data_ID());
@@ -70,15 +71,15 @@ public class DiscretionaryGrantsApplicationCandidacyVM {
 		setFormInfo(new FormInfo("DGA CANDIDACY", "DGAF01"));
 
 		employerInfo = new EmployerInfo();
-		setCandidacyInfo(new CandidacyInfo(masterData.getZZ_Program_Master_Data_ID()));
+		programInfo = new ProgramInfo(masterData.getZZ_Program_Master_Data_ID(), programType);
 
 	}
 
 	/**
-	 * @param candidacyInfo the candidacyInfo to set
+	 * @param programInfo the programInfo to set
 	 */
-	public void setCandidacyInfo(CandidacyInfo candidacyInfo) {
-		this.candidacyInfo = candidacyInfo;
+	public void setProgramInfo(ProgramInfo programInfo) {
+		this.programInfo = programInfo;
 	}
 
 	/**
