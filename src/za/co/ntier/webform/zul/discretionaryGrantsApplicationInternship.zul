@@ -79,10 +79,10 @@
 		<label sclass="sectionHeaderTitle" value="E. INTERNSHIP" />
 	</hlayout>
 	<include programMasterDataID="@load(vm.programMasterDataID)"
-		src="@load((WebForm.getBundleResourcePath('fragment/disciplineInternernship.zul')))" />
+		src="@load((WebForm.getBundleResourcePath('fragment/disciplineInternship.zul')))" />
 		
 	<include programMasterDataID="@load(vm.programMasterDataID)"
-		src="@load((WebForm.getBundleResourcePath('fragment/tradeInternernship.zul')))" />
+		src="@load((WebForm.getBundleResourcePath('fragment/tradeInternship.zul')))" />
 
 	<hlayout sclass="subSectionHeader">
 		<label sclass="subSectionHeaderTitle"
