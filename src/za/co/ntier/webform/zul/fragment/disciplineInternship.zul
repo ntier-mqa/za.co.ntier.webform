@@ -102,7 +102,7 @@ applying should be based on." />
 		<hlayout>
 			<label sclass="sectionHeader" value="Note:" />
 			<label
-				value=" All Employers/Organisations with multiple sites using one levy number must submit one" />
+				value=" All Employers/Organisations with multiple sites using one levy number must submit one consolidated application for all sites." />
 		</hlayout>
 	</div>
 </zk>

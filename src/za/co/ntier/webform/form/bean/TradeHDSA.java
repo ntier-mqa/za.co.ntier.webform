@@ -27,7 +27,7 @@ public class TradeHDSA {
 	private Collection<MCity> areas;
 	private MCity areaSelected;
 	
-	public TradeHDSA(String discipline, boolean isUploadAccreditation, boolean isUploadWPA) {
+	public TradeHDSA(String trade, boolean isUploadAccreditation, boolean isUploadWPA) {
 		setTrade(trade);
 		setUploadAccreditation(isUploadAccreditation);
 		setUploadWPA(isUploadWPA);

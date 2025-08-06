@@ -23,7 +23,7 @@ applying should be based on." />
 			</div>
 		</div>
 
-		<!-- CANDIDACY table detail -->
+		<!-- Internship table detail -->
 		<div sclass="container-fluid"
 			children="@load(vmTrades.tradeHDSAs)">
 			<template name="children" var="tradeHDSA">
@@ -84,7 +84,7 @@ applying should be based on." />
 				</div>
 			</template>
 		</div>
-<!-- CANDIDACY total -->
+<!-- Internship total -->
 		<div sclass="container-fluid">
 			<div class="row font-weight-bold">
 				<div
