@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<div>
+<zk>
 
-	<label value="I," />
-	<textbox sclass="inlineComponent" value="" />
-	<label
-		value=", named hereunder, declare that as the duly authorised
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="A. EMPLOYER DECLARATION" />
+	</hlayout>
+	<div>
+
+		<label value="I," />
+		<textbox sclass="inlineComponent" value="" />
+		<label
+			value=", named hereunder, declare that as the duly authorised
 representative of the Employer/Organisation confirms that Employer/Organisation will comply
 with the general rules and criteria hereunder and further confirmed that all the information
 provided in this application is true and accurate" />
 
-	<div sclass="container-fluid text-left">
-		<div sclass="row">
-			<div sclass="col-sm-3 col-title">
-				<label value="Name and Surname:" />
-			</div>
-			<div sclass="col-sm-6 col-content-input-full" ><textbox sclass="form-control" value="" /></div>
+		<div sclass="container-fluid text-left">
+			<div sclass="row">
+				<div sclass="col-sm-3 col-title">
+					<label value="Name and Surname:" />
+				</div>
+				<div sclass="col-sm-6 col-content-input-full">
+					<textbox sclass="form-control" value="" />
+				</div>
 
 
-			<div sclass="col-sm-1 col-title">
-				<label value="Date:" />
+				<div sclass="col-sm-1 col-title">
+					<label value="Date:" />
+				</div>
+				<div sclass="col-sm-2 d-flex align-items-center">
+					<datebox format="short" />
+				</div>
 			</div>
-			<div sclass="col-sm-2 d-flex align-items-center">
-				<datebox format="short"/>
-			</div>
-		</div>
 
-		<div sclass="row">
-			<div sclass="col-sm-11 col-title-right">
-				<label value="Click here to acknowledge commitment" />
-			</div>
-			<div sclass="col-sm-1 d-flex align-items-center">
-				<checkbox/>
+			<div sclass="row">
+				<div sclass="col-sm-11 col-title-right">
+					<label value="Click here to acknowledge commitment" />
+				</div>
+				<div sclass="col-sm-1 d-flex align-items-center">
+					<checkbox />
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</zk>

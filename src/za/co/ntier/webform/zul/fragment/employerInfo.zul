@@ -1,61 +1,114 @@
-<?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
-
-<div sclass="container-fluid text-left"
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
+<?import za.co.ntier.webform.form.WebForm ?>
+<div
 	viewModel="@id('vmEmployerInfo') @init('za.co.ntier.webform.form.viewmodel.EmployerInfoVMWrapper')">
-	<div sclass="row">
-		<div sclass="col-sm-4 col-title">
-			<label
-				value="@init(vmEmployerInfo.employerInfo.employerNameTitle)" />
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="C. EMPLOYER/APPLICANT INFORMATION" />
+	</hlayout>
+	<div sclass="container-fluid text-left">
+		<div sclass="row">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmEmployerInfo.employerInfo.employerNameTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmEmployerInfo.employerInfo.employerName)" />
+			</div>
 		</div>
-		<div sclass="col-sm-8 col-content-input-full">
-			<textbox sclass="form-control"
-				value="@bind(vmEmployerInfo.employerInfo.employerName)" />
+		<div sclass="row">
+			<div sclass="col-sm-7 col-title">
+				<label
+					value="@init(vmEmployerInfo.employerInfo.sdlNumberTitle)" />
+			</div>
+			<div sclass="col-sm-5 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmEmployerInfo.employerInfo.sdlNumber)" />
+			</div>
+		</div>
+		<div sclass="row">
+			<div sclass="col-sm-7 col-title">
+				<label
+					value="@init(vmEmployerInfo.employerInfo.siteSDLNumberTitle)" />
+			</div>
+			<div sclass="col-sm-5 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmEmployerInfo.employerInfo.siteSDLNumber)" />
+			</div>
+		</div>
+		<div sclass="row">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmEmployerInfo.employerInfo.orgRegistrationNumberTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmEmployerInfo.employerInfo.orgRegistrationNumber)" />
+			</div>
+		</div>
+
+		<div sclass="row">
+			<div sclass="col-sm-4 col-title">
+				<label
+					value="@init(vmEmployerInfo.employerInfo.employerTaxNumberTitle)" />
+			</div>
+			<div sclass="col-sm-4 col-content-input-full">
+				<textbox sclass="form-control"
+					value="@bind(vmEmployerInfo.employerInfo.employerTaxNumber)" />
+			</div>
+			<div sclass="col-sm-4 col-title">
+				<fileupload sclass="text-wrap w-100"
+					label="Upload VAT Exemption Certificate"
+					onUpload="@command('uploadFile', media=event.media)" />
+				<label
+					value="@load(vmEmployerInfo.employerInfo.fileNameVATCer)" />
+			</div>
 		</div>
 	</div>
-	<div sclass="row">
-		<div sclass="col-sm-7 col-title">
-			<label
-				value="@init(vmEmployerInfo.employerInfo.sdlNumberTitle)" />
-		</div>
-		<div sclass="col-sm-5 col-content-input-full">
-			<textbox sclass="form-control"
-				value="@bind(vmEmployerInfo.employerInfo.sdlNumber)" />
-		</div>
-	</div>
-	<div sclass="row">
-		<div sclass="col-sm-7 col-title">
-			<label
-				value="@init(vmEmployerInfo.employerInfo.siteSDLNumberTitle)" />
-		</div>
-		<div sclass="col-sm-5 col-content-input-full">
-			<textbox sclass="form-control"
-				value="@bind(vmEmployerInfo.employerInfo.siteSDLNumber)" />
-		</div>
-	</div>
-	<div sclass="row">
-		<div sclass="col-sm-4 col-title">
-			<label
-				value="@init(vmEmployerInfo.employerInfo.orgRegistrationNumberTitle)" />
-		</div>
-		<div sclass="col-sm-8 col-content-input-full">
-			<textbox sclass="form-control"
-				value="@bind(vmEmployerInfo.employerInfo.orgRegistrationNumber)" />
-		</div>
-	</div>
-	
-	<div sclass="row">
-		<div sclass="col-sm-4 col-title">
-			<label
-				value="@init(vmEmployerInfo.employerInfo.employerTaxNumberTitle)" />
-		</div>
-		<div sclass="col-sm-4 col-content-input-full">
-			<textbox sclass="form-control"
-				value="@bind(vmEmployerInfo.employerInfo.employerTaxNumber)" />
-		</div>
-		<div sclass="col-sm-4 col-title">
-			<fileupload sclass="text-wrap w-100" label="Upload VAT Exemption Certificate"
-							onUpload="@command('uploadFile', media=event.media)" />
-						<label value="@load(vmEmployerInfo.employerInfo.fileNameVATCer)" />
-		</div>
-	</div>
+
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle" value="PHYSICAL ADDRESS" />
+	</hlayout>
+
+	<include
+		addressInfo="@load(vmEmployerInfo.employerInfo.physicalAddressInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle" value="POSTAL ADDRESS" />
+	</hlayout>
+
+	<include
+		addressInfo="@load(vmEmployerInfo.employerInfo.postAddressInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle"
+			value="SIZE OF THE ORGANISATION" />
+		<label
+			value="(please select the correct option pertaining to the company size)" />
+	</hlayout>
+	<include
+		orgSizeInfo="@load(vmEmployerInfo.employerInfo.orgSizeInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/organisationSize.zul')))" />
+
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle"
+			value="Primary Organisation Contact:" />
+	</hlayout>
+
+	<include
+		addressInfo="@load(vmEmployerInfo.employerInfo.orgContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle"
+			value="Alternate Organisation Contact:" />
+	</hlayout>
+
+	<include
+		addressInfo="@load(vmEmployerInfo.employerInfo.alternateOrgContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+
 </div>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
+<?import za.co.ntier.webform.form.bean.DisciplineHDSA?>
+
+<div
+	viewModel="@id('vmCandidacyInfo') @init('za.co.ntier.webform.form.viewmodel.CandidacyHDSAVMWrapper')">
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle" value="D. CANDIDACY" />
+	</hlayout>
+	<div>
+		<hlayout>
+			<label
+				value="List of disciplines supported for the HDSA Candidacy which the number of learners
+applying should be based on." />
+		</hlayout>
+
+		<!-- CANDIDACY table header -->
+		<div sclass="container-fluid">
+			<div class="row font-weight-bold"
+				children="@load((vmCandidacyInfo.candidacyInfo.colHeaders))">
+				<template name="children" var="colHeader">
+					<div
+						class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(colHeaderStatus.index) += ' col-title' ))">
+						<label value="@init(colHeader)" />
+					</div>
+				</template>
+			</div>
+		</div>
+
+		<!-- CANDIDACY table detail -->
+		<div sclass="container-fluid"
+			children="@load(vmCandidacyInfo.candidacyInfo.disciplineHDSAs)">
+			<template name="children" var="disciplineHDSA">
+				<div class="row font-weight-bold">
+
+					<div
+						class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(0) += ' col-title' ))">
+						<label value="@load(disciplineHDSA.discipline)" />
+					</div>
+
+					<div
+						class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(1) += ' col-content-input-full' ))">
+						<textbox sclass="form-control"
+							value="@bind(disciplineHDSA.noOfLearners)"
+							onChange="@command('noOfLearnerChange')" />
+					</div>
+
+					<div
+						class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(2) += ' col-content-input-full' ))">
+						<textbox sclass="form-control"
+							value="@bind(disciplineHDSA.postalCode)" />
+					</div>
+
+					<div
+						class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(3) += ' col-content-input-full' ))">
+
+						<listbox mold="select" sclass="form-control"
+							model="@load(disciplineHDSA.areas)"
+							selectedItem="@bind(disciplineHDSA.areaSelected)">
+							<template name="model" var="item">
+								<listitem label="@load(item.name)" />
+							</template>
+						</listbox>
+					</div>
+
+					<div
+						class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(4) += ' col-title' ))">
+						<label value="@load(disciplineHDSA.province.name)" />
+					</div>
+
+					<div if="${vmCandidacyInfo.candidacyInfo.isHasWPAReq()}"
+						class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(5) += ' col-title' ))">
+						<div if="${disciplineHDSA.isUploadWPA()}">
+							<fileupload sclass="text-wrap w-100"
+								label="@load(disciplineHDSA.uploadWPATitle)"
+								onUpload="@command('uploadFile', media=event.media, isDSA = true, discipline = disciplineHDSA, index = disciplineHDSAStatus.index)" />
+							<label value="@load(disciplineHDSA.fileNameWPA)" />
+						</div>
+					</div>
+
+					<div if="${vmCandidacyInfo.candidacyInfo.isHasAccreditation()}"
+						class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(vmCandidacyInfo.candidacyInfo.colSizes.size() - 1) += ' col-title' ))">
+						<div if="${disciplineHDSA.isUploadAccreditation()}">
+							<fileupload sclass="text-wrap w-100"
+								label="@load(disciplineHDSA.uploadAccreditationTitle)"
+								onUpload="@command('uploadFile', media=event.media, isDSA = false, discipline = disciplineHDSA, index = disciplineHDSAStatus.index)" />
+							<label value="@load(disciplineHDSA.fileNameAccreditation)" />
+						</div>
+					</div>
+				</div>
+			</template>
+		</div>
+		<!-- CANDIDACY total -->
+		<div sclass="container-fluid">
+			<div class="row font-weight-bold">
+				<div
+					class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(0) += ' col-title' ))">
+					<label value="Total" />
+				</div>
+
+				<div
+					class="@init(('col-sm-' += vmCandidacyInfo.candidacyInfo.colSizes.get(1) += ' col-title' ))">
+					<label
+						value="@load(vmCandidacyInfo.candidacyInfo.totalLearners)" />
+				</div>
+			</div>
+		</div>
+		<hlayout>
+			<label sclass="sectionHeader" value="Note:" />
+			<label
+				value=" All Employers/Organisations with multiple sites using one levy number must submit one" />
+		</hlayout>
+	</div>
+
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle"
+			value="Contact details of person responsible for CANDIDACY:" />
+	</hlayout>
+	<include
+		addressInfo="@load(vmCandidacyInfo.candidacyInfo.candidacyContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle"
+			value="Alternate contact details of the person responsible for CANDIDACY:" />
+	</hlayout>
+	<include
+		addressInfo="@load(vmCandidacyInfo.candidacyInfo.alternateCandidacyContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+</div>

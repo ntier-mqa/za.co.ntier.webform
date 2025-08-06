@@ -8,8 +8,17 @@ import org.compiere.util.Env;
 import org.zkoss.image.AImage;
 
 public class CompanyInfo {
-	public static CompanyInfo getDefaultCompanyInfo() throws IOException {
-		return new CompanyInfo();
+	private static final CompanyInfo companyInfo;
+	static {
+		try {
+			companyInfo = new CompanyInfo();
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to initialize default company info", e);
+		}
+	}
+
+	public static CompanyInfo getDefaultCompanyInfo() {
+		return companyInfo;
 	}
 
 	private String companyAddress;
@@ -41,9 +50,9 @@ public class CompanyInfo {
 		MImage logo = MImage.get(Env.getCtx(), clientInfo.getLogo_ID());
 
 		AImage logoMedia = null;
-		byte [] data = logo.getData();
+		byte[] data = logo.getData();
 		if (data != null) {
-			logoMedia =	new AImage("company logo", data);
+			logoMedia = new AImage("company logo", data);
 			setCompanyLogo(logoMedia);
 		}
 	}
