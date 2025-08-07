@@ -15,7 +15,7 @@
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
 	<include
-		if="@init(vmProgramInfo.programInfo.programType == ProgramType.INTERNSHIP)"
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.INTERNSHIP}"
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
