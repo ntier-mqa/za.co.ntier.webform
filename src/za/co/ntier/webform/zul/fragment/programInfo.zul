@@ -6,14 +6,16 @@
 <div
 	viewModel="@id('vmProgramInfo') @init('za.co.ntier.webform.form.viewmodel.ProgramInfoVMWrapper')">
 	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle" value="@init(( 'D. ' += vmProgramInfo.programInfo.programTitle))" />
+		<label sclass="sectionHeaderTitle"
+			value="@init(( 'D. ' += vmProgramInfo.programInfo.programTitle))" />
 	</hlayout>
 
 	<include
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
-	<include if="@init(vmProgramInfo.programInfo.programType == ProgramType.INTERNSHIP)"
+	<include
+		if="@init(vmProgramInfo.programInfo.programType == ProgramType.INTERNSHIP)"
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
