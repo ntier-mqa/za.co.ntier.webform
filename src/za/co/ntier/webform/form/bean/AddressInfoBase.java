@@ -20,10 +20,10 @@ public class AddressInfoBase {
 
 	private String addressLineTitle = "Street Name and Number";
 
+	private Collection<MCity> areas;
+
 	private MCity areaSelected;
 
-	private Collection<MCity> areas;
-	
 	private String areaTitle = "Area/Suburb";
 
 	private String email;
@@ -64,7 +64,7 @@ public class AddressInfoBase {
 
 	public AddressInfoBase(AddressCategory addressCategory, MRegion provinceSelected) {
 		setAddressCategory(addressCategory);
-		
+
 		setProvinceSelected(provinceSelected);
 	}
 
@@ -84,6 +84,34 @@ public class AddressInfoBase {
 	 */
 	public String getAddressLineTitle() {
 		return addressLineTitle;
+	}
+
+	public String getAddressTitle() {
+		if (addressCategory == AddressCategory.PHYSICAL)
+			return "PHYSICAL ADDRESS";
+		if (addressCategory == AddressCategory.POSTAL)
+			return "POSTAL ADDRESS";
+		if (addressCategory == AddressCategory.ORG)
+			return "Primary Organisation Contact:";
+		if (addressCategory == AddressCategory.ORG_ALTER)
+			return "Alternate Organisation Contact:";
+		if (addressCategory == AddressCategory.CANDIDACY)
+			return "Contact details of person responsible for CANDIDACY:";
+		if (addressCategory == AddressCategory.CANDIDACY_ALTER)
+			return "Alternate contact details of the person responsible for CANDIDACY:";
+		if (addressCategory == AddressCategory.INTERNSHIP)
+			return "Contact details of person responsible for INTERNSHIP:";
+		if (addressCategory == AddressCategory.INTERNSHIP_ALTER)
+			return "Alternate contact details of the person responsible for INTERNSHIP:";
+		else
+			return addressCategory.toString();
+	}
+
+	/**
+	 * @return the areas
+	 */
+	public Collection<MCity> getAreas() {
+		return areas;
 	}
 
 	/**
@@ -233,33 +261,6 @@ public class AddressInfoBase {
 		return siteNameTitle;
 	}
 
-	public boolean showSiteName() {
-		return addressCategory == AddressCategory.PROGRAM_CONTACT;
-	}
-	
-	public boolean showContact() {
-		return addressCategory == AddressCategory.PROGRAM_CONTACT ||
-				addressCategory == AddressCategory.ORG_CONTACT;
-	}
-
-	public boolean showLineAddress() {
-		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.PROGRAM_CONTACT;
-	}
-	
-	public boolean showGeographicAddress() {
-		return addressCategory == AddressCategory.PHYSICAL || addressCategory == AddressCategory.PROGRAM_CONTACT
-				|| addressCategory == AddressCategory.POSTAL;
-	}
-	
-
-	public boolean showPostalAddress() {
-		return addressCategory == AddressCategory.POSTAL;
-	}
-
-	public boolean showMunicipalities() {
-		return false;
-	}
-
 	public void setAddressCategory(AddressCategory addressCategory) {
 		this.addressCategory = addressCategory;
 	}
@@ -276,6 +277,13 @@ public class AddressInfoBase {
 	 */
 	public void setAddressLineTitle(String addressLineTitle) {
 		this.addressLineTitle = addressLineTitle;
+	}
+
+	/**
+	 * @param areas the areas to set
+	 */
+	public void setAreas(Collection<MCity> areas) {
+		this.areas = areas;
 	}
 
 	/**
@@ -383,37 +391,34 @@ public class AddressInfoBase {
 	@NotifyChange({ "provinceSelected", "areas" })
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
-		
+
 		Collection<MCity> areaFilters = new ArrayList<>();
-		
+
 		if (StringUtils.isNotEmpty(postalCode)) {
 			MasterUtil.getCities().stream()
-			.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
-			.limit(MasterUtil.limitItem)
-			.forEach(city -> {
-				areaFilters.add(city);
-			});
+					.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
+					.limit(MasterUtil.limitItem).forEach(city -> {
+						areaFilters.add(city);
+					});
 		}
-		
+
 		areaSelected = null;
-		
+
 		if (!areaFilters.isEmpty()) {
 			provinceSelected = MRegion.get(areaFilters.iterator().next().getC_Region_ID());
 			if (areaFilters.size() == 1) {
 				areaSelected = areaFilters.iterator().next();
 			}
-		}else {
-			MasterUtil.getCities().stream()
-			.limit(MasterUtil.limitItem)
-			.forEach(city -> {
+		} else {
+			MasterUtil.getCities().stream().limit(MasterUtil.limitItem).forEach(city -> {
 				areaFilters.add(city);
 			});
-			
+
 			provinceSelected = null;
 		}
-		
+
 		areas = areaFilters;
-		
+
 	}
 
 	/**
@@ -429,22 +434,20 @@ public class AddressInfoBase {
 	@NotifyChange({ "areas", "areaSelected", "postalCode" })
 	public void setProvinceSelected(MRegion provinceSelected) {
 		this.provinceSelected = provinceSelected;
-		
+
 		areaSelected = null;
-		
+
 		if (provinceSelected == null) {
 			areas = null;
 			postalCode = null;
-		}else {
+		} else {
 			List<MCity> areaFilters = new ArrayList<>();
-			
-			MasterUtil.getCities().stream()
-				.filter(city -> city.getC_Region_ID() == provinceSelected.getC_Region_ID())
-				.limit(MasterUtil.limitItem)
-				.forEach(city -> {
-					areaFilters.add(city);
-				});
-			
+
+			MasterUtil.getCities().stream().filter(city -> city.getC_Region_ID() == provinceSelected.getC_Region_ID())
+					.limit(MasterUtil.limitItem).forEach(city -> {
+						areaFilters.add(city);
+					});
+
 			areas = areaFilters;
 			if (!areas.isEmpty()) {
 				postalCode = areaFilters.iterator().next().getPostal();
@@ -453,8 +456,7 @@ public class AddressInfoBase {
 				}
 			}
 		}
-		
-		
+
 	}
 
 	/**
@@ -493,18 +495,30 @@ public class AddressInfoBase {
 		this.siteNameTitle = siteNameTitle;
 	}
 
-	/**
-	 * @return the areas
-	 */
-	public Collection<MCity> getAreas() {
-		return areas;
+	public boolean showContact() {
+		return addressCategory.isProgramContact() || addressCategory == AddressCategory.ORG
+				|| addressCategory == AddressCategory.ORG_ALTER;
 	}
 
-	/**
-	 * @param areas the areas to set
-	 */
-	public void setAreas(Collection<MCity> areas) {
-		this.areas = areas;
+	public boolean showGeographicAddress() {
+		return addressCategory == AddressCategory.PHYSICAL || addressCategory.isProgramContact()
+				|| addressCategory == AddressCategory.POSTAL;
+	}
+
+	public boolean showLineAddress() {
+		return addressCategory == AddressCategory.PHYSICAL || addressCategory.isProgramContact();
+	}
+
+	public boolean showMunicipalities() {
+		return false;
+	}
+
+	public boolean showPostalAddress() {
+		return addressCategory == AddressCategory.POSTAL;
+	}
+
+	public boolean showSiteName() {
+		return addressCategory.isProgramContact();
 	}
 
 }

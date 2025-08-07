@@ -5,28 +5,31 @@ import java.util.Random;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 public class ProgramInfo {
-	public static final String PROGRAM_TYPE_CANDIDACY = "CANDIDACY";
-	public static final String PROGRAM_TYPE_INTERNSHIP = "INTERNSHIP";
-
 	private AddressInfoBase alternateProgramContact;
 	private DisciplineTableInfo disciplineTableInfo;
-	private boolean isCandidacy = true;
-	private boolean isInternShip = false;
 	private AddressInfoBase programContact;
+	private ProgramType programType = ProgramType.UNKNOWN;
 	private DisciplineTableInfo tradeTableInfo;
 
-	public ProgramInfo(int programMasterDataID, String programType) {
-		programContact = new AddressInfoBase(AddressCategory.PROGRAM_CONTACT,
-				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
-		alternateProgramContact = new AddressInfoBase(AddressCategory.PROGRAM_CONTACT,
-				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
-		
-		disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, false);
+	public ProgramInfo(int programMasterDataID, String sProgramType) {
+		this.programType = ProgramType.valueOf(sProgramType.toUpperCase());
+		AddressCategory addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY
+				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP : AddressCategory.UNKNOWN;
 
-		tradeTableInfo = new DisciplineTableInfo(programMasterDataID, true);
+		programContact = new AddressInfoBase(addressCategory,
+				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		isCandidacy = PROGRAM_TYPE_CANDIDACY.equalsIgnoreCase(programType);
-		isInternShip = PROGRAM_TYPE_INTERNSHIP.equalsIgnoreCase(programType);
+		addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY_ALTER
+				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP_ALTER
+						: AddressCategory.UNKNOWN;
+
+		alternateProgramContact = new AddressInfoBase(addressCategory,
+				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+
+		disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, false);
+
+		tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, true);
+
 	}
 
 	/**
@@ -51,24 +54,29 @@ public class ProgramInfo {
 	}
 
 	/**
+	 * @return the programTitle
+	 */
+	public String getProgramTitle() {
+		if (programType == ProgramType.CANDIDACY)
+			return "CANDIDACY";
+		if (programType == ProgramType.INTERNSHIP)
+			return "INTERNSHIP";
+		else
+			return programType.toString();
+	}
+
+	/**
+	 * @return the programType
+	 */
+	public ProgramType getProgramType() {
+		return programType;
+	}
+
+	/**
 	 * @return the tradeTableInfo
 	 */
 	public DisciplineTableInfo getTradeTableInfo() {
 		return tradeTableInfo;
-	}
-
-	/**
-	 * @return the isCandidacy
-	 */
-	public boolean isCandidacy() {
-		return isCandidacy;
-	}
-
-	/**
-	 * @return the isInternShip
-	 */
-	public boolean isInternShip() {
-		return isInternShip;
 	}
 
 	/**
@@ -79,24 +87,10 @@ public class ProgramInfo {
 	}
 
 	/**
-	 * @param isCandidacy the isCandidacy to set
-	 */
-	public void setCandidacy(boolean isCandidacy) {
-		this.isCandidacy = isCandidacy;
-	}
-
-	/**
 	 * @param disciplineTableInfo the disciplineTableInfo to set
 	 */
 	public void setDisciplineTableInfo(DisciplineTableInfo disciplineTableInfo) {
 		this.disciplineTableInfo = disciplineTableInfo;
-	}
-
-	/**
-	 * @param isInternShip the isInternShip to set
-	 */
-	public void setInternShip(boolean isInternShip) {
-		this.isInternShip = isInternShip;
 	}
 
 	/**
@@ -107,9 +101,17 @@ public class ProgramInfo {
 	}
 
 	/**
+	 * @param programType the programType to set
+	 */
+	public void setProgramType(ProgramType programType) {
+		this.programType = programType;
+	}
+
+	/**
 	 * @param tradeTableInfo the tradeTableInfo to set
 	 */
 	public void setTradeTableInfo(DisciplineTableInfo tradeTableInfo) {
 		this.tradeTableInfo = tradeTableInfo;
 	}
+
 }

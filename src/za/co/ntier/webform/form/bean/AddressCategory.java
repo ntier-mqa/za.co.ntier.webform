@@ -1,10 +1,10 @@
 package za.co.ntier.webform.form.bean;
 
 public enum AddressCategory {
-	AddressCategory() {
+	CANDIDACY(), CANDIDACY_ALTER(), INTERNSHIP(), INTERNSHIP_ALTER(), ORG(), ORG_ALTER(), PHYSICAL(), POSTAL(),
+	UNKNOWN();
 
-	},
-	PROGRAM_CONTACT(), PHYSICAL(),
-
-	POSTAL(), ORG_CONTACT()
+	public boolean isProgramContact() {
+		return this == CANDIDACY || this == INTERNSHIP || this == CANDIDACY_ALTER || this == INTERNSHIP_ALTER;
+	}
 }

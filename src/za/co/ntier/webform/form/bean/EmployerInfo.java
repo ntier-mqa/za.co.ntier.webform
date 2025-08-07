@@ -36,10 +36,10 @@ public class EmployerInfo {
 
 		orgSizeInfo = new OrganisationSizeInfo(new Random().nextInt(), false, true);
 
-		orgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT,
+		orgContact = new AddressInfoBase(AddressCategory.ORG,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		alternateOrgContact = new AddressInfoBase(AddressCategory.ORG_CONTACT,
+		alternateOrgContact = new AddressInfoBase(AddressCategory.ORG_ALTER,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 	}
 

@@ -1,32 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
 <?import za.co.ntier.webform.form.bean.Discipline?>
+<?import za.co.ntier.webform.form.bean.ProgramType?>
+
 
 <div
 	viewModel="@id('vmProgramInfo') @init('za.co.ntier.webform.form.viewmodel.ProgramInfoVMWrapper')">
 	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle" value="D. CANDIDACY" />
+		<label sclass="sectionHeaderTitle" value="@init(( 'D. ' += vmProgramInfo.programInfo.programTitle))" />
 	</hlayout>
 
 	<include
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
-	<include if="${vmProgramInfo.programInfo.isInternShip()}"
+	<include if="@init(vmProgramInfo.programInfo.programType == ProgramType.INTERNSHIP)"
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
-	<hlayout sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle"
-			value="Contact details of person responsible for CANDIDACY:" />
-	</hlayout>
 	<include
 		addressInfo="@load(vmProgramInfo.programInfo.programContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 
-	<hlayout sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle"
-			value="Alternate contact details of the person responsible for CANDIDACY:" />
-	</hlayout>
 	<include
 		addressInfo="@load(vmProgramInfo.programInfo.alternateProgramContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />

@@ -22,11 +22,17 @@ public class DisciplineTableInfo {
 	private List<Discipline> disciplines;
 	private boolean hasAccreditation = false;
 	private boolean hasWPAReq = false;
+	private boolean isTrade = false;
+	private ProgramType programType;
 	private int totalLearners = 0;
 
-	public DisciplineTableInfo(int programMasterDataID, boolean isTrade) {
+	public DisciplineTableInfo(int programMasterDataID, ProgramType programType, boolean isTrade) {
 		this.disciplines = new ArrayList<>();
+		this.setProgramType(programType);
+		this.setTrade(isTrade);
+
 		String disciplineHeader = isTrade ? "Trade" : "Discipline";
+
 		if (isTrade) {
 			List<X_ZZ_Program_Trade> programTrades = new Query(Env.getCtx(), I_ZZ_Program_Trade.Table_Name,
 					String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID), null)
@@ -46,11 +52,12 @@ public class DisciplineTableInfo {
 					hasAccreditation = true;
 				}
 			});
-		}else {
-			List<X_ZZ_Program_Disciplines> programDisciplines = new Query(Env.getCtx(), I_ZZ_Program_Disciplines.Table_Name,
+		} else {
+			List<X_ZZ_Program_Disciplines> programDisciplines = new Query(Env.getCtx(),
+					I_ZZ_Program_Disciplines.Table_Name,
 					String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID), null)
-					.setParameters(programMasterDataID).setClient_ID().setOrderBy(I_ZZ_Program_Disciplines.COLUMNNAME_Line)
-					.list();
+					.setParameters(programMasterDataID).setClient_ID()
+					.setOrderBy(I_ZZ_Program_Disciplines.COLUMNNAME_Line).list();
 
 			programDisciplines.stream().forEach((programDiscipline) -> {
 				I_ZZ_Disciplines discipline = programDiscipline.getZZ_Disciplines();
@@ -68,19 +75,20 @@ public class DisciplineTableInfo {
 		}
 
 		if (hasWPAReq && hasAccreditation) {
-			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb", "Site Province",
-					"Attach WPA", "Attach Accreditation");
+			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb",
+					"Site Province", "Attach WPA", "Attach Accreditation");
 			colSizes = List.of(3, 1, 1, 2, 1, 2, 2);
 		} else if (hasWPAReq) {
-			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb", "Site Province",
-					"Attach WPA");
+			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb",
+					"Site Province", "Attach WPA");
 			colSizes = List.of(3, 1, 1, 2, 1, 4);
 		} else if (hasAccreditation) {
-			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb", "Site Province",
-					"Attach Accreditation");
+			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb",
+					"Site Province", "Attach Accreditation");
 			colSizes = List.of(3, 1, 1, 2, 1, 4);
 		} else {
-			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb", "Site Province");
+			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb",
+					"Site Province");
 			colSizes = List.of(3, 2, 2, 3, 2);
 		}
 	}
@@ -99,11 +107,40 @@ public class DisciplineTableInfo {
 		return colSizes;
 	}
 
+	public String getDisciplineNote() {
+		return """
+				All Employers/Organisations with multiple sites using one levy number must submit one
+				consolidated application for all sites.
+				""";
+	}
+
 	/**
 	 * @return the disciplines
 	 */
 	public List<Discipline> getDisciplines() {
 		return disciplines;
+	}
+
+	public String getDisciplineTitle() {
+		if (programType == ProgramType.CANDIDACY)
+			return "List of disciplines supported for the HDSA Candidacy which the number of learners applying should be based on.";
+		if (programType == ProgramType.INTERNSHIP && !isTrade)
+			return "List of disciplines supported for Internships which the number of learners applying should be based on.";
+		if (programType == ProgramType.INTERNSHIP && isTrade)
+			return """
+					List of disciplines supported for Artisan Internships which the number of learners applying
+					should be based on. Preference will be given to the following trades that are hard to fill
+					according MQA SPOI list, (Diesel Mechanic and Millwright).""";
+		else
+			return programType.toString();
+
+	}
+
+	/**
+	 * @return the programType
+	 */
+	public ProgramType getProgramType() {
+		return programType;
 	}
 
 	/**
@@ -125,6 +162,13 @@ public class DisciplineTableInfo {
 	 */
 	public boolean isHasWPAReq() {
 		return hasWPAReq;
+	}
+
+	/**
+	 * @return the isTrade
+	 */
+	public boolean isTrade() {
+		return isTrade;
 	}
 
 	public void noOfLearnerChange() {
@@ -170,10 +214,24 @@ public class DisciplineTableInfo {
 	}
 
 	/**
+	 * @param programType the programType to set
+	 */
+	public void setProgramType(ProgramType programType) {
+		this.programType = programType;
+	}
+
+	/**
 	 * @param totalLearners the totalLearners to set
 	 */
 	public void setTotalLearners(int totalLearners) {
 		this.totalLearners = totalLearners;
+	}
+
+	/**
+	 * @param isTrade the isTrade to set
+	 */
+	public void setTrade(boolean isTrade) {
+		this.isTrade = isTrade;
 	}
 
 }

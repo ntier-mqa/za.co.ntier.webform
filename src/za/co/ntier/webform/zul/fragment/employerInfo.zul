@@ -67,17 +67,9 @@
 		</div>
 	</div>
 
-	<hlayout sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle" value="PHYSICAL ADDRESS" />
-	</hlayout>
-
 	<include
 		addressInfo="@load(vmEmployerInfo.employerInfo.physicalAddressInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
-
-	<hlayout sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle" value="POSTAL ADDRESS" />
-	</hlayout>
 
 	<include
 		addressInfo="@load(vmEmployerInfo.employerInfo.postAddressInfo)"
@@ -93,19 +85,9 @@
 		orgSizeInfo="@load(vmEmployerInfo.employerInfo.orgSizeInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/organisationSize.zul')))" />
 
-	<hlayout sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle"
-			value="Primary Organisation Contact:" />
-	</hlayout>
-
 	<include
 		addressInfo="@load(vmEmployerInfo.employerInfo.orgContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
-
-	<hlayout sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle"
-			value="Alternate Organisation Contact:" />
-	</hlayout>
 
 	<include
 		addressInfo="@load(vmEmployerInfo.employerInfo.alternateOrgContact)"

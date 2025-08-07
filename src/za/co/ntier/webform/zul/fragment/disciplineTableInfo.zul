@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <div
 	viewModel="@id('vmDisciplineInfo') @init('za.co.ntier.webform.form.viewmodel.DisciplineTableVMWrapper')">
 	<hlayout>
 		<label
-			value="List of disciplines supported for the HDSA Candidacy which the number of learners
-applying should be based on." />
+			value="@init(vmDisciplineInfo.disciplineTableInfo.disciplineTitle)" />
 	</hlayout>
 
 	<!-- Disciplines table header -->
@@ -102,6 +102,6 @@ applying should be based on." />
 	<hlayout>
 		<label sclass="sectionHeader" value="Note:" />
 		<label
-			value=" All Employers/Organisations with multiple sites using one levy number must submit one" />
+			value="@init(vmDisciplineInfo.disciplineTableInfo.disciplineNote)" />
 	</hlayout>
 </div>
