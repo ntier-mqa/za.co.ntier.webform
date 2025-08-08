@@ -141,9 +141,9 @@ public class DisciplineTableInfo {
 	public String getOverallTitle() {
 		if (programType == ProgramType.EXPERIENCE) {
 			return "• WORK EXPERIENCE (PRACTICAL TRAINING)";
-		} else {
-			return " ";
-		}
+		} 
+		
+		return null;
 	}
 
 	/**

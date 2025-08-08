@@ -27,5 +27,9 @@
 
 	<include programInfo="@load(vm.programInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/programInfo.zul')))" />
+		
+	<button sclass="btn btn-primary"
+        label="@init(vm.submitButtonLabel)"
+        onClick="@command('submitApplication')" />
 
 </div>

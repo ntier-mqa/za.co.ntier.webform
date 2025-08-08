@@ -11,6 +11,7 @@ public class ProgramInfo {
 	private ProgramType programType = ProgramType.UNKNOWN;
 	private DisciplineTableInfo tradeTableInfo;
 	private WorkInfo workInfo;
+	private AddressInfoBase vacationContact;
 
 	public ProgramInfo(int programMasterDataID, ProgramType programType) {
 		this.programType = programType;
@@ -29,6 +30,11 @@ public class ProgramInfo {
 		alternateProgramContact = new AddressInfoBase(addressCategory,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
+		if (this.programType == ProgramType.EXPERIENCE) {
+			setVacationContact(new AddressInfoBase(AddressCategory.VACATION,
+					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size()))));
+		}
+		
 		disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, false);
 
 		tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, true);
@@ -65,9 +71,9 @@ public class ProgramInfo {
 		if (programType == ProgramType.CANDIDACY)
 			return "D. CANDIDACY";
 		if (programType == ProgramType.INTERNSHIP)
-			return "E. INTERNSHIP";
+			return "D. INTERNSHIP";
 		if (programType == ProgramType.EXPERIENCE)
-			return "F. WORK EXPERIENCE AND VACATION WORK";
+			return "D. WORK EXPERIENCE AND VACATION WORK";
 		else
 			return programType.toString();
 	}
@@ -127,6 +133,20 @@ public class ProgramInfo {
 
 	public void setWorkInfo(WorkInfo workInfo) {
 		this.workInfo = workInfo;
+	}
+
+	/**
+	 * @return the vacationContact
+	 */
+	public AddressInfoBase getVacationContact() {
+		return vacationContact;
+	}
+
+	/**
+	 * @param vacationContact the vacationContact to set
+	 */
+	public void setVacationContact(AddressInfoBase vacationContact) {
+		this.vacationContact = vacationContact;
 	}
 
 }

@@ -1,16 +1,22 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import org.apache.commons.lang3.RandomUtils;
+import org.compiere.model.MUser;
 import org.compiere.util.Env;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.AddressInfoBase;
 import za.co.ntier.webform.form.bean.CompanyInfo;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.model.X_ZZ_FormContact;
 import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
 public class DiscretionaryGrantsApplicationProgramVM {
@@ -114,5 +120,77 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public void setProgramMasterDataID(int programMasterDataID) {
 		this.programMasterDataID = programMasterDataID;
 	}
-
+	
+	public String getSubmitButtonLabel() {
+		return "Submit Application";
+	}
+	
+	@Command(value = "submitApplication")
+	public void submitApplication() {
+		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, null);
+		applicationForm.setName("test" + RandomUtils.nextInt());
+		
+		MUser loginUser = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
+		applicationForm.setC_BPartner_ID(loginUser.getC_BPartner_ID());
+		applicationForm.setZZ_SDL_No(employerInfo.getSdlNumber());
+		applicationForm.setZZ_Side_SDL_No(employerInfo.getSiteSDLNumber());
+		applicationForm.setZZ_VAT(employerInfo.getEmployerTaxNumber());
+		
+		applicationForm.setNumberEmployees(employerInfo.getOrgSizeInfo().getNumOfEmployer());
+		applicationForm.setZZ_HasWSPSubmited(employerInfo.getOrgSizeInfo().isSubmittedWSP());
+		applicationForm.setZZ_HasPivotalPlanSubmited(employerInfo.getOrgSizeInfo().isSubmittedPivotal());
+		
+		applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalLearners());
+		applicationForm.setZZ_TradeTotalLearners(programInfo.getTradeTableInfo().getTotalLearners());
+		
+		applicationForm.saveEx();
+		
+		X_ZZ_FormContact contact = createFormContact(employerInfo.getPhysicalAddressInfo());
+		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+		
+		contact = createFormContact(employerInfo.getPostAddressInfo());
+		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+		
+		contact = createFormContact(employerInfo.getOrgContact());
+		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+		
+		contact = createFormContact(employerInfo.getAlternateOrgContact());
+		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+		
+		contact = createFormContact(programInfo.getProgramContact());
+		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+		
+		contact = createFormContact(programInfo.getAlternateProgramContact());
+		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+		
+		
+	}
+	
+	public X_ZZ_FormContact createFormContact(AddressInfoBase addressInfoBase) {
+		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
+		if(addressInfoBase.getProvinceSelected() != null)
+			contact.setC_Region_ID(addressInfoBase.getProvinceSelected().getC_Region_ID());
+		
+		if(addressInfoBase.getAreaSelected() != null)
+			contact.setC_City_ID(addressInfoBase.getAreaSelected().getC_City_ID());
+		
+		contact.setPostal(addressInfoBase.getPostalCode());
+		
+		contact.setZZ_SideName(addressInfoBase.getSiteName());
+		contact.setAddress(addressInfoBase.getAddressLine());
+		
+		contact.setContactName(addressInfoBase.getNameSiteRepresentative());
+		contact.setZZ_Designation(addressInfoBase.getRepresentativeDesignation());
+		contact.setPhone(addressInfoBase.getMobileNumber());
+		contact.setPhone2(addressInfoBase.getLandlineNumber());
+		contact.setEMail(addressInfoBase.getEmail());
+		contact.setZZ_ContactType(addressInfoBase.getAddressCategory().toString());
+		return contact;
+	}
 }

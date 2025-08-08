@@ -2,7 +2,8 @@
 
 <div
 	viewModel="@id('vmDisciplineInfo') @init('za.co.ntier.webform.form.viewmodel.DisciplineTableVMWrapper')">
-	<hlayout>
+	<hlayout
+		if="${vmDisciplineInfo.disciplineTableInfo.overallTitle ne null}">
 		<label
 			value="@init(vmDisciplineInfo.disciplineTableInfo.overallTitle)" />
 	</hlayout>
