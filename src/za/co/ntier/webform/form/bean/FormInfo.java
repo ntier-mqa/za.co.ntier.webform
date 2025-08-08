@@ -16,9 +16,12 @@ public class FormInfo {
 	private String revision;
 	private String revisionTitle;
 
-	public FormInfo(String formName, String formCode) {
+	public FormInfo(ProgramType programType, String formCode) {
 		LocalDate financialYear = MasterUtil.getcurrrentPeriodYear();
 		this.formCode = String.format("%s_%d/%d", formCode, financialYear.getYear(), financialYear.getYear() + 1);
+		String formName = programType == ProgramType.CANDIDACY ? "DGA CANDIDACY" : 
+			programType == ProgramType.INTERNSHIP ? "DGA  INTERNSHIP" : programType.toString();
+		
 		this.formHeader = String.format("%s - %d/%d", formName, financialYear.getYear(), financialYear.getYear() + 1);
 		this.orgName = "COO";
 		this.revision = "02";

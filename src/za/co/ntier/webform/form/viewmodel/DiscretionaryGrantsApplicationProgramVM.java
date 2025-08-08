@@ -6,6 +6,7 @@ import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
+import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.CompanyInfo;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
@@ -52,6 +53,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public FormInfo getFormInfo() {
 		return formInfo;
 	}
+	
+	private ProgramType programType;
 
 	/**
 	 * @return the programMasterDataID
@@ -62,13 +65,15 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	@Init
 	public void init(@ExecutionArgParam(WebForm.programMasterDataUUKey) String programMasterDataKey,
-			@ExecutionArgParam(WebForm.programType) String programType) {
+			@ExecutionArgParam(WebForm.programType) String sProgramType) {
+		
+		this.programType = ProgramType.valueOf(sProgramType.toUpperCase());
 		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataKey, null);
 
 		setProgramMasterDataID(masterData.getZZ_Program_Master_Data_ID());
 
 		setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
-		setFormInfo(new FormInfo("DGA CANDIDACY", "DGAF01"));
+		setFormInfo(new FormInfo(programType, "DGAF01"));
 
 		employerInfo = new EmployerInfo();
 		programInfo = new ProgramInfo(masterData.getZZ_Program_Master_Data_ID(), programType);

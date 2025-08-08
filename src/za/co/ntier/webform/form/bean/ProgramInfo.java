@@ -11,8 +11,8 @@ public class ProgramInfo {
 	private ProgramType programType = ProgramType.UNKNOWN;
 	private DisciplineTableInfo tradeTableInfo;
 
-	public ProgramInfo(int programMasterDataID, String sProgramType) {
-		this.programType = ProgramType.valueOf(sProgramType.toUpperCase());
+	public ProgramInfo(int programMasterDataID, ProgramType programType) {
+		this.programType = programType;
 		AddressCategory addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY
 				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP : AddressCategory.UNKNOWN;
 
