@@ -103,6 +103,8 @@ public class AddressInfoBase {
 			return "Contact details of person responsible for INTERNSHIP:";
 		if (addressCategory == AddressCategory.INTERNSHIP_ALTER)
 			return "Alternate contact details of the person responsible for INTERNSHIP:";
+		if (addressCategory == AddressCategory.EXPERIENCE)
+			return "Contact details of person responsible for PRACTICAL TRAINING:";
 		else
 			return addressCategory.toString();
 	}
