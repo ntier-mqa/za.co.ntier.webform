@@ -7,12 +7,13 @@
 	viewModel="@id('vmProgramInfo') @init('za.co.ntier.webform.form.viewmodel.ProgramInfoVMWrapper')">
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
-			value="@init(( 'E. ' += vmProgramInfo.programInfo.programTitle)) " 
-			if="${vmProgramInfo.programInfo.programType eq ProgramType.INTERNSHIP}"/>
-		<label sclass="sectionHeaderTitle"
-			value="@init(( 'D. ' += vmProgramInfo.programInfo.programTitle)) " 
-			if="${vmProgramInfo.programInfo.programType eq ProgramType.CANDIDACY}"/>
+			value="@init((vmProgramInfo.programInfo.programTitle)) "/>
 	</hlayout>
+	
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.INTERNSHIP}"
+		disciplineTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
 	<include
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"

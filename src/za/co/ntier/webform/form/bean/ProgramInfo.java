@@ -10,6 +10,7 @@ public class ProgramInfo {
 	private AddressInfoBase programContact;
 	private ProgramType programType = ProgramType.UNKNOWN;
 	private DisciplineTableInfo tradeTableInfo;
+	private WorkInfo workInfo;
 
 	public ProgramInfo(int programMasterDataID, ProgramType programType) {
 		this.programType = programType;
@@ -29,6 +30,8 @@ public class ProgramInfo {
 		disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, false);
 
 		tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, true);
+		
+		workInfo = new WorkInfo();
 
 	}
 
@@ -58,9 +61,11 @@ public class ProgramInfo {
 	 */
 	public String getProgramTitle() {
 		if (programType == ProgramType.CANDIDACY)
-			return "CANDIDACY";
+			return "D. CANDIDACY";
 		if (programType == ProgramType.INTERNSHIP)
-			return "INTERNSHIP";
+			return "E. INTERNSHIP";
+		if (programType == ProgramType.EXPERIENCE)
+			return "F. WORK EXPERIENCE AND VACATION WORK";
 		else
 			return programType.toString();
 	}
@@ -112,6 +117,14 @@ public class ProgramInfo {
 	 */
 	public void setTradeTableInfo(DisciplineTableInfo tradeTableInfo) {
 		this.tradeTableInfo = tradeTableInfo;
+	}
+
+	public WorkInfo getWorkInfo() {
+		return workInfo;
+	}
+
+	public void setWorkInfo(WorkInfo workInfo) {
+		this.workInfo = workInfo;
 	}
 
 }
