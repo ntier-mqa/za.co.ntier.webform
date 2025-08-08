@@ -31,8 +31,6 @@ public class DisciplineTableInfo {
 		this.setProgramType(programType);
 		this.setTrade(isTrade);
 
-		String disciplineHeader = isTrade ? "Trade" : "Discipline";
-
 		if (isTrade) {
 			List<X_ZZ_Program_Trade> programTrades = new Query(Env.getCtx(), I_ZZ_Program_Trade.Table_Name,
 					String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID), null)
@@ -75,24 +73,16 @@ public class DisciplineTableInfo {
 		}
 
 		if (hasWPAReq && hasAccreditation) {
-			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb",
-					"Site Province", "Attach WPA", "Attach Accreditation");
-			colSizes = List.of(3, 1, 1, 2, 1, 2, 2);
-		} else if (hasWPAReq) {
-			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb",
-					"Site Province", "Attach WPA");
-			colSizes = List.of(3, 1, 1, 2, 1, 4);
-		} else if (hasAccreditation) {
-			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb",
-					"Site Province", "Attach Accreditation");
-			colSizes = List.of(3, 1, 1, 2, 1, 4);
+			rightColSize = 12/4;
+		} else if (!hasWPAReq && !hasAccreditation) {
+			rightColSize = 12/2;
 		} else {
-			colHeaders = List.of(disciplineHeader, "No. of Learners", "Site Postal Code", "Area/Suburb",
-					"Site Province");
-			colSizes = List.of(3, 2, 2, 3, 2);
+			rightColSize = 12/3;
 		}
 	}
 
+	private int rightColSize;
+	
 	/**
 	 * @return the colHeaders
 	 */
@@ -242,6 +232,20 @@ public class DisciplineTableInfo {
 	 */
 	public void setTrade(boolean isTrade) {
 		this.isTrade = isTrade;
+	}
+
+	/**
+	 * @return the rightColSize
+	 */
+	public int getRightColSize() {
+		return rightColSize;
+	}
+
+	/**
+	 * @param rightColSize the rightColSize to set
+	 */
+	public void setRightColSize(int rightColSize) {
+		this.rightColSize = rightColSize;
 	}
 
 }

@@ -11,99 +11,117 @@
 		<label
 			value="@init(vmDisciplineInfo.disciplineTableInfo.disciplineTitle)" />
 	</hlayout>
-
-	<!-- Disciplines table header -->
-	<div sclass="container-fluid">
-		<div class="row font-weight-bold"
-			children="@load((vmDisciplineInfo.disciplineTableInfo.colHeaders))">
-			<template name="children" var="colHeader">
-				<div
-					class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(colHeaderStatus.index) += ' col-title' ))">
-					<label value="@init(colHeader)" />
-				</div>
-			</template>
-		</div>
-	</div>
-
-	<!-- Disciplines table detail -->
+	
 	<div sclass="container-fluid"
 		children="@load(vmDisciplineInfo.disciplineTableInfo.disciplines)">
 		<template name="children" var="discipline">
+			<!-- Disciplines table header -->
+			<div if="${disciplineStatus.first}"
+                    class="row font-weight-bold">
+                <div class="col-sm-3 col-title text-center">
+					<label value="@init(vmDisciplineInfo.disciplineTableInfo.trade?'Trade':'Discipline')" />
+				</div>
+				<div class="col-sm-1 col-title text-center">
+					<label value="No. of Learners" />
+				</div>
+				<div class="col-sm-1 col-title text-center">
+					<label value="Site Postal Code" />
+				</div>
+				<div class="col-sm-7 col-container text-center">
+					<div class="row font-weight-bold">
+						<div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        <label value="Area" />
+	                    </div>
+	                    <div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        <label value="Province" />
+	                    </div>
+	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasWPAReq()}"
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        <label value="WPA" />
+	                    </div>
+	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasAccreditation()}"
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        <label value="Accreditation" />
+	                    </div>
+					</div>
+				</div>
+            </div>
+            
+            <!-- Disciplines table detail -->
 			<div class="row font-weight-bold">
 
 				<div
-					class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(0) += ' col-title' ))">
+					class="col-sm-3 col-title">
 					<label value="@load(discipline.disciplineText)" />
 				</div>
 
 				<div
-					class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(1) += ' col-content-input-full' ))">
+					class="col-sm-1 col-content-input-full">
 					<textbox sclass="form-control"
 						value="@bind(discipline.noOfLearners)"
 						onChange="@command('noOfLearnerChange')" />
 				</div>
 
 				<div
-					class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(2) += ' col-content-input-full' ))">
+					class="col-sm-1 col-content-input-full">
 					<textbox sclass="form-control"
 						value="@bind(discipline.postalCode)" />
 				</div>
 
-				<div
-					class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(3) += ' col-content-input-full' ))">
-
-					<listbox mold="select" sclass="form-control"
-						model="@load(discipline.areas)"
-						selectedItem="@bind(discipline.areaSelected)">
-						<template name="model" var="item">
-							<listitem label="@load(item.name)" />
-						</template>
-					</listbox>
-				</div>
-
-				<div
-					class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(4) += ' col-title' ))">
-					<label value="@load(discipline.province.name)" />
-				</div>
-
-				<div if="${vmDisciplineInfo.disciplineTableInfo.isHasWPAReq()}"
-					class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(5) += ' col-title' ))">
-					<div if="${discipline.isUploadWPA()}">
-						<fileupload sclass="text-wrap w-100"
-							label="@load(discipline.uploadWPATitle)"
-							onUpload="@command('uploadFile', media=event.media, isDSA = true, discipline = discipline, index = disciplineStatus.index)" />
-						<label value="@load(discipline.fileNameWPA)" />
+				<div class="col-sm-7 col-container">
+					<div class="row font-weight-bold">
+						<div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-content-input-full'))">
+	                        <listbox mold="select" sclass="form-control"
+								model="@load(discipline.areas)"
+								selectedItem="@bind(discipline.areaSelected)">
+								<template name="model" var="item">
+									<listitem label="@load(item.name)" />
+								</template>
+							</listbox>
+	                    </div>
+	                    <div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        <label value="@load(discipline.province.name)" />
+	                    </div>
+	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasWPAReq()}"
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        <div if="${discipline.isUploadWPA()}">
+								<fileupload sclass="text-wrap w-100"
+									label="@load(discipline.uploadWPATitle)"
+									onUpload="@command('uploadFile', media=event.media, isDSA = true, discipline = discipline, index = disciplineStatus.index)" />
+								<label value="@load(discipline.fileNameWPA)" />
+							</div>
+	                    </div>
+	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasAccreditation()}"
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        <div if="${discipline.isUploadAccreditation()}">
+								<fileupload sclass="text-wrap w-100"
+									label="@load(discipline.uploadAccreditationTitle)"
+									onUpload="@command('uploadFile', media=event.media, isDSA = false, discipline = discipline, index = disciplineStatus.index)" />
+								<label value="@load(discipline.fileNameAccreditation)" />
+							</div>
+	                    </div>
 					</div>
 				</div>
-
+			</div>
+			
+			<!-- Disciplines total -->		
+			<div if="${disciplineStatus.last}"
+					class="row font-weight-bold">
 				<div
-					if="${vmDisciplineInfo.disciplineTableInfo.isHasAccreditation()}"
-					class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(vmDisciplineInfo.disciplineTableInfo.colSizes.size() - 1) += ' col-title' ))">
-					<div if="${discipline.isUploadAccreditation()}">
-						<fileupload sclass="text-wrap w-100"
-							label="@load(discipline.uploadAccreditationTitle)"
-							onUpload="@command('uploadFile', media=event.media, isDSA = false, discipline = discipline, index = disciplineStatus.index)" />
-						<label value="@load(discipline.fileNameAccreditation)" />
-					</div>
+					class="col-sm-3 col-title">
+					<label value="Total" />
+				</div>
+	
+				<div
+					class="col-sm-9 col-title">
+					<label
+						value="@load(vmDisciplineInfo.disciplineTableInfo.totalLearners)" />
 				</div>
 			</div>
 		</template>
 	</div>
-	<!-- Disciplines total -->
-	<div sclass="container-fluid">
-		<div class="row font-weight-bold">
-			<div
-				class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(0) += ' col-title' ))">
-				<label value="Total" />
-			</div>
-
-			<div
-				class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.colSizes.get(1) += ' col-title' ))">
-				<label
-					value="@load(vmDisciplineInfo.disciplineTableInfo.totalLearners)" />
-			</div>
-		</div>
-	</div>
+	
+	
 	<hlayout>
 		<label sclass="sectionHeader" value="Note:" />
 		<label
