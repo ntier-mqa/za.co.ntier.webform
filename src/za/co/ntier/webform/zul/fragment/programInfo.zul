@@ -18,8 +18,7 @@
 	<include
 		if="${vmProgramInfo.programInfo.programType eq ProgramType.EXPERIENCE}"
 		addressInfo="@load(vmProgramInfo.programInfo.programContact)"
-		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
-		
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />		
 	
 		
 	<include

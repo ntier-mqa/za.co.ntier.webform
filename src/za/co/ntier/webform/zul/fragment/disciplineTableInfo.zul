@@ -10,10 +10,6 @@
 		<label
 			value="@init(vmDisciplineInfo.disciplineTableInfo.disciplineTitle)" />
 	</hlayout>
-	<hlayout>
-		<label
-			value="@init(vmDisciplineInfo.disciplineTableInfo.disciplineTitle)" />
-	</hlayout>
 
 	<!-- Disciplines table header -->
 	<div sclass="container-fluid">

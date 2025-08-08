@@ -15,13 +15,15 @@ public class ProgramInfo {
 	public ProgramInfo(int programMasterDataID, ProgramType programType) {
 		this.programType = programType;
 		AddressCategory addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY
-				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP : AddressCategory.UNKNOWN;
+				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP 
+				: this.programType == ProgramType.EXPERIENCE ? AddressCategory.EXPERIENCE: AddressCategory.UNKNOWN;
 
 		programContact = new AddressInfoBase(addressCategory,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
 		addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY_ALTER
 				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP_ALTER
+				: this.programType == ProgramType.EXPERIENCE ? AddressCategory.EXPERIENCE_ALTER
 						: AddressCategory.UNKNOWN;
 
 		alternateProgramContact = new AddressInfoBase(addressCategory,

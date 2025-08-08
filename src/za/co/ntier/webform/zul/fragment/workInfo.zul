@@ -7,7 +7,7 @@
 	</div>
 	<div sclass="row">
 		<div sclass="col-sm-8 col-title">
-			<label value="@init(vmworkInfo.workInfo.numOfEmployerTitle)" />
+			<label value="@init(vmworkInfo.workInfo.numOfEmployerLabel)" />
 		</div>
 		<div sclass="col-sm-4 col-content-input-full">
 			<textbox
