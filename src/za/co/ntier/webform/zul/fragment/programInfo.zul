@@ -9,16 +9,18 @@
 		<label sclass="sectionHeaderTitle"
 			value="@init((vmProgramInfo.programInfo.programTitle)) "/>
 	</hlayout>
-	
-	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle"
-			value="@init((vmProgramInfo.programInfo.programTitle)) "/>
-	</hlayout>
-	
+		
 	<include
 		if="${vmProgramInfo.programInfo.programType eq ProgramType.EXPERIENCE}"
 		workInfo="@load(vmProgramInfo.programInfo.workInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/workInfo.zul')))" />
+		src="@load((WebForm.getBundleResourcePath('fragment/workInfo.zul')))" />		
+	
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.EXPERIENCE}"
+		addressInfo="@load(vmProgramInfo.programInfo.programContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+		
+	
 		
 	<include
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"

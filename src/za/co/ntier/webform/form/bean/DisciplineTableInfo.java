@@ -131,9 +131,19 @@ public class DisciplineTableInfo {
 					List of disciplines supported for Artisan Internships which the number of learners applying
 					should be based on. Preference will be given to the following trades that are hard to fill
 					according MQA SPOI list, (Diesel Mechanic and Millwright).""";
+		if (programType == ProgramType.EXPERIENCE)
+			return "List of disciplines supported for practical training which the number of learners applying should be based on.";
 		else
 			return programType.toString();
 
+	}
+	
+	public String getOverallTitle() {
+		if (programType == ProgramType.EXPERIENCE) {
+			return "• WORK EXPERIENCE (PRACTICAL TRAINING)";
+		} else {
+			return " ";
+		}
 	}
 
 	/**

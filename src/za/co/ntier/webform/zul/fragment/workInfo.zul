@@ -3,7 +3,7 @@
 <div sclass="container-fluid text-left"
 	viewModel="@id('vmworkInfo') @init('za.co.ntier.webform.form.viewmodel.WorkInfoVMWrapper')">
 	<div class="row font-weight-bold">
-		<label value="@init(vmworkInfo.workInfo.numOfEmployerTitle)" />
+		<label value="@init(vmworkInfo.workInfo.vacationWorkLabel)" />
 	</div>
 	<div sclass="row">
 		<div sclass="col-sm-8 col-title">
