@@ -10,11 +10,16 @@
 			value="@init((vmProgramInfo.programInfo.programTitle)) "/>
 	</hlayout>
 	
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="@init((vmProgramInfo.programInfo.programTitle)) "/>
+	</hlayout>
+	
 	<include
-		if="${vmProgramInfo.programInfo.programType eq ProgramType.INTERNSHIP}"
-		disciplineTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
-
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.EXPERIENCE}"
+		workInfo="@load(vmProgramInfo.programInfo.workInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/workInfo.zul')))" />
+		
 	<include
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
