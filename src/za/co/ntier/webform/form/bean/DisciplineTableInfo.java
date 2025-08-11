@@ -12,6 +12,7 @@ import za.co.ntier.webform.model.I_ZZ_Program_Disciplines;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.I_ZZ_Program_Trade;
 import za.co.ntier.webform.model.I_ZZ_Trade;
+import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
 import za.co.ntier.webform.model.X_ZZ_Program_Trade;
 import za.co.ntier.webform.model.X_ZZ_Trade;
@@ -22,16 +23,16 @@ public class DisciplineTableInfo {
 	private List<Discipline> disciplines;
 	private boolean hasAccreditation = false;
 	private boolean hasWPAReq = false;
-	private boolean isTrade = false;
 	private ProgramType programType;
 	private int totalLearners = 0;
+	private String disciplineType;
 
-	public DisciplineTableInfo(int programMasterDataID, ProgramType programType, boolean isTrade) {
+	public DisciplineTableInfo(int programMasterDataID, ProgramType programType, String disciplineType) {
 		this.disciplines = new ArrayList<>();
 		this.setProgramType(programType);
-		this.setTrade(isTrade);
+		this.disciplineType = disciplineType;
 
-		if (isTrade) {
+		if (this.disciplineType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade) {
 			List<X_ZZ_Program_Trade> programTrades = new Query(Env.getCtx(), I_ZZ_Program_Trade.Table_Name,
 					String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID), null)
 					.setParameters(programMasterDataID).setClient_ID().setOrderBy(I_ZZ_Program_Trade.COLUMNNAME_Line)
@@ -114,9 +115,9 @@ public class DisciplineTableInfo {
 	public String getDisciplineTitle() {
 		if (programType == ProgramType.CANDIDACY)
 			return "List of disciplines supported for the HDSA Candidacy which the number of learners applying should be based on.";
-		if (programType == ProgramType.INTERNSHIP && !isTrade)
+		if (programType == ProgramType.INTERNSHIP && !isTrade())
 			return "List of disciplines supported for Internships which the number of learners applying should be based on.";
-		if (programType == ProgramType.INTERNSHIP && isTrade)
+		if (programType == ProgramType.INTERNSHIP && isTrade())
 			return """
 					List of disciplines supported for Artisan Internships which the number of learners applying
 					should be based on. Preference will be given to the following trades that are hard to fill
@@ -168,7 +169,7 @@ public class DisciplineTableInfo {
 	 * @return the isTrade
 	 */
 	public boolean isTrade() {
-		return isTrade;
+		return disciplineType.equals(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
 	}
 
 	public void noOfLearnerChange() {
@@ -228,13 +229,6 @@ public class DisciplineTableInfo {
 	}
 
 	/**
-	 * @param isTrade the isTrade to set
-	 */
-	public void setTrade(boolean isTrade) {
-		this.isTrade = isTrade;
-	}
-
-	/**
 	 * @return the rightColSize
 	 */
 	public int getRightColSize() {
@@ -246,6 +240,20 @@ public class DisciplineTableInfo {
 	 */
 	public void setRightColSize(int rightColSize) {
 		this.rightColSize = rightColSize;
+	}
+
+	/**
+	 * @return the disciplineType
+	 */
+	public String getDisciplineType() {
+		return disciplineType;
+	}
+
+	/**
+	 * @param disciplineType the disciplineType to set
+	 */
+	public void setDisciplineType(String disciplineType) {
+		this.disciplineType = disciplineType;
 	}
 
 }

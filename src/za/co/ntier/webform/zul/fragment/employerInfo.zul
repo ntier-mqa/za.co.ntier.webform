@@ -8,59 +8,60 @@
 	</hlayout>
 	<div sclass="container-fluid text-left">
 		<div sclass="row">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmEmployerInfo.employerInfo.employerNameTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmEmployerInfo.employerInfo.employerName)" />
 			</div>
 		</div>
 		<div sclass="row">
-			<div sclass="col-sm-7 col-title">
+			<div sclass="col-sm-7 col-title d-flex align-items-center">
 				<label
 					value="@init(vmEmployerInfo.employerInfo.sdlNumberTitle)" />
 			</div>
-			<div sclass="col-sm-5 col-content-input-full">
+			<div sclass="col-sm-5 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmEmployerInfo.employerInfo.sdlNumber)" />
 			</div>
 		</div>
 		<div sclass="row">
-			<div sclass="col-sm-7 col-title">
+			<div sclass="col-sm-7 col-title d-flex align-items-center">
 				<label
 					value="@init(vmEmployerInfo.employerInfo.siteSDLNumberTitle)" />
 			</div>
-			<div sclass="col-sm-5 col-content-input-full">
+			<div sclass="col-sm-5 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmEmployerInfo.employerInfo.siteSDLNumber)" />
 			</div>
 		</div>
 		<div sclass="row">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmEmployerInfo.employerInfo.orgRegistrationNumberTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmEmployerInfo.employerInfo.orgRegistrationNumber)" />
 			</div>
 		</div>
 
 		<div sclass="row">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmEmployerInfo.employerInfo.employerTaxNumberTitle)" />
 			</div>
-			<div sclass="col-sm-4 col-content-input-full">
+			<div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmEmployerInfo.employerInfo.employerTaxNumber)" />
 			</div>
-			<div sclass="col-sm-4 col-title">
-				<fileupload sclass="text-wrap w-100"
-					label="Upload VAT Exemption Certificate"
-					onUpload="@command('uploadFile', media=event.media)" />
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
+				<fileupload  sclass="text-wrap w-100"
+				 	iconSclass="z-icon-arrow-up-from-bracket z-icon-solid" label=" VAT Exempt Cert."
+					onUpload="@command('uploadFile', media=event.media)">
+					</fileupload>
 				<label
 					value="@load(vmEmployerInfo.employerInfo.fileNameVATCer)" />
 			</div>

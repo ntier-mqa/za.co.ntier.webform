@@ -3,29 +3,26 @@
 
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
-			value="A. EMPLOYER DECLARATION" />
+			value="A. DECLARATION" />
 	</hlayout>
 	<div>
-
-		<label value="I," />
-		<textbox sclass="inlineComponent" value="" />
 		<label
-			value=", named hereunder, declare that as the duly authorised
-representative of the Employer/Organisation confirms that Employer/Organisation will comply
+			value="I declare that as the duly authorised
+representative of the Organisation confirms that Organisation will comply
 with the general rules and criteria hereunder and further confirmed that all the information
 provided in this application is true and accurate" />
 
 		<div sclass="container-fluid text-left">
 			<div sclass="row">
-				<div sclass="col-sm-3 col-title">
+				<div sclass="col-sm-3 col-title d-flex align-items-center">
 					<label value="Name and Surname:" />
 				</div>
-				<div sclass="col-sm-6 col-content-input-full">
+				<div sclass="col-sm-6 col-content-input-full d-flex align-items-center">
 					<textbox sclass="form-control" value="" />
 				</div>
 
 
-				<div sclass="col-sm-1 col-title">
+				<div sclass="col-sm-1 col-title d-flex align-items-center">
 					<label value="Date:" />
 				</div>
 				<div sclass="col-sm-2 d-flex align-items-center">
@@ -34,10 +31,10 @@ provided in this application is true and accurate" />
 			</div>
 
 			<div sclass="row">
-				<div sclass="col-sm-11 col-title-right">
+				<div sclass="col-sm-11 col-title-right d-flex align-items-center">
 					<label value="Click here to acknowledge commitment" />
 				</div>
-				<div sclass="col-sm-1 d-flex align-items-center">
+				<div sclass="col-sm-1 d-flex align-items-center ">
 					<checkbox />
 				</div>
 			</div>

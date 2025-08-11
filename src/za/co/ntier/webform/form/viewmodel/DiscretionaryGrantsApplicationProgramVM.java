@@ -1,5 +1,7 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import java.util.List;
+
 import org.apache.commons.lang3.RandomUtils;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
@@ -12,11 +14,14 @@ import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.AddressInfoBase;
 import za.co.ntier.webform.form.bean.CompanyInfo;
+import za.co.ntier.webform.form.bean.Discipline;
+import za.co.ntier.webform.form.bean.DisciplineTableInfo;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormContact;
+import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
 public class DiscretionaryGrantsApplicationProgramVM {
@@ -145,35 +150,58 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		applicationForm.saveEx();
 		
-		X_ZZ_FormContact contact = createFormContact(employerInfo.getPhysicalAddressInfo());
-		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		X_ZZ_FormContact contact = createFormContact(employerInfo.getPhysicalAddressInfo(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(employerInfo.getPostAddressInfo());
-		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(employerInfo.getPostAddressInfo(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(employerInfo.getOrgContact());
-		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(employerInfo.getOrgContact(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(employerInfo.getAlternateOrgContact());
-		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(employerInfo.getAlternateOrgContact(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(programInfo.getProgramContact());
-		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(programInfo.getProgramContact(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(programInfo.getAlternateProgramContact());
-		contact.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(programInfo.getAlternateProgramContact(), applicationForm.getZZ_Application_Form_ID());		
 		contact.saveEx();
 		
+		createDiscipline(programInfo.getDisciplineTableInfo(), applicationForm.getZZ_Application_Form_ID());
+		createDiscipline(programInfo.getTradeTableInfo(), applicationForm.getZZ_Application_Form_ID());
 		
 	}
 	
-	public X_ZZ_FormContact createFormContact(AddressInfoBase addressInfoBase) {
+	public List<X_ZZ_FormDiscipline> createDiscipline(DisciplineTableInfo disciplineTableInfo, int applicationFormID) {
+		for (Discipline discipline : disciplineTableInfo.getDisciplines()) {
+			X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null);
+			formDisciplines.setZZ_Application_Form_ID(applicationFormID);
+			formDisciplines.setZZ_LearnersNo(discipline.getNoOfLearners());
+			
+			if (discipline.getAreaSelected() != null)
+				formDisciplines.setC_City_ID(discipline.getAreaSelected().getC_City_ID());
+			
+			if (discipline.getProvince() != null);
+				formDisciplines.setC_Region_ID(discipline.getProvince().getC_Region_ID());
+				
+			formDisciplines.setPostal(discipline.getPostalCode());
+			formDisciplines.setZZ_DisciplineType(disciplineTableInfo.getDisciplineType());
+			if (disciplineTableInfo.isTrade()) {
+				formDisciplines.setZZ_Trade_ID(discipline.getDisciplineID());
+			}else {
+				formDisciplines.setZZ_Disciplines_ID(discipline.getDisciplineID());
+			}
+
+			formDisciplines.saveEx();
+		}
+		
+		return null;
+	}
+	
+	public X_ZZ_FormContact createFormContact(AddressInfoBase addressInfoBase, int applicationFormID) {
 		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
+		contact.setZZ_Application_Form_ID(applicationFormID);
 		if(addressInfoBase.getProvinceSelected() != null)
 			contact.setC_Region_ID(addressInfoBase.getProvinceSelected().getC_Region_ID());
 		

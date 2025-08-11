@@ -18,29 +18,29 @@
 			<!-- Disciplines table header -->
 			<div if="${disciplineStatus.first}"
                     class="row font-weight-bold">
-                <div class="col-sm-3 col-title text-center">
+                <div class="col-sm-3 col-title text-center d-flex align-items-center">
 					<label value="@init(vmDisciplineInfo.disciplineTableInfo.trade?'Trade':'Discipline')" />
 				</div>
-				<div class="col-sm-1 col-title text-center">
+				<div class="col-sm-1 col-title text-center d-flex align-items-center">
 					<label value="No. of Learners" />
 				</div>
-				<div class="col-sm-1 col-title text-center">
+				<div class="col-sm-1 col-title text-center d-flex align-items-center">
 					<label value="Site Postal Code" />
 				</div>
 				<div class="col-sm-7 col-container text-center">
 					<div class="row font-weight-bold">
-						<div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+						<div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
 	                        <label value="Area" />
 	                    </div>
-	                    <div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                    <div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
 	                        <label value="Province" />
 	                    </div>
 	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasWPAReq()}"
-	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
 	                        <label value="WPA" />
 	                    </div>
 	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasAccreditation()}"
-	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
 	                        <label value="Accreditation" />
 	                    </div>
 					</div>
@@ -51,26 +51,26 @@
 			<div class="row font-weight-bold">
 
 				<div
-					class="col-sm-3 col-title">
+					class="col-sm-3 col-title d-flex align-items-center">
 					<label value="@load(discipline.disciplineText)" />
 				</div>
 
 				<div
-					class="col-sm-1 col-content-input-full">
+					class="col-sm-1 col-content-input-full d-flex align-items-center">
 					<textbox sclass="form-control"
 						value="@bind(discipline.noOfLearners)"
 						onChange="@command('noOfLearnerChange')" />
 				</div>
 
 				<div
-					class="col-sm-1 col-content-input-full">
+					class="col-sm-1 col-content-input-full d-flex align-items-center">
 					<textbox sclass="form-control"
 						value="@bind(discipline.postalCode)" />
 				</div>
 
 				<div class="col-sm-7 col-container">
 					<div class="row font-weight-bold">
-						<div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-content-input-full'))">
+						<div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-content-input-full d-flex align-items-center'))">
 	                        <listbox mold="select" sclass="form-control"
 								model="@load(discipline.areas)"
 								selectedItem="@bind(discipline.areaSelected)">
@@ -79,23 +79,23 @@
 								</template>
 							</listbox>
 	                    </div>
-	                    <div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                    <div class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
 	                        <label value="@load(discipline.province.name)" />
 	                    </div>
 	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasWPAReq()}"
-	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
 	                        <div if="${discipline.isUploadWPA()}">
 								<fileupload sclass="text-wrap w-100"
-									label="@load(discipline.uploadWPATitle)"
+									iconSclass="z-icon-arrow-up-from-bracket z-icon-solid" label="@load(discipline.uploadWPATitle)"
 									onUpload="@command('uploadFile', media=event.media, isDSA = true, discipline = discipline, index = disciplineStatus.index)" />
 								<label value="@load(discipline.fileNameWPA)" />
 							</div>
 	                    </div>
 	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasAccreditation()}"
-	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title'))">
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
 	                        <div if="${discipline.isUploadAccreditation()}">
 								<fileupload sclass="text-wrap w-100"
-									label="@load(discipline.uploadAccreditationTitle)"
+									iconSclass="z-icon-arrow-up-from-bracket z-icon-solid" label="@load(discipline.uploadAccreditationTitle)"
 									onUpload="@command('uploadFile', media=event.media, isDSA = false, discipline = discipline, index = disciplineStatus.index)" />
 								<label value="@load(discipline.fileNameAccreditation)" />
 							</div>
@@ -108,12 +108,12 @@
 			<div if="${disciplineStatus.last}"
 					class="row font-weight-bold">
 				<div
-					class="col-sm-3 col-title">
+					class="col-sm-3 col-title d-flex align-items-center">
 					<label value="Total" />
 				</div>
 	
 				<div
-					class="col-sm-9 col-title">
+					class="col-sm-9 col-title d-flex align-items-center">
 					<label
 						value="@load(vmDisciplineInfo.disciplineTableInfo.totalLearners)" />
 				</div>

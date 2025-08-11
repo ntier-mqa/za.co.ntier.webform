@@ -11,30 +11,30 @@
 	<div sclass="container-fluid text-left">
 
 		<div sclass="row" if="${vmAddress.addressInfo.showSiteName()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label value="@init(vmAddress.addressInfo.siteNameTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.siteName)" />
 			</div>
 		</div>
 
 		<div sclass="row" if="${vmAddress.addressInfo.showLineAddress()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label value="@init(vmAddress.addressInfo.addressLineTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.addressLine)" />
 			</div>
 		</div>
 		<div sclass="row"
 			if="${vmAddress.addressInfo.showPostalAddress()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label value="@init(vmAddress.addressInfo.postAddressTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.postAddress)" />
 			</div>
@@ -42,10 +42,10 @@
 
 		<div sclass="row"
 			if="${vmAddress.addressInfo.showGeographicAddress()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label value="@init(vmAddress.addressInfo.areaTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<listbox mold="select" sclass="form-control"
 					model="@load(vmAddress.addressInfo.areas)"
 					selectedItem="@bind(vmAddress.addressInfo.areaSelected)">
@@ -58,18 +58,18 @@
 
 		<div sclass="row"
 			if="${vmAddress.addressInfo.showGeographicAddress()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label value="@init(vmAddress.addressInfo.postalCodeTitle)" />
 			</div>
-			<div sclass="col-sm-2 col-content-input-full">
+			<div sclass="col-sm-2 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.postalCode)" />
 			</div>
-			<div sclass="col-sm-3 col-title">
+			<div sclass="col-sm-3 col-title d-flex align-items-center">
 				<label value="@init(vmAddress.addressInfo.provinceTitle)" />
 			</div>
 
-			<div sclass="col-sm-3 col-content-input-full">
+			<div sclass="col-sm-3 col-content-input-full d-flex align-items-center">
 				<listbox mold="select" sclass="form-control"
 					model="@load((MasterUtil.getRegions()))"
 					selectedItem="@bind(vmAddress.addressInfo.provinceSelected)">
@@ -81,53 +81,53 @@
 		</div>
 
 		<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmAddress.addressInfo.nameSiteRepresentativeTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.nameSiteRepresentative)" />
 			</div>
 		</div>
 
 		<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmAddress.addressInfo.representativeDesignationTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.representativeDesignation)" />
 			</div>
 		</div>
 
 		<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.mobileNumber)" />
 			</div>
 		</div>
 
 		<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmAddress.addressInfo.landlineNumberTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.landlineNumber)" />
 			</div>
 		</div>
 
 		<div sclass="row" if="${vmAddress.addressInfo.showContact()}">
-			<div sclass="col-sm-4 col-title">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label value="@init(vmAddress.addressInfo.emailTitle)" />
 			</div>
-			<div sclass="col-sm-8 col-content-input-full">
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmAddress.addressInfo.email)" />
 			</div>

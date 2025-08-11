@@ -6,10 +6,10 @@
 		<label value="@init(vmworkInfo.workInfo.vacationWorkLabel)" />
 	</div>
 	<div sclass="row">
-		<div sclass="col-sm-8 col-title">
+		<div sclass="col-sm-8 col-title  d-flex align-items-center">
 			<label value="@init(vmworkInfo.workInfo.numOfEmployerLabel)" />
 		</div>
-		<div sclass="col-sm-4 col-content-input-full">
+		<div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
 			<textbox
                 value="@bind(vmworkInfo.workInfo.noOfLearners)"
                 sclass="form-control" />

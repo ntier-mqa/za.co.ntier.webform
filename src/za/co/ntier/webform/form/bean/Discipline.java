@@ -22,12 +22,12 @@ public class Discipline {
 	private int programLineID;
 	
 	private String fileNameWPA;
-	private String uploadWPATitle = "Upload WPA";
+	private String uploadWPATitle = " WPA";
 	private boolean isUploadWPA = false;
 	private boolean isUploadAccreditation = false;
-	private String uploadAccreditationTitle = "Upload Accred./SLA";
+	private String uploadAccreditationTitle = " Accred./SLA";
 	private String fileNameAccreditation;
-	private Integer noOfLearners;
+	private int noOfLearners = 0;
 	private String postalCode;
 	private MRegion province;
 	private Collection<MCity> areas;

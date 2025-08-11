@@ -3,6 +3,7 @@ package za.co.ntier.webform.form.bean;
 import java.util.Random;
 
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
+import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class ProgramInfo {
 	private AddressInfoBase alternateProgramContact;
@@ -35,9 +36,14 @@ public class ProgramInfo {
 					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size()))));
 		}
 		
-		disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, false);
+		String disciplineType = programType == ProgramType.INTERNSHIP ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline :
+				 	programType == ProgramType.CANDIDACY ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_CandidacyDiscipline : 
+					programType == ProgramType.EXPERIENCE? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_ExperienceDiscipline :
+					X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_UnknowDiscipline	;
+		
+		disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, disciplineType);
 
-		tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, true);
+		tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
 		
 		workInfo = new WorkInfo();
 
