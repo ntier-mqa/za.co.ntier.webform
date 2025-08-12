@@ -17,21 +17,11 @@ public class ProgramInfo {
 
 	public ProgramInfo(int programMasterDataID, ProgramType programType) {
 		this.programType = programType;
-		AddressCategory addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY
-				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP
-				: this.programType == ProgramType.DEVPROGRAM ? AddressCategory.DEVPROGRAM
-				: this.programType == ProgramType.EXPERIENCE ? AddressCategory.EXPERIENCE: AddressCategory.UNKNOWN;
 
-		programContact = new AddressInfoBase(addressCategory,
+		programContact = new AddressInfoBase(programType, false,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY_ALTER
-				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP_ALTER
-				: this.programType == ProgramType.DEVPROGRAM? AddressCategory.DEVPROGRAM_ALTER
-				: this.programType == ProgramType.EXPERIENCE ? AddressCategory.EXPERIENCE_ALTER
-						: AddressCategory.UNKNOWN;
-
-		alternateProgramContact = new AddressInfoBase(addressCategory,
+		alternateProgramContact = new AddressInfoBase(programType, true,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
 		if (this.programType == ProgramType.EXPERIENCE) {

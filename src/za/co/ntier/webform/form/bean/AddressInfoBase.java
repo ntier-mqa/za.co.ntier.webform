@@ -61,13 +61,26 @@ public class AddressInfoBase {
 	private String siteName;
 
 	private String siteNameTitle = "Site Name";
+	
+	private String orgName;
 
-	public AddressInfoBase(AddressCategory addressCategory, MRegion provinceSelected) {
-		setAddressCategory(addressCategory);
+	private String orgNameTitle = "Organisation Name";
 
-		setProvinceSelected(provinceSelected);
+	private ProgramType programType;
+
+	private boolean isAlternate;
+
+	public AddressInfoBase(ProgramType programType, boolean isAlternate, MRegion provinceSelected) {
+		this(isAlternate?AddressCategory.MAIN_ALTER:AddressCategory.MAIN, provinceSelected);
+		this.isAlternate = isAlternate;
+		this.programType = programType;
 	}
 
+	public AddressInfoBase(AddressCategory addressCategory, MRegion provinceSelected) {
+		this.addressCategory = addressCategory;
+		this.provinceSelected = provinceSelected;
+	}
+	
 	public AddressCategory getAddressCategory() {
 		return this.addressCategory;
 	}
@@ -87,34 +100,7 @@ public class AddressInfoBase {
 	}
 
 	public String getAddressTitle() {
-		if (addressCategory == AddressCategory.PHYSICAL)
-			return "PHYSICAL ADDRESS";
-		if (addressCategory == AddressCategory.POSTAL)
-			return "POSTAL ADDRESS";
-		if (addressCategory == AddressCategory.ORG)
-			return "Primary Organisation Contact:";
-		if (addressCategory == AddressCategory.ORG_ALTER)
-			return "Alternate Organisation Contact:";
-		if (addressCategory == AddressCategory.CANDIDACY)
-			return "Contact details of person responsible for CANDIDACY:";
-		if (addressCategory == AddressCategory.CANDIDACY_ALTER)
-			return "Alternate contact details of the person responsible for CANDIDACY:";
-		if (addressCategory == AddressCategory.INTERNSHIP)
-			return "Contact details of person responsible for INTERNSHIP:";
-		if (addressCategory == AddressCategory.INTERNSHIP_ALTER)
-			return "Alternate contact details of the person responsible for INTERNSHIP:";
-		if (addressCategory == AddressCategory.VACATION)
-			return "Contact details of person responsible for VACATION WORK:";
-		if (addressCategory == AddressCategory.EXPERIENCE)
-			return "Contact details of person responsible for PRACTICAL TRAINING:";
-		if (addressCategory == AddressCategory.EXPERIENCE_ALTER)
-			return "Alternate contact details of the person responsible for PRACTICAL TRAINING:";
-		if (addressCategory == AddressCategory.DEVPROGRAM)
-			return "Contact details of person responsible for MEDP";
-		if (addressCategory == AddressCategory.EXPERIENCE_ALTER)
-			return "Alternative contact details of person responsible for MEDP";
-		else
-			return addressCategory.toString();
+		return addressCategory.getAddressTitle(programType, isAlternate);
 	}
 
 	/**
@@ -506,17 +492,17 @@ public class AddressInfoBase {
 	}
 
 	public boolean showContact() {
-		return addressCategory.isProgramContact() || addressCategory == AddressCategory.ORG
+		return programType != null || addressCategory == AddressCategory.ORG
 				|| addressCategory == AddressCategory.ORG_ALTER;
 	}
 
 	public boolean showGeographicAddress() {
-		return addressCategory == AddressCategory.PHYSICAL || addressCategory.isProgramContact()
+		return programType != null || addressCategory == AddressCategory.PHYSICAL
 				|| addressCategory == AddressCategory.POSTAL;
 	}
 
 	public boolean showLineAddress() {
-		return addressCategory == AddressCategory.PHYSICAL || addressCategory.isProgramContact();
+		return programType != null || addressCategory == AddressCategory.PHYSICAL;
 	}
 
 	public boolean showMunicipalities() {
@@ -528,7 +514,53 @@ public class AddressInfoBase {
 	}
 
 	public boolean showSiteName() {
-		return addressCategory.isProgramContact();
+		return programType != null && programType.isShowAddressSiteField();
+	}
+	
+	public boolean showOrgName() {
+		return programType != null && programType.isShowAddressOrgField();
+	}
+
+	/**
+	 * @return the orgName
+	 */
+	public String getOrgName() {
+		return orgName;
+	}
+
+	/**
+	 * @param orgName the orgName to set
+	 */
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	/**
+	 * @return the orgNameTitle
+	 */
+	public String getOrgNameTitle() {
+		return orgNameTitle;
+	}
+
+	/**
+	 * @param orgNameTitle the orgNameTitle to set
+	 */
+	public void setOrgNameTitle(String orgNameTitle) {
+		this.orgNameTitle = orgNameTitle;
+	}
+
+	/**
+	 * @return the programType
+	 */
+	public ProgramType getProgramType() {
+		return programType;
+	}
+
+	/**
+	 * @param programType the programType to set
+	 */
+	public void setProgramType(ProgramType programType) {
+		this.programType = programType;
 	}
 
 }
