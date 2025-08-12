@@ -72,16 +72,7 @@ public class ProgramInfo {
 	 * @return the programTitle
 	 */
 	public String getProgramTitle() {
-		if (programType == ProgramType.CANDIDACY)
-			return "D. CANDIDACY";
-		if (programType == ProgramType.INTERNSHIP)
-			return "D. INTERNSHIP";
-		if (programType == ProgramType.EXPERIENCE)
-			return "D. WORK EXPERIENCE AND VACATION WORK";
-		if (programType == ProgramType.DEVPROGRAM)
-			return "D. MANAGEMENT AND EXECUTIVE DEVELOPMENT PROGRAMME (MEDP) SPECIFIC GUIDELINES";
-		else
-			return programType.toString();
+		return programType.getProgramTitle();
 	}
 
 	/**
