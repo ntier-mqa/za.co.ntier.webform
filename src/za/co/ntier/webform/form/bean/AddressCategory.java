@@ -10,6 +10,8 @@ public enum AddressCategory {
 	EXPERIENCE(X_ZZ_FormContact.ZZ_CONTACTTYPE_Experience),
 	EXPERIENCE_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_AlternateExperience),
 	VACATION(X_ZZ_FormContact.ZZ_CONTACTTYPE_Vacation),
+	DEVPROGRAM(X_ZZ_FormContact.ZZ_CONTACTTYPE_Experience),
+	DEVPROGRAM_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_Experience),
 	ORG(X_ZZ_FormContact.ZZ_CONTACTTYPE_PrimaryOrganisationContact), 
 	ORG_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_AlternateOrganisationContact), 
 	PHYSICAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_PhysicalAddress), 
@@ -22,7 +24,7 @@ public enum AddressCategory {
 	}
 	
 	public boolean isProgramContact() {
-		return this == CANDIDACY || this == INTERNSHIP || this == CANDIDACY_ALTER || this == INTERNSHIP_ALTER || this == EXPERIENCE|| this == EXPERIENCE_ALTER || this == VACATION;
+		return this == CANDIDACY || this == INTERNSHIP || this == CANDIDACY_ALTER || this == INTERNSHIP_ALTER || this == EXPERIENCE|| this == EXPERIENCE_ALTER || this == VACATION || this == DEVPROGRAM || this == DEVPROGRAM_ALTER;
 	}
 	
 	@Override

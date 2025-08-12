@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import za.co.ntier.webform.form.bean.DisciplineTableInfo ?>
 <div
 	viewModel="@id('vmDisciplineInfo') @init('za.co.ntier.webform.form.viewmodel.DisciplineTableVMWrapper')">
 	<hlayout
@@ -125,6 +126,6 @@
 	<hlayout>
 		<label sclass="sectionHeader" value="Note:" />
 		<label
-			value="@init(vmDisciplineInfo.disciplineTableInfo.disciplineNote)" />
+			value="@init((DisciplineTableInfo.getDisciplineNote()))" />
 	</hlayout>
 </div>

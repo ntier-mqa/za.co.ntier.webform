@@ -19,9 +19,14 @@
 		if="${vmProgramInfo.programInfo.programType eq ProgramType.EXPERIENCE}"
 		addressInfo="@load(vmProgramInfo.programInfo.vacationContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />		
-	
 		
 	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.DEVPROGRAM}"
+		devProgramInfo="@load(vmProgramInfo.programInfo.devProgramInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/devProgramInfo.zul')))" />
+		
+	<include 
+		if="${vmProgramInfo.programInfo.programType ne ProgramType.DEVPROGRAM}"
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 

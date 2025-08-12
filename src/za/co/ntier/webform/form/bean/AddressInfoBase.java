@@ -109,6 +109,10 @@ public class AddressInfoBase {
 			return "Contact details of person responsible for PRACTICAL TRAINING:";
 		if (addressCategory == AddressCategory.EXPERIENCE_ALTER)
 			return "Alternate contact details of the person responsible for PRACTICAL TRAINING:";
+		if (addressCategory == AddressCategory.DEVPROGRAM)
+			return "Contact details of person responsible for MEDP";
+		if (addressCategory == AddressCategory.EXPERIENCE_ALTER)
+			return "Alternative contact details of person responsible for MEDP";
 		else
 			return addressCategory.toString();
 	}

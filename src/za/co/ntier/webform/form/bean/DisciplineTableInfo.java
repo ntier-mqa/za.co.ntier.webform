@@ -98,7 +98,7 @@ public class DisciplineTableInfo {
 		return colSizes;
 	}
 
-	public String getDisciplineNote() {
+	public static String getDisciplineNote() {
 		return """
 				All Employers/Organisations with multiple sites using one levy number must submit one
 				consolidated application for all sites.

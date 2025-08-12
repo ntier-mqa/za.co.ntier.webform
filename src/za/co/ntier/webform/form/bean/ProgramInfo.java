@@ -12,12 +12,14 @@ public class ProgramInfo {
 	private ProgramType programType = ProgramType.UNKNOWN;
 	private DisciplineTableInfo tradeTableInfo;
 	private WorkInfo workInfo;
+	private DevProgramInfo devProgramInfo;
 	private AddressInfoBase vacationContact;
 
 	public ProgramInfo(int programMasterDataID, ProgramType programType) {
 		this.programType = programType;
 		AddressCategory addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY
-				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP 
+				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP
+				: this.programType == ProgramType.DEVPROGRAM ? AddressCategory.DEVPROGRAM
 				: this.programType == ProgramType.EXPERIENCE ? AddressCategory.EXPERIENCE: AddressCategory.UNKNOWN;
 
 		programContact = new AddressInfoBase(addressCategory,
@@ -25,6 +27,7 @@ public class ProgramInfo {
 
 		addressCategory = this.programType == ProgramType.CANDIDACY ? AddressCategory.CANDIDACY_ALTER
 				: this.programType == ProgramType.INTERNSHIP ? AddressCategory.INTERNSHIP_ALTER
+				: this.programType == ProgramType.DEVPROGRAM? AddressCategory.DEVPROGRAM_ALTER
 				: this.programType == ProgramType.EXPERIENCE ? AddressCategory.EXPERIENCE_ALTER
 						: AddressCategory.UNKNOWN;
 
@@ -40,13 +43,18 @@ public class ProgramInfo {
 				 	programType == ProgramType.CANDIDACY ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_CandidacyDiscipline : 
 					programType == ProgramType.EXPERIENCE? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_ExperienceDiscipline :
 					X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_UnknowDiscipline	;
+	
+		if (programType == ProgramType.DEVPROGRAM) {
+			devProgramInfo = new DevProgramInfo();
+		} else if (programType == ProgramType.EXPERIENCE) {
+			workInfo = new WorkInfo();
+		}else if (programType == ProgramType.INTERNSHIP) {
+			tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
+		} 
 		
-		disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, disciplineType);
-
-		tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
-		
-		workInfo = new WorkInfo();
-
+		if (programType != ProgramType.DEVPROGRAM) {
+			disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, disciplineType);
+		}
 	}
 
 	/**
@@ -80,6 +88,8 @@ public class ProgramInfo {
 			return "D. INTERNSHIP";
 		if (programType == ProgramType.EXPERIENCE)
 			return "D. WORK EXPERIENCE AND VACATION WORK";
+		if (programType == ProgramType.DEVPROGRAM)
+			return "D. MANAGEMENT AND EXECUTIVE DEVELOPMENT PROGRAMME (MEDP) SPECIFIC GUIDELINES";
 		else
 			return programType.toString();
 	}
@@ -153,6 +163,20 @@ public class ProgramInfo {
 	 */
 	public void setVacationContact(AddressInfoBase vacationContact) {
 		this.vacationContact = vacationContact;
+	}
+
+	/**
+	 * @return the devProgramInfo
+	 */
+	public DevProgramInfo getDevProgramInfo() {
+		return devProgramInfo;
+	}
+
+	/**
+	 * @param devProgramInfo the devProgramInfo to set
+	 */
+	public void setDevProgramInfo(DevProgramInfo devProgramInfo) {
+		this.devProgramInfo = devProgramInfo;
 	}
 
 }
