@@ -87,4 +87,20 @@ public enum ProgramType {
 		else
 			return programType.toString();
 	}
+	
+	public boolean isShowDisciplineTable() {
+		return this != ProgramType.DEV_PROGRAM && this != ProgramType.ARTISAN_AIDES && 
+				this != ProgramType.ARTISAN_DEV && this != ProgramType.CENTRE_SPECIALISATION && 
+				this != ProgramType.AET && this != ProgramType.ARTISAN_RPL &&
+				this != ProgramType.NON_ARTISAN_DEV && this != ProgramType.NON_ARTISAN_DEV_RPL &&
+				this != ProgramType.NCV_LEVEL_4_GRADUATES && this != ProgramType.INHOUSE_TRAINING &&
+				this != ProgramType.OCCUPATIONAL_HEALTH_AND_SAFETY_SKILLS_PROGRAMMES;
+	}
+	
+	public boolean isShowTradeTable() {
+		return this == ProgramType.INTERNSHIP || this == ProgramType.ARTISAN_DEV || 
+				this == ProgramType.CENTRE_SPECIALISATION;
+		
+	}
+	
 }

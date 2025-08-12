@@ -8,7 +8,8 @@
 		<label
 			value="@init(vmDisciplineInfo.disciplineTableInfo.overallTitle)" />
 	</hlayout>
-	<hlayout>
+	<hlayout
+		if="${vmDisciplineInfo.disciplineTableInfo.disciplineTitle ne null}">>
 		<label
 			value="@init(vmDisciplineInfo.disciplineTableInfo.disciplineTitle)" />
 	</hlayout>

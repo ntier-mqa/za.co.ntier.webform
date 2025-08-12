@@ -15,6 +15,8 @@ public class ProgramInfo {
 	private DevProgramInfo devProgramInfo;
 	private AddressInfoBase vacationContact;
 	private ArtisanAidesInfo artisanAidesInfo;
+	private ArtisanDevInfo artisanDevInfo;
+	private CentreOfSpecialisationInfo centreOfSpecialisationInfo;
 
 	public ProgramInfo(int programMasterDataID, ProgramType programType) {
 		this.programType = programType;
@@ -40,19 +42,20 @@ public class ProgramInfo {
 			devProgramInfo = new DevProgramInfo();
 		} else if (programType == ProgramType.EXPERIENCE) {
 			workInfo = new WorkInfo();
-		}else if (programType == ProgramType.INTERNSHIP) {
-			tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
 		}else if (programType == ProgramType.ARTISAN_AIDES) {
-			this.setArtisanAidesInfo(new ArtisanAidesInfo());
+			this.artisanAidesInfo =  new ArtisanAidesInfo();
+		}else if (programType == ProgramType.ARTISAN_DEV) {
+			this.artisanDevInfo = new ArtisanDevInfo();
+		}else if (programType == ProgramType.CENTRE_SPECIALISATION) {
+			this.setcentreOfSpecialisationInfo(new CentreOfSpecialisationInfo());
 		}
 		
+		if (programType.isShowTradeTable())
+			tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
+		
 		// discipline table info
-		if (programType != ProgramType.DEV_PROGRAM) {
-			String disciplineType = programType == ProgramType.INTERNSHIP ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline :
-			 	programType == ProgramType.CANDIDACY ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_CandidacyDiscipline : 
-				programType == ProgramType.EXPERIENCE? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_ExperienceDiscipline :
-				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_UnknowDiscipline	;
-			disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, disciplineType);
+		if (programType.isShowDisciplineTable()) {
+			disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline);
 		}
 	}
 
@@ -181,6 +184,34 @@ public class ProgramInfo {
 	 */
 	public void setArtisanAidesInfo(ArtisanAidesInfo artisanAidesInfo) {
 		this.artisanAidesInfo = artisanAidesInfo;
+	}
+
+	/**
+	 * @return the artisanDevInfo
+	 */
+	public ArtisanDevInfo getArtisanDevInfo() {
+		return artisanDevInfo;
+	}
+
+	/**
+	 * @param artisanDevInfo the artisanDevInfo to set
+	 */
+	public void setArtisanDevInfo(ArtisanDevInfo artisanDevInfo) {
+		this.artisanDevInfo = artisanDevInfo;
+	}
+
+	/**
+	 * @return the centreOfSpecialisationInfo
+	 */
+	public CentreOfSpecialisationInfo getcentreOfSpecialisationInfo() {
+		return centreOfSpecialisationInfo;
+	}
+
+	/**
+	 * @param centreOfSpecialisationInfo the centreOfSpecialisationInfo to set
+	 */
+	public void setcentreOfSpecialisationInfo(CentreOfSpecialisationInfo centreOfSpecialisationInfo) {
+		this.centreOfSpecialisationInfo = centreOfSpecialisationInfo;
 	}
 
 }

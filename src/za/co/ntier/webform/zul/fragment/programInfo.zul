@@ -27,17 +27,26 @@
 		
 	<include
 		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_AIDES}"
-		devProgramInfo="@load(vmProgramInfo.programInfo.artisanAidesInfo)"
+		artisanAidesInfo="@load(vmProgramInfo.programInfo.artisanAidesInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/artisanAides.zul')))" />
 		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.CENTRE_SPECIALISATION}"
+		centreOfSpecialisationInfo="@load(vmProgramInfo.programInfo.centreOfSpecialisationInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/centreOfSpecialisation.zul')))" />
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_DEV}"
+		artisanDevInfo="@load(vmProgramInfo.programInfo.artisanDevInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/artisanDev.zul')))" />
+		
 	<include 
-		if="${vmProgramInfo.programInfo.programType ne ProgramType.DEV_PROGRAM and
-			vmProgramInfo.programInfo.programType ne ProgramType.ARTISAN_AIDES}"
+		if="${vmProgramInfo.programInfo.programType.isShowDisciplineTable()}"
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
 	<include
-		if="${vmProgramInfo.programInfo.programType eq ProgramType.INTERNSHIP}"
+		if="${vmProgramInfo.programInfo.programType.isShowTradeTable()}"
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 

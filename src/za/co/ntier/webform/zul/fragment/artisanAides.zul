@@ -26,17 +26,17 @@
             <div sclass="row">
                 <div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationEmployerNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationEmployedNo)"
                         sclass="form-control" />
                 </div>
                 <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationUnemployedNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationUnEmployedNo)"
                         sclass="form-control" />
                 </div>
                 <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationTotalNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationTotalApplyNo)"
                         sclass="form-control" />
                 </div>
             </div>
@@ -62,12 +62,12 @@
             <div sclass="row">
                 <div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.skillEmployerNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.skillEmployedNo)"
                         sclass="form-control" />
                 </div>
                 <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.skillUNEmployerNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.skillUnEmployedNo)"
                         sclass="form-control" />
                 </div>
                 <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">

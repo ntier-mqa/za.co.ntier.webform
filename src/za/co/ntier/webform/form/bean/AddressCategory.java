@@ -53,6 +53,8 @@ public enum AddressCategory {
 			return "Alternative contact details of person responsible for MEDP";
 		else if (programType == ProgramType.ARTISAN_AIDES)
 			return "Contact details of person responsible for Artisan Aides:";
+		else if (programType == ProgramType.ARTISAN_DEV)
+			return "Contact details of person responsible for Artisan Development:";
 		else if (programType == ProgramType.CENTRE_SPECIALISATION)
 			return "Contact details of person responsible for Centre of Specialisation";
 		else if (programType == ProgramType.ARTISAN_RPL)

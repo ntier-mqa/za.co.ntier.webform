@@ -125,7 +125,7 @@ public class DisciplineTableInfo {
 		if (programType == ProgramType.EXPERIENCE)
 			return "List of disciplines supported for practical training which the number of learners applying should be based on.";
 		else
-			return programType.toString();
+			return null;
 
 	}
 	

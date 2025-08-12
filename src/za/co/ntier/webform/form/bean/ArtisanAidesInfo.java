@@ -1,36 +1,36 @@
 package za.co.ntier.webform.form.bean;
 
 public class ArtisanAidesInfo {
-	private int qualificationEmployerNo = 0;
-	private int qualificationUNEmployerNo = 0;
+	private int qualificationEmployedNo = 0;
+	private int qualificationUnEmployedNo = 0;
 	private int qualificationTotalApplyNo = 0;
 	
-	private int skillEmployerNo = 0;
-	private int skillUNEmployerNo = 0;
+	private int skillEmployedNo = 0;
+	private int skillUnEmployedNo = 0;
 	private int skillTotalApplyNo = 0;
 	/**
-	 * @return the qualificationEmployerNo
+	 * @return the qualificationEmployedNo
 	 */
-	public int getQualificationEmployerNo() {
-		return qualificationEmployerNo;
+	public int getQualificationEmployedNo() {
+		return qualificationEmployedNo;
 	}
 	/**
-	 * @param qualificationEmployerNo the qualificationEmployerNo to set
+	 * @param qualificationEmployedNo the qualificationEmployedNo to set
 	 */
-	public void setQualificationEmployerNo(int qualificationEmployerNo) {
-		this.qualificationEmployerNo = qualificationEmployerNo;
+	public void setQualificationEmployedNo(int qualificationEmployedNo) {
+		this.qualificationEmployedNo = qualificationEmployedNo;
 	}
 	/**
-	 * @return the qualificationUNEmployerNo
+	 * @return the qualificationUnEmployedNo
 	 */
-	public int getQualificationUNEmployerNo() {
-		return qualificationUNEmployerNo;
+	public int getQualificationUnEmployedNo() {
+		return qualificationUnEmployedNo;
 	}
 	/**
-	 * @param qualificationUNEmployerNo the qualificationUNEmployerNo to set
+	 * @param qualificationUnEmployedNo the qualificationUnEmployedNo to set
 	 */
-	public void setQualificationUNEmployerNo(int qualificationUNEmployerNo) {
-		this.qualificationUNEmployerNo = qualificationUNEmployerNo;
+	public void setQualificationUnEmployedNo(int qualificationUnEmployedNo) {
+		this.qualificationUnEmployedNo = qualificationUnEmployedNo;
 	}
 	/**
 	 * @return the qualificationTotalApplyNo
@@ -45,28 +45,28 @@ public class ArtisanAidesInfo {
 		this.qualificationTotalApplyNo = qualificationTotalApplyNo;
 	}
 	/**
-	 * @return the skillEmployerNo
+	 * @return the skillEmployedNo
 	 */
-	public int getSkillEmployerNo() {
-		return skillEmployerNo;
+	public int getSkillEmployedNo() {
+		return skillEmployedNo;
 	}
 	/**
-	 * @param skillEmployerNo the skillEmployerNo to set
+	 * @param skillEmployedNo the skillEmployedNo to set
 	 */
-	public void setSkillEmployerNo(int skillEmployerNo) {
-		this.skillEmployerNo = skillEmployerNo;
+	public void setSkillEmployedNo(int skillEmployedNo) {
+		this.skillEmployedNo = skillEmployedNo;
 	}
 	/**
-	 * @return the skillUNEmployerNo
+	 * @return the skillUnEmployedNo
 	 */
-	public int getSkillUNEmployerNo() {
-		return skillUNEmployerNo;
+	public int getSkillUnEmployedNo() {
+		return skillUnEmployedNo;
 	}
 	/**
-	 * @param skillUNEmployerNo the skillUNEmployerNo to set
+	 * @param skillUnEmployedNo the skillUnEmployedNo to set
 	 */
-	public void setSkillUNEmployerNo(int skillUNEmployerNo) {
-		this.skillUNEmployerNo = skillUNEmployerNo;
+	public void setSkillUnEmployedNo(int skillUnEmployedNo) {
+		this.skillUnEmployedNo = skillUnEmployedNo;
 	}
 	/**
 	 * @return the skillTotalApplyNo

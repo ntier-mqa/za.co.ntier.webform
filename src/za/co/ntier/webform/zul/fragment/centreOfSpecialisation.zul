@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk xmlns:n="native">
+	<div
+		viewModel="@id('vmCentreOfSpecialisation') @init('za.co.ntier.webform.form.viewmodel.CentreOfSpecialisationVMWrapper')">
+		<div>
+			<label sclass="note" value="Note:"/><label
+				value="Centre of Specialisation Grant is paid in four tranches according to the grant rules as stated in
+the MQA funding policy. Preference will be given to the following trades that are hard to fill according
+to MQA SPOI list, (Diesel Mechanic and Millwright)" />
+		</div>
+		
+		<div sclass="container-fluid">
+            <div sclass="row">
+                <div sclass="col-sm-8 col-title d-flex align-items-center">
+                    <label value="Is the TVET College registered with the DHET?" />
+                </div>
+                <div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
+                    <checkbox
+                        
+                        sclass="form-control" />
+                     <checkbox
+                        
+                        sclass="form-control" />
+                </div>
+            </div>
+            
+		</div>
+	</div>
+</zk>
