@@ -14,35 +14,44 @@ public class ProgramInfo {
 	private WorkInfo workInfo;
 	private DevProgramInfo devProgramInfo;
 	private AddressInfoBase vacationContact;
+	private ArtisanAidesInfo artisanAidesInfo;
 
 	public ProgramInfo(int programMasterDataID, ProgramType programType) {
 		this.programType = programType;
 
-		programContact = new AddressInfoBase(programType, false,
+		// main contact
+		if (programType.isShowMainAddress())
+			programContact = new AddressInfoBase(programType, false,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		alternateProgramContact = new AddressInfoBase(programType, true,
+		// main alternate contact
+		if (programType.isShowMainAddressAlter())
+			alternateProgramContact = new AddressInfoBase(programType, true,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
+		// vacation contact
 		if (this.programType == ProgramType.EXPERIENCE) {
 			setVacationContact(new AddressInfoBase(AddressCategory.VACATION,
 					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size()))));
 		}
 		
-		String disciplineType = programType == ProgramType.INTERNSHIP ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline :
-				 	programType == ProgramType.CANDIDACY ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_CandidacyDiscipline : 
-					programType == ProgramType.EXPERIENCE? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_ExperienceDiscipline :
-					X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_UnknowDiscipline	;
-	
-		if (programType == ProgramType.DEVPROGRAM) {
+		// extra program info
+		if (programType == ProgramType.DEV_PROGRAM) {
 			devProgramInfo = new DevProgramInfo();
 		} else if (programType == ProgramType.EXPERIENCE) {
 			workInfo = new WorkInfo();
 		}else if (programType == ProgramType.INTERNSHIP) {
 			tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
-		} 
+		}else if (programType == ProgramType.ARTISAN_AIDES) {
+			this.setArtisanAidesInfo(new ArtisanAidesInfo());
+		}
 		
-		if (programType != ProgramType.DEVPROGRAM) {
+		// discipline table info
+		if (programType != ProgramType.DEV_PROGRAM) {
+			String disciplineType = programType == ProgramType.INTERNSHIP ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline :
+			 	programType == ProgramType.CANDIDACY ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_CandidacyDiscipline : 
+				programType == ProgramType.EXPERIENCE? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_ExperienceDiscipline :
+				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_UnknowDiscipline	;
 			disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, disciplineType);
 		}
 	}
@@ -158,6 +167,20 @@ public class ProgramInfo {
 	 */
 	public void setDevProgramInfo(DevProgramInfo devProgramInfo) {
 		this.devProgramInfo = devProgramInfo;
+	}
+
+	/**
+	 * @return the artisanAidesInfo
+	 */
+	public ArtisanAidesInfo getArtisanAidesInfo() {
+		return artisanAidesInfo;
+	}
+
+	/**
+	 * @param artisanAidesInfo the artisanAidesInfo to set
+	 */
+	public void setArtisanAidesInfo(ArtisanAidesInfo artisanAidesInfo) {
+		this.artisanAidesInfo = artisanAidesInfo;
 	}
 
 }

@@ -21,12 +21,18 @@
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />		
 		
 	<include
-		if="${vmProgramInfo.programInfo.programType eq ProgramType.DEVPROGRAM}"
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.DEV_PROGRAM}"
 		devProgramInfo="@load(vmProgramInfo.programInfo.devProgramInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/devProgramInfo.zul')))" />
 		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_AIDES}"
+		devProgramInfo="@load(vmProgramInfo.programInfo.artisanAidesInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/artisanAides.zul')))" />
+		
 	<include 
-		if="${vmProgramInfo.programInfo.programType ne ProgramType.DEVPROGRAM}"
+		if="${vmProgramInfo.programInfo.programType ne ProgramType.DEV_PROGRAM and
+			vmProgramInfo.programInfo.programType ne ProgramType.ARTISAN_AIDES}"
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
@@ -35,11 +41,11 @@
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/disciplineTableInfo.zul')))" />
 
-	<include
+	<include if="${vmProgramInfo.programInfo.programType.isShowMainAddress()}"
 		addressInfo="@load(vmProgramInfo.programInfo.programContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 
-	<include
+	<include if="${vmProgramInfo.programInfo.programType.isShowMainAddressAlter()}"
 		addressInfo="@load(vmProgramInfo.programInfo.alternateProgramContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 </div>
