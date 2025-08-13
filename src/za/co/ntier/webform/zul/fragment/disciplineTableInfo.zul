@@ -9,7 +9,7 @@
 			value="@init(vmDisciplineInfo.disciplineTableInfo.overallTitle)" />
 	</hlayout>
 	<hlayout
-		if="${vmDisciplineInfo.disciplineTableInfo.disciplineTitle ne null}">>
+		if="${vmDisciplineInfo.disciplineTableInfo.disciplineTitle ne null}">
 		<label
 			value="@init(vmDisciplineInfo.disciplineTableInfo.disciplineTitle)" />
 	</hlayout>
@@ -38,11 +38,11 @@
 	                        <label value="Province" />
 	                    </div>
 	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasWPAReq()}"
-	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex justify-content-center align-items-center'))">
 	                        <label value="WPA" />
 	                    </div>
 	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasAccreditation()}"
-	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex justify-content-center align-items-center'))">
 	                        <label value="Accreditation" />
 	                    </div>
 					</div>
@@ -85,7 +85,7 @@
 	                        <label value="@load(discipline.province.name)" />
 	                    </div>
 	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasWPAReq()}"
-	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex justify-content-center align-items-center'))">
 	                        <div if="${discipline.isUploadWPA()}">
 								<fileupload sclass="text-wrap w-100"
 									iconSclass="z-icon-arrow-up-from-bracket z-icon-solid" label="@load(discipline.uploadWPATitle)"
@@ -94,7 +94,7 @@
 							</div>
 	                    </div>
 	                    <div if="${vmDisciplineInfo.disciplineTableInfo.isHasAccreditation()}"
-	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
+	                        	class="@init(('col-sm-' += vmDisciplineInfo.disciplineTableInfo.rightColSize += ' col-title d-flex justify-content-center align-items-center'))">
 	                        <div if="${discipline.isUploadAccreditation()}">
 								<fileupload sclass="text-wrap w-100"
 									iconSclass="z-icon-arrow-up-from-bracket z-icon-solid" label="@load(discipline.uploadAccreditationTitle)"

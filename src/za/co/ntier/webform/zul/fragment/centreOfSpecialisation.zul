@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zk xmlns:n="native">
-	<div
+	<div sclass="sectionSeparator"
 		viewModel="@id('vmCentreOfSpecialisation') @init('za.co.ntier.webform.form.viewmodel.CentreOfSpecialisationVMWrapper')">
 		<div>
 			<label sclass="note" value="Note:"/><label
@@ -14,13 +14,35 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
                 <div sclass="col-sm-8 col-title d-flex align-items-center">
                     <label value="Is the TVET College registered with the DHET?" />
                 </div>
-                <div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
-                    <checkbox
-                        
-                        sclass="form-control" />
-                     <checkbox
-                        
-                        sclass="form-control" />
+                <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
+                    <checkbox  label="YES"/>
+                </div>
+                <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
+                     <checkbox label="NO"/>
+                </div>
+            </div>
+            
+            <div sclass="row">
+                <div sclass="col-sm-8 col-title d-flex align-items-center">
+                    <label value="Is the TVET College recognised as a centre of specialisation" />
+                </div>
+                <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
+                    <checkbox  label="YES"/>
+                </div>
+                <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
+                     <checkbox label="NO"/>
+                </div>
+            </div>
+            
+            <div sclass="row">
+                <div sclass="col-sm-8 col-title d-flex align-items-center">
+                    <label value="Does the TVET College have an SLA with a company within the MMS" />
+                </div>
+                <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
+                    <checkbox  label="YES"/>
+                </div>
+                <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
+                     <checkbox label="NO"/>
                 </div>
             </div>
             

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk>
+<zk xmlns:n="native">
 
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
@@ -31,10 +31,10 @@ provided in this application is true and accurate" />
 			</div>
 
 			<div sclass="row">
-				<div sclass="col-sm-11 col-title-right d-flex align-items-center">
-					<label value="Click here to acknowledge commitment" />
+				<div sclass="col-sm-11 d-flex justify-content-end align-items-center">
+					<label value = "Click here to acknowledge commitment"></label>
 				</div>
-				<div sclass="col-sm-1 d-flex align-items-center ">
+				<div sclass="col-sm-1 d-flex justify-content-center align-items-center">
 					<checkbox />
 				</div>
 			</div>

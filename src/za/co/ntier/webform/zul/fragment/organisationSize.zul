@@ -3,32 +3,32 @@
 <div sclass="container-fluid text-left"
 	viewModel="@id('vmOrgSize') @init('za.co.ntier.webform.form.viewmodel.OrganisationSizeVMWrapper')">
 	<div sclass="row">
-		<div sclass="col-sm-8 col-title d-flex align-items-center">
+		<div sclass="col-sm-10 col-title d-flex align-items-center">
 			<label value="@init(vmOrgSize.orgSizeInfo.numOfEmployerTitle)" />
 		</div>
-		<div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
+		<div sclass="col-sm-2 col-content-input-full d-flex justify-content-center align-items-center">
 			<textbox
                 value="@bind(vmOrgSize.orgSizeInfo.numOfEmployer)"
                 sclass="form-control" />
 		</div>
 	</div>
 	<div sclass="row">
-		<div sclass="col-sm-8 col-title d-flex align-items-center">
+		<div sclass="col-sm-10 col-title d-flex align-items-center">
 			<label
 				value="@init(vmOrgSize.orgSizeInfo.submittedWSPTitle)" />
 		</div>
-		<div sclass="col-sm-4 col-title-center-white d-flex align-items-center">
+		<div sclass="col-sm-2 col-title-center-white d-flex justify-content-center align-items-center">
 			<label
 				value="@load((vmOrgSize.orgSizeInfo.submittedWSP?'YES':'NO'))" />
 		</div>
 	</div>
 
 	<div sclass="row">
-		<div sclass="col-sm-8 col-title d-flex align-items-center">
+		<div sclass="col-sm-10 col-title d-flex align-items-center">
 			<label
 				value="@init(vmOrgSize.orgSizeInfo.submittedPivotalTitle)" />
 		</div>
-		<div sclass="col-sm-4 col-title-center-white  d-flex align-items-center">
+		<div sclass="col-sm-2 col-title-center-white d-flex justify-content-center align-items-center">
 			<label
 				value="@load((vmOrgSize.orgSizeInfo.submittedPivotal?'YES':'NO'))" />
 		</div>

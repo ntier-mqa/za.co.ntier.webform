@@ -27,7 +27,8 @@
 
 	<include programInfo="@load(vm.programInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/programInfo.zul')))" />
-		
+	
+	<div sclass="sectionSeparator"/>	
 	<button sclass="btn btn-primary" autodisable="true"
         label="@init(vm.submitButtonLabel)"
         onClick="@command('submitApplication')" />
