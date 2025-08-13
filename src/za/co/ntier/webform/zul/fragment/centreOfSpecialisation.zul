@@ -15,10 +15,11 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
                     <label value="Is the TVET College registered with the DHET?" />
                 </div>
                 <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
-                    <checkbox  label="YES"/>
+                    <radio label="YES" radiogroup="dhet"/>
                 </div>
                 <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
-                     <checkbox label="NO"/>
+                     <radio label="NO" radiogroup="dhet"/>
+                     <radiogroup id="dhet"/>
                 </div>
             </div>
             
@@ -27,10 +28,11 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
                     <label value="Is the TVET College recognised as a centre of specialisation" />
                 </div>
                 <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
-                    <checkbox  label="YES"/>
+                    <radio label="YES" radiogroup="cos"/>
                 </div>
                 <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
-                     <checkbox label="NO"/>
+                     <radio label="NO" radiogroup="cos"/>
+                     <radiogroup id="cos"/>
                 </div>
             </div>
             
@@ -39,10 +41,11 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
                     <label value="Does the TVET College have an SLA with a company within the MMS" />
                 </div>
                 <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
-                    <checkbox  label="YES"/>
+                    <radio label="YES" radiogroup="mms"/>
                 </div>
                 <div sclass="col-sm-2 d-flex justify-content-center align-items-center">
-                     <checkbox label="NO"/>
+                     <radio label="NO" radiogroup="mms"/>
+                     <radiogroup id="mms"/>
                 </div>
             </div>
             
