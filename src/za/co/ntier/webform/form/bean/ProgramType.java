@@ -11,9 +11,9 @@ public enum ProgramType {
 	ARTISAN_RPL("ARTISAN RPL"),
 	NON_ARTISAN_DEV("NON-ARTISAN DEVELOPMENT"),
 	NON_ARTISAN_DEV_RPL("NON-ARTISAN DEVELOPMENT RPL"),
-	NCV_LEVEL_4_GRADUATES("NCV LEVEL 4 GRADUATES"),
+	NCV_GRADUATES("NCV LEVEL 4 GRADUATES"),
 	AET("AET"),
-	OCCUPATIONAL_HEALTH_AND_SAFETY_SKILLS_PROGRAMMES("OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES"),
+	OHASSP("OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES"),
 	INHOUSE_TRAINING("IN-HOUSE TRAINING"),
 	UNKNOWN("UNNOWN PROGRAM TYPE");
 
@@ -33,8 +33,8 @@ public enum ProgramType {
 				|| this == ARTISAN_AIDES || this == ARTISAN_DEV
 				|| this == CENTRE_SPECIALISATION || this == ARTISAN_RPL
 				|| this == NON_ARTISAN_DEV || this == NON_ARTISAN_DEV_RPL
-				|| this == NCV_LEVEL_4_GRADUATES || this == AET
-				|| this == OCCUPATIONAL_HEALTH_AND_SAFETY_SKILLS_PROGRAMMES
+				|| this == NCV_GRADUATES || this == AET
+				|| this == OHASSP
 				|| this == INHOUSE_TRAINING;
 	}
 	
@@ -42,8 +42,8 @@ public enum ProgramType {
 		return isShowMainAddress() && this != ARTISAN_AIDES && this != ARTISAN_DEV
 						&& this != CENTRE_SPECIALISATION && this != ARTISAN_RPL
 						&& this != NON_ARTISAN_DEV && this != NON_ARTISAN_DEV_RPL
-						&& this != NCV_LEVEL_4_GRADUATES && this != AET
-						&& this != OCCUPATIONAL_HEALTH_AND_SAFETY_SKILLS_PROGRAMMES
+						&& this != NCV_GRADUATES && this != AET
+						&& this != OHASSP
 						&& this != INHOUSE_TRAINING;
 	}
 	
@@ -76,11 +76,11 @@ public enum ProgramType {
 			return "D. NON-ARTISAN DEVELOPMENT GRANT";
 		if (this == ProgramType.NON_ARTISAN_DEV_RPL)
 			return "D. NON-ARTISAN DEVELOPMENT (RPL) GRANT";
-		if (this == ProgramType.NCV_LEVEL_4_GRADUATES)
+		if (this == ProgramType.NCV_GRADUATES)
 			return "D. NCV (LEVEL 4 GRADUATES) GRANT";
 		if (this == ProgramType.AET)
 			return "D. AET GRANT";
-		if (this == ProgramType.OCCUPATIONAL_HEALTH_AND_SAFETY_SKILLS_PROGRAMMES)
+		if (this == ProgramType.OHASSP)
 			return "D. OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES GRANT";
 		if (this == ProgramType.INHOUSE_TRAINING)
 			return "D. IN-HOUSE TRAINING";
@@ -93,8 +93,8 @@ public enum ProgramType {
 				this != ProgramType.ARTISAN_DEV && this != ProgramType.CENTRE_SPECIALISATION && 
 				this != ProgramType.AET && this != ProgramType.ARTISAN_RPL &&
 				this != ProgramType.NON_ARTISAN_DEV && this != ProgramType.NON_ARTISAN_DEV_RPL &&
-				this != ProgramType.NCV_LEVEL_4_GRADUATES && this != ProgramType.INHOUSE_TRAINING &&
-				this != ProgramType.OCCUPATIONAL_HEALTH_AND_SAFETY_SKILLS_PROGRAMMES;
+				this != ProgramType.NCV_GRADUATES && this != ProgramType.INHOUSE_TRAINING &&
+				this != ProgramType.OHASSP;
 	}
 	
 	public boolean isShowTradeTable() {

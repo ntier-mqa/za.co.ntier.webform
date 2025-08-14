@@ -17,6 +17,13 @@ public class ProgramInfo {
 	private ArtisanAidesInfo artisanAidesInfo;
 	private ArtisanDevInfo artisanDevInfo;
 	private CentreOfSpecialisationInfo centreOfSpecialisationInfo;
+	private ArtisanRPLInfo artisanRPLInfo;
+	private NonArtisanDevInfo nonArtisanDevInfo;
+	private NonArtisanDevRPLInfo nonArtisanDevRPLInfo;
+	private NCVGraduatesInfo ncvGraduatesInfo;
+	private AETInfo aetInfo;
+	private OHASSPInfo ohasspInfo;
+	private InhouseTrainingInfo inhouseTrainingInfo;
 
 	public ProgramInfo(int programMasterDataID, ProgramType programType) {
 		this.programType = programType;
@@ -48,6 +55,20 @@ public class ProgramInfo {
 			this.artisanDevInfo = new ArtisanDevInfo();
 		}else if (programType == ProgramType.CENTRE_SPECIALISATION) {
 			this.setcentreOfSpecialisationInfo(new CentreOfSpecialisationInfo());
+		}else if (programType == ProgramType.ARTISAN_RPL) {
+			this.artisanRPLInfo = new ArtisanRPLInfo();
+		}else if (programType == ProgramType.NON_ARTISAN_DEV) {
+			this.nonArtisanDevInfo = new NonArtisanDevInfo();
+		}else if (programType == ProgramType.NON_ARTISAN_DEV_RPL) {
+			this.nonArtisanDevRPLInfo = new NonArtisanDevRPLInfo();
+		}else if (programType == ProgramType.NCV_GRADUATES) {
+			this.ncvGraduatesInfo = new NCVGraduatesInfo();
+		}else if (programType == ProgramType.NCV_GRADUATES) {
+			this.aetInfo = new AETInfo();
+		}else if (programType == ProgramType.OHASSP) {
+			this.ohasspInfo = new OHASSPInfo();
+		}else if (programType == ProgramType.INHOUSE_TRAINING) {
+			this.inhouseTrainingInfo = new InhouseTrainingInfo();
 		}
 		
 		if (programType.isShowTradeTable())
@@ -57,6 +78,104 @@ public class ProgramInfo {
 		if (programType.isShowDisciplineTable()) {
 			disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline);
 		}
+	}
+
+	/**
+	 * @return the centreOfSpecialisationInfo
+	 */
+	public CentreOfSpecialisationInfo getCentreOfSpecialisationInfo() {
+		return centreOfSpecialisationInfo;
+	}
+
+	/**
+	 * @param centreOfSpecialisationInfo the centreOfSpecialisationInfo to set
+	 */
+	public void setCentreOfSpecialisationInfo(CentreOfSpecialisationInfo centreOfSpecialisationInfo) {
+		this.centreOfSpecialisationInfo = centreOfSpecialisationInfo;
+	}
+
+	/**
+	 * @return the nonArtisanDevInfo
+	 */
+	public NonArtisanDevInfo getNonArtisanDevInfo() {
+		return nonArtisanDevInfo;
+	}
+
+	/**
+	 * @param nonArtisanDevInfo the nonArtisanDevInfo to set
+	 */
+	public void setNonArtisanDevInfo(NonArtisanDevInfo nonArtisanDevInfo) {
+		this.nonArtisanDevInfo = nonArtisanDevInfo;
+	}
+
+	/**
+	 * @return the nonArtisanDevRPLInfo
+	 */
+	public NonArtisanDevRPLInfo getNonArtisanDevRPLInfo() {
+		return nonArtisanDevRPLInfo;
+	}
+
+	/**
+	 * @param nonArtisanDevRPLInfo the nonArtisanDevRPLInfo to set
+	 */
+	public void setNonArtisanDevRPLInfo(NonArtisanDevRPLInfo nonArtisanDevRPLInfo) {
+		this.nonArtisanDevRPLInfo = nonArtisanDevRPLInfo;
+	}
+
+	/**
+	 * @return the ncvGraduatesInfo
+	 */
+	public NCVGraduatesInfo getNcvGraduatesInfo() {
+		return ncvGraduatesInfo;
+	}
+
+	/**
+	 * @param ncvGraduatesInfo the ncvGraduatesInfo to set
+	 */
+	public void setNcvGraduatesInfo(NCVGraduatesInfo ncvGraduatesInfo) {
+		this.ncvGraduatesInfo = ncvGraduatesInfo;
+	}
+
+	/**
+	 * @return the aetInfo
+	 */
+	public AETInfo getAetInfo() {
+		return aetInfo;
+	}
+
+	/**
+	 * @param aetInfo the aetInfo to set
+	 */
+	public void setAetInfo(AETInfo aetInfo) {
+		this.aetInfo = aetInfo;
+	}
+
+	/**
+	 * @return the ohasspInfo
+	 */
+	public OHASSPInfo getOhasspInfo() {
+		return ohasspInfo;
+	}
+
+	/**
+	 * @param ohasspInfo the ohasspInfo to set
+	 */
+	public void setOhasspInfo(OHASSPInfo ohasspInfo) {
+		this.ohasspInfo = ohasspInfo;
+	}
+
+	/**
+	 * @return the inhouseTrainingInfo
+	 */
+	public InhouseTrainingInfo getInhouseTrainingInfo() {
+		return inhouseTrainingInfo;
+	}
+
+	/**
+	 * @param inhouseTrainingInfo the inhouseTrainingInfo to set
+	 */
+	public void setInhouseTrainingInfo(InhouseTrainingInfo inhouseTrainingInfo) {
+		this.inhouseTrainingInfo = inhouseTrainingInfo;
 	}
 
 	/**
@@ -212,6 +331,20 @@ public class ProgramInfo {
 	 */
 	public void setcentreOfSpecialisationInfo(CentreOfSpecialisationInfo centreOfSpecialisationInfo) {
 		this.centreOfSpecialisationInfo = centreOfSpecialisationInfo;
+	}
+
+	/**
+	 * @return the artisanRPLInfo
+	 */
+	public ArtisanRPLInfo getArtisanRPLInfo() {
+		return artisanRPLInfo;
+	}
+
+	/**
+	 * @param artisanRPLInfo the artisanRPLInfo to set
+	 */
+	public void setArtisanRPLInfo(ArtisanRPLInfo artisanRPLInfo) {
+		this.artisanRPLInfo = artisanRPLInfo;
 	}
 
 }

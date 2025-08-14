@@ -29,17 +29,47 @@
 		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_AIDES}"
 		artisanAidesInfo="@load(vmProgramInfo.programInfo.artisanAidesInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/artisanAides.zul')))" />
-		
+
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_DEV}"
+		artisanDevInfo="@load(vmProgramInfo.programInfo.artisanDevInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/artisanDev.zul')))" />
+				
 	<include
 		if="${vmProgramInfo.programInfo.programType eq ProgramType.CENTRE_SPECIALISATION}"
 		centreOfSpecialisationInfo="@load(vmProgramInfo.programInfo.centreOfSpecialisationInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/centreOfSpecialisation.zul')))" />
 		
 	<include
-		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_DEV}"
-		artisanDevInfo="@load(vmProgramInfo.programInfo.artisanDevInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/artisanDev.zul')))" />
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_RPL}"
+		artisanRPLInfo="@load(vmProgramInfo.programInfo.artisanRPLInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/artisanRPL.zul')))" />
 		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.NON_ARTISAN_DEV}"
+		nonArtisanDevInfo="@load(vmProgramInfo.programInfo.nonArtisanDevInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/artisanRPL.zul')))" />
+	
+	<include
+	    if="${vmProgramInfo.programInfo.programType eq ProgramType.NCV_GRADUATES}"
+	    ncvGraduatesInfo="@load(vmProgramInfo.programInfo.ncvGraduatesInfo)"
+	    src="@load((WebForm.getBundleResourcePath('fragment/ncvGraduates.zul')))" />
+	
+	<include
+	    if="${vmProgramInfo.programInfo.programType eq ProgramType.AET}"
+	    aetInfo="@load(vmProgramInfo.programInfo.aetInfo)"
+	    src="@load((WebForm.getBundleResourcePath('fragment/aet.zul')))" />
+	
+	<include
+	    if="${vmProgramInfo.programInfo.programType eq ProgramType.OHASSP}"
+	    ohasspInfo="@load(vmProgramInfo.programInfo.ohasspInfo)"
+	    src="@load((WebForm.getBundleResourcePath('fragment/ohassp.zul')))" />
+	
+	<include
+	    if="${vmProgramInfo.programInfo.programType eq ProgramType.INHOUSE_TRAINING}"
+	    inhouseTrainingInfo="@load(vmProgramInfo.programInfo.inhouseTrainingInfo)"
+	    src="@load((WebForm.getBundleResourcePath('fragment/inhouseTraining.zul')))" />
+
 	<include 
 		if="${vmProgramInfo.programInfo.programType.isShowDisciplineTable()}"
 		disciplineTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"

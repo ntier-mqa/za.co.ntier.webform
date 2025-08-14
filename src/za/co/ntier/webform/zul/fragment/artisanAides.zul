@@ -26,17 +26,17 @@
             <div sclass="row">
                 <div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationEmployedNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.qualification.employedNo)"
                         sclass="form-control" />
                 </div>
                 <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationUnEmployedNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.qualification.unEmployedNo)"
                         sclass="form-control" />
                 </div>
                 <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.qualificationTotalApplyNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.qualification.totalApplyNo)"
                         sclass="form-control" />
                 </div>
             </div>
@@ -62,17 +62,17 @@
             <div sclass="row">
                 <div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.skillEmployedNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.skill.employedNo)"
                         sclass="form-control" />
                 </div>
                 <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.skillUnEmployedNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.skill.unEmployedNo)"
                         sclass="form-control" />
                 </div>
                 <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
                     <textbox
-                        value="@bind(vmArtisanAides.artisanAidesInfo.skillTotalApplyNo)"
+                        value="@bind(vmArtisanAides.artisanAidesInfo.skill.totalApplyNo)"
                         sclass="form-control" />
                 </div>
             </div>

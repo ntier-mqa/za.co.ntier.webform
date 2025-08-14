@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk xmlns:n="native">
+	<div
+		viewModel="@id('vmNonArtisanDev') @init('za.co.ntier.webform.form.viewmodel.nonArtisanDevVMWrapper')">
+		
+	</div>
+</zk>

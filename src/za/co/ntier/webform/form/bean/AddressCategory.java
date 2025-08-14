@@ -63,11 +63,11 @@ public enum AddressCategory {
 			return "Contact details of person responsible for Non-Artisan Development:";
 		else if (programType == ProgramType.NON_ARTISAN_DEV_RPL)
 			return "Contact details of person responsible for Non-Artisan Development RPL:";
-		else if (programType == ProgramType.NCV_LEVEL_4_GRADUATES)
+		else if (programType == ProgramType.NCV_GRADUATES)
 			return "Contact details of person responsible for NCV Graduates:";
 		else if (programType == ProgramType.AET)
 			return "Contact details of person responsible for AET:";
-		else if (programType == ProgramType.OCCUPATIONAL_HEALTH_AND_SAFETY_SKILLS_PROGRAMMES)
+		else if (programType == ProgramType.OHASSP)
 			return "Contact details of person responsible for Occupational Health and Safety Skills Programmes:";
 		else if (programType == ProgramType.INHOUSE_TRAINING)
 			return "Contact details of person responsible for IHT:";
