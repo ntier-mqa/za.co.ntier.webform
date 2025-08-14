@@ -29,7 +29,7 @@
 		src="@load((WebForm.getBundleResourcePath('fragment/programInfo.zul')))" />
 	
 	<div sclass="sectionSeparator"/>	
-	<button sclass="btn btn-primary" autodisable="true"
+	<button sclass="btn btn-primary"
         label="@init(vm.submitButtonLabel)"
         onClick="@command('submitApplication')" />
 

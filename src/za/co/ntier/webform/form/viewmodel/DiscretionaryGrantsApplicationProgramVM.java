@@ -145,8 +145,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		applicationForm.setZZ_HasWSPSubmited(employerInfo.getOrgSizeInfo().isSubmittedWSP());
 		applicationForm.setZZ_HasPivotalPlanSubmited(employerInfo.getOrgSizeInfo().isSubmittedPivotal());
 		
-		applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalLearners());
-		applicationForm.setZZ_TradeTotalLearners(programInfo.getTradeTableInfo().getTotalLearners());
+		if (programType.isShowDisciplineTable())
+			applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalLearners());
+		
+		if (programType.isShowTradeTable())
+			applicationForm.setZZ_TradeTotalLearners(programInfo.getTradeTableInfo().getTotalLearners());
 		
 		applicationForm.saveEx();
 		
@@ -167,9 +170,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		contact = createFormContact(programInfo.getAlternateProgramContact(), applicationForm.getZZ_Application_Form_ID());		
 		contact.saveEx();
+		if (programType.isShowDisciplineTable())
+			createDiscipline(programInfo.getDisciplineTableInfo(), applicationForm.getZZ_Application_Form_ID());
 		
-		createDiscipline(programInfo.getDisciplineTableInfo(), applicationForm.getZZ_Application_Form_ID());
-		createDiscipline(programInfo.getTradeTableInfo(), applicationForm.getZZ_Application_Form_ID());
+		if (programType.isShowTradeTable())
+			createDiscipline(programInfo.getTradeTableInfo(), applicationForm.getZZ_Application_Form_ID());
 		
 	}
 	
@@ -182,7 +187,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			if (discipline.getAreaSelected() != null)
 				formDisciplines.setC_City_ID(discipline.getAreaSelected().getC_City_ID());
 			
-			if (discipline.getProvince() != null);
+			if (discipline.getProvince() != null)
 				formDisciplines.setC_Region_ID(discipline.getProvince().getC_Region_ID());
 				
 			formDisciplines.setPostal(discipline.getPostalCode());
