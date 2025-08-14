@@ -14,8 +14,8 @@ import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.AddressInfoBase;
 import za.co.ntier.webform.form.bean.CompanyInfo;
-import za.co.ntier.webform.form.bean.Discipline;
-import za.co.ntier.webform.form.bean.DisciplineTableInfo;
+import za.co.ntier.webform.form.bean.LearnerInputInfo;
+import za.co.ntier.webform.form.bean.LearnerInputTableInfo;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
@@ -178,8 +178,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 	}
 	
-	public List<X_ZZ_FormDiscipline> createDiscipline(DisciplineTableInfo disciplineTableInfo, int applicationFormID) {
-		for (Discipline discipline : disciplineTableInfo.getDisciplines()) {
+	public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo disciplineTableInfo, int applicationFormID) {
+		for (LearnerInputInfo discipline : disciplineTableInfo.getLearnerInputInfos()) {
 			X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null);
 			formDisciplines.setZZ_Application_Form_ID(applicationFormID);
 			formDisciplines.setZZ_LearnersNo(discipline.getNoOfLearners());
@@ -191,11 +191,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 				formDisciplines.setC_Region_ID(discipline.getProvince().getC_Region_ID());
 				
 			formDisciplines.setPostal(discipline.getPostalCode());
-			formDisciplines.setZZ_DisciplineType(disciplineTableInfo.getDisciplineType());
+			formDisciplines.setZZ_DisciplineType(disciplineTableInfo.getLearnerInputType());
 			if (disciplineTableInfo.isTrade()) {
-				formDisciplines.setZZ_Trade_ID(discipline.getDisciplineID());
+				formDisciplines.setZZ_Trade_ID(discipline.getLearnerInputID());
 			}else {
-				formDisciplines.setZZ_Disciplines_ID(discipline.getDisciplineID());
+				formDisciplines.setZZ_Disciplines_ID(discipline.getLearnerInputID());
 			}
 
 			formDisciplines.saveEx();

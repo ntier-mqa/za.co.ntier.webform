@@ -223,10 +223,10 @@ public interface I_ZZ_Application_Form
     /** Column name ZZ_DisciplineTotalLearners */
     public static final String COLUMNNAME_ZZ_DisciplineTotalLearners = "ZZ_DisciplineTotalLearners";
 
-	/** Set Discipline Total Learners	  */
+	/** Set LearnerInputInfo Total Learners	  */
 	public void setZZ_DisciplineTotalLearners (int ZZ_DisciplineTotalLearners);
 
-	/** Get Discipline Total Learners	  */
+	/** Get LearnerInputInfo Total Learners	  */
 	public int getZZ_DisciplineTotalLearners();
 
     /** Column name ZZ_HasPivotalPlanSubmited */

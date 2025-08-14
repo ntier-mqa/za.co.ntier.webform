@@ -1,7 +1,9 @@
 package za.co.ntier.webform.form.bean;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
@@ -11,46 +13,29 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
-import za.co.ntier.webform.model.I_ZZ_Disciplines;
-import za.co.ntier.webform.model.I_ZZ_Trade;
-import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
-import za.co.ntier.webform.model.X_ZZ_Program_Trade;
 
-public class Discipline {	
-	private int disciplineID;
-	private String disciplineText;
-	private int programLineID;
+public class LearnerInputInfo {	
+	private int learnerInputProgramID;
+	private int learnerInputID;
+	private String learnerInputText;
 	
 	private String fileNameWPA;
-	private String uploadWPATitle = " WPA";
 	private boolean isUploadWPA = false;
-	private boolean isUploadAccreditation = false;
-	private String uploadAccreditationTitle = " Accred./SLA";
-	private String fileNameAccreditation;
+	private boolean isUploadAccred = false;
+	private String fileNameAccred;
 	private int noOfLearners = 0;
 	private String postalCode;
 	private MRegion province;
 	private Collection<MCity> areas;
 	private MCity areaSelected;
 	
-	public Discipline(X_ZZ_Program_Disciplines programLine, I_ZZ_Disciplines discipline) {
-		programLineID = programLine.getZZ_Program_Disciplines_ID();
-		disciplineID = discipline.getZZ_Disciplines_ID();
-		disciplineText = discipline.getName();
+	public LearnerInputInfo(List<Object> args) {
 		
-		this.isUploadAccreditation = programLine.isZZ_Is_Accred_SLA_Req();
-		this.isUploadWPA = programLine.isZZ_WPA_Req();
-		
-		setAreas(MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList());
-	}
-	
-	public Discipline(X_ZZ_Program_Trade programLine, I_ZZ_Trade discipline) {
-		programLineID = programLine.getZZ_Program_Trade_ID();
-		disciplineID = discipline.getZZ_Trade_ID();
-		disciplineText = discipline.getName();
-		
-		this.isUploadAccreditation = programLine.isZZ_Is_Accred_SLA_Req();
-		this.isUploadWPA = programLine.isZZ_WPA_Req();
+		this.learnerInputProgramID = ((BigDecimal)args.get(0)).intValueExact();
+		this.learnerInputID = ((BigDecimal)args.get(1)).intValueExact();
+		this.isUploadWPA = args.get(2) != null && "Y".equalsIgnoreCase((String)args.get(2));
+		this.isUploadAccred = args.get(3) != null && "Y".equalsIgnoreCase((String)args.get(3));
+		this.learnerInputText = (String)args.get(4);
 		
 		setAreas(MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList());
 	}
@@ -66,8 +51,8 @@ public class Discipline {
 	/**
 	 * @return the fileNameHDSA
 	 */
-	public String getFileNameAccreditation() {
-		return fileNameAccreditation;
+	public String getFileNameAccred() {
+		return fileNameAccred;
 	}
 
 	/**
@@ -102,10 +87,10 @@ public class Discipline {
 		BindUtils.postNotifyChange(this, "fileNameWPA");
 	}
 	
-	public void setFileNameAccreditation(String fileNameAccreditation) {
-		this.fileNameAccreditation = fileNameAccreditation;
+	public void setFileNameAccred(String fileNameAccred) {
+		this.fileNameAccred = fileNameAccred;
 
-		BindUtils.postNotifyChange(this, "fileNameAccreditation");
+		BindUtils.postNotifyChange(this, "fileNameAccred");
 	}
 
 	/**
@@ -165,7 +150,7 @@ public class Discipline {
 		if (media != null && isDSA) {
 			setFileNameWPA(media.getName());
 		} else if (media != null && !isDSA) {
-			setFileNameAccreditation(media.getName());
+			setFileNameAccred(media.getName());
 		}
 	}
 
@@ -173,28 +158,14 @@ public class Discipline {
 	 * @return the uploadWPATitle
 	 */
 	public String getUploadWPATitle() {
-		return uploadWPATitle;
-	}
-
-	/**
-	 * @param uploadWPATitle the uploadWPATitle to set
-	 */
-	public void setUploadWPATitle(String uploadWPATitle) {
-		this.uploadWPATitle = uploadWPATitle;
+		return " WPA";
 	}
 
 	/**
 	 * @return the uploadAccreditationTitle
 	 */
 	public String getUploadAccreditationTitle() {
-		return uploadAccreditationTitle;
-	}
-
-	/**
-	 * @param uploadAccreditationTitle the uploadAccreditationTitle to set
-	 */
-	public void setUploadAccreditationTitle(String uploadAccreditationTitle) {
-		this.uploadAccreditationTitle = uploadAccreditationTitle;
+		return " Accred./SLA";
 	}
 
 	/**
@@ -212,17 +183,17 @@ public class Discipline {
 	}
 
 	/**
-	 * @return the isUploadAccreditation
+	 * @return the isUploadAccred
 	 */
-	public boolean isUploadAccreditation() {
-		return isUploadAccreditation;
+	public boolean isUploadAccred() {
+		return isUploadAccred;
 	}
 
 	/**
-	 * @param isUploadAccreditation the isUploadAccreditation to set
+	 * @param isUploadAccred the isUploadAccred to set
 	 */
-	public void setUploadAccreditation(boolean isUploadAccreditation) {
-		this.isUploadAccreditation = isUploadAccreditation;
+	public void setUploadAccred(boolean isUploadAccred) {
+		this.isUploadAccred = isUploadAccred;
 	}
 
 	/**
@@ -258,49 +229,49 @@ public class Discipline {
 
 
 	/**
-	 * @return the disciplineID
+	 * @return the learnerInputID
 	 */
-	public int getDisciplineID() {
-		return disciplineID;
+	public int getLearnerInputID() {
+		return learnerInputID;
 	}
 
 
 	/**
-	 * @param disciplineID the disciplineID to set
+	 * @param learnerInputID the learnerInputID to set
 	 */
-	public void setDisciplineID(int disciplineID) {
-		this.disciplineID = disciplineID;
+	public void setLearnerInputID(int learnerInputID) {
+		this.learnerInputID = learnerInputID;
 	}
 
 
 	/**
-	 * @return the disciplineText
+	 * @return the learnerInputText
 	 */
-	public String getDisciplineText() {
-		return disciplineText;
+	public String getLearnerInputText() {
+		return learnerInputText;
 	}
 
 
 	/**
-	 * @param disciplineText the disciplineText to set
+	 * @param learnerInputText the learnerInputText to set
 	 */
-	public void setDisciplineText(String disciplineText) {
-		this.disciplineText = disciplineText;
+	public void setLearnerInputText(String learnerInputText) {
+		this.learnerInputText = learnerInputText;
 	}
 
 
 	/**
-	 * @return the programLineID
+	 * @return the learnerInputProgramID
 	 */
-	public int getProgramLineID() {
-		return programLineID;
+	public int getLearnerInputProgramID() {
+		return learnerInputProgramID;
 	}
 
 
 	/**
-	 * @param programLineID the programLineID to set
+	 * @param learnerInputProgramID the learnerInputProgramID to set
 	 */
-	public void setProgramLineID(int programLineID) {
-		this.programLineID = programLineID;
+	public void setLearnerInputProgramID(int learnerInputProgramID) {
+		this.learnerInputProgramID = learnerInputProgramID;
 	}
 }

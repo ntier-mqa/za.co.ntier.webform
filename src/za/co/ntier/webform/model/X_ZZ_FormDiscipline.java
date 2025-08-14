@@ -215,18 +215,18 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		return ii.intValue();
 	}
 
-	/** Candidacy Discipline = CandidacyDiscipline */
+	/** Candidacy LearnerInputInfo = CandidacyDiscipline */
 	public static final String ZZ_DISCIPLINETYPE_CandidacyDiscipline = "CandidacyDiscipline";
-	/** Experience Discipline = ExperienceDiscipline */
+	/** Experience LearnerInputInfo = ExperienceDiscipline */
 	public static final String ZZ_DISCIPLINETYPE_ExperienceDiscipline = "ExperienceDiscipline";
-	/** Internship Discipline = InternshipDiscipline */
+	/** Internship LearnerInputInfo = InternshipDiscipline */
 	public static final String ZZ_DISCIPLINETYPE_InternshipDiscipline = "InternshipDiscipline";
 	/** Internship Trade = InternshipTrade */
 	public static final String ZZ_DISCIPLINETYPE_InternshipTrade = "InternshipTrade";
-	/** Unknow Discipline = UnknowDiscipline */
+	/** Unknow LearnerInputInfo = UnknowDiscipline */
 	public static final String ZZ_DISCIPLINETYPE_UnknowDiscipline = "UnknowDiscipline";
-	/** Set Discipline Type.
-		@param ZZ_DisciplineType Discipline Type
+	/** Set LearnerInputInfo Type.
+		@param ZZ_DisciplineType LearnerInputInfo Type
 	*/
 	public void setZZ_DisciplineType (String ZZ_DisciplineType)
 	{
@@ -234,8 +234,8 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		set_Value (COLUMNNAME_ZZ_DisciplineType, ZZ_DisciplineType);
 	}
 
-	/** Get Discipline Type.
-		@return Discipline Type	  */
+	/** Get LearnerInputInfo Type.
+		@return LearnerInputInfo Type	  */
 	public String getZZ_DisciplineType()
 	{
 		return (String)get_Value(COLUMNNAME_ZZ_DisciplineType);
@@ -268,8 +268,8 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set Form Discipline.
-		@param ZZ_FormDiscipline_ID Form Discipline
+	/** Set Form LearnerInputInfo.
+		@param ZZ_FormDiscipline_ID Form LearnerInputInfo
 	*/
 	public void setZZ_FormDiscipline_ID (int ZZ_FormDiscipline_ID)
 	{
@@ -279,8 +279,8 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 			set_ValueNoCheck (COLUMNNAME_ZZ_FormDiscipline_ID, Integer.valueOf(ZZ_FormDiscipline_ID));
 	}
 
-	/** Get Form Discipline.
-		@return Form Discipline	  */
+	/** Get Form LearnerInputInfo.
+		@return Form LearnerInputInfo	  */
 	public int getZZ_FormDiscipline_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_FormDiscipline_ID);

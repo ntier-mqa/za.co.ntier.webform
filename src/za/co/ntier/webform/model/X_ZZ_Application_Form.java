@@ -284,16 +284,16 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 		return (String)get_Value(COLUMNNAME_ZZ_Application_Form_UU);
 	}
 
-	/** Set Discipline Total Learners.
-		@param ZZ_DisciplineTotalLearners Discipline Total Learners
+	/** Set LearnerInputInfo Total Learners.
+		@param ZZ_DisciplineTotalLearners LearnerInputInfo Total Learners
 	*/
 	public void setZZ_DisciplineTotalLearners (int ZZ_DisciplineTotalLearners)
 	{
 		set_Value (COLUMNNAME_ZZ_DisciplineTotalLearners, Integer.valueOf(ZZ_DisciplineTotalLearners));
 	}
 
-	/** Get Discipline Total Learners.
-		@return Discipline Total Learners	  */
+	/** Get LearnerInputInfo Total Learners.
+		@return LearnerInputInfo Total Learners	  */
 	public int getZZ_DisciplineTotalLearners()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_DisciplineTotalLearners);

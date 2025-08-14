@@ -7,10 +7,10 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class ProgramInfo {
 	private AddressInfoBase alternateProgramContact;
-	private DisciplineTableInfo disciplineTableInfo;
+	private LearnerInputTableInfo disciplineTableInfo;
 	private AddressInfoBase programContact;
 	private ProgramType programType = ProgramType.UNKNOWN;
-	private DisciplineTableInfo tradeTableInfo;
+	private LearnerInputTableInfo tradeTableInfo;
 	private WorkInfo workInfo;
 	private DevProgramInfo devProgramInfo;
 	private AddressInfoBase vacationContact;
@@ -72,11 +72,11 @@ public class ProgramInfo {
 		}
 		
 		if (programType.isShowTradeTable())
-			tradeTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
+			tradeTableInfo = new TradeLearnerInputTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
 		
 		// discipline table info
 		if (programType.isShowDisciplineTable()) {
-			disciplineTableInfo = new DisciplineTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline);
+			disciplineTableInfo = new LearnerInputTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline);
 		}
 	}
 
@@ -188,7 +188,7 @@ public class ProgramInfo {
 	/**
 	 * @return the disciplineTableInfo
 	 */
-	public DisciplineTableInfo getDisciplineTableInfo() {
+	public LearnerInputTableInfo getDisciplineTableInfo() {
 		return disciplineTableInfo;
 	}
 
@@ -216,7 +216,7 @@ public class ProgramInfo {
 	/**
 	 * @return the tradeTableInfo
 	 */
-	public DisciplineTableInfo getTradeTableInfo() {
+	public LearnerInputTableInfo getTradeTableInfo() {
 		return tradeTableInfo;
 	}
 
@@ -230,7 +230,7 @@ public class ProgramInfo {
 	/**
 	 * @param disciplineTableInfo the disciplineTableInfo to set
 	 */
-	public void setDisciplineTableInfo(DisciplineTableInfo disciplineTableInfo) {
+	public void setDisciplineTableInfo(LearnerInputTableInfo disciplineTableInfo) {
 		this.disciplineTableInfo = disciplineTableInfo;
 	}
 
@@ -251,7 +251,7 @@ public class ProgramInfo {
 	/**
 	 * @param tradeTableInfo the tradeTableInfo to set
 	 */
-	public void setTradeTableInfo(DisciplineTableInfo tradeTableInfo) {
+	public void setTradeTableInfo(LearnerInputTableInfo tradeTableInfo) {
 		this.tradeTableInfo = tradeTableInfo;
 	}
 

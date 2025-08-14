@@ -175,10 +175,10 @@ public interface I_ZZ_FormDiscipline
     /** Column name ZZ_DisciplineType */
     public static final String COLUMNNAME_ZZ_DisciplineType = "ZZ_DisciplineType";
 
-	/** Set Discipline Type	  */
+	/** Set LearnerInputInfo Type	  */
 	public void setZZ_DisciplineType (String ZZ_DisciplineType);
 
-	/** Get Discipline Type	  */
+	/** Get LearnerInputInfo Type	  */
 	public String getZZ_DisciplineType();
 
     /** Column name ZZ_Disciplines_ID */
@@ -195,10 +195,10 @@ public interface I_ZZ_FormDiscipline
     /** Column name ZZ_FormDiscipline_ID */
     public static final String COLUMNNAME_ZZ_FormDiscipline_ID = "ZZ_FormDiscipline_ID";
 
-	/** Set Form Discipline	  */
+	/** Set Form LearnerInputInfo	  */
 	public void setZZ_FormDiscipline_ID (int ZZ_FormDiscipline_ID);
 
-	/** Get Form Discipline	  */
+	/** Get Form LearnerInputInfo	  */
 	public int getZZ_FormDiscipline_ID();
 
     /** Column name ZZ_FormDiscipline_UU */
