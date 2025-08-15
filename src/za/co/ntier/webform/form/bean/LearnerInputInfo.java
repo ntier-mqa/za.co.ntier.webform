@@ -23,11 +23,13 @@ public class LearnerInputInfo {
 	private boolean isUploadWPA = false;
 	private boolean isUploadAccred = false;
 	private String fileNameAccred;
-	private int noOfLearners = 0;
+	private Integer noOfLearners = null;
 	private String postalCode;
 	private MRegion province;
 	private Collection<MCity> areas;
 	private MCity areaSelected;
+	private Integer noOfEmployedLearners = null;
+	private Integer noOfUnEmployedLearners = null;
 	
 	public LearnerInputInfo(List<Object> args) {
 		
@@ -164,7 +166,7 @@ public class LearnerInputInfo {
 	/**
 	 * @return the uploadAccreditationTitle
 	 */
-	public String getUploadAccreditationTitle() {
+	public String getUploadAccredTitle() {
 		return " Accred./SLA";
 	}
 
@@ -271,7 +273,39 @@ public class LearnerInputInfo {
 	/**
 	 * @param learnerInputProgramID the learnerInputProgramID to set
 	 */
-	public void setLearnerInputProgramID(int learnerInputProgramID) {
+	public void setLearnerInputProgramID(Integer learnerInputProgramID) {
 		this.learnerInputProgramID = learnerInputProgramID;
+	}
+
+
+	/**
+	 * @return the noOfEmployedLearners
+	 */
+	public Integer getNoOfEmployedLearners() {
+		return noOfEmployedLearners;
+	}
+
+
+	/**
+	 * @param noOfEmployedLearners the noOfEmployedLearners to set
+	 */
+	public void setNoOfEmployedLearners(Integer noOfEmployedLearners) {
+		this.noOfEmployedLearners = noOfEmployedLearners;
+	}
+
+
+	/**
+	 * @return the noOfUnEmployedLearners
+	 */
+	public Integer getNoOfUnEmployedLearners() {
+		return noOfUnEmployedLearners;
+	}
+
+
+	/**
+	 * @param noOfUnEmployedLearners the noOfUnEmployedLearners to set
+	 */
+	public void setNoOfUnEmployedLearners(Integer noOfUnEmployedLearners) {
+		this.noOfUnEmployedLearners = noOfUnEmployedLearners;
 	}
 }

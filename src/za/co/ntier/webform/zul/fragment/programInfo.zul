@@ -48,7 +48,12 @@
 	<include
 		if="${vmProgramInfo.programInfo.programType eq ProgramType.NON_ARTISAN_DEV}"
 		nonArtisanDevInfo="@load(vmProgramInfo.programInfo.nonArtisanDevInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/artisanRPL.zul')))" />
+		src="@load((WebForm.getBundleResourcePath('fragment/nonArtisanDev.zul')))" />
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.NON_ARTISAN_DEV_RPL}"
+		nonArtisanDevRPLInfo="@load(vmProgramInfo.programInfo.nonArtisanDevRPLInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/nonArtisanDevRPL.zul')))" />
 	
 	<include
 	    if="${vmProgramInfo.programInfo.programType eq ProgramType.NCV_GRADUATES}"

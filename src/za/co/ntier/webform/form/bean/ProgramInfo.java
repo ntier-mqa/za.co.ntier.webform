@@ -58,7 +58,7 @@ public class ProgramInfo {
 		}else if (programType == ProgramType.ARTISAN_RPL) {
 			this.artisanRPLInfo = new ArtisanRPLInfo();
 		}else if (programType == ProgramType.NON_ARTISAN_DEV) {
-			this.nonArtisanDevInfo = new NonArtisanDevInfo();
+			this.nonArtisanDevInfo = new NonArtisanDevInfo(programMasterDataID, programType);
 		}else if (programType == ProgramType.NON_ARTISAN_DEV_RPL) {
 			this.nonArtisanDevRPLInfo = new NonArtisanDevRPLInfo();
 		}else if (programType == ProgramType.NCV_GRADUATES) {
@@ -72,7 +72,7 @@ public class ProgramInfo {
 		}
 		
 		if (programType.isShowTradeTable())
-			tradeTableInfo = new TradeLearnerInputTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
+			tradeTableInfo = new TradeTableInfo(programMasterDataID, programType);
 		
 		// discipline table info
 		if (programType.isShowDisciplineTable()) {

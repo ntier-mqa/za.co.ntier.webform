@@ -7,7 +7,9 @@ import org.zkoss.bind.BindUtils;
 
 import za.co.ntier.webform.model.X_ZZ_Disciplines;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
+import za.co.ntier.webform.model.X_ZZ_Learnerships;
 import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
+import za.co.ntier.webform.model.X_ZZ_Program_Learnerships;
 import za.co.ntier.webform.model.X_ZZ_Program_Trade;
 import za.co.ntier.webform.model.X_ZZ_Trade;
 
@@ -17,7 +19,19 @@ public class LearnerInputTableInfo {
 	private boolean hasWPAReq = false;
 	private ProgramType programType;
 	private int totalLearners = 0;
+	private int totalEmployedLearners = 0;
+	private int totalUnEmployedLearners = 0;
 	private String learnerInputType;
+	private boolean showLearners = true;
+	private boolean showEmployedLearners = false;
+	
+	public int getLeftColSize() {
+		if (showLearners) {
+			return 6;//12/2
+		}else {
+			return 4;// 12/3
+		}
+	}
 
 	public LearnerInputTableInfo(int programMasterDataID, ProgramType programType, String learnerInputType) {
 		this.learnerInputInfos = new ArrayList<>();
@@ -30,6 +44,7 @@ public class LearnerInputTableInfo {
 		String learnerInputProgramTable;
 		String learnerInputTable;
 		
+		StringBuilder sql = new StringBuilder();
 		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade) {
 			learnerInputProgramID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Trade_ID;
 			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
@@ -40,12 +55,17 @@ public class LearnerInputTableInfo {
 			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
 			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
 			learnerInputTable = X_ZZ_Disciplines.Table_Name;
+		}else if (learnerInputType == LearnershipTableInfo.learnerInputType_4IR_Learnership ||
+				learnerInputType == LearnershipTableInfo.learnerInputType_General_Learnership) {
+			learnerInputProgramID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
+			learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
+			learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
+			learnerInputTable = X_ZZ_Learnerships.Table_Name;
 		}else {
 			throw new IllegalArgumentException("Wrong learnerInput type");
 		}
-			
 		
-		List<List<Object>> learnerInputInfoObjs = DB.getSQLArrayObjectsEx(null, String.format("SELECT %s, %s.%s, %s, %s, %s FROM %s INNER JOIN %s ON (%s.%s = %s.%s) WHERE %s = ?", 
+		sql.append(String.format("SELECT %s, %s.%s, %s, %s, %s FROM %s INNER JOIN %s ON (%s.%s = %s.%s) WHERE %s = ?", 
 				learnerInputProgramID,
 				learnerInputTable,
 				learnerInputID,
@@ -58,10 +78,17 @@ public class LearnerInputTableInfo {
 				learnerInputID,
 				learnerInputTable,
 				learnerInputID,
-				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID), programMasterDataID);
+				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID));
+		
+		if (learnerInputType == LearnershipTableInfo.learnerInputType_4IR_Learnership) {
+			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = '4'");
+		}else if (learnerInputType == LearnershipTableInfo.learnerInputType_General_Learnership){
+			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'G'");
+		}
+				
+		List<List<Object>> learnerInputInfoObjs = DB.getSQLArrayObjectsEx(null, sql.toString(), programMasterDataID);
 
 		
-
 		learnerInputInfoObjs.stream().forEach((learnerInputInfoObj) -> {
 				LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
 				learnerInputInfos.add(learnerInputInfo);
@@ -77,11 +104,11 @@ public class LearnerInputTableInfo {
 		
 
 		if (hasWPAReq && hasAccred) {
-			rightColSize = 12/4;
+			rightColSize = 4; //12/3
 		} else if (!hasWPAReq && !hasAccred) {
-			rightColSize = 12/2;
+			rightColSize = 12;
 		} else {
-			rightColSize = 12/3;
+			rightColSize = 6; //12/2
 		}
 	}
 
@@ -165,6 +192,20 @@ public class LearnerInputTableInfo {
 
 		BindUtils.postNotifyChange(this, "totalLearners");
 	}
+	
+	public void noOfUnEmployedLearnersChange() {
+		setTotalUnEmployedLearners(learnerInputInfos.stream().filter(t -> t.getNoOfUnEmployedLearners() != null)
+				.mapToInt(LearnerInputInfo::getNoOfUnEmployedLearners).sum());
+
+		BindUtils.postNotifyChange(this, "totalUnEmployedLearners");
+	}
+	
+	public void noOfEmployedLearnersChange() {
+		setTotalEmployedLearners(learnerInputInfos.stream().filter(t -> t.getNoOfEmployedLearners() != null)
+				.mapToInt(LearnerInputInfo::getNoOfEmployedLearners).sum());
+
+		BindUtils.postNotifyChange(this, "totalEmployedLearners");
+	}
 
 
 	/**
@@ -228,6 +269,62 @@ public class LearnerInputTableInfo {
 	 */
 	public void setLearnerInputType(String learnerInputType) {
 		this.learnerInputType = learnerInputType;
+	}
+
+	/**
+	 * @return the totalEmployedLearners
+	 */
+	public int getTotalEmployedLearners() {
+		return totalEmployedLearners;
+	}
+
+	/**
+	 * @param totalEmployedLearners the totalEmployedLearners to set
+	 */
+	public void setTotalEmployedLearners(int totalEmployedLearners) {
+		this.totalEmployedLearners = totalEmployedLearners;
+	}
+
+	/**
+	 * @return the totalUnEmployedLearners
+	 */
+	public int getTotalUnEmployedLearners() {
+		return totalUnEmployedLearners;
+	}
+
+	/**
+	 * @param totalUnEmployedLearners the totalUnEmployedLearners to set
+	 */
+	public void setTotalUnEmployedLearners(int totalUnEmployedLearners) {
+		this.totalUnEmployedLearners = totalUnEmployedLearners;
+	}
+
+	/**
+	 * @return the showLearners
+	 */
+	public boolean isShowLearners() {
+		return showLearners;
+	}
+
+	/**
+	 * @param showLearners the showLearners to set
+	 */
+	public void setShowLearners(boolean showLearners) {
+		this.showLearners = showLearners;
+	}
+
+	/**
+	 * @return the showEmployedLearners
+	 */
+	public boolean isShowEmployedLearners() {
+		return showEmployedLearners;
+	}
+
+	/**
+	 * @param showEmployedLearners the showEmployedLearners to set
+	 */
+	public void setShowEmployedLearners(boolean showEmployedLearners) {
+		this.showEmployedLearners = showEmployedLearners;
 	}
 
 }

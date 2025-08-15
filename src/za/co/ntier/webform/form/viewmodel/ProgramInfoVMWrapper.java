@@ -28,5 +28,4 @@ public class ProgramInfoVMWrapper {
 	public void setProgramInfo(ProgramInfo programInfo) {
 		this.programInfo = programInfo;
 	}
-
 }

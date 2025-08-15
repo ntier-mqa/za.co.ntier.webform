@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zk xmlns:n="native">
 	<div
-		viewModel="@id('vmNonArtisanDevRPL') @init('za.co.ntier.webform.form.viewmodel.nonArtisanDevRPLVMWrapper')">
-		
+		viewModel="@id('vmNonArtisanDevRPL') @init('za.co.ntier.webform.form.viewmodel.NonArtisanDevRPLVMWrapper')">
+		<div>
+			<label value="Note 1:" />
+			<label value="Non- Artisan RPL is paid upon completion (for Mining and Mining Contractors)" />
+		</div>
+		<div>
+			<label value="Note 2:" />
+			<label value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
+grants." />
+		</div>
 	</div>
 </zk>
