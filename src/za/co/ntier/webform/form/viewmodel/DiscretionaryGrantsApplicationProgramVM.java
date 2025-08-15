@@ -180,6 +180,9 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	
 	public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo disciplineTableInfo, int applicationFormID) {
 		for (LearnerInputInfo discipline : disciplineTableInfo.getLearnerInputInfos()) {
+			if (discipline.getNoOfLearners() == null)
+				continue;
+			
 			X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null);
 			formDisciplines.setZZ_Application_Form_ID(applicationFormID);
 			formDisciplines.setZZ_LearnersNo(discipline.getNoOfLearners());

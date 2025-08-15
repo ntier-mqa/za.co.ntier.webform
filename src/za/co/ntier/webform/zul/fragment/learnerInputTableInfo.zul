@@ -32,12 +32,12 @@
 						</div>
 						
 						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
+							sclass="@init(('longtext col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
 							<label value="No. of Unemployed" />
 						</div>
 						
 						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
+							sclass="@init(('longtext col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
 							<label value="No. of Employed" />
 						</div>
 						
@@ -50,7 +50,7 @@
 				
 				<div class="col-sm-5 col-container text-center">
 					<div class="row font-weight-bold">
-						<div sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.rightColSize += ' col-title d-flex align-items-center'))">
+						<div sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.rightColSize += ' col-title d-flex justify-content-center align-items-center'))">
 	                        <label value="Area" />
 	                    </div>
 	                    <div if="${vmLearnerInputInfo.learnerInputTableInfo.isHasWPAReq()}"
@@ -79,8 +79,8 @@
 						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowLearners()}"
 							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-content-input-full d-flex align-items-center'))">
 							<textbox sclass="form-control"
-								value="@bind(learnerInputInfo.noOfLearnerChange)"
-								onChange="@command('noOfLearnerChange')" />
+								value="@bind(learnerInputInfo.noOfLearners)"
+								onChange="@command('noOfLearnersChange')" />
 						</div>
 						
 						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
@@ -161,7 +161,7 @@
 						</div>
 						
 						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="col-sm col-title text-center d-flex align-items-center">
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
 							<label
 								value="@load(vmLearnerInputInfo.learnerInputTableInfo.totalEmployedLearners)" />
 						</div>
@@ -170,12 +170,13 @@
 			</div>
 		</template>
 	</div>
-	
-	
+
 	<hlayout>
 		<label sclass="sectionHeader" value="Note:" />
 		<label
 			value="All Employers/Organisations with multiple sites using one levy number must submit one
 				consolidated application for all sites." />
 	</hlayout>
+	
+	
 </div>

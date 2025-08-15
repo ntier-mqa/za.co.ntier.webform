@@ -25,9 +25,9 @@ public class LearnerInputTableVMWrapper {
 
 	}
 
-	@Command({ "noOfLearnerChange" })
-	public void noOfLearnerChange() {
-		learnerInputTableInfo.noOfLearnerChange();
+	@Command({ "noOfLearnersChange" })
+	public void noOfLearnersChange() {
+		learnerInputTableInfo.noOfLearnersChange();
 	}
 	
 	@Command({ "noOfEmployedLearnersChange" })

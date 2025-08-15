@@ -25,6 +25,9 @@ public class LearnershipTableInfo extends LearnerInputTableInfo {
 	
 	@Override
 	public String getLearnerInputColTilte() {
+		if(LearnershipTableInfo.learnerInputType_AET_Learnership.equalsIgnoreCase(getLearnerInputType())) {
+			return "Name of Programme";
+		}
 		return "Learnership Type";
 	}
 	

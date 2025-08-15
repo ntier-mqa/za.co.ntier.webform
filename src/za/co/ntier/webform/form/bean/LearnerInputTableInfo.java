@@ -192,7 +192,7 @@ public class LearnerInputTableInfo {
 		return learnerInputType.equals(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
 	}
 
-	public void noOfLearnerChange() {
+	public void noOfLearnersChange() {
 		setTotalLearners(learnerInputInfos.stream().filter(t -> t.getNoOfLearners() != null)
 				.mapToInt(LearnerInputInfo::getNoOfLearners).sum());
 
