@@ -63,8 +63,8 @@ public class ProgramInfo {
 			this.nonArtisanDevRPLInfo = new NonArtisanDevRPLInfo();
 		}else if (programType == ProgramType.NCV_GRADUATES) {
 			this.ncvGraduatesInfo = new NCVGraduatesInfo();
-		}else if (programType == ProgramType.NCV_GRADUATES) {
-			this.aetInfo = new AETInfo();
+		}else if (programType == ProgramType.AET) {
+			this.aetInfo = new AETInfo(programMasterDataID, programType);
 		}else if (programType == ProgramType.OHASSP) {
 			this.ohasspInfo = new OHASSPInfo();
 		}else if (programType == ProgramType.INHOUSE_TRAINING) {

@@ -29,7 +29,17 @@ public class LearnerInputTableVMWrapper {
 	public void noOfLearnerChange() {
 		learnerInputTableInfo.noOfLearnerChange();
 	}
+	
+	@Command({ "noOfEmployedLearnersChange" })
+	public void noOfEmployedLearnersChange() {
+		learnerInputTableInfo.noOfEmployedLearnersChange();
+	}
 
+	@Command({ "noOfUnEmployedLearnersChange" })
+	public void noOfUnEmployedLearnersChange() {
+		learnerInputTableInfo.noOfUnEmployedLearnersChange();
+	}
+	
 	/**
 	 * @param learnerInputTableInfo the learnerInputTableInfo to set
 	 */

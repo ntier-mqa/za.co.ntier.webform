@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -23,4 +24,5 @@ public class NonArtisanDevVMWrapper {
 	public void setNonArtisanDevInfo(NonArtisanDevInfo nonArtisanDevInfo) {
 		this.nonArtisanDevInfo = nonArtisanDevInfo;
 	}
+	
 }

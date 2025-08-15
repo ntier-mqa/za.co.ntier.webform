@@ -9,14 +9,21 @@ public class AETVMWrapper {
 
     @Init
     public void init(@ExecutionArgParam("aetInfo") AETInfo aetInfo) {
-        this.setAETInfo(aetInfo);
-    }
-
-    public AETInfo getAETInfo() {
-        return aetInfo;
-    }
-
-    public void setAETInfo(AETInfo aetInfo) {
         this.aetInfo = aetInfo;
     }
+
+	/**
+	 * @return the aetInfo
+	 */
+	public AETInfo getAetInfo() {
+		return aetInfo;
+	}
+
+	/**
+	 * @param aetInfo the aetInfo to set
+	 */
+	public void setAetInfo(AETInfo aetInfo) {
+		this.aetInfo = aetInfo;
+	}
+
 }

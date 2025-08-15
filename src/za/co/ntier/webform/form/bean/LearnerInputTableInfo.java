@@ -56,7 +56,8 @@ public class LearnerInputTableInfo {
 			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
 			learnerInputTable = X_ZZ_Disciplines.Table_Name;
 		}else if (learnerInputType == LearnershipTableInfo.learnerInputType_4IR_Learnership ||
-				learnerInputType == LearnershipTableInfo.learnerInputType_General_Learnership) {
+				learnerInputType == LearnershipTableInfo.learnerInputType_General_Learnership ||
+				learnerInputType == LearnershipTableInfo.learnerInputType_AET_Learnership) {
 			learnerInputProgramID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
 			learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
 			learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
@@ -84,8 +85,13 @@ public class LearnerInputTableInfo {
 			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = '4'");
 		}else if (learnerInputType == LearnershipTableInfo.learnerInputType_General_Learnership){
 			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'G'");
+		}else if (learnerInputType == LearnershipTableInfo.learnerInputType_AET_Learnership){
+			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'A'");
 		}
-				
+		
+		sql.append(" ORDER BY ");
+		sql.append(X_ZZ_Program_Trade.COLUMNNAME_Line);
+		
 		List<List<Object>> learnerInputInfoObjs = DB.getSQLArrayObjectsEx(null, sql.toString(), programMasterDataID);
 
 		

@@ -3,6 +3,7 @@ package za.co.ntier.webform.form.bean;
 public class LearnershipTableInfo extends LearnerInputTableInfo {
 	public final static String learnerInputType_General_Learnership = "General Learnership";
 	public final static String learnerInputType_4IR_Learnership = "4IR Learnership";
+	public final static String learnerInputType_AET_Learnership = "AET Learnership";
 	
 	private LearnershipTableInfo(int programMasterDataID, ProgramType programType, String learnerInputType) {
 		super(programMasterDataID, programType, learnerInputType);
@@ -16,6 +17,10 @@ public class LearnershipTableInfo extends LearnerInputTableInfo {
 	
 	public static LearnershipTableInfo createGeneralLearnership(int programMasterDataID, ProgramType programType) {
 		return new LearnershipTableInfo(programMasterDataID, programType, learnerInputType_General_Learnership);
+	}
+	
+	public static LearnershipTableInfo createAetLearnership(int programMasterDataID, ProgramType programType) {
+		return new LearnershipTableInfo(programMasterDataID, programType, learnerInputType_AET_Learnership);
 	}
 	
 	@Override
