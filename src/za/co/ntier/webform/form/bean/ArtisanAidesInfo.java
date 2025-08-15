@@ -1,32 +1,37 @@
 package za.co.ntier.webform.form.bean;
 
 public class ArtisanAidesInfo {
-	private EmployedNoInfo qualification;
-	private EmployedNoInfo skill;
-	/**
-	 * @return the qualification
-	 */
-	public EmployedNoInfo getQualification() {
-		return qualification;
+	private OneLineTableInfo qualificationTableInfo;
+	private OneLineTableInfo skillTableInfo;
+	
+	public ArtisanAidesInfo() {
+		this.qualificationTableInfo = OneLineTableInfo.createFullEmployedTableInfo();
+		this.skillTableInfo = OneLineTableInfo.createFullEmployedTableInfo();
 	}
 	/**
-	 * @param qualification the qualification to set
+	 * @return the qualificationTableInfo
 	 */
-	public void setQualification(EmployedNoInfo qualification) {
-		this.qualification = qualification;
+	public OneLineTableInfo getQualificationTableInfo() {
+		return qualificationTableInfo;
 	}
 	/**
-	 * @return the skill
+	 * @param qualificationTableInfo the qualificationTableInfo to set
 	 */
-	public EmployedNoInfo getSkill() {
-		return skill;
+	public void setQualificationTableInfo(OneLineTableInfo qualificationTableInfo) {
+		this.qualificationTableInfo = qualificationTableInfo;
 	}
 	/**
-	 * @param skill the skill to set
+	 * @return the skillTableInfo
 	 */
-	public void setSkill(EmployedNoInfo skill) {
-		this.skill = skill;
+	public OneLineTableInfo getSkillTableInfo() {
+		return skillTableInfo;
+	}
+	/**
+	 * @param skillTableInfo the skillTableInfo to set
+	 */
+	public void setSkillTableInfo(OneLineTableInfo skillTableInfo) {
+		this.skillTableInfo = skillTableInfo;
 	}
 	
-	
+		
 }
