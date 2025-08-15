@@ -11,5 +11,9 @@
 			<label value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
 grants." />
 		</div>
+		
+		<include 
+				learnerInputTableInfo="@load(vmNonArtisanDevRPL.nonArtisanDevRPLInfo.tableInfo)"
+				src="@load((WebForm.getBundleResourcePath('fragment/learnerInputTableInfo.zul')))" />
 	</div>
 </zk>

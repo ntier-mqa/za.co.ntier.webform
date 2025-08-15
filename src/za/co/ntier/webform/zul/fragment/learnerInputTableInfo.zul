@@ -20,35 +20,43 @@
 			<!-- learner Input table header -->
 			<div if="${learnerInputInfoStatus.first}"
                     class="row font-weight-bold">
-                <div class="col-sm-3 col-title text-center d-flex align-items-center">
-					<label value="@init(vmLearnerInputInfo.learnerInputTableInfo.learnerInputColTilte)" />
+                    
+                <div 
+                	if="${vmLearnerInputInfo.learnerInputTableInfo.isShowLearnerTitle()}"
+                	class="col-sm-3 col-title text-center d-flex align-items-center">
+					<label value="@init(vmLearnerInputInfo.learnerInputTableInfo.learnerTilte)" />
 				</div>
 				
-				<div class="col-sm-4 col-container">
+				<div class="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftSize += ' col-container'))">
 					<div class="row font-weight-bold">
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
-							<label value="No. of Learners" />
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoLearners()}"
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noLearnersSize += ' col-title text-center d-flex align-items-center'))">
+							<label value="@init(vmLearnerInputInfo.learnerInputTableInfo.noLearnersTitle)" />
 						</div>
 						
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="@init(('longtext col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
-							<label value="No. of Unemployed" />
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoUnEmployed()}"
+							sclass="@init(('longtext col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noUnEmployedSize += ' col-title text-center d-flex align-items-center'))">
+							<label value="@init(vmLearnerInputInfo.learnerInputTableInfo.noUnEmployedTitle)" />
 						</div>
 						
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="@init(('longtext col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
-							<label value="No. of Employed" />
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoEmployed()}"
+							sclass="@init(('longtext col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noEmployedSize += ' col-title text-center d-flex align-items-center'))">
+							<label value="@init(vmLearnerInputInfo.learnerInputTableInfo.noEmployedTitle)" />
+						</div>
+						
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoTotalApply()}"
+							sclass="@init(('longtext col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noTotalApplySize += ' col-title text-center d-flex align-items-center'))">
+							<label value="@init(vmLearnerInputInfo.learnerInputTableInfo.noTotalApplyTitle)" />
 						</div>
 						
 						<div 
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.postalCodeSize += ' col-title text-center d-flex align-items-center'))">
 							<label value="Site Postal Code" />
 						</div>
 					</div>
 				</div>
 				
-				<div class="col-sm-5 col-container text-center">
+				<div class="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.rightSize += ' col-container text-center'))">
 					<div class="row font-weight-bold">
 						<div sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.rightColSize += ' col-title d-flex justify-content-center align-items-center'))">
 	                        <label value="Area" />
@@ -68,44 +76,50 @@
             <!-- learner Input table detail -->
 			<div class="row font-weight-bold">
 
-				<div 
+				<div
+					if="${vmLearnerInputInfo.learnerInputTableInfo.isShowLearnerTitle()}" 
 					sclass="col-sm-3 col-title d-flex align-items-center">
 					<label value="@load(learnerInputInfo.learnerInputText)" />
 				</div>
 
-				<div class="col-sm-4 col-container">
+				<div class="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftSize += ' col-container'))">
 					<div class="row font-weight-bold">
-					
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-content-input-full d-flex align-items-center'))">
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoLearners()}"
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noLearnersSize += ' col-content-input-full d-flex align-items-center'))">
 							<textbox sclass="form-control"
-								value="@bind(learnerInputInfo.noOfLearners)"
-								onChange="@command('noOfLearnersChange')" />
+								value="@bind(learnerInputInfo.noLearners)"
+								onChange="@command('noLearnersChange')" />
 						</div>
 						
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-content-input-full d-flex align-items-center'))">
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoUnEmployed()}"
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noUnEmployedSize += ' col-content-input-full d-flex align-items-center'))">
 							<textbox sclass="form-control"
-								value="@bind(learnerInputInfo.noOfUnEmployedLearners)"
-								onChange="@command('noOfUnEmployedLearnersChange')" />
+								value="@bind(learnerInputInfo.noUnEmployed)"
+								onChange="@command('noUnEmployedChange')" />
 						</div>
 		
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-content-input-full d-flex align-items-center'))">
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoEmployed()}"
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noEmployedSize += ' col-content-input-full d-flex align-items-center'))">
 							<textbox sclass="form-control"
-								value="@bind(learnerInputInfo.noOfEmployedLearners)"
-								onChange="@command('noOfEmployedLearnersChange')" />
+								value="@bind(learnerInputInfo.noEmployed)"
+								onChange="@command('noEmployedChange')" />
+						</div>
+						
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoTotalApply()}"
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noTotalApplySize += ' col-content-input-full d-flex align-items-center'))">
+							<textbox sclass="form-control"
+								value="@bind(learnerInputInfo.noTotalApply)"/>
 						</div>
 		
 						<div
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-content-input-full d-flex align-items-center'))">
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.postalCodeSize += ' col-content-input-full d-flex align-items-center'))">
 							<textbox sclass="form-control"
 								value="@bind(learnerInputInfo.postalCode)" />
 						</div>
 					</div>
 				</div>
 				
-				<div class="col-sm-5 col-container">
+				<div class="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.rightSize += ' col-container'))">
 					<div sclass="row font-weight-bold">
 						<div sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.rightColSize += ' col-content-input-full d-flex align-items-center'))">
 	                        <listbox mold="select" sclass="form-control"
@@ -116,6 +130,7 @@
 								</template>
 							</listbox>
 	                    </div>
+	                    
 	                    <div if="${vmLearnerInputInfo.learnerInputTableInfo.isHasWPAReq()}"
 	                        	sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.rightColSize += ' col-title d-flex justify-content-center align-items-center'))">
 	                        <div if="${learnerInputInfo.isUploadWPA()}">
@@ -125,6 +140,7 @@
 								<label value="@load(learnerInputInfo.fileNameWPA)" />
 							</div>
 	                    </div>
+	                    
 	                    <div if="${vmLearnerInputInfo.learnerInputTableInfo.isHasAccred()}"
 	                        	sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.rightColSize += ' col-title d-flex justify-content-center align-items-center'))">
 	                        <div if="${learnerInputInfo.isUploadAccred()}">
@@ -139,31 +155,33 @@
 			</div>
 			
 			<!-- learner Input total -->		
-			<div if="${learnerInputInfoStatus.last}"
+			<div if="${learnerInputInfoStatus.last and vmLearnerInputInfo.learnerInputTableInfo.showTotalLine}"
 					class="row font-weight-bold">
+					
 				<div
+					if="${vmLearnerInputInfo.learnerInputTableInfo.isShowLearnerTitle()}"
 					sclass="col-sm-3 col-title d-flex align-items-center">
 					<label value="Total" />
 				</div>
 				
-				<div class="col-sm-4 col-container">
+				<div class="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftSize += ' col-container'))">
 					<div class="row font-weight-bold">
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoLearners()}"
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noLearnersSize += ' col-title text-center d-flex align-items-center'))">
 							<label
 								value="@load(vmLearnerInputInfo.learnerInputTableInfo.totalLearners)" />
 						</div>
 						
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoUnEmployed()}"
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noUnEmployedSize += ' col-title text-center d-flex align-items-center'))">
 							<label
-								value="@load(vmLearnerInputInfo.learnerInputTableInfo.totalUnEmployedLearners)" />
+								value="@load(vmLearnerInputInfo.learnerInputTableInfo.totalNoUnEmployed)" />
 						</div>
 						
-						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowEmployedLearners()}"
-							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.leftColSize += ' col-title text-center d-flex align-items-center'))">
+						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoEmployed()}"
+							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noEmployedSize += ' col-title text-center d-flex align-items-center'))">
 							<label
-								value="@load(vmLearnerInputInfo.learnerInputTableInfo.totalEmployedLearners)" />
+								value="@load(vmLearnerInputInfo.learnerInputTableInfo.totalNoEmployed)" />
 						</div>
 					</div>
 				</div>

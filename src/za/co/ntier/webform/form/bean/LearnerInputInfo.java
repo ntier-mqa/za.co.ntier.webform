@@ -23,13 +23,19 @@ public class LearnerInputInfo {
 	private boolean isUploadWPA = false;
 	private boolean isUploadAccred = false;
 	private String fileNameAccred;
-	private Integer noOfLearners = null;
 	private String postalCode;
 	private MRegion province;
 	private Collection<MCity> areas;
 	private MCity areaSelected;
-	private Integer noOfEmployedLearners = null;
-	private Integer noOfUnEmployedLearners = null;
+	
+	private Integer noLearners = null;
+	private Integer noEmployed = null;
+	private Integer noUnEmployed = null;
+	private Integer noTotalApply = null;
+	
+	public LearnerInputInfo() {
+		
+	}
 	
 	public LearnerInputInfo(List<Object> args) {
 		
@@ -58,10 +64,10 @@ public class LearnerInputInfo {
 	}
 
 	/**
-	 * @return the noOfLearners
+	 * @return the noLearners
 	 */
-	public Integer getNoOfLearners() {
-		return noOfLearners;
+	public Integer getNoLearners() {
+		return noLearners;
 	}
 
 	/**
@@ -96,10 +102,10 @@ public class LearnerInputInfo {
 	}
 
 	/**
-	 * @param noOfLearners the noOfLearners to set
+	 * @param noLearners the noLearners to set
 	 */
-	public void setNoOfLearners(Integer noOfLearners) {
-		this.noOfLearners = noOfLearners;
+	public void setNoLearners(Integer noLearners) {
+		this.noLearners = noLearners;
 	}
 
 	/**
@@ -279,33 +285,49 @@ public class LearnerInputInfo {
 
 
 	/**
-	 * @return the noOfEmployedLearners
+	 * @return the noEmployed
 	 */
-	public Integer getNoOfEmployedLearners() {
-		return noOfEmployedLearners;
+	public Integer getNoEmployed() {
+		return noEmployed;
 	}
 
 
 	/**
-	 * @param noOfEmployedLearners the noOfEmployedLearners to set
+	 * @param noEmployed the noEmployed to set
 	 */
-	public void setNoOfEmployedLearners(Integer noOfEmployedLearners) {
-		this.noOfEmployedLearners = noOfEmployedLearners;
+	public void setNoEmployed(Integer noEmployed) {
+		this.noEmployed = noEmployed;
 	}
 
 
 	/**
-	 * @return the noOfUnEmployedLearners
+	 * @return the noUnEmployed
 	 */
-	public Integer getNoOfUnEmployedLearners() {
-		return noOfUnEmployedLearners;
+	public Integer getNoUnEmployed() {
+		return noUnEmployed;
 	}
 
 
 	/**
-	 * @param noOfUnEmployedLearners the noOfUnEmployedLearners to set
+	 * @param noUnEmployed the noUnEmployed to set
 	 */
-	public void setNoOfUnEmployedLearners(Integer noOfUnEmployedLearners) {
-		this.noOfUnEmployedLearners = noOfUnEmployedLearners;
+	public void setNoUnEmployed(Integer noUnEmployed) {
+		this.noUnEmployed = noUnEmployed;
+	}
+
+
+	/**
+	 * @return the noTotalApply
+	 */
+	public Integer getNoTotalApply() {
+		return noTotalApply;
+	}
+
+
+	/**
+	 * @param noTotalApply the noTotalApply to set
+	 */
+	public void setNoTotalApply(Integer noTotalApply) {
+		this.noTotalApply = noTotalApply;
 	}
 }

@@ -8,7 +8,7 @@ public class TradeTableInfo extends LearnerInputTableInfo {
 	}
 
 	@Override
-	public String getLearnerInputColTilte() {
+	public String getLearnerTilte() {
 		return "Trade";
 	}
 }

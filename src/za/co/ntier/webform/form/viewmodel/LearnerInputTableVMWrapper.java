@@ -25,19 +25,19 @@ public class LearnerInputTableVMWrapper {
 
 	}
 
-	@Command({ "noOfLearnersChange" })
-	public void noOfLearnersChange() {
-		learnerInputTableInfo.noOfLearnersChange();
+	@Command({ "noLearnersChange" })
+	public void noLearnersChange() {
+		learnerInputTableInfo.noLearnersChange();
 	}
 	
-	@Command({ "noOfEmployedLearnersChange" })
-	public void noOfEmployedLearnersChange() {
-		learnerInputTableInfo.noOfEmployedLearnersChange();
+	@Command({ "noEmployedChange" })
+	public void noEmployedChange() {
+		learnerInputTableInfo.noOfEmployedChange();
 	}
 
-	@Command({ "noOfUnEmployedLearnersChange" })
-	public void noOfUnEmployedLearnersChange() {
-		learnerInputTableInfo.noOfUnEmployedLearnersChange();
+	@Command({ "noUnEmployedChange" })
+	public void noUnEmployedChange() {
+		learnerInputTableInfo.noOfUnEmployedChange();
 	}
 	
 	/**

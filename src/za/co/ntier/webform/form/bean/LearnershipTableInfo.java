@@ -7,8 +7,9 @@ public class LearnershipTableInfo extends LearnerInputTableInfo {
 	
 	private LearnershipTableInfo(int programMasterDataID, ProgramType programType, String learnerInputType) {
 		super(programMasterDataID, programType, learnerInputType);
-		setShowEmployedLearners(true);
-		setShowLearners(false);
+		setShowNoEmployed(true);
+		setShowNoUnEmployed(true);
+		setShowNoLearners(false);
 	}
 
 	public static LearnershipTableInfo create4IRLearnership(int programMasterDataID, ProgramType programType) {
@@ -24,7 +25,7 @@ public class LearnershipTableInfo extends LearnerInputTableInfo {
 	}
 	
 	@Override
-	public String getLearnerInputColTilte() {
+	public String getLearnerTilte() {
 		if(LearnershipTableInfo.learnerInputType_AET_Learnership.equalsIgnoreCase(getLearnerInputType())) {
 			return "Name of Programme";
 		}

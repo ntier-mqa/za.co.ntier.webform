@@ -15,24 +15,74 @@ import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class LearnerInputTableInfo {
 	private List<LearnerInputInfo> learnerInputInfos;
+	
 	private boolean hasAccred = false;
 	private boolean hasWPAReq = false;
-	private ProgramType programType;
-	private int totalLearners = 0;
-	private int totalEmployedLearners = 0;
-	private int totalUnEmployedLearners = 0;
-	private String learnerInputType;
-	private boolean showLearners = true;
-	private boolean showEmployedLearners = false;
 	
-	public int getLeftColSize() {
-		if (showLearners) {
+	private ProgramType programType;
+	private String learnerInputType;
+	
+	private int totalNoLearners = 0;
+	private int totalNoEmployed = 0;
+	private int totalNoUnEmployed = 0;
+	
+	
+	private boolean showNoLearners = true;
+	private boolean showNoEmployed = false;
+	private boolean showNoUnEmployed = false;
+	private boolean showNoTotalApply = false;
+	private boolean showTotalLine = true;
+	
+	private String noLearnersTitle = "No. of Learners";
+	private String noEmployedTitle = "No. of Employed";
+	private String noUnEmployedTitle = "No. of Unemployed";
+	private String noTotalApplyTitle = "Total Number of Learners Applied For";
+	
+	private boolean showLearnerTitle = true;
+	
+	public int getRightSize() {
+		return 5;
+	}
+	
+	public int getLeftSize() {
+		return 4;
+	}
+	
+	public int getNoLearnersSize() {
+		if (showNoLearners) {
+			return 6;//12/2
+		}else {
+			return 4;// 12/3
+		}
+	}
+	
+	public int getNoEmployedSize() {
+		if (showNoLearners) {
+			return 6;//12/2
+		}else {
+			return 4;// 12/3
+		}
+	}
+	
+	public int getNoUnEmployedSize() {
+		if (showNoLearners) {
+			return 6;//12/2
+		}else {
+			return 4;// 12/3
+		}
+	}
+	
+	public int getPostalCodeSize() {
+		if (showNoLearners) {
 			return 6;//12/2
 		}else {
 			return 4;// 12/3
 		}
 	}
 
+	public LearnerInputTableInfo() {
+		
+	}
 	public LearnerInputTableInfo(int programMasterDataID, ProgramType programType, String learnerInputType) {
 		this.learnerInputInfos = new ArrayList<>();
 		this.setProgramType(programType);
@@ -152,7 +202,7 @@ public class LearnerInputTableInfo {
 		return null;
 	}
 
-	public String getLearnerInputColTilte() {
+	public String getLearnerTilte() {
 		return "Discipline";
 	}
 	
@@ -165,10 +215,10 @@ public class LearnerInputTableInfo {
 	}
 
 	/**
-	 * @return the totalLearners
+	 * @return the totalNoLearners
 	 */
 	public int getTotalLearners() {
-		return totalLearners;
+		return totalNoLearners;
 	}
 
 	/**
@@ -192,25 +242,25 @@ public class LearnerInputTableInfo {
 		return learnerInputType.equals(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
 	}
 
-	public void noOfLearnersChange() {
-		setTotalLearners(learnerInputInfos.stream().filter(t -> t.getNoOfLearners() != null)
-				.mapToInt(LearnerInputInfo::getNoOfLearners).sum());
+	public void noLearnersChange() {
+		setTotalLearners(learnerInputInfos.stream().filter(t -> t.getNoLearners() != null)
+				.mapToInt(LearnerInputInfo::getNoLearners).sum());
 
-		BindUtils.postNotifyChange(this, "totalLearners");
+		BindUtils.postNotifyChange(this, "totalNoLearners");
 	}
 	
-	public void noOfUnEmployedLearnersChange() {
-		setTotalUnEmployedLearners(learnerInputInfos.stream().filter(t -> t.getNoOfUnEmployedLearners() != null)
-				.mapToInt(LearnerInputInfo::getNoOfUnEmployedLearners).sum());
+	public void noOfUnEmployedChange() {
+		setTotalNoUnEmployed(learnerInputInfos.stream().filter(t -> t.getNoUnEmployed() != null)
+				.mapToInt(LearnerInputInfo::getNoUnEmployed).sum());
 
-		BindUtils.postNotifyChange(this, "totalUnEmployedLearners");
+		BindUtils.postNotifyChange(this, "totalNoUnEmployed");
 	}
 	
-	public void noOfEmployedLearnersChange() {
-		setTotalEmployedLearners(learnerInputInfos.stream().filter(t -> t.getNoOfEmployedLearners() != null)
-				.mapToInt(LearnerInputInfo::getNoOfEmployedLearners).sum());
+	public void noOfEmployedChange() {
+		setTotalNoEmployed(learnerInputInfos.stream().filter(t -> t.getNoEmployed() != null)
+				.mapToInt(LearnerInputInfo::getNoEmployed).sum());
 
-		BindUtils.postNotifyChange(this, "totalEmployedLearners");
+		BindUtils.postNotifyChange(this, "totalNoEmployed");
 	}
 
 
@@ -243,10 +293,10 @@ public class LearnerInputTableInfo {
 	}
 
 	/**
-	 * @param totalLearners the totalLearners to set
+	 * @param totalNoLearners the totalNoLearners to set
 	 */
 	public void setTotalLearners(int totalLearners) {
-		this.totalLearners = totalLearners;
+		this.totalNoLearners = totalLearners;
 	}
 
 	/**
@@ -278,59 +328,168 @@ public class LearnerInputTableInfo {
 	}
 
 	/**
-	 * @return the totalEmployedLearners
+	 * @return the totalNoEmployed
 	 */
-	public int getTotalEmployedLearners() {
-		return totalEmployedLearners;
+	public int getTotalNoEmployed() {
+		return totalNoEmployed;
 	}
 
 	/**
-	 * @param totalEmployedLearners the totalEmployedLearners to set
+	 * @param totalNoEmployed the totalNoEmployed to set
 	 */
-	public void setTotalEmployedLearners(int totalEmployedLearners) {
-		this.totalEmployedLearners = totalEmployedLearners;
+	public void setTotalNoEmployed(int totalNoEmployed) {
+		this.totalNoEmployed = totalNoEmployed;
 	}
 
 	/**
-	 * @return the totalUnEmployedLearners
+	 * @return the totalNoUnEmployed
 	 */
-	public int getTotalUnEmployedLearners() {
-		return totalUnEmployedLearners;
+	public int getTotalNoUnEmployed() {
+		return totalNoUnEmployed;
 	}
 
 	/**
-	 * @param totalUnEmployedLearners the totalUnEmployedLearners to set
+	 * @param totalNoUnEmployed the totalNoUnEmployed to set
 	 */
-	public void setTotalUnEmployedLearners(int totalUnEmployedLearners) {
-		this.totalUnEmployedLearners = totalUnEmployedLearners;
+	public void setTotalNoUnEmployed(int totalNoUnEmployed) {
+		this.totalNoUnEmployed = totalNoUnEmployed;
 	}
 
 	/**
-	 * @return the showLearners
+	 * @return the showNoLearners
 	 */
-	public boolean isShowLearners() {
-		return showLearners;
+	public boolean isShowNoLearners() {
+		return showNoLearners;
 	}
 
 	/**
-	 * @param showLearners the showLearners to set
+	 * @param showNoLearners the showNoLearners to set
 	 */
-	public void setShowLearners(boolean showLearners) {
-		this.showLearners = showLearners;
+	public void setShowNoLearners(boolean showNoLearners) {
+		this.showNoLearners = showNoLearners;
 	}
 
 	/**
-	 * @return the showEmployedLearners
+	 * @return the showNoEmployed
 	 */
-	public boolean isShowEmployedLearners() {
-		return showEmployedLearners;
+	public boolean isShowNoEmployed() {
+		return showNoEmployed;
 	}
 
 	/**
-	 * @param showEmployedLearners the showEmployedLearners to set
+	 * @param showNoEmployed the showNoEmployed to set
 	 */
-	public void setShowEmployedLearners(boolean showEmployedLearners) {
-		this.showEmployedLearners = showEmployedLearners;
+	public void setShowNoEmployed(boolean showNoEmployed) {
+		this.showNoEmployed = showNoEmployed;
+	}
+
+	/**
+	 * @return the showLearnerTitle
+	 */
+	public boolean isShowLearnerTitle() {
+		return showLearnerTitle;
+	}
+
+	/**
+	 * @param showLearnerTitle the showLearnerTitle to set
+	 */
+	public void setShowLearnerTitle(boolean showLearnerTitle) {
+		this.showLearnerTitle = showLearnerTitle;
+	}
+
+	/**
+	 * @return the showNoUnEmployed
+	 */
+	public boolean isShowNoUnEmployed() {
+		return showNoUnEmployed;
+	}
+	
+	public boolean isShowTotalLine() {
+		return showTotalLine;
+	}
+
+	/**
+	 * @param showNoUnEmployed the showNoUnEmployed to set
+	 */
+	public void setShowNoUnEmployed(boolean showNoUnEmployed) {
+		this.showNoUnEmployed = showNoUnEmployed;
+	}
+
+	/**
+	 * @return the showNoTotalApply
+	 */
+	public boolean isShowNoTotalApply() {
+		return showNoTotalApply;
+	}
+
+	/**
+	 * @param showNoTotalApply the showNoTotalApply to set
+	 */
+	public void setShowNoTotalApply(boolean showNoTotalApply) {
+		this.showNoTotalApply = showNoTotalApply;
+	}
+
+	/**
+	 * @return the noEmployedTitle
+	 */
+	public String getNoEmployedTitle() {
+		return noEmployedTitle;
+	}
+
+	/**
+	 * @param noEmployedTitle the noEmployedTitle to set
+	 */
+	public void setNoEmployedTitle(String noEmployedTitle) {
+		this.noEmployedTitle = noEmployedTitle;
+	}
+
+	/**
+	 * @return the noUnEmployedTitle
+	 */
+	public String getNoUnEmployedTitle() {
+		return noUnEmployedTitle;
+	}
+
+	/**
+	 * @param noUnEmployedTitle the noUnEmployedTitle to set
+	 */
+	public void setNoUnEmployedTitle(String noUnEmployedTitle) {
+		this.noUnEmployedTitle = noUnEmployedTitle;
+	}
+
+	/**
+	 * @return the noTotalApplyTitle
+	 */
+	public String getNoTotalApplyTitle() {
+		return noTotalApplyTitle;
+	}
+
+	/**
+	 * @param noTotalApplyTitle the noTotalApplyTitle to set
+	 */
+	public void setNoTotalApplyTitle(String noTotalApplyTitle) {
+		this.noTotalApplyTitle = noTotalApplyTitle;
+	}
+
+	/**
+	 * @return the noLearnersTitle
+	 */
+	public String getNoLearnersTitle() {
+		return noLearnersTitle;
+	}
+
+	/**
+	 * @param noLearnersTitle the noLearnersTitle to set
+	 */
+	public void setNoLearnersTitle(String noLearnersTitle) {
+		this.noLearnersTitle = noLearnersTitle;
+	}
+
+	/**
+	 * @param showTotalLine the showTotalLine to set
+	 */
+	public void setShowTotalLine(boolean showTotalLine) {
+		this.showTotalLine = showTotalLine;
 	}
 
 }
