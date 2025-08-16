@@ -492,17 +492,26 @@ public class AddressInfoBase {
 	}
 
 	public boolean showContact() {
-		return programType != null || addressCategory == AddressType.ORG
-				|| addressCategory == AddressType.ORG_ALTER;
+		return addressCategory == AddressType.MAIN
+				|| addressCategory == AddressType.MAIN_ALTER
+				|| addressCategory == AddressType.ORG
+				|| addressCategory == AddressType.ORG_ALTER
+				|| addressCategory == AddressType.VACATION;
 	}
 
 	public boolean showGeographicAddress() {
-		return programType != null || addressCategory == AddressType.PHYSICAL
-				|| addressCategory == AddressType.POSTAL;
+		return addressCategory == AddressType.MAIN
+				|| addressCategory == AddressType.MAIN_ALTER
+				|| addressCategory == AddressType.PHYSICAL
+				|| addressCategory == AddressType.POSTAL
+				|| addressCategory == AddressType.VACATION;
 	}
 
 	public boolean showLineAddress() {
-		return programType != null || addressCategory == AddressType.PHYSICAL;
+		return addressCategory == AddressType.MAIN
+				|| addressCategory == AddressType.MAIN_ALTER 
+				|| addressCategory == AddressType.PHYSICAL
+				|| addressCategory == AddressType.VACATION;
 	}
 
 	public boolean showMunicipalities() {
@@ -514,7 +523,7 @@ public class AddressInfoBase {
 	}
 
 	public boolean showSiteName() {
-		return programType != null && programType.isShowAddressSiteField();
+		return (programType != null && programType.isShowAddressSiteField()) || addressCategory == AddressType.VACATION;
 	}
 	
 	public boolean showOrgName() {
