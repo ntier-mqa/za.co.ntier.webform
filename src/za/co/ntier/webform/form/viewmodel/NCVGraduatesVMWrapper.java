@@ -9,14 +9,21 @@ public class NCVGraduatesVMWrapper {
 
     @Init
     public void init(@ExecutionArgParam("ncvGraduatesInfo") NCVGraduatesInfo ncvGraduatesInfo) {
-        this.setNCVGraduatesInfo(ncvGraduatesInfo);
+        this.setNcvGraduatesInfo(ncvGraduatesInfo);
     }
 
-    public NCVGraduatesInfo getNCVGraduatesInfo() {
-        return ncvGraduatesInfo;
-    }
+	/**
+	 * @return the ncvGraduatesInfo
+	 */
+	public NCVGraduatesInfo getNcvGraduatesInfo() {
+		return ncvGraduatesInfo;
+	}
 
-    public void setNCVGraduatesInfo(NCVGraduatesInfo ncvGraduatesInfo) {
-        this.ncvGraduatesInfo = ncvGraduatesInfo;
-    }
+	/**
+	 * @param ncvGraduatesInfo the ncvGraduatesInfo to set
+	 */
+	public void setNcvGraduatesInfo(NCVGraduatesInfo ncvGraduatesInfo) {
+		this.ncvGraduatesInfo = ncvGraduatesInfo;
+	}
+
 }

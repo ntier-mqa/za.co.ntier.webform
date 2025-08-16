@@ -1,19 +1,23 @@
 package za.co.ntier.webform.form.bean;
 
 public class ArtisanRPLInfo {
-	private EmployedNoInfo employedNoInfo;
-
-	/**
-	 * @return the employedNoInfo
-	 */
-	public EmployedNoInfo getEmployedNoInfo() {
-		return employedNoInfo;
+	private OneLineTableInfo fullEmployedTableInfo;
+	
+	public ArtisanRPLInfo() {
+		this.fullEmployedTableInfo = OneLineTableInfo.createFullEmployedTableInfo();
 	}
 
 	/**
-	 * @param employedNoInfo the employedNoInfo to set
+	 * @return the fullEmployedTableInfo
 	 */
-	public void setEmployedNoInfo(EmployedNoInfo employedNoInfo) {
-		this.employedNoInfo = employedNoInfo;
+	public OneLineTableInfo getFullEmployedTableInfo() {
+		return fullEmployedTableInfo;
+	}
+
+	/**
+	 * @param fullEmployedTableInfo the fullEmployedTableInfo to set
+	 */
+	public void setFullEmployedTableInfo(OneLineTableInfo fullEmployedTableInfo) {
+		this.fullEmployedTableInfo = fullEmployedTableInfo;
 	}
 }

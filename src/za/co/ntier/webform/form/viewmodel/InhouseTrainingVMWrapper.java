@@ -6,24 +6,24 @@ import org.zkoss.bind.annotation.Init;
 import za.co.ntier.webform.form.bean.InhouseTrainingInfo;
 
 public class InhouseTrainingVMWrapper {
-	private InhouseTrainingInfo inHouseTrainingInfo;
+	private InhouseTrainingInfo inhouseTrainingInfo;
 
 	@Init
-    public void init(@ExecutionArgParam("inHouseTrainingInfo") InhouseTrainingInfo inHouseTrainingInfo) {
-		this.setInHouseTrainingInfo(inHouseTrainingInfo);
+    public void init(@ExecutionArgParam("inhouseTrainingInfo") InhouseTrainingInfo inhouseTrainingInfo) {
+		this.setInhouseTrainingInfo(inhouseTrainingInfo);
     }
 
 	/**
-	 * @return the inHouseTrainingInfo
+	 * @return the inhouseTrainingInfo
 	 */
-	public InhouseTrainingInfo getInHouseTrainingInfo() {
-		return inHouseTrainingInfo;
+	public InhouseTrainingInfo getInhouseTrainingInfo() {
+		return inhouseTrainingInfo;
 	}
 
 	/**
-	 * @param inHouseTrainingInfo the inHouseTrainingInfo to set
+	 * @param inhouseTrainingInfo the inhouseTrainingInfo to set
 	 */
-	public void setInHouseTrainingInfo(InhouseTrainingInfo inHouseTrainingInfo) {
-		this.inHouseTrainingInfo = inHouseTrainingInfo;
+	public void setInhouseTrainingInfo(InhouseTrainingInfo inhouseTrainingInfo) {
+		this.inhouseTrainingInfo = inhouseTrainingInfo;
 	}
 }

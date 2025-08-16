@@ -7,36 +7,10 @@
 				value="Artisan RPL is paid upon completion." />
 		</div>
 		
-		<div sclass="container-fluid">
-            <div sclass="row">
-                <div sclass="col-sm-4 col-title d-flex align-items-center">
-                    <label value="No. of Employed Learners" />
-                </div>
-                <div sclass="col-sm-4 col-title d-flex align-items-center">
-                    <label value="No. of Unemployed Learners" />
-                </div>
-                <div sclass="col-sm-4 col-title d-flex align-items-center">
-                    <label value="Total No. of Learners Applied For" />
-                </div>
-            </div>
-            <div sclass="row">
-                <div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
-                    <textbox
-                        value="@bind(vmArtisanRPL.artisanRPLInfo.employedNoInfo.employedNo)"
-                        sclass="form-control" />
-                </div>
-                <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
-                    <textbox
-                        value="@bind(vmArtisanRPL.artisanRPLInfo.employedNoInfo.unEmployedNo)"
-                        sclass="form-control" />
-                </div>
-                <div sclass="col-sm-4 col-content-input-full  d-flex align-items-center">
-                    <textbox
-                        value="@bind(vmArtisanRPL.artisanRPLInfo.employedNoInfo.totalApplyNo)"
-                        sclass="form-control" />
-                </div>
-            </div>
-		</div>
+		<include 
+			learnerInputTableInfo="@load(vmArtisanRPL.artisanRPLInfo.fullEmployedTableInfo)"
+			src="@load((WebForm.getBundleResourcePath('fragment/learnerInputTableInfo.zul')))" />
+		
 
 	</div>
 </zk>

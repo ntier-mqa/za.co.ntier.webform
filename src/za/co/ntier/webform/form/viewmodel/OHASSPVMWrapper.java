@@ -6,24 +6,24 @@ import org.zkoss.bind.annotation.Init;
 import za.co.ntier.webform.form.bean.OHASSPInfo;
 
 public class OHASSPVMWrapper {
-	private OHASSPInfo oHASSPInfo;
+	private OHASSPInfo ohasspInfo;
 
 	@Init
-    public void init(@ExecutionArgParam("oHASSPInfo") OHASSPInfo oHASSPInfo) {
-		this.setoHASSPInfo(oHASSPInfo);
+    public void init(@ExecutionArgParam("ohasspInfo") OHASSPInfo ohasspInfo) {
+		this.setOhasspInfo(ohasspInfo);
     }
 
 	/**
-	 * @return the oHASSPInfo
+	 * @return the ohasspInfo
 	 */
-	public OHASSPInfo getoHASSPInfo() {
-		return oHASSPInfo;
+	public OHASSPInfo getOhasspInfo() {
+		return ohasspInfo;
 	}
 
 	/**
-	 * @param oHASSPInfo the oHASSPInfo to set
+	 * @param ohasspInfo the ohasspInfo to set
 	 */
-	public void setoHASSPInfo(OHASSPInfo oHASSPInfo) {
-		this.oHASSPInfo = oHASSPInfo;
+	public void setOhasspInfo(OHASSPInfo ohasspInfo) {
+		this.ohasspInfo = ohasspInfo;
 	}
 }
