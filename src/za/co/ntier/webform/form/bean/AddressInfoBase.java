@@ -13,7 +13,7 @@ import org.zkoss.bind.annotation.NotifyChange;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 public class AddressInfoBase {
-	private AddressCategory addressCategory;
+	private AddressType addressCategory;
 
 	// Street name and number
 	private String addressLine;
@@ -71,17 +71,17 @@ public class AddressInfoBase {
 	private boolean isAlternate;
 
 	public AddressInfoBase(ProgramType programType, boolean isAlternate, MRegion provinceSelected) {
-		this(isAlternate?AddressCategory.MAIN_ALTER:AddressCategory.MAIN, provinceSelected);
+		this(isAlternate?AddressType.MAIN_ALTER:AddressType.MAIN, provinceSelected);
 		this.isAlternate = isAlternate;
 		this.programType = programType;
 	}
 
-	public AddressInfoBase(AddressCategory addressCategory, MRegion provinceSelected) {
+	public AddressInfoBase(AddressType addressCategory, MRegion provinceSelected) {
 		this.addressCategory = addressCategory;
 		this.provinceSelected = provinceSelected;
 	}
 	
-	public AddressCategory getAddressCategory() {
+	public AddressType getAddressCategory() {
 		return this.addressCategory;
 	}
 
@@ -257,7 +257,7 @@ public class AddressInfoBase {
 		return siteNameTitle;
 	}
 
-	public void setAddressCategory(AddressCategory addressCategory) {
+	public void setAddressCategory(AddressType addressCategory) {
 		this.addressCategory = addressCategory;
 	}
 
@@ -492,17 +492,17 @@ public class AddressInfoBase {
 	}
 
 	public boolean showContact() {
-		return programType != null || addressCategory == AddressCategory.ORG
-				|| addressCategory == AddressCategory.ORG_ALTER;
+		return programType != null || addressCategory == AddressType.ORG
+				|| addressCategory == AddressType.ORG_ALTER;
 	}
 
 	public boolean showGeographicAddress() {
-		return programType != null || addressCategory == AddressCategory.PHYSICAL
-				|| addressCategory == AddressCategory.POSTAL;
+		return programType != null || addressCategory == AddressType.PHYSICAL
+				|| addressCategory == AddressType.POSTAL;
 	}
 
 	public boolean showLineAddress() {
-		return programType != null || addressCategory == AddressCategory.PHYSICAL;
+		return programType != null || addressCategory == AddressType.PHYSICAL;
 	}
 
 	public boolean showMunicipalities() {
@@ -510,7 +510,7 @@ public class AddressInfoBase {
 	}
 
 	public boolean showPostalAddress() {
-		return addressCategory == AddressCategory.POSTAL;
+		return addressCategory == AddressType.POSTAL;
 	}
 
 	public boolean showSiteName() {

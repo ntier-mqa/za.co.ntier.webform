@@ -2,18 +2,18 @@ package za.co.ntier.webform.form.bean;
 
 import za.co.ntier.webform.model.X_ZZ_FormContact;
 
-public enum AddressCategory {
-	MAIN(X_ZZ_FormContact.ZZ_CONTACTTYPE_PrimaryOrganisationContact),
-	MAIN_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_PrimaryOrganisationContact),
-	ORG(X_ZZ_FormContact.ZZ_CONTACTTYPE_PrimaryOrganisationContact), 
-	ORG_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_AlternateOrganisationContact), 
-	PHYSICAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_PhysicalAddress), 
-	POSTAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_PotalAddress),
-	VACATION(X_ZZ_FormContact.ZZ_CONTACTTYPE_PotalAddress),
+public enum AddressType {
+	MAIN(X_ZZ_FormContact.ZZ_CONTACTTYPE_Main),
+	MAIN_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_MainAlter),
+	ORG(X_ZZ_FormContact.ZZ_CONTACTTYPE_Org), 
+	ORG_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_OrgAlter), 
+	PHYSICAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_Physical), 
+	POSTAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_Postal),
+	VACATION(X_ZZ_FormContact.ZZ_CONTACTTYPE_Vacation),
 	UNKNOWN("UNKNOWN CONTACT TYPE");
 
 	String contactType;
-	AddressCategory(String	 contactType) {
+	AddressType(String	 contactType) {
 		this.contactType = contactType;
 	}
 	
@@ -23,15 +23,15 @@ public enum AddressCategory {
 	}
 	
 	public String getAddressTitle(ProgramType programType, boolean isAlternate) {
-		if (this == AddressCategory.PHYSICAL)
+		if (this == AddressType.PHYSICAL)
 			return "PHYSICAL ADDRESS";
-		else if (this == AddressCategory.POSTAL)
+		else if (this == AddressType.POSTAL)
 			return "POSTAL ADDRESS";
-		else if (this == AddressCategory.ORG)
+		else if (this == AddressType.ORG)
 			return "Primary Organisation Contact:";
-		else if (this == AddressCategory.ORG_ALTER)
+		else if (this == AddressType.ORG_ALTER)
 			return "Alternate Organisation Contact:";
-		else if (this == AddressCategory.VACATION)
+		else if (this == AddressType.VACATION)
 			return "Contact details of person responsible for VACATION WORK:";
 		else if (programType == null)
 			return UNKNOWN.toString();

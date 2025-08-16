@@ -1,10 +1,8 @@
 package za.co.ntier.webform.form.bean;
 
+import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
+
 public class LearnershipTableInfo extends LearnerInputTableInfo {
-	public final static String learnerInputType_General_Learnership = "General Learnership";
-	public final static String learnerInputType_4IR_Learnership = "4IR Learnership";
-	public final static String learnerInputType_AET_Learnership = "AET Learnership";
-	
 	private LearnershipTableInfo(int programMasterDataID, ProgramType programType, String learnerInputType) {
 		super(programMasterDataID, programType, learnerInputType);
 		setShowNoEmployed(true);
@@ -13,20 +11,20 @@ public class LearnershipTableInfo extends LearnerInputTableInfo {
 	}
 
 	public static LearnershipTableInfo create4IRLearnership(int programMasterDataID, ProgramType programType) {
-		return new LearnershipTableInfo(programMasterDataID, programType, learnerInputType_4IR_Learnership);
+		return new LearnershipTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership);
 	}
 	
 	public static LearnershipTableInfo createGeneralLearnership(int programMasterDataID, ProgramType programType) {
-		return new LearnershipTableInfo(programMasterDataID, programType, learnerInputType_General_Learnership);
+		return new LearnershipTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership);
 	}
 	
 	public static LearnershipTableInfo createAetLearnership(int programMasterDataID, ProgramType programType) {
-		return new LearnershipTableInfo(programMasterDataID, programType, learnerInputType_AET_Learnership);
+		return new LearnershipTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership);
 	}
 	
 	@Override
 	public String getLearnerTilte() {
-		if(LearnershipTableInfo.learnerInputType_AET_Learnership.equalsIgnoreCase(getLearnerInputType())) {
+		if(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership.equalsIgnoreCase(getLearnerInputType())) {
 			return "Name of Programme";
 		}
 		return "Learnership Type";

@@ -31,7 +31,7 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250811L;
+	private static final long serialVersionUID = 20250816L;
 
     /** Standard Constructor */
     public X_ZZ_FormDiscipline (Properties ctx, int ZZ_FormDiscipline_ID, String trxName)
@@ -215,18 +215,20 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		return ii.intValue();
 	}
 
-	/** Candidacy LearnerInputInfo = CandidacyDiscipline */
-	public static final String ZZ_DISCIPLINETYPE_CandidacyDiscipline = "CandidacyDiscipline";
-	/** Experience LearnerInputInfo = ExperienceDiscipline */
-	public static final String ZZ_DISCIPLINETYPE_ExperienceDiscipline = "ExperienceDiscipline";
-	/** Internship LearnerInputInfo = InternshipDiscipline */
-	public static final String ZZ_DISCIPLINETYPE_InternshipDiscipline = "InternshipDiscipline";
-	/** Internship Trade = InternshipTrade */
-	public static final String ZZ_DISCIPLINETYPE_InternshipTrade = "InternshipTrade";
-	/** Unknow LearnerInputInfo = UnknowDiscipline */
-	public static final String ZZ_DISCIPLINETYPE_UnknowDiscipline = "UnknowDiscipline";
-	/** Set LearnerInputInfo Type.
-		@param ZZ_DisciplineType LearnerInputInfo Type
+	/** 4IR Learnership = 4IRLearnership */
+	public static final String ZZ_DISCIPLINETYPE_4IRLearnership = "4IRLearnership";
+	/** AET Learnership = AETLearnership */
+	public static final String ZZ_DISCIPLINETYPE_AETLearnership = "AETLearnership";
+	/** Discipline = Discipline */
+	public static final String ZZ_DISCIPLINETYPE_Discipline = "Discipline";
+	/** General Learnership = GeneralLearnership */
+	public static final String ZZ_DISCIPLINETYPE_GeneralLearnership = "GeneralLearnership";
+	/** Trade = Trade */
+	public static final String ZZ_DISCIPLINETYPE_Trade = "Trade";
+	/** UnknowLearnership = UnknowLearnership */
+	public static final String ZZ_DISCIPLINETYPE_UnknowLearnership = "UnknowLearnership";
+	/** Set Discipline Type.
+		@param ZZ_DisciplineType Discipline Type
 	*/
 	public void setZZ_DisciplineType (String ZZ_DisciplineType)
 	{
@@ -234,8 +236,8 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		set_Value (COLUMNNAME_ZZ_DisciplineType, ZZ_DisciplineType);
 	}
 
-	/** Get LearnerInputInfo Type.
-		@return LearnerInputInfo Type	  */
+	/** Get Discipline Type.
+		@return Discipline Type	  */
 	public String getZZ_DisciplineType()
 	{
 		return (String)get_Value(COLUMNNAME_ZZ_DisciplineType);
@@ -268,8 +270,8 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		return ii.intValue();
 	}
 
-	/** Set Form LearnerInputInfo.
-		@param ZZ_FormDiscipline_ID Form LearnerInputInfo
+	/** Set Form Discipline.
+		@param ZZ_FormDiscipline_ID Form Discipline
 	*/
 	public void setZZ_FormDiscipline_ID (int ZZ_FormDiscipline_ID)
 	{
@@ -279,8 +281,8 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 			set_ValueNoCheck (COLUMNNAME_ZZ_FormDiscipline_ID, Integer.valueOf(ZZ_FormDiscipline_ID));
 	}
 
-	/** Get Form LearnerInputInfo.
-		@return Form LearnerInputInfo	  */
+	/** Get Form Discipline.
+		@return Form Discipline	  */
 	public int getZZ_FormDiscipline_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_FormDiscipline_ID);

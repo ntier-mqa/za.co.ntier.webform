@@ -31,7 +31,7 @@ public class X_ZZ_FormContact extends PO implements I_ZZ_FormContact, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250809L;
+	private static final long serialVersionUID = 20250816L;
 
     /** Standard Constructor */
     public X_ZZ_FormContact (Properties ctx, int ZZ_FormContact_ID, String trxName)
@@ -275,26 +275,22 @@ public class X_ZZ_FormContact extends PO implements I_ZZ_FormContact, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Alternate Experience = AlternateExperience */
-	public static final String ZZ_CONTACTTYPE_AlternateExperience = "AlternateExperience";
-	/** Alternate Organisation Contact = AlternateOrganisationContact */
-	public static final String ZZ_CONTACTTYPE_AlternateOrganisationContact = "AlternateOrganisationContact";
 	/** Alternate Responsible Candidacy = AlternateResponsibleCandidacy */
 	public static final String ZZ_CONTACTTYPE_AlternateResponsibleCandidacy = "AlternateResponsibleCandidacy";
 	/** Alternate Responsible Internship = AlternateResponsibleInternship */
 	public static final String ZZ_CONTACTTYPE_AlternateResponsibleInternship = "AlternateResponsibleInternship";
-	/** Experience = Experience */
-	public static final String ZZ_CONTACTTYPE_Experience = "Experience";
-	/** Primary Organisation Contact = OrganisationContact */
-	public static final String ZZ_CONTACTTYPE_PrimaryOrganisationContact = "OrganisationContact";
-	/** Physical Address = PhysicalAddress */
-	public static final String ZZ_CONTACTTYPE_PhysicalAddress = "PhysicalAddress";
-	/** Potal Address = PotalAddress */
-	public static final String ZZ_CONTACTTYPE_PotalAddress = "PotalAddress";
-	/** Responsible Candidacy = ResponsibleCandidacy */
-	public static final String ZZ_CONTACTTYPE_ResponsibleCandidacy = "ResponsibleCandidacy";
-	/** Responsible Internship = ResponsibleInternship */
-	public static final String ZZ_CONTACTTYPE_ResponsibleInternship = "ResponsibleInternship";
+	/** Main = Main */
+	public static final String ZZ_CONTACTTYPE_Main = "Main";
+	/** Main Alter = Main Alter */
+	public static final String ZZ_CONTACTTYPE_MainAlter = "Main Alter";
+	/** Org = Org */
+	public static final String ZZ_CONTACTTYPE_Org = "Org";
+	/** Org Alter = Org Alter */
+	public static final String ZZ_CONTACTTYPE_OrgAlter = "Org Alter";
+	/** Physical = Physical */
+	public static final String ZZ_CONTACTTYPE_Physical = "Physical";
+	/** Postal = Postal */
+	public static final String ZZ_CONTACTTYPE_Postal = "Postal";
 	/** Vacation = Vacation */
 	public static final String ZZ_CONTACTTYPE_Vacation = "Vacation";
 	/** Set Contact Type.

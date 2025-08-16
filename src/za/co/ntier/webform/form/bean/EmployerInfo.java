@@ -28,18 +28,18 @@ public class EmployerInfo {
 
 	public EmployerInfo() {
 		employerName = "Le Quy Hiep";
-		postAddressInfo = new AddressInfoBase(AddressCategory.POSTAL,
+		postAddressInfo = new AddressInfoBase(AddressType.POSTAL,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		physicalAddressInfo = new AddressInfoBase(AddressCategory.PHYSICAL,
+		physicalAddressInfo = new AddressInfoBase(AddressType.PHYSICAL,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
 		orgSizeInfo = new OrganisationSizeInfo(new Random().nextInt(), false, true);
 
-		orgContact = new AddressInfoBase(AddressCategory.ORG,
+		orgContact = new AddressInfoBase(AddressType.ORG,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		alternateOrgContact = new AddressInfoBase(AddressCategory.ORG_ALTER,
+		alternateOrgContact = new AddressInfoBase(AddressType.ORG_ALTER,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 	}
 

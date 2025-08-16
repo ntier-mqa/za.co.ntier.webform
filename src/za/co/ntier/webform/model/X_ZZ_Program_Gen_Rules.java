@@ -31,7 +31,7 @@ public class X_ZZ_Program_Gen_Rules extends PO implements I_ZZ_Program_Gen_Rules
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250803L;
+	private static final long serialVersionUID = 20250816L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Gen_Rules (Properties ctx, int ZZ_Program_Gen_Rules_ID, String trxName)

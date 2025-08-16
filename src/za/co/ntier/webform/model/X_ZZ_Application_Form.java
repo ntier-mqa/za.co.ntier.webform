@@ -31,7 +31,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250808L;
+	private static final long serialVersionUID = 20250816L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -284,16 +284,16 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 		return (String)get_Value(COLUMNNAME_ZZ_Application_Form_UU);
 	}
 
-	/** Set LearnerInputInfo Total Learners.
-		@param ZZ_DisciplineTotalLearners LearnerInputInfo Total Learners
+	/** Set Discipline Total Learners.
+		@param ZZ_DisciplineTotalLearners Discipline Total Learners
 	*/
 	public void setZZ_DisciplineTotalLearners (int ZZ_DisciplineTotalLearners)
 	{
 		set_Value (COLUMNNAME_ZZ_DisciplineTotalLearners, Integer.valueOf(ZZ_DisciplineTotalLearners));
 	}
 
-	/** Get LearnerInputInfo Total Learners.
-		@return LearnerInputInfo Total Learners	  */
+	/** Get Discipline Total Learners.
+		@return Discipline Total Learners	  */
 	public int getZZ_DisciplineTotalLearners()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_DisciplineTotalLearners);

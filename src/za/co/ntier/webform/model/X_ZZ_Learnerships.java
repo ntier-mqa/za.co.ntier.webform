@@ -31,7 +31,7 @@ public class X_ZZ_Learnerships extends PO implements I_ZZ_Learnerships, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250803L;
+	private static final long serialVersionUID = 20250816L;
 
     /** Standard Constructor */
     public X_ZZ_Learnerships (Properties ctx, int ZZ_Learnerships_ID, String trxName)

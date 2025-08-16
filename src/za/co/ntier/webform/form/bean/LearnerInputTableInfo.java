@@ -95,19 +95,19 @@ public class LearnerInputTableInfo {
 		String learnerInputTable;
 		
 		StringBuilder sql = new StringBuilder();
-		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade) {
+		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade) {
 			learnerInputProgramID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Trade_ID;
 			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
 			learnerInputProgramTable = X_ZZ_Program_Trade.Table_Name;
 			learnerInputTable = X_ZZ_Trade.Table_Name;
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline) {
+		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline) {
 			learnerInputProgramID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Program_Disciplines_ID;
 			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
 			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
 			learnerInputTable = X_ZZ_Disciplines.Table_Name;
-		}else if (learnerInputType == LearnershipTableInfo.learnerInputType_4IR_Learnership ||
-				learnerInputType == LearnershipTableInfo.learnerInputType_General_Learnership ||
-				learnerInputType == LearnershipTableInfo.learnerInputType_AET_Learnership) {
+		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership ||
+				learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership ||
+				learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership) {
 			learnerInputProgramID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
 			learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
 			learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
@@ -131,11 +131,11 @@ public class LearnerInputTableInfo {
 				learnerInputID,
 				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID));
 		
-		if (learnerInputType == LearnershipTableInfo.learnerInputType_4IR_Learnership) {
+		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership) {
 			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = '4'");
-		}else if (learnerInputType == LearnershipTableInfo.learnerInputType_General_Learnership){
+		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership){
 			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'G'");
-		}else if (learnerInputType == LearnershipTableInfo.learnerInputType_AET_Learnership){
+		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership){
 			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'A'");
 		}
 		
@@ -239,7 +239,7 @@ public class LearnerInputTableInfo {
 	 * @return the isTrade
 	 */
 	public boolean isTrade() {
-		return learnerInputType.equals(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipTrade);
+		return learnerInputType.equals(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
 	}
 
 	public void noLearnersChange() {

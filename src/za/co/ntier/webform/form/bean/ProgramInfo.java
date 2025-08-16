@@ -40,7 +40,7 @@ public class ProgramInfo {
 
 		// vacation contact
 		if (this.programType == ProgramType.EXPERIENCE) {
-			setVacationContact(new AddressInfoBase(AddressCategory.VACATION,
+			setVacationContact(new AddressInfoBase(AddressType.VACATION,
 					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size()))));
 		}
 		
@@ -76,7 +76,7 @@ public class ProgramInfo {
 		
 		// discipline table info
 		if (programType.isShowDisciplineTable()) {
-			disciplineTableInfo = new LearnerInputTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_InternshipDiscipline);
+			disciplineTableInfo = new LearnerInputTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
 		}
 	}
 
