@@ -34,4 +34,9 @@ public class EmployerInfoVMWrapper {
 	public void uploadFile(@BindingParam("media") Media media) {
 		employerInfo.uploadFile(media);
 	}
+	
+	@Command
+	public void sdlNumberChange() {
+		employerInfo.sdlNumberChange();
+	}
 }

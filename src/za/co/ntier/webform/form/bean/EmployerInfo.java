@@ -2,6 +2,11 @@ package za.co.ntier.webform.form.bean;
 
 import java.util.Random;
 
+import org.compiere.model.I_C_BPartner;
+import org.compiere.model.Query;
+import org.compiere.model.X_C_BPartner;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 
@@ -27,14 +32,13 @@ public class EmployerInfo {
 	private String siteSDLNumberTitle = "Site SDL Number (if applicable)";
 
 	public EmployerInfo() {
-		employerName = "Le Quy Hiep";
 		postAddressInfo = new AddressInfoBase(AddressType.POSTAL,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
 		physicalAddressInfo = new AddressInfoBase(AddressType.PHYSICAL,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		orgSizeInfo = new OrganisationSizeInfo(new Random().nextInt(), false, true);
+		orgSizeInfo = new OrganisationSizeInfo();
 
 		orgContact = new AddressInfoBase(AddressType.ORG,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
@@ -271,5 +275,29 @@ public class EmployerInfo {
 	public void uploadFile(Media media) {
 		setFileNameVATCer(media.getName());
 
+	}
+	
+	public void sdlNumberChange() {
+		X_C_BPartner bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name, 
+				String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null)
+				.setParameters(sdlNumber)
+				.first();
+		
+		if (bPartner != null) {
+			employerName = bPartner.getName();
+			employerTaxNumber = bPartner.getTaxID();
+			orgRegistrationNumber = bPartner.getReferenceNo();
+			BindUtils.postNotifyChange(this, "employerName", "employerTaxNumber", "orgRegistrationNumber");
+			
+			orgSizeInfo.setNumOfEmployer(bPartner.get_ValueAsInt("ZZ_Number_Of_Employees"));
+			
+			int prevApprovedCount = DB.getSQLValueEx(null, 
+					String.format("SELECT Count (*) FROM ZZ_WSP_ATR_Approvals WHERE C_BPartner_ID = ? AND ZZ_Grant_Status = 'A'"), 
+					bPartner.getC_BPartner_ID());
+			
+			
+			orgSizeInfo.setSubmittedWSP(prevApprovedCount > 0);
+			BindUtils.postNotifyChange(orgSizeInfo, "submittedWSPText", "numOfEmployer");
+		}
 	}
 }

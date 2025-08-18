@@ -15,7 +15,8 @@
 			</div>
 			<div sclass="col-sm-5 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
-					value="@bind(vmEmployerInfo.employerInfo.sdlNumber)" />
+					value="@bind(vmEmployerInfo.employerInfo.sdlNumber)" 
+					onChange="@command('sdlNumberChange')"/>
 			</div>
 		</div>
 		<div sclass="row">

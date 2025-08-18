@@ -11,6 +11,8 @@ public class OrganisationSizeInfo {
 
 	private String submittedWSPTitle = "Has the organisation submitted the WSP/ATR In previous financial year?";
 
+	public OrganisationSizeInfo() {};
+	
 	public OrganisationSizeInfo(int numOfEmployer, boolean isSubmittedWSP, boolean isSubmittedPivotal) {
 		this.setSubmittedWSP(isSubmittedWSP);
 		this.setSubmittedPivotal(isSubmittedPivotal);
@@ -52,6 +54,15 @@ public class OrganisationSizeInfo {
 		return isSubmittedPivotal;
 	}
 
+	
+	public String getSubmittedPivotalText() {
+		return isSubmittedPivotal ? "YES" : "NO";
+	}
+	
+	public String getSubmittedWSPText() {
+		return isSubmittedWSP ? "YES" : "NO";
+	}
+		
 	/**
 	 * @return the isSubmittedWSP
 	 */

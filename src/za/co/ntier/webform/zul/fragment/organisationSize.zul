@@ -19,7 +19,7 @@
 		</div>
 		<div sclass="col-sm-2 col-title-center-white d-flex justify-content-center align-items-center">
 			<label
-				value="@load((vmOrgSize.orgSizeInfo.submittedWSP?'YES':'NO'))" />
+				value="@load(vmOrgSize.orgSizeInfo.submittedWSPText)" />
 		</div>
 	</div>
 
@@ -30,7 +30,7 @@
 		</div>
 		<div sclass="col-sm-2 col-title-center-white d-flex justify-content-center align-items-center">
 			<label
-				value="@load((vmOrgSize.orgSizeInfo.submittedPivotal?'YES':'NO'))" />
+				value="@load(vmOrgSize.orgSizeInfo.submittedPivotalText)" />
 		</div>
 	</div>
 </div>
