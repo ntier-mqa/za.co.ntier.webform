@@ -32,7 +32,7 @@ public interface I_ZZ_Application_Form
     /** TableName=ZZ_Application_Form */
     public static final String Table_Name = "ZZ_Application_Form";
 
-    /** AD_Table_ID=1000046 */
+    /** AD_Table_ID=1000048 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);

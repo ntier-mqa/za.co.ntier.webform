@@ -10,14 +10,14 @@ import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 public class EmployerInfo {
 	private AddressInfoBase alternateOrgContact;
 	private String employerName;
-	private String employerNameTitle = "Employer Name";
+	private String employerNameTitle = "Organisation Name";
 	private String employerTaxNumber;
-	private String employerTaxNumberTitle = "VAT Number";
+	private String employerTaxNumberTitle = "Tax ID";
 
 	private String fileNameVATCer;
 	private AddressInfoBase orgContact;
 	private String orgRegistrationNumber;
-	private String orgRegistrationNumberTitle = "Organisation Registration Number (if applicable)";
+	private String orgRegistrationNumberTitle = "Reference No";
 	private OrganisationSizeInfo orgSizeInfo;
 	private AddressInfoBase physicalAddressInfo;
 	private AddressInfoBase postAddressInfo;

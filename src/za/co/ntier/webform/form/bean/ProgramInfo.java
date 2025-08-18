@@ -2,6 +2,7 @@ package za.co.ntier.webform.form.bean;
 
 import java.util.Random;
 
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
@@ -9,7 +10,6 @@ public class ProgramInfo {
 	private AddressInfoBase alternateProgramContact;
 	private LearnerInputTableInfo disciplineTableInfo;
 	private AddressInfoBase programContact;
-	private ProgramType programType = ProgramType.UNKNOWN;
 	private LearnerInputTableInfo tradeTableInfo;
 	private WorkInfo workInfo;
 	private DevProgramInfo devProgramInfo;
@@ -24,10 +24,28 @@ public class ProgramInfo {
 	private AETInfo aetInfo;
 	private OHASSPInfo ohasspInfo;
 	private InhouseTrainingInfo inhouseTrainingInfo;
+	private MenuContextInfo menuContextInfo;
+	private ProgramType programType;
+	
+	/**
+	 * @return the programType
+	 */
+	public ProgramType getProgramType() {
+		return programType;
+	}
 
-	public ProgramInfo(int programMasterDataID, ProgramType programType) {
+	/**
+	 * @param programType the programType to set
+	 */
+	public void setProgramType(ProgramType programType) {
 		this.programType = programType;
+	}
 
+	public ProgramInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
+		programType = menuContextInfo.getProgramType();
+		int programMasterDataID = menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID();
+		
 		// main contact
 		if (programType.isShowMainAddress())
 			programContact = new AddressInfoBase(programType, false,
@@ -39,7 +57,7 @@ public class ProgramInfo {
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
 		// vacation contact
-		if (this.programType == ProgramType.EXPERIENCE) {
+		if (programType == ProgramType.EXPERIENCE) {
 			setVacationContact(new AddressInfoBase(AddressType.VACATION,
 					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size()))));
 		}
@@ -58,13 +76,13 @@ public class ProgramInfo {
 		}else if (programType == ProgramType.ARTISAN_RPL) {
 			this.artisanRPLInfo = new ArtisanRPLInfo();
 		}else if (programType == ProgramType.NON_ARTISAN_DEV) {
-			this.nonArtisanDevInfo = new NonArtisanDevInfo(programMasterDataID, programType);
+			this.nonArtisanDevInfo = new NonArtisanDevInfo(menuContextInfo);
 		}else if (programType == ProgramType.NON_ARTISAN_DEV_RPL) {
 			this.nonArtisanDevRPLInfo = new NonArtisanDevRPLInfo();
 		}else if (programType == ProgramType.NCV_GRADUATES) {
-			this.ncvGraduatesInfo = new NCVGraduatesInfo();
+			this.ncvGraduatesInfo = new NCVGraduatesInfo(menuContextInfo);
 		}else if (programType == ProgramType.AET) {
-			this.aetInfo = new AETInfo(programMasterDataID, programType);
+			this.aetInfo = new AETInfo(menuContextInfo);
 		}else if (programType == ProgramType.OHASSP) {
 			this.ohasspInfo = new OHASSPInfo();
 		}else if (programType == ProgramType.INHOUSE_TRAINING) {
@@ -203,14 +221,7 @@ public class ProgramInfo {
 	 * @return the programTitle
 	 */
 	public String getProgramTitle() {
-		return programType.getProgramTitle();
-	}
-
-	/**
-	 * @return the programType
-	 */
-	public ProgramType getProgramType() {
-		return programType;
+		return menuContextInfo.getProgramType().getProgramTitle();
 	}
 
 	/**
@@ -239,13 +250,6 @@ public class ProgramInfo {
 	 */
 	public void setProgramContact(AddressInfoBase programContact) {
 		this.programContact = programContact;
-	}
-
-	/**
-	 * @param programType the programType to set
-	 */
-	public void setProgramType(ProgramType programType) {
-		this.programType = programType;
 	}
 
 	/**
@@ -345,6 +349,20 @@ public class ProgramInfo {
 	 */
 	public void setArtisanRPLInfo(ArtisanRPLInfo artisanRPLInfo) {
 		this.artisanRPLInfo = artisanRPLInfo;
+	}
+
+	/**
+	 * @return the menuContextInfo
+	 */
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
+	}
+
+	/**
+	 * @param menuContextInfo the menuContextInfo to set
+	 */
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
 	}
 
 }

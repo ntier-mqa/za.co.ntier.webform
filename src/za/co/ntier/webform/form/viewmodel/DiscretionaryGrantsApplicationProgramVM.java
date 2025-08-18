@@ -9,6 +9,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
@@ -18,11 +19,9 @@ import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.LearnerInputTableInfo;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
-import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormContact;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
 public class DiscretionaryGrantsApplicationProgramVM {
 	private ProgramInfo programInfo;
@@ -33,7 +32,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	private FormInfo formInfo;
 
-	private int programMasterDataID;
+	private MenuContextInfo menuContextInfo;
 
 	/**
 	 * @return the programInfo
@@ -70,24 +69,20 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	/**
 	 * @return the programMasterDataID
 	 */
-	public int getProgramMasterDataID() {
-		return programMasterDataID;
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
 	}
 
 	@Init
-	public void init(@ExecutionArgParam(WebForm.programMasterDataUUKey) String programMasterDataKey,
-			@ExecutionArgParam(WebForm.programType) String sProgramType) {
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo) {
 		
-		this.programType = ProgramType.valueOf(sProgramType.toUpperCase());
-		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataKey, null);
-
-		setProgramMasterDataID(masterData.getZZ_Program_Master_Data_ID());
+		setMenuContextInfo(menuContextInfo);
 
 		setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
-		setFormInfo(new FormInfo(programType, "DGAF01"));
+		setFormInfo(new FormInfo(menuContextInfo));
 
 		employerInfo = new EmployerInfo();
-		programInfo = new ProgramInfo(masterData.getZZ_Program_Master_Data_ID(), programType);
+		programInfo = new ProgramInfo(menuContextInfo);
 
 	}
 
@@ -122,8 +117,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	/**
 	 * @param programMasterDataID the programMasterDataID to set
 	 */
-	public void setProgramMasterDataID(int programMasterDataID) {
-		this.programMasterDataID = programMasterDataID;
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
 	}
 	
 	public String getSubmitButtonLabel() {

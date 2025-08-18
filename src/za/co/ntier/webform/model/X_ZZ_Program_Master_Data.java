@@ -31,7 +31,7 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250816L;
+	private static final long serialVersionUID = 20250819L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Master_Data (Properties ctx, int ZZ_Program_Master_Data_ID, String trxName)
@@ -128,6 +128,34 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
 	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_ID)
+			.getPO(getC_Year_ID(), get_TrxName());
+	}
+
+	/** Set Year.
+		@param C_Year_ID Calendar Year
+	*/
+	public void setC_Year_ID (int C_Year_ID)
+	{
+		if (C_Year_ID < 1)
+			set_Value (COLUMNNAME_C_Year_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Year_ID, Integer.valueOf(C_Year_ID));
+	}
+
+	/** Get Year.
+		@return Calendar Year
+	  */
+	public int getC_Year_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Year_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

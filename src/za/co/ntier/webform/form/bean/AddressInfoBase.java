@@ -559,14 +559,14 @@ public class AddressInfoBase {
 	}
 
 	/**
-	 * @return the programType
+	 * @return the programTypeMenuContextKey
 	 */
 	public ProgramType getProgramType() {
 		return programType;
 	}
 
 	/**
-	 * @param programType the programType to set
+	 * @param programTypeMenuContextKey the programTypeMenuContextKey to set
 	 */
 	public void setProgramType(ProgramType programType) {
 		this.programType = programType;

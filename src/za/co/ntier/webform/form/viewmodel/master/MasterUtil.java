@@ -1,12 +1,10 @@
 package za.co.ntier.webform.form.viewmodel.master;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 import org.compiere.model.MCity;
 import org.compiere.model.MCountry;
-import org.compiere.model.MPeriod;
 import org.compiere.model.MRegion;
 import org.compiere.model.Query;
 import org.compiere.util.CCache;
@@ -18,11 +16,6 @@ public class MasterUtil {
 	public static final List<KeyNamePair> districtMunicipalities;
 	public static final List<KeyNamePair> localMunicipalities;
 	public static final List<KeyNamePair> municipalityTypes;
-	
-	public static LocalDate getcurrrentPeriodYear() {
-		MPeriod period = MPeriod.get(Env.getCtx(), Env.getContextAsDate(Env.getCtx(), "#Date"), 0, null);
-		return period.getStartDate().toLocalDateTime().toLocalDate();
-	}
 
 	static {
 		municipalityTypes = Arrays.asList(new KeyNamePair(1, "Rural"), new KeyNamePair(2, "Urban"));

@@ -19,7 +19,7 @@
 	<include
 		src="@load((WebForm.getBundleResourcePath('fragment/employDeclaration.zul')))" />
 
-	<include programMasterDataID="@load(vm.programMasterDataID)"
+	<include menuContextInfo="@load(vm.menuContextInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/generalAppRule.zul')))" />
 
 	<include employerInfo="@load(vm.employerInfo)"

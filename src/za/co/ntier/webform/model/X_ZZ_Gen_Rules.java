@@ -21,11 +21,11 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.model.*;
 
-/** Generated Model for ZZ_Program_Gen_Rules
+/** Generated Model for ZZ_Gen_Rules
  *  @author iDempiere (generated)
  *  @version Release 12 - $Id$ */
-@org.adempiere.base.Model(table="ZZ_Program_Gen_Rules")
-public class X_ZZ_Program_Gen_Rules extends PO implements I_ZZ_Program_Gen_Rules, I_Persistent
+@org.adempiere.base.Model(table="ZZ_Gen_Rules")
+public class X_ZZ_Gen_Rules extends PO implements I_ZZ_Gen_Rules, I_Persistent
 {
 
 	/**
@@ -34,51 +34,51 @@ public class X_ZZ_Program_Gen_Rules extends PO implements I_ZZ_Program_Gen_Rules
 	private static final long serialVersionUID = 20250819L;
 
     /** Standard Constructor */
-    public X_ZZ_Program_Gen_Rules (Properties ctx, int ZZ_Program_Gen_Rules_ID, String trxName)
+    public X_ZZ_Gen_Rules (Properties ctx, int ZZ_Gen_Rules_ID, String trxName)
     {
-      super (ctx, ZZ_Program_Gen_Rules_ID, trxName);
-      /** if (ZZ_Program_Gen_Rules_ID == 0)
+      super (ctx, ZZ_Gen_Rules_ID, trxName);
+      /** if (ZZ_Gen_Rules_ID == 0)
         {
 			setName (null);
-			setZZ_Program_Gen_Rules_ID (0);
+			setZZ_Gen_Rules_ID (0);
         } */
     }
 
     /** Standard Constructor */
-    public X_ZZ_Program_Gen_Rules (Properties ctx, int ZZ_Program_Gen_Rules_ID, String trxName, String ... virtualColumns)
+    public X_ZZ_Gen_Rules (Properties ctx, int ZZ_Gen_Rules_ID, String trxName, String ... virtualColumns)
     {
-      super (ctx, ZZ_Program_Gen_Rules_ID, trxName, virtualColumns);
-      /** if (ZZ_Program_Gen_Rules_ID == 0)
+      super (ctx, ZZ_Gen_Rules_ID, trxName, virtualColumns);
+      /** if (ZZ_Gen_Rules_ID == 0)
         {
 			setName (null);
-			setZZ_Program_Gen_Rules_ID (0);
+			setZZ_Gen_Rules_ID (0);
         } */
     }
 
     /** Standard Constructor */
-    public X_ZZ_Program_Gen_Rules (Properties ctx, String ZZ_Program_Gen_Rules_UU, String trxName)
+    public X_ZZ_Gen_Rules (Properties ctx, String ZZ_Gen_Rules_UU, String trxName)
     {
-      super (ctx, ZZ_Program_Gen_Rules_UU, trxName);
-      /** if (ZZ_Program_Gen_Rules_UU == null)
+      super (ctx, ZZ_Gen_Rules_UU, trxName);
+      /** if (ZZ_Gen_Rules_UU == null)
         {
 			setName (null);
-			setZZ_Program_Gen_Rules_ID (0);
+			setZZ_Gen_Rules_ID (0);
         } */
     }
 
     /** Standard Constructor */
-    public X_ZZ_Program_Gen_Rules (Properties ctx, String ZZ_Program_Gen_Rules_UU, String trxName, String ... virtualColumns)
+    public X_ZZ_Gen_Rules (Properties ctx, String ZZ_Gen_Rules_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, ZZ_Program_Gen_Rules_UU, trxName, virtualColumns);
-      /** if (ZZ_Program_Gen_Rules_UU == null)
+      super (ctx, ZZ_Gen_Rules_UU, trxName, virtualColumns);
+      /** if (ZZ_Gen_Rules_UU == null)
         {
 			setName (null);
-			setZZ_Program_Gen_Rules_ID (0);
+			setZZ_Gen_Rules_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_ZZ_Program_Gen_Rules (Properties ctx, ResultSet rs, String trxName)
+    public X_ZZ_Gen_Rules (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -100,7 +100,7 @@ public class X_ZZ_Program_Gen_Rules extends PO implements I_ZZ_Program_Gen_Rules
 
     public String toString()
     {
-      StringBuilder sb = new StringBuilder ("X_ZZ_Program_Gen_Rules[")
+      StringBuilder sb = new StringBuilder ("X_ZZ_Gen_Rules[")
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
@@ -110,7 +110,7 @@ public class X_ZZ_Program_Gen_Rules extends PO implements I_ZZ_Program_Gen_Rules
 	*/
 	public void setLine (int Line)
 	{
-		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
+		set_ValueNoCheck (COLUMNNAME_Line, Integer.valueOf(Line));
 	}
 
 	/** Get Line No.
@@ -140,60 +140,39 @@ public class X_ZZ_Program_Gen_Rules extends PO implements I_ZZ_Program_Gen_Rules
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set Program Learnerships.
-		@param ZZ_Program_Gen_Rules_ID Program Learnerships
+	/** Set General Rules.
+		@param ZZ_Gen_Rules_ID General Rules
 	*/
-	public void setZZ_Program_Gen_Rules_ID (int ZZ_Program_Gen_Rules_ID)
+	public void setZZ_Gen_Rules_ID (int ZZ_Gen_Rules_ID)
 	{
-		if (ZZ_Program_Gen_Rules_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_ZZ_Program_Gen_Rules_ID, null);
+		if (ZZ_Gen_Rules_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_ZZ_Gen_Rules_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_ZZ_Program_Gen_Rules_ID, Integer.valueOf(ZZ_Program_Gen_Rules_ID));
+			set_ValueNoCheck (COLUMNNAME_ZZ_Gen_Rules_ID, Integer.valueOf(ZZ_Gen_Rules_ID));
 	}
 
-	/** Get Program Learnerships.
-		@return Program Learnerships	  */
-	public int getZZ_Program_Gen_Rules_ID()
+	/** Get General Rules.
+		@return General Rules	  */
+	public int getZZ_Gen_Rules_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_Program_Gen_Rules_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_Gen_Rules_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set ZZ_Program_Gen_Rules_UU.
-		@param ZZ_Program_Gen_Rules_UU ZZ_Program_Gen_Rules_UU
+	/** Set ZZ_Gen_Rules_UU.
+		@param ZZ_Gen_Rules_UU ZZ_Gen_Rules_UU
 	*/
-	public void setZZ_Program_Gen_Rules_UU (String ZZ_Program_Gen_Rules_UU)
+	public void setZZ_Gen_Rules_UU (String ZZ_Gen_Rules_UU)
 	{
-		set_Value (COLUMNNAME_ZZ_Program_Gen_Rules_UU, ZZ_Program_Gen_Rules_UU);
+		set_Value (COLUMNNAME_ZZ_Gen_Rules_UU, ZZ_Gen_Rules_UU);
 	}
 
-	/** Get ZZ_Program_Gen_Rules_UU.
-		@return ZZ_Program_Gen_Rules_UU	  */
-	public String getZZ_Program_Gen_Rules_UU()
+	/** Get ZZ_Gen_Rules_UU.
+		@return ZZ_Gen_Rules_UU	  */
+	public String getZZ_Gen_Rules_UU()
 	{
-		return (String)get_Value(COLUMNNAME_ZZ_Program_Gen_Rules_UU);
-	}
-
-	/** Set Program Master Data.
-		@param ZZ_Program_Master_Data_ID Program Master Data
-	*/
-	public void setZZ_Program_Master_Data_ID (int ZZ_Program_Master_Data_ID)
-	{
-		if (ZZ_Program_Master_Data_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_ZZ_Program_Master_Data_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_ZZ_Program_Master_Data_ID, Integer.valueOf(ZZ_Program_Master_Data_ID));
-	}
-
-	/** Get Program Master Data.
-		@return Program Master Data	  */
-	public int getZZ_Program_Master_Data_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_Program_Master_Data_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_ZZ_Gen_Rules_UU);
 	}
 }

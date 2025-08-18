@@ -3,6 +3,8 @@ package za.co.ntier.webform.form.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import za.co.ntier.webform.form.MenuContextInfo;
+
 public class OneLineTableInfo extends LearnerInputTableInfo {
 	@Override
 	public int getLeftSize() {
@@ -10,11 +12,17 @@ public class OneLineTableInfo extends LearnerInputTableInfo {
 				typeLearners.equals(type))
 			return 7;
 		
+		if (typeUnEmployed.equals(type) &&
+				isHasWPAReq())
+			return 8;
+		
 		return 10;
 	}
 	
 	@Override
 	public int getRightSize() {
+		if (isHasWPAReq())
+			return 4;
 		return 2;
 	}
 	
@@ -105,8 +113,10 @@ public class OneLineTableInfo extends LearnerInputTableInfo {
 		return oneLineTableInfo;
 	}
 	
-	public static OneLineTableInfo createUnEmployedTableInfo() {
+	public static OneLineTableInfo createUnEmployedTableInfo(MenuContextInfo menuContextInfo) {
 		OneLineTableInfo oneLineTableInfo = new OneLineTableInfo(typeUnEmployed);
+		oneLineTableInfo.setHasWPAReq(menuContextInfo.getIsUploadWPAForNVC());
+		oneLineTableInfo.getLearnerInputInfos().get(0).setUploadWPA(menuContextInfo.getIsUploadWPAForNVC());
 		
 		oneLineTableInfo.setShowLearnerTitle(false);
 		

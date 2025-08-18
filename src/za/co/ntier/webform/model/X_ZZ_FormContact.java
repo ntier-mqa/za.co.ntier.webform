@@ -31,7 +31,7 @@ public class X_ZZ_FormContact extends PO implements I_ZZ_FormContact, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250816L;
+	private static final long serialVersionUID = 20250819L;
 
     /** Standard Constructor */
     public X_ZZ_FormContact (Properties ctx, int ZZ_FormContact_ID, String trxName)

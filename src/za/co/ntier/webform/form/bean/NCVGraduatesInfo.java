@@ -1,5 +1,7 @@
 package za.co.ntier.webform.form.bean;
 
+import za.co.ntier.webform.form.MenuContextInfo;
+
 public class NCVGraduatesInfo {
 	private OneLineTableInfo unEmployedTableInfo;
 
@@ -17,7 +19,7 @@ public class NCVGraduatesInfo {
 		this.unEmployedTableInfo = unEmployedTableInfo;
 	}
 	
-	public NCVGraduatesInfo() {
-		this.unEmployedTableInfo = OneLineTableInfo.createUnEmployedTableInfo();
+	public NCVGraduatesInfo(MenuContextInfo menuContextInfo) {
+		this.unEmployedTableInfo = OneLineTableInfo.createUnEmployedTableInfo(menuContextInfo);
 	}
 }

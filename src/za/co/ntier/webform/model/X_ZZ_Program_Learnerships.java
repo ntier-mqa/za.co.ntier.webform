@@ -31,7 +31,7 @@ public class X_ZZ_Program_Learnerships extends PO implements I_ZZ_Program_Learne
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250816L;
+	private static final long serialVersionUID = 20250819L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Learnerships (Properties ctx, int ZZ_Program_Learnerships_ID, String trxName)

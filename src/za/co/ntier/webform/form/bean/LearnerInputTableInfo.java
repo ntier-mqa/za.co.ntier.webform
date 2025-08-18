@@ -159,18 +159,9 @@ public class LearnerInputTableInfo {
 					hasAccred = true;
 				}
 			});
-		
-
-		if (hasWPAReq && hasAccred) {
-			rightColSize = 4; //12/3
-		} else if (!hasWPAReq && !hasAccred) {
-			rightColSize = 12;
-		} else {
-			rightColSize = 6; //12/2
-		}
 	}
 
-	private int rightColSize;
+	private Integer rightColSize;
 
 	/**
 	 * @return the learnerInputInfos
@@ -210,7 +201,7 @@ public class LearnerInputTableInfo {
 	
 	
 	/**
-	 * @return the programType
+	 * @return the programTypeMenuContextKey
 	 */
 	public ProgramType getProgramType() {
 		return programType;
@@ -288,7 +279,7 @@ public class LearnerInputTableInfo {
 	}
 
 	/**
-	 * @param programType the programType to set
+	 * @param programTypeMenuContextKey the programTypeMenuContextKey to set
 	 */
 	public void setProgramType(ProgramType programType) {
 		this.programType = programType;
@@ -305,7 +296,17 @@ public class LearnerInputTableInfo {
 	 * @return the rightColSize
 	 */
 	public int getRightColSize() {
-		return rightColSize;
+		if (rightColSize != null)
+			return rightColSize;
+		
+		if (hasWPAReq && hasAccred) {
+			return 4; //12/3
+		} else if (!hasWPAReq && !hasAccred) {
+			return 12;
+		} else {
+			return 6; //12/2
+		}
+		
 	}
 
 	/**

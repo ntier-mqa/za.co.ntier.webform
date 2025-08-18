@@ -32,7 +32,7 @@ public interface I_ZZ_FormDiscipline
     /** TableName=ZZ_FormDiscipline */
     public static final String Table_Name = "ZZ_FormDiscipline";
 
-    /** AD_Table_ID=1000048 */
+    /** AD_Table_ID=1000049 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);

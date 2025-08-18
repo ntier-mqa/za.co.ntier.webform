@@ -1,9 +1,12 @@
 package za.co.ntier.webform.form.bean;
 
+import za.co.ntier.webform.form.MenuContextInfo;
+
 public class AETInfo {
 	private LearnershipTableInfo aetLearnership;
-	public AETInfo(int programMasterDataID, ProgramType programType) {
-		aetLearnership = LearnershipTableInfo.createGeneralLearnership(programMasterDataID, programType);
+	public AETInfo(MenuContextInfo menuContextInfo) {
+		aetLearnership = LearnershipTableInfo.createGeneralLearnership(
+					menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), menuContextInfo.getProgramType());
 	}
 	/**
 	 * @return the aetLearnership

@@ -8,6 +8,7 @@ import org.compiere.util.Env;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.model.I_ZZ_Program_Gen_Rules;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
@@ -18,10 +19,10 @@ public class GeneralAppRuleVMWrapper {
 	private List<String> generalAppRules;
 	
 	@Init
-	public void init(@ExecutionArgParam(WebForm.programMasterDataIDKey) int programMasterDataID) {
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo) {
 		List<X_ZZ_Program_Gen_Rules> programGenRules = new Query(Env.getCtx(), I_ZZ_Program_Gen_Rules.Table_Name, 
         		String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID), null)
-			.setParameters(programMasterDataID)
+			.setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID())
 			.setClient_ID()
 			.setOrderBy(I_ZZ_Program_Gen_Rules.COLUMNNAME_Line)
 			.list();

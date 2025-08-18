@@ -9,7 +9,9 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Div;
 
+import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
 @org.idempiere.ui.zk.annotation.Form(name = "za.co.ntier.webform.form.EmployerApplicationForm")
 public class WebForm extends ADForm {
@@ -23,28 +25,51 @@ public class WebForm extends ADForm {
 		return WebForm.class.getResource(zulPath).toString();
 	}
 
+	MenuContextInfo menuContextInfo;
+	
 	@Override
 	protected void init(int adFormId, String name) {
-		String formTitle = Env.getContext(Env.getCtx(), m_WindowNo, "+formTitle");
-		super.init(adFormId, formTitle);
+		menuContextInfo = parseMenuContectInfo();
+		super.init(adFormId, menuContextInfo.getFormTitle());
 	}
 
-	public static final String programMasterDataUUKey = "+" + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
-	public static final String programType = "+programType";
-	public static final String programMasterDataIDKey = "programMasterDataID";
+	public static final String programMasterDataUUMenuContextKey = "+" + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
+	public static final String programTypeMenuContextKey = "+programType";
+	public static final String isUploadWPAForNVCMenuContextKey = "+uploadWPAForNVC";
+	public static final String menuContextInfoKey = "menuContextInfo";
+	
+	private MenuContextInfo parseMenuContectInfo() {
+		String zulPath = Env.getContext(Env.getCtx(), m_WindowNo, "+zulPath");
+
+		String programMasterDataUUValue = Env.getContext(Env.getCtx(), m_WindowNo, programMasterDataUUMenuContextKey);
+		
+		String programTypeValue = Env.getContext(Env.getCtx(), m_WindowNo, programTypeMenuContextKey);
+		
+		String uploadWPAForNVCValue = Env.getContext(Env.getCtx(), m_WindowNo, isUploadWPAForNVCMenuContextKey);
+		
+		boolean isUploadWPAForNVC = uploadWPAForNVCValue != null && "Y".equalsIgnoreCase(uploadWPAForNVCValue);
+		
+		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataUUValue, null);
+		
+		String formTitle = Env.getContext(Env.getCtx(), m_WindowNo, "+formTitle");
+		
+		MenuContextInfo menuContextInfo = new MenuContextInfo(
+				ProgramType.valueOf(programTypeValue),
+				zulPath,
+				masterData,
+				isUploadWPAForNVC,
+				formTitle);
+		
+		return menuContextInfo;
+	}
 	
 	@Override
 	protected void initForm() {
-		String zulPath = Env.getContext(Env.getCtx(), m_WindowNo, "+zulPath");
-
-		String zulPathRelative = WebForm.class.getResource(zulPath).toString();
-		
-		String programMasterDataUU = Env.getContext(Env.getCtx(), m_WindowNo, programMasterDataUUKey);
-		
 		Map<String, Object> args = new HashMap<>();
-		args.put(programMasterDataUUKey, programMasterDataUU);
-		args.put(programType, Env.getContext(Env.getCtx(), m_WindowNo, programType));
+		args.put(menuContextInfoKey, menuContextInfo);
 		
+		String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
+
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		// Set the context class loader to this bundle's class loader to ensure that
 		// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)

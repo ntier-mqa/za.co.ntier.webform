@@ -2,6 +2,10 @@ package za.co.ntier.webform.form.bean;
 
 import java.time.LocalDate;
 
+import org.compiere.model.MYear;
+import org.compiere.util.Env;
+
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 public class FormInfo {
@@ -9,20 +13,21 @@ public class FormInfo {
 	private String approvedDate;
 	private String approvedDateTitle;
 	private String approvedTitle;
-	private String formCode;
 	private String formHeader;
 
 	private String orgName;
 	private String revision;
 	private String revisionTitle;
 
-	public FormInfo(ProgramType programType, String formCode) {
-		LocalDate financialYear = MasterUtil.getcurrrentPeriodYear();
-		this.formCode = String.format("%s_%d/%d", formCode, financialYear.getYear(), financialYear.getYear() + 1);
-		String formName = programType == ProgramType.CANDIDACY ? "DGA CANDIDACY" : 
-			programType == ProgramType.INTERNSHIP ? "DGA  INTERNSHIP" : programType.toString();
+	public FormInfo(MenuContextInfo menuContextInfo) {
+		String formName = menuContextInfo.getProgramMasterData().getTitle();
+		int year = 0;
+		if (menuContextInfo.getProgramMasterData().getC_Year_ID() != 0) {
+			MYear fiscalYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
+			year = fiscalYear.getYearAsInt();
+		}
 		
-		this.formHeader = String.format("%s - %d/%d", formName, financialYear.getYear(), financialYear.getYear() + 1);
+		this.formHeader = String.format("%s - %d/%d", formName, year, year + 1);
 		this.orgName = "COO";
 		this.revision = "02";
 		this.approved = "ACOO";
@@ -59,13 +64,6 @@ public class FormInfo {
 	 */
 	public String getApprovedTitle() {
 		return approvedTitle;
-	}
-
-	/**
-	 * @return the formCode
-	 */
-	public String getFormCode() {
-		return formCode;
 	}
 
 	/**
@@ -122,13 +120,6 @@ public class FormInfo {
 	 */
 	public void setApprovedTitle(String approvedTitle) {
 		this.approvedTitle = approvedTitle;
-	}
-
-	/**
-	 * @param formCode the formCode to set
-	 */
-	public void setFormCode(String formCode) {
-		this.formCode = formCode;
 	}
 
 	/**

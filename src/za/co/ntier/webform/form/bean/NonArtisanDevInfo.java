@@ -1,28 +1,18 @@
 package za.co.ntier.webform.form.bean;
 
+import za.co.ntier.webform.form.MenuContextInfo;
+
 public class NonArtisanDevInfo {
 	private LearnershipTableInfo generalLearnership;
 	private LearnershipTableInfo firLearnership;
-	private int programMasterDataID;
+	private MenuContextInfo menuContextInfo;
 	
-	public NonArtisanDevInfo(int programMasterDataID, ProgramType programType) {
-		this.setProgramMasterDataID(programMasterDataID);
-		setGeneralLearnership(LearnershipTableInfo.createGeneralLearnership(programMasterDataID, programType));
-		setFirLearnership(LearnershipTableInfo.create4IRLearnership(programMasterDataID, programType));
-	}
-
-	/**
-	 * @return the programMasterDataID
-	 */
-	public int getProgramMasterDataID() {
-		return programMasterDataID;
-	}
-
-	/**
-	 * @param programMasterDataID the programMasterDataID to set
-	 */
-	public void setProgramMasterDataID(int programMasterDataID) {
-		this.programMasterDataID = programMasterDataID;
+	public NonArtisanDevInfo(MenuContextInfo menuContextInfo) {
+		this.setMenuContextInfo(menuContextInfo);
+		setGeneralLearnership(LearnershipTableInfo.createGeneralLearnership(
+						menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), menuContextInfo.getProgramType()));
+		setFirLearnership(LearnershipTableInfo.create4IRLearnership(
+						menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), menuContextInfo.getProgramType()));
 	}
 
 	/**
@@ -51,5 +41,19 @@ public class NonArtisanDevInfo {
 	 */
 	public void setFirLearnership(LearnershipTableInfo firLearnership) {
 		this.firLearnership = firLearnership;
+	}
+
+	/**
+	 * @return the menuContextInfo
+	 */
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
+	}
+
+	/**
+	 * @param menuContextInfo the menuContextInfo to set
+	 */
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
 	}
 }
