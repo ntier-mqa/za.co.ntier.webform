@@ -143,7 +143,9 @@ public class LearnerInputTableInfo {
 		sql.append(X_ZZ_Program_Trade.COLUMNNAME_Line);
 		
 		List<List<Object>> learnerInputInfoObjs = DB.getSQLArrayObjectsEx(null, sql.toString(), programMasterDataID);
-
+		
+		if (learnerInputInfoObjs == null)
+			learnerInputInfoObjs = new ArrayList<>();
 		
 		learnerInputInfoObjs.stream().forEach((learnerInputInfoObj) -> {
 				LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
