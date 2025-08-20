@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
 <?import za.co.ntier.webform.form.WebForm ?>
+
 <div
 	viewModel="@id('vmEmployerInfo') @init('za.co.ntier.webform.form.viewmodel.EmployerInfoVMWrapper')">
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
-			value="C. EMPLOYER/APPLICANT INFORMATION" />
+			value="C. ORGANISATION INFORMATION" />
 	</hlayout>
 	<div sclass="container-fluid text-left">
 		
@@ -19,7 +20,9 @@
 					onChange="@command('sdlNumberChange')"/>
 			</div>
 		</div>
-		<div sclass="row">
+		<div 
+			if="${!vmEmployerInfo.employerInfo.isCetTvet()}"
+			sclass="row">
 			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmEmployerInfo.employerInfo.employerNameTitle)" />
@@ -27,6 +30,23 @@
 			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
 					value="@bind(vmEmployerInfo.employerInfo.employerName)" />
+			</div>
+		</div>
+		<div 
+			if="${vmEmployerInfo.employerInfo.isCetTvet()}"
+			sclass="row">
+			<div sclass="col-sm-4 col-title d-flex align-items-center">
+				<label
+					value="@init(vmEmployerInfo.employerInfo.cetTvetNameTitle)" />
+			</div>
+			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
+				<listbox mold="select" sclass="form-control"
+					model="@load(vmEmployerInfo.employerInfo.cetTvetColleges)"
+					selectedItem="@bind(vmEmployerInfo.employerInfo.cetTvetCollegeSelected)">
+					<template name="model" var="item">
+						<listitem label="@load(item.name)" />
+					</template>
+				</listbox>
 			</div>
 		</div>
 		<div sclass="row">
@@ -39,7 +59,9 @@
 					value="@bind(vmEmployerInfo.employerInfo.siteSDLNumber)" />
 			</div>
 		</div>
-		<div sclass="row">
+		<div
+			if="${!vmEmployerInfo.employerInfo.isCetTvet()}" 
+			sclass="row">
 			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmEmployerInfo.employerInfo.orgRegistrationNumberTitle)" />
@@ -50,7 +72,9 @@
 			</div>
 		</div>
 
-		<div sclass="row">
+		<div
+			if="${!vmEmployerInfo.employerInfo.isCetTvet()}"
+			sclass="row">
 			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
 					value="@init(vmEmployerInfo.employerInfo.employerTaxNumberTitle)" />
@@ -84,15 +108,19 @@
 		<label
 			value="(please select the correct option pertaining to the company size)" />
 	</hlayout>
-	<include
+	
+	<include 
+		if="${!vmEmployerInfo.employerInfo.isCetTvet()}"
 		orgSizeInfo="@load(vmEmployerInfo.employerInfo.orgSizeInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/organisationSize.zul')))" />
 
 	<include
+		if="${!vmEmployerInfo.employerInfo.isCetTvet()}"
 		addressInfo="@load(vmEmployerInfo.employerInfo.orgContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 
 	<include
+		if="${!vmEmployerInfo.employerInfo.isCetTvet()}"
 		addressInfo="@load(vmEmployerInfo.employerInfo.alternateOrgContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 

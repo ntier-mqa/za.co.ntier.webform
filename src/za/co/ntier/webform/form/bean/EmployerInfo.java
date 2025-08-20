@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.bean;
 
+import java.util.List;
 import java.util.Random;
 
 import org.compiere.model.I_C_BPartner;
@@ -10,6 +11,7 @@ import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 public class EmployerInfo {
@@ -30,21 +32,52 @@ public class EmployerInfo {
 	private String sdlNumberTitle = "Skills Development Levy (SDL) Number (Paying or Exempted)";
 	private String siteSDLNumber;
 	private String siteSDLNumberTitle = "Site SDL Number (if applicable)";
+	
+	private MenuContextInfo menuContextInfo;
+	
+	public boolean isCetTvet(){
+		return ProgramType.CET.equals(menuContextInfo.getProgramType()) ||
+				ProgramType.TVET.equals(menuContextInfo.getProgramType());
+	}
+	
+	public String getCetTvetNameTitle() {
+		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
+			return "Name of CET College";
+		}else if(ProgramType.TVET.equals(menuContextInfo.getProgramType()))
+			return "Name of TVET College";
+		else
+			return "unknownCetNameTitle";
+	}
+	
+	private X_C_BPartner cetTvetCollegeSelected;
+	
+	public List<X_C_BPartner> getCetTvetColleges() {
+		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
+			return MasterUtil.getCetColleges();
+		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())) {
+			return MasterUtil.getTvetColleges();
+		}
+		return null;
+	}
 
-	public EmployerInfo() {
+	public EmployerInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
 		postAddressInfo = new AddressInfoBase(AddressType.POSTAL,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
 		physicalAddressInfo = new AddressInfoBase(AddressType.PHYSICAL,
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		orgSizeInfo = new OrganisationSizeInfo();
+		
+		if (!isCetTvet()) {
+			orgSizeInfo = new OrganisationSizeInfo();
 
-		orgContact = new AddressInfoBase(AddressType.ORG,
-				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+			orgContact = new AddressInfoBase(AddressType.ORG,
+					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
-		alternateOrgContact = new AddressInfoBase(AddressType.ORG_ALTER,
-				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+			alternateOrgContact = new AddressInfoBase(AddressType.ORG_ALTER,
+					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+		}
 	}
 
 	/**
@@ -299,5 +332,13 @@ public class EmployerInfo {
 			orgSizeInfo.setSubmittedWSP(prevApprovedCount > 0);
 			BindUtils.postNotifyChange(orgSizeInfo, "submittedWSPText", "numOfEmployer");
 		}
+	}
+
+	public X_C_BPartner getCetTvetCollegeSelected() {
+		return cetTvetCollegeSelected;
+	}
+
+	public void setCetTvetCollegeSelected(X_C_BPartner cetTvetCollegeSelected) {
+		this.cetTvetCollegeSelected = cetTvetCollegeSelected;
 	}
 }

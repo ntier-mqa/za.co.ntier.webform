@@ -3,13 +3,18 @@ package za.co.ntier.webform.form.viewmodel.master;
 import java.util.Arrays;
 import java.util.List;
 
+import org.compiere.model.I_C_BP_Group;
+import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MCity;
 import org.compiere.model.MCountry;
 import org.compiere.model.MRegion;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+
+import za.co.ntier.webform.form.bean.ProgramType;
 
 public class MasterUtil {
 	public static final int limitItem = 30;
@@ -68,6 +73,7 @@ public class MasterUtil {
 	
 	private static CCache<Integer,List<MCity>> s_Cities =  new CCache<>(MCity.Table_Name + "_DisciplineHDSA", 1);
 	private static CCache<Integer,List<MRegion>> s_Regions =  new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
+	private static CCache<ProgramType, List<X_C_BPartner>> s_CetTvetCollege =  new CCache<>(I_C_BPartner.Table_Name + "_CetTvetCollege", 2);
 	
 	public static List<MCity> getCities() {
 		if (s_Cities.isEmpty()) {
@@ -96,5 +102,37 @@ public class MasterUtil {
 		}
 		
 		return s_Regions.get(Integer.MIN_VALUE);
+	}
+	
+	public static List<X_C_BPartner> getCetColleges() {
+		List<X_C_BPartner> cetColleges = s_CetTvetCollege.get(ProgramType.CET);
+		if (cetColleges == null) {
+			Query queryCetColleges = new Query(Env.getCtx(), 
+					I_C_BPartner.Table_Name, 
+					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), 
+					null);
+			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
+			queryCetColleges.setParameters("Z-CET");
+			cetColleges = queryCetColleges.list();
+			
+			s_CetTvetCollege.put(ProgramType.CET, cetColleges);
+		}
+		return cetColleges;
+	}
+	
+	public static List<X_C_BPartner> getTvetColleges() {
+		List<X_C_BPartner> tvetColleges = s_CetTvetCollege.get(ProgramType.TVET);
+		if (tvetColleges == null) {
+			Query queryCetColleges = new Query(Env.getCtx(), 
+					I_C_BPartner.Table_Name, 
+					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), 
+					null);
+			queryCetColleges.setParameters("Z-TVET");
+			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
+			tvetColleges = queryCetColleges.list();
+			
+			s_CetTvetCollege.put(ProgramType.TVET, tvetColleges);
+		}
+		return tvetColleges;
 	}
 }

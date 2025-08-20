@@ -81,7 +81,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
 		setFormInfo(new FormInfo(menuContextInfo));
 
-		employerInfo = new EmployerInfo();
+		employerInfo = new EmployerInfo(menuContextInfo);
 		programInfo = new ProgramInfo(menuContextInfo);
 
 	}
