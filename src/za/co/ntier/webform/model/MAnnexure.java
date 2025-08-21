@@ -9,8 +9,10 @@ import java.util.Properties;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRefList;
 import org.compiere.util.Env;
+import org.zkoss.bind.BindUtils;
 
 import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
+import za.co.ntier.webform.form.bean.SubAnnexure;
 
 public class MAnnexure extends X_ZZAnnexure {
 
@@ -20,9 +22,18 @@ public class MAnnexure extends X_ZZAnnexure {
 
 	private static final long serialVersionUID = -4916660585335630255L;
 	
-	List<Entry<MAnnexure, MRefList>> masterColumns;
-	List<Entry<MAnnexure, MRefList>> subColumns;
+	private List<Entry<MAnnexure, MRefList>> masterColumns;
+	private List<Entry<MAnnexure, MRefList>> subColumns;
+	private List<SubAnnexure> subAnnexures = new ArrayList<>();
 	
+	public void setMasterColumns(List<Entry<MAnnexure, MRefList>> masterColumns) {
+		this.masterColumns = masterColumns;
+	}
+
+	public void setSubColumns(List<Entry<MAnnexure, MRefList>> subColumns) {
+		this.subColumns = subColumns;
+	}
+
 	public List<Entry<MAnnexure, MRefList>> getMasterColumns() {
 		if (masterColumns == null) {
 			masterColumns = new ArrayList<>();
@@ -87,6 +98,9 @@ public class MAnnexure extends X_ZZAnnexure {
 			if (getZZFourthSubcolumn() != null) {
 				subColumns.add(getMRefList(COLUMNNAME_ZZFourth, getZZFourthSubcolumn()));
 			}
+			
+			if (subColumns.size() > 0)
+				subAnnexures.add(new SubAnnexure());
 		}
 
 		return subColumns;
@@ -94,5 +108,18 @@ public class MAnnexure extends X_ZZAnnexure {
 	//AD_Ref_List
 	//ZZSub-Annex AD_Reference_UU=fe97c4e6-f33e-49c9-a4c4-0096b53e5c6a
 	 //ZZAnnexure AD_Reference_UU=14c1459a-6899-4ce1-9dec-b4f51e664edc
+
+	public List<SubAnnexure> getSubAnnexures() {
+		return subAnnexures;
+	}
+
+	public void setSubAnnexures(List<SubAnnexure> subAnnexures) {
+		this.subAnnexures = subAnnexures;
+	}
+	
+	public void addSubAnnexure() {
+		subAnnexures.add(new SubAnnexure());
+		BindUtils.postNotifyChange(this, "subAnnexures");
+	}
 	
 }

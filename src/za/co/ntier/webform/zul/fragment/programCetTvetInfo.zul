@@ -75,19 +75,34 @@
 			</div>
 			
 			<!-- for detail table of annexure -->
-			<div style="padding:0 3%">
-				<div sclass="container-fluid">
-					<div 
-					 	children="@bind(annexure.subColumns) @template('subColumnHeader')"
-	                    class="row font-weight-bold">
-	                </div>
-	                
-	                <div 
-	                	children="@bind(annexure.subColumns) @template('subColumnDetails')"
-	                    class="row font-weight-bold">
-	                </div>
-					
+			
+			
+			
+			<div
+				if="${annexure.subColumns.size() > 0}"
+				style="padding:0 3%">
+			
+				<div sclass="container-fluid"
+					children="@bind(annexure.subAnnexures)">
+
+					<template name="children" var="subAnnexure">
+						<div
+							if="${subAnnexureStatus.first}"  
+					 		children="@bind(annexure.subColumns) @template('subColumnHeader')"
+	                    	class="row font-weight-bold">
+	                	</div>
+	                	
+		                <div
+		                	children="@bind(annexure.subColumns) @template('subColumnDetails')"
+		                    class="row font-weight-bold">
+		                </div>
+					</template>		
 				</div>
+				
+				<div sclass="sectionSeparator"/>	
+				<button sclass="btn btn-primary"
+			        label="@init(vmProgramCetTvetInfo.addSubLineLabel)"
+			        onClick="@command('addSubLine', annexure = annexure)" />
 			</div>
 			
 		</template>
