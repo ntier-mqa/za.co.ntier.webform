@@ -15,6 +15,8 @@ public class ProgramCetTvetInfo {
 	private AddressInfoBase addressInfo;
 	
 	public static final String COL_NAME_titleHeaderText = "titleHeaderText";
+	public static final String COL_NAME_customizeDetaileTemplate = "customizeDetaileTemplate";
+
 	public ProgramCetTvetInfo(MenuContextInfo menuContextInfo) {
 		this.setMenuContextInfo(menuContextInfo);
 		
@@ -110,7 +112,7 @@ public class ProgramCetTvetInfo {
 			annexure.set_Attribute(COL_NAME_titleHeaderText, "Lecturers exposed to industry through skills programmes");
 			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
 			annexure.setZZSecond(X_ZZAnnexure.ZZSECOND_ProgrammeApplyingFor);
-			
+			annexure.set_Attribute(COL_NAME_customizeDetaileTemplate, true);
 			annexures.add(annexure);
 		}
 		
