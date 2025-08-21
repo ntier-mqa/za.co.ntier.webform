@@ -172,16 +172,16 @@ public class LearnerInputTableInfo {
 
 	public String getTableTitle() {
 		if (programType == ProgramType.CANDIDACY)
-			return "List of learnerInputInfos supported for the HDSA Candidacy which the number of learners applying should be based on.";
+			return "List of disciplines supported for the HDSA Candidacy which the number of learners applying should be based on.";
 		if (programType == ProgramType.INTERNSHIP && !isTrade())
-			return "List of learnerInputInfos supported for Internships which the number of learners applying should be based on.";
+			return "List of disciplines supported for Internships which the number of learners applying should be based on.";
 		if (programType == ProgramType.INTERNSHIP && isTrade())
 			return """
 					List of disciplines supported for Artisan Internships which the number of learners applying
 					should be based on. Preference will be given to the following trades that are hard to fill
 					according MQA SPOI list, (Diesel Mechanic and Millwright).""";
 		if (programType == ProgramType.EXPERIENCE)
-			return "List of learnerInputInfos supported for practical training which the number of learners applying should be based on.";
+			return "List of disciplines supported for practical training which the number of learners applying should be based on.";
 		else
 			return null;
 
@@ -210,7 +210,7 @@ public class LearnerInputTableInfo {
 	/**
 	 * @return the totalNoLearners
 	 */
-	public int getTotalLearners() {
+	public int getTotalNoLearners() {
 		return totalNoLearners;
 	}
 
@@ -236,7 +236,7 @@ public class LearnerInputTableInfo {
 	}
 
 	public void noLearnersChange() {
-		setTotalLearners(learnerInputInfos.stream().filter(t -> t.getNoLearners() != null)
+		setTotalNoLearners(learnerInputInfos.stream().filter(t -> t.getNoLearners() != null)
 				.mapToInt(LearnerInputInfo::getNoLearners).sum());
 
 		BindUtils.postNotifyChange(this, "totalNoLearners");
@@ -288,7 +288,7 @@ public class LearnerInputTableInfo {
 	/**
 	 * @param totalNoLearners the totalNoLearners to set
 	 */
-	public void setTotalLearners(int totalLearners) {
+	public void setTotalNoLearners(int totalLearners) {
 		this.totalNoLearners = totalLearners;
 	}
 

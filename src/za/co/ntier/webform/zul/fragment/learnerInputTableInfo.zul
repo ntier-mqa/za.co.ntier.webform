@@ -169,7 +169,7 @@
 						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoLearners()}"
 							sclass="@init(('col-sm-' += vmLearnerInputInfo.learnerInputTableInfo.noLearnersSize += ' col-title text-center d-flex align-items-center'))">
 							<label
-								value="@load(vmLearnerInputInfo.learnerInputTableInfo.totalLearners)" />
+								value="@load(vmLearnerInputInfo.learnerInputTableInfo.totalNoLearners)" />
 						</div>
 						
 						<div if="${vmLearnerInputInfo.learnerInputTableInfo.isShowNoUnEmployed()}"

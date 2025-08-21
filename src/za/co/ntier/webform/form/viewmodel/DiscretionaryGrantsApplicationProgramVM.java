@@ -158,10 +158,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		applicationForm.setZZ_HasPivotalPlanSubmited(employerInfo.getOrgSizeInfo().isSubmittedPivotal());
 		
 		if (programType.isShowDisciplineTable())
-			applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalLearners());
+			applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalNoLearners());
 		
 		if (programType.isShowTradeTable())
-			applicationForm.setZZ_TradeTotalLearners(programInfo.getTradeTableInfo().getTotalLearners());
+			applicationForm.setZZ_TradeTotalLearners(programInfo.getTradeTableInfo().getTotalNoLearners());
 		
 		applicationForm.saveEx();
 		
