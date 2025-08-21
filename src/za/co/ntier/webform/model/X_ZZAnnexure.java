@@ -19,6 +19,7 @@ package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+
 import org.compiere.model.*;
 
 /** Generated Model for ZZAnnexure
@@ -31,7 +32,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250819L;
+	private static final long serialVersionUID = 20250820L;
 
     /** Standard Constructor */
     public X_ZZAnnexure (Properties ctx, int ZZAnnexure_ID, String trxName)
@@ -39,8 +40,6 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       super (ctx, ZZAnnexure_ID, trxName);
       /** if (ZZAnnexure_ID == 0)
         {
-			setIsShowTitle (true);
-// Y
 			setZZAnnexure_ID (0);
         } */
     }
@@ -51,8 +50,6 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       super (ctx, ZZAnnexure_ID, trxName, virtualColumns);
       /** if (ZZAnnexure_ID == 0)
         {
-			setIsShowTitle (true);
-// Y
 			setZZAnnexure_ID (0);
         } */
     }
@@ -63,8 +60,6 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       super (ctx, ZZAnnexure_UU, trxName);
       /** if (ZZAnnexure_UU == null)
         {
-			setIsShowTitle (true);
-// Y
 			setZZAnnexure_ID (0);
         } */
     }
@@ -75,8 +70,6 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       super (ctx, ZZAnnexure_UU, trxName, virtualColumns);
       /** if (ZZAnnexure_UU == null)
         {
-			setIsShowTitle (true);
-// Y
 			setZZAnnexure_ID (0);
         } */
     }
@@ -109,26 +102,23 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       return sb.toString();
     }
 
-	/** Set Show Title.
-		@param IsShowTitle Show Title
+	/** Set Line.
+		@param LineNo Line No
 	*/
-	public void setIsShowTitle (boolean IsShowTitle)
+	public void setLineNo (int LineNo)
 	{
-		set_Value (COLUMNNAME_IsShowTitle, Boolean.valueOf(IsShowTitle));
+		set_Value (COLUMNNAME_LineNo, Integer.valueOf(LineNo));
 	}
 
-	/** Get Show Title.
-		@return Show Title	  */
-	public boolean isShowTitle()
+	/** Get Line.
+		@return Line No
+	  */
+	public int getLineNo()
 	{
-		Object oo = get_Value(COLUMNNAME_IsShowTitle);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
+		Integer ii = (Integer)get_Value(COLUMNNAME_LineNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Title.
@@ -189,6 +179,8 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public static final String ZZFIRST_DisciplineApplyingFor = "Discipline";
 	/** Programme Applying For = Programme */
 	public static final String ZZFIRST_ProgrammeApplyingFor = "Programme";
+	/** Total Number Of Beneficiaries Applying For = Total Number Beneficiaries */
+	public static final String ZZFIRST_TotalNumberOfBeneficiariesApplyingFor = "Total Number Beneficiaries";
 	/** Set First Column.
 		@param ZZFirst First Column
 	*/
@@ -209,8 +201,8 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public static final String ZZFIRSTSUBCOLUMN_NumberOfLearners = "Learners";
 	/** Number of learners applied for = Learners Applied */
 	public static final String ZZFIRSTSUBCOLUMN_NumberOfLearnersAppliedFor = "Learners Applied";
-	/** Number of lecturers = Lecturers */
-	public static final String ZZFIRSTSUBCOLUMN_NumberOfLecturers = "Lecturers";
+	/** Number of managers = Managers */
+	public static final String ZZFIRSTSUBCOLUMN_NumberOfManagers = "Managers";
 	/** Requested Programme = Programme */
 	public static final String ZZFIRSTSUBCOLUMN_RequestedProgramme = "Programme";
 	/** Field of Study = Study */
@@ -237,6 +229,8 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public static final String ZZFOURTH_DisciplineApplyingFor = "Discipline";
 	/** Programme Applying For = Programme */
 	public static final String ZZFOURTH_ProgrammeApplyingFor = "Programme";
+	/** Total Number Of Beneficiaries Applying For = Total Number Beneficiaries */
+	public static final String ZZFOURTH_TotalNumberOfBeneficiariesApplyingFor = "Total Number Beneficiaries";
 	/** Set Fourth Column.
 		@param ZZFourth Fourth Column
 	*/
@@ -257,8 +251,8 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public static final String ZZFOURTHSUBCOLUMN_NumberOfLearners = "Learners";
 	/** Number of learners applied for = Learners Applied */
 	public static final String ZZFOURTHSUBCOLUMN_NumberOfLearnersAppliedFor = "Learners Applied";
-	/** Number of lecturers = Lecturers */
-	public static final String ZZFOURTHSUBCOLUMN_NumberOfLecturers = "Lecturers";
+	/** Number of managers = Managers */
+	public static final String ZZFOURTHSUBCOLUMN_NumberOfManagers = "Managers";
 	/** Requested Programme = Programme */
 	public static final String ZZFOURTHSUBCOLUMN_RequestedProgramme = "Programme";
 	/** Field of Study = Study */
@@ -301,6 +295,8 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public static final String ZZSECOND_DisciplineApplyingFor = "Discipline";
 	/** Programme Applying For = Programme */
 	public static final String ZZSECOND_ProgrammeApplyingFor = "Programme";
+	/** Total Number Of Beneficiaries Applying For = Total Number Beneficiaries */
+	public static final String ZZSECOND_TotalNumberOfBeneficiariesApplyingFor = "Total Number Beneficiaries";
 	/** Set Second Column.
 		@param ZZSecond Second Column
 	*/
@@ -321,8 +317,8 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public static final String ZZSECONDSUBCOLUMN_NumberOfLearners = "Learners";
 	/** Number of learners applied for = Learners Applied */
 	public static final String ZZSECONDSUBCOLUMN_NumberOfLearnersAppliedFor = "Learners Applied";
-	/** Number of lecturers = Lecturers */
-	public static final String ZZSECONDSUBCOLUMN_NumberOfLecturers = "Lecturers";
+	/** Number of managers = Managers */
+	public static final String ZZSECONDSUBCOLUMN_NumberOfManagers = "Managers";
 	/** Requested Programme = Programme */
 	public static final String ZZSECONDSUBCOLUMN_RequestedProgramme = "Programme";
 	/** Field of Study = Study */
@@ -349,6 +345,8 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public static final String ZZTHIRD_DisciplineApplyingFor = "Discipline";
 	/** Programme Applying For = Programme */
 	public static final String ZZTHIRD_ProgrammeApplyingFor = "Programme";
+	/** Total Number Of Beneficiaries Applying For = Total Number Beneficiaries */
+	public static final String ZZTHIRD_TotalNumberOfBeneficiariesApplyingFor = "Total Number Beneficiaries";
 	/** Set Third Column.
 		@param ZZThird Third Column
 	*/
@@ -369,8 +367,8 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public static final String ZZTHIRDSUBCOLUMN_NumberOfLearners = "Learners";
 	/** Number of learners applied for = Learners Applied */
 	public static final String ZZTHIRDSUBCOLUMN_NumberOfLearnersAppliedFor = "Learners Applied";
-	/** Number of lecturers = Lecturers */
-	public static final String ZZTHIRDSUBCOLUMN_NumberOfLecturers = "Lecturers";
+	/** Number of managers = Managers */
+	public static final String ZZTHIRDSUBCOLUMN_NumberOfManagers = "Managers";
 	/** Requested Programme = Programme */
 	public static final String ZZTHIRDSUBCOLUMN_RequestedProgramme = "Programme";
 	/** Field of Study = Study */

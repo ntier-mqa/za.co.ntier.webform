@@ -31,7 +31,12 @@ public enum ProgramType {
 	public String toString() {
 		return programType;
 	}
-
+	
+	public boolean isCetTvet(){
+		return ProgramType.CET.equals(this) ||
+				ProgramType.TVET.equals(this);
+	}
+	
 	public boolean isShowMainAddress() {
 		return this == CANDIDACY || this == INTERNSHIP || this == EXPERIENCE || this == DEV_PROGRAM
 				|| this == ARTISAN_AIDES || this == ARTISAN_DEV

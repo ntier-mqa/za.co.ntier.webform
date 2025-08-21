@@ -25,8 +25,15 @@
 	<include employerInfo="@load(vm.employerInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/employerInfo.zul')))" />
 
-	<include programInfo="@load(vm.programInfo)"
+	<include
+		if="${!vm.programType.isCetTvet()}"
+		programInfo="@load(vm.programInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/programInfo.zul')))" />
+	
+	<include
+		if="${vm.programType.isCetTvet()}"
+		programCetTvetInfo="@load(vm.programCetTvetInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/programCetTvetInfo.zul')))" />
 	
 	<div sclass="sectionSeparator"/>	
 	<button sclass="btn btn-primary"

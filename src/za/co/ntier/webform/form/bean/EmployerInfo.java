@@ -35,11 +35,15 @@ public class EmployerInfo {
 	
 	private MenuContextInfo menuContextInfo;
 	
-	public boolean isCetTvet(){
-		return ProgramType.CET.equals(menuContextInfo.getProgramType()) ||
-				ProgramType.TVET.equals(menuContextInfo.getProgramType());
-	}
 	
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
+	}
+
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
+	}
+
 	public String getCetTvetNameTitle() {
 		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
 			return "Name of CET College";
@@ -69,7 +73,7 @@ public class EmployerInfo {
 				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
 
 		
-		if (!isCetTvet()) {
+		if (!menuContextInfo.getProgramType().isCetTvet()) {
 			orgSizeInfo = new OrganisationSizeInfo();
 
 			orgContact = new AddressInfoBase(AddressType.ORG,

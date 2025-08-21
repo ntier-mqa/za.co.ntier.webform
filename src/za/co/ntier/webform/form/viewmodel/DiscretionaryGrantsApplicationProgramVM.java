@@ -17,6 +17,7 @@ import za.co.ntier.webform.form.bean.AddressInfoBase;
 import za.co.ntier.webform.form.bean.CompanyInfo;
 import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.LearnerInputTableInfo;
+import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
 import za.co.ntier.webform.form.bean.EmployerInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -66,6 +67,16 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	
 	private ProgramType programType;
 
+	public ProgramType getProgramType() {
+		return programType;
+	}
+
+	public void setProgramType(ProgramType programType) {
+		this.programType = programType;
+	}
+
+	private ProgramCetTvetInfo programCetTvetInfo;
+
 	/**
 	 * @return the programMasterDataID
 	 */
@@ -77,12 +88,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo) {
 		
 		setMenuContextInfo(menuContextInfo);
-
+		programType = menuContextInfo.getProgramType();
 		setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
 		setFormInfo(new FormInfo(menuContextInfo));
 
 		employerInfo = new EmployerInfo(menuContextInfo);
-		programInfo = new ProgramInfo(menuContextInfo);
+		
+		if (programType.isCetTvet()) {
+			setProgramCetTvetInfo(new ProgramCetTvetInfo(menuContextInfo));
+		}else {
+			programInfo = new ProgramInfo(menuContextInfo);
+		}
+		
 
 	}
 
@@ -223,5 +240,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		contact.setEMail(addressInfoBase.getEmail());
 		contact.setZZ_ContactType(addressInfoBase.getAddressCategory().toString());
 		return contact;
+	}
+
+	public ProgramCetTvetInfo getProgramCetTvetInfo() {
+		return programCetTvetInfo;
+	}
+
+	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
+		this.programCetTvetInfo = programCetTvetInfo;
 	}
 }

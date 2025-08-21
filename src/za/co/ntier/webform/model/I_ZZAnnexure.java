@@ -93,14 +93,18 @@ public interface I_ZZAnnexure
 	  */
 	public boolean isActive();
 
-    /** Column name IsShowTitle */
-    public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
+    /** Column name LineNo */
+    public static final String COLUMNNAME_LineNo = "LineNo";
 
-	/** Set Show Title	  */
-	public void setIsShowTitle (boolean IsShowTitle);
+	/** Set Line.
+	  * Line No
+	  */
+	public void setLineNo (int LineNo);
 
-	/** Get Show Title	  */
-	public boolean isShowTitle();
+	/** Get Line.
+	  * Line No
+	  */
+	public int getLineNo();
 
     /** Column name Title */
     public static final String COLUMNNAME_Title = "Title";

@@ -135,4 +135,10 @@ public class MasterUtil {
 		}
 		return tvetColleges;
 	}
+	
+	public static char getOffsetChar (char c, int offset) {
+		
+		return (char)(c + offset);
+		
+	}
 }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
+<?import za.co.ntier.webform.form.bean.LearnerInputInfo?>
+<?import za.co.ntier.webform.form.bean.ProgramType?>
+<?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
+<?import za.co.ntier.webform.form.bean.ProgramCetTvetInfo?>
+
+
+
+<div
+	viewModel="@id('vmProgramCetTvetInfo') @init('za.co.ntier.webform.form.viewmodel.ProgramCetTvetInfoVMWrapper')">
+	
+	<div
+		children="@load(vmProgramCetTvetInfo.programCetTvetInfo.annexures)">
+		
+		<template name="children" var="annexure">
+			<hlayout sclass="sectionHeader">
+				<label sclass="sectionHeaderTitle"
+					value="@init(( MasterUtil.getOffsetChar('D', annexureStatus.index) += '. ' += annexure.ZZHeader))" />
+			</hlayout>
+			
+			<div sclass="container-fluid">
+				<div 
+				 	children="@bind(annexure.masterColumns) @template('masterColumnHeader')"
+                    class="row font-weight-bold">
+                </div>
+                
+                <div 
+                	children="@bind(annexure.masterColumns) @template('masterColumnDetails')"
+                    class="row font-weight-bold">
+                </div>
+				
+			</div>
+			
+			<div style="padding:0 3%">
+				<div sclass="container-fluid">
+					<div 
+					 	children="@bind(annexure.subColumns) @template('subColumnHeader')"
+	                    class="row font-weight-bold">
+	                </div>
+	                
+	                <div 
+	                	children="@bind(annexure.subColumns) @template('subColumnDetails')"
+	                    class="row font-weight-bold">
+	                </div>
+					
+				</div>
+			</div>
+			
+		</template>
+		
+		<!-- master template -->
+		<template name="masterColumnHeader" var="refList">
+			<div class="@init(( 'col-sm-' += refList.key.masterColNumber() += ' col-title d-flex align-items-center' ))">
+				<label 
+					value="@init(refList.value.name)"/>
+			</div>
+		</template>
+		
+		<template name="masterColumnDetails" var="refList">
+			<div
+				if="${refList.key.title ne null and refListStatus.first}" 
+				class="@init(( 'col-sm-' += refList.key.masterColNumber() += ' col-title d-flex align-items-center' ))">
+				<label 
+					value="@init(( refList.value.get_Attribute(ProgramCetTvetInfo.COL_NAME_titleHeaderText) ))"/>
+			</div>
+			
+			<div
+				if="${refList.key.title eq null or !refListStatus.first}" 
+				class="@init(( 'col-sm-' += refList.key.masterColNumber() += ' col-content-input-full d-flex align-items-center' ))">
+				<textbox sclass="form-control"
+					if="${refList.key.title eq null or !refListStatus.first}" />
+			</div>
+		</template>
+		
+		<!-- sub template -->
+		<template name="subColumnHeader" var="refList">
+			<div class="@init(( 'col-sm-' += refList.key.subColNumber() += ' col-title d-flex align-items-center' ))">
+				<label 
+					value="@init(refList.value.name)"/>
+			</div>
+		</template>
+		
+		<template name="subColumnDetails" var="refList">
+			<div
+				class="@init(( 'col-sm-' += refList.key.subColNumber() += ' col-content-input-full d-flex align-items-center' ))">
+				<textbox sclass="form-control"/>
+			</div>
+		</template>
+	</div>
+	
+	<include
+		addressInfo="@load(vmProgramCetTvetInfo.programCetTvetInfo.addressInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+</div>
