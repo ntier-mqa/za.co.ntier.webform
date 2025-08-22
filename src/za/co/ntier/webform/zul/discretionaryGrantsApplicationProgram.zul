@@ -4,7 +4,6 @@
 	been added to the root <window> to scope the CSS rules specifically to this 
 	MVVM form. -->
 <?import za.co.ntier.webform.form.WebForm ?>
-
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 
@@ -39,5 +38,17 @@
 	<button sclass="btn btn-primary"
         label="@init(vm.submitButtonLabel)"
         onClick="@command('submitApplication')" />
-
+        
+    <window title="Done" width="300px" mode="modal" position="center,center" visible="@load(vm.showDialog)">
+    
+		<div class="modal-body">
+        <label value="The application form has been created."/>
+      </div>
+      <div class="modal-footer">
+        <button sclass="btn btn-primary"
+        label="OK"
+        onClick="@command('closeDialog')" />
+      </div>
+   		
+    </window>
 </div>

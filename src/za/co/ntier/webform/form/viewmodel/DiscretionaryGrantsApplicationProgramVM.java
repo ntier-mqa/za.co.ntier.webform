@@ -1,13 +1,13 @@
 package za.co.ntier.webform.form.viewmodel;
 
 import java.util.List;
-
 import org.apache.commons.lang3.RandomUtils;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -34,7 +34,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private FormInfo formInfo;
 
 	private MenuContextInfo menuContextInfo;
+	
+    private boolean showDialog = false;
 
+    private int recordId;
+    
+    private int tableId;
+    
 	/**
 	 * @return the programInfo
 	 */
@@ -143,6 +149,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 	
 	@Command(value = "submitApplication")
+    @NotifyChange("showDialog")
 	public void submitApplication() {
 		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, null);
 		applicationForm.setName("test" + RandomUtils.nextInt());
@@ -188,6 +195,17 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (programType.isShowTradeTable())
 			createDiscipline(programInfo.getTradeTableInfo(), applicationForm.getZZ_Application_Form_ID());
 		
+		recordId = applicationForm.getZZ_Application_Form_ID();
+		tableId = applicationForm.get_Table_ID();
+		setShowDialog(true);
+		
+		
+	}
+	
+	@Command
+	@NotifyChange("showDialog")
+	public void closeDialog() {
+		setShowDialog(false);
 	}
 	
 	public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo disciplineTableInfo, int applicationFormID) {
@@ -248,5 +266,29 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
 		this.programCetTvetInfo = programCetTvetInfo;
+	}
+
+	public boolean isShowDialog() {
+		return showDialog;
+	}
+
+	public void setShowDialog(boolean showDialog) {
+		this.showDialog = showDialog;
+	}
+
+	public int getRecordId() {
+		return recordId;
+	}
+
+	public void setRecordId(int recordId) {
+		this.recordId = recordId;
+	}
+
+	public int getTableId() {
+		return tableId;
+	}
+
+	public void setTableId(int tableId) {
+		this.tableId = tableId;
 	}
 }
