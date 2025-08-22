@@ -1,5 +1,7 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import java.io.IOException;
+
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -49,7 +51,7 @@ public class LearnerInputTableVMWrapper {
 
 	@Command
 	public void uploadFile(@BindingParam("media") Media media, @BindingParam("isDSA") boolean isDSA,
-			@BindingParam("learnerInputInfo") LearnerInputInfo learnerInputInfo, @BindingParam("index") int index) {
+			@BindingParam("learnerInputInfo") LearnerInputInfo learnerInputInfo, @BindingParam("index") int index) throws IOException {
 		learnerInputInfo.uploadFile(media, isDSA);
 	}
 

@@ -1,7 +1,7 @@
 package za.co.ntier.webform.form.bean;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.Query;
@@ -22,6 +22,7 @@ public class EmployerInfo {
 	private String employerTaxNumberTitle = "Tax ID";
 
 	private String fileNameVATCer;
+	private String fullPathVATCer;
 	private AddressInfoBase orgContact;
 	private String orgRegistrationNumber;
 	private String orgRegistrationNumberTitle = "Reference No";
@@ -305,8 +306,9 @@ public class EmployerInfo {
 		this.siteSDLNumberTitle = siteSDLNumberTitle;
 	}
 
-	public void uploadFile(Media media) {
+	public void uploadFile(Media media) throws IOException {
 		setFileNameVATCer(media.getName());
+		fullPathVATCer = MasterUtil.saveUploadFile(media);
 
 	}
 	
@@ -340,5 +342,13 @@ public class EmployerInfo {
 
 	public void setCetTvetCollegeSelected(X_C_BPartner cetTvetCollegeSelected) {
 		this.cetTvetCollegeSelected = cetTvetCollegeSelected;
+	}
+
+	public String getFullPathVATCer() {
+		return fullPathVATCer;
+	}
+
+	public void setFullPathVATCer(String fullPathVATCer) {
+		this.fullPathVATCer = fullPathVATCer;
 	}
 }

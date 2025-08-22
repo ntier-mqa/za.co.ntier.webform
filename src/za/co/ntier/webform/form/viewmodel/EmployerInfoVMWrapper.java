@@ -1,5 +1,7 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import java.io.IOException;
+
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -31,7 +33,7 @@ public class EmployerInfoVMWrapper {
 	}
 	
 	@Command
-	public void uploadFile(@BindingParam("media") Media media) {
+	public void uploadFile(@BindingParam("media") Media media) throws IOException {
 		employerInfo.uploadFile(media);
 	}
 	

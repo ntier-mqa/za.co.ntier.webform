@@ -1,5 +1,12 @@
 package za.co.ntier.webform.form.viewmodel.master;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,6 +20,7 @@ import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.bean.ProgramType;
 
@@ -140,5 +148,29 @@ public class MasterUtil {
 		
 		return (char)(c + offset);
 		
+	}
+	
+	public static String saveUploadFile (Media media) throws IOException {
+		
+		// System temp base folder
+	    String tmpDir = System.getProperty("java.io.tmpdir"); // usually /tmp
+
+	    // Create unique subfolder, e.g. myapp_20250822_123456789
+	    File uploadDir = Files.createTempDirectory(Paths.get(tmpDir), "MQA_").toFile();
+
+	    // Keep original filename
+	    String originalName = media.getName();
+	    File savedFile = new File(uploadDir, originalName);
+
+	    try (InputStream in = media.getStreamData();
+	         OutputStream out = new FileOutputStream(savedFile)) {
+	        byte[] buffer = new byte[8192];
+	        int len;
+	        while ((len = in.read(buffer)) != -1) {
+	            out.write(buffer, 0, len);
+	        }
+	    }
+
+	    return savedFile.getAbsolutePath();
 	}
 }

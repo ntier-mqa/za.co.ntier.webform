@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.bean;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +22,8 @@ public class LearnerInputInfo {
 	
 	private String fileNameWPA;
 	private boolean isUploadWPA = false;
+	private String fullPathWPA;
+	private String fullPathAccred;
 	private boolean isUploadAccred = false;
 	private String fileNameAccred;
 	private String postalCode;
@@ -154,12 +157,16 @@ public class LearnerInputInfo {
 		this.province = province;
 	}
 
-	public void uploadFile(Media media, boolean isDSA) {
+	public void uploadFile(Media media, boolean isDSA) throws IOException {
 		if (media != null && isDSA) {
 			setFileNameWPA(media.getName());
+			setFilePathWPA(MasterUtil.saveUploadFile(media));
 		} else if (media != null && !isDSA) {
 			setFileNameAccred(media.getName());
+			setFilePathAccred(MasterUtil.saveUploadFile(media));
 		}
+		
+		
 	}
 
 	/**
@@ -329,5 +336,21 @@ public class LearnerInputInfo {
 	 */
 	public void setNoTotalApply(Integer noTotalApply) {
 		this.noTotalApply = noTotalApply;
+	}
+
+	public String getFullPathWPA() {
+		return fullPathWPA;
+	}
+
+	public void setFilePathWPA(String fullPathWPA) {
+		this.fullPathWPA = fullPathWPA;
+	}
+
+	public String getFullPathAccred() {
+		return fullPathAccred;
+	}
+
+	public void setFilePathAccred(String fullPathAccred) {
+		this.fullPathAccred = fullPathAccred;
 	}
 }

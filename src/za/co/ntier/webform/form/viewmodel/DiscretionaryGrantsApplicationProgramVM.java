@@ -1,7 +1,11 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
@@ -150,7 +154,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	
 	@Command(value = "submitApplication")
     @NotifyChange("showDialog")
-	public void submitApplication() {
+	public void submitApplication() throws IOException {
 		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, null);
 		applicationForm.setName("test" + RandomUtils.nextInt());
 		
@@ -208,7 +212,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		setShowDialog(false);
 	}
 	
-	public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo disciplineTableInfo, int applicationFormID) {
+	public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo disciplineTableInfo, int applicationFormID) throws IOException {
 		for (LearnerInputInfo discipline : disciplineTableInfo.getLearnerInputInfos()) {
 			if (discipline.getNoLearners() == null)
 				continue;
@@ -231,6 +235,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 				formDisciplines.setZZ_Disciplines_ID(discipline.getLearnerInputID());
 			}
 
+			if (StringUtils.isNoneEmpty(discipline.getFullPathWPA())) {
+				formDisciplines.setZZ_WPAFile(Files.readAllBytes(Paths.get(discipline.getFullPathWPA())));
+			}
+			
+			if (StringUtils.isNoneEmpty(discipline.getFullPathAccred())) {
+				formDisciplines.setZZ_AccredFile((Files.readAllBytes(Paths.get(discipline.getFullPathAccred()))));
+			}
+			
 			formDisciplines.saveEx();
 		}
 		
