@@ -66,21 +66,17 @@ public class EmployerInfo {
 
 	public EmployerInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
-		postAddressInfo = new AddressInfoBase(AddressType.POSTAL,
-				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+		postAddressInfo = new AddressInfoBase(AddressType.POSTAL, null);
 
-		physicalAddressInfo = new AddressInfoBase(AddressType.PHYSICAL,
-				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+		physicalAddressInfo = new AddressInfoBase(AddressType.PHYSICAL, null);
 
 		
 		if (!menuContextInfo.getProgramType().isCetTvet()) {
 			orgSizeInfo = new OrganisationSizeInfo();
 
-			orgContact = new AddressInfoBase(AddressType.ORG,
-					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+			orgContact = new AddressInfoBase(AddressType.ORG, null);
 
-			alternateOrgContact = new AddressInfoBase(AddressType.ORG_ALTER,
-					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+			alternateOrgContact = new AddressInfoBase(AddressType.ORG_ALTER, null);
 		}
 	}
 

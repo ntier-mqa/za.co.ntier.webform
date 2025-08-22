@@ -48,18 +48,15 @@ public class ProgramInfo {
 		
 		// main contact
 		if (programType.isShowMainAddress())
-			programContact = new AddressInfoBase(programType, false,
-				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+			programContact = new AddressInfoBase(programType, false, null);
 
 		// main alternate contact
 		if (programType.isShowMainAddressAlter())
-			alternateProgramContact = new AddressInfoBase(programType, true,
-				MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size())));
+			alternateProgramContact = new AddressInfoBase(programType, true, null);
 
 		// vacation contact
 		if (programType == ProgramType.EXPERIENCE) {
-			setVacationContact(new AddressInfoBase(AddressType.VACATION,
-					MasterUtil.getRegions().get(new Random().nextInt(MasterUtil.getRegions().size()))));
+			setVacationContact(new AddressInfoBase(AddressType.VACATION, null));
 		}
 		
 		// extra program info

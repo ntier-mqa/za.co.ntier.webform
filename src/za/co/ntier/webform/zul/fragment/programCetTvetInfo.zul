@@ -79,8 +79,7 @@
 			
 			
 			<div
-				if="${annexure.subColumns.size() > 0}"
-				style="padding:0 3%">
+				if="${annexure.subColumns.size() > 0}">
 			
 				<div sclass="container-fluid"
 					children="@bind(annexure.subAnnexures)">
