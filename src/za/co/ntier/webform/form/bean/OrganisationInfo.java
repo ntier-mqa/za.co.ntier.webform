@@ -14,18 +14,21 @@ import org.zkoss.util.media.Media;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
-public class EmployerInfo {
+/**
+ * base on bpartner, a Organisation is a bpartner
+ */
+public class OrganisationInfo {
 	private AddressInfoBase alternateOrgContact;
-	private String employerName;
-	private String employerNameTitle = "Organisation Name";
-	private String employerTaxNumber;
-	private String employerTaxNumberTitle = "Tax ID";
+	private String orgName;
+	private String orgNameTitle = "Organisation Name";
+	private String orgTaxNumber;
+	private String orgTaxNumberTitle = "Tax ID";
 
 	private String fileNameVATCer;
 	private String fullPathVATCer;
 	private AddressInfoBase orgContact;
 	private String orgRegistrationNumber;
-	private String orgRegistrationNumberTitle = "Reference No";
+	private String orgRegistrationNumberTitle = "Registration No";
 	private OrganisationSizeInfo orgSizeInfo;
 	private AddressInfoBase physicalAddressInfo;
 	private AddressInfoBase postAddressInfo;
@@ -33,6 +36,7 @@ public class EmployerInfo {
 	private String sdlNumberTitle = "Skills Development Levy (SDL) Number (Paying or Exempted)";
 	private String siteSDLNumber;
 	private String siteSDLNumberTitle = "Site SDL Number (if applicable)";
+	private int bPartnerId;
 	
 	private MenuContextInfo menuContextInfo;
 	
@@ -65,7 +69,7 @@ public class EmployerInfo {
 		return null;
 	}
 
-	public EmployerInfo(MenuContextInfo menuContextInfo) {
+	public OrganisationInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
 		postAddressInfo = new AddressInfoBase(AddressType.POSTAL, null);
 
@@ -89,31 +93,31 @@ public class EmployerInfo {
 	}
 
 	/**
-	 * @return the employerName
+	 * @return the orgName
 	 */
-	public String getEmployerName() {
-		return employerName;
+	public String getOrgName() {
+		return orgName;
 	}
 
 	/**
-	 * @return the employerNameTitle
+	 * @return the orgNameTitle
 	 */
-	public String getEmployerNameTitle() {
-		return employerNameTitle;
+	public String getOrgNameTitle() {
+		return orgNameTitle;
 	}
 
 	/**
-	 * @return the employerTaxNumber
+	 * @return the orgTaxNumber
 	 */
-	public String getEmployerTaxNumber() {
-		return employerTaxNumber;
+	public String getOrgTaxNumber() {
+		return orgTaxNumber;
 	}
 
 	/**
-	 * @return the employerTaxNumberTitle
+	 * @return the orgTaxNumberTitle
 	 */
-	public String getEmployerTaxNumberTitle() {
-		return employerTaxNumberTitle;
+	public String getOrgTaxNumberTitle() {
+		return orgTaxNumberTitle;
 	}
 
 	/**
@@ -201,31 +205,31 @@ public class EmployerInfo {
 	}
 
 	/**
-	 * @param employerName the employerName to set
+	 * @param orgName the orgName to set
 	 */
-	public void setEmployerName(String employerName) {
-		this.employerName = employerName;
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 
 	/**
-	 * @param employerNameTitle the employerNameTitle to set
+	 * @param orgNameTitle the orgNameTitle to set
 	 */
-	public void setEmployerNameTitle(String employerNameTitle) {
-		this.employerNameTitle = employerNameTitle;
+	public void setOrgNameTitle(String orgNameTitle) {
+		this.orgNameTitle = orgNameTitle;
 	}
 
 	/**
-	 * @param employerTaxNumber the employerTaxNumber to set
+	 * @param orgTaxNumber the orgTaxNumber to set
 	 */
-	public void setEmployerTaxNumber(String employerTaxNumber) {
-		this.employerTaxNumber = employerTaxNumber;
+	public void setOrgTaxNumber(String orgTaxNumber) {
+		this.orgTaxNumber = orgTaxNumber;
 	}
 
 	/**
-	 * @param employerTaxNumberTitle the employerTaxNumberTitle to set
+	 * @param orgTaxNumberTitle the orgTaxNumberTitle to set
 	 */
-	public void setEmployerTaxNumberTitle(String employerTaxNumberTitle) {
-		this.employerTaxNumberTitle = employerTaxNumberTitle;
+	public void setOrgTaxNumberTitle(String orgTaxNumberTitle) {
+		this.orgTaxNumberTitle = orgTaxNumberTitle;
 	}
 
 	/**
@@ -319,10 +323,10 @@ public class EmployerInfo {
 				.first();
 		
 		if (bPartner != null) {
-			employerName = bPartner.getName();
-			employerTaxNumber = bPartner.getTaxID();
+			orgName = bPartner.getName();
+			orgTaxNumber = bPartner.getTaxID();
 			orgRegistrationNumber = bPartner.getReferenceNo();
-			BindUtils.postNotifyChange(this, "employerName", "employerTaxNumber", "orgRegistrationNumber");
+			BindUtils.postNotifyChange(this, "orgName", "orgTaxNumber", "orgRegistrationNumber");
 			
 			orgSizeInfo.setNumOfEmployer(bPartner.get_ValueAsInt("ZZ_Number_Of_Employees"));
 			
@@ -333,6 +337,10 @@ public class EmployerInfo {
 			
 			orgSizeInfo.setSubmittedWSP(prevApprovedCount > 0);
 			BindUtils.postNotifyChange(orgSizeInfo, "submittedWSPText", "numOfEmployer");
+			
+			bPartnerId = bPartner.getC_BPartner_ID();
+		}else {
+			bPartnerId = 0;
 		}
 	}
 
@@ -350,5 +358,13 @@ public class EmployerInfo {
 
 	public void setFullPathVATCer(String fullPathVATCer) {
 		this.fullPathVATCer = fullPathVATCer;
+	}
+
+	public int getbPartnerId() {
+		return bPartnerId;
+	}
+
+	public void setbPartnerId(int bPartnerId) {
+		this.bPartnerId = bPartnerId;
 	}
 }

@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -19,10 +18,11 @@ import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.AddressInfoBase;
 import za.co.ntier.webform.form.bean.CompanyInfo;
+import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.LearnerInputTableInfo;
 import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
-import za.co.ntier.webform.form.bean.EmployerInfo;
+import za.co.ntier.webform.form.bean.OrganisationInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormContact;
@@ -33,7 +33,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	private CompanyInfo companyInfo;
 
-	private EmployerInfo employerInfo;
+	private OrganisationInfo organisationInfo;
 
 	private FormInfo formInfo;
 
@@ -45,6 +45,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
     
     private int tableId;
     
+    private EmployerDeclarationInfo employerDeclarationInfo;
 	/**
 	 * @return the programInfo
 	 */
@@ -62,10 +63,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	// --- Getters and Setters for Data Binding ---
 
 	/**
-	 * @return the employerInfo
+	 * @return the organisationInfo
 	 */
-	public EmployerInfo getEmployerInfo() {
-		return employerInfo;
+	public OrganisationInfo getOrganisationInfo() {
+		return organisationInfo;
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
 		setFormInfo(new FormInfo(menuContextInfo));
 
-		employerInfo = new EmployerInfo(menuContextInfo);
+		organisationInfo = new OrganisationInfo(menuContextInfo);
 		
 		if (programType.isCetTvet()) {
 			setProgramCetTvetInfo(new ProgramCetTvetInfo(menuContextInfo));
@@ -110,6 +111,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			programInfo = new ProgramInfo(menuContextInfo);
 		}
 		
+		employerDeclarationInfo = new EmployerDeclarationInfo();
 
 	}
 
@@ -128,10 +130,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @param employerInfo the employerInfo to set
+	 * @param organisationInfo the organisationInfo to set
 	 */
-	public void setEmployerInfo(EmployerInfo employerInfo) {
-		this.employerInfo = employerInfo;
+	public void setOrganisationInfo(OrganisationInfo organisationInfo) {
+		this.organisationInfo = organisationInfo;
 	}
 
 	/**
@@ -158,15 +160,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, null);
 		applicationForm.setName("test" + RandomUtils.nextInt());
 		
-		MUser loginUser = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
-		applicationForm.setC_BPartner_ID(loginUser.getC_BPartner_ID());
-		applicationForm.setZZ_SDL_No(employerInfo.getSdlNumber());
-		applicationForm.setZZ_Side_SDL_No(employerInfo.getSiteSDLNumber());
-		applicationForm.setZZ_VAT(employerInfo.getEmployerTaxNumber());
+		applicationForm.setUserName(employerDeclarationInfo.getUserName());
+		applicationForm.setDateDoc(employerDeclarationInfo.getDate());
 		
-		applicationForm.setNumberEmployees(employerInfo.getOrgSizeInfo().getNumOfEmployer());
-		applicationForm.setZZ_HasWSPSubmited(employerInfo.getOrgSizeInfo().isSubmittedWSP());
-		applicationForm.setZZ_HasPivotalPlanSubmited(employerInfo.getOrgSizeInfo().isSubmittedPivotal());
+		applicationForm.setZZ_SDL_No(organisationInfo.getSdlNumber());
+		applicationForm.setZZ_Side_SDL_No(organisationInfo.getSiteSDLNumber());
+		applicationForm.setZZ_VAT(organisationInfo.getOrgTaxNumber());
+		applicationForm.setOrgName(organisationInfo.getOrgName());
+		applicationForm.setC_BPartner_ID(organisationInfo.getbPartnerId());
+		
+		applicationForm.setNumberEmployees(organisationInfo.getOrgSizeInfo().getNumOfEmployer());
+		applicationForm.setZZ_HasWSPSubmited(organisationInfo.getOrgSizeInfo().isSubmittedWSP());
+		applicationForm.setZZ_HasPivotalPlanSubmited(organisationInfo.getOrgSizeInfo().isSubmittedPivotal());
 		
 		if (programType.isShowDisciplineTable())
 			applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalNoLearners());
@@ -176,16 +181,16 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		applicationForm.saveEx();
 		
-		X_ZZ_FormContact contact = createFormContact(employerInfo.getPhysicalAddressInfo(), applicationForm.getZZ_Application_Form_ID());
+		X_ZZ_FormContact contact = createFormContact(organisationInfo.getPhysicalAddressInfo(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(employerInfo.getPostAddressInfo(), applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(organisationInfo.getPostAddressInfo(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(employerInfo.getOrgContact(), applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(organisationInfo.getOrgContact(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(employerInfo.getAlternateOrgContact(), applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(organisationInfo.getAlternateOrgContact(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
 		contact = createFormContact(programInfo.getProgramContact(), applicationForm.getZZ_Application_Form_ID());
@@ -302,5 +307,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	public void setTableId(int tableId) {
 		this.tableId = tableId;
+	}
+
+	public EmployerDeclarationInfo getEmployerDeclarationInfo() {
+		return employerDeclarationInfo;
+	}
+
+	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
+		this.employerDeclarationInfo = employerDeclarationInfo;
 	}
 }

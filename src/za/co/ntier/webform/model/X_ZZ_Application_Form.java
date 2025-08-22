@@ -18,6 +18,7 @@
 package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.model.*;
 
@@ -31,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250819L;
+	private static final long serialVersionUID = 20250822L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -149,6 +150,22 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 		return ii.intValue();
 	}
 
+	/** Set Document Date.
+		@param DateDoc Date of the Document
+	*/
+	public void setDateDoc (Timestamp DateDoc)
+	{
+		set_Value (COLUMNNAME_DateDoc, DateDoc);
+	}
+
+	/** Get Document Date.
+		@return Date of the Document
+	  */
+	public Timestamp getDateDoc()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -230,6 +247,21 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getOrgName()
 	{
 		return (String)get_Value(COLUMNNAME_OrgName);
+	}
+
+	/** Set User Name.
+		@param UserName User Name
+	*/
+	public void setUserName (String UserName)
+	{
+		set_Value (COLUMNNAME_UserName, UserName);
+	}
+
+	/** Get User Name.
+		@return User Name	  */
+	public String getUserName()
+	{
+		return (String)get_Value(COLUMNNAME_UserName);
 	}
 
 	/** Set Search Key.

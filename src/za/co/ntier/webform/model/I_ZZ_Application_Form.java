@@ -95,6 +95,19 @@ public interface I_ZZ_Application_Form
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateDoc */
+    public static final String COLUMNNAME_DateDoc = "DateDoc";
+
+	/** Set Document Date.
+	  * Date of the Document
+	  */
+	public void setDateDoc (Timestamp DateDoc);
+
+	/** Get Document Date.
+	  * Date of the Document
+	  */
+	public Timestamp getDateDoc();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -188,6 +201,15 @@ public interface I_ZZ_Application_Form
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name UserName */
+    public static final String COLUMNNAME_UserName = "UserName";
+
+	/** Set User Name	  */
+	public void setUserName (String UserName);
+
+	/** Get User Name	  */
+	public String getUserName();
 
     /** Column name Value */
     public static final String COLUMNNAME_Value = "Value";

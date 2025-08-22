@@ -4,7 +4,7 @@
 
 
 <div
-	viewModel="@id('vmEmployerInfo') @init('za.co.ntier.webform.form.viewmodel.EmployerInfoVMWrapper')">
+	viewModel="@id('vmOrgInfo') @init('za.co.ntier.webform.form.viewmodel.OrganisationInfoVMWrapper')">
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
 			value="C. ORGANISATION INFORMATION" />
@@ -14,37 +14,37 @@
 		<div sclass="row">
 			<div sclass="col-sm-7 col-title d-flex align-items-center">
 				<label
-					value="@init(vmEmployerInfo.employerInfo.sdlNumberTitle)" />
+					value="@init(vmOrgInfo.organisationInfo.sdlNumberTitle)" />
 			</div>
 			<div sclass="col-sm-5 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
-					value="@bind(vmEmployerInfo.employerInfo.sdlNumber)" 
+					value="@bind(vmOrgInfo.organisationInfo.sdlNumber)" 
 					onChange="@command('sdlNumberChange')"/>
 			</div>
 		</div>
 		<div 
-			if="${!vmEmployerInfo.employerInfo.menuContextInfo.programType.isCetTvet()}"
+			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
 			sclass="row">
 			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
-					value="@init(vmEmployerInfo.employerInfo.employerNameTitle)" />
+					value="@init(vmOrgInfo.organisationInfo.orgNameTitle)" />
 			</div>
 			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
-					value="@bind(vmEmployerInfo.employerInfo.employerName)" />
+					value="@bind(vmOrgInfo.organisationInfo.orgName)" />
 			</div>
 		</div>
 		<div 
-			if="${vmEmployerInfo.employerInfo.menuContextInfo.programType.isCetTvet()}"
+			if="${vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
 			sclass="row">
 			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
-					value="@init(vmEmployerInfo.employerInfo.cetTvetNameTitle)" />
+					value="@init(vmOrgInfo.organisationInfo.cetTvetNameTitle)" />
 			</div>
 			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<listbox mold="select" sclass="form-control"
-					model="@load(vmEmployerInfo.employerInfo.cetTvetColleges)"
-					selectedItem="@bind(vmEmployerInfo.employerInfo.cetTvetCollegeSelected)">
+					model="@load(vmOrgInfo.organisationInfo.cetTvetColleges)"
+					selectedItem="@bind(vmOrgInfo.organisationInfo.cetTvetCollegeSelected)">
 					<template name="model" var="item">
 						<listitem label="@load(item.name)" />
 					</template>
@@ -54,36 +54,36 @@
 		<div sclass="row">
 			<div sclass="col-sm-7 col-title d-flex align-items-center">
 				<label
-					value="@init(vmEmployerInfo.employerInfo.siteSDLNumberTitle)" />
+					value="@init(vmOrgInfo.organisationInfo.siteSDLNumberTitle)" />
 			</div>
 			<div sclass="col-sm-5 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
-					value="@bind(vmEmployerInfo.employerInfo.siteSDLNumber)" />
+					value="@bind(vmOrgInfo.organisationInfo.siteSDLNumber)" />
 			</div>
 		</div>
 		<div
-			if="${!vmEmployerInfo.employerInfo.menuContextInfo.programType.isCetTvet()}" 
+			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}" 
 			sclass="row">
 			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
-					value="@init(vmEmployerInfo.employerInfo.orgRegistrationNumberTitle)" />
+					value="@init(vmOrgInfo.organisationInfo.orgRegistrationNumberTitle)" />
 			</div>
 			<div sclass="col-sm-8 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
-					value="@bind(vmEmployerInfo.employerInfo.orgRegistrationNumber)" />
+					value="@bind(vmOrgInfo.organisationInfo.orgRegistrationNumber)" />
 			</div>
 		</div>
 
 		<div
-			if="${!vmEmployerInfo.employerInfo.menuContextInfo.programType.isCetTvet()}"
+			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
 			sclass="row">
 			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<label
-					value="@init(vmEmployerInfo.employerInfo.employerTaxNumberTitle)" />
+					value="@init(vmOrgInfo.organisationInfo.orgTaxNumberTitle)" />
 			</div>
 			<div sclass="col-sm-4 col-content-input-full d-flex align-items-center">
 				<textbox sclass="form-control"
-					value="@bind(vmEmployerInfo.employerInfo.employerTaxNumber)" />
+					value="@bind(vmOrgInfo.organisationInfo.orgTaxNumber)" />
 			</div>
 			<div sclass="col-sm-4 col-title d-flex align-items-center">
 				<fileupload  sclass="text-wrap w-100"
@@ -91,17 +91,17 @@
 					onUpload="@command('uploadFile', media=event.media)">
 					</fileupload>
 				<label
-					value="@load(vmEmployerInfo.employerInfo.fileNameVATCer)" />
+					value="@load(vmOrgInfo.organisationInfo.fileNameVATCer)" />
 			</div>
 		</div>
 	</div>
 
 	<include
-		addressInfo="@load(vmEmployerInfo.employerInfo.physicalAddressInfo)"
+		addressInfo="@load(vmOrgInfo.organisationInfo.physicalAddressInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 
 	<include
-		addressInfo="@load(vmEmployerInfo.employerInfo.postAddressInfo)"
+		addressInfo="@load(vmOrgInfo.organisationInfo.postAddressInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 
 	<hlayout sclass="subSectionHeader">
@@ -112,18 +112,18 @@
 	</hlayout>
 	
 	<include 
-		if="${!vmEmployerInfo.employerInfo.menuContextInfo.programType.isCetTvet()}"
-		orgSizeInfo="@load(vmEmployerInfo.employerInfo.orgSizeInfo)"
+		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+		orgSizeInfo="@load(vmOrgInfo.organisationInfo.orgSizeInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/organisationSize.zul')))" />
 
 	<include
-		if="${!vmEmployerInfo.employerInfo.menuContextInfo.programType.isCetTvet()}"
-		addressInfo="@load(vmEmployerInfo.employerInfo.orgContact)"
+		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+		addressInfo="@load(vmOrgInfo.organisationInfo.orgContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 
 	<include
-		if="${!vmEmployerInfo.employerInfo.menuContextInfo.programType.isCetTvet()}"
-		addressInfo="@load(vmEmployerInfo.employerInfo.alternateOrgContact)"
+		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+		addressInfo="@load(vmOrgInfo.organisationInfo.alternateOrgContact)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 
 </div>

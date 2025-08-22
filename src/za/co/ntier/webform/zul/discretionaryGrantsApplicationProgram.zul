@@ -16,13 +16,14 @@
 	<label sclass="formHeader" value="@init(vm.formInfo.formHeader)" />
 
 	<include
-		src="@load((WebForm.getBundleResourcePath('fragment/employDeclaration.zul')))" />
+		employerDeclarationInfo = "@load(vm.employerDeclarationInfo)" 
+		src="@load((WebForm.getBundleResourcePath('fragment/employerDeclaration.zul')))" />
 
 	<include menuContextInfo="@load(vm.menuContextInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/generalAppRule.zul')))" />
 
-	<include employerInfo="@load(vm.employerInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/employerInfo.zul')))" />
+	<include organisationInfo="@load(vm.organisationInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/organisationInfo.zul')))" />
 
 	<include
 		if="${!vm.programType.isCetTvet()}"

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zk xmlns:n="native">
-
+<div
+	viewModel="@id('vmEmployerDeclaration') @init('za.co.ntier.webform.form.viewmodel.EmployerDeclarationInfoVMWrapper')">
+	
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
 			value="A. DECLARATION" />
@@ -18,7 +20,7 @@ provided in this application is true and accurate" />
 					<label value="Name and Surname:" />
 				</div>
 				<div sclass="col-sm-6 col-content-input-full d-flex align-items-center">
-					<textbox sclass="form-control" value="" />
+					<textbox sclass="form-control" value="@bind(vmEmployerDeclaration.employerDeclarationInfo.userName)" />
 				</div>
 
 
@@ -26,7 +28,7 @@ provided in this application is true and accurate" />
 					<label value="Date:" />
 				</div>
 				<div sclass="col-sm-2 d-flex align-items-center">
-					<datebox format="short" />
+					<datebox format="short" valueInLocalDate="@bind(vmEmployerDeclaration.employerDeclarationInfo.localDate)"/>
 				</div>
 			</div>
 
@@ -40,4 +42,5 @@ provided in this application is true and accurate" />
 			</div>
 		</div>
 	</div>
+</div>
 </zk>
