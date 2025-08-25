@@ -34,7 +34,7 @@
                 
                 
                 <div
-                	if="${annexure.get_Attribute(ProgramCetTvetInfo.COL_NAME_customizeDetaileTemplate)}"
+                	if="${annexure.get_Attribute(ProgramCetTvetInfo.COL_NAME_customizeDetaileTemplate eq ProgramCetTvetInfo.DetaileTemplate_LecturersExposedIndustry)}"
                 	class="row font-weight-bold">
                 	<div
 						class="@init(( 'col-sm-' += annexure.masterColNumber() += ' col-title d-flex align-items-center' ))">
@@ -75,33 +75,44 @@
 			</div>
 			
 			<!-- for detail table of annexure -->
-			
-			
-			
-			<div
-				if="${annexure.subColumns.size() > 0}">
-			
-				<div sclass="container-fluid"
-					children="@bind(annexure.subAnnexures)">
 
-					<template name="children" var="subAnnexure">
-						<div
-							if="${subAnnexureStatus.first}"  
-					 		children="@bind(annexure.subColumns) @template('subColumnHeader')"
-	                    	class="row font-weight-bold">
-	                	</div>
-	                	
-		                <div
-		                	children="@bind(annexure.subColumns) @template('subColumnDetails')"
-		                    class="row font-weight-bold">
-		                </div>
-					</template>		
+			<div class="d-flex align-items-end"
+				if="${annexure.subColumns.size() > 0}">
+				
+				<div class="flex-grow-1">
+					<div sclass="container-fluid"
+						children="@bind(annexure.subAnnexures)">
+	
+						<template name="children" var="subAnnexure">
+							
+							<div
+								if="${subAnnexureStatus.first}"  
+						 		children="@bind(annexure.subColumns) @template('subColumnHeader')"
+		                    	class="row font-weight-bold">
+		                	</div>
+		                	
+			                <div
+			                	children="@bind(annexure.subColumns) @template('subColumnDetails')"
+			                    class="row font-weight-bold">
+			                </div>
+			                
+			                <div
+								visible="@load(( subAnnexureStatus.last ))"  
+						 		children="@bind(annexure.subColumns) @template('subColumnTotal')"
+		                    	class="row font-weight-bold">
+		                	</div>
+			                
+						</template>		
+					</div>
 				</div>
 				
-				<div sclass="sectionSeparator"/>	
-				<button sclass="btn btn-primary"
-			        label="@init(vmProgramCetTvetInfo.addSubLineLabel)"
+				<div class="flex-grow-0 ms-2 me-2 mb-5">
+					<button sclass="btn btn-primary btn-circle"
+					iconSclass="z-icon-plus"
+			        label=""
 			        onClick="@command('addSubLine', annexure = annexure)" />
+					
+				</div>
 			</div>
 			
 		</template>
@@ -140,11 +151,52 @@
 		</template>
 		
 		<template name="subColumnDetails" var="refList">
+			
 			<div
 				class="@init(( 'col-sm-' += refList.key.subColNumber() += ' col-content-input-full d-flex align-items-center' ))">
-				<textbox sclass="form-control"/>
+				
+				
+				<listbox 
+					visible="@init((refListStatus.first and annexure.get_Attribute(ProgramCetTvetInfo.ATTSUBAnnexureCustomize) eq ProgramCetTvetInfo.SUBAnnexure_TradeBeneficiaries))"
+					mold="select" sclass="form-control"
+					model="@load((vmProgramCetTvetInfo.programCetTvetInfo.tradeInfo))"
+					onSelect="@command('subAnnexureTradeSelection', subAnnexure=subAnnexure)"
+					selectedItem="@bind(subAnnexure.selectedItem)"
+					>
+					<template name="model" var="item">
+						<listitem label="@load(item.learnerInputText)" />
+					</template>
+				</listbox>
+				
+				<intbox 
+					visible="@init((!refListStatus.first or annexure.get_Attribute(ProgramCetTvetInfo.ATTSUBAnnexureCustomize) ne ProgramCetTvetInfo.SUBAnnexure_TradeBeneficiaries))"
+					sclass="form-control"
+					value = "@bind(subAnnexure[refList.value.name])" 
+					onChange="@command('subAnnexureNumChange', subAnnexure=subAnnexure, annexure = annexure, key = refList.value.name)"
+					constraint="no negative,no empty"/>
 			</div>
+
 		</template>
+		
+
+		<template name="subColumnTotal" var="refList">
+			
+			<div
+				class="@init(( 'col-sm-' += refList.key.subColNumber() += ' col-title d-flex align-items-center' ))">
+				
+				<label 
+					visible="@init((refListStatus.first and annexure.get_Attribute(ProgramCetTvetInfo.ATTSUBAnnexureCustomize) eq ProgramCetTvetInfo.SUBAnnexure_TradeBeneficiaries))"
+					value="Total number of beneficiaries applying for"
+				/>
+				
+				
+				<label 
+					visible="@init((!refListStatus.first or annexure.get_Attribute(ProgramCetTvetInfo.ATTSUBAnnexureCustomize) ne ProgramCetTvetInfo.SUBAnnexure_TradeBeneficiaries))"
+					value="@load(( annexure.total[refList.value.name]))"/>
+			</div>
+
+		</template>		
+		
 	</div>
 	
 	<include

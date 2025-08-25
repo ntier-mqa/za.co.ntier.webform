@@ -25,6 +25,7 @@ public class MAnnexure extends X_ZZAnnexure {
 	private List<Entry<MAnnexure, MRefList>> masterColumns;
 	private List<Entry<MAnnexure, MRefList>> subColumns;
 	private List<SubAnnexure> subAnnexures = new ArrayList<>();
+	private SubAnnexure total;
 	
 	public void setMasterColumns(List<Entry<MAnnexure, MRefList>> masterColumns) {
 		this.masterColumns = masterColumns;
@@ -98,9 +99,17 @@ public class MAnnexure extends X_ZZAnnexure {
 			if (getZZFourthSubcolumn() != null) {
 				subColumns.add(getMRefList(COLUMNNAME_ZZFourth, getZZFourthSubcolumn()));
 			}
-			
-			if (subColumns.size() > 0)
-				subAnnexures.add(new SubAnnexure());
+
+			if (subColumns.size() > 0) {
+				SubAnnexure firstLine = new SubAnnexure();
+				total = new SubAnnexure();
+				for (Entry<MAnnexure, MRefList> subColumn : subColumns) {
+					firstLine.put(subColumn.getValue().getName(), 0);
+					total.put(subColumn.getValue().getName(), 0);
+				}
+				
+				subAnnexures.add(firstLine);
+			}
 		}
 
 		return subColumns;
@@ -118,8 +127,39 @@ public class MAnnexure extends X_ZZAnnexure {
 	}
 	
 	public void addSubAnnexure() {
-		subAnnexures.add(new SubAnnexure());
+		SubAnnexure line = new SubAnnexure();
+		for (Entry<MAnnexure, MRefList> subColumn : subColumns) {
+			line.put(subColumn.getValue().getName(), 0);
+		}
+		
+		subAnnexures.add(line);
 		BindUtils.postNotifyChange(this, "subAnnexures");
+	}
+
+	/**
+	 * @return the total
+	 */
+	public SubAnnexure getTotal() {
+		return total;
+	}
+
+	/**
+	 * @param total the total to set
+	 */
+	public void setTotal(SubAnnexure total) {
+		this.total = total;
+	}
+
+	public void updateSubAnnexureTotal(String key) {
+		int totalNum = 0;
+		for (SubAnnexure subAnnexure : subAnnexures) {
+			totalNum += (int)subAnnexure.get(key);
+		}
+		
+		total.put(key, totalNum);
+		
+		BindUtils.postNotifyChange(this, "subAnnexures");
+		
 	}
 	
 }

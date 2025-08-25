@@ -2,16 +2,10 @@ package za.co.ntier.webform.form.bean;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.compiere.util.DB;
 import org.zkoss.bind.BindUtils;
 
-import za.co.ntier.webform.model.X_ZZ_Disciplines;
+import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZ_Learnerships;
-import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
-import za.co.ntier.webform.model.X_ZZ_Program_Learnerships;
-import za.co.ntier.webform.model.X_ZZ_Program_Trade;
-import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class LearnerInputTableInfo {
 	private List<LearnerInputInfo> learnerInputInfos;
@@ -83,83 +77,20 @@ public class LearnerInputTableInfo {
 	public LearnerInputTableInfo() {
 		
 	}
+	@SuppressWarnings("unchecked")
 	public LearnerInputTableInfo(int programMasterDataID, ProgramType programType, String learnerInputType) {
 		this.learnerInputInfos = new ArrayList<>();
 		this.setProgramType(programType);
 		this.learnerInputType = learnerInputType;
 		
-		String learnerInputProgramID;
-		String learnerInputID;
-		String learnerInputText = X_ZZ_Trade.COLUMNNAME_Name;
-		String learnerInputProgramTable;
-		String learnerInputTable;
+		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, programType, learnerInputType);
+		learnerInputInfos = (List<LearnerInputInfo>)rObjs.get(0);
+		hasWPAReq = (boolean)rObjs.get(1);
+		hasAccred = (boolean)rObjs.get(2);
 		
-		StringBuilder sql = new StringBuilder();
-		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade) {
-			learnerInputProgramID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Trade_ID;
-			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
-			learnerInputProgramTable = X_ZZ_Program_Trade.Table_Name;
-			learnerInputTable = X_ZZ_Trade.Table_Name;
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline) {
-			learnerInputProgramID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Program_Disciplines_ID;
-			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
-			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
-			learnerInputTable = X_ZZ_Disciplines.Table_Name;
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership ||
-				learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership ||
-				learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership) {
-			learnerInputProgramID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
-			learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
-			learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
-			learnerInputTable = X_ZZ_Learnerships.Table_Name;
-		}else {
-			throw new IllegalArgumentException("Wrong learnerInput type");
-		}
-		
-		sql.append(String.format("SELECT %s, %s.%s, %s, %s, %s FROM %s INNER JOIN %s ON (%s.%s = %s.%s) WHERE %s = ?", 
-				learnerInputProgramID,
-				learnerInputTable,
-				learnerInputID,
-				X_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req,
-				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req,
-				learnerInputText,
-				learnerInputProgramTable,
-				learnerInputTable,
-				learnerInputProgramTable,
-				learnerInputID,
-				learnerInputTable,
-				learnerInputID,
-				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID));
-		
-		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership) {
-			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = '4'");
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership){
-			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'G'");
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership){
-			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'A'");
-		}
-		
-		sql.append(" ORDER BY ");
-		sql.append(X_ZZ_Program_Trade.COLUMNNAME_Line);
-		
-		List<List<Object>> learnerInputInfoObjs = DB.getSQLArrayObjectsEx(null, sql.toString(), programMasterDataID);
-		
-		if (learnerInputInfoObjs == null)
-			learnerInputInfoObjs = new ArrayList<>();
-		
-		learnerInputInfoObjs.stream().forEach((learnerInputInfoObj) -> {
-				LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
-				learnerInputInfos.add(learnerInputInfo);
-
-				if (learnerInputInfo.isUploadWPA()) {
-					hasWPAReq = true;
-				}
-
-				if (learnerInputInfo.isUploadAccred()) {
-					hasAccred = true;
-				}
-			});
 	}
+	
+	
 
 	private Integer rightColSize;
 

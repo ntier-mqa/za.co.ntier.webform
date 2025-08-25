@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,11 +19,20 @@ import org.compiere.model.MRegion;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CCache;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.zkoss.util.media.Media;
 
+import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.model.X_ZZ_Disciplines;
+import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
+import za.co.ntier.webform.model.X_ZZ_Learnerships;
+import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
+import za.co.ntier.webform.model.X_ZZ_Program_Learnerships;
+import za.co.ntier.webform.model.X_ZZ_Program_Trade;
+import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class MasterUtil {
 	public static final int limitItem = 30;
@@ -172,5 +182,88 @@ public class MasterUtil {
 	    }
 
 	    return savedFile.getAbsolutePath();
+	}
+	
+	public static List<Object> queryLearnerInputInfos(int programMasterDataID, 
+			ProgramType programType, 
+			String learnerInputType){
+		
+		String learnerInputProgramID;
+		String learnerInputID;
+		String learnerInputText = X_ZZ_Trade.COLUMNNAME_Name;
+		String learnerInputProgramTable;
+		String learnerInputTable;
+		
+		StringBuilder sql = new StringBuilder();
+		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade) {
+			learnerInputProgramID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Trade_ID;
+			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
+			learnerInputProgramTable = X_ZZ_Program_Trade.Table_Name;
+			learnerInputTable = X_ZZ_Trade.Table_Name;
+		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline) {
+			learnerInputProgramID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Program_Disciplines_ID;
+			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
+			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
+			learnerInputTable = X_ZZ_Disciplines.Table_Name;
+		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership ||
+				learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership ||
+				learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership) {
+			learnerInputProgramID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
+			learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
+			learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
+			learnerInputTable = X_ZZ_Learnerships.Table_Name;
+		}else {
+			throw new IllegalArgumentException("Wrong learnerInput type");
+		}
+		
+		sql.append(String.format("SELECT %s, %s.%s, %s, %s, %s FROM %s INNER JOIN %s ON (%s.%s = %s.%s) WHERE %s = ?", 
+				learnerInputProgramID,
+				learnerInputTable,
+				learnerInputID,
+				X_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req,
+				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req,
+				learnerInputText,
+				learnerInputProgramTable,
+				learnerInputTable,
+				learnerInputProgramTable,
+				learnerInputID,
+				learnerInputTable,
+				learnerInputID,
+				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID));
+		
+		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership) {
+			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = '4'");
+		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership){
+			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'G'");
+		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership){
+			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'A'");
+		}
+		
+		sql.append(" ORDER BY ");
+		sql.append(X_ZZ_Program_Trade.COLUMNNAME_Line);
+		
+		List<List<Object>> learnerInputInfoObjs = DB.getSQLArrayObjectsEx(null, sql.toString(), programMasterDataID);
+		
+		List<LearnerInputInfo> learnerInputInfos = new ArrayList<>();
+		
+		boolean hasWPAReq = false;
+		boolean hasAccred = false;
+		if (learnerInputInfoObjs == null)
+			learnerInputInfoObjs = new ArrayList<>();
+		
+		for (List<Object> learnerInputInfoObj : learnerInputInfoObjs) {
+				LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
+				learnerInputInfos.add(learnerInputInfo);
+
+				if (learnerInputInfo.isUploadWPA()) {
+					hasWPAReq = true;
+				}
+
+				if (learnerInputInfo.isUploadAccred()) {
+					hasAccred = true;
+				}
+			}
+		
+		return List.of(learnerInputInfos, hasWPAReq, hasAccred);
 	}
 }

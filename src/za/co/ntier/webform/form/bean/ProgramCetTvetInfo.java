@@ -6,8 +6,10 @@ import java.util.List;
 import org.compiere.util.Env;
 
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 import za.co.ntier.webform.model.MAnnexure;
 import za.co.ntier.webform.model.X_ZZAnnexure;
+import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class ProgramCetTvetInfo {
 	private MenuContextInfo menuContextInfo;
@@ -16,7 +18,26 @@ public class ProgramCetTvetInfo {
 	
 	public static final String COL_NAME_titleHeaderText = "titleHeaderText";
 	public static final String COL_NAME_customizeDetaileTemplate = "customizeDetaileTemplate";
+	
+	public static final String DetaileTemplate_LecturersExposedIndustry = "Lecturers exposed to industry";
+	
+	public static final String ATTSUBAnnexureCustomize = "Attribute Sub Annexure Customize";
+	public static final String SUBAnnexure_TradeBeneficiaries = "TradeBeneficiaries";
+	
+	public static final String ATTSUBAnnexureColumnType = "Attribute Sub Annexure Column Type";
+	public static final String SUBAnnexureColumnType_Number = "Number";
+	
+	private List<LearnerInputInfo> tradeInfo;
 
+	public List<LearnerInputInfo> getTradeInfo() {
+		return tradeInfo;
+	}
+
+	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
+		this.tradeInfo = tradeInfo;
+	}
+
+	@SuppressWarnings("unchecked")
 	public ProgramCetTvetInfo(MenuContextInfo menuContextInfo) {
 		this.setMenuContextInfo(menuContextInfo);
 		
@@ -114,6 +135,23 @@ public class ProgramCetTvetInfo {
 			annexure.setZZSecond(X_ZZAnnexure.ZZSECOND_ProgrammeApplyingFor);
 			annexure.set_Attribute(COL_NAME_customizeDetaileTemplate, true);
 			annexures.add(annexure);
+			
+			List<Object> rObjs = MasterUtil.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
+					menuContextInfo.getProgramType(), X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
+			
+			tradeInfo = (List<LearnerInputInfo>)rObjs.get(0);
+			if (tradeInfo != null) {
+				annexure = new MAnnexure(Env.getCtx(), 0, null);
+				annexure.setZZHeader("TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION");
+				annexure.setTitle("Name of the Intervention:");
+				annexure.set_Attribute(COL_NAME_titleHeaderText, "TVETtvet unemployed bursars support funding application");
+				annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_TotalNumberOfBeneficiariesApplyingFor);
+
+				annexure.setZZFirstSubcolumn(X_ZZAnnexure.ZZFIRSTSUBCOLUMN_FieldOfStudy);
+				annexure.setZZSecondSubcolumn(X_ZZAnnexure.ZZSECONDSUBCOLUMN_NumberOfLearners);
+				annexure.set_Attribute(ATTSUBAnnexureCustomize, SUBAnnexure_TradeBeneficiaries);
+				annexures.add(annexure);
+			}
 		}
 		
 		addressInfo = new AddressInfoBase(menuContextInfo.getProgramType(), false, null);
