@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
+<?import za.co.ntier.webform.form.WebForm ?>
+<?import za.co.ntier.webform.form.bean.ProgramType ?>
+
+
+<div viewModel="@id('vmOrgInfo') @init('za.co.ntier.webform.form.viewmodel.OrganisationInfoVMWrapper')">
+
+    <hlayout sclass="sectionHeader">
+        <label sclass="sectionHeaderTitle" value="C. ORGANISATION INFORMATION" />
+    </hlayout>
+
+    <div sclass="container-fluid text-left">
+
+        <!-- SDL Number -->
+        <div sclass="row">
+            <div sclass="col-sm-6 no-block form-group">
+                <label sclass="form-label-sm" value="@init(vmOrgInfo.organisationInfo.sdlNumberTitle)" />
+                <textbox sclass="form-control"
+                         value="@bind(vmOrgInfo.organisationInfo.sdlNumber)"
+                         onChange="@command('sdlNumberChange')" />
+            </div>
+        </div>
+
+        <!-- Organisation Name (non CET/TVET) -->
+        <div if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}" sclass="row">
+            <div sclass="col-sm-8 no-block form-group">
+                <label sclass="form-label-sm" value="@init(vmOrgInfo.organisationInfo.orgNameTitle)" />
+                <textbox sclass="form-control"
+                         value="@bind(vmOrgInfo.organisationInfo.orgName)" />
+            </div>
+        </div>
+
+        <!-- CET/TVET College (CET/TVET only) -->
+        <div if="${vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}" sclass="row">
+            <div sclass="col-sm-8 no-block form-group">
+                <label sclass="form-label-sm" value="@init(vmOrgInfo.organisationInfo.cetTvetNameTitle)" />
+                <listbox mold="select" sclass="form-control"
+                         model="@load(vmOrgInfo.organisationInfo.cetTvetColleges)"
+                         selectedItem="@bind(vmOrgInfo.organisationInfo.cetTvetCollegeSelected)">
+                    <template name="model" var="item">
+                        <listitem label="@load(item.name)" />
+                    </template>
+                </listbox>
+            </div>
+        </div>
+
+        <!-- Site SDL Number -->
+        <div sclass="row">
+            <div sclass="col-sm-6 no-block form-group">
+                <label sclass="form-label-sm" value="@init(vmOrgInfo.organisationInfo.siteSDLNumberTitle)" />
+                <textbox sclass="form-control"
+                         value="@bind(vmOrgInfo.organisationInfo.siteSDLNumber)" />
+            </div>
+        </div>
+
+        <!-- Registration Number (non CET/TVET) -->
+        <div if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}" sclass="row">
+            <div sclass="col-sm-6 no-block form-group">
+                <label sclass="form-label-sm" value="@init(vmOrgInfo.organisationInfo.orgRegistrationNumberTitle)" />
+                <textbox sclass="form-control"
+                         value="@bind(vmOrgInfo.organisationInfo.orgRegistrationNumber)" />
+            </div>
+        </div>
+
+        <!-- Tax Number + VAT Exempt Upload (non CET/TVET) -->
+        <div if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}" sclass="row">
+            <div sclass="col-sm-4 no-block form-group">
+                <label sclass="form-label-sm" value="@init(vmOrgInfo.organisationInfo.orgTaxNumberTitle)" />
+                <textbox sclass="form-control"
+                         value="@bind(vmOrgInfo.organisationInfo.orgTaxNumber)" />
+            </div>
+            <div sclass="col-sm-4 no-block form-group">
+                <label sclass="form-label-sm" value="VAT Exempt Cert." />
+                <fileupload sclass="text-wrap w-100"
+                            iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
+                            label="Upload"
+                            onUpload="@command('uploadFile', media=event.media)" />
+                <label sclass="form-label-sm" value="@load(vmOrgInfo.organisationInfo.fileNameVATCer)" />
+            </div>
+        </div>
+
+    </div>
+
+    <!-- includes unchanged -->
+    <include addressInfo="@load(vmOrgInfo.organisationInfo.physicalAddressInfo)"
+             src="@load((WebForm.getBundleResourcePath('fragment/addressDemo.zul')))" />
+
+    <include addressInfo="@load(vmOrgInfo.organisationInfo.postAddressInfo)"
+             src="@load((WebForm.getBundleResourcePath('fragment/addressDemo.zul')))" />
+
+    <hlayout sclass="subSectionHeader">
+        <label sclass="subSectionHeaderTitle" value="SIZE OF THE ORGANISATION" />
+        <label value="(please select the correct option pertaining to the company size)" />
+    </hlayout>
+
+    <include if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+             orgSizeInfo="@load(vmOrgInfo.organisationInfo.orgSizeInfo)"
+             src="@load((WebForm.getBundleResourcePath('fragment/organisationSizeDemo.zul')))" />
+
+    <include if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+             addressInfo="@load(vmOrgInfo.organisationInfo.orgContact)"
+             src="@load((WebForm.getBundleResourcePath('fragment/addressDemo.zul')))" />
+
+    <include if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+             addressInfo="@load(vmOrgInfo.organisationInfo.alternateOrgContact)"
+             src="@load((WebForm.getBundleResourcePath('fragment/addressDemo.zul')))" />
+
+</div>

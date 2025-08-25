@@ -1,0 +1,116 @@
+/* --- Remove the “boxes” from grid wrappers --- */
+.employer-mvvm-form .form-group,
+.employer-mvvm-form .row,
+.employer-mvvm-form .container-fluid,
+.employer-mvvm-form div[class^="col-"],
+.employer-mvvm-form div[class*=" col-"],
+.employer-mvvm-form .col-title,
+.employer-mvvm-form .col-content-input-full {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* --- Small italic labels --- */
+.employer-mvvm-form .form-label-sm {
+  font-size: 0.60rem;
+  font-style: italic;
+  color: #555;
+  margin-bottom: 2px;
+  display: block;
+  line-height: 1.05;
+}
+
+/* --- Underline-only controls --- */
+.employer-mvvm-form .form-control {
+  border: none !important;
+  border-bottom: 1px solid #aaa !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 2px 0 !important;
+  background: transparent !important;
+}
+.employer-mvvm-form input.z-textbox.form-control {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.employer-mvvm-form .form-control:focus {
+  outline: 0 !important;
+  border-bottom-color: #007bff !important;
+  box-shadow: none !important;
+}
+
+/* Datebox specific */
+.employer-mvvm-form .z-datebox.form-control {
+  border: none !important;
+  border-bottom: 1px solid #aaa !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.employer-mvvm-form .z-datebox.form-control .z-datebox-input {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 2px 0 !important;
+}
+.employer-mvvm-form .z-datebox.form-control:focus-within {
+  border-bottom-color: #007bff !important;
+}
+
+/* (If you use listbox mold="select") */
+.employer-mvvm-form .z-listbox.form-control .z-select {
+  border: none !important;
+  border-bottom: 1px solid #aaa !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 2px 0 !important;
+}
+.employer-mvvm-form .z-listbox.form-control:focus-within .z-select {
+  border-bottom-color: #007bff !important;
+}
+
+/* --- Maroon header pill --- */
+.employer-mvvm-form .sectionHeader .z-label.sectionHeaderTitle,
+.employer-mvvm-form .z-label.sectionHeaderTitle,
+.employer-mvvm-form .sectionHeaderTitle,
+.z-label.sectionHeaderTitle {
+  background-color: #800000 !important;
+  color: #fff !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  display: inline-block !important;
+  font-weight: 700 !important;
+}
+
+/* --- Datebox popup (global on purpose) --- */
+.z-datebox-popup {
+  background: #fff !important;
+  border: 1px solid #aaa !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.2) !important;
+  z-index: 2147483647 !important;
+}
+.z-datebox-popup *,
+.z-datebox-popup *::before,
+.z-datebox-popup *::after {
+  background: #fff !important;
+  color: #000 !important;
+}
+.z-datebox-popup .z-calendar-title {
+  background: #800000 !important;
+  color: #fff !important;
+  border-bottom: 1px solid #aaa !important;
+}
+.z-datebox-popup .z-calendar-selected,
+.z-datebox-popup .z-calendar-selected * {
+  background: #800000 !important;
+  color: #fff !important;
+}
+.z-datebox-popup .z-calendar-cell:hover {
+  background: #f3f3f3 !important;
+  cursor: pointer;
+}

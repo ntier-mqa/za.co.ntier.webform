@@ -11,7 +11,8 @@
 	
     sclass="employer-mvvm-form"
 	viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM')">
-	
+	    
+	<!-- style src="@load(WebForm.getBundleResourcePath('css/dg-form.css'))"/ -->
 	
 	<include companyInfo="@load(vm.companyInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/companyHeader.zul')))" />
@@ -31,7 +32,7 @@
 	<include
 		if="${!vm.programType.isCetTvet()}"
 		programInfo="@load(vm.programInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/programInfoDemo.zul')))" />
+		src="@load((WebForm.getBundleResourcePath('fragment/programInfo.zul')))" />
 	
 	<include
 		if="${vm.programType.isCetTvet()}"

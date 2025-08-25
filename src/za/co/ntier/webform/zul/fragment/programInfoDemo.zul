@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil?>
+<?import za.co.ntier.webform.form.bean.LearnerInputInfo?>
+<?import za.co.ntier.webform.form.bean.ProgramType?>
+
+
+<div
+	viewModel="@id('vmProgramInfo') @init('za.co.ntier.webform.form.viewmodel.ProgramInfoVMWrapper')">
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="@init((vmProgramInfo.programInfo.programTitle)) "/>
+	</hlayout>
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.EXPERIENCE}"
+		workInfo="@load(vmProgramInfo.programInfo.workInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/workInfo.zul')))" />		
+	
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.EXPERIENCE}"
+		addressInfo="@load(vmProgramInfo.programInfo.vacationContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />		
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.DEV_PROGRAM}"
+		devProgramInfo="@load(vmProgramInfo.programInfo.devProgramInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/devProgramInfo.zul')))" />
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_AIDES}"
+		artisanAidesInfo="@load(vmProgramInfo.programInfo.artisanAidesInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/artisanAides.zul')))" />
+
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_DEV}"
+		artisanDevInfo="@load(vmProgramInfo.programInfo.artisanDevInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/artisanDev.zul')))" />
+				
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.CENTRE_SPECIALISATION}"
+		centreOfSpecialisationInfo="@load(vmProgramInfo.programInfo.centreOfSpecialisationInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/centreOfSpecialisation.zul')))" />
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.ARTISAN_RPL}"
+		artisanRPLInfo="@load(vmProgramInfo.programInfo.artisanRPLInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/artisanRPL.zul')))" />
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.NON_ARTISAN_DEV}"
+		nonArtisanDevInfo="@load(vmProgramInfo.programInfo.nonArtisanDevInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/nonArtisanDev.zul')))" />
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType eq ProgramType.NON_ARTISAN_DEV_RPL}"
+		nonArtisanDevRPLInfo="@load(vmProgramInfo.programInfo.nonArtisanDevRPLInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/nonArtisanDevRPL.zul')))" />
+	
+	<include
+	    if="${vmProgramInfo.programInfo.programType eq ProgramType.NCV_GRADUATES}"
+	    ncvGraduatesInfo="@load(vmProgramInfo.programInfo.ncvGraduatesInfo)"
+	    src="@load((WebForm.getBundleResourcePath('fragment/ncvGraduates.zul')))" />
+	
+	<include
+	    if="${vmProgramInfo.programInfo.programType eq ProgramType.AET}"
+	    aetInfo="@load(vmProgramInfo.programInfo.aetInfo)"
+	    src="@load((WebForm.getBundleResourcePath('fragment/aet.zul')))" />
+	
+	<include
+	    if="${vmProgramInfo.programInfo.programType eq ProgramType.OHASSP}"
+	    ohasspInfo="@load(vmProgramInfo.programInfo.ohasspInfo)"
+	    src="@load((WebForm.getBundleResourcePath('fragment/ohassp.zul')))" />
+	
+	<include
+	    if="${vmProgramInfo.programInfo.programType eq ProgramType.INHOUSE_TRAINING}"
+	    inhouseTrainingInfo="@load(vmProgramInfo.programInfo.inhouseTrainingInfo)"
+	    src="@load((WebForm.getBundleResourcePath('fragment/inhouseTraining.zul')))" />
+
+	<include 
+		if="${vmProgramInfo.programInfo.programType.isShowDisciplineTable()}"
+		learnerInputTableInfo="@load(vmProgramInfo.programInfo.disciplineTableInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/learnerInputTableInfo.zul')))" />
+
+	<include
+		if="${vmProgramInfo.programInfo.programType.isShowTradeTable()}"
+		learnerInputTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
+		src="@load((WebForm.getBundleResourcePath('fragment/learnerInputTableInfo.zul')))" />
+
+	<include if="${vmProgramInfo.programInfo.programType.isShowMainAddress()}"
+		addressInfo="@load(vmProgramInfo.programInfo.programContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/addressDemo.zul')))" />
+
+	<include if="${vmProgramInfo.programInfo.programType.isShowMainAddressAlter()}"
+		addressInfo="@load(vmProgramInfo.programInfo.alternateProgramContact)"
+		src="@load((WebForm.getBundleResourcePath('fragment/addressDemo.zul')))" />
+</div>
