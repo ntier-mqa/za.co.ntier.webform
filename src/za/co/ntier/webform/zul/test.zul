@@ -13,7 +13,7 @@
 	
 	<label sclass="formHeader" value="@init(vm.formInfo.formHeader)" />
 	
-	<tabbox width="100%" vflex="1">
+	<tabbox width="100%" vflex="1" id="formTab">
 	    <tabs>
 	        <tab label="Declaration" />
 	        <tab label="Organisation Information" />
@@ -50,8 +50,9 @@
 		        	
 		        	<div sclass="formBottomPanelFirst">
 		        		<button label="Next" 
+		        			sclass="icon-on-right"
 		        			iconSclass="z-icon-arrow-right"
-		        			onClick="@command('nextTab')"/>
+		        			onClick="@command('nextTab', tab=formTab)"/>
 		        	</div>
 		        </div>
 	        </tabpanel>
@@ -65,9 +66,14 @@
 							src="@load((WebForm.getBundleResourcePath('fragment/test/organisationInfo.zul')))" />
 		        	</div>
 		        	<div sclass="formBottomPanel">
-		        		<button label="Prev" iconSclass="z-icon-arrow-left"/>
+		        		<button label="Prev" 
+		        			iconSclass="z-icon-arrow-left"
+		        			onClick="@command('prevTab', tab=formTab)"/>
 		        		
-		        		<button label="Next" iconSclass="z-icon-arrow-right"/>
+		        		<button label="Next" 
+		        			sclass="icon-on-right"
+		        			iconSclass="z-icon-arrow-right"
+		        			onClick="@command('nextTab', tab=formTab)"/>
 		        	</div>
 		        </div>
 	        </tabpanel>
@@ -82,9 +88,14 @@
 						
 						</div>
 					<div sclass="formBottomPanel">
-		        		<button label="Prev" iconSclass="z-icon-arrow-left"/>
+		        		<button label="Prev" 
+		        			iconSclass="z-icon-arrow-left"
+		        			onClick="@command('prevTab', tab=formTab)"/>
 		        		
-		        		<button label="Next" iconSclass="z-icon-arrow-right"/>
+		        		<button label="Next"
+		        			sclass="icon-on-right"
+		        			iconSclass="z-icon-arrow-right"
+		        			onClick="@command('nextTab', tab=formTab)"/>
 		        	</div>
 		        </div>
 	        </tabpanel>
@@ -100,9 +111,14 @@
 							src="@load((WebForm.getBundleResourcePath('fragment/test/address.zul')))" />	
 					</div>
 					<div sclass="formBottomPanel">
-		        		<button label="Prev" iconSclass="z-icon-arrow-left"/>
+		        		<button label="Prev" 
+		        			iconSclass="z-icon-arrow-left"
+		        			onClick="@command('prevTab', tab=formTab)"/>
 		        		
-		        		<button label="Submit" iconSclass="z-icon-gear"/>
+		        		<button label="Submit" 
+		        			iconSclass="z-icon-gear"
+		        			sclass="icon-on-right"
+		        			onClick="@command('submit')"/>
 		        	</div>
 		        </div>
 	        </tabpanel>

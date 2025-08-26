@@ -1,8 +1,10 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zul.Tabbox;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -157,12 +159,21 @@ public class TestVM {
 	}
 	
 	@Command
-	public void nextTab() {
-		
+	public void nextTab(@BindingParam("tab") Tabbox tab) {
+		int currentIndex = tab.getSelectedIndex();
+		tab.setSelectedIndex(currentIndex + 1); 
+	}
+    
+	@Command
+	public void prevTab(@BindingParam("tab") Tabbox tab) {
+		int currentIndex = tab.getSelectedIndex();
+		tab.setSelectedIndex(currentIndex - 1); 
 	}
 	
 	@Command
-	public void prevTab() {
-		
+	public void submit() {
+		 
 	}
+
+	
 }
