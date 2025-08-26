@@ -3,7 +3,7 @@
 <zk xmlns:n="native">
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
-			value="B. GENERAL APPLICATION RULES" />
+			value="GENERAL APPLICATION RULES" />
 	</hlayout>
 
 	<div

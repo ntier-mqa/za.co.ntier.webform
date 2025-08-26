@@ -68,33 +68,33 @@ public enum ProgramType {
 	
 	public String getProgramTitle() {
 		if (this == ProgramType.CANDIDACY)
-			return "D. CANDIDACY";
+			return "CANDIDACY";
 		if (this == ProgramType.INTERNSHIP)
-			return "D. INTERNSHIP";
+			return "INTERNSHIP";
 		if (this == ProgramType.EXPERIENCE)
-			return "D. WORK EXPERIENCE AND VACATION WORK";
+			return "WORK EXPERIENCE AND VACATION WORK";
 		if (this == ProgramType.DEV_PROGRAM)
-			return "D. MANAGEMENT AND EXECUTIVE DEVELOPMENT PROGRAMME (MEDP) SPECIFIC GUIDELINES";
+			return "MANAGEMENT AND EXECUTIVE DEVELOPMENT PROGRAMME (MEDP) SPECIFIC GUIDELINES";
 		if (this == ProgramType.ARTISAN_AIDES)
-			return "D. ARTISAN AIDES GRANT";
+			return "ARTISAN AIDES GRANT";
 		if (this == ProgramType.ARTISAN_DEV)
-			return "D. ARTISAN DEVELOPMENT GRANT";
+			return "ARTISAN DEVELOPMENT GRANT";
 		if (this == ProgramType.CENTRE_SPECIALISATION)
-			return "D. CENTRE OF SPECIALISATION GRANT";
+			return "CENTRE OF SPECIALISATION GRANT";
 		if (this == ProgramType.ARTISAN_RPL)
-			return "D. ARTISAN RPL GRANT";
+			return "ARTISAN RPL GRANT";
 		if (this == ProgramType.NON_ARTISAN_DEV)
-			return "D. NON-ARTISAN DEVELOPMENT GRANT";
+			return "NON-ARTISAN DEVELOPMENT GRANT";
 		if (this == ProgramType.NON_ARTISAN_DEV_RPL)
-			return "D. NON-ARTISAN DEVELOPMENT (RPL) GRANT";
+			return "NON-ARTISAN DEVELOPMENT (RPL) GRANT";
 		if (this == ProgramType.NCV_GRADUATES)
-			return "D. NCV (LEVEL 4 GRADUATES) GRANT";
+			return "NCV (LEVEL 4 GRADUATES) GRANT";
 		if (this == ProgramType.AET)
-			return "D. AET GRANT";
+			return "AET GRANT";
 		if (this == ProgramType.OHASSP)
-			return "D. OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES GRANT";
+			return "OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES GRANT";
 		if (this == ProgramType.INHOUSE_TRAINING)
-			return "D. IN-HOUSE TRAINING";
+			return "IN-HOUSE TRAINING";
 		else
 			return programType.toString();
 	}

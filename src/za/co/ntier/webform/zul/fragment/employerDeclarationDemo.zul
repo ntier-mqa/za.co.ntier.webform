@@ -39,6 +39,21 @@
       display: inline-block;
       font-weight: bold;
   }
+  
+ 
+  /* maroon pill-style subheader */
+  .subSectionHeader .z-label.subSectionHeaderTitle,
+  .z-label.subSectionHeaderTitle,
+  .subSectionHeaderTitle {
+    background:#800000;      /* maroon */
+    color:#fff;              /* white text */
+    padding:6px 12px;
+    border-radius:4px;
+    display:inline-block;    /* wraps just the text */
+    font-weight:700;
+  }
+
+  
 
   /* Datebox popup: solid panel and theme */
   .z-datebox-popup {
@@ -88,7 +103,7 @@
 <div viewModel="@id('vmEmployerDeclaration') @init('za.co.ntier.webform.form.viewmodel.EmployerDeclarationInfoVMWrapper')">
 
     <hlayout sclass="sectionHeader">
-        <label sclass="sectionHeaderTitle" value="A. DECLARATION" />
+        <label sclass="sectionHeaderTitle" value="DECLARATION" />
     </hlayout>
 
     <div>

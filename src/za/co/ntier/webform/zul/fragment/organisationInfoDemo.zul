@@ -7,7 +7,7 @@
 <div viewModel="@id('vmOrgInfo') @init('za.co.ntier.webform.form.viewmodel.OrganisationInfoVMWrapper')">
 
     <hlayout sclass="sectionHeader">
-        <label sclass="sectionHeaderTitle" value="C. ORGANISATION INFORMATION" />
+        <label sclass="sectionHeaderTitle" value="ORGANISATION INFORMATION" />
     </hlayout>
 
     <div sclass="container-fluid text-left">
