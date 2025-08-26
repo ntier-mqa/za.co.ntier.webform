@@ -68,6 +68,9 @@ public class WebForm extends ADForm {
 		Map<String, Object> args = new HashMap<>();
 		args.put(menuContextInfoKey, menuContextInfo);
 		
+		if (menuContextInfo.getProgramType() == ProgramType.TVET) {
+			menuContextInfo.setZulPath("/za/co/ntier/webform/zul/test.zul");
+		}
 		String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
 
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -87,7 +90,13 @@ public class WebForm extends ADForm {
 		outterDiv.setSclass("mqaWebForm");
 
 		Div container = new Div();
-		container.setSclass("container");
+		
+		if (menuContextInfo.getProgramType() == ProgramType.TVET) {
+			container.setSclass("container test");
+		}else {
+			container.setSclass("container");
+		}
+		
 		outterDiv.appendChild(container);
 
 		container.appendChild(inc);

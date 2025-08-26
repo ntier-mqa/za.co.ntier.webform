@@ -103,13 +103,6 @@
 	<include
 		addressInfo="@load(vmOrgInfo.organisationInfo.postAddressInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
-
-	<hlayout sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle"
-			value="SIZE OF THE ORGANISATION" />
-		<label
-			value="(please select the correct option pertaining to the company size)" />
-	</hlayout>
 	
 	<include 
 		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"

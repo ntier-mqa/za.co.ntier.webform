@@ -44,7 +44,8 @@ public enum ProgramType {
 				|| this == NON_ARTISAN_DEV || this == NON_ARTISAN_DEV_RPL
 				|| this == NCV_GRADUATES || this == AET
 				|| this == OHASSP
-				|| this == INHOUSE_TRAINING;
+				|| this == INHOUSE_TRAINING
+				|| this == TVET;
 	}
 	
 	public boolean isShowMainAddressAlter() {
@@ -53,7 +54,8 @@ public enum ProgramType {
 						&& this != NON_ARTISAN_DEV && this != NON_ARTISAN_DEV_RPL
 						&& this != NCV_GRADUATES && this != AET
 						&& this != OHASSP
-						&& this != INHOUSE_TRAINING;
+						&& this != INHOUSE_TRAINING
+						&& this != TVET;
 	}
 	
 	public boolean isShowAddressSiteField() {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.viewmodel.master.MasterUtil ?>
+
+<zk xmlns:n="native">
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="B. GENERAL APPLICATION RULES" />
+	</hlayout>
+
+	<div
+		viewModel="@id('vmGeneralAppRule') @init('za.co.ntier.webform.form.viewmodel.GeneralAppRuleVMWrapper')">
+
+		<n:ol sclass="generalAppRules">
+
+			<n:li forEach="${vmGeneralAppRule.generalAppRules}">
+				<label value="${each}" />
+			</n:li>
+
+		</n:ol>
+	</div>
+</zk>
