@@ -4,8 +4,10 @@
 <nodom
 	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.AddressInfoVMWrapper')">
 	
-	<groupbox style="width:100%">
-       	<caption iconSclass="z-icon-folder-open-o" label="@init(vmAddress.addressInfo.addressTitle)" />
+	<hlayout sclass="subSectionHeader">
+			<label sclass="subSectionHeaderTitle"
+				value="@init(vmAddress.addressInfo.addressTitle)" />
+		</hlayout>
        	
 		<div sclass="grid-container">
        		<div if="${vmAddress.addressInfo.showSiteName()}"
@@ -127,5 +129,4 @@
        		</div>
        	</div>
        	
-	</groupbox>
 </nodom>

@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -153,5 +154,15 @@ public class TestVM {
 	 */
 	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
 		this.programCetTvetInfo = programCetTvetInfo;
+	}
+	
+	@Command
+	public void nextTab() {
+		
+	}
+	
+	@Command
+	public void prevTab() {
+		
 	}
 }

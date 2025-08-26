@@ -83,7 +83,7 @@ public class ProgramCetTvetInfo {
 			annexures.add(annexure);
 			
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET) {
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
+			/*annexure = new MAnnexure(Env.getCtx(), 0, null);
 			annexure.setZZHeader("ANNEXURE E (Applicable to TVET Colleges)");
 			annexure.setTitle("Name of the Intervention:");
 			annexure.set_Attribute(COL_NAME_titleHeaderText, "Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)");
@@ -135,7 +135,7 @@ public class ProgramCetTvetInfo {
 			annexure.setZZSecond(X_ZZAnnexure.ZZSECOND_ProgrammeApplyingFor);
 			annexure.set_Attribute(COL_NAME_customizeDetaileTemplate, true);
 			annexures.add(annexure);
-			
+			*/
 			List<Object> rObjs = MasterUtil.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
 					menuContextInfo.getProgramType(), X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
 			

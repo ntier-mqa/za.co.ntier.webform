@@ -5,8 +5,10 @@
 <nodom
 	viewModel="@id('vmOrgInfo') @init('za.co.ntier.webform.form.viewmodel.OrganisationInfoVMWrapper')">
 	
-	<groupbox style="width:100%">
-       	<caption iconSclass="z-icon-folder-open-o" label="Organisation Information" />
+       	<hlayout sclass="sectionHeader">
+			<label sclass="sectionHeaderTitle"
+				value="ORGANISATION INFORMATION" />
+		</hlayout>
        	
 		<div sclass="grid-container">
        		<div sclass="form-field">
@@ -85,7 +87,6 @@
        		</div>
        	</div>
 	        	
-	</groupbox>
 
 	<include
 		addressInfo="@load(vmOrgInfo.organisationInfo.physicalAddressInfo)"

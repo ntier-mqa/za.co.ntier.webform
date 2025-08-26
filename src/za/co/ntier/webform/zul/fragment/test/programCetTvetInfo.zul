@@ -16,7 +16,7 @@
 		<template name="children" var="annexure">
 			<hlayout sclass="sectionHeader">
 				<label sclass="sectionHeaderTitle"
-					value="@init(( MasterUtil.getOffsetChar('A', annexureStatus.index) += '. ' += annexure.ZZHeader))" />
+					value="@init(annexure.ZZHeader)" />
 			</hlayout>
 			
 			<!-- for master table of annexure -->
@@ -144,8 +144,9 @@
 		
 		<!-- sub template -->
 		<template name="subColumnHeader" var="refList">
-			<div class="@init(( 'col-sm-' += refList.key.subColNumber() += ' col-title d-flex align-items-center' ))">
+			<div class="@init(( 'col-sm-' += refList.key.subColNumber() += ' d-flex align-items-center' ))">
 				<label 
+					sclass="fw-bold"
 					value="@init(refList.value.name)"/>
 			</div>
 		</template>
@@ -182,9 +183,10 @@
 		<template name="subColumnTotal" var="refList">
 			
 			<div
-				class="@init(( 'col-sm-' += refList.key.subColNumber() += ' col-title d-flex align-items-center' ))">
+				sclass="@init(( 'col-sm-' += refList.key.subColNumber() += ' d-flex align-items-center' ))">
 				
-				<label 
+				<label
+					sclass="fw-bold"
 					visible="@init((refListStatus.first and annexure.get_Attribute(ProgramCetTvetInfo.ATTSUBAnnexureCustomize) eq ProgramCetTvetInfo.SUBAnnexure_TradeBeneficiaries))"
 					value="Total number of beneficiaries applying for"
 				/>
