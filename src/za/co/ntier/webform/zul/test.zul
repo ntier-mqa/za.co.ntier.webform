@@ -42,8 +42,8 @@
 			        			<label sclass="label" value="Date"/>
 						  		<datebox />
 			        		</div>
-			        		<div sclass="form-field" style="padding-right: 0px;">
-			        			<checkbox label="Click here to acknowledge commitment"/>
+			        		<div sclass="form-field" style="padding-left: 0px;padding-right: 0px">
+			        			<checkbox sclass="icon-on-right" label="Click here to acknowledge commitment"/>
 			        		</div>
 			        	</div>
 		        	</div>
