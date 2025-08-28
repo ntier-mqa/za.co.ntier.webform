@@ -6,25 +6,7 @@ import java.util.List;
 import za.co.ntier.webform.form.MenuContextInfo;
 
 public class OneLineTableInfo extends LearnerInputTableInfo {
-	@Override
-	public int getLeftSize() {
-		if (typeEmployed.equals(type) ||
-				typeLearners.equals(type))
-			return 7;
-		
-		if (typeUnEmployed.equals(type) &&
-				isHasWPAReq())
-			return 8;
-		
-		return 10;
-	}
 	
-	@Override
-	public int getRightSize() {
-		if (isHasWPAReq())
-			return 4;
-		return 2;
-	}
 	
 	public int getNoTotalApplySize() {
 		if (typeNoTotalApply.equals(type)) {
@@ -33,44 +15,6 @@ public class OneLineTableInfo extends LearnerInputTableInfo {
 			return 3;
 		}
 		return -1;
-	}
-	
-	@Override
-	public int getPostalCodeSize() {
-		if (typeNoTotalApply.equals(type)
-				|| typeUnEmployed.equals(type)) {
-			return 2;
-		}else if (typeFullEmployed.equals(type)) {
-			return 3;
-		}
-		
-		return super.getPostalCodeSize();
-	}
-	
-	@Override
-	public int getNoEmployedSize() {
-		if (typeFullEmployed.equals(type)) {
-			return 3;
-		}
-		return super.getNoEmployedSize();
-	}
-	
-	@Override
-	public int getNoLearnersSize() {
-		if (typeFullEmployed.equals(type)) {
-			return 3;
-		}
-		return super.getNoLearnersSize();
-	}
-	
-	@Override
-	public int getNoUnEmployedSize() {
-		if (typeFullEmployed.equals(type)) {
-			return 3;
-		}else if (typeUnEmployed.equals(type)) {
-			return 10;
-		}
-		return super.getNoUnEmployedSize();
 	}
 	
 	@Override
@@ -166,5 +110,7 @@ public class OneLineTableInfo extends LearnerInputTableInfo {
 				
 		return oneLineTableInfo;
 	}
+
+	
 
 }

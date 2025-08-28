@@ -1,49 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This ZUL file is designed to be included within another ZUL page. The 
-	<zk> root tag has been removed. A unique 'sclass' (employer-mvvm-form) has 
-	been added to the root <window> to scope the CSS rules specifically to this 
-	MVVM form. Martin added the sclass for demo -->
 <?import za.co.ntier.webform.form.WebForm ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
-
-<div	
+<div sclass="test" style="height:100%" xmlns:n="native"
+		viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM')">
 	
-    sclass="employer-mvvm-form"
-	viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM')">
-	
-	
-	<include companyInfo="@load(vm.companyInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/companyHeader.zul')))" />
-
 	<label sclass="formHeader" value="@init(vm.formInfo.formHeader)" />
-
-	<include
-		employerDeclarationInfo = "@load(vm.employerDeclarationInfo)" 
-		src="@load((WebForm.getBundleResourcePath('fragment/employerDeclarationDemo.zul')))" />
-
-	<include menuContextInfo="@load(vm.menuContextInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/generalAppRule.zul')))" />
-
-	<include organisationInfo="@load(vm.organisationInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/organisationInfoDemo.zul')))" />
-
-	<include
-		if="${!vm.programType.isCetTvet()}"
-		programInfo="@load(vm.programInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/programInfoDemo.zul')))" />
 	
-	<include
-		if="${vm.programType.isCetTvet()}"
-		programCetTvetInfo="@load(vm.programCetTvetInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/programCetTvetInfo.zul')))" />
+	<tabbox width="100%" vflex="1" id="formTab">
+	    <tabs>
+	        <tab label="Declaration" />
+	        <tab label="Organisation Information" />
+	        <tab label="Program" />
+	        <tab label="Program Contact" />
+	    </tabs>
+	    <tabpanels>
+	        <tabpanel style="color:#336699">
+		        <div sclass="tabContainer">
+		        	<div sclass="formContainer">
+		        		<include menuContextInfo="@load(vm.menuContextInfo)"
+						src="@load((WebForm.getBundleResourcePath('fragment/generalAppRule.zul')))" />
+						
+						<include menuContextInfo="@load(vm.menuContextInfo)"
+						src="@load((WebForm.getBundleResourcePath('fragment/employerDeclaration.zul')))" />
+		        	</div>
+		        	
+		        	<div sclass="formBottomPanelFirst">
+		        		<button label="Next" 
+		        			sclass="icon-on-right"
+		        			iconSclass="z-icon-arrow-right"
+		        			onClick="@command('nextTab', tab=formTab)"/>
+		        	</div>
+		        </div>
+	        </tabpanel>
+	        
+	        <tabpanel style="color:#663366;">
+		        <div sclass="tabContainer">
+		        	<div sclass="formContainer">
+		        		<include 
+			        		menuContextInfo="@load(vm.menuContextInfo)"
+			        		organisationInfo="@load(vm.organisationInfo)"
+							src="@load((WebForm.getBundleResourcePath('fragment/organisationInfo.zul')))" />
+		        	</div>
+		        	<div sclass="formBottomPanel">
+		        		<button label="Prev" 
+		        			iconSclass="z-icon-arrow-left"
+		        			onClick="@command('prevTab', tab=formTab)"/>
+		        		
+		        		<button label="Next" 
+		        			sclass="icon-on-right"
+		        			iconSclass="z-icon-arrow-right"
+		        			onClick="@command('nextTab', tab=formTab)"/>
+		        	</div>
+		        </div>
+	        </tabpanel>
+	        
+	        <tabpanel style="color:#CC0033;overflow: scroll;">
+		        <div sclass="tabContainer">
+		        	<div sclass="formContainer">
+			        	<include
+							if="${vm.programType.isCetTvet()}"
+							programCetTvetInfo="@load(vm.programCetTvetInfo)"
+							src="@load((WebForm.getBundleResourcePath('fragment/programCetTvetInfo.zul')))" />
+						<include
+							if="${!vm.programType.isCetTvet()}"
+							programInfo="@load(vm.programInfo)"
+							src="@load((WebForm.getBundleResourcePath('fragment/programInfo.zul')))" />	
+					</div>
+					<div sclass="formBottomPanel">
+		        		<button label="Prev" 
+		        			iconSclass="z-icon-arrow-left"
+		        			onClick="@command('prevTab', tab=formTab)"/>
+		        		
+		        		<button label="Next"
+		        			sclass="icon-on-right"
+		        			iconSclass="z-icon-arrow-right"
+		        			onClick="@command('nextTab', tab=formTab)"/>
+		        	</div>
+		        </div>
+	        </tabpanel>
+	        <tabpanel style="color:#CC3300;overflow: scroll;">
+	        	<div sclass="tabContainer">
+		        	<div sclass="formContainer">
+				        <include if="${vm.programType.isShowMainAddress()}"
+							addressInfo="@load(vm.programContact)"
+							src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
+					
+						<include if="${vm.programType.isShowMainAddressAlter()}"
+							addressInfo="@load(vm.alternateProgramContact)"
+							src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />	
+					</div>
+					<div sclass="formBottomPanel">
+		        		<button label="Prev" 
+		        			iconSclass="z-icon-arrow-left"
+		        			onClick="@command('prevTab', tab=formTab)"/>
+		        		
+		        		<button label="Submit" 
+		        			iconSclass="z-icon-gear"
+		        			sclass="icon-on-right"
+		        			onClick="@command('submitApplication')"/>
+		        	</div>
+		        </div>
+	        </tabpanel>
+	    </tabpanels>
+	</tabbox>
 	
-	<div sclass="sectionSeparator"/>	
-	<button sclass="btn btn-primary"
-        label="@init(vm.submitButtonLabel)"
-        onClick="@command('submitApplication')" />
-        
-    <window title="Done" width="300px" mode="modal" position="center,center" visible="@load(vm.showDialog)">
+	<window title="Done" width="300px" mode="modal" position="center,center" visible="@load(vm.showDialog)">
     
 		<div class="modal-body">
         <label value="The application form has been created."/>

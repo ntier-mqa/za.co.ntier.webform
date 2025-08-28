@@ -1,46 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-<div
+
+<nodom xmlns:n="native"
 	viewModel="@id('vmEmployerDeclaration') @init('za.co.ntier.webform.form.viewmodel.EmployerDeclarationInfoVMWrapper')">
 	
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
-			value="A. DECLARATION" />
+			value="DECLARATION" />
 	</hlayout>
-	<div>
-		<label
-			value="I declare that as the duly authorised
-representative of the Organisation confirms that Organisation will comply
-with the general rules and criteria hereunder and further confirmed that all the information
-provided in this application is true and accurate" />
-
-		<div sclass="container-fluid text-left">
-			<div sclass="row">
-				<div sclass="col-sm-3 col-title d-flex align-items-center">
-					<label value="Name and Surname:" />
-				</div>
-				<div sclass="col-sm-6 col-content-input-full d-flex align-items-center">
-					<textbox sclass="form-control" value="@bind(vmEmployerDeclaration.employerDeclarationInfo.userName)" />
-				</div>
-
-
-				<div sclass="col-sm-1 col-title d-flex align-items-center">
-					<label value="Date:" />
-				</div>
-				<div sclass="col-sm-2 d-flex align-items-center">
-					<datebox format="short" valueInLocalDate="@bind(vmEmployerDeclaration.employerDeclarationInfo.localDate)"/>
-				</div>
-			</div>
-
-			<div sclass="row">
-				<div sclass="col-sm-11 d-flex justify-content-end align-items-center">
-					<label value = "Click here to acknowledge commitment"></label>
-				</div>
-				<div sclass="col-sm-1 d-flex justify-content-center align-items-center">
-					<checkbox />
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-</zk>
+  	<label style="padding:20px 50px 0px;  display: block;  font-size: large;" value="I declare that as the duly authorised representative of the Organisation confirms that Organisation will comply with the general rules and criteria hereunder and further confirmed that all the information provided in this application is true and accurate"/>
+  	
+  	<div sclass="grid-container">
+  		<div sclass="form-field">
+  			<label sclass="label" value="Name and Surname"/>
+  			<textbox placeholder="Le Quy Hiep" value="@bind(vmEmployerDeclaration.employerDeclarationInfo.userName)"/>
+  		</div>
+  		<div sclass="form-field">
+  			<label sclass="label" value="Date"/>
+			<datebox format="short" valueInLocalDate="@bind(vmEmployerDeclaration.employerDeclarationInfo.localDate)"/>
+  		</div>
+  		<div sclass="form-field" style="padding-left: 0px;padding-right: 0px">
+  			<checkbox sclass="icon-on-right" label="Click here to acknowledge commitment"/>
+  		</div>
+  	</div>
+</nodom>

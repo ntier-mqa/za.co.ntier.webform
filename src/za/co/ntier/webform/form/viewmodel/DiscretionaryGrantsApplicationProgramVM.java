@@ -7,17 +7,18 @@ import java.util.List;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.util.Env;
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zul.Tabbox;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.AddressInfoBase;
-import za.co.ntier.webform.form.bean.CompanyInfo;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.LearnerInputTableInfo;
@@ -30,8 +31,6 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class DiscretionaryGrantsApplicationProgramVM {
 	private ProgramInfo programInfo;
-
-	private CompanyInfo companyInfo;
 
 	private OrganisationInfo organisationInfo;
 
@@ -46,18 +45,15 @@ public class DiscretionaryGrantsApplicationProgramVM {
     private int tableId;
     
     private EmployerDeclarationInfo employerDeclarationInfo;
+    
+    private AddressInfoBase alternateProgramContact;
+	private AddressInfoBase programContact;
+    
 	/**
 	 * @return the programInfo
 	 */
 	public ProgramInfo getProgramInfo() {
 		return programInfo;
-	}
-
-	/**
-	 * @return the companyInfo
-	 */
-	public CompanyInfo getCompanyInfo() {
-		return companyInfo;
 	}
 
 	// --- Getters and Setters for Data Binding ---
@@ -100,7 +96,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		setMenuContextInfo(menuContextInfo);
 		programType = menuContextInfo.getProgramType();
-		setCompanyInfo(CompanyInfo.getDefaultCompanyInfo());
 		setFormInfo(new FormInfo(menuContextInfo));
 
 		organisationInfo = new OrganisationInfo(menuContextInfo);
@@ -112,6 +107,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 		
 		employerDeclarationInfo = new EmployerDeclarationInfo();
+		
+		// main contact
+		if (programType.isShowMainAddress())
+			programContact = new AddressInfoBase(programType, false, null);
+
+		// main alternate contact
+		if (programType.isShowMainAddressAlter())
+			alternateProgramContact = new AddressInfoBase(programType, true, null);
 
 	}
 
@@ -120,13 +123,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setProgramInfo(ProgramInfo programInfo) {
 		this.programInfo = programInfo;
-	}
-
-	/**
-	 * @param companyInfo the companyInfo to set
-	 */
-	public void setCompanyInfo(CompanyInfo companyInfo) {
-		this.companyInfo = companyInfo;
 	}
 
 	/**
@@ -193,10 +189,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		contact = createFormContact(organisationInfo.getAlternateOrgContact(), applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(programInfo.getProgramContact(), applicationForm.getZZ_Application_Form_ID());
+		contact = createFormContact(programContact, applicationForm.getZZ_Application_Form_ID());
 		contact.saveEx();
 		
-		contact = createFormContact(programInfo.getAlternateProgramContact(), applicationForm.getZZ_Application_Form_ID());		
+		contact = createFormContact(alternateProgramContact, applicationForm.getZZ_Application_Form_ID());		
 		contact.saveEx();
 		if (programType.isShowDisciplineTable())
 			createDiscipline(programInfo.getDisciplineTableInfo(), applicationForm.getZZ_Application_Form_ID());
@@ -315,5 +311,46 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
 		this.employerDeclarationInfo = employerDeclarationInfo;
+	}
+	
+
+	@Command
+	public void nextTab(@BindingParam("tab") Tabbox tab) {
+		int currentIndex = tab.getSelectedIndex();
+		tab.setSelectedIndex(currentIndex + 1); 
+	}
+    
+	@Command
+	public void prevTab(@BindingParam("tab") Tabbox tab) {
+		int currentIndex = tab.getSelectedIndex();
+		tab.setSelectedIndex(currentIndex - 1); 
+	}
+
+	/**
+	 * @return the alternateProgramContact
+	 */
+	public AddressInfoBase getAlternateProgramContact() {
+		return alternateProgramContact;
+	}
+
+	/**
+	 * @param alternateProgramContact the alternateProgramContact to set
+	 */
+	public void setAlternateProgramContact(AddressInfoBase alternateProgramContact) {
+		this.alternateProgramContact = alternateProgramContact;
+	}
+
+	/**
+	 * @return the programContact
+	 */
+	public AddressInfoBase getProgramContact() {
+		return programContact;
+	}
+
+	/**
+	 * @param programContact the programContact to set
+	 */
+	public void setProgramContact(AddressInfoBase programContact) {
+		this.programContact = programContact;
 	}
 }

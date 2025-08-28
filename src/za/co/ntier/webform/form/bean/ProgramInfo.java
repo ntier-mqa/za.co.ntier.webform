@@ -2,12 +2,12 @@ package za.co.ntier.webform.form.bean;
 
 
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
+
 
 public class ProgramInfo {
-	private AddressInfoBase alternateProgramContact;
+	
 	private LearnerInputTableInfo disciplineTableInfo;
-	private AddressInfoBase programContact;
+	
 	private LearnerInputTableInfo tradeTableInfo;
 	private WorkInfo workInfo;
 	private DevProgramInfo devProgramInfo;
@@ -43,14 +43,6 @@ public class ProgramInfo {
 		this.menuContextInfo = menuContextInfo;
 		programType = menuContextInfo.getProgramType();
 		int programMasterDataID = menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID();
-		
-		// main contact
-		if (programType.isShowMainAddress())
-			programContact = new AddressInfoBase(programType, false, null);
-
-		// main alternate contact
-		if (programType.isShowMainAddressAlter())
-			alternateProgramContact = new AddressInfoBase(programType, true, null);
 
 		// vacation contact
 		if (programType == ProgramType.EXPERIENCE) {
@@ -85,11 +77,11 @@ public class ProgramInfo {
 		}
 		
 		if (programType.isShowTradeTable())
-			tradeTableInfo = new TradeTableInfo(programMasterDataID, programType);
+			tradeTableInfo = TradeDisciplineInputTableInfo.getTrade (programMasterDataID, programType);
 		
 		// discipline table info
 		if (programType.isShowDisciplineTable()) {
-			disciplineTableInfo = new LearnerInputTableInfo(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
+			disciplineTableInfo = TradeDisciplineInputTableInfo.getDiscipline(programMasterDataID, programType);
 		}
 	}
 
@@ -192,25 +184,12 @@ public class ProgramInfo {
 	}
 
 	/**
-	 * @return the alternateProgramContact
-	 */
-	public AddressInfoBase getAlternateProgramContact() {
-		return alternateProgramContact;
-	}
-
-	/**
 	 * @return the disciplineTableInfo
 	 */
 	public LearnerInputTableInfo getDisciplineTableInfo() {
 		return disciplineTableInfo;
 	}
 
-	/**
-	 * @return the programContact
-	 */
-	public AddressInfoBase getProgramContact() {
-		return programContact;
-	}
 
 	/**
 	 * @return the programTitle
@@ -226,25 +205,12 @@ public class ProgramInfo {
 		return tradeTableInfo;
 	}
 
-	/**
-	 * @param alternateProgramContact the alternateProgramContact to set
-	 */
-	public void setAlternateProgramContact(AddressInfoBase alternateProgramContact) {
-		this.alternateProgramContact = alternateProgramContact;
-	}
 
 	/**
 	 * @param disciplineTableInfo the disciplineTableInfo to set
 	 */
 	public void setDisciplineTableInfo(LearnerInputTableInfo disciplineTableInfo) {
 		this.disciplineTableInfo = disciplineTableInfo;
-	}
-
-	/**
-	 * @param programContact the programContact to set
-	 */
-	public void setProgramContact(AddressInfoBase programContact) {
-		this.programContact = programContact;
 	}
 
 	/**

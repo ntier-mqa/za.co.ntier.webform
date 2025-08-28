@@ -85,11 +85,4 @@
 		learnerInputTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('fragment/learnerInputTableInfo.zul')))" />
 
-	<include if="${vmProgramInfo.programInfo.programType.isShowMainAddress()}"
-		addressInfo="@load(vmProgramInfo.programInfo.programContact)"
-		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
-
-	<include if="${vmProgramInfo.programInfo.programType.isShowMainAddressAlter()}"
-		addressInfo="@load(vmProgramInfo.programInfo.alternateProgramContact)"
-		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 </div>

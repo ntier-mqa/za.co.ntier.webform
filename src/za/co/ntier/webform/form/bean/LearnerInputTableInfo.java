@@ -7,7 +7,9 @@ import org.zkoss.bind.BindUtils;
 import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
-public class LearnerInputTableInfo {
+public abstract class LearnerInputTableInfo {
+	
+	
 	private List<LearnerInputInfo> learnerInputInfos;
 	
 	private boolean hasAccred = false;
@@ -19,7 +21,6 @@ public class LearnerInputTableInfo {
 	private int totalNoLearners = 0;
 	private int totalNoEmployed = 0;
 	private int totalNoUnEmployed = 0;
-	
 	
 	private boolean showNoLearners = true;
 	private boolean showNoEmployed = false;
@@ -34,46 +35,6 @@ public class LearnerInputTableInfo {
 	
 	private boolean showLearnerTitle = true;
 	
-	public int getRightSize() {
-		return 5;
-	}
-	
-	public int getLeftSize() {
-		return 4;
-	}
-	
-	public int getNoLearnersSize() {
-		if (showNoLearners) {
-			return 6;//12/2
-		}else {
-			return 4;// 12/3
-		}
-	}
-	
-	public int getNoEmployedSize() {
-		if (showNoLearners) {
-			return 6;//12/2
-		}else {
-			return 4;// 12/3
-		}
-	}
-	
-	public int getNoUnEmployedSize() {
-		if (showNoLearners) {
-			return 6;//12/2
-		}else {
-			return 4;// 12/3
-		}
-	}
-	
-	public int getPostalCodeSize() {
-		if (showNoLearners) {
-			return 6;//12/2
-		}else {
-			return 4;// 12/3
-		}
-	}
-
 	public LearnerInputTableInfo() {
 		
 	}
@@ -89,10 +50,6 @@ public class LearnerInputTableInfo {
 		hasAccred = (boolean)rObjs.get(2);
 		
 	}
-	
-	
-
-	private Integer rightColSize;
 
 	/**
 	 * @return the learnerInputInfos
@@ -126,9 +83,7 @@ public class LearnerInputTableInfo {
 		return null;
 	}
 
-	public String getLearnerTilte() {
-		return "Discipline";
-	}
+	public abstract String getLearnerTilte();
 	
 	
 	/**
@@ -223,29 +178,6 @@ public class LearnerInputTableInfo {
 		this.totalNoLearners = totalLearners;
 	}
 
-	/**
-	 * @return the rightColSize
-	 */
-	public int getRightColSize() {
-		if (rightColSize != null)
-			return rightColSize;
-		
-		if (hasWPAReq && hasAccred) {
-			return 4; //12/3
-		} else if (!hasWPAReq && !hasAccred) {
-			return 12;
-		} else {
-			return 6; //12/2
-		}
-		
-	}
-
-	/**
-	 * @param rightColSize the rightColSize to set
-	 */
-	public void setRightColSize(int rightColSize) {
-		this.rightColSize = rightColSize;
-	}
 
 	/**
 	 * @return the learnerInputType
@@ -289,19 +221,7 @@ public class LearnerInputTableInfo {
 		this.totalNoUnEmployed = totalNoUnEmployed;
 	}
 
-	/**
-	 * @return the showNoLearners
-	 */
-	public boolean isShowNoLearners() {
-		return showNoLearners;
-	}
-
-	/**
-	 * @param showNoLearners the showNoLearners to set
-	 */
-	public void setShowNoLearners(boolean showNoLearners) {
-		this.showNoLearners = showNoLearners;
-	}
+	
 
 	/**
 	 * @return the showNoEmployed
@@ -424,6 +344,39 @@ public class LearnerInputTableInfo {
 	 */
 	public void setShowTotalLine(boolean showTotalLine) {
 		this.showTotalLine = showTotalLine;
+	}
+	/**
+	 * @return the showNoLearners
+	 */
+	public boolean isShowNoLearners() {
+		return showNoLearners;
+	}
+	/**
+	 * @param showNoLearners the showNoLearners to set
+	 */
+	public void setShowNoLearners(boolean showNoLearners) {
+		this.showNoLearners = showNoLearners;
+	}
+	
+
+	public int getNumOfCol() {
+		int numOfCols = 2;
+		if (isHasAccred())
+			numOfCols++;
+		if (isHasWPAReq())
+			numOfCols++;
+		if (isShowLearnerTitle())
+			numOfCols++;
+		if (isShowNoEmployed())
+			numOfCols++;
+		if (isShowNoLearners())
+			numOfCols++;
+		if (isShowNoTotalApply())
+			numOfCols++;
+		if (isShowNoUnEmployed())
+			numOfCols++;
+		
+		return numOfCols;
 	}
 
 }

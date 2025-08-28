@@ -29,5 +29,15 @@ public class LearnershipTableInfo extends LearnerInputTableInfo {
 		}
 		return "Learnership Type";
 	}
+
+	@Override
+	public int getNumOfCol (){
+		if (isHasAccred() && isHasWPAReq())
+			return 7;
+		else if(!isHasAccred() && !isHasWPAReq())
+			return 5;
+		else
+			return 6;
+	}
 	
 }

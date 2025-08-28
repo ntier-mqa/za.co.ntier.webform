@@ -16,71 +16,71 @@
 		<template name="children" var="annexure">
 			<hlayout sclass="sectionHeader">
 				<label sclass="sectionHeaderTitle"
-					value="@init(( MasterUtil.getOffsetChar('D', annexureStatus.index) += '. ' += annexure.ZZHeader))" />
+					value="@init(annexure.ZZHeader)" />
 			</hlayout>
 			
-			<!-- for master table of annexure -->
-			<div sclass="container-fluid">
-				<div 
-				 	children="@bind(annexure.masterColumns) @template('masterColumnHeader')"
-                    class="row font-weight-bold">
-                </div>
-                
-                <div
-                	if="${!annexure.get_Attribute(ProgramCetTvetInfo.COL_NAME_customizeDetaileTemplate)}"
-                	children="@bind(annexure.masterColumns) @template('masterColumnDetails')"
-                    class="row font-weight-bold">
-                </div>
-                
-                
-                <div
-                	if="${annexure.get_Attribute(ProgramCetTvetInfo.COL_NAME_customizeDetaileTemplate eq ProgramCetTvetInfo.DetaileTemplate_LecturersExposedIndustry)}"
-                	class="row font-weight-bold">
-                	<div
-						class="@init(( 'col-sm-' += annexure.masterColNumber() += ' col-title d-flex align-items-center' ))">
-						<label 
-							value="@init(( annexure.masterColumns.get(0).value.get_Attribute(ProgramCetTvetInfo.COL_NAME_titleHeaderText) ))"/>
+			<div class="d-flex align-items-end">
+			
+				<div class="flex-grow-1">
+					<!-- for master table of annexure -->
+					<div sclass="container-fluid">
+						<div 
+						 	children="@bind(annexure.masterColumns) @template('masterColumnHeader')"
+		                    class="row font-weight-bold">
+		                </div>
+		                
+		                <div
+		                	if="${!annexure.get_Attribute(ProgramCetTvetInfo.COL_NAME_customizeDetaileTemplate)}"
+		                	children="@bind(annexure.masterColumns) @template('masterColumnDetails')"
+		                    class="row font-weight-bold">
+		                </div>
+		                
+		                
+		                <div
+		                	if="${annexure.get_Attribute(ProgramCetTvetInfo.COL_NAME_customizeDetaileTemplate eq ProgramCetTvetInfo.DetaileTemplate_LecturersExposedIndustry)}"
+		                	class="row font-weight-bold">
+		                	<div
+								class="@init(( 'col-sm-' += annexure.masterColNumber() += ' col-title d-flex align-items-center' ))">
+								<label 
+									value="@init(( annexure.masterColumns.get(0).value.get_Attribute(ProgramCetTvetInfo.COL_NAME_titleHeaderText) ))"/>
+							</div>
+							
+		                	<div
+								class="col-sm col-container">
+								
+								<div sclass="container-fluid" style="padding:0">
+									<div class="row font-weight-bold">
+										<div
+											class="col-sm-6 col-content-input-full d-flex align-items-center">
+												<textbox sclass="form-control"/>
+										</div>
+										<div
+											class="col-sm-6 col-content col-title d-flex align-items-center">
+											<label value="Occupational Health and Safety"/>
+											
+										</div>
+									</div>
+									<div class="row font-weight-bold">
+										<div
+											class="col-sm-6 col-content-input-full d-flex align-items-center">
+											<textbox sclass="form-control"></textbox>
+										</div>
+										<div
+											class="col-sm-6 col-content col-title d-flex align-items-center">
+											<label value="Other, specify"/>
+										</div>
+									</div>
+								</div>
+		                	</div>
+		                </div>
+		            
+						
 					</div>
 					
-                	<div
-						class="col-sm col-container">
-						
-						<div sclass="container-fluid" style="padding:0">
-							<div class="row font-weight-bold">
-								<div
-									class="col-sm-6 col-content-input-full d-flex align-items-center">
-										<textbox sclass="form-control"/>
-								</div>
-								<div
-									class="col-sm-6 col-content col-title d-flex align-items-center">
-									<label value="Occupational Health and Safety"/>
-									
-								</div>
-							</div>
-							<div class="row font-weight-bold">
-								<div
-									class="col-sm-6 col-content-input-full d-flex align-items-center">
-									<textbox sclass="form-control"></textbox>
-								</div>
-								<div
-									class="col-sm-6 col-content col-title d-flex align-items-center">
-									<label value="Other, specify"/>
-								</div>
-							</div>
-						</div>
-                	</div>
-                </div>
-            
-				
-			</div>
-			
-			<!-- for detail table of annexure -->
-
-			<div class="d-flex align-items-end"
-				if="${annexure.subColumns.size() > 0}">
-				
-				<div class="flex-grow-1">
+					<!-- for detail table of annexure -->
+	
 					<div sclass="container-fluid"
+						if="${annexure.subColumns.size() > 0}"
 						children="@bind(annexure.subAnnexures)">
 	
 						<template name="children" var="subAnnexure">
@@ -104,9 +104,12 @@
 			                
 						</template>		
 					</div>
+				
 				</div>
 				
-				<div class="flex-grow-0 ms-2 me-2 mb-5">
+				<div 
+						class="flex-grow-0 ms-2 me-2 mb-5"
+						if="${annexure.subColumns.size() > 0}">
 					<button sclass="btn btn-primary btn-circle"
 					iconSclass="z-icon-plus"
 			        label=""
@@ -144,8 +147,9 @@
 		
 		<!-- sub template -->
 		<template name="subColumnHeader" var="refList">
-			<div class="@init(( 'col-sm-' += refList.key.subColNumber() += ' col-title d-flex align-items-center' ))">
+			<div class="@init(( 'col-sm-' += refList.key.subColNumber() += ' d-flex align-items-center' ))">
 				<label 
+					sclass="fw-bold"
 					value="@init(refList.value.name)"/>
 			</div>
 		</template>
@@ -182,9 +186,10 @@
 		<template name="subColumnTotal" var="refList">
 			
 			<div
-				class="@init(( 'col-sm-' += refList.key.subColNumber() += ' col-title d-flex align-items-center' ))">
+				sclass="@init(( 'col-sm-' += refList.key.subColNumber() += ' d-flex align-items-center' ))">
 				
-				<label 
+				<label
+					sclass="fw-bold"
 					visible="@init((refListStatus.first and annexure.get_Attribute(ProgramCetTvetInfo.ATTSUBAnnexureCustomize) eq ProgramCetTvetInfo.SUBAnnexure_TradeBeneficiaries))"
 					value="Total number of beneficiaries applying for"
 				/>
@@ -198,8 +203,4 @@
 		</template>		
 		
 	</div>
-	
-	<include
-		addressInfo="@load(vmProgramCetTvetInfo.programCetTvetInfo.addressInfo)"
-		src="@load((WebForm.getBundleResourcePath('fragment/address.zul')))" />
 </div>
