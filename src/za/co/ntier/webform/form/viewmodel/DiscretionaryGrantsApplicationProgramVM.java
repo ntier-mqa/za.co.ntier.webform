@@ -18,7 +18,7 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.form.bean.AddressInfoBase;
+import za.co.ntier.webform.form.bean.AddressInfo;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.LearnerInputTableInfo;
@@ -46,8 +46,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
     
     private EmployerDeclarationInfo employerDeclarationInfo;
     
-    private AddressInfoBase alternateProgramContact;
-	private AddressInfoBase programContact;
+    private AddressInfo alternateProgramContact;
+	private AddressInfo programContact;
     
 	/**
 	 * @return the programInfo
@@ -110,11 +110,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		// main contact
 		if (programType.isShowMainAddress())
-			programContact = new AddressInfoBase(programType, false, null);
+			programContact = new AddressInfo(programType, false, null);
 
 		// main alternate contact
 		if (programType.isShowMainAddressAlter())
-			alternateProgramContact = new AddressInfoBase(programType, true, null);
+			alternateProgramContact = new AddressInfo(programType, true, null);
 
 	}
 
@@ -250,26 +250,26 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		return null;
 	}
 	
-	public X_ZZ_FormContact createFormContact(AddressInfoBase addressInfoBase, int applicationFormID) {
+	public X_ZZ_FormContact createFormContact(AddressInfo addressInfo, int applicationFormID) {
 		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
 		contact.setZZ_Application_Form_ID(applicationFormID);
-		if(addressInfoBase.getProvinceSelected() != null)
-			contact.setC_Region_ID(addressInfoBase.getProvinceSelected().getC_Region_ID());
+		if(addressInfo.getProvinceSelected() != null)
+			contact.setC_Region_ID(addressInfo.getProvinceSelected().getC_Region_ID());
 		
-		if(addressInfoBase.getAreaSelected() != null)
-			contact.setC_City_ID(addressInfoBase.getAreaSelected().getC_City_ID());
+		if(addressInfo.getAreaSelected() != null)
+			contact.setC_City_ID(addressInfo.getAreaSelected().getC_City_ID());
 		
-		contact.setPostal(addressInfoBase.getPostalCode());
+		contact.setPostal(addressInfo.getPostalCode());
 		
-		contact.setZZ_SideName(addressInfoBase.getSiteName());
-		contact.setAddress(addressInfoBase.getAddressLine());
+		contact.setZZ_SideName(addressInfo.getSiteName());
+		contact.setAddress(addressInfo.getAddressLine());
 		
-		contact.setContactName(addressInfoBase.getNameSiteRepresentative());
-		contact.setZZ_Designation(addressInfoBase.getRepresentativeDesignation());
-		contact.setPhone(addressInfoBase.getMobileNumber());
-		contact.setPhone2(addressInfoBase.getLandlineNumber());
-		contact.setEMail(addressInfoBase.getEmail());
-		contact.setZZ_ContactType(addressInfoBase.getAddressCategory().toString());
+		contact.setContactName(addressInfo.getNameSiteRepresentative());
+		contact.setZZ_Designation(addressInfo.getRepresentativeDesignation());
+		contact.setPhone(addressInfo.getMobileNumber());
+		contact.setPhone2(addressInfo.getLandlineNumber());
+		contact.setEMail(addressInfo.getEmail());
+		contact.setZZ_ContactType(addressInfo.getAddressCategory().toString());
 		return contact;
 	}
 
@@ -329,28 +329,28 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	/**
 	 * @return the alternateProgramContact
 	 */
-	public AddressInfoBase getAlternateProgramContact() {
+	public AddressInfo getAlternateProgramContact() {
 		return alternateProgramContact;
 	}
 
 	/**
 	 * @param alternateProgramContact the alternateProgramContact to set
 	 */
-	public void setAlternateProgramContact(AddressInfoBase alternateProgramContact) {
+	public void setAlternateProgramContact(AddressInfo alternateProgramContact) {
 		this.alternateProgramContact = alternateProgramContact;
 	}
 
 	/**
 	 * @return the programContact
 	 */
-	public AddressInfoBase getProgramContact() {
+	public AddressInfo getProgramContact() {
 		return programContact;
 	}
 
 	/**
 	 * @param programContact the programContact to set
 	 */
-	public void setProgramContact(AddressInfoBase programContact) {
+	public void setProgramContact(AddressInfo programContact) {
 		this.programContact = programContact;
 	}
 }

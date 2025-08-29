@@ -11,14 +11,14 @@ import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
 
 /**
  * base on bpartner, a Organisation is a bpartner
  */
 public class OrganisationInfo {
-	private AddressInfoBase alternateOrgContact;
+	private AddressInfo alternateOrgContact;
 	private String orgName;
 	private String orgNameTitle = "Organisation Name";
 	private String orgTaxNumber;
@@ -26,12 +26,12 @@ public class OrganisationInfo {
 
 	private String fileNameVATCer;
 	private String fullPathVATCer;
-	private AddressInfoBase orgContact;
+	private AddressInfo orgContact;
 	private String orgRegistrationNumber;
 	private String orgRegistrationNumberTitle = "Registration No";
 	private OrganisationSizeInfo orgSizeInfo;
-	private AddressInfoBase physicalAddressInfo;
-	private AddressInfoBase postAddressInfo;
+	private AddressInfo physicalAddressInfo;
+	private AddressInfo postAddressInfo;
 	private String sdlNumber;
 	private String sdlNumberTitle = "Skills Development Levy (SDL) Number (Paying or Exempted)";
 	private String siteSDLNumber;
@@ -52,7 +52,8 @@ public class OrganisationInfo {
 	public String getCetTvetNameTitle() {
 		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
 			return "Name of CET College";
-		}else if(ProgramType.TVET.equals(menuContextInfo.getProgramType()))
+		}else if(ProgramType.TVET.equals(menuContextInfo.getProgramType()) ||
+				ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType()))
 			return "Name of TVET College";
 		else
 			return "unknownCetNameTitle";
@@ -63,7 +64,8 @@ public class OrganisationInfo {
 	public List<X_C_BPartner> getCetTvetColleges() {
 		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
 			return MasterUtil.getCetColleges();
-		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())) {
+		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())
+				|| ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType())) {
 			return MasterUtil.getTvetColleges();
 		}
 		return null;
@@ -71,24 +73,24 @@ public class OrganisationInfo {
 
 	public OrganisationInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
-		postAddressInfo = new AddressInfoBase(AddressType.POSTAL, null);
+		postAddressInfo = new AddressInfo(AddressType.POSTAL, null);
 
-		physicalAddressInfo = new AddressInfoBase(AddressType.PHYSICAL, null);
+		physicalAddressInfo = new AddressInfo(AddressType.PHYSICAL, null);
 
 		
 		if (!menuContextInfo.getProgramType().isCetTvet()) {
 			orgSizeInfo = new OrganisationSizeInfo();
 
-			orgContact = new AddressInfoBase(AddressType.ORG, null);
+			orgContact = new AddressInfo(AddressType.ORG, null);
 
-			alternateOrgContact = new AddressInfoBase(AddressType.ORG_ALTER, null);
+			alternateOrgContact = new AddressInfo(AddressType.ORG_ALTER, null);
 		}
 	}
 
 	/**
 	 * @return the alternateOrgContact
 	 */
-	public AddressInfoBase getAlternateOrgContact() {
+	public AddressInfo getAlternateOrgContact() {
 		return alternateOrgContact;
 	}
 
@@ -130,7 +132,7 @@ public class OrganisationInfo {
 	/**
 	 * @return the orgContact
 	 */
-	public AddressInfoBase getOrgContact() {
+	public AddressInfo getOrgContact() {
 		return orgContact;
 	}
 
@@ -158,14 +160,14 @@ public class OrganisationInfo {
 	/**
 	 * @return the physicalAddressInfo
 	 */
-	public AddressInfoBase getPhysicalAddressInfo() {
+	public AddressInfo getPhysicalAddressInfo() {
 		return physicalAddressInfo;
 	}
 
 	/**
 	 * @return the postAddressInfo
 	 */
-	public AddressInfoBase getPostAddressInfo() {
+	public AddressInfo getPostAddressInfo() {
 		return postAddressInfo;
 	}
 
@@ -200,7 +202,7 @@ public class OrganisationInfo {
 	/**
 	 * @param alternateOrgContact the alternateOrgContact to set
 	 */
-	public void setAlternateOrgContact(AddressInfoBase alternateOrgContact) {
+	public void setAlternateOrgContact(AddressInfo alternateOrgContact) {
 		this.alternateOrgContact = alternateOrgContact;
 	}
 
@@ -243,7 +245,7 @@ public class OrganisationInfo {
 	/**
 	 * @param orgContact the orgContact to set
 	 */
-	public void setOrgContact(AddressInfoBase orgContact) {
+	public void setOrgContact(AddressInfo orgContact) {
 		this.orgContact = orgContact;
 	}
 
@@ -271,14 +273,14 @@ public class OrganisationInfo {
 	/**
 	 * @param physicalAddressInfo the physicalAddressInfo to set
 	 */
-	public void setPhysicalAddressInfo(AddressInfoBase physicalAddressInfo) {
+	public void setPhysicalAddressInfo(AddressInfo physicalAddressInfo) {
 		this.physicalAddressInfo = physicalAddressInfo;
 	}
 
 	/**
 	 * @param postAddressInfo the postAddressInfo to set
 	 */
-	public void setPostAddressInfo(AddressInfoBase postAddressInfo) {
+	public void setPostAddressInfo(AddressInfo postAddressInfo) {
 		this.postAddressInfo = postAddressInfo;
 	}
 

@@ -13,7 +13,7 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 
-import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
+import za.co.ntier.webform.form.MasterUtil;
 
 public class LearnerInputInfo {	
 	private int learnerInputProgramID;

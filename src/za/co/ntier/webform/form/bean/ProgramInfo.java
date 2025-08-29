@@ -2,6 +2,18 @@ package za.co.ntier.webform.form.bean;
 
 
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.bean.program.AETProgram;
+import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
+import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
+import za.co.ntier.webform.form.bean.program.ArtisanRPLProgram;
+import za.co.ntier.webform.form.bean.program.CentreOfSpecialisationProgram;
+import za.co.ntier.webform.form.bean.program.DevProgramProgram;
+import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
+import za.co.ntier.webform.form.bean.program.NCVGraduatesProgram;
+import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
+import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
+import za.co.ntier.webform.form.bean.program.OHASSPProgram;
+import za.co.ntier.webform.form.bean.program.WorkProgram;
 
 
 public class ProgramInfo {
@@ -9,19 +21,19 @@ public class ProgramInfo {
 	private LearnerInputTableInfo disciplineTableInfo;
 	
 	private LearnerInputTableInfo tradeTableInfo;
-	private WorkInfo workInfo;
-	private DevProgramInfo devProgramInfo;
-	private AddressInfoBase vacationContact;
-	private ArtisanAidesInfo artisanAidesInfo;
-	private ArtisanDevInfo artisanDevInfo;
-	private CentreOfSpecialisationInfo centreOfSpecialisationInfo;
-	private ArtisanRPLInfo artisanRPLInfo;
-	private NonArtisanDevInfo nonArtisanDevInfo;
-	private NonArtisanDevRPLInfo nonArtisanDevRPLInfo;
-	private NCVGraduatesInfo ncvGraduatesInfo;
-	private AETInfo aetInfo;
-	private OHASSPInfo ohasspInfo;
-	private InhouseTrainingInfo inhouseTrainingInfo;
+	private WorkProgram workInfo;
+	private DevProgramProgram devProgramInfo;
+	private AddressInfo vacationContact;
+	private ArtisanAidesProgram artisanAidesInfo;
+	private ArtisanDevProgram artisanDevInfo;
+	private CentreOfSpecialisationProgram centreOfSpecialisationInfo;
+	private ArtisanRPLProgram artisanRPLInfo;
+	private NonArtisanDevProgram nonArtisanDevInfo;
+	private NonArtisanDevRPLProgram nonArtisanDevRPLInfo;
+	private NCVGraduatesProgram ncvGraduatesInfo;
+	private AETProgram aetInfo;
+	private OHASSPProgram ohasspInfo;
+	private InhouseTrainingProgram inhouseTrainingInfo;
 	private MenuContextInfo menuContextInfo;
 	private ProgramType programType;
 	
@@ -46,34 +58,34 @@ public class ProgramInfo {
 
 		// vacation contact
 		if (programType == ProgramType.EXPERIENCE) {
-			setVacationContact(new AddressInfoBase(AddressType.VACATION, null));
+			setVacationContact(new AddressInfo(AddressType.VACATION, null));
 		}
 		
 		// extra program info
 		if (programType == ProgramType.DEV_PROGRAM) {
-			devProgramInfo = new DevProgramInfo();
+			devProgramInfo = new DevProgramProgram();
 		} else if (programType == ProgramType.EXPERIENCE) {
-			workInfo = new WorkInfo();
+			workInfo = new WorkProgram();
 		}else if (programType == ProgramType.ARTISAN_AIDES) {
-			this.artisanAidesInfo =  new ArtisanAidesInfo();
+			this.artisanAidesInfo =  new ArtisanAidesProgram();
 		}else if (programType == ProgramType.ARTISAN_DEV) {
-			this.artisanDevInfo = new ArtisanDevInfo();
+			this.artisanDevInfo = new ArtisanDevProgram();
 		}else if (programType == ProgramType.CENTRE_SPECIALISATION) {
-			this.setcentreOfSpecialisationInfo(new CentreOfSpecialisationInfo());
+			this.setcentreOfSpecialisationInfo(new CentreOfSpecialisationProgram());
 		}else if (programType == ProgramType.ARTISAN_RPL) {
-			this.artisanRPLInfo = new ArtisanRPLInfo();
+			this.artisanRPLInfo = new ArtisanRPLProgram();
 		}else if (programType == ProgramType.NON_ARTISAN_DEV) {
-			this.nonArtisanDevInfo = new NonArtisanDevInfo(menuContextInfo);
+			this.nonArtisanDevInfo = new NonArtisanDevProgram(menuContextInfo);
 		}else if (programType == ProgramType.NON_ARTISAN_DEV_RPL) {
-			this.nonArtisanDevRPLInfo = new NonArtisanDevRPLInfo();
+			this.nonArtisanDevRPLInfo = new NonArtisanDevRPLProgram();
 		}else if (programType == ProgramType.NCV_GRADUATES) {
-			this.ncvGraduatesInfo = new NCVGraduatesInfo(menuContextInfo);
+			this.ncvGraduatesInfo = new NCVGraduatesProgram(menuContextInfo);
 		}else if (programType == ProgramType.AET) {
-			this.aetInfo = new AETInfo(menuContextInfo);
+			this.aetInfo = new AETProgram(menuContextInfo);
 		}else if (programType == ProgramType.OHASSP) {
-			this.ohasspInfo = new OHASSPInfo();
+			this.ohasspInfo = new OHASSPProgram();
 		}else if (programType == ProgramType.INHOUSE_TRAINING) {
-			this.inhouseTrainingInfo = new InhouseTrainingInfo();
+			this.inhouseTrainingInfo = new InhouseTrainingProgram();
 		}
 		
 		if (programType.isShowTradeTable())
@@ -88,98 +100,98 @@ public class ProgramInfo {
 	/**
 	 * @return the centreOfSpecialisationInfo
 	 */
-	public CentreOfSpecialisationInfo getCentreOfSpecialisationInfo() {
+	public CentreOfSpecialisationProgram getCentreOfSpecialisationInfo() {
 		return centreOfSpecialisationInfo;
 	}
 
 	/**
 	 * @param centreOfSpecialisationInfo the centreOfSpecialisationInfo to set
 	 */
-	public void setCentreOfSpecialisationInfo(CentreOfSpecialisationInfo centreOfSpecialisationInfo) {
+	public void setCentreOfSpecialisationInfo(CentreOfSpecialisationProgram centreOfSpecialisationInfo) {
 		this.centreOfSpecialisationInfo = centreOfSpecialisationInfo;
 	}
 
 	/**
 	 * @return the nonArtisanDevInfo
 	 */
-	public NonArtisanDevInfo getNonArtisanDevInfo() {
+	public NonArtisanDevProgram getNonArtisanDevInfo() {
 		return nonArtisanDevInfo;
 	}
 
 	/**
 	 * @param nonArtisanDevInfo the nonArtisanDevInfo to set
 	 */
-	public void setNonArtisanDevInfo(NonArtisanDevInfo nonArtisanDevInfo) {
+	public void setNonArtisanDevInfo(NonArtisanDevProgram nonArtisanDevInfo) {
 		this.nonArtisanDevInfo = nonArtisanDevInfo;
 	}
 
 	/**
 	 * @return the nonArtisanDevRPLInfo
 	 */
-	public NonArtisanDevRPLInfo getNonArtisanDevRPLInfo() {
+	public NonArtisanDevRPLProgram getNonArtisanDevRPLInfo() {
 		return nonArtisanDevRPLInfo;
 	}
 
 	/**
 	 * @param nonArtisanDevRPLInfo the nonArtisanDevRPLInfo to set
 	 */
-	public void setNonArtisanDevRPLInfo(NonArtisanDevRPLInfo nonArtisanDevRPLInfo) {
+	public void setNonArtisanDevRPLInfo(NonArtisanDevRPLProgram nonArtisanDevRPLInfo) {
 		this.nonArtisanDevRPLInfo = nonArtisanDevRPLInfo;
 	}
 
 	/**
 	 * @return the ncvGraduatesInfo
 	 */
-	public NCVGraduatesInfo getNcvGraduatesInfo() {
+	public NCVGraduatesProgram getNcvGraduatesInfo() {
 		return ncvGraduatesInfo;
 	}
 
 	/**
 	 * @param ncvGraduatesInfo the ncvGraduatesInfo to set
 	 */
-	public void setNcvGraduatesInfo(NCVGraduatesInfo ncvGraduatesInfo) {
+	public void setNcvGraduatesInfo(NCVGraduatesProgram ncvGraduatesInfo) {
 		this.ncvGraduatesInfo = ncvGraduatesInfo;
 	}
 
 	/**
 	 * @return the aetInfo
 	 */
-	public AETInfo getAetInfo() {
+	public AETProgram getAetInfo() {
 		return aetInfo;
 	}
 
 	/**
 	 * @param aetInfo the aetInfo to set
 	 */
-	public void setAetInfo(AETInfo aetInfo) {
+	public void setAetInfo(AETProgram aetInfo) {
 		this.aetInfo = aetInfo;
 	}
 
 	/**
 	 * @return the ohasspInfo
 	 */
-	public OHASSPInfo getOhasspInfo() {
+	public OHASSPProgram getOhasspInfo() {
 		return ohasspInfo;
 	}
 
 	/**
 	 * @param ohasspInfo the ohasspInfo to set
 	 */
-	public void setOhasspInfo(OHASSPInfo ohasspInfo) {
+	public void setOhasspInfo(OHASSPProgram ohasspInfo) {
 		this.ohasspInfo = ohasspInfo;
 	}
 
 	/**
 	 * @return the inhouseTrainingInfo
 	 */
-	public InhouseTrainingInfo getInhouseTrainingInfo() {
+	public InhouseTrainingProgram getInhouseTrainingInfo() {
 		return inhouseTrainingInfo;
 	}
 
 	/**
 	 * @param inhouseTrainingInfo the inhouseTrainingInfo to set
 	 */
-	public void setInhouseTrainingInfo(InhouseTrainingInfo inhouseTrainingInfo) {
+	public void setInhouseTrainingInfo(InhouseTrainingProgram inhouseTrainingInfo) {
 		this.inhouseTrainingInfo = inhouseTrainingInfo;
 	}
 
@@ -220,95 +232,95 @@ public class ProgramInfo {
 		this.tradeTableInfo = tradeTableInfo;
 	}
 
-	public WorkInfo getWorkInfo() {
+	public WorkProgram getWorkInfo() {
 		return workInfo;
 	}
 
-	public void setWorkInfo(WorkInfo workInfo) {
+	public void setWorkInfo(WorkProgram workInfo) {
 		this.workInfo = workInfo;
 	}
 
 	/**
 	 * @return the vacationContact
 	 */
-	public AddressInfoBase getVacationContact() {
+	public AddressInfo getVacationContact() {
 		return vacationContact;
 	}
 
 	/**
 	 * @param vacationContact the vacationContact to set
 	 */
-	public void setVacationContact(AddressInfoBase vacationContact) {
+	public void setVacationContact(AddressInfo vacationContact) {
 		this.vacationContact = vacationContact;
 	}
 
 	/**
 	 * @return the devProgramInfo
 	 */
-	public DevProgramInfo getDevProgramInfo() {
+	public DevProgramProgram getDevProgramInfo() {
 		return devProgramInfo;
 	}
 
 	/**
 	 * @param devProgramInfo the devProgramInfo to set
 	 */
-	public void setDevProgramInfo(DevProgramInfo devProgramInfo) {
+	public void setDevProgramInfo(DevProgramProgram devProgramInfo) {
 		this.devProgramInfo = devProgramInfo;
 	}
 
 	/**
 	 * @return the artisanAidesInfo
 	 */
-	public ArtisanAidesInfo getArtisanAidesInfo() {
+	public ArtisanAidesProgram getArtisanAidesInfo() {
 		return artisanAidesInfo;
 	}
 
 	/**
 	 * @param artisanAidesInfo the artisanAidesInfo to set
 	 */
-	public void setArtisanAidesInfo(ArtisanAidesInfo artisanAidesInfo) {
+	public void setArtisanAidesInfo(ArtisanAidesProgram artisanAidesInfo) {
 		this.artisanAidesInfo = artisanAidesInfo;
 	}
 
 	/**
 	 * @return the artisanDevInfo
 	 */
-	public ArtisanDevInfo getArtisanDevInfo() {
+	public ArtisanDevProgram getArtisanDevInfo() {
 		return artisanDevInfo;
 	}
 
 	/**
 	 * @param artisanDevInfo the artisanDevInfo to set
 	 */
-	public void setArtisanDevInfo(ArtisanDevInfo artisanDevInfo) {
+	public void setArtisanDevInfo(ArtisanDevProgram artisanDevInfo) {
 		this.artisanDevInfo = artisanDevInfo;
 	}
 
 	/**
 	 * @return the centreOfSpecialisationInfo
 	 */
-	public CentreOfSpecialisationInfo getcentreOfSpecialisationInfo() {
+	public CentreOfSpecialisationProgram getcentreOfSpecialisationInfo() {
 		return centreOfSpecialisationInfo;
 	}
 
 	/**
 	 * @param centreOfSpecialisationInfo the centreOfSpecialisationInfo to set
 	 */
-	public void setcentreOfSpecialisationInfo(CentreOfSpecialisationInfo centreOfSpecialisationInfo) {
+	public void setcentreOfSpecialisationInfo(CentreOfSpecialisationProgram centreOfSpecialisationInfo) {
 		this.centreOfSpecialisationInfo = centreOfSpecialisationInfo;
 	}
 
 	/**
 	 * @return the artisanRPLInfo
 	 */
-	public ArtisanRPLInfo getArtisanRPLInfo() {
+	public ArtisanRPLProgram getArtisanRPLInfo() {
 		return artisanRPLInfo;
 	}
 
 	/**
 	 * @param artisanRPLInfo the artisanRPLInfo to set
 	 */
-	public void setArtisanRPLInfo(ArtisanRPLInfo artisanRPLInfo) {
+	public void setArtisanRPLInfo(ArtisanRPLProgram artisanRPLInfo) {
 		this.artisanRPLInfo = artisanRPLInfo;
 	}
 

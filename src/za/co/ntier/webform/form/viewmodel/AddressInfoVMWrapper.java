@@ -3,27 +3,27 @@ package za.co.ntier.webform.form.viewmodel;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
-import za.co.ntier.webform.form.bean.AddressInfoBase;
+import za.co.ntier.webform.form.bean.AddressInfo;
 
 public class AddressInfoVMWrapper {
-	private AddressInfoBase addressInfo;
+	private AddressInfo addressInfo;
 
 	/**
 	 * @return the addressInfo
 	 */
-	public AddressInfoBase getAddressInfo() {
+	public AddressInfo getAddressInfo() {
 		return addressInfo;
 	}
 
 	@Init
-	public void init(@ExecutionArgParam("addressInfo") AddressInfoBase addressInfo) {
+	public void init(@ExecutionArgParam("addressInfo") AddressInfo addressInfo) {
 		this.addressInfo = addressInfo;
 	}
 
 	/**
 	 * @param addressInfo the addressInfo to set
 	 */
-	public void setAddressInfo(AddressInfoBase addressInfo) {
+	public void setAddressInfo(AddressInfo addressInfo) {
 		this.addressInfo = addressInfo;
 	}
 }

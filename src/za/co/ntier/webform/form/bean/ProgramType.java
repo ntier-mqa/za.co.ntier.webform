@@ -15,7 +15,7 @@ public enum ProgramType {
 	AET("AET"),
 	OHASSP("OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES"),
 	INHOUSE_TRAINING("IN-HOUSE TRAINING"),
-	
+	TVET_BURSARS("TVET_BURSARS"),
 	CET("CET"),
 	TVET("TVET"),
 	
@@ -34,7 +34,8 @@ public enum ProgramType {
 	
 	public boolean isCetTvet(){
 		return ProgramType.CET.equals(this) ||
-				ProgramType.TVET.equals(this);
+				ProgramType.TVET.equals(this) ||
+				ProgramType.TVET_BURSARS.equals(this);
 	}
 	
 	public boolean isShowMainAddress() {
@@ -45,7 +46,9 @@ public enum ProgramType {
 				|| this == NCV_GRADUATES || this == AET
 				|| this == OHASSP
 				|| this == INHOUSE_TRAINING
-				|| this == TVET;
+				|| this == TVET
+				|| this == CET
+				|| this == TVET_BURSARS;
 	}
 	
 	public boolean isShowMainAddressAlter() {
@@ -55,7 +58,9 @@ public enum ProgramType {
 						&& this != NCV_GRADUATES && this != AET
 						&& this != OHASSP
 						&& this != INHOUSE_TRAINING
-						&& this != TVET;
+						&& this != TVET
+						&& this != CET
+						&& this != TVET_BURSARS;
 	}
 	
 	public boolean isShowAddressSiteField() {

@@ -4,6 +4,7 @@ Bundle-Name: Ntier Webform
 Bundle-SymbolicName: za.co.ntier.webform
 Bundle-Version: 1.0.0.qualifier
 Import-Package: org.adempiere.base,
+ org.adempiere.exceptions,
  org.adempiere.model,
  org.adempiere.webui.factory,
  org.adempiere.webui.panel,

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.zkoss.bind.BindUtils;
 
-import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public abstract class LearnerInputTableInfo {

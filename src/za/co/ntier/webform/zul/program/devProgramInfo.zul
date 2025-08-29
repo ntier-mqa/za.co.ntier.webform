@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk xmlns:n="native">
+	<div
+		viewModel="@id('vmDevProgram') @init('za.co.ntier.webform.form.viewmodel.program.DevProgramVMWrapper')">
+		<div>
+			<label
+				value="To support qualifying HDSA employees with Management and Executive Development
+			Programmes including MBAs/MBLs." />
+		</div>
+		<div>
+				<label 
+					value="The MQA will only fund Employers who register learners in courses that meet the following
+			criteria:" />
+		</div>
+		
+		<n:ol>
+			<n:li>
+				<label
+					value="The provider delivering the programme must be accredited for the specific programme by
+		the relevant accreditation/certification body." />
+			</n:li>
+		</n:ol>
+	
+		<label sclass="sectionHeaderTitle"
+				value="Please complete the compulsory fields (*) below." />
+		<div sclass="container-fluid">
+			<div class="row	 font-weight-bold">
+				<div sclass="col-sm-5 col-title d-flex align-items-center">
+					<label
+						value="Number of learners applying for Management and
+	Executive Development Programme (MEDP" />
+				</div>
+				<div
+					sclass="col-sm-2 col-content-input-full  d-flex align-items-center">
+					<textbox
+						value="@bind(vmDevProgram.devProgramInfo.noOfLearners)"
+						sclass="form-control" />
+				</div>
+	
+			</div>
+		</div>
+		<hlayout>
+			<label sclass="sectionHeader" value="Note:" />
+			<label
+				value="All Employers/Organisations with multiple sites using one levy number must submit one
+				consolidated application for all sites." />
+		</hlayout>
+	</div>
+</zk>

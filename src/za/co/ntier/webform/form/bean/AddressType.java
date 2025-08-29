@@ -71,7 +71,7 @@ public enum AddressType {
 			return "Contact details of person responsible for Occupational Health and Safety Skills Programmes:";
 		else if (programType == ProgramType.INHOUSE_TRAINING)
 			return "Contact details of person responsible for IHT:";
-		else if (programType == ProgramType.TVET || programType == ProgramType.CET)
+		else if (programType == ProgramType.TVET || programType == ProgramType.CET || programType == ProgramType.TVET_BURSARS)
 			return "Contact details of the responsible person:";
 		else
 			return UNKNOWN.toString();

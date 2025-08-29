@@ -3,18 +3,14 @@ package za.co.ntier.webform.form.bean;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.compiere.util.Env;
-
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.viewmodel.master.MasterUtil;
-import za.co.ntier.webform.model.MAnnexure;
-import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class ProgramCetTvetInfo {
 	private MenuContextInfo menuContextInfo;
-	private List<MAnnexure> annexures;
-	private AddressInfoBase addressInfo;
+	private List<AnnexureInfo> annexureInfos;
+	private AddressInfo addressInfo;
 	
 	public static final String COL_NAME_titleHeaderText = "titleHeaderText";
 	public static final String COL_NAME_customizeDetaileTemplate = "customizeDetaileTemplate";
@@ -41,120 +37,137 @@ public class ProgramCetTvetInfo {
 	public ProgramCetTvetInfo(MenuContextInfo menuContextInfo) {
 		this.setMenuContextInfo(menuContextInfo);
 		
-		setAnnexures(new ArrayList<>());
-		MAnnexure annexure = null;
+		annexureInfos = new ArrayList<>();
+		AnnexureInfo annexure = null;
+		AnnexureInfo subAnnexure = null;
 		if (menuContextInfo.getProgramType() == ProgramType.CET) {
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE A (Applicable to CET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "CET learners funded to access AET Programmes");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE A (Applicable to CET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Number Of Beneficiaries Applying For")), 
+					"CET learners funded to access AET Programmes");
 			
-			annexures.add(annexure);
+			annexureInfos.add(annexure);
 			
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE B (Applicable to CET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "Number of TVET Colleges and HEI graduates that entered CET Internships");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
-			annexure.setZZSecond(X_ZZAnnexure.ZZSECOND_DisciplineApplyingFor);
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE B (Applicable to CET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Number of beneficiaries applying for"),
+							ColumnInfo.getColPositiveNumber("Discipline Applying For")), 
+					"Number of TVET Colleges and HEI graduates that entered CET Internships");
 			
-			annexures.add(annexure);
+			annexureInfos.add(annexure);
 			
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE C (Applicable to CET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "CET Managers receiving training on curriculum related studies");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE C (Applicable to CET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Number of beneficiaries applying for")
+							), 
+					"CET Managers receiving training on curriculum related studies");
 			
-			annexure.setZZFirstSubcolumn(X_ZZAnnexure.ZZFIRSTSUBCOLUMN_RequestedProgramme);
-			annexure.setZZSecondSubcolumn(X_ZZAnnexure.ZZFOURTHSUBCOLUMN_NumberOfManagers);
+			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(null, 
+					List.of(ColumnInfo.getColPositiveNumber("Requested Programme"),
+							ColumnInfo.getColPositiveNumber("Number of managers")));
+			annexure.setSubAnnexure(subAnnexure);
 			
-			annexures.add(annexure);
+			annexureInfos.add(annexure);
 			
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE D (Applicable to CET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "Number of CET Colleges lecturers awarded skills development programmes");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE D (Applicable to CET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Number of beneficiaries applying for")
+							), 
+					"Number of CET Colleges lecturers awarded skills development programmes");
 			
-			annexure.setZZFirstSubcolumn(X_ZZAnnexure.ZZFIRSTSUBCOLUMN_RequestedProgramme);
+			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(null, 
+					List.of(ColumnInfo.getColPositiveNumber("Requested Programme")
+							));
+			annexure.setSubAnnexure(subAnnexure);
 			
-			annexures.add(annexure);
-			
+			annexureInfos.add(annexure);
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET) {
-			/*annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE E (Applicable to TVET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
-			annexure.setZZSecond(X_ZZAnnexure.ZZSECOND_DisciplineApplyingFor);
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE E (Applicable to TVET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Number of beneficiaries applying for"),
+							ColumnInfo.getColPositiveNumber("Discipline Applying For")
+							), 
+					"Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)");
 			
-			annexure.setZZFirstSubcolumn(X_ZZAnnexure.ZZFIRSTSUBCOLUMN_FieldOfStudy);
-			annexure.setZZSecondSubcolumn(X_ZZAnnexure.ZZSECONDSUBCOLUMN_NumberOfLearners);
+			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(null, 
+					List.of(ColumnInfo.getColPositiveNumber("Field of Study"),
+							ColumnInfo.getColPositiveNumber("Number of learners")
+							));
+			annexure.setSubAnnexure(subAnnexure);
 			
-			annexures.add(annexure);
-			
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE F  (Applicable to TVET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "TVET Managers receiving training on curriculum related studies");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
-			annexure.setZZSecond(X_ZZAnnexure.ZZSECOND_ProgrammeApplyingFor);
-			
-			annexure.setZZFirstSubcolumn(X_ZZAnnexure.ZZFIRSTSUBCOLUMN_RequestedProgramme);
-			annexure.setZZSecondSubcolumn(X_ZZAnnexure.ZZSECONDSUBCOLUMN_NumberOfManagers);
-			
-			annexures.add(annexure);
-			
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE G (Applicable to TVET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "Number of TVET students requiring Work Integrated Learning to complete their work integrated learning placements (WIL)");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
-			
-			annexure.setZZFirstSubcolumn(X_ZZAnnexure.ZZFIRSTSUBCOLUMN_FieldOfStudy);
-			annexure.setZZSecondSubcolumn(X_ZZAnnexure.ZZSECONDSUBCOLUMN_NumberOfLearnersAppliedFor);
-			
-			annexures.add(annexure);
-			
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE H (Applicable to TVET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "TVET Lecturers to be awarded bursaries to further their studies");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
+			annexureInfos.add(annexure);
 
-			annexures.add(annexure);
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE F  (Applicable to TVET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Number of beneficiaries applying for"),
+							ColumnInfo.getColPositiveNumber("Programme Applying For")
+							), 
+					"TVET Managers receiving training on curriculum related studies");
+			
+			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(null, 
+					List.of(ColumnInfo.getColPositiveNumber("Requested Programme"),
+							ColumnInfo.getColPositiveNumber("Number of managers")
+							));
+			annexure.setSubAnnexure(subAnnexure);
+			
+			annexureInfos.add(annexure);
 			
 			
-			annexure = new MAnnexure(Env.getCtx(), 0, null);
-			annexure.setZZHeader("ANNEXURE I (Applicable to TVET Colleges)");
-			annexure.setTitle("Name of the Intervention:");
-			annexure.set_Attribute(COL_NAME_titleHeaderText, "Lecturers exposed to industry through skills programmes");
-			annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_NumberOfBeneficiariesApplyingFor);
-			annexure.setZZSecond(X_ZZAnnexure.ZZSECOND_ProgrammeApplyingFor);
-			annexure.set_Attribute(COL_NAME_customizeDetaileTemplate, true);
-			annexures.add(annexure);
-			*/
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE G (Applicable to TVET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Total Number of beneficiaries applying for")
+							), 
+					"Number of TVET students requiring Work Integrated Learning to complete their work integrated learning placements (WIL)");
+			
+			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine("Please supply the list of possible fields of study for this WIL", 
+					List.of(ColumnInfo.getColPositiveNumber("Field of Study:"),
+							ColumnInfo.getColPositiveNumber("Number of learners applied for:")
+							));
+			annexure.setSubAnnexure(subAnnexure);
+			
+			annexureInfos.add(annexure);
+			
+			
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE H (Applicable to TVET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Total Number of beneficiaries applying for")
+							), 
+					"TVET Lecturers to be awarded bursaries to further their studies");
+			
+			annexureInfos.add(annexure);
+			
+			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE I (Applicable to TVET Colleges)", 
+					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+							ColumnInfo.getColPositiveNumber("Total Number of beneficiaries applying for"),
+							ColumnInfo.getColPositiveNumber("Programme Applied for")
+							), 
+					"Lecturers exposed to industry through skills programmes");
+			
+			annexureInfos.add(annexure);
+		
+		}else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS) {
 			List<Object> rObjs = MasterUtil.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
 					menuContextInfo.getProgramType(), X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
 			
 			tradeInfo = (List<LearnerInputInfo>)rObjs.get(0);
 			if (tradeInfo != null) {
-				annexure = new MAnnexure(Env.getCtx(), 0, null);
-				annexure.setZZHeader("TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION");
-				annexure.setTitle("Name of the Intervention:");
-				annexure.set_Attribute(COL_NAME_titleHeaderText, "TVETtvet unemployed bursars support funding application");
-				annexure.setZZFirst(X_ZZAnnexure.ZZFIRST_TotalNumberOfBeneficiariesApplyingFor);
-
-				annexure.setZZFirstSubcolumn(X_ZZAnnexure.ZZFIRSTSUBCOLUMN_FieldOfStudy);
-				annexure.setZZSecondSubcolumn(X_ZZAnnexure.ZZSECONDSUBCOLUMN_NumberOfLearners);
-				annexure.set_Attribute(ATTSUBAnnexureCustomize, SUBAnnexure_TradeBeneficiaries);
-				annexures.add(annexure);
+				annexure = AnnexureInfo.getAnnexureInfoOneLine("TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION", 
+						List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+								ColumnInfo.getColPositiveNumber("Total Number of beneficiaries applying for")
+								), 
+						"TVETtvet unemployed bursars support funding application");
+				
+				subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(null, 
+						List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
+								ColumnInfo.getColPositiveNumber("Number of learners")
+								));
+				annexure.setSubAnnexure(subAnnexure);
+				
+				annexureInfos.add(annexure);
 			}
 		}
 		
-		addressInfo = new AddressInfoBase(menuContextInfo.getProgramType(), false, null);
+		addressInfo = new AddressInfo(menuContextInfo.getProgramType(), false, null);
 	}
 
 	public MenuContextInfo getMenuContextInfo() {
@@ -165,19 +178,25 @@ public class ProgramCetTvetInfo {
 		this.menuContextInfo = menuContextInfo;
 	}
 
-	public List<MAnnexure> getAnnexures() {
-		return annexures;
-	}
-
-	public void setAnnexures(List<MAnnexure> annexures) {
-		this.annexures = annexures;
-	}
-
-	public AddressInfoBase getAddressInfo() {
+	public AddressInfo getAddressInfo() {
 		return addressInfo;
 	}
 
-	public void setAddressInfo(AddressInfoBase addressInfoBase) {
-		this.addressInfo = addressInfoBase;
+	public void setAddressInfo(AddressInfo addressInfo) {
+		this.addressInfo = addressInfo;
+	}
+
+	/**
+	 * @return the annexureInfos
+	 */
+	public List<AnnexureInfo> getAnnexureInfos() {
+		return annexureInfos;
+	}
+
+	/**
+	 * @param annexureInfos the annexureInfos to set
+	 */
+	public void setAnnexureInfos(List<AnnexureInfo> annexureInfos) {
+		this.annexureInfos = annexureInfos;
 	}
 }
