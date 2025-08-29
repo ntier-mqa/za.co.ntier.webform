@@ -24,22 +24,24 @@
 	
 		<label sclass="sectionHeaderTitle"
 				value="Please complete the compulsory fields (*) below." />
-		<div sclass="container-fluid">
-			<div class="row	 font-weight-bold">
-				<div sclass="col-sm-5 col-title d-flex align-items-center">
+				
+		<div sclass="grid-table grid-table-auto-2">
+			
+				<div sclass="grid-cell">
 					<label
 						value="Number of learners applying for Management and
 	Executive Development Programme (MEDP" />
 				</div>
 				<div
-					sclass="col-sm-2 col-content-input-full  d-flex align-items-center">
+					sclass="grid-cell">
 					<textbox
 						value="@bind(vmDevProgram.devProgramInfo.noOfLearners)"
 						sclass="form-control" />
 				</div>
 	
-			</div>
+			
 		</div>
+		
 		<hlayout>
 			<label sclass="sectionHeader" value="Note:" />
 			<label
