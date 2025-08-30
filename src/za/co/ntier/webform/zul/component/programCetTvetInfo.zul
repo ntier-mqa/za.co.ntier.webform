@@ -53,6 +53,34 @@
 									<intbox value="@bind(row[detailCol])"
 										constraint="no negative" />
 								</nodom>
+								<nodom
+									if="${detailCol.dataType == DataType.TwoValues}">
+									
+									<div style="display: flex;flex-direction: column; width:100%;">
+										<div style="height:50%; border-bottom: black solid 1px; padding-top: 5px; padding-bottom: 10px;">
+											<intbox value="@bind(row[detailCol][0])"
+												constraint="no negative" />
+											
+										</div>
+										<div style="height:50%; padding-top: 10px; padding-bottom: 5px;">
+											<intbox value="@bind(row[detailCol][1])"
+												constraint="no negative" />
+											
+										</div>
+									</div>
+								</nodom>
+								<nodom
+									if="${detailCol.dataType == DataType.TwoTitles}">
+									
+									<div style="display: flex;flex-direction: column; width:100%;">
+										<div style="height:50%; border-bottom: black solid 1px; padding-top: 5px; padding-bottom: 10px;">
+											<label value="@init(row[detailCol][0])" />
+										</div>
+										<div style="height:50%; padding-top: 10px; padding-bottom: 5px;">
+											<label value="@init(row[detailCol][1])" />
+										</div>
+									</div>
+								</nodom>
 							</div>
 						</template>
 					</nodom>

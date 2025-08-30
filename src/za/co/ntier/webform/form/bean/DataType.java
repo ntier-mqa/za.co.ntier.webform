@@ -5,5 +5,7 @@ public enum DataType {
 	Label,
 	Text,
 	Date,
-	List
+	List,
+	TwoValues,
+	TwoTitles
 }

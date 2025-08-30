@@ -1,6 +1,7 @@
 package za.co.ntier.webform.form.bean;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 public class ColumnInfo<T> {
 	private String title;
@@ -59,6 +60,15 @@ public class ColumnInfo<T> {
 		return col;
 	}
 	
+	public static ColumnInfo<Entry<Integer, Integer>> getColTwoValue(String title) {
+		return new ColumnInfo<Entry<Integer, Integer>>(title, DataType.TwoValues);
+		
+	}
+	
+	public static ColumnInfo<Entry<String, String>> getColTwoTitle(String title) {
+		return new ColumnInfo<Entry<String, String>>(title, DataType.TwoTitles);
+		
+	}
 	
 	/**
 	 * @return the dataProvider

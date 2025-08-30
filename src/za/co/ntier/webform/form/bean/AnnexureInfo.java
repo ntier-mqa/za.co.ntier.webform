@@ -1,9 +1,11 @@
 package za.co.ntier.webform.form.bean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.adempiere.exceptions.AdempiereException;
 import org.zkoss.bind.BindUtils;
 
@@ -77,7 +79,7 @@ public class AnnexureInfo {
 	 * @return
 	 */
 	public static AnnexureInfo getAnnexureInfoOneLine(String header, List<ColumnInfo<?>> columnInfos) {
-		return AnnexureInfo.getAnnexureInfoOneLine(header, columnInfos, null, true);
+		return AnnexureInfo.getAnnexureInfoOneLine(header, columnInfos, null, true, null);
 	}
 	
 	/**
@@ -88,39 +90,51 @@ public class AnnexureInfo {
 	 * @return
 	 */
 	public static AnnexureInfo getAnnexureInfoOneLine(String header, List<ColumnInfo<?>> columnInfos, String rowTitle) {
-		return AnnexureInfo.getAnnexureInfoOneLine(header, columnInfos, rowTitle, false);
+		return AnnexureInfo.getAnnexureInfoOneLine(header, columnInfos, rowTitle, false, null);
 	}
 	
-	public void addDetailRow() {
+	public static Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
+		return AnnexureInfo.createDetailRow(columnInfos, null, null);
+	}
+	
+	public static Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos, String rowTitle, List<String> twoTitleValue) {
 		Map<ColumnInfo<?>, Object> newRow = new HashMap<>();
+		
 		for (ColumnInfo<?> columnInfo : columnInfos) {
-			newRow.put(columnInfo, null);
+			if (columnInfo.getDataType() == DataType.Label && rowTitle != null) {
+				newRow.put(columnInfo, rowTitle);
+			}else if (columnInfo.getDataType() == DataType.TwoTitles) {
+				if (twoTitleValue == null) {
+					twoTitleValue = Arrays.asList(null, null);
+				}
+				newRow.put(columnInfo, twoTitleValue);
+			}else if (columnInfo.getDataType() == DataType.TwoValues) {
+				List<Integer> values = Arrays.asList(null, null);
+				newRow.put(columnInfo, values);
+			}else {
+				newRow.put(columnInfo, null);
+			}
 		}
 		
-		rows.add(newRow);
+		return newRow;
 	}
 	
-	public static AnnexureInfo getAnnexureInfoOneLine(String header, List<ColumnInfo<?>> columnInfos, String rowTitle, boolean isShowTotal) {
+	public static AnnexureInfo getAnnexureInfoOneLine(String header, List<ColumnInfo<?>> columnInfos, String rowTitle, 
+			List<String> twoTitleValue) {
+		return getAnnexureInfoOneLine(header, columnInfos, rowTitle, false, twoTitleValue);
+	}
+	
+	public static AnnexureInfo getAnnexureInfoOneLine(String header, List<ColumnInfo<?>> columnInfos, String rowTitle, boolean isShowTotal, List<String> twoTitleValue) {
 		AnnexureInfo annexureInfo = new AnnexureInfo();
 		annexureInfo.setShowTotal(isShowTotal);
 		annexureInfo.setHeader(header);
 		annexureInfo.setColumnInfos(columnInfos);
-		Map<ColumnInfo<?>, Object> fistRow = new HashMap<>();
+		
 		List<Map<ColumnInfo<?>, Object>> rows = new ArrayList<>();
-		rows.add(fistRow);
-		
-		for (ColumnInfo<?> columnInfo : columnInfos) {
-			if (columnInfo.getDataType() == DataType.Label && rowTitle != null) {
-				if (columnInfos.indexOf(columnInfo) != 0) {
-					throw new AdempiereException("Moment row title need to ad first column");
-				}
-				fistRow.put(columnInfo, rowTitle);
-			}else {
-				fistRow.put(columnInfo, null);
-			}
-		}
-		
 		annexureInfo.setRows(rows);
+		
+		Map<ColumnInfo<?>, Object> fistRow = AnnexureInfo.createDetailRow(columnInfos, rowTitle, twoTitleValue);
+		rows.add(fistRow);
 		
 		if (isShowTotal) {
 			Map<ColumnInfo<?>, Object> totalRow = new HashMap<>();
@@ -181,7 +195,7 @@ public class AnnexureInfo {
 	}
 	
 	public void addRow(){
-		this.addDetailRow();
+		createDetailRow(getColumnInfos());
 		BindUtils.postNotifyChange(this, "rows");
 	}
 }

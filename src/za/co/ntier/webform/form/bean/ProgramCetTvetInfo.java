@@ -136,12 +136,13 @@ public class ProgramCetTvetInfo {
 			
 			annexureInfos.add(annexure);
 			
+			List<String> twoTitleFirstRow = List.of("Occupational Health and Safety", "Other, specify");
 			annexure = AnnexureInfo.getAnnexureInfoOneLine("ANNEXURE I (Applicable to TVET Colleges)", 
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber("Total Number of beneficiaries applying for"),
-							ColumnInfo.getColPositiveNumber("Programme Applied for")
+							ColumnInfo.getColTwoValue("Total Number of beneficiaries applying for"),
+							ColumnInfo.getColTwoTitle("Programme Applied for")
 							), 
-					"Lecturers exposed to industry through skills programmes");
+					"Lecturers exposed to industry through skills programmes", twoTitleFirstRow);
 			
 			annexureInfos.add(annexure);
 		
