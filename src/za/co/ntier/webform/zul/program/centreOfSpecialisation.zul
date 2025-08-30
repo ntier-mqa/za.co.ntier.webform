@@ -49,5 +49,13 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
                 </div>
             
 		</div>
+		
+		<include
+			learnerInputTableInfo="@load(vmCentreOfSpecialisation.centreOfSpecialisation.tradeTableInfo)"
+			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
+			
+		<include 
+			learnerInputTableInfo="@load(vmCentreOfSpecialisation.centreOfSpecialisation.totalNumTableInfo)"
+			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
 	</div>
 </zk>

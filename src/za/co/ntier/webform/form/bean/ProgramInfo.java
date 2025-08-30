@@ -69,9 +69,9 @@ public class ProgramInfo {
 		}else if (programType == ProgramType.ARTISAN_AIDES) {
 			this.artisanAidesInfo =  new ArtisanAidesProgram();
 		}else if (programType == ProgramType.ARTISAN_DEV) {
-			this.artisanDevInfo = new ArtisanDevProgram();
+			this.artisanDevInfo = new ArtisanDevProgram(menuContextInfo);
 		}else if (programType == ProgramType.CENTRE_SPECIALISATION) {
-			this.setcentreOfSpecialisationInfo(new CentreOfSpecialisationProgram());
+			this.setcentreOfSpecialisationInfo(new CentreOfSpecialisationProgram(menuContextInfo));
 		}else if (programType == ProgramType.ARTISAN_RPL) {
 			this.artisanRPLInfo = new ArtisanRPLProgram();
 		}else if (programType == ProgramType.NON_ARTISAN_DEV) {

@@ -114,8 +114,7 @@ public enum ProgramType {
 	}
 	
 	public boolean isShowTradeTable() {
-		return this == ProgramType.INTERNSHIP || this == ProgramType.ARTISAN_DEV || 
-				this == ProgramType.CENTRE_SPECIALISATION;
+		return this == ProgramType.INTERNSHIP;
 		
 	}
 	
