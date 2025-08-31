@@ -17,7 +17,7 @@
 		<template name="children" var="annexure">
 			<hlayout sclass="sectionHeader">
 				<label sclass="sectionHeaderTitle"
-					value="@init(annexure.header)" />
+					value="@init(annexure.sectionHeader)" />
 			</hlayout>
 
 
@@ -115,8 +115,8 @@
 			<nodom if="${annexure.subAnnexure ne null}">
 
 	
-				<label if="${annexure.subAnnexure.header ne null}" sclass=""
-					value="@init(annexure.subAnnexure.header)" />
+				<label if="${annexure.subAnnexure.sectionHeader ne null}" sclass=""
+					value="@init(annexure.subAnnexure.sectionHeader)" />
 
 
 				<div
@@ -176,7 +176,8 @@
 
 						<!-- total fix me -->
 
-						<nodom children="@bind(annexure.subAnnexure.columnInfos)">
+						<nodom children="@bind(annexure.subAnnexure.columnInfos)"
+						if = "${rowStatus.last}">>
 							<template name="children" var="totalCol">
 								<div sclass="grid-cell grid-sub-footer grid-footer-cell"
 									visible="@load((annexure.subAnnexure.isShowTotal() and rowStatus.last))">

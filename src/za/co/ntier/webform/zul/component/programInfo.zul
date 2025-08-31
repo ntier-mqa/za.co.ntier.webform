@@ -84,5 +84,10 @@
 		if="${vmProgramInfo.programInfo.programType.isShowTradeTable()}"
 		learnerInputTableInfo="@load(vmProgramInfo.programInfo.tradeTableInfo)"
 		src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
+		
+	<include
+		if="${vmProgramInfo.programInfo.programType.isShowTradeTable()}"
+		annexureInfo="@load(vmProgramInfo.programInfo.tradeInfo)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 </div>

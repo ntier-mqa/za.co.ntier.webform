@@ -6,14 +6,11 @@ import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.event.SelectEvent;
 
 import za.co.ntier.webform.form.bean.AnnexureInfo;
 import za.co.ntier.webform.form.bean.ColumnInfo;
 import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
-import za.co.ntier.webform.form.bean.SubAnnexure;
 
 public class ProgramCetTvetInfoVMWrapper {
 	private ProgramCetTvetInfo programCetTvetInfo;
@@ -38,21 +35,6 @@ public class ProgramCetTvetInfoVMWrapper {
 
 	public void setAddSubLineLabel(String addSubLineLabel) {
 		this.addSubLineLabel = addSubLineLabel;
-	}
-	
-	@Command
-	public void subAnnexureTradeSelection ( 
-			@BindingParam("subAnnexure") SubAnnexure subAnnexure,
-			@ContextParam (ContextType.TRIGGER_EVENT) SelectEvent<Component, Object> event){
-		
-		/*Iterator<Object> iSelectedObj = event.getSelectedObjects().iterator();
-		if (iSelectedObj.hasNext()) {
-			subAnnexure.setSelectedItem(iSelectedObj.next());
-		}else {
-			subAnnexure.setSelectedItem(null);
-		}*/
-		
-		
 	}
 	
 	@Command

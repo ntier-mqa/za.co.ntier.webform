@@ -1,66 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.DataType ?>
+<?import org.adempiere.webui.AdempiereWebUI ?>
 
-<div
+<nodom
 	viewModel="@id('vmAnnexure') @init('za.co.ntier.webform.form.viewmodel.AnnexureTableVMWrapper')">
-	
-	
+
 	<div
-			sclass="@init(('grid-table grid-table-' += vmAnnexure.annexureInfo.columnInfos.size() ))"
-				children="@bind(vmAnnexure.annexureInfo.rows)">
-				<template name="children" var="row">
-					<!-- header -->
-					<nodom if="${rowStatus.first}">
-						<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
-							<template name="children" var="titleCol">
-								<div sclass="grid-cell grid-header-cell">
-									<label value="@init(titleCol.title)" />
-								</div>
-							</template>
+		sclass="@init(('grid-table grid-table-' += vmAnnexure.annexureInfo.columnInfos.size() ))"
+		children="@bind(vmAnnexure.annexureInfo.rows)">
+		<template name="children" var="row">
+			<!-- header -->
+			<nodom if="${rowStatus.first}">
+				<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
+					<template name="children" var="titleCol">
+						<div sclass="grid-cell grid-header-cell">
+							<label value="@init(titleCol.title)" />
+						</div>
+					</template>
+				</nodom>
+			</nodom>
+
+			<!-- detail -->
+			<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
+				<template name="children" var="detailCol">
+					<div
+						sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.annexureInfo.columnInfos.size() ))">
+						<nodom if="${detailCol.dataType == DataType.Label}">
+							<label value="@init(row[detailCol])" />
 						</nodom>
-					</nodom>
+						<nodom if="${detailCol.dataType == DataType.Text}">
+							<textbox value="@bind(row[detailCol])" />
+						</nodom>
+						<nodom if="${detailCol.dataType == DataType.PositiveNumber}">
+							<intbox value="@bind(row[detailCol])"
+								constraint="no negative" 
+								onChange="@command('numChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )"/>
+						</nodom>
+						<nodom if="${detailCol.dataType == DataType.TwoValues}">
 
-					<!-- detail -->
-					<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
-						<template name="children" var="detailCol">
 							<div
-								sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.annexureInfo.columnInfos.size() ))">
-								<nodom if="${detailCol.dataType == DataType.Label}">
-									<label value="@init(row.get(detailCol))" />
-								</nodom>
-								<nodom if="${detailCol.dataType == DataType.Text}">
-									<textbox value="@bind(row.get(detailCol))" />
-								</nodom>
-								<nodom
-									if="${detailCol.dataType == DataType.PositiveNumber}">
-									<intbox value="@bind(row.get(detailCol))"
+								style="display: flex;flex-direction: column; width:100%;">
+								<div
+									style="height:50%; border-bottom: black solid 1px; padding-top: 5px; padding-bottom: 10px;">
+									<intbox value="@bind(row[detailCol][0])"
 										constraint="no negative" />
-								</nodom>
+
+								</div>
+								<div
+									style="height:50%; padding-top: 10px; padding-bottom: 5px;">
+									<intbox value="@bind(row[detailCol][1])"
+										constraint="no negative" />
+
+								</div>
 							</div>
-						</template>
-					</nodom>
+						</nodom>
+						<nodom if="${detailCol.dataType == DataType.TwoTitles}">
 
-
-					<!-- total fix me -->
-					
-					<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
-						<template name="children" var="totalCol">
-							<div sclass="grid-cell grid-footer-cell"
-								visible="@load((vmAnnexure.annexureInfo.showTotal and rowStatus.last))">
-								<nodom if="${totalCol.dataType == DataType.Label}">
-									<label value="@init(annexure.totalRow.get(totalCol))" />
-								</nodom>
-
-								<nodom
-									if="${totalCol.dataType == DataType.PositiveNumber}">
-									<label value="@load(annexure.totalRow.get(totalCol))" />
-								</nodom>
-
+							<div
+								style="display: flex;flex-direction: column; width:100%;">
+								<div
+									style="height:50%; border-bottom: black solid 1px; padding-top: 5px; padding-bottom: 10px;">
+									<label value="@init(row[detailCol][0])" />
+								</div>
+								<div
+									style="height:50%; padding-top: 10px; padding-bottom: 5px;">
+									<label value="@init(row[detailCol][1])" />
+								</div>
 							</div>
-						</template>
-					</nodom>
+						</nodom>
 
-				</template>
+						<nodom if="${detailCol.dataType == DataType.List}">
 
+							<listbox mold="select"
+								model="@load(detailCol.dataProvider)"
+								selectedItem="@bind(row[detailCol])">
+								<template name="model" var="item">
+									<listitem label="@load(item.learnerInputText)" />
+								</template>
+							</listbox>
 
-			</div>
+						</nodom>
+						<nodom if="${detailCol.dataType == DataType.Area}">
+
+							<listbox mold="select"
+								model="@load(detailCol.dataProvider)"
+								selectedItem="@bind(row[detailCol])">
+								<template name="model" var="item">
+									<listitem label="@load(item.name)" />
+								</template>
+							</listbox>
+
+						</nodom>
+
+						<nodom if="${detailCol.dataType == DataType.FileUpload}">
+							<div style="display: flex;flex-direction: column; width:100%;">
+
+							<fileupload sclass="text-wrap w-100"
+								iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
+								label="@load(detailCol.btText)"
+								onUpload="@command('uploadFile', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol)" 
+								upload = "@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))"/>
+							<label value="@load(row[detailCol].fileName)" />
 </div>
+
+						</nodom>
+
+					</div>
+				</template>
+			</nodom>
+
+
+			<!-- total fix me -->
+
+			<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)"
+				if="${vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last}">
+				<template name="children" var="totalCol">
+					<div sclass="grid-cell grid-footer-cell"
+						visible="@load((vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last))">
+						<nodom if="${totalCol.dataType == DataType.Label}">
+							<label
+								value="@init(vmAnnexure.annexureInfo.totalRow[totalCol])" />
+						</nodom>
+
+						<nodom if="${totalCol.dataType == DataType.PositiveNumber}">
+							<label
+								value="@load(vmAnnexure.annexureInfo.totalRow[totalCol])" />
+						</nodom>
+
+					</div>
+				</template>
+			</nodom>
+
+		</template>
+
+
+	</div>
+</nodom>

@@ -1,6 +1,8 @@
 package za.co.ntier.webform.form.bean;
 
 
+import java.lang.reflect.InvocationTargetException;
+
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.program.AETProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
@@ -37,6 +39,8 @@ public class ProgramInfo {
 	private MenuContextInfo menuContextInfo;
 	private ProgramType programType;
 	
+	private AnnexureInfo tradeInfo;
+	
 	/**
 	 * @return the programType
 	 */
@@ -51,7 +55,7 @@ public class ProgramInfo {
 		this.programType = programType;
 	}
 
-	public ProgramInfo(MenuContextInfo menuContextInfo) {
+	public ProgramInfo(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this.menuContextInfo = menuContextInfo;
 		programType = menuContextInfo.getProgramType();
 		int programMasterDataID = menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID();
@@ -88,8 +92,11 @@ public class ProgramInfo {
 			this.inhouseTrainingInfo = new InhouseTrainingProgram();
 		}
 		
-		if (programType.isShowTradeTable())
+		if (programType.isShowTradeTable()) {
 			tradeTableInfo = TradeDisciplineInputTableInfo.getTrade (programMasterDataID, programType);
+			setTradeInfo(LearnerInput.getTrade(programMasterDataID, programType));
+					
+		}
 		
 		// discipline table info
 		if (programType.isShowDisciplineTable()) {
@@ -337,5 +344,20 @@ public class ProgramInfo {
 	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
 	}
+
+	/**
+	 * @return the tradeInfo
+	 */
+	public AnnexureInfo getTradeInfo() {
+		return tradeInfo;
+	}
+
+	/**
+	 * @param tradeInfo the tradeInfo to set
+	 */
+	public void setTradeInfo(AnnexureInfo tradeInfo) {
+		this.tradeInfo = tradeInfo;
+	}
+
 
 }

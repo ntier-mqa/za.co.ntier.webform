@@ -1,6 +1,7 @@
 package za.co.ntier.webform.form.viewmodel;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -92,7 +93,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	@Init
-	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo) {
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		setMenuContextInfo(menuContextInfo);
 		programType = menuContextInfo.getProgramType();

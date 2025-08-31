@@ -7,5 +7,7 @@ public enum DataType {
 	Date,
 	List,
 	TwoValues,
-	TwoTitles
+	TwoTitles,
+	FileUpload,
+	Area,
 }

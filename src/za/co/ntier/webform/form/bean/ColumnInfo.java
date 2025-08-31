@@ -7,6 +7,7 @@ public class ColumnInfo<T> {
 	private String title;
 	private DataType dataType;
 	private List<T> dataProvider;
+	private String btText;
 	
 	/**
 	 * @return the title
@@ -70,6 +71,20 @@ public class ColumnInfo<T> {
 		
 	}
 	
+	public static <T> ColumnInfo<T> getColFileUpload(String title, String btText) {
+		ColumnInfo<T> colInfo = new ColumnInfo<T>(title, DataType.FileUpload);
+		colInfo.setBtText(btText);
+		return colInfo;
+		
+	}
+	
+	public static <T> ColumnInfo<T> getColArea(String title) {
+		ColumnInfo<T> colInfo = new ColumnInfo<T>(title, DataType.Area);
+		
+		return colInfo;
+		
+	}
+	
 	/**
 	 * @return the dataProvider
 	 */
@@ -81,5 +96,17 @@ public class ColumnInfo<T> {
 	 */
 	public void setDataProvider(List<T> dataProvider) {
 		this.dataProvider = dataProvider;
+	}
+	/**
+	 * @return the btText
+	 */
+	public String getBtText() {
+		return btText;
+	}
+	/**
+	 * @param btText the btText to set
+	 */
+	public void setBtText(String btText) {
+		this.btText = btText;
 	}
 }

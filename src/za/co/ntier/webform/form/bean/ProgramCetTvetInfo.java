@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.bean;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class ProgramCetTvetInfo {
 	}
 
 	@SuppressWarnings("unchecked")
-	public ProgramCetTvetInfo(MenuContextInfo menuContextInfo) {
+	public ProgramCetTvetInfo(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this.setMenuContextInfo(menuContextInfo);
 		
 		annexureInfos = new ArrayList<>();
