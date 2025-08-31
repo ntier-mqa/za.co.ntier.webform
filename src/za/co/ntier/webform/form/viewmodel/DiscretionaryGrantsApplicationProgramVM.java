@@ -21,6 +21,7 @@ import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.program.CandidacyProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
+import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.bean.AddressInfo;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.LearnerInputInfo;
@@ -36,6 +37,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private ProgramInfo programInfo;
 	private InternshipProgram internship;
 	private CandidacyProgram candidacy;
+	private WorkExperienceProgram workExperience;
 	
 	private OrganisationInfo organisationInfo;
 
@@ -111,6 +113,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			internship = new InternshipProgram(menuContextInfo);
 		}else if (ProgramType.CANDIDACY == programType) {
 			setCandidacy(new CandidacyProgram(menuContextInfo));
+		}else if (ProgramType.EXPERIENCE == programType) {
+			setWorkExperience(new WorkExperienceProgram(menuContextInfo));
 		}else {
 			programInfo = new ProgramInfo(menuContextInfo);
 		}
@@ -389,5 +393,19 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setCandidacy(CandidacyProgram candidacy) {
 		this.candidacy = candidacy;
+	}
+
+	/**
+	 * @return the workExperience
+	 */
+	public WorkExperienceProgram getWorkExperience() {
+		return workExperience;
+	}
+
+	/**
+	 * @param workExperience the workExperience to set
+	 */
+	public void setWorkExperience(WorkExperienceProgram workExperience) {
+		this.workExperience = workExperience;
 	}
 }

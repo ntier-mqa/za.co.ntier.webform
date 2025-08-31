@@ -11,7 +11,7 @@ public class CandidacyProgram {
 	public CandidacyProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		this.setDisciplines(LearnerInput.getDisciplines(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
-				menuContextInfo.getProgramType(),
+				
 				"""
 				List of disciplines supported for Internships which the number of learners applying should
 be based on.

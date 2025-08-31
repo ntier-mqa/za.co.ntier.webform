@@ -149,7 +149,7 @@ public class ProgramCetTvetInfo {
 		
 		}else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS) {
 			List<Object> rObjs = MasterUtil.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
-					menuContextInfo.getProgramType(), X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
+					 X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
 			
 			tradeInfo = (List<LearnerInputInfo>)rObjs.get(0);
 			if (tradeInfo != null) {

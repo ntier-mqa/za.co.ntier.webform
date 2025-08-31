@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<nodom
+	viewModel="@id('vmWorkExperience') @init('za.co.ntier.webform.form.viewmodel.program.WorkExperienceVMWrapper')">
+	
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="WORK EXPERIENCE AND VACATION WORK"/>
+	</hlayout>
+	
+	<label value="• VACATION WORK" />
+	
+	<div sclass="grid-table grid-table-auto-2">
+		<div sclass="grid-cell">
+			<label value="Number of learners applying for Vacation Work?" />
+		</div>
+		<div sclass="grid-cell">
+			<textbox
+                value="@bind(vmWorkExperience.program.noOfLearners)"/>
+		</div>
+	</div>
+	
+	<include
+		addressInfo="@load(vmWorkExperience.program.vacationContact)"
+		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />	
+	
+	<label value="• WORK EXPERIENCE (PRACTICAL TRAINING)" />	
+	<include
+		annexureInfo="@load(vmWorkExperience.program.disciplines)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />	
+</nodom>

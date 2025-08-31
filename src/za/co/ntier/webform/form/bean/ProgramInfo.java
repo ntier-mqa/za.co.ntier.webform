@@ -15,7 +15,7 @@ import za.co.ntier.webform.form.bean.program.NCVGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OHASSPProgram;
-import za.co.ntier.webform.form.bean.program.WorkProgram;
+import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 
 
 public class ProgramInfo {
@@ -23,7 +23,7 @@ public class ProgramInfo {
 	private LearnerInputTableInfo disciplineTableInfo;
 	
 	private LearnerInputTableInfo tradeTableInfo;
-	private WorkProgram workInfo;
+	private WorkExperienceProgram workInfo;
 	private DevProgramProgram devProgramInfo;
 	private AddressInfo vacationContact;
 	private ArtisanAidesProgram artisanAidesInfo;
@@ -68,8 +68,7 @@ public class ProgramInfo {
 		// extra program info
 		if (programType == ProgramType.DEV_PROGRAM) {
 			devProgramInfo = new DevProgramProgram();
-		} else if (programType == ProgramType.EXPERIENCE) {
-			workInfo = new WorkProgram();
+		
 		}else if (programType == ProgramType.ARTISAN_AIDES) {
 			this.artisanAidesInfo =  new ArtisanAidesProgram();
 		}else if (programType == ProgramType.ARTISAN_DEV) {
@@ -233,11 +232,11 @@ public class ProgramInfo {
 		this.tradeTableInfo = tradeTableInfo;
 	}
 
-	public WorkProgram getWorkInfo() {
+	public WorkExperienceProgram getWorkInfo() {
 		return workInfo;
 	}
 
-	public void setWorkInfo(WorkProgram workInfo) {
+	public void setWorkInfo(WorkExperienceProgram workInfo) {
 		this.workInfo = workInfo;
 	}
 

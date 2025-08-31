@@ -44,7 +44,7 @@ public abstract class LearnerInputTableInfo {
 		this.setProgramType(programType);
 		this.learnerInputType = learnerInputType;
 		
-		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, programType, learnerInputType);
+		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, learnerInputType);
 		learnerInputInfos = (List<LearnerInputInfo>)rObjs.get(0);
 		hasWPAReq = (boolean)rObjs.get(1);
 		hasAccred = (boolean)rObjs.get(2);

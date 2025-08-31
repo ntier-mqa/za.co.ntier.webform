@@ -78,7 +78,13 @@
 						<include
 							if="${vm.programType eq ProgramType.INTERNSHIP}"
 							program="@load(vm.internship)"
-							src="@load((WebForm.getBundleResourcePath('program/internship.zul')))" />				
+							src="@load((WebForm.getBundleResourcePath('program/internship.zul')))" />
+						
+						<include
+							if="${vm.programType eq ProgramType.EXPERIENCE}"
+							program="@load(vm.workExperience)"
+							src="@load((WebForm.getBundleResourcePath('program/workExperience.zul')))" />	
+											
 					</div>
 					<div sclass="formBottomPanel">
 		        		<button label="Prev" 

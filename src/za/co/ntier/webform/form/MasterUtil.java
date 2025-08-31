@@ -185,7 +185,6 @@ public class MasterUtil {
 	}
 	
 	public static List<Object> queryLearnerInputInfos(int programMasterDataID, 
-			ProgramType programType, 
 			String learnerInputType){
 		
 		String learnerInputProgramID;

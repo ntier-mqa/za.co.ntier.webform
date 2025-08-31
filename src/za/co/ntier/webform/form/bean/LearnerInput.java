@@ -15,17 +15,17 @@ public class LearnerInput extends AnnexureInfo {
 	
 	private String tableTitle;
 
-	public static LearnerInput getTrade(int programMasterDataID, ProgramType programType, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return LearnerInput.getTradeDiscipline(true, programMasterDataID, programType, tableTitle);
+	public static LearnerInput getTrade(int programMasterDataID, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return LearnerInput.getTradeDiscipline(true, programMasterDataID, tableTitle);
 	}
 	
-	public static LearnerInput getDisciplines(int programMasterDataID, ProgramType programType, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return LearnerInput.getTradeDiscipline(false, programMasterDataID, programType, tableTitle);
+	public static LearnerInput getDisciplines(int programMasterDataID, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return LearnerInput.getTradeDiscipline(false, programMasterDataID, tableTitle);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static LearnerInput getTradeDiscipline(boolean isTrade, int programMasterDataID, ProgramType programType, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, programType, isTrade?X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade:X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
+	private static LearnerInput getTradeDiscipline(boolean isTrade, int programMasterDataID, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, isTrade?X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade:X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
 		List<LearnerInputInfo> learnerInputInfos = (List<LearnerInputInfo>)rObjs.get(0);
 		boolean hasWPAReq = (boolean)rObjs.get(1);
 		boolean hasAccred = (boolean)rObjs.get(2);
