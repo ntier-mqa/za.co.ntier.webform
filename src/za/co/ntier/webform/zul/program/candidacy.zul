@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.program.InternshipProgram ?>
+<nodom
+	viewModel="@id('vmCandidacy') @init('za.co.ntier.webform.form.viewmodel.program.CandidacyVMWrapper')">
+	
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="CANDIDACY"/>
+	</hlayout>
+	
+	<include
+		annexureInfo="@load(vmCandidacy.program.disciplines)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+		
+</nodom>

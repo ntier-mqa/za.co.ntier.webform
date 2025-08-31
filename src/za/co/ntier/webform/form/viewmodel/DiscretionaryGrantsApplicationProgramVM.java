@@ -19,6 +19,7 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.program.CandidacyProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
 import za.co.ntier.webform.form.bean.AddressInfo;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
@@ -34,6 +35,8 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 public class DiscretionaryGrantsApplicationProgramVM {
 	private ProgramInfo programInfo;
 	private InternshipProgram internship;
+	private CandidacyProgram candidacy;
+	
 	private OrganisationInfo organisationInfo;
 
 	private FormInfo formInfo;
@@ -106,6 +109,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			setProgramCetTvetInfo(new ProgramCetTvetInfo(menuContextInfo));
 		}else if (ProgramType.INTERNSHIP == programType) {
 			internship = new InternshipProgram(menuContextInfo);
+		}else if (ProgramType.CANDIDACY == programType) {
+			setCandidacy(new CandidacyProgram(menuContextInfo));
 		}else {
 			programInfo = new ProgramInfo(menuContextInfo);
 		}
@@ -370,5 +375,19 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setInternship(InternshipProgram internship) {
 		this.internship = internship;
+	}
+
+	/**
+	 * @return the candidacy
+	 */
+	public CandidacyProgram getCandidacy() {
+		return candidacy;
+	}
+
+	/**
+	 * @param candidacy the candidacy to set
+	 */
+	public void setCandidacy(CandidacyProgram candidacy) {
+		this.candidacy = candidacy;
 	}
 }
