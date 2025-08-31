@@ -113,9 +113,4 @@ public enum ProgramType {
 				this != ProgramType.OHASSP;
 	}
 	
-	public boolean isShowTradeTable() {
-		return this == ProgramType.INTERNSHIP;
-		
-	}
-	
 }

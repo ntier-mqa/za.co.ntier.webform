@@ -19,6 +19,7 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.program.InternshipProgram;
 import za.co.ntier.webform.form.bean.AddressInfo;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.LearnerInputInfo;
@@ -32,7 +33,7 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class DiscretionaryGrantsApplicationProgramVM {
 	private ProgramInfo programInfo;
-
+	private InternshipProgram internship;
 	private OrganisationInfo organisationInfo;
 
 	private FormInfo formInfo;
@@ -103,6 +104,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		if (programType.isCetTvet()) {
 			setProgramCetTvetInfo(new ProgramCetTvetInfo(menuContextInfo));
+		}else if (ProgramType.INTERNSHIP == programType) {
+			internship = new InternshipProgram(menuContextInfo);
 		}else {
 			programInfo = new ProgramInfo(menuContextInfo);
 		}
@@ -170,11 +173,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		applicationForm.setZZ_HasWSPSubmited(organisationInfo.getOrgSizeInfo().isSubmittedWSP());
 		applicationForm.setZZ_HasPivotalPlanSubmited(organisationInfo.getOrgSizeInfo().isSubmittedPivotal());
 		
-		if (programType.isShowDisciplineTable())
-			applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalNoLearners());
+		//if (programType.isShowDisciplineTable())
+			//applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalNoLearners());
 		
-		if (programType.isShowTradeTable())
-			applicationForm.setZZ_TradeTotalLearners(programInfo.getTradeTableInfo().getTotalNoLearners());
+		//if (programType.isShowTradeTable())
+			//applicationForm.setZZ_TradeTotalLearners(programInfo.getTradeTableInfo().getTotalNoLearners());
 		
 		applicationForm.saveEx();
 		
@@ -198,8 +201,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (programType.isShowDisciplineTable())
 			createDiscipline(programInfo.getDisciplineTableInfo(), applicationForm.getZZ_Application_Form_ID());
 		
-		if (programType.isShowTradeTable())
-			createDiscipline(programInfo.getTradeTableInfo(), applicationForm.getZZ_Application_Form_ID());
+		//if (programType.isShowTradeTable())
+			//createDiscipline(programInfo.getTradeTableInfo(), applicationForm.getZZ_Application_Form_ID());
 		
 		recordId = applicationForm.getZZ_Application_Form_ID();
 		tableId = applicationForm.get_Table_ID();
@@ -353,5 +356,19 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setProgramContact(AddressInfo programContact) {
 		this.programContact = programContact;
+	}
+
+	/**
+	 * @return the internship
+	 */
+	public InternshipProgram getInternship() {
+		return internship;
+	}
+
+	/**
+	 * @param internship the internship to set
+	 */
+	public void setInternship(InternshipProgram internship) {
+		this.internship = internship;
 	}
 }

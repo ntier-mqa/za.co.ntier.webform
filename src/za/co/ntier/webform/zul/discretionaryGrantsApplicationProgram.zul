@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import za.co.ntier.webform.form.WebForm ?>
+<?import za.co.ntier.webform.form.bean.ProgramType ?>
+<?import za.co.ntier.webform.form.viewmodel.program.ProgramVMWrapper ?>
+
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <div sclass="test" style="height:100%" xmlns:n="native"
@@ -65,7 +68,12 @@
 						<include
 							if="${!vm.programType.isCetTvet()}"
 							programInfo="@load(vm.programInfo)"
-							src="@load((WebForm.getBundleResourcePath('component/programInfo.zul')))" />	
+							src="@load((WebForm.getBundleResourcePath('component/programInfo.zul')))" />
+						
+						<include
+							if="${vm.programType eq ProgramType.INTERNSHIP}"
+							program="@load(vm.internship)"
+							src="@load((WebForm.getBundleResourcePath('program/internship.zul')))" />		
 					</div>
 					<div sclass="formBottomPanel">
 		        		<button label="Prev" 

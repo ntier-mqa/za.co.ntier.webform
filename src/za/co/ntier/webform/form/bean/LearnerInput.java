@@ -12,25 +12,20 @@ import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class LearnerInput extends AnnexureInfo {
+	
 	private String tableTitle;
 
-	/**
-	 * @return the tableTitle
-	 */
-	public String getTableTitle() {
-		return tableTitle;
+	public static LearnerInput getTrade(int programMasterDataID, ProgramType programType, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return LearnerInput.getTradeDiscipline(true, programMasterDataID, programType, tableTitle);
 	}
-
-	/**
-	 * @param tableTitle the tableTitle to set
-	 */
-	public void setTableTitle(String tableTitle) {
-		this.tableTitle = tableTitle;
+	
+	public static LearnerInput getDisciplines(int programMasterDataID, ProgramType programType, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		return LearnerInput.getTradeDiscipline(false, programMasterDataID, programType, tableTitle);
 	}
-
+	
 	@SuppressWarnings("unchecked")
-	public static AnnexureInfo getTrade(int programMasterDataID, ProgramType programType) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, programType, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
+	private static LearnerInput getTradeDiscipline(boolean isTrade, int programMasterDataID, ProgramType programType, String tableTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, programType, isTrade?X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade:X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
 		List<LearnerInputInfo> learnerInputInfos = (List<LearnerInputInfo>)rObjs.get(0);
 		boolean hasWPAReq = (boolean)rObjs.get(1);
 		boolean hasAccred = (boolean)rObjs.get(2);
@@ -54,6 +49,7 @@ public class LearnerInput extends AnnexureInfo {
 		
 		LearnerInput learnerInput = AnnexureInfo.getAnnexureInfo(LearnerInput.class, 
 				columns, true);
+		learnerInput.setTableTitle(tableTitle);
 		
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
@@ -62,6 +58,20 @@ public class LearnerInput extends AnnexureInfo {
 			learnerInput.getRows().add(newRow);
 		}
 		return learnerInput;
+	}
+
+	/**
+	 * @return the tableTitle
+	 */
+	public String getTableTitle() {
+		return tableTitle;
+	}
+
+	/**
+	 * @param tableTitle the tableTitle to set
+	 */
+	public void setTableTitle(String tableTitle) {
+		this.tableTitle = tableTitle;
 	}
 
 	

@@ -5,6 +5,11 @@
 <nodom
 	viewModel="@id('vmAnnexure') @init('za.co.ntier.webform.form.viewmodel.AnnexureTableVMWrapper')">
 
+	<hlayout
+		if="${vmAnnexure.annexureInfo.tableTitle ne null}">
+		<label
+			value="@init(vmAnnexure.annexureInfo.tableTitle)" />
+	</hlayout>
 	<div
 		sclass="@init(('grid-table grid-table-' += vmAnnexure.annexureInfo.columnInfos.size() ))"
 		children="@bind(vmAnnexure.annexureInfo.rows)">

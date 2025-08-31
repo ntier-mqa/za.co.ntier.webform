@@ -92,12 +92,6 @@ public class ProgramInfo {
 			this.inhouseTrainingInfo = new InhouseTrainingProgram();
 		}
 		
-		if (programType.isShowTradeTable()) {
-			tradeTableInfo = TradeDisciplineInputTableInfo.getTrade (programMasterDataID, programType);
-			setTradeInfo(LearnerInput.getTrade(programMasterDataID, programType));
-					
-		}
-		
 		// discipline table info
 		if (programType.isShowDisciplineTable()) {
 			disciplineTableInfo = TradeDisciplineInputTableInfo.getDiscipline(programMasterDataID, programType);
