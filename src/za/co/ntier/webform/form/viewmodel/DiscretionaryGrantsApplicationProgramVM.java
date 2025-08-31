@@ -21,6 +21,7 @@ import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.program.CandidacyProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
+import za.co.ntier.webform.form.bean.program.MedpProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.bean.AddressInfo;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
@@ -38,6 +39,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private InternshipProgram internship;
 	private CandidacyProgram candidacy;
 	private WorkExperienceProgram workExperience;
+	private MedpProgram medp;
 	
 	private OrganisationInfo organisationInfo;
 
@@ -115,7 +117,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			setCandidacy(new CandidacyProgram(menuContextInfo));
 		}else if (ProgramType.EXPERIENCE == programType) {
 			setWorkExperience(new WorkExperienceProgram(menuContextInfo));
-		}else {
+		}else if (ProgramType.DEV_PROGRAM == programType) {
+			setMedp(new MedpProgram());
+		}
+		
+		else {
 			programInfo = new ProgramInfo(menuContextInfo);
 		}
 		
@@ -407,5 +413,19 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setWorkExperience(WorkExperienceProgram workExperience) {
 		this.workExperience = workExperience;
+	}
+
+	/**
+	 * @return the medp
+	 */
+	public MedpProgram getMedp() {
+		return medp;
+	}
+
+	/**
+	 * @param medp the medp to set
+	 */
+	public void setMedp(MedpProgram medp) {
+		this.medp = medp;
 	}
 }

@@ -1,6 +1,6 @@
 package za.co.ntier.webform.form.bean.program;
 
-public class DevProgramProgram {
+public class MedpProgram {
 	private int noOfLearners;
 
 	/**

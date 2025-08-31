@@ -9,7 +9,7 @@ import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanRPLProgram;
 import za.co.ntier.webform.form.bean.program.CentreOfSpecialisationProgram;
-import za.co.ntier.webform.form.bean.program.DevProgramProgram;
+import za.co.ntier.webform.form.bean.program.MedpProgram;
 import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
 import za.co.ntier.webform.form.bean.program.NCVGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
@@ -24,7 +24,7 @@ public class ProgramInfo {
 	
 	private LearnerInputTableInfo tradeTableInfo;
 	private WorkExperienceProgram workInfo;
-	private DevProgramProgram devProgramInfo;
+	private MedpProgram devProgramInfo;
 	private AddressInfo vacationContact;
 	private ArtisanAidesProgram artisanAidesInfo;
 	private ArtisanDevProgram artisanDevInfo;
@@ -67,7 +67,7 @@ public class ProgramInfo {
 		
 		// extra program info
 		if (programType == ProgramType.DEV_PROGRAM) {
-			devProgramInfo = new DevProgramProgram();
+			devProgramInfo = new MedpProgram();
 		
 		}else if (programType == ProgramType.ARTISAN_AIDES) {
 			this.artisanAidesInfo =  new ArtisanAidesProgram();
@@ -257,14 +257,14 @@ public class ProgramInfo {
 	/**
 	 * @return the devProgramInfo
 	 */
-	public DevProgramProgram getDevProgramInfo() {
+	public MedpProgram getDevProgramInfo() {
 		return devProgramInfo;
 	}
 
 	/**
 	 * @param devProgramInfo the devProgramInfo to set
 	 */
-	public void setDevProgramInfo(DevProgramProgram devProgramInfo) {
+	public void setDevProgramInfo(MedpProgram devProgramInfo) {
 		this.devProgramInfo = devProgramInfo;
 	}
 
