@@ -78,9 +78,9 @@ public class ColumnInfo<T> {
 		
 	}
 	
-	public static <T> ColumnInfo<T> getColArea(String title) {
+	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {
 		ColumnInfo<T> colInfo = new ColumnInfo<T>(title, DataType.Area);
-		
+		colInfo.setDataProvider(dataProvider);
 		return colInfo;
 		
 	}

@@ -19,6 +19,8 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
+import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.CandidacyProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
 import za.co.ntier.webform.form.bean.program.MedpProgram;
@@ -40,6 +42,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private CandidacyProgram candidacy;
 	private WorkExperienceProgram workExperience;
 	private MedpProgram medp;
+	
+	private ArtisanAidesProgram artisanAidesProgram;
+	private ArtisanDevProgram artisanDevProgram;
+	
 	
 	private OrganisationInfo organisationInfo;
 
@@ -92,6 +98,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	private ProgramCetTvetInfo programCetTvetInfo;
+	
 
 	/**
 	 * @return the programMasterDataID
@@ -119,8 +126,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			setWorkExperience(new WorkExperienceProgram(menuContextInfo));
 		}else if (ProgramType.DEV_PROGRAM == programType) {
 			setMedp(new MedpProgram());
+		}else if (ProgramType.ARTISAN_AIDES== programType) {
+			setArtisanAidesProgram(new ArtisanAidesProgram());
+		}else if (ProgramType.ARTISAN_DEV == programType) {
+			setArtisanDevProgram(new ArtisanDevProgram(menuContextInfo));
 		}
-		
 		else {
 			programInfo = new ProgramInfo(menuContextInfo);
 		}
@@ -427,5 +437,33 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setMedp(MedpProgram medp) {
 		this.medp = medp;
+	}
+
+	/**
+	 * @return the artisanAidesProgram
+	 */
+	public ArtisanAidesProgram getArtisanAidesProgram() {
+		return artisanAidesProgram;
+	}
+
+	/**
+	 * @param artisanAidesProgram the artisanAidesProgram to set
+	 */
+	public void setArtisanAidesProgram(ArtisanAidesProgram artisanAidesProgram) {
+		this.artisanAidesProgram = artisanAidesProgram;
+	}
+
+	/**
+	 * @return the artisanDevProgram
+	 */
+	public ArtisanDevProgram getArtisanDevProgram() {
+		return artisanDevProgram;
+	}
+
+	/**
+	 * @param artisanDevProgram the artisanDevProgram to set
+	 */
+	public void setArtisanDevProgram(ArtisanDevProgram artisanDevProgram) {
+		this.artisanDevProgram = artisanDevProgram;
 	}
 }

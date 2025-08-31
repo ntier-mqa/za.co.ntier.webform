@@ -1,38 +1,54 @@
 package za.co.ntier.webform.form.bean.program;
 
-import za.co.ntier.webform.form.bean.OneLineTableInfo;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.bean.AnnexureInfo;
+import za.co.ntier.webform.form.bean.ColumnInfo;
+import za.co.ntier.webform.form.bean.ProjectInput;
 
 public class ArtisanAidesProgram {
-	private OneLineTableInfo qualificationTableInfo;
-	private OneLineTableInfo skillTableInfo;
+	private AnnexureInfo qualification;
+	private AnnexureInfo skill;
 	
-	public ArtisanAidesProgram() {
-		this.qualificationTableInfo = OneLineTableInfo.createFullEmployedTableInfo();
-		this.skillTableInfo = OneLineTableInfo.createFullEmployedTableInfo();
+	
+	public ArtisanAidesProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		qualification = ProjectInput.getProject("QUALIFICATION",
+						List.of(ColumnInfo.getColPositiveNumber("No. of Employed Learners"),
+								ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"),
+								ColumnInfo.getColPositiveNumber("Total No. of Learners Applied For")));
+				
+		skill = ProjectInput.getProject("SKILLS PROGRAMME",
+				List.of(ColumnInfo.getColPositiveNumber("No. of Employed Learners"),
+						ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"),
+						ColumnInfo.getColPositiveNumber("Total No. of Learners Applied For")));
+		
+	}
+	
+	/**
+	 * @return the skill
+	 */
+	public AnnexureInfo getSkill() {
+		return skill;
 	}
 	/**
-	 * @return the qualificationTableInfo
+	 * @param skill the skill to set
 	 */
-	public OneLineTableInfo getQualificationTableInfo() {
-		return qualificationTableInfo;
+	public void setSkill(AnnexureInfo skill) {
+		this.skill = skill;
 	}
 	/**
-	 * @param qualificationTableInfo the qualificationTableInfo to set
+	 * @return the qualification
 	 */
-	public void setQualificationTableInfo(OneLineTableInfo qualificationTableInfo) {
-		this.qualificationTableInfo = qualificationTableInfo;
+	public AnnexureInfo getQualification() {
+		return qualification;
 	}
 	/**
-	 * @return the skillTableInfo
+	 * @param qualification the qualification to set
 	 */
-	public OneLineTableInfo getSkillTableInfo() {
-		return skillTableInfo;
-	}
-	/**
-	 * @param skillTableInfo the skillTableInfo to set
-	 */
-	public void setSkillTableInfo(OneLineTableInfo skillTableInfo) {
-		this.skillTableInfo = skillTableInfo;
+	public void setQualification(AnnexureInfo qualification) {
+		this.qualification = qualification;
 	}
 	
 		

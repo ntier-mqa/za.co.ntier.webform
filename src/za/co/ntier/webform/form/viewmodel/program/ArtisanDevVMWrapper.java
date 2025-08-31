@@ -1,29 +1,15 @@
 package za.co.ntier.webform.form.viewmodel.program;
 
-import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
 
-public class ArtisanDevVMWrapper {
-	private ArtisanDevProgram artisanDevInfo;
+/**
+ * If super has an init method but its ChildViewModel doesn't, you can add @Init(superclass=true) on the ChildViewModel to
+use super's init.
+ */
+@Init(superclass=true)
+public class ArtisanDevVMWrapper extends ProgramVMWrapper<ArtisanDevProgram> {
 
-	@Init
-	public void init(@ExecutionArgParam("artisanDevInfo") ArtisanDevProgram artisanDevInfo) {
-		this.setArtisanDevInfo(artisanDevInfo);
-	}
 
-	/**
-	 * @return the artisanDevInfo
-	 */
-	public ArtisanDevProgram getArtisanDevInfo() {
-		return artisanDevInfo;
-	}
-
-	/**
-	 * @param artisanDevInfo the artisanDevInfo to set
-	 */
-	public void setArtisanDevInfo(ArtisanDevProgram artisanDevInfo) {
-		this.artisanDevInfo = artisanDevInfo;
-	}
 }

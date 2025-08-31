@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-	<div
-		viewModel="@id('vmArtisanAides') @init('za.co.ntier.webform.form.viewmodel.program.ArtisanAidesVMWrapper')">
-		<div>
-			<label sclass="note" value="Note:"/><label
-				value="Artisan Aides is paid upon completion" />
-		</div>
-		<div sclass="subSectionHeader">
-			<label sclass="subSectionHeaderTitle"
-				value="QUALIFICATION" />
-				
-		</div>
-		<include 
-			learnerInputTableInfo="@load(vmArtisanAides.artisanAidesInfo.qualificationTableInfo)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
-		
-		<div sclass="subSectionHeader">
-			<label sclass="subSectionHeaderTitle"
-				value="SKILLS PROGRAMME" />
-				
-		</div>
-		<include 
-			learnerInputTableInfo="@load(vmArtisanAides.artisanAidesInfo.skillTableInfo)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmArtisanAides') @init('za.co.ntier.webform.form.viewmodel.program.ArtisanAidesVMWrapper')">
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="ARTISAN AIDES GRANT"/>
+	</hlayout>
+	
+	<div>
+		<label sclass="note" value="Note:" />
+		<label value="Artisan Aides is paid upon completion" />
 	</div>
-</zk>
+	
+	<div sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle" value="QUALIFICATION" />
+
+	</div>
+	<include
+		annexureInfo="@load(vmArtisanAides.program.qualification)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+
+	<div sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle" value="SKILLS PROGRAMME" />
+
+	</div>
+	<include
+		annexureInfo="@load(vmArtisanAides.program.skill)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+</nodom>

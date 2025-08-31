@@ -1,46 +1,54 @@
 package za.co.ntier.webform.form.bean.program;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.LearnerInputTableInfo;
-import za.co.ntier.webform.form.bean.OneLineTableInfo;
-import za.co.ntier.webform.form.bean.TradeDisciplineInputTableInfo;
+import za.co.ntier.webform.form.bean.AnnexureInfo;
+import za.co.ntier.webform.form.bean.ColumnInfo;
+import za.co.ntier.webform.form.bean.ProgramInput;
+import za.co.ntier.webform.form.bean.ProjectInput;
 
 public class ArtisanDevProgram {
-	private LearnerInputTableInfo tradeTableInfo;
-	
-	private OneLineTableInfo totalNumTableInfo;
+	private AnnexureInfo totalNumApplied;
 
-	/**
-	 * @return the tradeTableInfo
-	 */
-	public LearnerInputTableInfo getTradeTableInfo() {
-		return tradeTableInfo;
-	}
+	private ProgramInput trade;
 
-	/**
-	 * @param tradeTableInfo the tradeTableInfo to set
-	 */
-	public void setTradeTableInfo(LearnerInputTableInfo tradeTableInfo) {
-		this.tradeTableInfo = tradeTableInfo;
-	}
-	
-	public ArtisanDevProgram(MenuContextInfo menuContextInfo) {
-		tradeTableInfo = TradeDisciplineInputTableInfo.getTrade (menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), menuContextInfo.getProgramType());
-		totalNumTableInfo = OneLineTableInfo.createNoTotalApplyTableInfo();
+	public ArtisanDevProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		setTrade(ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), null));
+		
+		setTotalNumApplied(ProjectInput.getProject(
+				List.of(ColumnInfo.getColPositiveNumber("Total Number of Learners Applied For"))));
+
 	}
 
 	/**
-	 * @return the totalNumTableInfo
+	 * @return the totalNumApplied
 	 */
-	public OneLineTableInfo getTotalNumTableInfo() {
-		return totalNumTableInfo;
+	public AnnexureInfo getTotalNumApplied() {
+		return totalNumApplied;
 	}
 
 	/**
-	 * @param totalNumTableInfo the totalNumTableInfo to set
+	 * @return the trade
 	 */
-	public void setTotalNumTableInfo(OneLineTableInfo totalNumTableInfo) {
-		this.totalNumTableInfo = totalNumTableInfo;
+	public ProgramInput getTrade() {
+		return trade;
 	}
-	
+
+	/**
+	 * @param totalNumApplied the totalNumApplied to set
+	 */
+	public void setTotalNumApplied(AnnexureInfo totalNumApplied) {
+		this.totalNumApplied = totalNumApplied;
+	}
+
+	/**
+	 * @param trade the trade to set
+	 */
+	public void setTrade(ProgramInput trade) {
+		this.trade = trade;
+	}
+
 }

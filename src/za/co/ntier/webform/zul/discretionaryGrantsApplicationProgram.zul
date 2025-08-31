@@ -88,6 +88,16 @@
 							if="${vm.programType eq ProgramType.DEV_PROGRAM}"
 							program="@load(vm.medp)"
 							src="@load((WebForm.getBundleResourcePath('program/medp.zul')))" />	
+							
+						<!-- DGA_Form_Cluster 2 for 2025-2026 FY.pdf -->
+						<include
+							if="${vm.programType eq ProgramType.ARTISAN_AIDES}"
+							program="@load(vm.artisanAidesProgram)"
+							src="@load((WebForm.getBundleResourcePath('program/artisanAides.zul')))" />	
+						<include
+							if="${vm.programType eq ProgramType.ARTISAN_DEV}"
+							program="@load(vm.artisanDevProgram)"
+							src="@load((WebForm.getBundleResourcePath('program/artisanDev.zul')))" />	
 											
 					</div>
 					<div sclass="formBottomPanel">

@@ -3,14 +3,14 @@ package za.co.ntier.webform.form.bean.program;
 import java.lang.reflect.InvocationTargetException;
 
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.LearnerInput;
+import za.co.ntier.webform.form.bean.ProgramInput;
 
 public class InternshipProgram extends CandidacyProgram {
-	private LearnerInput trade;
+	private ProgramInput trade;
 	
 	public InternshipProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		super(menuContextInfo);
-		this.trade = LearnerInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
+		this.trade = ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
 				
 				"""
 				List of disciplines supported for Artisan Internships which the number of learners applying
@@ -21,13 +21,13 @@ according MQA SPOI list, (Diesel Mechanic and Millwright).
 	/**
 	 * @return the trade
 	 */
-	public LearnerInput getTrade() {
+	public ProgramInput getTrade() {
 		return trade;
 	}
 	/**
 	 * @param trade the trade to set
 	 */
-	public void setTrade(LearnerInput trade) {
+	public void setTrade(ProgramInput trade) {
 		this.trade = trade;
 	}
 }
