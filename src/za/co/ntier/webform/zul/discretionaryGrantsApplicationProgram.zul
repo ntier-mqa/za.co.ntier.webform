@@ -16,6 +16,7 @@
 	        <tab label="Organisation Information" />
 	        <tab label="Program" />
 	        <tab label="Program Contact" />
+	        <tab label="Upload Document" />
 	    </tabs>
 	    <tabpanels>
 	        <tabpanel style="color:#336699">
@@ -28,8 +29,12 @@
 						src="@load((WebForm.getBundleResourcePath('component/employerDeclaration.zul')))" />
 		        	</div>
 		        	
-		        	<div sclass="formBottomPanelFirst">
-		        		<button label="Next" 
+		        	<div sclass="formBottomPanel">
+		        		<button label="Cancel Application" 
+		        			iconSclass="z-icon-xmark"
+		        			onClick="@command('nextTab', tab=formTab)"/>
+		        			
+		        		<button label="Save &amp; Continue" 
 		        			sclass="icon-on-right"
 		        			iconSclass="z-icon-arrow-right"
 		        			onClick="@command('nextTab', tab=formTab)"/>
@@ -46,11 +51,11 @@
 							src="@load((WebForm.getBundleResourcePath('component/organisationInfo.zul')))" />
 		        	</div>
 		        	<div sclass="formBottomPanel">
-		        		<button label="Prev" 
+		        		<button label="Back" 
 		        			iconSclass="z-icon-arrow-left"
 		        			onClick="@command('prevTab', tab=formTab)"/>
 		        		
-		        		<button label="Next" 
+		        		<button label="Save &amp; Continue" 
 		        			sclass="icon-on-right"
 		        			iconSclass="z-icon-arrow-right"
 		        			onClick="@command('nextTab', tab=formTab)"/>
@@ -136,11 +141,11 @@
 
 					</div>
 					<div sclass="formBottomPanel">
-		        		<button label="Prev" 
+		        		<button label="Back" 
 		        			iconSclass="z-icon-arrow-left"
 		        			onClick="@command('prevTab', tab=formTab)"/>
 		        		
-		        		<button label="Next"
+		        		<button label="Save &amp; Continue"
 		        			sclass="icon-on-right"
 		        			iconSclass="z-icon-arrow-right"
 		        			onClick="@command('nextTab', tab=formTab)"/>
@@ -159,17 +164,38 @@
 							src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />	
 					</div>
 					<div sclass="formBottomPanel">
-		        		<button label="Prev" 
+		        		<button label="Back" 
 		        			iconSclass="z-icon-arrow-left"
 		        			onClick="@command('prevTab', tab=formTab)"/>
 		        		
-		        		<button label="Submit" 
+		        		<button label="Save &amp; Continue"
+		        			sclass="icon-on-right"
+		        			iconSclass="z-icon-arrow-right"
+		        			onClick="@command('nextTab', tab=formTab)"/>
+		        	</div>
+		        </div>
+	        </tabpanel>
+	        
+	        <tabpanel style="color:#CC3300;overflow: scroll;">
+	        	<div sclass="tabContainer">
+		        	<div sclass="formContainer">
+				        <include
+							component="@load(vm.uploadDoc)"
+							src="@load((WebForm.getBundleResourcePath('component/uploadDoc.zul')))" />
+					</div>
+					<div sclass="formBottomPanel">
+		        		<button label="Back" 
+		        			iconSclass="z-icon-arrow-left"
+		        			onClick="@command('prevTab', tab=formTab)"/>
+		        		
+		        		<button label="Submit Application" 
 		        			iconSclass="z-icon-gear"
 		        			sclass="icon-on-right"
 		        			onClick="@command('submitApplication')"/>
 		        	</div>
 		        </div>
 	        </tabpanel>
+	        
 	    </tabpanels>
 	</tabbox>
 	

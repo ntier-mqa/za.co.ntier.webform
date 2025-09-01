@@ -98,7 +98,7 @@
 						</nodom>
 
 						<nodom if="${detailCol.dataType == DataType.FileUpload}">
-							<div style="display: flex;flex-direction: column; width:100%;">
+							<div style="display: flex;flex-direction: column; width:100%;align-items:center">
 
 							<fileupload sclass="text-wrap w-100"
 								iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"

@@ -14,6 +14,7 @@ import org.zkoss.zul.Tabbox;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.UploadDocComponent;
 import za.co.ntier.webform.form.bean.program.AetProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
@@ -56,6 +57,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private ProgramCetTvetInfo programCetTvetInfo;
 	
 	private OrganisationInfo organisationInfo;
+	
+	private UploadDocComponent uploadDoc;
 
 	private FormInfo formInfo;
 
@@ -99,12 +102,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public void setProgramType(ProgramType programType) {
 		this.programType = programType;
 	}
-
-	
-	
-	
-	
-	
 
 	/**
 	 * @return the programMasterDataID
@@ -164,6 +161,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (programType.isShowMainAddressAlter())
 			alternateProgramContact = new AddressInfo(programType, true, null);
 
+		// logic for create this one
+		uploadDoc = new UploadDocComponent(menuContextInfo);
 	}
 
 	
@@ -583,5 +582,19 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setInhouseTraining(InhouseTrainingProgram inhouseTraining) {
 		this.inhouseTraining = inhouseTraining;
+	}
+
+	/**
+	 * @return the uploadDoc
+	 */
+	public UploadDocComponent getUploadDoc() {
+		return uploadDoc;
+	}
+
+	/**
+	 * @param uploadDoc the uploadDoc to set
+	 */
+	public void setUploadDoc(UploadDocComponent uploadDoc) {
+		this.uploadDoc = uploadDoc;
 	}
 }
