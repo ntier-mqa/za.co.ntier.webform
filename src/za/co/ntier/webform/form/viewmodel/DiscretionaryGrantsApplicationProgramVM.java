@@ -2,11 +2,7 @@ package za.co.ntier.webform.form.viewmodel;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -17,7 +13,6 @@ import org.zkoss.zul.Tabbox;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
-import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.program.AetProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
@@ -35,17 +30,13 @@ import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.bean.AddressInfo;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
-import za.co.ntier.webform.form.bean.LearnerInputInfo;
-import za.co.ntier.webform.form.bean.LearnerInputTableInfo;
 import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
 import za.co.ntier.webform.form.bean.OrganisationInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormContact;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class DiscretionaryGrantsApplicationProgramVM {
-	private ProgramInfo programInfo;
 	private InternshipProgram internship;
 	private CandidacyProgram candidacy;
 	private WorkExperienceProgram workExperience;
@@ -81,12 +72,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
     private AddressInfo alternateProgramContact;
 	private AddressInfo programContact;
     
-	/**
-	 * @return the programInfo
-	 */
-	public ProgramInfo getProgramInfo() {
-		return programInfo;
-	}
 
 	// --- Getters and Setters for Data Binding ---
 
@@ -181,12 +166,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	}
 
-	/**
-	 * @param programInfo the programInfo to set
-	 */
-	public void setProgramInfo(ProgramInfo programInfo) {
-		this.programInfo = programInfo;
-	}
+	
 
 	/**
 	 * @param organisationInfo the organisationInfo to set
@@ -257,11 +237,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		contact = createFormContact(alternateProgramContact, applicationForm.getZZ_Application_Form_ID());		
 		contact.saveEx();
-		if (programType.isShowDisciplineTable())
-			createDiscipline(programInfo.getDisciplineTableInfo(), applicationForm.getZZ_Application_Form_ID());
-		
-		//if (programType.isShowTradeTable())
-			//createDiscipline(programInfo.getTradeTableInfo(), applicationForm.getZZ_Application_Form_ID());
 		
 		recordId = applicationForm.getZZ_Application_Form_ID();
 		tableId = applicationForm.get_Table_ID();
@@ -275,43 +250,40 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public void closeDialog() {
 		setShowDialog(false);
 	}
-	
-	public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo disciplineTableInfo, int applicationFormID) throws IOException {
-		for (LearnerInputInfo discipline : disciplineTableInfo.getLearnerInputInfos()) {
-			if (discipline.getNoLearners() == null)
-				continue;
-			
-			X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null);
-			formDisciplines.setZZ_Application_Form_ID(applicationFormID);
-			formDisciplines.setZZ_LearnersNo(discipline.getNoLearners());
-			
-			if (discipline.getAreaSelected() != null)
-				formDisciplines.setC_City_ID(discipline.getAreaSelected().getC_City_ID());
-			
-			if (discipline.getProvince() != null)
-				formDisciplines.setC_Region_ID(discipline.getProvince().getC_Region_ID());
-				
-			formDisciplines.setPostal(discipline.getPostalCode());
-			formDisciplines.setZZ_DisciplineType(disciplineTableInfo.getLearnerInputType());
-			if (disciplineTableInfo.isTrade()) {
-				formDisciplines.setZZ_Trade_ID(discipline.getLearnerInputID());
-			}else {
-				formDisciplines.setZZ_Disciplines_ID(discipline.getLearnerInputID());
-			}
-
-			if (StringUtils.isNoneEmpty(discipline.getFullPathWPA())) {
-				formDisciplines.setZZ_WPAFile(Files.readAllBytes(Paths.get(discipline.getFullPathWPA())));
-			}
-			
-			if (StringUtils.isNoneEmpty(discipline.getFullPathAccred())) {
-				formDisciplines.setZZ_AccredFile((Files.readAllBytes(Paths.get(discipline.getFullPathAccred()))));
-			}
-			
-			formDisciplines.saveEx();
-		}
-		
-		return null;
-	}
+	/*
+	 * public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo
+	 * disciplineTableInfo, int applicationFormID) throws IOException { for
+	 * (LearnerInputInfo discipline : disciplineTableInfo.getLearnerInputInfos()) {
+	 * if (discipline.getNoLearners() == null) continue;
+	 * 
+	 * X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(),
+	 * 0, null); formDisciplines.setZZ_Application_Form_ID(applicationFormID);
+	 * formDisciplines.setZZ_LearnersNo(discipline.getNoLearners());
+	 * 
+	 * if (discipline.getAreaSelected() != null)
+	 * formDisciplines.setC_City_ID(discipline.getAreaSelected().getC_City_ID());
+	 * 
+	 * if (discipline.getProvince() != null)
+	 * formDisciplines.setC_Region_ID(discipline.getProvince().getC_Region_ID());
+	 * 
+	 * formDisciplines.setPostal(discipline.getPostalCode());
+	 * formDisciplines.setZZ_DisciplineType(disciplineTableInfo.getLearnerInputType(
+	 * )); if (disciplineTableInfo.isTrade()) {
+	 * formDisciplines.setZZ_Trade_ID(discipline.getLearnerInputID()); }else {
+	 * formDisciplines.setZZ_Disciplines_ID(discipline.getLearnerInputID()); }
+	 * 
+	 * if (StringUtils.isNoneEmpty(discipline.getFullPathWPA())) {
+	 * formDisciplines.setZZ_WPAFile(Files.readAllBytes(Paths.get(discipline.
+	 * getFullPathWPA()))); }
+	 * 
+	 * if (StringUtils.isNoneEmpty(discipline.getFullPathAccred())) {
+	 * formDisciplines.setZZ_AccredFile((Files.readAllBytes(Paths.get(discipline.
+	 * getFullPathAccred())))); }
+	 * 
+	 * formDisciplines.saveEx(); }
+	 * 
+	 * return null; }
+	 */
 	
 	public X_ZZ_FormContact createFormContact(AddressInfo addressInfo, int applicationFormID) {
 		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
