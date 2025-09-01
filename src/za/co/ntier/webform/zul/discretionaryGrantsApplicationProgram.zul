@@ -16,7 +16,8 @@
 	        <tab label="Organisation Information" />
 	        <tab label="Program" />
 	        <tab label="Program Contact" />
-	        <tab label="Upload Document" />
+	        <tab label="Upload Document" visible="@load(vm.showUploadDoc)" />
+	        
 	    </tabs>
 	    <tabpanels>
 	        <tabpanel style="color:#336699">
@@ -168,33 +169,44 @@
 		        			iconSclass="z-icon-arrow-left"
 		        			onClick="@command('prevTab', tab=formTab)"/>
 		        		
-		        		<button label="Save &amp; Continue"
+		        		<nodom if= "${vm.isShowUploadDoc()}">
+		        			<button label="Save &amp; Continue"
+			        			sclass="icon-on-right"
+			        			iconSclass="z-icon-arrow-right"
+			        			onClick="@command('nextTab', tab=formTab)"/>
+		        		</nodom>
+		        		
+		        		<nodom if= "${!vm.isShowUploadDoc()}">
+		        			<button label="Submit Application" 
+		        			iconSclass="z-icon-gear"
 		        			sclass="icon-on-right"
-		        			iconSclass="z-icon-arrow-right"
-		        			onClick="@command('nextTab', tab=formTab)"/>
+		        			onClick="@command('submitApplication')"/>
+		        		</nodom>
 		        	</div>
 		        </div>
 	        </tabpanel>
 	        
-	        <tabpanel style="color:#CC3300;overflow: scroll;">
-	        	<div sclass="tabContainer">
-		        	<div sclass="formContainer">
-				        <include
-							component="@load(vm.uploadDoc)"
-							src="@load((WebForm.getBundleResourcePath('component/uploadDoc.zul')))" />
-					</div>
-					<div sclass="formBottomPanel">
-		        		<button label="Back" 
-		        			iconSclass="z-icon-arrow-left"
-		        			onClick="@command('prevTab', tab=formTab)"/>
-		        		
-		        		<button label="Submit Application" 
-		        			iconSclass="z-icon-gear"
-		        			sclass="icon-on-right"
-		        			onClick="@command('submitApplication')"/>
-		        	</div>
-		        </div>
-	        </tabpanel>
+	        
+		        <tabpanel style="color:#CC3300;overflow: scroll;" visible="@load(vm.showUploadDoc)" >
+		        	<div sclass="tabContainer">
+			        	<div sclass="formContainer">
+					        <include
+								component="@load(vm.uploadDoc)"
+								src="@load((WebForm.getBundleResourcePath('component/uploadDoc.zul')))" />
+						</div>
+						<div sclass="formBottomPanel">
+			        		<button label="Back" 
+			        			iconSclass="z-icon-arrow-left"
+			        			onClick="@command('prevTab', tab=formTab)"/>
+			        		
+			        		<button label="Submit Application" 
+			        			iconSclass="z-icon-gear"
+			        			sclass="icon-on-right"
+			        			onClick="@command('submitApplication')"/>
+			        	</div>
+			        </div>
+		        </tabpanel>
+		    
 	        
 	    </tabpanels>
 	</tabbox>

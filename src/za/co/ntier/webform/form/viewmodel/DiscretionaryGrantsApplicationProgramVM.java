@@ -161,11 +161,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (programType.isShowMainAddressAlter())
 			alternateProgramContact = new AddressInfo(programType, true, null);
 
-		// logic for create this one
+		
 		uploadDoc = new UploadDocComponent(menuContextInfo);
+		
 	}
 
-	
+	public boolean isShowUploadDoc() {
+		return uploadDoc != null && uploadDoc.getUploadDoc().getRows().size() > 0;
+	}
 
 	/**
 	 * @param organisationInfo the organisationInfo to set
@@ -210,12 +213,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		applicationForm.setNumberEmployees(organisationInfo.getOrgSizeInfo().getNumOfEmployer());
 		applicationForm.setZZ_HasWSPSubmited(organisationInfo.getOrgSizeInfo().isSubmittedWSP());
 		applicationForm.setZZ_HasPivotalPlanSubmited(organisationInfo.getOrgSizeInfo().isSubmittedPivotal());
-		
-		//if (programType.isShowDisciplineTable())
-			//applicationForm.setZZ_DisciplineTotalLearners(programInfo.getDisciplineTableInfo().getTotalNoLearners());
-		
-		//if (programType.isShowTradeTable())
-			//applicationForm.setZZ_TradeTotalLearners(programInfo.getTradeTableInfo().getTotalNoLearners());
 		
 		applicationForm.saveEx();
 		

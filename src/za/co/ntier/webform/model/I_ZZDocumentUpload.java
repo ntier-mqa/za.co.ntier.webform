@@ -21,18 +21,18 @@ import java.sql.Timestamp;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for ZZAnnexure
+/** Generated Interface for ZZDocumentUpload
  *  @author iDempiere (generated) 
  *  @version Release 12
  */
 @SuppressWarnings("all")
-public interface I_ZZAnnexure 
+public interface I_ZZDocumentUpload 
 {
 
-    /** TableName=ZZAnnexure */
-    public static final String Table_Name = "ZZAnnexure";
+    /** TableName=ZZDocumentUpload */
+    public static final String Table_Name = "ZZDocumentUpload";
 
-    /** AD_Table_ID=1000051 */
+    /** AD_Table_ID=1000056 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -93,31 +93,31 @@ public interface I_ZZAnnexure
 	  */
 	public boolean isActive();
 
-    /** Column name LineNo */
-    public static final String COLUMNNAME_LineNo = "LineNo";
+    /** Column name IsMandatory */
+    public static final String COLUMNNAME_IsMandatory = "IsMandatory";
 
-	/** Set Line.
-	  * Line No
+	/** Set Mandatory.
+	  * Data entry is required in this column
 	  */
-	public void setLineNo (int LineNo);
+	public void setIsMandatory (boolean IsMandatory);
 
-	/** Get Line.
-	  * Line No
+	/** Get Mandatory.
+	  * Data entry is required in this column
 	  */
-	public int getLineNo();
+	public boolean isMandatory();
 
-    /** Column name Title */
-    public static final String COLUMNNAME_Title = "Title";
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
 
-	/** Set Title.
-	  * Name this entity is referred to as
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public void setTitle (String Title);
+	public void setName (String Name);
 
-	/** Get Title.
-	  * Name this entity is referred to as
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
 	  */
-	public String getTitle();
+	public String getName();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -135,108 +135,23 @@ public interface I_ZZAnnexure
 	  */
 	public int getUpdatedBy();
 
-    /** Column name ZZAnnexure_ID */
-    public static final String COLUMNNAME_ZZAnnexure_ID = "ZZAnnexure_ID";
+    /** Column name ZZDocumentUpload_ID */
+    public static final String COLUMNNAME_ZZDocumentUpload_ID = "ZZDocumentUpload_ID";
 
-	/** Set Annexure Definition	  */
-	public void setZZAnnexure_ID (int ZZAnnexure_ID);
+	/** Set Document Upload	  */
+	public void setZZDocumentUpload_ID (int ZZDocumentUpload_ID);
 
-	/** Get Annexure Definition	  */
-	public int getZZAnnexure_ID();
+	/** Get Document Upload	  */
+	public int getZZDocumentUpload_ID();
 
-    /** Column name ZZAnnexure_UU */
-    public static final String COLUMNNAME_ZZAnnexure_UU = "ZZAnnexure_UU";
+    /** Column name ZZDocumentUpload_UU */
+    public static final String COLUMNNAME_ZZDocumentUpload_UU = "ZZDocumentUpload_UU";
 
-	/** Set ZZAnnexure_UU	  */
-	public void setZZAnnexure_UU (String ZZAnnexure_UU);
+	/** Set ZZDocumentUpload_UU	  */
+	public void setZZDocumentUpload_UU (String ZZDocumentUpload_UU);
 
-	/** Get ZZAnnexure_UU	  */
-	public String getZZAnnexure_UU();
-
-    /** Column name ZZFirst */
-    public static final String COLUMNNAME_ZZFirst = "ZZFirst";
-
-	/** Set First Column	  */
-	public void setZZFirst (String ZZFirst);
-
-	/** Get First Column	  */
-	public String getZZFirst();
-
-    /** Column name ZZFirstSubcolumn */
-    public static final String COLUMNNAME_ZZFirstSubcolumn = "ZZFirstSubcolumn";
-
-	/** Set First Subcolumn	  */
-	public void setZZFirstSubcolumn (String ZZFirstSubcolumn);
-
-	/** Get First Subcolumn	  */
-	public String getZZFirstSubcolumn();
-
-    /** Column name ZZFourth */
-    public static final String COLUMNNAME_ZZFourth = "ZZFourth";
-
-	/** Set Fourth Column	  */
-	public void setZZFourth (String ZZFourth);
-
-	/** Get Fourth Column	  */
-	public String getZZFourth();
-
-    /** Column name ZZFourthSubcolumn */
-    public static final String COLUMNNAME_ZZFourthSubcolumn = "ZZFourthSubcolumn";
-
-	/** Set Fourth Subcolumn	  */
-	public void setZZFourthSubcolumn (String ZZFourthSubcolumn);
-
-	/** Get Fourth Subcolumn	  */
-	public String getZZFourthSubcolumn();
-
-    /** Column name ZZHeader */
-    public static final String COLUMNNAME_ZZHeader = "ZZHeader";
-
-	/** Set Header.
-	  * Header Annexure
-	  */
-	public void setZZHeader (String ZZHeader);
-
-	/** Get Header.
-	  * Header Annexure
-	  */
-	public String getZZHeader();
-
-    /** Column name ZZSecond */
-    public static final String COLUMNNAME_ZZSecond = "ZZSecond";
-
-	/** Set Second Column	  */
-	public void setZZSecond (String ZZSecond);
-
-	/** Get Second Column	  */
-	public String getZZSecond();
-
-    /** Column name ZZSecondSubcolumn */
-    public static final String COLUMNNAME_ZZSecondSubcolumn = "ZZSecondSubcolumn";
-
-	/** Set Second Subcolumn	  */
-	public void setZZSecondSubcolumn (String ZZSecondSubcolumn);
-
-	/** Get Second Subcolumn	  */
-	public String getZZSecondSubcolumn();
-
-    /** Column name ZZThird */
-    public static final String COLUMNNAME_ZZThird = "ZZThird";
-
-	/** Set Third Column	  */
-	public void setZZThird (String ZZThird);
-
-	/** Get Third Column	  */
-	public String getZZThird();
-
-    /** Column name ZZThirdSubcolumn */
-    public static final String COLUMNNAME_ZZThirdSubcolumn = "ZZThirdSubcolumn";
-
-	/** Set Third Subcolumn	  */
-	public void setZZThirdSubcolumn (String ZZThirdSubcolumn);
-
-	/** Get Third Subcolumn	  */
-	public String getZZThirdSubcolumn();
+	/** Get ZZDocumentUpload_UU	  */
+	public String getZZDocumentUpload_UU();
 
     /** Column name ZZ_Program_Master_Data_ID */
     public static final String COLUMNNAME_ZZ_Program_Master_Data_ID = "ZZ_Program_Master_Data_ID";

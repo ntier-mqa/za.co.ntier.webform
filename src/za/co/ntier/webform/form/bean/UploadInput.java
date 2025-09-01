@@ -5,13 +5,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+
+import org.compiere.model.MTable;
+import org.compiere.util.Env;
+
+import za.co.ntier.webform.model.I_ZZDocumentUpload;
+import za.co.ntier.webform.model.X_ZZDocumentUpload;
 
 
 public class UploadInput extends AnnexureInfo {
 	
 	public static UploadInput getUploadInput(int programMasterDataID) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		//query upload info
+		List<X_ZZDocumentUpload> docUploads = MTable.get(Env.getCtx(), I_ZZDocumentUpload.Table_ID).
+				createQuery(I_ZZDocumentUpload.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?", null).
+				setParameters(programMasterDataID).
+				list();
 		
 		List<ColumnInfo<?>> columns = new ArrayList<>();
 		columns.add(ColumnInfo.getColLabel("Document Name"));
@@ -21,14 +30,9 @@ public class UploadInput extends AnnexureInfo {
 				columns, false);
 		
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
-		
-		Random random = new Random();
-		int min = 3;
-        int max = 10;
-        int randomNumber = random.nextInt((max - min) + 1) + min;
         
-		for (int num = 0; num < randomNumber; num++) {
-			rowDataInits.put(columns.get(0), "document " + num);
+		for (X_ZZDocumentUpload  docUpload : docUploads) {
+			rowDataInits.put(columns.get(0), docUpload.getName());
 			Map<ColumnInfo<?>, Object> newRow = AnnexureInfo.createDetailRow(columns, rowDataInits);
 			uploadInput.getRows().add(newRow);
 		}

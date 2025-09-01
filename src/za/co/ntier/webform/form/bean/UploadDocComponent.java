@@ -21,4 +21,5 @@ public class UploadDocComponent {
 	public void setUploadDoc(UploadInput uploadDoc) {
 		this.uploadDoc = uploadDoc;
 	}
+	
 }
