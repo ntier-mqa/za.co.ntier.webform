@@ -12,7 +12,7 @@
   	<div sclass="grid-container">
   		<div sclass="form-field">
   			<label sclass="label" value="Name and Surname"/>
-  			<textbox placeholder="Le Quy Hiep" value="@bind(vmEmployerDeclaration.employerDeclarationInfo.userName)"/>
+  			<textbox placeholder="" value="@bind(vmEmployerDeclaration.employerDeclarationInfo.userName)"/>
   		</div>
   		<div sclass="form-field">
   			<label sclass="label" value="Date"/>

@@ -26,14 +26,14 @@
 		        		<include menuContextInfo="@load(vm.menuContextInfo)"
 						src="@load((WebForm.getBundleResourcePath('component/generalAppRule.zul')))" />
 						
-						<include menuContextInfo="@load(vm.menuContextInfo)"
+						<include employerDeclarationInfo="@load(vm.employerDeclarationInfo)"
 						src="@load((WebForm.getBundleResourcePath('component/employerDeclaration.zul')))" />
 		        	</div>
 		        	
 		        	<div sclass="formBottomPanel">
 		        		<button label="Cancel Application" 
 		        			iconSclass="z-icon-xmark"
-		        			onClick="@command('nextTab', tab=formTab)"/>
+		        			onClick="@command('cancelApp')"/>
 		        			
 		        		<button label="Save &amp; Continue" 
 		        			sclass="icon-on-right"
@@ -47,7 +47,6 @@
 		        <div sclass="tabContainer">
 		        	<div sclass="formContainer">
 		        		<include 
-			        		menuContextInfo="@load(vm.menuContextInfo)"
 			        		organisationInfo="@load(vm.organisationInfo)"
 							src="@load((WebForm.getBundleResourcePath('component/organisationInfo.zul')))" />
 		        	</div>
@@ -188,7 +187,8 @@
 	        
 	        
 		        <tabpanel style="color:#CC3300;overflow: scroll;" visible="@load(vm.showUploadDoc)" >
-		        	<div sclass="tabContainer">
+		        	<div if="${vm.showUploadDoc}"
+		        		sclass="tabContainer">
 			        	<div sclass="formContainer">
 					        <include
 								component="@load(vm.uploadDoc)"
@@ -211,7 +211,7 @@
 	    </tabpanels>
 	</tabbox>
 	
-	<window title="Done" width="300px" mode="modal" position="center,center" visible="@load(vm.showDialog)">
+	<window title="Done" width="300px" mode="modal" position="center,center" if="${vm.showDialog}">
     
 		<div class="modal-body">
         <label value="The application form has been created."/>

@@ -344,7 +344,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.employerDeclarationInfo = employerDeclarationInfo;
 	}
 	
-
+	@Command
+	public void cancelApp() {
+		
+	}
+	
 	@Command
 	public void nextTab(@BindingParam("tab") Tabbox tab) {
 		int currentIndex = tab.getSelectedIndex();
