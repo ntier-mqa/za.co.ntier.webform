@@ -1,61 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-	<div sclass="sectionSeparator"
-		viewModel="@id('vmCentreOfSpecialisation') @init('za.co.ntier.webform.form.viewmodel.program.CentreOfSpecialisationVMWrapper')">
-		<div>
-			<label sclass="note" value="Note:"/><label
-				value="Centre of Specialisation Grant is paid in four tranches according to the grant rules as stated in
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmCentreOfSpecialisation') @init('za.co.ntier.webform.form.viewmodel.program.CentreOfSpecialisationVMWrapper')">
+	
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="CENTRE OF SPECIALISATION GRANT" />
+	</hlayout>
+	
+	<div>
+		<label sclass="note" value="Note:" />
+		<label
+			value="Centre of Specialisation Grant is paid in four tranches according to the grant rules as stated in
 the MQA funding policy. Preference will be given to the following trades that are hard to fill according
 to MQA SPOI list, (Diesel Mechanic and Millwright)" />
-		</div>
-		
-		<div sclass="grid-table grid-table-auto-3">
-            
-                <div sclass="grid-cell">
-                    <label value="Is the TVET College registered with the DHET?" />
-                </div>
-                <div sclass="grid-cell">
-                    <radio label="YES" radiogroup="dhet"/>
-                </div>
-                <div sclass="grid-cell">
-                     <radio label="NO" radiogroup="dhet"/>
-                     <radiogroup id="dhet"/>
-                </div>
-            
-            
-            
-                <div sclass="grid-cell">
-                    <label value="Is the TVET College recognised as a centre of specialisation" />
-                </div>
-                <div sclass="grid-cell">
-                    <radio label="YES" radiogroup="cos"/>
-                </div>
-                <div sclass="grid-cell">
-                     <radio label="NO" radiogroup="cos"/>
-                     <radiogroup id="cos"/>
-                </div>
-
-            
-
-                <div sclass="grid-cell">
-                    <label value="Does the TVET College have an SLA with a company within the MMS" />
-                </div>
-                <div sclass="grid-cell">
-                    <radio label="YES" radiogroup="mms"/>
-                </div>
-                <div sclass="grid-cell">
-                     <radio label="NO" radiogroup="mms"/>
-                     <radiogroup id="mms"/>
-                </div>
-            
-		</div>
-		
-		<include
-			learnerInputTableInfo="@load(vmCentreOfSpecialisation.centreOfSpecialisation.tradeTableInfo)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
-			
-		<include 
-			learnerInputTableInfo="@load(vmCentreOfSpecialisation.centreOfSpecialisation.totalNumTableInfo)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
 	</div>
-</zk>
+
+	<div sclass="grid-table grid-table-auto-3">
+
+		<div sclass="grid-cell">
+			<label value="Is the TVET College registered with the DHET?" />
+		</div>
+		<div sclass="grid-cell">
+			<radio label="YES" radiogroup="dhet" />
+		</div>
+		<div sclass="grid-cell">
+			<radio label="NO" radiogroup="dhet" />
+			<radiogroup id="dhet" />
+		</div>
+
+
+
+		<div sclass="grid-cell">
+			<label
+				value="Is the TVET College recognised as a centre of specialisation" />
+		</div>
+		<div sclass="grid-cell">
+			<radio label="YES" radiogroup="cos" />
+		</div>
+		<div sclass="grid-cell">
+			<radio label="NO" radiogroup="cos" />
+			<radiogroup id="cos" />
+		</div>
+
+
+
+		<div sclass="grid-cell">
+			<label
+				value="Does the TVET College have an SLA with a company within the MMS" />
+		</div>
+		<div sclass="grid-cell">
+			<radio label="YES" radiogroup="mms" />
+		</div>
+		<div sclass="grid-cell">
+			<radio label="NO" radiogroup="mms" />
+			<radiogroup id="mms" />
+		</div>
+
+	</div>
+
+	<include
+		annexureInfo="@load(vmCentreOfSpecialisation.program.trade)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+
+	<include
+		annexureInfo="@load(vmCentreOfSpecialisation.program.totalNumApplied)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+</nodom>

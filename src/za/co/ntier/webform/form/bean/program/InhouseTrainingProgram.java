@@ -1,22 +1,37 @@
 package za.co.ntier.webform.form.bean.program;
 
-import za.co.ntier.webform.form.bean.OneLineTableInfo;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.bean.AnnexureInfo;
+import za.co.ntier.webform.form.bean.ColumnInfo;
+
 
 public class InhouseTrainingProgram {
-	private OneLineTableInfo learnersTableInfo;
-	public InhouseTrainingProgram() {
-		this.learnersTableInfo = OneLineTableInfo.createLearnersTableInfo("Inhouse /Industry/Company based short courses");
+	private AnnexureInfo inhouse;
+	public InhouseTrainingProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		this.setInhouse(AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null, 
+				List.of(ColumnInfo.getColLabel("Name of Programme"),
+						ColumnInfo.getColPositiveNumber("No of Learners applied for"),
+						ColumnInfo.getColPositiveNumber("Site Postal Code"),
+						ColumnInfo.getColArea("Area", 
+								MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList())),
+				"Inhouse /Industry/Company based short courses"));
+				
+				
+	}
+	
+	/**
+	 * @return the inhouse
+	 */
+	public AnnexureInfo getInhouse() {
+		return inhouse;
 	}
 	/**
-	 * @return the learnersTableInfo
+	 * @param inhouse the inhouse to set
 	 */
-	public OneLineTableInfo getLearnersTableInfo() {
-		return learnersTableInfo;
-	}
-	/**
-	 * @param learnersTableInfo the learnersTableInfo to set
-	 */
-	public void setLearnersTableInfo(OneLineTableInfo learnersTableInfo) {
-		this.learnersTableInfo = learnersTableInfo;
+	public void setInhouse(AnnexureInfo inhouse) {
+		this.inhouse = inhouse;
 	}
 }

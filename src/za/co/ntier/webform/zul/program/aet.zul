@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-	<div
-		viewModel="@id('vmAET') @init('za.co.ntier.webform.form.viewmodel.program.AETVMWrapper')">
-		
-		<div>
-			<label value="Note:" />
-			<label value="AET is paid upon completion and no workplace approval is required" />
-		</div>
-		
-		<include 
-			learnerInputTableInfo="@load(vmAET.aetInfo.aetLearnership)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmAet') @init('za.co.ntier.webform.form.viewmodel.program.AetVMWrapper')">
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="AET GRANT"/>
+	</hlayout>
+	<div>
+		<label value="Note:" />
+		<label
+			value="AET is paid upon completion and no workplace approval is required" />
 	</div>
-</zk>
+
+	<include annexureInfo="@load(vmAet.program.aetLearnership)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+</nodom>

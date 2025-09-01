@@ -54,4 +54,39 @@ public class ProgramInput extends AnnexureInfo {
 		}
 		return programInput;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static ProgramInput getLearnership(String learnershipType, int programMasterDataID) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, learnershipType);
+		List<LearnerInputInfo> learnerInputInfos = (List<LearnerInputInfo>)rObjs.get(0);
+		boolean hasWPAReq = (boolean)rObjs.get(1);
+		boolean hasAccred = (boolean)rObjs.get(2);
+		
+		List<ColumnInfo<?>> columns = new ArrayList<>();
+		columns.add(ColumnInfo.getColLabel("Learnership Type"));
+		columns.add(ColumnInfo.getColPositiveNumber("No. of employed Learners"));
+		columns.add(ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"));
+		
+		columns.add(ColumnInfo.getColArea("Area", 
+				MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList()));
+		
+		if (hasWPAReq) {
+			columns.add(ColumnInfo.getColFileUpload("WPA", "WPA"));
+		}
+		
+		if (hasAccred) {
+			columns.add(ColumnInfo.getColFileUpload("Accreditation", "Accred./SLA"));
+		}
+		
+		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, 
+				columns, true);
+		
+		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
+		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
+			rowDataInits.put(columns.get(0), learnerInputInfo.getLearnerInputText());
+			Map<ColumnInfo<?>, Object> newRow = AnnexureInfo.createDetailRow(columns, rowDataInits);
+			programInput.getRows().add(newRow);
+		}
+		return programInput;
+	}
 }

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-	<div
-		viewModel="@id('vmNCVGraduates') @init('za.co.ntier.webform.form.viewmodel.program.NCVGraduatesVMWrapper')">
-		
+
+	<nodom xmlns:n="native"
+		viewModel="@id('vmNcvGraduates') @init('za.co.ntier.webform.form.viewmodel.program.NcvGraduatesVMWrapper')">
+		<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="NCV (LEVEL 4 GRADUATES) GRANT" />
+ 	</hlayout>
 		<div>
 			<label sclass="note" value="Note 1:"/>
 			<label value="Valid workplace Approval documents must be submitted with the application." />
@@ -12,8 +15,7 @@
 			<label sclass="note" value="Note 2:"/>
 			<label value="Preference will be given to employers within the Mining and Mineral Sector." />
 		</div>
-		<include 
-			learnerInputTableInfo="@load(vmNCVGraduates.ncvGraduatesInfo.unEmployedTableInfo)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
-	</div>
-</zk>
+	<include
+		annexureInfo="@load(vmNcvGraduates.program.unemployed)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+	</nodom>

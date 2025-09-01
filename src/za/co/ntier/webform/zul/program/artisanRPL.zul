@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-	<div
-		viewModel="@id('vmArtisanRPL') @init('za.co.ntier.webform.form.viewmodel.program.ArtisanRPLVMWrapper')">
-		<div>
-			<label sclass="note" value="Note:"/><label
-				value="Artisan RPL is paid upon completion." />
-		</div>
-		
-		<include 
-			learnerInputTableInfo="@load(vmArtisanRPL.artisanRPLInfo.fullEmployedTableInfo)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
-		
 
+<nodom xmlns:n="native"
+	viewModel="@id('vmArtisanRPL') @init('za.co.ntier.webform.form.viewmodel.program.ArtisanRPLVMWrapper')">
+
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle" value="ARTISAN RPL GRANT" />
+	</hlayout>
+
+	<div>
+		<label sclass="note" value="Note:" />
+		<label value="Artisan RPL is paid upon completion." />
 	</div>
-</zk>
+
+	<include
+		annexureInfo="@load(vmArtisanRPL.program.allLearners)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+
+</nodom>

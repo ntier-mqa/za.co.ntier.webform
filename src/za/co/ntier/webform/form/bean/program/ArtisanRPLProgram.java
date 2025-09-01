@@ -1,25 +1,34 @@
 package za.co.ntier.webform.form.bean.program;
 
-import za.co.ntier.webform.form.bean.OneLineTableInfo;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import za.co.ntier.webform.form.bean.AnnexureInfo;
+import za.co.ntier.webform.form.bean.ColumnInfo;
+import za.co.ntier.webform.form.bean.ProjectInput;
 
 public class ArtisanRPLProgram {
-	private OneLineTableInfo fullEmployedTableInfo;
+	private AnnexureInfo allLearners;
 	
-	public ArtisanRPLProgram() {
-		this.fullEmployedTableInfo = OneLineTableInfo.createFullEmployedTableInfo();
+	public ArtisanRPLProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		allLearners = ProjectInput.getProject(
+				List.of(ColumnInfo.getColPositiveNumber("No. of Employed Learners"),
+						ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"),
+						ColumnInfo.getColPositiveNumber("Total No. of Learners Applied For")));
 	}
 
 	/**
-	 * @return the fullEmployedTableInfo
+	 * @return the allLearners
 	 */
-	public OneLineTableInfo getFullEmployedTableInfo() {
-		return fullEmployedTableInfo;
+	public AnnexureInfo getAllLearners() {
+		return allLearners;
 	}
 
 	/**
-	 * @param fullEmployedTableInfo the fullEmployedTableInfo to set
+	 * @param allLearners the allLearners to set
 	 */
-	public void setFullEmployedTableInfo(OneLineTableInfo fullEmployedTableInfo) {
-		this.fullEmployedTableInfo = fullEmployedTableInfo;
+	public void setAllLearners(AnnexureInfo allLearners) {
+		this.allLearners = allLearners;
 	}
+
 }

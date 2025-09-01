@@ -1,60 +1,52 @@
 package za.co.ntier.webform.form.bean.program;
 
+import java.lang.reflect.InvocationTargetException;
+
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.LearnershipTableInfo;
+import za.co.ntier.webform.form.bean.ProgramInput;
+import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class NonArtisanDevProgram {
-	private LearnershipTableInfo generalLearnership;
-	private LearnershipTableInfo firLearnership;
-	private MenuContextInfo menuContextInfo;
+	private ProgramInput generalLearnership;
+	private ProgramInput firLearnership;
 	
-	public NonArtisanDevProgram(MenuContextInfo menuContextInfo) {
-		this.setMenuContextInfo(menuContextInfo);
-		setGeneralLearnership(LearnershipTableInfo.createGeneralLearnership(
-						menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), menuContextInfo.getProgramType()));
-		setFirLearnership(LearnershipTableInfo.create4IRLearnership(
-						menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), menuContextInfo.getProgramType()));
+	public NonArtisanDevProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		setGeneralLearnership(ProgramInput.getLearnership(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership,
+				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()
+				));
+		
+		setFirLearnership(ProgramInput.getLearnership(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership,
+				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()
+				));
+
 	}
 
 	/**
 	 * @return the generalLearnership
 	 */
-	public LearnershipTableInfo getGeneralLearnership() {
+	public ProgramInput getGeneralLearnership() {
 		return generalLearnership;
 	}
 
 	/**
 	 * @param generalLearnership the generalLearnership to set
 	 */
-	public void setGeneralLearnership(LearnershipTableInfo generalLearnership) {
+	public void setGeneralLearnership(ProgramInput generalLearnership) {
 		this.generalLearnership = generalLearnership;
 	}
 
 	/**
 	 * @return the firLearnership
 	 */
-	public LearnershipTableInfo getFirLearnership() {
+	public ProgramInput getFirLearnership() {
 		return firLearnership;
 	}
 
 	/**
 	 * @param firLearnership the firLearnership to set
 	 */
-	public void setFirLearnership(LearnershipTableInfo firLearnership) {
+	public void setFirLearnership(ProgramInput firLearnership) {
 		this.firLearnership = firLearnership;
 	}
 
-	/**
-	 * @return the menuContextInfo
-	 */
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
-
-	/**
-	 * @param menuContextInfo the menuContextInfo to set
-	 */
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
 }

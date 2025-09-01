@@ -4,17 +4,17 @@ package za.co.ntier.webform.form.bean;
 import java.lang.reflect.InvocationTargetException;
 
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.program.AETProgram;
+import za.co.ntier.webform.form.bean.program.AetProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanRPLProgram;
 import za.co.ntier.webform.form.bean.program.CentreOfSpecialisationProgram;
 import za.co.ntier.webform.form.bean.program.MedpProgram;
 import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
-import za.co.ntier.webform.form.bean.program.NCVGraduatesProgram;
+import za.co.ntier.webform.form.bean.program.NcvGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
-import za.co.ntier.webform.form.bean.program.OHASSPProgram;
+import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 
 
@@ -32,9 +32,9 @@ public class ProgramInfo {
 	private ArtisanRPLProgram artisanRPLInfo;
 	private NonArtisanDevProgram nonArtisanDevInfo;
 	private NonArtisanDevRPLProgram nonArtisanDevRPLInfo;
-	private NCVGraduatesProgram ncvGraduatesInfo;
-	private AETProgram aetInfo;
-	private OHASSPProgram ohasspInfo;
+	private NcvGraduatesProgram ncvGraduatesInfo;
+	private AetProgram aetInfo;
+	private OhasspProgram ohasspInfo;
 	private InhouseTrainingProgram inhouseTrainingInfo;
 	private MenuContextInfo menuContextInfo;
 	private ProgramType programType;
@@ -80,13 +80,13 @@ public class ProgramInfo {
 		}else if (programType == ProgramType.NON_ARTISAN_DEV) {
 			this.nonArtisanDevInfo = new NonArtisanDevProgram(menuContextInfo);
 		}else if (programType == ProgramType.NON_ARTISAN_DEV_RPL) {
-			this.nonArtisanDevRPLInfo = new NonArtisanDevRPLProgram();
+			this.nonArtisanDevRPLInfo = new NonArtisanDevRPLProgram(menuContextInfo);
 		}else if (programType == ProgramType.NCV_GRADUATES) {
-			this.ncvGraduatesInfo = new NCVGraduatesProgram(menuContextInfo);
+			this.ncvGraduatesInfo = new NcvGraduatesProgram(menuContextInfo);
 		}else if (programType == ProgramType.AET) {
-			this.aetInfo = new AETProgram(menuContextInfo);
+			this.aetInfo = new AetProgram(menuContextInfo);
 		}else if (programType == ProgramType.OHASSP) {
-			this.ohasspInfo = new OHASSPProgram();
+			this.ohasspInfo = new OhasspProgram();
 		}else if (programType == ProgramType.INHOUSE_TRAINING) {
 			this.inhouseTrainingInfo = new InhouseTrainingProgram();
 		}
@@ -142,42 +142,42 @@ public class ProgramInfo {
 	/**
 	 * @return the ncvGraduatesInfo
 	 */
-	public NCVGraduatesProgram getNcvGraduatesInfo() {
+	public NcvGraduatesProgram getNcvGraduatesInfo() {
 		return ncvGraduatesInfo;
 	}
 
 	/**
 	 * @param ncvGraduatesInfo the ncvGraduatesInfo to set
 	 */
-	public void setNcvGraduatesInfo(NCVGraduatesProgram ncvGraduatesInfo) {
+	public void setNcvGraduatesInfo(NcvGraduatesProgram ncvGraduatesInfo) {
 		this.ncvGraduatesInfo = ncvGraduatesInfo;
 	}
 
 	/**
 	 * @return the aetInfo
 	 */
-	public AETProgram getAetInfo() {
+	public AetProgram getAetInfo() {
 		return aetInfo;
 	}
 
 	/**
 	 * @param aetInfo the aetInfo to set
 	 */
-	public void setAetInfo(AETProgram aetInfo) {
+	public void setAetInfo(AetProgram aetInfo) {
 		this.aetInfo = aetInfo;
 	}
 
 	/**
 	 * @return the ohasspInfo
 	 */
-	public OHASSPProgram getOhasspInfo() {
+	public OhasspProgram getOhasspInfo() {
 		return ohasspInfo;
 	}
 
 	/**
 	 * @param ohasspInfo the ohasspInfo to set
 	 */
-	public void setOhasspInfo(OHASSPProgram ohasspInfo) {
+	public void setOhasspInfo(OhasspProgram ohasspInfo) {
 		this.ohasspInfo = ohasspInfo;
 	}
 

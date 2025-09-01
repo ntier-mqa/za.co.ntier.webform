@@ -19,11 +19,19 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.ProgramInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.program.AetProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
+import za.co.ntier.webform.form.bean.program.ArtisanRPLProgram;
 import za.co.ntier.webform.form.bean.program.CandidacyProgram;
+import za.co.ntier.webform.form.bean.program.CentreOfSpecialisationProgram;
+import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
 import za.co.ntier.webform.form.bean.program.MedpProgram;
+import za.co.ntier.webform.form.bean.program.NcvGraduatesProgram;
+import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
+import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
+import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.bean.AddressInfo;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
@@ -43,9 +51,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private WorkExperienceProgram workExperience;
 	private MedpProgram medp;
 	
-	private ArtisanAidesProgram artisanAidesProgram;
-	private ArtisanDevProgram artisanDevProgram;
+	private ArtisanAidesProgram artisanAides;
+	private ArtisanDevProgram artisanDev;
+	private CentreOfSpecialisationProgram centreOfSpecialisation;
+	private ArtisanRPLProgram artisanRPL;
+	private NonArtisanDevProgram nonArtisanDev;
+	private NonArtisanDevRPLProgram nonArtisanDevRPL;
+	private	NcvGraduatesProgram ncvGraduates;
+	private AetProgram aet;
+	private OhasspProgram ohassp;
+	private InhouseTrainingProgram inhouseTraining;
 	
+	private ProgramCetTvetInfo programCetTvetInfo;
 	
 	private OrganisationInfo organisationInfo;
 
@@ -88,6 +105,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 	
 	private ProgramType programType;
+	
 
 	public ProgramType getProgramType() {
 		return programType;
@@ -97,7 +115,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.programType = programType;
 	}
 
-	private ProgramCetTvetInfo programCetTvetInfo;
+	
+	
+	
+	
 	
 
 	/**
@@ -127,12 +148,25 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}else if (ProgramType.DEV_PROGRAM == programType) {
 			setMedp(new MedpProgram());
 		}else if (ProgramType.ARTISAN_AIDES== programType) {
-			setArtisanAidesProgram(new ArtisanAidesProgram());
+			setArtisanAides(new ArtisanAidesProgram());
 		}else if (ProgramType.ARTISAN_DEV == programType) {
-			setArtisanDevProgram(new ArtisanDevProgram(menuContextInfo));
-		}
-		else {
-			programInfo = new ProgramInfo(menuContextInfo);
+			setArtisanDev(new ArtisanDevProgram(menuContextInfo));
+		}else if (ProgramType.CENTRE_SPECIALISATION == programType) {
+			setCentreOfSpecialisation(new CentreOfSpecialisationProgram(menuContextInfo));
+		}else if (ProgramType.ARTISAN_RPL == programType) {
+			setArtisanRPL(new ArtisanRPLProgram());
+		}else if (ProgramType.NON_ARTISAN_DEV == programType) {
+			setNonArtisanDev(new NonArtisanDevProgram(menuContextInfo));
+		}else if (ProgramType.NON_ARTISAN_DEV_RPL == programType) {
+			setNonArtisanDevRPL(new NonArtisanDevRPLProgram(menuContextInfo));
+		}else if (ProgramType.NCV_GRADUATES == programType) {
+			setNcvGraduates(new NcvGraduatesProgram(menuContextInfo));
+		}else if (ProgramType.AET == programType) {
+			setAet(new AetProgram(menuContextInfo));
+		}else if (ProgramType.OHASSP == programType) {
+			setOhassp(new OhasspProgram());
+		}else if (ProgramType.INHOUSE_TRAINING == programType) {
+			setInhouseTraining(new InhouseTrainingProgram());
 		}
 		
 		employerDeclarationInfo = new EmployerDeclarationInfo();
@@ -440,30 +474,142 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @return the artisanAidesProgram
+	 * @return the artisanAides
 	 */
-	public ArtisanAidesProgram getArtisanAidesProgram() {
-		return artisanAidesProgram;
+	public ArtisanAidesProgram getArtisanAides() {
+		return artisanAides;
 	}
 
 	/**
-	 * @param artisanAidesProgram the artisanAidesProgram to set
+	 * @param artisanAides the artisanAides to set
 	 */
-	public void setArtisanAidesProgram(ArtisanAidesProgram artisanAidesProgram) {
-		this.artisanAidesProgram = artisanAidesProgram;
+	public void setArtisanAides(ArtisanAidesProgram artisanAidesProgram) {
+		this.artisanAides = artisanAidesProgram;
 	}
 
 	/**
-	 * @return the artisanDevProgram
+	 * @return the artisanDev
 	 */
-	public ArtisanDevProgram getArtisanDevProgram() {
-		return artisanDevProgram;
+	public ArtisanDevProgram getArtisanDev() {
+		return artisanDev;
 	}
 
 	/**
-	 * @param artisanDevProgram the artisanDevProgram to set
+	 * @param artisanDev the artisanDev to set
 	 */
-	public void setArtisanDevProgram(ArtisanDevProgram artisanDevProgram) {
-		this.artisanDevProgram = artisanDevProgram;
+	public void setArtisanDev(ArtisanDevProgram artisanDev) {
+		this.artisanDev = artisanDev;
+	}
+
+	/**
+	 * @return the centreOfSpecialisation
+	 */
+	public CentreOfSpecialisationProgram getCentreOfSpecialisation() {
+		return centreOfSpecialisation;
+	}
+
+	/**
+	 * @param centreOfSpecialisation the centreOfSpecialisation to set
+	 */
+	public void setCentreOfSpecialisation(CentreOfSpecialisationProgram centreOfSpecialisation) {
+		this.centreOfSpecialisation = centreOfSpecialisation;
+	}
+
+	/**
+	 * @return the artisanRPL
+	 */
+	public ArtisanRPLProgram getArtisanRPL() {
+		return artisanRPL;
+	}
+
+	/**
+	 * @param artisanRPL the artisanRPL to set
+	 */
+	public void setArtisanRPL(ArtisanRPLProgram artisanRPL) {
+		this.artisanRPL = artisanRPL;
+	}
+
+	/**
+	 * @return the nonArtisanDev
+	 */
+	public NonArtisanDevProgram getNonArtisanDev() {
+		return nonArtisanDev;
+	}
+
+	/**
+	 * @param nonArtisanDev the nonArtisanDev to set
+	 */
+	public void setNonArtisanDev(NonArtisanDevProgram nonArtisanDev) {
+		this.nonArtisanDev = nonArtisanDev;
+	}
+
+	/**
+	 * @return the nonArtisanDevRPL
+	 */
+	public NonArtisanDevRPLProgram getNonArtisanDevRPL() {
+		return nonArtisanDevRPL;
+	}
+
+	/**
+	 * @param nonArtisanDevRPL the nonArtisanDevRPL to set
+	 */
+	public void setNonArtisanDevRPL(NonArtisanDevRPLProgram nonArtisanDevRPL) {
+		this.nonArtisanDevRPL = nonArtisanDevRPL;
+	}
+
+	/**
+	 * @return the ncvGraduates
+	 */
+	public NcvGraduatesProgram getNcvGraduates() {
+		return ncvGraduates;
+	}
+
+	/**
+	 * @param ncvGraduates the ncvGraduates to set
+	 */
+	public void setNcvGraduates(NcvGraduatesProgram ncvGraduates) {
+		this.ncvGraduates = ncvGraduates;
+	}
+
+	/**
+	 * @return the aet
+	 */
+	public AetProgram getAet() {
+		return aet;
+	}
+
+	/**
+	 * @param aet the aet to set
+	 */
+	public void setAet(AetProgram aet) {
+		this.aet = aet;
+	}
+
+	/**
+	 * @return the ohassp
+	 */
+	public OhasspProgram getOhassp() {
+		return ohassp;
+	}
+
+	/**
+	 * @param ohassp the ohassp to set
+	 */
+	public void setOhassp(OhasspProgram ohassp) {
+		this.ohassp = ohassp;
+	}
+
+	/**
+	 * @return the inhouseTraining
+	 */
+	public InhouseTrainingProgram getInhouseTraining() {
+		return inhouseTraining;
+	}
+
+	/**
+	 * @param inhouseTraining the inhouseTraining to set
+	 */
+	public void setInhouseTraining(InhouseTrainingProgram inhouseTraining) {
+		this.inhouseTraining = inhouseTraining;
 	}
 }

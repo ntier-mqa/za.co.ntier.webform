@@ -22,4 +22,6 @@ MQA SPOI list, (Diesel Mechanic and Millwright)" />
 	<include
 		annexureInfo="@load(vmArtisanDev.program.totalNumApplied)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+
+
 </nodom>

@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-	<div
-		viewModel="@id('vmInhouseTraining') @init('za.co.ntier.webform.form.viewmodel.program.InhouseTrainingVMWrapper')">
-		<div>
-			<label sclass="note" value="Note 1:"/>
-			<label value="In-House Training is paid upon completion and no workplace approval is required." />
-		</div>
-		
-		<div>
-			<label sclass="note" value="Note 2:"/>
-			<label value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
-grants" />
-		</div>
-		<include 
-			learnerInputTableInfo="@load(vmInhouseTraining.inhouseTrainingInfo.learnersTableInfo)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmInhouseTraining') @init('za.co.ntier.webform.form.viewmodel.program.InhouseTrainingVMWrapper')">
+
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="IN-HOUSE TRAINING"/>
+	</hlayout>
+	
+	<div>
+		<label sclass="note" value="Note 1:" />
+		<label
+			value="In-House Training is paid upon completion and no workplace approval is required." />
 	</div>
-</zk>
+
+	<div>
+		<label sclass="note" value="Note 2:" />
+		<label
+			value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
+grants" />
+	</div>
+	
+	<include annexureInfo="@load(vmInhouseTraining.program.inhouse)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+</nodom>

@@ -65,10 +65,6 @@
 							if="${vm.programType.isCetTvet()}"
 							programCetTvetInfo="@load(vm.programCetTvetInfo)"
 							src="@load((WebForm.getBundleResourcePath('component/programCetTvetInfo.zul')))" />
-						<include
-							if="${!vm.programType.isCetTvet()}"
-							programInfo="@load(vm.programInfo)"
-							src="@load((WebForm.getBundleResourcePath('component/programInfo.zul')))" />
 						
 						<include
 							if="${vm.programType eq ProgramType.CANDIDACY}"
@@ -92,13 +88,52 @@
 						<!-- DGA_Form_Cluster 2 for 2025-2026 FY.pdf -->
 						<include
 							if="${vm.programType eq ProgramType.ARTISAN_AIDES}"
-							program="@load(vm.artisanAidesProgram)"
+							program="@load(vm.artisanAides)"
 							src="@load((WebForm.getBundleResourcePath('program/artisanAides.zul')))" />	
 						<include
 							if="${vm.programType eq ProgramType.ARTISAN_DEV}"
-							program="@load(vm.artisanDevProgram)"
+							program="@load(vm.artisanDev)"
 							src="@load((WebForm.getBundleResourcePath('program/artisanDev.zul')))" />	
+						<include
+							if="${vm.programType eq ProgramType.CENTRE_SPECIALISATION}"
+							program="@load(vm.centreOfSpecialisation)"
+							src="@load((WebForm.getBundleResourcePath('program/centreOfSpecialisation.zul')))" />	
+
+						<include
+							if="${vm.programType eq ProgramType.ARTISAN_RPL}"
+							program="@load(vm.artisanRPL)"
+							src="@load((WebForm.getBundleResourcePath('program/artisanRPL.zul')))" />	
 											
+<include
+							if="${vm.programType eq ProgramType.NON_ARTISAN_DEV}"
+							program="@load(vm.nonArtisanDev)"
+							src="@load((WebForm.getBundleResourcePath('program/nonArtisanDev.zul')))" />
+
+<include
+							if="${vm.programType eq ProgramType.NON_ARTISAN_DEV_RPL}"
+							program="@load(vm.nonArtisanDevRPL)"
+							src="@load((WebForm.getBundleResourcePath('program/nonArtisanDevRPL.zul')))" />
+
+<include
+							if="${vm.programType eq ProgramType.NCV_GRADUATES}"
+							program="@load(vm.ncvGraduates)"
+							src="@load((WebForm.getBundleResourcePath('program/ncvGraduates.zul')))" />
+
+<include
+							if="${vm.programType eq ProgramType.AET}"
+							program="@load(vm.aet)"
+							src="@load((WebForm.getBundleResourcePath('program/aet.zul')))" />
+
+<include
+							if="${vm.programType eq ProgramType.OHASSP}"
+							program="@load(vm.ohassp)"
+							src="@load((WebForm.getBundleResourcePath('program/ohassp.zul')))" />
+
+<include
+							if="${vm.programType eq ProgramType.INHOUSE_TRAINING}"
+							program="@load(vm.inhouseTraining)"
+							src="@load((WebForm.getBundleResourcePath('program/inhouseTraining.zul')))" />
+
 					</div>
 					<div sclass="formBottomPanel">
 		        		<button label="Prev" 

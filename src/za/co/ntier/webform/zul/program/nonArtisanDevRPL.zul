@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-	<div
-		viewModel="@id('vmNonArtisanDevRPL') @init('za.co.ntier.webform.form.viewmodel.program.NonArtisanDevRPLVMWrapper')">
-		<div>
-			<label value="Note 1:" />
-			<label value="Non- Artisan RPL is paid upon completion (for Mining and Mining Contractors)" />
-		</div>
-		<div>
-			<label value="Note 2:" />
-			<label value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
-grants." />
-		</div>
-		
-		<include 
-				learnerInputTableInfo="@load(vmNonArtisanDevRPL.nonArtisanDevRPLInfo.tableInfo)"
-				src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmNonArtisanDevRPL') @init('za.co.ntier.webform.form.viewmodel.program.NonArtisanDevRPLVMWrapper')">
+		<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="NON-ARTISAN DEVELOPMENT (RPL) GRANT" />
+	</hlayout>
+	
+	
+	<div>
+		<label value="Note 1:" />
+		<label
+			value="Non- Artisan RPL is paid upon completion (for Mining and Mining Contractors)" />
 	</div>
-</zk>
+	<div>
+		<label value="Note 2:" />
+		<label
+			value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
+grants." />
+	</div>
+
+	<include
+		annexureInfo="@load(vmNonArtisanDevRPL.program.totalNumApplied)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+</nodom>

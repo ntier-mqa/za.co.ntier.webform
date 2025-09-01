@@ -1,25 +1,36 @@
 package za.co.ntier.webform.form.bean.program;
 
-import za.co.ntier.webform.form.bean.OneLineTableInfo;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.bean.AnnexureInfo;
+import za.co.ntier.webform.form.bean.ColumnInfo;
+import za.co.ntier.webform.form.bean.ProjectInput;
 
 public class NonArtisanDevRPLProgram {
-	private OneLineTableInfo tableInfo;
-
-	/**
-	 * @return the tableInfo
-	 */
-	public OneLineTableInfo getTableInfo() {
-		return tableInfo;
-	}
-
-	/**
-	 * @param tableInfo the tableInfo to set
-	 */
-	public void setTableInfo(OneLineTableInfo tableInfo) {
-		this.tableInfo = tableInfo;
-	}
+	private AnnexureInfo totalNumApplied;
 	
-	public NonArtisanDevRPLProgram() {
-		tableInfo = OneLineTableInfo.createNoTotalApplyTableInfo();
+	public NonArtisanDevRPLProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+		setTotalNumApplied(ProjectInput.getProject(
+				List.of(ColumnInfo.getColPositiveNumber("Total Number of Learners Applied For"))));
+
+}
+
+	/**
+	 * @return the totalNumApplied
+	 */
+	public AnnexureInfo getTotalNumApplied() {
+		return totalNumApplied;
 	}
+
+	/**
+	 * @param totalNumApplied the totalNumApplied to set
+	 */
+	public void setTotalNumApplied(AnnexureInfo totalNumApplied) {
+		this.totalNumApplied = totalNumApplied;
+	}
+
 }

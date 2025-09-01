@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zk xmlns:n="native">
-	<div
-		viewModel="@id('vmOhassp') @init('za.co.ntier.webform.form.viewmodel.program.OHASSPVMWrapper')">
-		<div>
-			<label sclass="note" value="Note 1:"/>
-			<label value="Occupational Health and Safety Skills Programmes are paid upon completion" />
-		</div>
-		
-		<div>
-			<label sclass="note" value="Note 2:"/>
-			<label value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
-grants." />
-		</div>
-		<include 
-			learnerInputTableInfo="@load(vmOhassp.ohasspInfo.employedTableInfo)"
-			src="@load((WebForm.getBundleResourcePath('component/learnerInputTableInfo.zul')))" />
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmOhassp') @init('za.co.ntier.webform.form.viewmodel.program.OhasspVMWrapper')">
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES GRANT" />
+	</hlayout>
+	<div>
+		<label sclass="note" value="Note 1:" />
+		<label
+			value="Occupational Health and Safety Skills Programmes are paid upon completion" />
 	</div>
-</zk>
+
+	<div>
+		<label sclass="note" value="Note 2:" />
+		<label
+			value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
+grants." />
+	</div>
+
+	<include
+		annexureInfo="@load(vmOhassp.program.healthSafetySkills)"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+</nodom>
