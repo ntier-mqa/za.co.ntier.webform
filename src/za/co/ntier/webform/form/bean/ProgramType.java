@@ -71,37 +71,4 @@ public enum ProgramType {
 		return this == CENTRE_SPECIALISATION;
 	}
 	
-	public String getProgramTitle() {
-		if (this == ProgramType.CANDIDACY)
-			return "CANDIDACY";
-		if (this == ProgramType.INTERNSHIP)
-			return "INTERNSHIP";
-		if (this == ProgramType.EXPERIENCE)
-			return "WORK EXPERIENCE AND VACATION WORK";
-		if (this == ProgramType.DEV_PROGRAM)
-			return "MANAGEMENT AND EXECUTIVE DEVELOPMENT PROGRAMME (MEDP) SPECIFIC GUIDELINES";
-		if (this == ProgramType.ARTISAN_AIDES)
-			return "ARTISAN AIDES GRANT";
-		if (this == ProgramType.ARTISAN_DEV)
-			return "ARTISAN DEVELOPMENT GRANT";
-		if (this == ProgramType.CENTRE_SPECIALISATION)
-			return "CENTRE OF SPECIALISATION GRANT";
-		if (this == ProgramType.ARTISAN_RPL)
-			return "ARTISAN RPL GRANT";
-		if (this == ProgramType.NON_ARTISAN_DEV)
-			return "NON-ARTISAN DEVELOPMENT GRANT";
-		if (this == ProgramType.NON_ARTISAN_DEV_RPL)
-			return "NON-ARTISAN DEVELOPMENT (RPL) GRANT";
-		if (this == ProgramType.NCV_GRADUATES)
-			return "NCV (LEVEL 4 GRADUATES) GRANT";
-		if (this == ProgramType.AET)
-			return "AET GRANT";
-		if (this == ProgramType.OHASSP)
-			return "OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES GRANT";
-		if (this == ProgramType.INHOUSE_TRAINING)
-			return "IN-HOUSE TRAINING";
-		else
-			return programType.toString();
-	}
-	
 }
