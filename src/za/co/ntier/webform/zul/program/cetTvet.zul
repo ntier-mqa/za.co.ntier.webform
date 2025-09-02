@@ -18,12 +18,7 @@
 				src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 
-			<!-- sub annexure -->
-			<nodom if="${annexure.subAnnexure ne null}">
-				<include annexureInfo="@load(annexure.subAnnexure)"
-					src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
-				
-			</nodom>
+
 		</template>
 
 

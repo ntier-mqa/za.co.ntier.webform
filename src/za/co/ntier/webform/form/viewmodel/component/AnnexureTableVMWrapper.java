@@ -25,9 +25,17 @@ public class AnnexureTableVMWrapper {
 		return annexureInfo;
 	}
 
+	private boolean isSubAnnexure = false;
+	
 	@Init
-	public void init(@ExecutionArgParam("annexureInfo") AnnexureInfo annexureInfo) {
+	public void init(@ExecutionArgParam("annexureInfo") AnnexureInfo annexureInfo,
+			@ExecutionArgParam("isSubAnnexure") Boolean isSubAnnexure
+			) {
 		this.setAnnexureInfo(annexureInfo);
+		if (isSubAnnexure == null)
+			this.isSubAnnexure = false;
+		else
+			this.isSubAnnexure = isSubAnnexure;
 	}
 
 	@Command
@@ -57,5 +65,19 @@ public class AnnexureTableVMWrapper {
 	@Command
 	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure) {
 		annexure.addRow();
+	}
+
+	/**
+	 * @return the isSubAnnexure
+	 */
+	public boolean isSubAnnexure() {
+		return isSubAnnexure;
+	}
+
+	/**
+	 * @param isSubAnnexure the isSubAnnexure to set
+	 */
+	public void setSubAnnexure(boolean isSubAnnexure) {
+		this.isSubAnnexure = isSubAnnexure;
 	}
 }

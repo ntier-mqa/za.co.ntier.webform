@@ -25,7 +25,7 @@
 			<nodom if="${rowStatus.first}">
 				<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
 					<template name="children" var="titleCol">
-						<div sclass="grid-cell grid-header-cell">
+						<div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-header':'grid-cell grid-header-cell'))">
 							<label value="@init(titleCol.title)" />
 						</div>
 					</template>
@@ -132,7 +132,7 @@
 			<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)"
 				if="${vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last}">
 				<template name="children" var="totalCol">
-					<div sclass="grid-cell grid-footer-cell"
+					<div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-footer':'grid-cell grid-footer-cell'))"
 						visible="@load((vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last))">
 						<nodom if="${totalCol.dataType == DataType.Label}">
 							<label
@@ -152,4 +152,13 @@
 
 
 	</div>
+	
+	<!-- sub annexure -->
+	<nodom if="${vmAnnexure.annexureInfo.subAnnexure ne null}">
+		<include 
+			annexureInfo="@load(vmAnnexure.annexureInfo.subAnnexure)"
+			isSubAnnexure="@init('true')"
+			src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+		
+	</nodom>
 </nodom>
