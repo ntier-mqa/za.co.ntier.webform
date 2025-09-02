@@ -31,7 +31,7 @@ public class X_ZZ_Program_Trade extends PO implements I_ZZ_Program_Trade, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250819L;
+	private static final long serialVersionUID = 20250903L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Trade (Properties ctx, int ZZ_Program_Trade_ID, String trxName)

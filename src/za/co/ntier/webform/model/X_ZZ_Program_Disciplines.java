@@ -31,7 +31,7 @@ public class X_ZZ_Program_Disciplines extends PO implements I_ZZ_Program_Discipl
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250819L;
+	private static final long serialVersionUID = 20250903L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Disciplines (Properties ctx, int ZZ_Program_Disciplines_ID, String trxName)
