@@ -9,12 +9,12 @@ import za.co.ntier.webform.form.bean.ProjectInput;
 
 public class ArtisanRPLProgram {
 	private AnnexureInfo allLearners;
-	
-	public ArtisanRPLProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		allLearners = ProjectInput.getProject(
-				List.of(ColumnInfo.getColPositiveNumber("No. of Employed Learners"),
-						ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"),
-						ColumnInfo.getColPositiveNumber("Total No. of Learners Applied For")));
+
+	public ArtisanRPLProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		allLearners = ProjectInput.getProject(List.of(ColumnInfo.getColPositiveNumber("No. of Employed Learners"),
+				ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"),
+				ColumnInfo.getColPositiveNumber("Total No. of Learners Applied For")));
 	}
 
 	/**

@@ -37,39 +37,10 @@ public class OrganisationInfo {
 	private String siteSDLNumber;
 	private String siteSDLNumberTitle = "Site SDL Number (if applicable)";
 	private int bPartnerId;
-	
+
 	private MenuContextInfo menuContextInfo;
-	
-	
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
 
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
-
-	public String getCetTvetNameTitle() {
-		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
-			return "Name of CET College";
-		}else if(ProgramType.TVET.equals(menuContextInfo.getProgramType()) ||
-				ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType()))
-			return "Name of TVET College";
-		else
-			return "unknownCetNameTitle";
-	}
-	
 	private X_C_BPartner cetTvetCollegeSelected;
-	
-	public List<X_C_BPartner> getCetTvetColleges() {
-		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
-			return MasterUtil.getCetColleges();
-		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())
-				|| ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType())) {
-			return MasterUtil.getTvetColleges();
-		}
-		return null;
-	}
 
 	public OrganisationInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
@@ -77,7 +48,6 @@ public class OrganisationInfo {
 
 		physicalAddressInfo = new AddressInfo(AddressType.PHYSICAL, null);
 
-		
 		if (!menuContextInfo.getProgramType().isCetTvet()) {
 			orgSizeInfo = new OrganisationSizeInfo();
 
@@ -94,6 +64,56 @@ public class OrganisationInfo {
 		return alternateOrgContact;
 	}
 
+	public int getbPartnerId() {
+		return bPartnerId;
+	}
+
+	public List<X_C_BPartner> getCetTvetColleges() {
+		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
+			return MasterUtil.getCetColleges();
+		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())
+				|| ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType())) {
+			return MasterUtil.getTvetColleges();
+		}
+		return null;
+	}
+
+	public X_C_BPartner getCetTvetCollegeSelected() {
+		return cetTvetCollegeSelected;
+	}
+
+	public String getCetTvetNameTitle() {
+		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
+			return "Name of CET College";
+		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())
+				|| ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType()))
+			return "Name of TVET College";
+		else
+			return "unknownCetNameTitle";
+	}
+
+	/**
+	 * @return the fileNameVATCer
+	 */
+	public String getFileNameVATCer() {
+		return fileNameVATCer;
+	}
+
+	public String getFullPathVATCer() {
+		return fullPathVATCer;
+	}
+
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
+	}
+
+	/**
+	 * @return the orgContact
+	 */
+	public AddressInfo getOrgContact() {
+		return orgContact;
+	}
+
 	/**
 	 * @return the orgName
 	 */
@@ -106,34 +126,6 @@ public class OrganisationInfo {
 	 */
 	public String getOrgNameTitle() {
 		return orgNameTitle;
-	}
-
-	/**
-	 * @return the orgTaxNumber
-	 */
-	public String getOrgTaxNumber() {
-		return orgTaxNumber;
-	}
-
-	/**
-	 * @return the orgTaxNumberTitle
-	 */
-	public String getOrgTaxNumberTitle() {
-		return orgTaxNumberTitle;
-	}
-
-	/**
-	 * @return the fileNameVATCer
-	 */
-	public String getFileNameVATCer() {
-		return fileNameVATCer;
-	}
-
-	/**
-	 * @return the orgContact
-	 */
-	public AddressInfo getOrgContact() {
-		return orgContact;
 	}
 
 	/**
@@ -155,6 +147,20 @@ public class OrganisationInfo {
 	 */
 	public OrganisationSizeInfo getOrgSizeInfo() {
 		return orgSizeInfo;
+	}
+
+	/**
+	 * @return the orgTaxNumber
+	 */
+	public String getOrgTaxNumber() {
+		return orgTaxNumber;
+	}
+
+	/**
+	 * @return the orgTaxNumberTitle
+	 */
+	public String getOrgTaxNumberTitle() {
+		return orgTaxNumberTitle;
 	}
 
 	/**
@@ -199,11 +205,67 @@ public class OrganisationInfo {
 		return siteSDLNumberTitle;
 	}
 
+	public void sdlNumberChange() {
+		X_C_BPartner bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
+				String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null).setParameters(sdlNumber).first();
+
+		if (bPartner != null) {
+			orgName = bPartner.getName();
+			orgTaxNumber = bPartner.getTaxID();
+			orgRegistrationNumber = bPartner.getReferenceNo();
+			BindUtils.postNotifyChange(this, "orgName", "orgTaxNumber", "orgRegistrationNumber");
+
+			orgSizeInfo.setNumOfEmployer(bPartner.get_ValueAsInt("ZZ_Number_Of_Employees"));
+
+			int prevApprovedCount = DB.getSQLValueEx(null, String.format(
+					"SELECT Count (*) FROM ZZ_WSP_ATR_Approvals WHERE C_BPartner_ID = ? AND ZZ_Grant_Status = 'A'"),
+					bPartner.getC_BPartner_ID());
+
+			orgSizeInfo.setSubmittedWSP(prevApprovedCount > 0);
+			BindUtils.postNotifyChange(orgSizeInfo, "submittedWSPText", "numOfEmployer");
+
+			bPartnerId = bPartner.getC_BPartner_ID();
+		} else {
+			bPartnerId = 0;
+		}
+	}
+
 	/**
 	 * @param alternateOrgContact the alternateOrgContact to set
 	 */
 	public void setAlternateOrgContact(AddressInfo alternateOrgContact) {
 		this.alternateOrgContact = alternateOrgContact;
+	}
+
+	public void setbPartnerId(int bPartnerId) {
+		this.bPartnerId = bPartnerId;
+	}
+
+	public void setCetTvetCollegeSelected(X_C_BPartner cetTvetCollegeSelected) {
+		this.cetTvetCollegeSelected = cetTvetCollegeSelected;
+	}
+
+	/**
+	 * @param fileNameVATCer the fileNameVATCer to set
+	 */
+	public void setFileNameVATCer(String fileNameVATCer) {
+		this.fileNameVATCer = fileNameVATCer;
+		BindUtils.postNotifyChange(this, "fileNameVATCer");
+	}
+
+	public void setFullPathVATCer(String fullPathVATCer) {
+		this.fullPathVATCer = fullPathVATCer;
+	}
+
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
+	}
+
+	/**
+	 * @param orgContact the orgContact to set
+	 */
+	public void setOrgContact(AddressInfo orgContact) {
+		this.orgContact = orgContact;
 	}
 
 	/**
@@ -218,35 +280,6 @@ public class OrganisationInfo {
 	 */
 	public void setOrgNameTitle(String orgNameTitle) {
 		this.orgNameTitle = orgNameTitle;
-	}
-
-	/**
-	 * @param orgTaxNumber the orgTaxNumber to set
-	 */
-	public void setOrgTaxNumber(String orgTaxNumber) {
-		this.orgTaxNumber = orgTaxNumber;
-	}
-
-	/**
-	 * @param orgTaxNumberTitle the orgTaxNumberTitle to set
-	 */
-	public void setOrgTaxNumberTitle(String orgTaxNumberTitle) {
-		this.orgTaxNumberTitle = orgTaxNumberTitle;
-	}
-
-	/**
-	 * @param fileNameVATCer the fileNameVATCer to set
-	 */
-	public void setFileNameVATCer(String fileNameVATCer) {
-		this.fileNameVATCer = fileNameVATCer;
-		BindUtils.postNotifyChange(this, "fileNameVATCer");
-	}
-
-	/**
-	 * @param orgContact the orgContact to set
-	 */
-	public void setOrgContact(AddressInfo orgContact) {
-		this.orgContact = orgContact;
 	}
 
 	/**
@@ -268,6 +301,20 @@ public class OrganisationInfo {
 	 */
 	public void setOrgSizeInfo(OrganisationSizeInfo orgSizeInfo) {
 		this.orgSizeInfo = orgSizeInfo;
+	}
+
+	/**
+	 * @param orgTaxNumber the orgTaxNumber to set
+	 */
+	public void setOrgTaxNumber(String orgTaxNumber) {
+		this.orgTaxNumber = orgTaxNumber;
+	}
+
+	/**
+	 * @param orgTaxNumberTitle the orgTaxNumberTitle to set
+	 */
+	public void setOrgTaxNumberTitle(String orgTaxNumberTitle) {
+		this.orgTaxNumberTitle = orgTaxNumberTitle;
 	}
 
 	/**
@@ -316,57 +363,5 @@ public class OrganisationInfo {
 		setFileNameVATCer(media.getName());
 		fullPathVATCer = MasterUtil.saveUploadFile(media);
 
-	}
-	
-	public void sdlNumberChange() {
-		X_C_BPartner bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name, 
-				String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null)
-				.setParameters(sdlNumber)
-				.first();
-		
-		if (bPartner != null) {
-			orgName = bPartner.getName();
-			orgTaxNumber = bPartner.getTaxID();
-			orgRegistrationNumber = bPartner.getReferenceNo();
-			BindUtils.postNotifyChange(this, "orgName", "orgTaxNumber", "orgRegistrationNumber");
-			
-			orgSizeInfo.setNumOfEmployer(bPartner.get_ValueAsInt("ZZ_Number_Of_Employees"));
-			
-			int prevApprovedCount = DB.getSQLValueEx(null, 
-					String.format("SELECT Count (*) FROM ZZ_WSP_ATR_Approvals WHERE C_BPartner_ID = ? AND ZZ_Grant_Status = 'A'"), 
-					bPartner.getC_BPartner_ID());
-			
-			
-			orgSizeInfo.setSubmittedWSP(prevApprovedCount > 0);
-			BindUtils.postNotifyChange(orgSizeInfo, "submittedWSPText", "numOfEmployer");
-			
-			bPartnerId = bPartner.getC_BPartner_ID();
-		}else {
-			bPartnerId = 0;
-		}
-	}
-
-	public X_C_BPartner getCetTvetCollegeSelected() {
-		return cetTvetCollegeSelected;
-	}
-
-	public void setCetTvetCollegeSelected(X_C_BPartner cetTvetCollegeSelected) {
-		this.cetTvetCollegeSelected = cetTvetCollegeSelected;
-	}
-
-	public String getFullPathVATCer() {
-		return fullPathVATCer;
-	}
-
-	public void setFullPathVATCer(String fullPathVATCer) {
-		this.fullPathVATCer = fullPathVATCer;
-	}
-
-	public int getbPartnerId() {
-		return bPartnerId;
-	}
-
-	public void setbPartnerId(int bPartnerId) {
-		this.bPartnerId = bPartnerId;
 	}
 }

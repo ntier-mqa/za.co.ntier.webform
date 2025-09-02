@@ -5,222 +5,200 @@
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
-<div sclass="test" style="height:100%" xmlns:n="native"
-		viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM')">
-	
+<div style="height:100%" xmlns:n="native"
+	viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM')">
+
 	<label sclass="formHeader" value="@init(vm.formInfo.formHeader)" />
-	
+
 	<tabbox width="100%" vflex="1" id="formTab">
-	    <tabs>
-	        <tab label="Declaration" />
-	        <tab label="Organisation Information" />
-	        <tab label="Program" />
-	        <tab label="Program Contact" />
-	        <tab label="Upload Document" visible="@load(vm.showUploadDoc)" />
-	        
-	    </tabs>
-	    <tabpanels>
-	        <tabpanel style="color:#336699">
-		        <div sclass="tabContainer">
-		        	<div sclass="formContainer">
-		        		<include menuContextInfo="@load(vm.menuContextInfo)"
-						src="@load((WebForm.getBundleResourcePath('component/generalAppRule.zul')))" />
-						
-						<include employerDeclarationInfo="@load(vm.employerDeclarationInfo)"
-						src="@load((WebForm.getBundleResourcePath('component/employerDeclaration.zul')))" />
-		        	</div>
-		        	
-		        	<div sclass="formBottomPanel">
-		        		<button label="Cancel Application" 
-		        			iconSclass="z-icon-xmark"
-		        			onClick="@command('cancelApp')"/>
-		        			
-		        		<button label="Save &amp; Continue" 
-		        			sclass="icon-on-right"
-		        			iconSclass="z-icon-arrow-right"
-		        			onClick="@command('nextTab', tab=formTab)"/>
-		        	</div>
-		        </div>
-	        </tabpanel>
-	        
-	        <tabpanel style="color:#663366;">
-		        <div sclass="tabContainer">
-		        	<div sclass="formContainer">
-		        		<include 
-			        		organisationInfo="@load(vm.organisationInfo)"
+		<tabs>
+			<tab label="Declaration" />
+			<tab label="Organisation Information" />
+			<tab label="Program" />
+			<tab label="Program Contact" />
+			<tab label="Upload Document" visible="@load(vm.showUploadDoc)" />
+
+		</tabs>
+		<tabpanels>
+			<tabpanel style="color:#336699">
+				<div sclass="tabContainer">
+					<div sclass="formContainer">
+						<include menuContextInfo="@load(vm.menuContextInfo)"
+							src="@load((WebForm.getBundleResourcePath('component/generalAppRule.zul')))" />
+
+						<include
+							employerDeclarationInfo="@load(vm.employerDeclarationInfo)"
+							src="@load((WebForm.getBundleResourcePath('component/employerDeclaration.zul')))" />
+					</div>
+
+					<div sclass="formBottomPanel">
+						<button label="Cancel Application"
+							iconSclass="z-icon-xmark" onClick="@command('cancelApp')" />
+
+						<button label="Save &amp; Continue" sclass="icon-on-right"
+							iconSclass="z-icon-arrow-right"
+							onClick="@command('nextTab', tab=formTab)" />
+					</div>
+				</div>
+			</tabpanel>
+
+			<tabpanel style="color:#663366;">
+				<div sclass="tabContainer">
+					<div sclass="formContainer">
+						<include organisationInfo="@load(vm.organisationInfo)"
 							src="@load((WebForm.getBundleResourcePath('component/organisationInfo.zul')))" />
-		        	</div>
-		        	<div sclass="formBottomPanel">
-		        		<button label="Back" 
-		        			iconSclass="z-icon-arrow-left"
-		        			onClick="@command('prevTab', tab=formTab)"/>
-		        		
-		        		<button label="Save &amp; Continue" 
-		        			sclass="icon-on-right"
-		        			iconSclass="z-icon-arrow-right"
-		        			onClick="@command('nextTab', tab=formTab)"/>
-		        	</div>
-		        </div>
-	        </tabpanel>
-	        
-	        <tabpanel style="color:#CC0033;overflow: scroll;">
-		        <div sclass="tabContainer">
-		        	<div sclass="formContainer">
-			        	<include
-							if="${vm.programType.isCetTvet()}"
+					</div>
+					<div sclass="formBottomPanel">
+						<button label="Back" iconSclass="z-icon-arrow-left"
+							onClick="@command('prevTab', tab=formTab)" />
+
+						<button label="Save &amp; Continue" sclass="icon-on-right"
+							iconSclass="z-icon-arrow-right"
+							onClick="@command('nextTab', tab=formTab)" />
+					</div>
+				</div>
+			</tabpanel>
+
+			<tabpanel style="color:#CC0033;overflow: scroll;">
+				<div sclass="tabContainer">
+					<div sclass="formContainer">
+						<include if="${vm.programType.isCetTvet()}"
 							programCetTvetInfo="@load(vm.programCetTvetInfo)"
 							src="@load((WebForm.getBundleResourcePath('component/programCetTvetInfo.zul')))" />
-						
-						<include
-							if="${vm.programType eq ProgramType.CANDIDACY}"
+
+						<include if="${vm.programType eq ProgramType.CANDIDACY}"
 							program="@load(vm.candidacy)"
 							src="@load((WebForm.getBundleResourcePath('program/candidacy.zul')))" />
-						
-						<include
-							if="${vm.programType eq ProgramType.INTERNSHIP}"
+
+						<include if="${vm.programType eq ProgramType.INTERNSHIP}"
 							program="@load(vm.internship)"
 							src="@load((WebForm.getBundleResourcePath('program/internship.zul')))" />
-						
-						<include
-							if="${vm.programType eq ProgramType.EXPERIENCE}"
+
+						<include if="${vm.programType eq ProgramType.EXPERIENCE}"
 							program="@load(vm.workExperience)"
-							src="@load((WebForm.getBundleResourcePath('program/workExperience.zul')))" />	
-						<include
-							if="${vm.programType eq ProgramType.DEV_PROGRAM}"
+							src="@load((WebForm.getBundleResourcePath('program/workExperience.zul')))" />
+						<include if="${vm.programType eq ProgramType.DEV_PROGRAM}"
 							program="@load(vm.medp)"
-							src="@load((WebForm.getBundleResourcePath('program/medp.zul')))" />	
-							
+							src="@load((WebForm.getBundleResourcePath('program/medp.zul')))" />
+
 						<!-- DGA_Form_Cluster 2 for 2025-2026 FY.pdf -->
 						<include
 							if="${vm.programType eq ProgramType.ARTISAN_AIDES}"
 							program="@load(vm.artisanAides)"
-							src="@load((WebForm.getBundleResourcePath('program/artisanAides.zul')))" />	
-						<include
-							if="${vm.programType eq ProgramType.ARTISAN_DEV}"
+							src="@load((WebForm.getBundleResourcePath('program/artisanAides.zul')))" />
+						<include if="${vm.programType eq ProgramType.ARTISAN_DEV}"
 							program="@load(vm.artisanDev)"
-							src="@load((WebForm.getBundleResourcePath('program/artisanDev.zul')))" />	
+							src="@load((WebForm.getBundleResourcePath('program/artisanDev.zul')))" />
 						<include
 							if="${vm.programType eq ProgramType.CENTRE_SPECIALISATION}"
 							program="@load(vm.centreOfSpecialisation)"
-							src="@load((WebForm.getBundleResourcePath('program/centreOfSpecialisation.zul')))" />	
+							src="@load((WebForm.getBundleResourcePath('program/centreOfSpecialisation.zul')))" />
+
+						<include if="${vm.programType eq ProgramType.ARTISAN_RPL}"
+							program="@load(vm.artisanRPL)"
+							src="@load((WebForm.getBundleResourcePath('program/artisanRPL.zul')))" />
 
 						<include
-							if="${vm.programType eq ProgramType.ARTISAN_RPL}"
-							program="@load(vm.artisanRPL)"
-							src="@load((WebForm.getBundleResourcePath('program/artisanRPL.zul')))" />	
-											
-<include
 							if="${vm.programType eq ProgramType.NON_ARTISAN_DEV}"
 							program="@load(vm.nonArtisanDev)"
 							src="@load((WebForm.getBundleResourcePath('program/nonArtisanDev.zul')))" />
 
-<include
+						<include
 							if="${vm.programType eq ProgramType.NON_ARTISAN_DEV_RPL}"
 							program="@load(vm.nonArtisanDevRPL)"
 							src="@load((WebForm.getBundleResourcePath('program/nonArtisanDevRPL.zul')))" />
 
-<include
+						<include
 							if="${vm.programType eq ProgramType.NCV_GRADUATES}"
 							program="@load(vm.ncvGraduates)"
 							src="@load((WebForm.getBundleResourcePath('program/ncvGraduates.zul')))" />
 
-<include
-							if="${vm.programType eq ProgramType.AET}"
+						<include if="${vm.programType eq ProgramType.AET}"
 							program="@load(vm.aet)"
 							src="@load((WebForm.getBundleResourcePath('program/aet.zul')))" />
 
-<include
-							if="${vm.programType eq ProgramType.OHASSP}"
+						<include if="${vm.programType eq ProgramType.OHASSP}"
 							program="@load(vm.ohassp)"
 							src="@load((WebForm.getBundleResourcePath('program/ohassp.zul')))" />
 
-<include
+						<include
 							if="${vm.programType eq ProgramType.INHOUSE_TRAINING}"
 							program="@load(vm.inhouseTraining)"
 							src="@load((WebForm.getBundleResourcePath('program/inhouseTraining.zul')))" />
 
 					</div>
 					<div sclass="formBottomPanel">
-		        		<button label="Back" 
-		        			iconSclass="z-icon-arrow-left"
-		        			onClick="@command('prevTab', tab=formTab)"/>
-		        		
-		        		<button label="Save &amp; Continue"
-		        			sclass="icon-on-right"
-		        			iconSclass="z-icon-arrow-right"
-		        			onClick="@command('nextTab', tab=formTab)"/>
-		        	</div>
-		        </div>
-	        </tabpanel>
-	        <tabpanel style="color:#CC3300;overflow: scroll;">
-	        	<div sclass="tabContainer">
-		        	<div sclass="formContainer">
-				        <include if="${vm.programType.isShowMainAddress()}"
+						<button label="Back" iconSclass="z-icon-arrow-left"
+							onClick="@command('prevTab', tab=formTab)" />
+
+						<button label="Save &amp; Continue" sclass="icon-on-right"
+							iconSclass="z-icon-arrow-right"
+							onClick="@command('nextTab', tab=formTab)" />
+					</div>
+				</div>
+			</tabpanel>
+			<tabpanel style="color:#CC3300;overflow: scroll;">
+				<div sclass="tabContainer">
+					<div sclass="formContainer">
+						<include if="${vm.programType.isShowMainAddress()}"
 							addressInfo="@load(vm.programContact)"
 							src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
-					
+
 						<include if="${vm.programType.isShowMainAddressAlter()}"
 							addressInfo="@load(vm.alternateProgramContact)"
-							src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />	
+							src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 					</div>
 					<div sclass="formBottomPanel">
-		        		<button label="Back" 
-		        			iconSclass="z-icon-arrow-left"
-		        			onClick="@command('prevTab', tab=formTab)"/>
-		        		
-		        		<nodom if= "${vm.isShowUploadDoc()}">
-		        			<button label="Save &amp; Continue"
-			        			sclass="icon-on-right"
-			        			iconSclass="z-icon-arrow-right"
-			        			onClick="@command('nextTab', tab=formTab)"/>
-		        		</nodom>
-		        		
-		        		<nodom if= "${!vm.isShowUploadDoc()}">
-		        			<button label="Submit Application" 
-		        			iconSclass="z-icon-gear"
-		        			sclass="icon-on-right"
-		        			onClick="@command('submitApplication')"/>
-		        		</nodom>
-		        	</div>
-		        </div>
-	        </tabpanel>
-	        
-	        
-		        <tabpanel style="color:#CC3300;overflow: scroll;" visible="@load(vm.showUploadDoc)" >
-		        	<div if="${vm.showUploadDoc}"
-		        		sclass="tabContainer">
-			        	<div sclass="formContainer">
-					        <include
-								component="@load(vm.uploadDoc)"
-								src="@load((WebForm.getBundleResourcePath('component/uploadDoc.zul')))" />
-						</div>
-						<div sclass="formBottomPanel">
-			        		<button label="Back" 
-			        			iconSclass="z-icon-arrow-left"
-			        			onClick="@command('prevTab', tab=formTab)"/>
-			        		
-			        		<button label="Submit Application" 
-			        			iconSclass="z-icon-gear"
-			        			sclass="icon-on-right"
-			        			onClick="@command('submitApplication')"/>
-			        	</div>
-			        </div>
-		        </tabpanel>
-		    
-	        
-	    </tabpanels>
+						<button label="Back" iconSclass="z-icon-arrow-left"
+							onClick="@command('prevTab', tab=formTab)" />
+
+						<nodom if="${vm.isShowUploadDoc()}">
+							<button label="Save &amp; Continue" sclass="icon-on-right"
+								iconSclass="z-icon-arrow-right"
+								onClick="@command('nextTab', tab=formTab)" />
+						</nodom>
+
+						<nodom if="${!vm.isShowUploadDoc()}">
+							<button label="Submit Application"
+								iconSclass="z-icon-gear" sclass="icon-on-right"
+								onClick="@command('submitApplication')" />
+						</nodom>
+					</div>
+				</div>
+			</tabpanel>
+
+
+			<tabpanel style="color:#CC3300;overflow: scroll;"
+				visible="@load(vm.showUploadDoc)">
+				<div if="${vm.showUploadDoc}" sclass="tabContainer">
+					<div sclass="formContainer">
+						<include component="@load(vm.uploadDoc)"
+							src="@load((WebForm.getBundleResourcePath('component/uploadDoc.zul')))" />
+					</div>
+					<div sclass="formBottomPanel">
+						<button label="Back" iconSclass="z-icon-arrow-left"
+							onClick="@command('prevTab', tab=formTab)" />
+
+						<button label="Submit Application" iconSclass="z-icon-gear"
+							sclass="icon-on-right" onClick="@command('submitApplication')" />
+					</div>
+				</div>
+			</tabpanel>
+
+
+		</tabpanels>
 	</tabbox>
-	
-	<window title="Done" width="300px" mode="modal" position="center,center" if="${vm.showDialog}">
-    
+
+	<window title="Done" width="300px" mode="modal"
+		position="center,center" if="${vm.showDialog}">
+
 		<div class="modal-body">
-        <label value="The application form has been created."/>
-      </div>
-      <div class="modal-footer">
-        <button sclass="btn btn-primary"
-        label="OK"
-        onClick="@command('closeDialog')" />
-      </div>
-   		
-    </window>
+			<label value="The application form has been created." />
+		</div>
+		<div class="modal-footer">
+			<button sclass="btn btn-primary" label="OK"
+				onClick="@command('closeDialog')" />
+		</div>
+
+	</window>
 </div>

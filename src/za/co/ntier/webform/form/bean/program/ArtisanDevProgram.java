@@ -17,9 +17,9 @@ public class ArtisanDevProgram {
 	public ArtisanDevProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		setTrade(ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), null));
-		
-		setTotalNumApplied(ProjectInput.getProject(
-				List.of(ColumnInfo.getColPositiveNumber("Total Number of Learners Applied For"))));
+
+		setTotalNumApplied(ProjectInput
+				.getProject(List.of(ColumnInfo.getColPositiveNumber("Total Number of Learners Applied For"))));
 
 	}
 

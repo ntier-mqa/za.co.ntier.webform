@@ -23,7 +23,7 @@ public class FormInfo {
 			MYear fiscalYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
 			year = fiscalYear.getYearAsInt();
 		}
-		
+
 		this.formHeader = String.format("%s - %d/%d", formName, year, year + 1);
 		this.orgName = "COO";
 		this.revision = "02";
@@ -34,7 +34,7 @@ public class FormInfo {
 		this.approvedTitle = "Approved";
 		this.approvedDateTitle = "Date";
 	}
-	
+
 	/**
 	 * @return the approved
 	 */

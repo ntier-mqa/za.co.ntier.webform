@@ -15,8 +15,6 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import za.co.ntier.webform.form.MasterUtil;
 
 public class AnnexureInfo {
-	private String tableTitle;
-	
 	public static Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
 		return AnnexureInfo.createDetailRow(columnInfos, null);
 	}
@@ -92,9 +90,9 @@ public class AnnexureInfo {
 	 * @throws InstantiationException
 	 * @throws NoSuchMethodException
 	 */
-	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader, List<ColumnInfo<?>> columnInfos)
-			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException {
+	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
+			List<ColumnInfo<?>> columnInfos) throws NoSuchMethodException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return AnnexureInfo.getAnnexureInfoOneLine(clazz, sectionHeader, columnInfos, null, true, null);
 	}
 
@@ -111,15 +109,16 @@ public class AnnexureInfo {
 	 * @throws InstantiationException
 	 * @throws NoSuchMethodException
 	 */
-	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader, List<ColumnInfo<?>> columnInfos,
-			String rowTitle) throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
+			List<ColumnInfo<?>> columnInfos, String rowTitle) throws NoSuchMethodException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return AnnexureInfo.getAnnexureInfoOneLine(clazz, sectionHeader, columnInfos, rowTitle, false, null);
 	}
 
-	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader, List<ColumnInfo<?>> columnInfos,
-			String rowTitle, boolean isShowTotal, List<String> twoTitleValue) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
+			List<ColumnInfo<?>> columnInfos, String rowTitle, boolean isShowTotal, List<String> twoTitleValue)
+			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException {
 		T annexureInfo = AnnexureInfo.getAnnexureInfo(clazz, columnInfos, isShowTotal);
 
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
@@ -137,11 +136,13 @@ public class AnnexureInfo {
 		return annexureInfo;
 	}
 
-	public static  <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader, List<ColumnInfo<?>> columnInfos,
-			String rowTitle, List<String> twoTitleValue) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
+			List<ColumnInfo<?>> columnInfos, String rowTitle, List<String> twoTitleValue) throws NoSuchMethodException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return getAnnexureInfoOneLine(clazz, sectionHeader, columnInfos, rowTitle, false, twoTitleValue);
 	}
+
+	private String tableTitle;
 
 	private List<ColumnInfo<?>> columnInfos;
 	private List<Map<ColumnInfo<?>, Object>> rows;
@@ -188,6 +189,13 @@ public class AnnexureInfo {
 	}
 
 	/**
+	 * @return the tableTitle
+	 */
+	public String getTableTitle() {
+		return tableTitle;
+	}
+
+	/**
 	 * @return the totalRow
 	 */
 	public Map<ColumnInfo<?>, Object> getTotalRow() {
@@ -199,6 +207,21 @@ public class AnnexureInfo {
 	 */
 	public boolean isShowTotal() {
 		return showTotal;
+	}
+
+	public void numChange(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, InputEvent event) {
+		if (col.getDataType() == DataType.PositiveNumber) {
+			Integer total = 0;
+			for (Map<ColumnInfo<?>, Object> r : getRows()) {
+				if (r.get(col) != null) {
+					total += (int) r.get(col);
+				}
+			}
+
+			totalRow.put(col, total);
+			BindUtils.postNotifyChange(this, "totalRow");
+		}
+
 	}
 
 	/**
@@ -237,6 +260,13 @@ public class AnnexureInfo {
 	}
 
 	/**
+	 * @param tableTitle the tableTitle to set
+	 */
+	public void setTableTitle(String tableTitle) {
+		this.tableTitle = tableTitle;
+	}
+
+	/**
 	 * @param totalRow the totalRow to set
 	 */
 	public void setTotalRow(Map<ColumnInfo<?>, Object> totalRow) {
@@ -247,7 +277,7 @@ public class AnnexureInfo {
 		UploadInfo uploadInfoObj = (UploadInfo) row.get(col);
 		uploadInfoObj.setFileName(event.getMedia().getName());
 		uploadInfoObj.setFullPath(MasterUtil.saveUploadFile(event.getMedia()));
-		
+
 		BindUtils.postNotifyChange(row.get(col), "fileName");
 	}
 
@@ -260,35 +290,6 @@ public class AnnexureInfo {
 		}
 		totalRow.put(detailCol, total);
 		BindUtils.postNotifyChange(this, "*");
-	}
-
-	public void numChange(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, InputEvent event) {
-		if (col.getDataType() == DataType.PositiveNumber) {
-			Integer total = 0;
-			for (Map<ColumnInfo<?>, Object> r : getRows()) {
-				if (r.get(col) != null) {
-					total += (int) r.get(col);
-				}
-			}
-			
-			totalRow.put(col, total);
-			BindUtils.postNotifyChange(this, "totalRow");
-		}
-		
-	}
-
-	/**
-	 * @return the tableTitle
-	 */
-	public String getTableTitle() {
-		return tableTitle;
-	}
-
-	/**
-	 * @param tableTitle the tableTitle to set
-	 */
-	public void setTableTitle(String tableTitle) {
-		this.tableTitle = tableTitle;
 	}
 
 }

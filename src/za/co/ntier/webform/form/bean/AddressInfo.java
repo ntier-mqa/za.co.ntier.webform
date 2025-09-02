@@ -61,7 +61,7 @@ public class AddressInfo {
 	private String siteName;
 
 	private String siteNameTitle = "Site Name";
-	
+
 	private String orgName;
 
 	private String orgNameTitle = "Organisation Name";
@@ -70,17 +70,17 @@ public class AddressInfo {
 
 	private boolean isAlternate;
 
-	public AddressInfo(ProgramType programType, boolean isAlternate, MRegion provinceSelected) {
-		this(isAlternate?AddressType.MAIN_ALTER:AddressType.MAIN, provinceSelected);
-		this.isAlternate = isAlternate;
-		this.programType = programType;
-	}
-
 	public AddressInfo(AddressType addressCategory, MRegion provinceSelected) {
 		this.addressCategory = addressCategory;
 		this.provinceSelected = provinceSelected;
 	}
-	
+
+	public AddressInfo(ProgramType programType, boolean isAlternate, MRegion provinceSelected) {
+		this(isAlternate ? AddressType.MAIN_ALTER : AddressType.MAIN, provinceSelected);
+		this.isAlternate = isAlternate;
+		this.programType = programType;
+	}
+
 	public AddressType getAddressCategory() {
 		return this.addressCategory;
 	}
@@ -188,6 +188,20 @@ public class AddressInfo {
 	}
 
 	/**
+	 * @return the orgName
+	 */
+	public String getOrgName() {
+		return orgName;
+	}
+
+	/**
+	 * @return the orgNameTitle
+	 */
+	public String getOrgNameTitle() {
+		return orgNameTitle;
+	}
+
+	/**
 	 * @return the postAddress
 	 */
 	public String getPostAddress() {
@@ -213,6 +227,13 @@ public class AddressInfo {
 	 */
 	public String getPostalCodeTitle() {
 		return postalCodeTitle;
+	}
+
+	/**
+	 * @return the programTypeMenuContextKey
+	 */
+	public ProgramType getProgramType() {
+		return programType;
 	}
 
 	/**
@@ -368,6 +389,20 @@ public class AddressInfo {
 	}
 
 	/**
+	 * @param orgName the orgName to set
+	 */
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	/**
+	 * @param orgNameTitle the orgNameTitle to set
+	 */
+	public void setOrgNameTitle(String orgNameTitle) {
+		this.orgNameTitle = orgNameTitle;
+	}
+
+	/**
 	 * @param postAddress the postAddress to set
 	 */
 	public void setPostAddress(String postAddress) {
@@ -422,6 +457,13 @@ public class AddressInfo {
 	 */
 	public void setPostalCodeTitle(String postalCodeTitle) {
 		this.postalCodeTitle = postalCodeTitle;
+	}
+
+	/**
+	 * @param programTypeMenuContextKey the programTypeMenuContextKey to set
+	 */
+	public void setProgramType(ProgramType programType) {
+		this.programType = programType;
 	}
 
 	/**
@@ -492,30 +534,28 @@ public class AddressInfo {
 	}
 
 	public boolean showContact() {
-		return addressCategory == AddressType.MAIN
-				|| addressCategory == AddressType.MAIN_ALTER
-				|| addressCategory == AddressType.ORG
-				|| addressCategory == AddressType.ORG_ALTER
+		return addressCategory == AddressType.MAIN || addressCategory == AddressType.MAIN_ALTER
+				|| addressCategory == AddressType.ORG || addressCategory == AddressType.ORG_ALTER
 				|| addressCategory == AddressType.VACATION;
 	}
 
 	public boolean showGeographicAddress() {
-		return addressCategory == AddressType.MAIN
-				|| addressCategory == AddressType.MAIN_ALTER
-				|| addressCategory == AddressType.PHYSICAL
-				|| addressCategory == AddressType.POSTAL
+		return addressCategory == AddressType.MAIN || addressCategory == AddressType.MAIN_ALTER
+				|| addressCategory == AddressType.PHYSICAL || addressCategory == AddressType.POSTAL
 				|| addressCategory == AddressType.VACATION;
 	}
 
 	public boolean showLineAddress() {
-		return addressCategory == AddressType.MAIN
-				|| addressCategory == AddressType.MAIN_ALTER 
-				|| addressCategory == AddressType.PHYSICAL
-				|| addressCategory == AddressType.VACATION;
+		return addressCategory == AddressType.MAIN || addressCategory == AddressType.MAIN_ALTER
+				|| addressCategory == AddressType.PHYSICAL || addressCategory == AddressType.VACATION;
 	}
 
 	public boolean showMunicipalities() {
 		return false;
+	}
+
+	public boolean showOrgName() {
+		return programType != null && programType.isShowAddressOrgField();
 	}
 
 	public boolean showPostalAddress() {
@@ -524,52 +564,6 @@ public class AddressInfo {
 
 	public boolean showSiteName() {
 		return (programType != null && programType.isShowAddressSiteField()) || addressCategory == AddressType.VACATION;
-	}
-	
-	public boolean showOrgName() {
-		return programType != null && programType.isShowAddressOrgField();
-	}
-
-	/**
-	 * @return the orgName
-	 */
-	public String getOrgName() {
-		return orgName;
-	}
-
-	/**
-	 * @param orgName the orgName to set
-	 */
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
-	}
-
-	/**
-	 * @return the orgNameTitle
-	 */
-	public String getOrgNameTitle() {
-		return orgNameTitle;
-	}
-
-	/**
-	 * @param orgNameTitle the orgNameTitle to set
-	 */
-	public void setOrgNameTitle(String orgNameTitle) {
-		this.orgNameTitle = orgNameTitle;
-	}
-
-	/**
-	 * @return the programTypeMenuContextKey
-	 */
-	public ProgramType getProgramType() {
-		return programType;
-	}
-
-	/**
-	 * @param programTypeMenuContextKey the programTypeMenuContextKey to set
-	 */
-	public void setProgramType(ProgramType programType) {
-		this.programType = programType;
 	}
 
 }

@@ -16,39 +16,36 @@ public class ProgramCetTvetInfoVMWrapper {
 	private ProgramCetTvetInfo programCetTvetInfo;
 	private String addSubLineLabel = "add more";
 
-	@Init
-	public void init(@ExecutionArgParam("programCetTvetInfo") ProgramCetTvetInfo programCetTvetInfo) {
-		this.setProgramCetTvetInfo(programCetTvetInfo);
-	}
-
-	public ProgramCetTvetInfo getProgramCetTvetInfo() {
-		return programCetTvetInfo;
-	}
-
-	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
-		this.programCetTvetInfo = programCetTvetInfo;
+	@Command
+	public void addSubLine(@BindingParam("subAnnexure") AnnexureInfo subAnnexure) {
+		subAnnexure.addRow();
 	}
 
 	public String getAddSubLineLabel() {
 		return addSubLineLabel;
 	}
 
+	public ProgramCetTvetInfo getProgramCetTvetInfo() {
+		return programCetTvetInfo;
+	}
+
+	@Init
+	public void init(@ExecutionArgParam("programCetTvetInfo") ProgramCetTvetInfo programCetTvetInfo) {
+		this.setProgramCetTvetInfo(programCetTvetInfo);
+	}
+
 	public void setAddSubLineLabel(String addSubLineLabel) {
 		this.addSubLineLabel = addSubLineLabel;
 	}
-	
+
+	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
+		this.programCetTvetInfo = programCetTvetInfo;
+	}
+
 	@Command
-	public void subAnnexureNumChange ( 
-			@BindingParam("subAnnexure") AnnexureInfo subAnnexure,
-			@BindingParam("col") ColumnInfo<?> detailCol,
-			@ContextParam (ContextType.TRIGGER_EVENT) InputEvent event){
+	public void subAnnexureNumChange(@BindingParam("subAnnexure") AnnexureInfo subAnnexure,
+			@BindingParam("col") ColumnInfo<?> detailCol, @ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) {
 		subAnnexure.valueNumChange(detailCol);
 	}
-	
-	@Command
-	public void addSubLine(
-			@BindingParam("subAnnexure") AnnexureInfo subAnnexure){
-		subAnnexure.addRow();
-	}
-	
+
 }

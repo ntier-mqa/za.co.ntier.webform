@@ -8,8 +8,9 @@ public class OrganisationSizeInfo {
 
 	private String submittedWSPTitle = "Has the organisation submitted the WSP/ATR In previous financial year?";
 
-	public OrganisationSizeInfo() {};
-	
+	public OrganisationSizeInfo() {
+	};
+
 	/**
 	 * @return the numOfEmployer
 	 */
@@ -24,17 +25,17 @@ public class OrganisationSizeInfo {
 		return numOfEmployerTitle;
 	}
 
+	public String getSubmittedWSPText() {
+		return isSubmittedWSP ? "YES" : "NO";
+	}
+
 	/**
 	 * @return the submittedWSPTitle
 	 */
 	public String getSubmittedWSPTitle() {
 		return submittedWSPTitle;
 	}
-	
-	public String getSubmittedWSPText() {
-		return isSubmittedWSP ? "YES" : "NO";
-	}
-		
+
 	/**
 	 * @return the isSubmittedWSP
 	 */

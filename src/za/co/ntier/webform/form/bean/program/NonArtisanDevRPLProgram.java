@@ -10,14 +10,14 @@ import za.co.ntier.webform.form.bean.ProjectInput;
 
 public class NonArtisanDevRPLProgram {
 	private AnnexureInfo totalNumApplied;
-	
-	public NonArtisanDevRPLProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-		setTotalNumApplied(ProjectInput.getProject(
-				List.of(ColumnInfo.getColPositiveNumber("Total Number of Learners Applied For"))));
+	public NonArtisanDevRPLProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-}
+		setTotalNumApplied(ProjectInput
+				.getProject(List.of(ColumnInfo.getColPositiveNumber("Total Number of Learners Applied For"))));
+
+	}
 
 	/**
 	 * @return the totalNumApplied

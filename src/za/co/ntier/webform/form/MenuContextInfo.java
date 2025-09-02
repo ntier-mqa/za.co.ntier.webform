@@ -9,14 +9,22 @@ public class MenuContextInfo {
 	private ProgramType programType;
 	private String zulPath;
 	private String formTitle;
-	
-	public MenuContextInfo(ProgramType programType, String zulPath, I_ZZ_Program_Master_Data programMasterData, boolean isUploadWPAForNVC, String formTitle) {
+
+	public MenuContextInfo(ProgramType programType, String zulPath, I_ZZ_Program_Master_Data programMasterData,
+			boolean isUploadWPAForNVC, String formTitle) {
 		super();
 		this.programType = programType;
 		this.zulPath = zulPath;
 		this.programMasterData = programMasterData;
 		this.isUploadWPAForNVC = isUploadWPAForNVC;
 		this.setFormTitle(formTitle);
+	}
+
+	/**
+	 * @return the formTitle
+	 */
+	public String getFormTitle() {
+		return formTitle;
 	}
 
 	/**
@@ -41,6 +49,20 @@ public class MenuContextInfo {
 	}
 
 	/**
+	 * @return the zulPath
+	 */
+	public String getZulPath() {
+		return zulPath;
+	}
+
+	/**
+	 * @param formTitle the formTitle to set
+	 */
+	public void setFormTitle(String formTitle) {
+		this.formTitle = formTitle;
+	}
+
+	/**
 	 * @param isUploadWPAForNVC the isUploadWPAForNVC to set
 	 */
 	public void setIsUploadWPAForNVC(boolean isUploadWPAForNVC) {
@@ -62,30 +84,9 @@ public class MenuContextInfo {
 	}
 
 	/**
-	 * @return the zulPath
-	 */
-	public String getZulPath() {
-		return zulPath;
-	}
-
-	/**
 	 * @param zulPath the zulPath to set
 	 */
 	public void setZulPath(String zulPath) {
 		this.zulPath = zulPath;
-	}
-
-	/**
-	 * @return the formTitle
-	 */
-	public String getFormTitle() {
-		return formTitle;
-	}
-
-	/**
-	 * @param formTitle the formTitle to set
-	 */
-	public void setFormTitle(String formTitle) {
-		this.formTitle = formTitle;
 	}
 }

@@ -8,28 +8,32 @@ import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramInput;
 
 public class WorkExperienceProgram {
-	
+
 	private Integer noOfLearners;
 	private AddressInfo vacationContact;
 	private ProgramInput disciplines;
-	
-	
-	public WorkExperienceProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+	public WorkExperienceProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		setVacationContact(new AddressInfo(AddressType.VACATION, null));
-		this.setDisciplines(ProgramInput.getDisciplines(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
-				
+		this.setDisciplines(ProgramInput.getDisciplines(
+				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
+
 				"""
-				List of disciplines supported for practical training which the number of learners applying
-should be based on
-				"""));
-	}
-	
-	public Integer getNoOfLearners() {
-		return noOfLearners;
+										List of disciplines supported for practical training which the number of learners applying
+						should be based on
+										"""));
 	}
 
-	public void setNoOfLearners(Integer noOfLearners) {
-		this.noOfLearners = noOfLearners;
+	/**
+	 * @return the disciplines
+	 */
+	public ProgramInput getDisciplines() {
+		return disciplines;
+	}
+
+	public Integer getNoOfLearners() {
+		return noOfLearners;
 	}
 
 	/**
@@ -40,26 +44,21 @@ should be based on
 	}
 
 	/**
-	 * @param vacationContact the vacationContact to set
-	 */
-	public void setVacationContact(AddressInfo vacationContact) {
-		this.vacationContact = vacationContact;
-	}
-
-	/**
-	 * @return the disciplines
-	 */
-	public ProgramInput getDisciplines() {
-		return disciplines;
-	}
-
-	/**
 	 * @param disciplines the disciplines to set
 	 */
 	public void setDisciplines(ProgramInput disciplines) {
 		this.disciplines = disciplines;
 	}
 
-	
+	public void setNoOfLearners(Integer noOfLearners) {
+		this.noOfLearners = noOfLearners;
+	}
+
+	/**
+	 * @param vacationContact the vacationContact to set
+	 */
+	public void setVacationContact(AddressInfo vacationContact) {
+		this.vacationContact = vacationContact;
+	}
 
 }

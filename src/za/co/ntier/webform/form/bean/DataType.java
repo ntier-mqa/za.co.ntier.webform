@@ -1,13 +1,5 @@
 package za.co.ntier.webform.form.bean;
 
 public enum DataType {
-	PositiveNumber,
-	Label,
-	Text,
-	Date,
-	List,
-	TwoValues,
-	TwoTitles,
-	FileUpload,
-	Area,
+	PositiveNumber, Label, Text, Date, List, TwoValues, TwoTitles, FileUpload, Area,
 }

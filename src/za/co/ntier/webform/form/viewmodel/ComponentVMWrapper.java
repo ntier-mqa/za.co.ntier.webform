@@ -7,16 +7,8 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 
 public class ComponentVMWrapper<T> {
-	private T component;
 	public static final String ComponentKey = "component";
-	
-
-	@Init
-	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo,
-			@ExecutionArgParam(ComponentKey) T component) throws Exception {
-		this.component = component;
-	}
-
+	private T component;
 
 	/**
 	 * @return the component
@@ -25,6 +17,11 @@ public class ComponentVMWrapper<T> {
 		return component;
 	}
 
+	@Init
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo,
+			@ExecutionArgParam(ComponentKey) T component) throws Exception {
+		this.component = component;
+	}
 
 	/**
 	 * @param component the component to set

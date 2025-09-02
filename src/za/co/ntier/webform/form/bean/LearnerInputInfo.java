@@ -15,11 +15,11 @@ import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.MasterUtil;
 
-public class LearnerInputInfo {	
+public class LearnerInputInfo {
 	private int learnerInputProgramID;
 	private int learnerInputID;
 	private String learnerInputText;
-	
+
 	private String fileNameWPA;
 	private boolean isUploadWPA = false;
 	private String fullPathWPA;
@@ -30,33 +30,39 @@ public class LearnerInputInfo {
 	private MRegion province;
 	private Collection<MCity> areas;
 	private MCity areaSelected;
-	
+
 	private Integer noLearners = null;
 	private Integer noEmployed = null;
 	private Integer noUnEmployed = null;
 	private Integer noTotalApply = null;
-	
+
 	public LearnerInputInfo() {
-		
+
 	}
-	
+
 	public LearnerInputInfo(List<Object> args) {
-		
-		this.learnerInputProgramID = ((BigDecimal)args.get(0)).intValueExact();
-		this.learnerInputID = ((BigDecimal)args.get(1)).intValueExact();
-		this.isUploadWPA = args.get(2) != null && "Y".equalsIgnoreCase((String)args.get(2));
-		this.isUploadAccred = args.get(3) != null && "Y".equalsIgnoreCase((String)args.get(3));
-		this.learnerInputText = (String)args.get(4);
-		
+
+		this.learnerInputProgramID = ((BigDecimal) args.get(0)).intValueExact();
+		this.learnerInputID = ((BigDecimal) args.get(1)).intValueExact();
+		this.isUploadWPA = args.get(2) != null && "Y".equalsIgnoreCase((String) args.get(2));
+		this.isUploadAccred = args.get(3) != null && "Y".equalsIgnoreCase((String) args.get(3));
+		this.learnerInputText = (String) args.get(4);
+
 		setAreas(MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList());
 	}
 
+	/**
+	 * @return the areas
+	 */
+	public Collection<MCity> getAreas() {
+		return areas;
+	}
 
 	/**
-	 * @return the fileNameWPA
+	 * @return the areaSelected
 	 */
-	public String getFileNameWPA() {
-		return fileNameWPA;
+	public MCity getAreaSelected() {
+		return areaSelected;
 	}
 
 	/**
@@ -67,10 +73,67 @@ public class LearnerInputInfo {
 	}
 
 	/**
+	 * @return the fileNameWPA
+	 */
+	public String getFileNameWPA() {
+		return fileNameWPA;
+	}
+
+	public String getFullPathAccred() {
+		return fullPathAccred;
+	}
+
+	public String getFullPathWPA() {
+		return fullPathWPA;
+	}
+
+	/**
+	 * @return the learnerInputID
+	 */
+	public int getLearnerInputID() {
+		return learnerInputID;
+	}
+
+	/**
+	 * @return the learnerInputProgramID
+	 */
+	public int getLearnerInputProgramID() {
+		return learnerInputProgramID;
+	}
+
+	/**
+	 * @return the learnerInputText
+	 */
+	public String getLearnerInputText() {
+		return learnerInputText;
+	}
+
+	/**
+	 * @return the noEmployed
+	 */
+	public Integer getNoEmployed() {
+		return noEmployed;
+	}
+
+	/**
 	 * @return the noLearners
 	 */
 	public Integer getNoLearners() {
 		return noLearners;
+	}
+
+	/**
+	 * @return the noTotalApply
+	 */
+	public Integer getNoTotalApply() {
+		return noTotalApply;
+	}
+
+	/**
+	 * @return the noUnEmployed
+	 */
+	public Integer getNoUnEmployed() {
+		return noUnEmployed;
 	}
 
 	/**
@@ -87,86 +150,11 @@ public class LearnerInputInfo {
 		return province;
 	}
 
-
 	/**
-	 * @param fileNameWPA the fileNameWPA to set
+	 * @return the uploadAccreditationTitle
 	 */
-
-	public void setFileNameWPA(String fileNameWPA) {
-		this.fileNameWPA = fileNameWPA;
-
-		BindUtils.postNotifyChange(this, "fileNameWPA");
-	}
-	
-	public void setFileNameAccred(String fileNameAccred) {
-		this.fileNameAccred = fileNameAccred;
-
-		BindUtils.postNotifyChange(this, "fileNameAccred");
-	}
-
-	/**
-	 * @param noLearners the noLearners to set
-	 */
-	public void setNoLearners(Integer noLearners) {
-		this.noLearners = noLearners;
-	}
-
-	/**
-	 * @param postalCode the postalCode to set
-	 */
-	@NotifyChange({ "province", "areas" })
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-		
-		Collection<MCity> areaFilters = new ArrayList<>();
-		
-		if (StringUtils.isNotBlank(postalCode)) {
-			MasterUtil.getCities().stream()
-				.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
-				.limit(MasterUtil.limitItem)
-				.forEach(city -> {
-					areaFilters.add(city);
-				});
-		}
-		
-		areaSelected = null;
-		if (!areaFilters.isEmpty()) {
-			province = MRegion.get(areaFilters.iterator().next().getC_Region_ID());
-			if (areaFilters.size() == 1) {
-				areaSelected = areaFilters.iterator().next();
-			}
-		}else {
-			MasterUtil.getCities().stream()
-			.limit(MasterUtil.limitItem)
-			.forEach(city -> {
-				areaFilters.add(city);
-			});
-			
-			province = null;
-		}
-		
-		areas = areaFilters;
-		
-		
-	}
-
-	/**
-	 * @param province the province to set
-	 */
-	public void setProvince(MRegion province) {
-		this.province = province;
-	}
-
-	public void uploadFile(Media media, boolean isDSA) throws IOException {
-		if (media != null && isDSA) {
-			setFileNameWPA(media.getName());
-			setFilePathWPA(MasterUtil.saveUploadFile(media));
-		} else if (media != null && !isDSA) {
-			setFileNameAccred(media.getName());
-			setFilePathAccred(MasterUtil.saveUploadFile(media));
-		}
-		
-		
+	public String getUploadAccredTitle() {
+		return " Accred./SLA";
 	}
 
 	/**
@@ -177,10 +165,10 @@ public class LearnerInputInfo {
 	}
 
 	/**
-	 * @return the uploadAccreditationTitle
+	 * @return the isUploadAccred
 	 */
-	public String getUploadAccredTitle() {
-		return " Accred./SLA";
+	public boolean isUploadAccred() {
+		return isUploadAccred;
 	}
 
 	/**
@@ -191,45 +179,10 @@ public class LearnerInputInfo {
 	}
 
 	/**
-	 * @param isUploadWPA the isUploadWPA to set
-	 */
-	public void setUploadWPA(boolean isUploadWPA) {
-		this.isUploadWPA = isUploadWPA;
-	}
-
-	/**
-	 * @return the isUploadAccred
-	 */
-	public boolean isUploadAccred() {
-		return isUploadAccred;
-	}
-
-	/**
-	 * @param isUploadAccred the isUploadAccred to set
-	 */
-	public void setUploadAccred(boolean isUploadAccred) {
-		this.isUploadAccred = isUploadAccred;
-	}
-
-	/**
-	 * @return the areas
-	 */
-	public Collection<MCity> getAreas() {
-		return areas;
-	}
-
-	/**
 	 * @param areas the areas to set
 	 */
 	public void setAreas(Collection<MCity> areas) {
 		this.areas = areas;
-	}
-
-	/**
-	 * @return the areaSelected
-	 */
-	public MCity getAreaSelected() {
-		return areaSelected;
 	}
 
 	/**
@@ -242,14 +195,29 @@ public class LearnerInputInfo {
 		postalCode = areaSelected.getPostal();
 	}
 
+	public void setFileNameAccred(String fileNameAccred) {
+		this.fileNameAccred = fileNameAccred;
 
-	/**
-	 * @return the learnerInputID
-	 */
-	public int getLearnerInputID() {
-		return learnerInputID;
+		BindUtils.postNotifyChange(this, "fileNameAccred");
 	}
 
+	/**
+	 * @param fileNameWPA the fileNameWPA to set
+	 */
+
+	public void setFileNameWPA(String fileNameWPA) {
+		this.fileNameWPA = fileNameWPA;
+
+		BindUtils.postNotifyChange(this, "fileNameWPA");
+	}
+
+	public void setFilePathAccred(String fullPathAccred) {
+		this.fullPathAccred = fullPathAccred;
+	}
+
+	public void setFilePathWPA(String fullPathWPA) {
+		this.fullPathWPA = fullPathWPA;
+	}
 
 	/**
 	 * @param learnerInputID the learnerInputID to set
@@ -258,14 +226,12 @@ public class LearnerInputInfo {
 		this.learnerInputID = learnerInputID;
 	}
 
-
 	/**
-	 * @return the learnerInputText
+	 * @param learnerInputProgramID the learnerInputProgramID to set
 	 */
-	public String getLearnerInputText() {
-		return learnerInputText;
+	public void setLearnerInputProgramID(Integer learnerInputProgramID) {
+		this.learnerInputProgramID = learnerInputProgramID;
 	}
-
 
 	/**
 	 * @param learnerInputText the learnerInputText to set
@@ -274,31 +240,6 @@ public class LearnerInputInfo {
 		this.learnerInputText = learnerInputText;
 	}
 
-
-	/**
-	 * @return the learnerInputProgramID
-	 */
-	public int getLearnerInputProgramID() {
-		return learnerInputProgramID;
-	}
-
-
-	/**
-	 * @param learnerInputProgramID the learnerInputProgramID to set
-	 */
-	public void setLearnerInputProgramID(Integer learnerInputProgramID) {
-		this.learnerInputProgramID = learnerInputProgramID;
-	}
-
-
-	/**
-	 * @return the noEmployed
-	 */
-	public Integer getNoEmployed() {
-		return noEmployed;
-	}
-
-
 	/**
 	 * @param noEmployed the noEmployed to set
 	 */
@@ -306,30 +247,12 @@ public class LearnerInputInfo {
 		this.noEmployed = noEmployed;
 	}
 
-
 	/**
-	 * @return the noUnEmployed
+	 * @param noLearners the noLearners to set
 	 */
-	public Integer getNoUnEmployed() {
-		return noUnEmployed;
+	public void setNoLearners(Integer noLearners) {
+		this.noLearners = noLearners;
 	}
-
-
-	/**
-	 * @param noUnEmployed the noUnEmployed to set
-	 */
-	public void setNoUnEmployed(Integer noUnEmployed) {
-		this.noUnEmployed = noUnEmployed;
-	}
-
-
-	/**
-	 * @return the noTotalApply
-	 */
-	public Integer getNoTotalApply() {
-		return noTotalApply;
-	}
-
 
 	/**
 	 * @param noTotalApply the noTotalApply to set
@@ -338,19 +261,77 @@ public class LearnerInputInfo {
 		this.noTotalApply = noTotalApply;
 	}
 
-	public String getFullPathWPA() {
-		return fullPathWPA;
+	/**
+	 * @param noUnEmployed the noUnEmployed to set
+	 */
+	public void setNoUnEmployed(Integer noUnEmployed) {
+		this.noUnEmployed = noUnEmployed;
 	}
 
-	public void setFilePathWPA(String fullPathWPA) {
-		this.fullPathWPA = fullPathWPA;
+	/**
+	 * @param postalCode the postalCode to set
+	 */
+	@NotifyChange({ "province", "areas" })
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
+
+		Collection<MCity> areaFilters = new ArrayList<>();
+
+		if (StringUtils.isNotBlank(postalCode)) {
+			MasterUtil.getCities().stream()
+					.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
+					.limit(MasterUtil.limitItem).forEach(city -> {
+						areaFilters.add(city);
+					});
+		}
+
+		areaSelected = null;
+		if (!areaFilters.isEmpty()) {
+			province = MRegion.get(areaFilters.iterator().next().getC_Region_ID());
+			if (areaFilters.size() == 1) {
+				areaSelected = areaFilters.iterator().next();
+			}
+		} else {
+			MasterUtil.getCities().stream().limit(MasterUtil.limitItem).forEach(city -> {
+				areaFilters.add(city);
+			});
+
+			province = null;
+		}
+
+		areas = areaFilters;
+
 	}
 
-	public String getFullPathAccred() {
-		return fullPathAccred;
+	/**
+	 * @param province the province to set
+	 */
+	public void setProvince(MRegion province) {
+		this.province = province;
 	}
 
-	public void setFilePathAccred(String fullPathAccred) {
-		this.fullPathAccred = fullPathAccred;
+	/**
+	 * @param isUploadAccred the isUploadAccred to set
+	 */
+	public void setUploadAccred(boolean isUploadAccred) {
+		this.isUploadAccred = isUploadAccred;
+	}
+
+	/**
+	 * @param isUploadWPA the isUploadWPA to set
+	 */
+	public void setUploadWPA(boolean isUploadWPA) {
+		this.isUploadWPA = isUploadWPA;
+	}
+
+	public void uploadFile(Media media, boolean isDSA) throws IOException {
+		if (media != null && isDSA) {
+			setFileNameWPA(media.getName());
+			setFilePathWPA(MasterUtil.saveUploadFile(media));
+		} else if (media != null && !isDSA) {
+			setFileNameAccred(media.getName());
+			setFilePathAccred(MasterUtil.saveUploadFile(media));
+		}
+
 	}
 }

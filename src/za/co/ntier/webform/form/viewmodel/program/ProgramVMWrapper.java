@@ -7,16 +7,8 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 
 public class ProgramVMWrapper<T> {
-	private T program;
 	public static final String ProgramKey = "program";
-	
-
-	@Init
-	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo,
-			@ExecutionArgParam(ProgramKey) T program) throws Exception {
-		this.setProgram(program);
-	}
-
+	private T program;
 
 	/**
 	 * @return the program
@@ -25,6 +17,11 @@ public class ProgramVMWrapper<T> {
 		return program;
 	}
 
+	@Init
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo,
+			@ExecutionArgParam(ProgramKey) T program) throws Exception {
+		this.setProgram(program);
+	}
 
 	/**
 	 * @param program the program to set
@@ -32,8 +29,5 @@ public class ProgramVMWrapper<T> {
 	public void setProgram(T program) {
 		this.program = program;
 	}
-
-
-
 
 }

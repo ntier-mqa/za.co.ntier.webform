@@ -25,20 +25,20 @@ public class OrganisationInfoVMWrapper {
 		this.organisationInfo = organisationInfo;
 	}
 
+	@Command
+	public void sdlNumberChange() {
+		organisationInfo.sdlNumberChange();
+	}
+
 	/**
 	 * @param organisationInfo the organisationInfo to set
 	 */
 	public void setOrganisationInfo(OrganisationInfo organisationInfo) {
 		this.organisationInfo = organisationInfo;
 	}
-	
+
 	@Command
 	public void uploadFile(@BindingParam("media") Media media) throws IOException {
 		organisationInfo.uploadFile(media);
-	}
-	
-	@Command
-	public void sdlNumberChange() {
-		organisationInfo.sdlNumberChange();
 	}
 }

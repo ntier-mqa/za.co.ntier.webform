@@ -16,6 +16,11 @@ import org.zkoss.zul.Tabbox;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
+import za.co.ntier.webform.form.bean.AddressInfo;
+import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
+import za.co.ntier.webform.form.bean.FormInfo;
+import za.co.ntier.webform.form.bean.OrganisationInfo;
+import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.UploadDocComponent;
 import za.co.ntier.webform.form.bean.program.AetProgram;
@@ -32,11 +37,6 @@ import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
-import za.co.ntier.webform.form.bean.AddressInfo;
-import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
-import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
-import za.co.ntier.webform.form.bean.OrganisationInfo;
-import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormContact;
 
@@ -45,207 +45,48 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private CandidacyProgram candidacy;
 	private WorkExperienceProgram workExperience;
 	private MedpProgram medp;
-	
+
 	private ArtisanAidesProgram artisanAides;
 	private ArtisanDevProgram artisanDev;
 	private CentreOfSpecialisationProgram centreOfSpecialisation;
 	private ArtisanRPLProgram artisanRPL;
 	private NonArtisanDevProgram nonArtisanDev;
 	private NonArtisanDevRPLProgram nonArtisanDevRPL;
-	private	NcvGraduatesProgram ncvGraduates;
+	private NcvGraduatesProgram ncvGraduates;
 	private AetProgram aet;
 	private OhasspProgram ohassp;
 	private InhouseTrainingProgram inhouseTraining;
-	
+
 	private ProgramCetTvetInfo programCetTvetInfo;
-	
+
 	private OrganisationInfo organisationInfo;
-	
+
 	private UploadDocComponent uploadDoc;
 
 	private FormInfo formInfo;
 
 	private MenuContextInfo menuContextInfo;
-	
-    private boolean showDialog = false;
 
-    private int recordId;
-    
-    private int tableId;
-    
-    private EmployerDeclarationInfo employerDeclarationInfo;
-    
-    private AddressInfo alternateProgramContact;
+	private boolean showDialog = false;
+
+	private int recordId;
+
+	private int tableId;
+
+	private EmployerDeclarationInfo employerDeclarationInfo;
+
+	private AddressInfo alternateProgramContact;
 	private AddressInfo programContact;
-    
 
 	// --- Getters and Setters for Data Binding ---
 
-	/**
-	 * @return the organisationInfo
-	 */
-	public OrganisationInfo getOrganisationInfo() {
-		return organisationInfo;
-	}
-
-	/**
-	 * @return the formInfo
-	 */
-	public FormInfo getFormInfo() {
-		return formInfo;
-	}
-	
 	private ProgramType programType;
-	
 
-	public ProgramType getProgramType() {
-		return programType;
+	@Command
+	public void cancelApp() {
+
 	}
 
-	public void setProgramType(ProgramType programType) {
-		this.programType = programType;
-	}
-
-	/**
-	 * @return the programMasterDataID
-	 */
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
-
-	@Init
-	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		setMenuContextInfo(menuContextInfo);
-		programType = menuContextInfo.getProgramType();
-		setFormInfo(new FormInfo(menuContextInfo));
-
-		organisationInfo = new OrganisationInfo(menuContextInfo);
-		
-		if (programType.isCetTvet()) {
-			setProgramCetTvetInfo(new ProgramCetTvetInfo(menuContextInfo));
-		}else if (ProgramType.INTERNSHIP == programType) {
-			internship = new InternshipProgram(menuContextInfo);
-		}else if (ProgramType.CANDIDACY == programType) {
-			setCandidacy(new CandidacyProgram(menuContextInfo));
-		}else if (ProgramType.EXPERIENCE == programType) {
-			setWorkExperience(new WorkExperienceProgram(menuContextInfo));
-		}else if (ProgramType.DEV_PROGRAM == programType) {
-			setMedp(new MedpProgram());
-		}else if (ProgramType.ARTISAN_AIDES== programType) {
-			setArtisanAides(new ArtisanAidesProgram());
-		}else if (ProgramType.ARTISAN_DEV == programType) {
-			setArtisanDev(new ArtisanDevProgram(menuContextInfo));
-		}else if (ProgramType.CENTRE_SPECIALISATION == programType) {
-			setCentreOfSpecialisation(new CentreOfSpecialisationProgram(menuContextInfo));
-		}else if (ProgramType.ARTISAN_RPL == programType) {
-			setArtisanRPL(new ArtisanRPLProgram());
-		}else if (ProgramType.NON_ARTISAN_DEV == programType) {
-			setNonArtisanDev(new NonArtisanDevProgram(menuContextInfo));
-		}else if (ProgramType.NON_ARTISAN_DEV_RPL == programType) {
-			setNonArtisanDevRPL(new NonArtisanDevRPLProgram(menuContextInfo));
-		}else if (ProgramType.NCV_GRADUATES == programType) {
-			setNcvGraduates(new NcvGraduatesProgram(menuContextInfo));
-		}else if (ProgramType.AET == programType) {
-			setAet(new AetProgram(menuContextInfo));
-		}else if (ProgramType.OHASSP == programType) {
-			setOhassp(new OhasspProgram());
-		}else if (ProgramType.INHOUSE_TRAINING == programType) {
-			setInhouseTraining(new InhouseTrainingProgram());
-		}
-		
-		employerDeclarationInfo = new EmployerDeclarationInfo();
-		
-		// main contact
-		if (programType.isShowMainAddress())
-			programContact = new AddressInfo(programType, false, null);
-
-		// main alternate contact
-		if (programType.isShowMainAddressAlter())
-			alternateProgramContact = new AddressInfo(programType, true, null);
-
-		
-		uploadDoc = new UploadDocComponent(menuContextInfo);
-		
-	}
-
-	public boolean isShowUploadDoc() {
-		return uploadDoc != null && uploadDoc.getUploadDoc().getRows().size() > 0;
-	}
-
-	/**
-	 * @param organisationInfo the organisationInfo to set
-	 */
-	public void setOrganisationInfo(OrganisationInfo organisationInfo) {
-		this.organisationInfo = organisationInfo;
-	}
-
-	/**
-	 * @param formInfo the formInfo to set
-	 */
-	public void setFormInfo(FormInfo formInfo) {
-		this.formInfo = formInfo;
-	}
-
-	/**
-	 * @param programMasterDataID the programMasterDataID to set
-	 */
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
-	
-	public String getSubmitButtonLabel() {
-		return "Submit Application";
-	}
-	
-	@Command(value = "submitApplication")
-    @NotifyChange("showDialog")
-	public void submitApplication() throws IOException {
-		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, null);
-		
-		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
-		DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-		applicationForm.setName( loginUser .getName() + LocalDateTime.now().format(dtf));
-		
-		applicationForm.setUserName(employerDeclarationInfo.getUserName());
-		applicationForm.setDateDoc(employerDeclarationInfo.getDate());
-		
-		applicationForm.setZZ_SDL_No(organisationInfo.getSdlNumber());
-		applicationForm.setZZ_Side_SDL_No(organisationInfo.getSiteSDLNumber());
-		applicationForm.setZZ_VAT(organisationInfo.getOrgTaxNumber());
-		applicationForm.setOrgName(organisationInfo.getOrgName());
-		applicationForm.setC_BPartner_ID(organisationInfo.getbPartnerId());
-		
-		applicationForm.setNumberEmployees(organisationInfo.getOrgSizeInfo().getNumOfEmployer());
-		applicationForm.setZZ_HasWSPSubmited(organisationInfo.getOrgSizeInfo().isSubmittedWSP());
-		
-		applicationForm.saveEx();
-		
-		X_ZZ_FormContact contact = createFormContact(organisationInfo.getPhysicalAddressInfo(), applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-		
-		contact = createFormContact(organisationInfo.getPostAddressInfo(), applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-		
-		contact = createFormContact(organisationInfo.getOrgContact(), applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-		
-		contact = createFormContact(organisationInfo.getAlternateOrgContact(), applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-		
-		contact = createFormContact(programContact, applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-		
-		contact = createFormContact(alternateProgramContact, applicationForm.getZZ_Application_Form_ID());		
-		contact.saveEx();
-		
-		recordId = applicationForm.getZZ_Application_Form_ID();
-		tableId = applicationForm.get_Table_ID();
-		setShowDialog(true);
-		
-		
-	}
-	
 	@Command
 	@NotifyChange("showDialog")
 	public void closeDialog() {
@@ -285,21 +126,21 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 * 
 	 * return null; }
 	 */
-	
+
 	public X_ZZ_FormContact createFormContact(AddressInfo addressInfo, int applicationFormID) {
 		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
 		contact.setZZ_Application_Form_ID(applicationFormID);
-		if(addressInfo.getProvinceSelected() != null)
+		if (addressInfo.getProvinceSelected() != null)
 			contact.setC_Region_ID(addressInfo.getProvinceSelected().getC_Region_ID());
-		
-		if(addressInfo.getAreaSelected() != null)
+
+		if (addressInfo.getAreaSelected() != null)
 			contact.setC_City_ID(addressInfo.getAreaSelected().getC_City_ID());
-		
+
 		contact.setPostal(addressInfo.getPostalCode());
-		
+
 		contact.setZZ_SideName(addressInfo.getSiteName());
 		contact.setAddress(addressInfo.getAddressLine());
-		
+
 		contact.setContactName(addressInfo.getNameSiteRepresentative());
 		contact.setZZ_Designation(addressInfo.getRepresentativeDesignation());
 		contact.setPhone(addressInfo.getMobileNumber());
@@ -307,245 +148,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		contact.setEMail(addressInfo.getEmail());
 		contact.setZZ_ContactType(addressInfo.getAddressCategory().toString());
 		return contact;
-	}
-
-	public ProgramCetTvetInfo getProgramCetTvetInfo() {
-		return programCetTvetInfo;
-	}
-
-	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
-		this.programCetTvetInfo = programCetTvetInfo;
-	}
-
-	public boolean isShowDialog() {
-		return showDialog;
-	}
-
-	public void setShowDialog(boolean showDialog) {
-		this.showDialog = showDialog;
-	}
-
-	public int getRecordId() {
-		return recordId;
-	}
-
-	public void setRecordId(int recordId) {
-		this.recordId = recordId;
-	}
-
-	public int getTableId() {
-		return tableId;
-	}
-
-	public void setTableId(int tableId) {
-		this.tableId = tableId;
-	}
-
-	public EmployerDeclarationInfo getEmployerDeclarationInfo() {
-		return employerDeclarationInfo;
-	}
-
-	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
-		this.employerDeclarationInfo = employerDeclarationInfo;
-	}
-	
-	@Command
-	public void cancelApp() {
-		
-	}
-	
-	@Command
-	public void nextTab(@BindingParam("tab") Tabbox tab) {
-		int currentIndex = tab.getSelectedIndex();
-		tab.setSelectedIndex(currentIndex + 1); 
-	}
-    
-	@Command
-	public void prevTab(@BindingParam("tab") Tabbox tab) {
-		int currentIndex = tab.getSelectedIndex();
-		tab.setSelectedIndex(currentIndex - 1); 
-	}
-
-	/**
-	 * @return the alternateProgramContact
-	 */
-	public AddressInfo getAlternateProgramContact() {
-		return alternateProgramContact;
-	}
-
-	/**
-	 * @param alternateProgramContact the alternateProgramContact to set
-	 */
-	public void setAlternateProgramContact(AddressInfo alternateProgramContact) {
-		this.alternateProgramContact = alternateProgramContact;
-	}
-
-	/**
-	 * @return the programContact
-	 */
-	public AddressInfo getProgramContact() {
-		return programContact;
-	}
-
-	/**
-	 * @param programContact the programContact to set
-	 */
-	public void setProgramContact(AddressInfo programContact) {
-		this.programContact = programContact;
-	}
-
-	/**
-	 * @return the internship
-	 */
-	public InternshipProgram getInternship() {
-		return internship;
-	}
-
-	/**
-	 * @param internship the internship to set
-	 */
-	public void setInternship(InternshipProgram internship) {
-		this.internship = internship;
-	}
-
-	/**
-	 * @return the candidacy
-	 */
-	public CandidacyProgram getCandidacy() {
-		return candidacy;
-	}
-
-	/**
-	 * @param candidacy the candidacy to set
-	 */
-	public void setCandidacy(CandidacyProgram candidacy) {
-		this.candidacy = candidacy;
-	}
-
-	/**
-	 * @return the workExperience
-	 */
-	public WorkExperienceProgram getWorkExperience() {
-		return workExperience;
-	}
-
-	/**
-	 * @param workExperience the workExperience to set
-	 */
-	public void setWorkExperience(WorkExperienceProgram workExperience) {
-		this.workExperience = workExperience;
-	}
-
-	/**
-	 * @return the medp
-	 */
-	public MedpProgram getMedp() {
-		return medp;
-	}
-
-	/**
-	 * @param medp the medp to set
-	 */
-	public void setMedp(MedpProgram medp) {
-		this.medp = medp;
-	}
-
-	/**
-	 * @return the artisanAides
-	 */
-	public ArtisanAidesProgram getArtisanAides() {
-		return artisanAides;
-	}
-
-	/**
-	 * @param artisanAides the artisanAides to set
-	 */
-	public void setArtisanAides(ArtisanAidesProgram artisanAidesProgram) {
-		this.artisanAides = artisanAidesProgram;
-	}
-
-	/**
-	 * @return the artisanDev
-	 */
-	public ArtisanDevProgram getArtisanDev() {
-		return artisanDev;
-	}
-
-	/**
-	 * @param artisanDev the artisanDev to set
-	 */
-	public void setArtisanDev(ArtisanDevProgram artisanDev) {
-		this.artisanDev = artisanDev;
-	}
-
-	/**
-	 * @return the centreOfSpecialisation
-	 */
-	public CentreOfSpecialisationProgram getCentreOfSpecialisation() {
-		return centreOfSpecialisation;
-	}
-
-	/**
-	 * @param centreOfSpecialisation the centreOfSpecialisation to set
-	 */
-	public void setCentreOfSpecialisation(CentreOfSpecialisationProgram centreOfSpecialisation) {
-		this.centreOfSpecialisation = centreOfSpecialisation;
-	}
-
-	/**
-	 * @return the artisanRPL
-	 */
-	public ArtisanRPLProgram getArtisanRPL() {
-		return artisanRPL;
-	}
-
-	/**
-	 * @param artisanRPL the artisanRPL to set
-	 */
-	public void setArtisanRPL(ArtisanRPLProgram artisanRPL) {
-		this.artisanRPL = artisanRPL;
-	}
-
-	/**
-	 * @return the nonArtisanDev
-	 */
-	public NonArtisanDevProgram getNonArtisanDev() {
-		return nonArtisanDev;
-	}
-
-	/**
-	 * @param nonArtisanDev the nonArtisanDev to set
-	 */
-	public void setNonArtisanDev(NonArtisanDevProgram nonArtisanDev) {
-		this.nonArtisanDev = nonArtisanDev;
-	}
-
-	/**
-	 * @return the nonArtisanDevRPL
-	 */
-	public NonArtisanDevRPLProgram getNonArtisanDevRPL() {
-		return nonArtisanDevRPL;
-	}
-
-	/**
-	 * @param nonArtisanDevRPL the nonArtisanDevRPL to set
-	 */
-	public void setNonArtisanDevRPL(NonArtisanDevRPLProgram nonArtisanDevRPL) {
-		this.nonArtisanDevRPL = nonArtisanDevRPL;
-	}
-
-	/**
-	 * @return the ncvGraduates
-	 */
-	public NcvGraduatesProgram getNcvGraduates() {
-		return ncvGraduates;
-	}
-
-	/**
-	 * @param ncvGraduates the ncvGraduates to set
-	 */
-	public void setNcvGraduates(NcvGraduatesProgram ncvGraduates) {
-		this.ncvGraduates = ncvGraduates;
 	}
 
 	/**
@@ -556,24 +158,56 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @param aet the aet to set
+	 * @return the alternateProgramContact
 	 */
-	public void setAet(AetProgram aet) {
-		this.aet = aet;
+	public AddressInfo getAlternateProgramContact() {
+		return alternateProgramContact;
 	}
 
 	/**
-	 * @return the ohassp
+	 * @return the artisanAides
 	 */
-	public OhasspProgram getOhassp() {
-		return ohassp;
+	public ArtisanAidesProgram getArtisanAides() {
+		return artisanAides;
 	}
 
 	/**
-	 * @param ohassp the ohassp to set
+	 * @return the artisanDev
 	 */
-	public void setOhassp(OhasspProgram ohassp) {
-		this.ohassp = ohassp;
+	public ArtisanDevProgram getArtisanDev() {
+		return artisanDev;
+	}
+
+	/**
+	 * @return the artisanRPL
+	 */
+	public ArtisanRPLProgram getArtisanRPL() {
+		return artisanRPL;
+	}
+
+	/**
+	 * @return the candidacy
+	 */
+	public CandidacyProgram getCandidacy() {
+		return candidacy;
+	}
+
+	/**
+	 * @return the centreOfSpecialisation
+	 */
+	public CentreOfSpecialisationProgram getCentreOfSpecialisation() {
+		return centreOfSpecialisation;
+	}
+
+	public EmployerDeclarationInfo getEmployerDeclarationInfo() {
+		return employerDeclarationInfo;
+	}
+
+	/**
+	 * @return the formInfo
+	 */
+	public FormInfo getFormInfo() {
+		return formInfo;
 	}
 
 	/**
@@ -584,10 +218,86 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @param inhouseTraining the inhouseTraining to set
+	 * @return the internship
 	 */
-	public void setInhouseTraining(InhouseTrainingProgram inhouseTraining) {
-		this.inhouseTraining = inhouseTraining;
+	public InternshipProgram getInternship() {
+		return internship;
+	}
+
+	/**
+	 * @return the medp
+	 */
+	public MedpProgram getMedp() {
+		return medp;
+	}
+
+	/**
+	 * @return the programMasterDataID
+	 */
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
+	}
+
+	/**
+	 * @return the ncvGraduates
+	 */
+	public NcvGraduatesProgram getNcvGraduates() {
+		return ncvGraduates;
+	}
+
+	/**
+	 * @return the nonArtisanDev
+	 */
+	public NonArtisanDevProgram getNonArtisanDev() {
+		return nonArtisanDev;
+	}
+
+	/**
+	 * @return the nonArtisanDevRPL
+	 */
+	public NonArtisanDevRPLProgram getNonArtisanDevRPL() {
+		return nonArtisanDevRPL;
+	}
+
+	/**
+	 * @return the ohassp
+	 */
+	public OhasspProgram getOhassp() {
+		return ohassp;
+	}
+
+	/**
+	 * @return the organisationInfo
+	 */
+	public OrganisationInfo getOrganisationInfo() {
+		return organisationInfo;
+	}
+
+	public ProgramCetTvetInfo getProgramCetTvetInfo() {
+		return programCetTvetInfo;
+	}
+
+	/**
+	 * @return the programContact
+	 */
+	public AddressInfo getProgramContact() {
+		return programContact;
+	}
+
+	public ProgramType getProgramType() {
+		return programType;
+	}
+
+	public int getRecordId() {
+		return recordId;
+	}
+
+	public String getSubmitButtonLabel() {
+		return "Submit Application";
+	}
+
+	public int getTableId() {
+		return tableId;
 	}
 
 	/**
@@ -598,9 +308,299 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
+	 * @return the workExperience
+	 */
+	public WorkExperienceProgram getWorkExperience() {
+		return workExperience;
+	}
+
+	@Init
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo)
+			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException {
+
+		setMenuContextInfo(menuContextInfo);
+		programType = menuContextInfo.getProgramType();
+		setFormInfo(new FormInfo(menuContextInfo));
+
+		organisationInfo = new OrganisationInfo(menuContextInfo);
+
+		if (programType.isCetTvet()) {
+			setProgramCetTvetInfo(new ProgramCetTvetInfo(menuContextInfo));
+		} else if (ProgramType.INTERNSHIP == programType) {
+			internship = new InternshipProgram(menuContextInfo);
+		} else if (ProgramType.CANDIDACY == programType) {
+			setCandidacy(new CandidacyProgram(menuContextInfo));
+		} else if (ProgramType.EXPERIENCE == programType) {
+			setWorkExperience(new WorkExperienceProgram(menuContextInfo));
+		} else if (ProgramType.DEV_PROGRAM == programType) {
+			setMedp(new MedpProgram());
+		} else if (ProgramType.ARTISAN_AIDES == programType) {
+			setArtisanAides(new ArtisanAidesProgram());
+		} else if (ProgramType.ARTISAN_DEV == programType) {
+			setArtisanDev(new ArtisanDevProgram(menuContextInfo));
+		} else if (ProgramType.CENTRE_SPECIALISATION == programType) {
+			setCentreOfSpecialisation(new CentreOfSpecialisationProgram(menuContextInfo));
+		} else if (ProgramType.ARTISAN_RPL == programType) {
+			setArtisanRPL(new ArtisanRPLProgram());
+		} else if (ProgramType.NON_ARTISAN_DEV == programType) {
+			setNonArtisanDev(new NonArtisanDevProgram(menuContextInfo));
+		} else if (ProgramType.NON_ARTISAN_DEV_RPL == programType) {
+			setNonArtisanDevRPL(new NonArtisanDevRPLProgram(menuContextInfo));
+		} else if (ProgramType.NCV_GRADUATES == programType) {
+			setNcvGraduates(new NcvGraduatesProgram(menuContextInfo));
+		} else if (ProgramType.AET == programType) {
+			setAet(new AetProgram(menuContextInfo));
+		} else if (ProgramType.OHASSP == programType) {
+			setOhassp(new OhasspProgram());
+		} else if (ProgramType.INHOUSE_TRAINING == programType) {
+			setInhouseTraining(new InhouseTrainingProgram());
+		}
+
+		employerDeclarationInfo = new EmployerDeclarationInfo();
+
+		// main contact
+		if (programType.isShowMainAddress())
+			programContact = new AddressInfo(programType, false, null);
+
+		// main alternate contact
+		if (programType.isShowMainAddressAlter())
+			alternateProgramContact = new AddressInfo(programType, true, null);
+
+		uploadDoc = new UploadDocComponent(menuContextInfo);
+
+	}
+
+	public boolean isShowDialog() {
+		return showDialog;
+	}
+
+	public boolean isShowUploadDoc() {
+		return uploadDoc != null && uploadDoc.getUploadDoc().getRows().size() > 0;
+	}
+
+	@Command
+	public void nextTab(@BindingParam("tab") Tabbox tab) {
+		int currentIndex = tab.getSelectedIndex();
+		tab.setSelectedIndex(currentIndex + 1);
+	}
+
+	@Command
+	public void prevTab(@BindingParam("tab") Tabbox tab) {
+		int currentIndex = tab.getSelectedIndex();
+		tab.setSelectedIndex(currentIndex - 1);
+	}
+
+	/**
+	 * @param aet the aet to set
+	 */
+	public void setAet(AetProgram aet) {
+		this.aet = aet;
+	}
+
+	/**
+	 * @param alternateProgramContact the alternateProgramContact to set
+	 */
+	public void setAlternateProgramContact(AddressInfo alternateProgramContact) {
+		this.alternateProgramContact = alternateProgramContact;
+	}
+
+	/**
+	 * @param artisanAides the artisanAides to set
+	 */
+	public void setArtisanAides(ArtisanAidesProgram artisanAidesProgram) {
+		this.artisanAides = artisanAidesProgram;
+	}
+
+	/**
+	 * @param artisanDev the artisanDev to set
+	 */
+	public void setArtisanDev(ArtisanDevProgram artisanDev) {
+		this.artisanDev = artisanDev;
+	}
+
+	/**
+	 * @param artisanRPL the artisanRPL to set
+	 */
+	public void setArtisanRPL(ArtisanRPLProgram artisanRPL) {
+		this.artisanRPL = artisanRPL;
+	}
+
+	/**
+	 * @param candidacy the candidacy to set
+	 */
+	public void setCandidacy(CandidacyProgram candidacy) {
+		this.candidacy = candidacy;
+	}
+
+	/**
+	 * @param centreOfSpecialisation the centreOfSpecialisation to set
+	 */
+	public void setCentreOfSpecialisation(CentreOfSpecialisationProgram centreOfSpecialisation) {
+		this.centreOfSpecialisation = centreOfSpecialisation;
+	}
+
+	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
+		this.employerDeclarationInfo = employerDeclarationInfo;
+	}
+
+	/**
+	 * @param formInfo the formInfo to set
+	 */
+	public void setFormInfo(FormInfo formInfo) {
+		this.formInfo = formInfo;
+	}
+
+	/**
+	 * @param inhouseTraining the inhouseTraining to set
+	 */
+	public void setInhouseTraining(InhouseTrainingProgram inhouseTraining) {
+		this.inhouseTraining = inhouseTraining;
+	}
+
+	/**
+	 * @param internship the internship to set
+	 */
+	public void setInternship(InternshipProgram internship) {
+		this.internship = internship;
+	}
+
+	/**
+	 * @param medp the medp to set
+	 */
+	public void setMedp(MedpProgram medp) {
+		this.medp = medp;
+	}
+
+	/**
+	 * @param programMasterDataID the programMasterDataID to set
+	 */
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
+	}
+
+	/**
+	 * @param ncvGraduates the ncvGraduates to set
+	 */
+	public void setNcvGraduates(NcvGraduatesProgram ncvGraduates) {
+		this.ncvGraduates = ncvGraduates;
+	}
+
+	/**
+	 * @param nonArtisanDev the nonArtisanDev to set
+	 */
+	public void setNonArtisanDev(NonArtisanDevProgram nonArtisanDev) {
+		this.nonArtisanDev = nonArtisanDev;
+	}
+
+	/**
+	 * @param nonArtisanDevRPL the nonArtisanDevRPL to set
+	 */
+	public void setNonArtisanDevRPL(NonArtisanDevRPLProgram nonArtisanDevRPL) {
+		this.nonArtisanDevRPL = nonArtisanDevRPL;
+	}
+
+	/**
+	 * @param ohassp the ohassp to set
+	 */
+	public void setOhassp(OhasspProgram ohassp) {
+		this.ohassp = ohassp;
+	}
+
+	/**
+	 * @param organisationInfo the organisationInfo to set
+	 */
+	public void setOrganisationInfo(OrganisationInfo organisationInfo) {
+		this.organisationInfo = organisationInfo;
+	}
+
+	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
+		this.programCetTvetInfo = programCetTvetInfo;
+	}
+
+	/**
+	 * @param programContact the programContact to set
+	 */
+	public void setProgramContact(AddressInfo programContact) {
+		this.programContact = programContact;
+	}
+
+	public void setProgramType(ProgramType programType) {
+		this.programType = programType;
+	}
+
+	public void setRecordId(int recordId) {
+		this.recordId = recordId;
+	}
+
+	public void setShowDialog(boolean showDialog) {
+		this.showDialog = showDialog;
+	}
+
+	public void setTableId(int tableId) {
+		this.tableId = tableId;
+	}
+
+	/**
 	 * @param uploadDoc the uploadDoc to set
 	 */
 	public void setUploadDoc(UploadDocComponent uploadDoc) {
 		this.uploadDoc = uploadDoc;
+	}
+
+	/**
+	 * @param workExperience the workExperience to set
+	 */
+	public void setWorkExperience(WorkExperienceProgram workExperience) {
+		this.workExperience = workExperience;
+	}
+
+	@Command(value = "submitApplication")
+	@NotifyChange("showDialog")
+	public void submitApplication() throws IOException {
+		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, null);
+
+		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
+		DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+		applicationForm.setName(loginUser.getName() + LocalDateTime.now().format(dtf));
+
+		applicationForm.setUserName(employerDeclarationInfo.getUserName());
+		applicationForm.setDateDoc(employerDeclarationInfo.getDate());
+
+		applicationForm.setZZ_SDL_No(organisationInfo.getSdlNumber());
+		applicationForm.setZZ_Side_SDL_No(organisationInfo.getSiteSDLNumber());
+		applicationForm.setZZ_VAT(organisationInfo.getOrgTaxNumber());
+		applicationForm.setOrgName(organisationInfo.getOrgName());
+		applicationForm.setC_BPartner_ID(organisationInfo.getbPartnerId());
+
+		applicationForm.setNumberEmployees(organisationInfo.getOrgSizeInfo().getNumOfEmployer());
+		applicationForm.setZZ_HasWSPSubmited(organisationInfo.getOrgSizeInfo().isSubmittedWSP());
+
+		applicationForm.saveEx();
+
+		X_ZZ_FormContact contact = createFormContact(organisationInfo.getPhysicalAddressInfo(),
+				applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+
+		contact = createFormContact(organisationInfo.getPostAddressInfo(), applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+
+		contact = createFormContact(organisationInfo.getOrgContact(), applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+
+		contact = createFormContact(organisationInfo.getAlternateOrgContact(),
+				applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+
+		contact = createFormContact(programContact, applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+
+		contact = createFormContact(alternateProgramContact, applicationForm.getZZ_Application_Form_ID());
+		contact.saveEx();
+
+		recordId = applicationForm.getZZ_Application_Form_ID();
+		tableId = applicationForm.get_Table_ID();
+		setShowDialog(true);
+
 	}
 }

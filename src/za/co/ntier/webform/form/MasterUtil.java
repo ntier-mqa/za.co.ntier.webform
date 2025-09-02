@@ -88,181 +88,170 @@ public class MasterUtil {
 				new KeyNamePair(39, "Central Karoo"), new KeyNamePair(40, "Cape Winelands"),
 				new KeyNamePair(41, "Eden"), new KeyNamePair(42, "Overberg"), new KeyNamePair(43, "West Coast"));
 	}
-	
-	private static CCache<Integer,List<MCity>> s_Cities =  new CCache<>(MCity.Table_Name + "_DisciplineHDSA", 1);
-	private static CCache<Integer,List<MRegion>> s_Regions =  new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
-	private static CCache<ProgramType, List<X_C_BPartner>> s_CetTvetCollege =  new CCache<>(I_C_BPartner.Table_Name + "_CetTvetCollege", 2);
-	
-	public static List<MCity> getCities() {
-		if (s_Cities.isEmpty()) {
-			
-			Query citisQuery = new Query(Env.getCtx(), MCity.Table_Name, null, null);
-			citisQuery.addTableDirectJoin(MRegion.Table_Name);
-			citisQuery.addJoinClause(String.format("INNER JOIN %s ON (%s.%s = %s.%s AND %s.%s = ?)", MCountry.Table_Name, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID, MRegion.Table_Name, MRegion.COLUMNNAME_C_Country_ID, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID));
-			citisQuery.setParameters(305);// South Africa
-			citisQuery.setRecordstoSkip(20);
-			
-			List<MCity> cityInfos = citisQuery.list();
-			s_Cities.put(Integer.MIN_VALUE, cityInfos);
-		}
-		
-		return s_Cities.get(Integer.MIN_VALUE);
-	}
-	
-	public static List<MRegion> getRegions() {
-		if (s_Regions.isEmpty()) {
-			Query regionsQuery = new Query(Env.getCtx(), MRegion.Table_Name, MRegion.Table_Name + "." + MCountry.COLUMNNAME_C_Country_ID + " = ?", null);
-			regionsQuery.addTableDirectJoin(MCountry.Table_Name);
-			regionsQuery.setParameters(305);// South Africa
-			
-			List<MRegion> regionInfos = regionsQuery.list();
-			s_Regions.put(Integer.MIN_VALUE, regionInfos);
-		}
-		
-		return s_Regions.get(Integer.MIN_VALUE);
-	}
-	
+
+	private static CCache<Integer, List<MCity>> s_Cities = new CCache<>(MCity.Table_Name + "_DisciplineHDSA", 1);
+	private static CCache<Integer, List<MRegion>> s_Regions = new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
+	private static CCache<ProgramType, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
+			I_C_BPartner.Table_Name + "_CetTvetCollege", 2);
+
 	public static List<X_C_BPartner> getCetColleges() {
 		List<X_C_BPartner> cetColleges = s_CetTvetCollege.get(ProgramType.CET);
 		if (cetColleges == null) {
-			Query queryCetColleges = new Query(Env.getCtx(), 
-					I_C_BPartner.Table_Name, 
-					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), 
-					null);
+			Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
+					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), null);
 			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
 			queryCetColleges.setParameters("Z-CET");
 			cetColleges = queryCetColleges.list();
-			
+
 			s_CetTvetCollege.put(ProgramType.CET, cetColleges);
 		}
 		return cetColleges;
 	}
-	
+
+	public static List<MCity> getCities() {
+		if (s_Cities.isEmpty()) {
+
+			Query citisQuery = new Query(Env.getCtx(), MCity.Table_Name, null, null);
+			citisQuery.addTableDirectJoin(MRegion.Table_Name);
+			citisQuery.addJoinClause(String.format("INNER JOIN %s ON (%s.%s = %s.%s AND %s.%s = ?)",
+					MCountry.Table_Name, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID, MRegion.Table_Name,
+					MRegion.COLUMNNAME_C_Country_ID, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID));
+			citisQuery.setParameters(305);// South Africa
+			citisQuery.setRecordstoSkip(20);
+
+			List<MCity> cityInfos = citisQuery.list();
+			s_Cities.put(Integer.MIN_VALUE, cityInfos);
+		}
+
+		return s_Cities.get(Integer.MIN_VALUE);
+	}
+
+	public static char getOffsetChar(char c, int offset) {
+
+		return (char) (c + offset);
+
+	}
+
+	public static List<MRegion> getRegions() {
+		if (s_Regions.isEmpty()) {
+			Query regionsQuery = new Query(Env.getCtx(), MRegion.Table_Name,
+					MRegion.Table_Name + "." + MCountry.COLUMNNAME_C_Country_ID + " = ?", null);
+			regionsQuery.addTableDirectJoin(MCountry.Table_Name);
+			regionsQuery.setParameters(305);// South Africa
+
+			List<MRegion> regionInfos = regionsQuery.list();
+			s_Regions.put(Integer.MIN_VALUE, regionInfos);
+		}
+
+		return s_Regions.get(Integer.MIN_VALUE);
+	}
+
 	public static List<X_C_BPartner> getTvetColleges() {
 		List<X_C_BPartner> tvetColleges = s_CetTvetCollege.get(ProgramType.TVET);
 		if (tvetColleges == null) {
-			Query queryCetColleges = new Query(Env.getCtx(), 
-					I_C_BPartner.Table_Name, 
-					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), 
-					null);
+			Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
+					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), null);
 			queryCetColleges.setParameters("Z-TVET");
 			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
 			tvetColleges = queryCetColleges.list();
-			
+
 			s_CetTvetCollege.put(ProgramType.TVET, tvetColleges);
 		}
 		return tvetColleges;
 	}
-	
-	public static char getOffsetChar (char c, int offset) {
-		
-		return (char)(c + offset);
-		
-	}
-	
-	public static String saveUploadFile (Media media) throws IOException {
-		
-		// System temp base folder
-	    String tmpDir = System.getProperty("java.io.tmpdir"); // usually /tmp
 
-	    // Create unique subfolder, e.g. myapp_20250822_123456789
-	    File uploadDir = Files.createTempDirectory(Paths.get(tmpDir), "MQA_").toFile();
+	public static List<Object> queryLearnerInputInfos(int programMasterDataID, String learnerInputType) {
 
-	    // Keep original filename
-	    String originalName = media.getName();
-	    File savedFile = new File(uploadDir, originalName);
-
-	    try (InputStream in = media.getStreamData();
-	         OutputStream out = new FileOutputStream(savedFile)) {
-	        byte[] buffer = new byte[8192];
-	        int len;
-	        while ((len = in.read(buffer)) != -1) {
-	            out.write(buffer, 0, len);
-	        }
-	    }
-
-	    return savedFile.getAbsolutePath();
-	}
-	
-	public static List<Object> queryLearnerInputInfos(int programMasterDataID, 
-			String learnerInputType){
-		
 		String learnerInputProgramID;
 		String learnerInputID;
 		String learnerInputText = X_ZZ_Trade.COLUMNNAME_Name;
 		String learnerInputProgramTable;
 		String learnerInputTable;
-		
+
 		StringBuilder sql = new StringBuilder();
 		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade) {
 			learnerInputProgramID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Trade_ID;
 			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
 			learnerInputProgramTable = X_ZZ_Program_Trade.Table_Name;
 			learnerInputTable = X_ZZ_Trade.Table_Name;
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline) {
+		} else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline) {
 			learnerInputProgramID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Program_Disciplines_ID;
 			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
 			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
 			learnerInputTable = X_ZZ_Disciplines.Table_Name;
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership ||
-				learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership ||
-				learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership) {
+		} else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership
+				|| learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership
+				|| learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership) {
 			learnerInputProgramID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
 			learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
 			learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
 			learnerInputTable = X_ZZ_Learnerships.Table_Name;
-		}else {
+		} else {
 			throw new IllegalArgumentException("Wrong learnerInput type");
 		}
-		
-		sql.append(String.format("SELECT %s, %s.%s, %s, %s, %s FROM %s INNER JOIN %s ON (%s.%s = %s.%s) WHERE %s = ?", 
-				learnerInputProgramID,
-				learnerInputTable,
-				learnerInputID,
-				X_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req,
-				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req,
-				learnerInputText,
-				learnerInputProgramTable,
-				learnerInputTable,
-				learnerInputProgramTable,
-				learnerInputID,
-				learnerInputTable,
-				learnerInputID,
+
+		sql.append(String.format("SELECT %s, %s.%s, %s, %s, %s FROM %s INNER JOIN %s ON (%s.%s = %s.%s) WHERE %s = ?",
+				learnerInputProgramID, learnerInputTable, learnerInputID, X_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req,
+				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req, learnerInputText, learnerInputProgramTable,
+				learnerInputTable, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID,
 				X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID));
-		
+
 		if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership) {
 			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = '4'");
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership){
+		} else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership) {
 			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'G'");
-		}else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership){
+		} else if (learnerInputType == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership) {
 			sql.append(" AND ZZ_Program_Learnerships.ZZ_Learnerships_Type = 'A'");
 		}
-		
+
 		sql.append(" ORDER BY ");
 		sql.append(X_ZZ_Program_Trade.COLUMNNAME_Line);
-		
+
 		List<List<Object>> learnerInputInfoObjs = DB.getSQLArrayObjectsEx(null, sql.toString(), programMasterDataID);
-		
+
 		List<LearnerInputInfo> learnerInputInfos = new ArrayList<>();
-		
+
 		boolean hasWPAReq = false;
 		boolean hasAccred = false;
 		if (learnerInputInfoObjs == null)
 			learnerInputInfoObjs = new ArrayList<>();
-		
+
 		for (List<Object> learnerInputInfoObj : learnerInputInfoObjs) {
-				LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
-				learnerInputInfos.add(learnerInputInfo);
+			LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
+			learnerInputInfos.add(learnerInputInfo);
 
-				if (learnerInputInfo.isUploadWPA()) {
-					hasWPAReq = true;
-				}
-
-				if (learnerInputInfo.isUploadAccred()) {
-					hasAccred = true;
-				}
+			if (learnerInputInfo.isUploadWPA()) {
+				hasWPAReq = true;
 			}
-		
+
+			if (learnerInputInfo.isUploadAccred()) {
+				hasAccred = true;
+			}
+		}
+
 		return List.of(learnerInputInfos, hasWPAReq, hasAccred);
+	}
+
+	public static String saveUploadFile(Media media) throws IOException {
+
+		// System temp base folder
+		String tmpDir = System.getProperty("java.io.tmpdir"); // usually /tmp
+
+		// Create unique subfolder, e.g. myapp_20250822_123456789
+		File uploadDir = Files.createTempDirectory(Paths.get(tmpDir), "MQA_").toFile();
+
+		// Keep original filename
+		String originalName = media.getName();
+		File savedFile = new File(uploadDir, originalName);
+
+		try (InputStream in = media.getStreamData(); OutputStream out = new FileOutputStream(savedFile)) {
+			byte[] buffer = new byte[8192];
+			int len;
+			while ((len = in.read(buffer)) != -1) {
+				out.write(buffer, 0, len);
+			}
+		}
+
+		return savedFile.getAbsolutePath();
 	}
 }

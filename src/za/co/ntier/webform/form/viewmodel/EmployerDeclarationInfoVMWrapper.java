@@ -12,12 +12,12 @@ public class EmployerDeclarationInfoVMWrapper {
 		return employerDeclarationInfo;
 	}
 
-	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
-		this.employerDeclarationInfo = employerDeclarationInfo;
-	}
-	
 	@Init
 	public void init(@ExecutionArgParam("employerDeclarationInfo") EmployerDeclarationInfo employerDeclarationInfo) {
+		this.employerDeclarationInfo = employerDeclarationInfo;
+	}
+
+	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
 		this.employerDeclarationInfo = employerDeclarationInfo;
 	}
 }

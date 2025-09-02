@@ -7,16 +7,18 @@ import za.co.ntier.webform.form.bean.ProgramInput;
 
 public class CandidacyProgram {
 	private ProgramInput disciplines;
-	
-	public CandidacyProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		
-		this.setDisciplines(ProgramInput.getDisciplines(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), 
-				
+
+	public CandidacyProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+		this.setDisciplines(ProgramInput.getDisciplines(
+				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
+
 				"""
-				List of disciplines supported for Internships which the number of learners applying should
-be based on.
-				"""));
-		
+										List of disciplines supported for Internships which the number of learners applying should
+						be based on.
+										"""));
+
 	}
 
 	/**

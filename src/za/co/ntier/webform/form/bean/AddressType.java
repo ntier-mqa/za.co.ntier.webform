@@ -3,25 +3,17 @@ package za.co.ntier.webform.form.bean;
 import za.co.ntier.webform.model.X_ZZ_FormContact;
 
 public enum AddressType {
-	MAIN(X_ZZ_FormContact.ZZ_CONTACTTYPE_Main),
-	MAIN_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_MainAlter),
-	ORG(X_ZZ_FormContact.ZZ_CONTACTTYPE_Org), 
-	ORG_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_OrgAlter), 
-	PHYSICAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_Physical), 
-	POSTAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_Postal),
-	VACATION(X_ZZ_FormContact.ZZ_CONTACTTYPE_Vacation),
-	UNKNOWN("UNKNOWN CONTACT TYPE");
+	MAIN(X_ZZ_FormContact.ZZ_CONTACTTYPE_Main), MAIN_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_MainAlter),
+	ORG(X_ZZ_FormContact.ZZ_CONTACTTYPE_Org), ORG_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_OrgAlter),
+	PHYSICAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_Physical), POSTAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_Postal),
+	VACATION(X_ZZ_FormContact.ZZ_CONTACTTYPE_Vacation), UNKNOWN("UNKNOWN CONTACT TYPE");
 
 	String contactType;
-	AddressType(String	 contactType) {
+
+	AddressType(String contactType) {
 		this.contactType = contactType;
 	}
-	
-	@Override
-	public String toString() {
-		return contactType;
-	}
-	
+
 	public String getAddressTitle(ProgramType programType, boolean isAlternate) {
 		if (this == AddressType.PHYSICAL)
 			return "PHYSICAL ADDRESS";
@@ -39,9 +31,9 @@ public enum AddressType {
 			return "Contact details of person responsible for CANDIDACY:";
 		else if (programType == ProgramType.CANDIDACY && isAlternate)
 			return "Alternate contact details of the person responsible for CANDIDACY:";
-		else if (programType == ProgramType.INTERNSHIP  && !isAlternate)
+		else if (programType == ProgramType.INTERNSHIP && !isAlternate)
 			return "Contact details of person responsible for INTERNSHIP:";
-		else if (programType == ProgramType.INTERNSHIP  && isAlternate)
+		else if (programType == ProgramType.INTERNSHIP && isAlternate)
 			return "Alternate contact details of the person responsible for INTERNSHIP:";
 		else if (programType == ProgramType.EXPERIENCE && !isAlternate)
 			return "Contact details of person responsible for PRACTICAL TRAINING:";
@@ -71,9 +63,15 @@ public enum AddressType {
 			return "Contact details of person responsible for Occupational Health and Safety Skills Programmes:";
 		else if (programType == ProgramType.INHOUSE_TRAINING)
 			return "Contact details of person responsible for IHT:";
-		else if (programType == ProgramType.TVET || programType == ProgramType.CET || programType == ProgramType.TVET_BURSARS)
+		else if (programType == ProgramType.TVET || programType == ProgramType.CET
+				|| programType == ProgramType.TVET_BURSARS)
 			return "Contact details of the responsible person:";
 		else
 			return UNKNOWN.toString();
+	}
+
+	@Override
+	public String toString() {
+		return contactType;
 	}
 }

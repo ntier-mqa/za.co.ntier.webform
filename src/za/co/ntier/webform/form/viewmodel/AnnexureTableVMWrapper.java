@@ -18,15 +18,6 @@ import za.co.ntier.webform.form.bean.ColumnInfo;
 public class AnnexureTableVMWrapper {
 	private AnnexureInfo annexureInfo;
 
-	
-	
-	@Init
-	public void init(@ExecutionArgParam("annexureInfo") AnnexureInfo annexureInfo) {
-		this.setAnnexureInfo(annexureInfo);
-	}
-
-
-
 	/**
 	 * @return the annexureInfo
 	 */
@@ -34,7 +25,20 @@ public class AnnexureTableVMWrapper {
 		return annexureInfo;
 	}
 
+	@Init
+	public void init(@ExecutionArgParam("annexureInfo") AnnexureInfo annexureInfo) {
+		this.setAnnexureInfo(annexureInfo);
+	}
 
+	@Command
+	public void numChange(@BindingParam("annexure") AnnexureInfo annexure,
+			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
+			@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
+		if (annexure.isShowTotal()) {
+			annexure.numChange(row, col, event);
+		}
+
+	}
 
 	/**
 	 * @param annexureInfo the annexureInfo to set
@@ -42,25 +46,11 @@ public class AnnexureTableVMWrapper {
 	public void setAnnexureInfo(AnnexureInfo annexureInfo) {
 		this.annexureInfo = annexureInfo;
 	}
-	
+
 	@Command
-	public void uploadFile(
-			@BindingParam("annexure") AnnexureInfo annexure,
-			@BindingParam("row") Map<ColumnInfo<?>, Object> row, 
-			@BindingParam("col") ColumnInfo<?> col,
-			@ContextParam (ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
+	public void uploadFile(@BindingParam("annexure") AnnexureInfo annexure,
+			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
+			@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
 		annexure.uploadFile(row, col, event);
-	}
-	
-	@Command
-	public void numChange(
-			@BindingParam("annexure") AnnexureInfo annexure,
-			@BindingParam("row") Map<ColumnInfo<?>, Object> row, 
-			@BindingParam("col") ColumnInfo<?> col,
-			@ContextParam (ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
-		if (annexure.isShowTotal()) {
-			annexure.numChange(row, col, event);
-		}
-		
 	}
 }

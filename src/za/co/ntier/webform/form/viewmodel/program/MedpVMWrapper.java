@@ -5,10 +5,10 @@ import org.zkoss.bind.annotation.Init;
 import za.co.ntier.webform.form.bean.program.MedpProgram;
 
 /**
- * If super has an init method but its ChildViewModel doesn't, you can add @Init(superclass=true) on the ChildViewModel to
-use super's init.
+ * If super has an init method but its ChildViewModel doesn't, you can
+ * add @Init(superclass=true) on the ChildViewModel to use super's init.
  */
-@Init(superclass=true)
+@Init(superclass = true)
 public class MedpVMWrapper extends ProgramVMWrapper<MedpProgram> {
-	
+
 }

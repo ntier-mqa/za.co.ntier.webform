@@ -18,56 +18,32 @@ public class WebForm extends ADForm {
 
 	private static final long serialVersionUID = -5402852171052424756L;
 
+	public static final String programMasterDataUUMenuContextKey = "+"
+			+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
+
+	public static final String programTypeMenuContextKey = "+programType";
+
+	public static final String isUploadWPAForNVCMenuContextKey = "+uploadWPAForNVC";
+
+	public static final String menuContextInfoKey = "menuContextInfo";
 	public static String getBundleResourcePath(String zulPath) {
 		if (!zulPath.startsWith("/")) {// relative path
 			zulPath = "/za/co/ntier/webform/zul/" + zulPath;
 		}
 		return WebForm.class.getResource(zulPath).toString();
 	}
-
 	MenuContextInfo menuContextInfo;
-	
 	@Override
 	protected void init(int adFormId, String name) {
 		menuContextInfo = parseMenuContectInfo();
 		super.init(adFormId, menuContextInfo.getFormTitle());
 	}
 
-	public static final String programMasterDataUUMenuContextKey = "+" + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
-	public static final String programTypeMenuContextKey = "+programType";
-	public static final String isUploadWPAForNVCMenuContextKey = "+uploadWPAForNVC";
-	public static final String menuContextInfoKey = "menuContextInfo";
-	
-	private MenuContextInfo parseMenuContectInfo() {
-		String zulPath = Env.getContext(Env.getCtx(), m_WindowNo, "+zulPath");
-
-		String programMasterDataUUValue = Env.getContext(Env.getCtx(), m_WindowNo, programMasterDataUUMenuContextKey);
-		
-		String programTypeValue = Env.getContext(Env.getCtx(), m_WindowNo, programTypeMenuContextKey);
-		
-		String uploadWPAForNVCValue = Env.getContext(Env.getCtx(), m_WindowNo, isUploadWPAForNVCMenuContextKey);
-		
-		boolean isUploadWPAForNVC = uploadWPAForNVCValue != null && "Y".equalsIgnoreCase(uploadWPAForNVCValue);
-		
-		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataUUValue, null);
-		
-		String formTitle = Env.getContext(Env.getCtx(), m_WindowNo, "+formTitle");
-		
-		MenuContextInfo menuContextInfo = new MenuContextInfo(
-				ProgramType.valueOf(programTypeValue),
-				zulPath,
-				masterData,
-				isUploadWPAForNVC,
-				formTitle);
-		
-		return menuContextInfo;
-	}
-	
 	@Override
 	protected void initForm() {
 		Map<String, Object> args = new HashMap<>();
 		args.put(menuContextInfoKey, menuContextInfo);
-		
+
 		String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
 
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -87,11 +63,33 @@ public class WebForm extends ADForm {
 		outterDiv.setSclass("mqaWebForm");
 
 		Div container = new Div();
-		
-		container.setSclass("container");		
-		
+
+		container.setSclass("container");
+
 		outterDiv.appendChild(container);
 
 		container.appendChild(inc);
+	}
+
+	private MenuContextInfo parseMenuContectInfo() {
+		String zulPath = Env.getContext(Env.getCtx(), m_WindowNo, "+zulPath");
+
+		String programMasterDataUUValue = Env.getContext(Env.getCtx(), m_WindowNo, programMasterDataUUMenuContextKey);
+
+		String programTypeValue = Env.getContext(Env.getCtx(), m_WindowNo, programTypeMenuContextKey);
+
+		String uploadWPAForNVCValue = Env.getContext(Env.getCtx(), m_WindowNo, isUploadWPAForNVCMenuContextKey);
+
+		boolean isUploadWPAForNVC = uploadWPAForNVCValue != null && "Y".equalsIgnoreCase(uploadWPAForNVCValue);
+
+		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataUUValue,
+				null);
+
+		String formTitle = Env.getContext(Env.getCtx(), m_WindowNo, "+formTitle");
+
+		MenuContextInfo menuContextInfo = new MenuContextInfo(ProgramType.valueOf(programTypeValue), zulPath,
+				masterData, isUploadWPAForNVC, formTitle);
+
+		return menuContextInfo;
 	}
 }
