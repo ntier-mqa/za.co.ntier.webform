@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -15,7 +16,7 @@ import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
-public class ProgramCetTvetInfo implements ISaveForm {
+public class ProgramCetTvetInfo implements ISaveForm, IProgram {
 	public static final String COL_NAME_titleHeaderText = "titleHeaderText";
 	public static final String COL_NAME_customizeDetaileTemplate = "customizeDetaileTemplate";
 	public static final String DetaileTemplate_LecturersExposedIndustry = "Lecturers exposed to industry";

@@ -16,6 +16,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Tabbox;
 
+import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.AddressInfo;
@@ -43,24 +44,8 @@ import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class DiscretionaryGrantsApplicationProgramVM {
-	private InternshipProgram internship;
-	private CandidacyProgram candidacy;
-	private WorkExperienceProgram workExperience;
-	private MedpProgram medp;
-
-	private ArtisanAidesProgram artisanAides;
-	private ArtisanDevProgram artisanDev;
-	private CentreOfSpecialisationProgram centreOfSpecialisation;
-	private ArtisanRPLProgram artisanRPL;
-	private NonArtisanDevProgram nonArtisanDev;
-	private NonArtisanDevRPLProgram nonArtisanDevRPL;
-	private NcvGraduatesProgram ncvGraduates;
-	private AetProgram aet;
-	private OhasspProgram ohassp;
-	private InhouseTrainingProgram inhouseTraining;
-
-	private ProgramCetTvetInfo programCetTvetInfo;
-
+	private IProgram program;
+	
 	private OrganisationInfo organisationInfo;
 
 	private UploadDocComponent uploadDoc;
@@ -123,52 +108,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 
 	/**
-	 * @return the aet
-	 */
-	public AetProgram getAet() {
-		return aet;
-	}
-
-	/**
 	 * @return the alternateProgramContact
 	 */
 	public AddressInfo getAlternateProgramContact() {
 		return alternateProgramContact;
-	}
-
-	/**
-	 * @return the artisanAides
-	 */
-	public ArtisanAidesProgram getArtisanAides() {
-		return artisanAides;
-	}
-
-	/**
-	 * @return the artisanDev
-	 */
-	public ArtisanDevProgram getArtisanDev() {
-		return artisanDev;
-	}
-
-	/**
-	 * @return the artisanRPL
-	 */
-	public ArtisanRPLProgram getArtisanRPL() {
-		return artisanRPL;
-	}
-
-	/**
-	 * @return the candidacy
-	 */
-	public CandidacyProgram getCandidacy() {
-		return candidacy;
-	}
-
-	/**
-	 * @return the centreOfSpecialisation
-	 */
-	public CentreOfSpecialisationProgram getCentreOfSpecialisation() {
-		return centreOfSpecialisation;
 	}
 
 	public EmployerDeclarationInfo getEmployerDeclarationInfo() {
@@ -183,27 +126,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @return the inhouseTraining
-	 */
-	public InhouseTrainingProgram getInhouseTraining() {
-		return inhouseTraining;
-	}
-
-	/**
-	 * @return the internship
-	 */
-	public InternshipProgram getInternship() {
-		return internship;
-	}
-
-	/**
-	 * @return the medp
-	 */
-	public MedpProgram getMedp() {
-		return medp;
-	}
-
-	/**
 	 * @return the programMasterDataID
 	 */
 	public MenuContextInfo getMenuContextInfo() {
@@ -211,42 +133,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @return the ncvGraduates
-	 */
-	public NcvGraduatesProgram getNcvGraduates() {
-		return ncvGraduates;
-	}
-
-	/**
-	 * @return the nonArtisanDev
-	 */
-	public NonArtisanDevProgram getNonArtisanDev() {
-		return nonArtisanDev;
-	}
-
-	/**
-	 * @return the nonArtisanDevRPL
-	 */
-	public NonArtisanDevRPLProgram getNonArtisanDevRPL() {
-		return nonArtisanDevRPL;
-	}
-
-	/**
-	 * @return the ohassp
-	 */
-	public OhasspProgram getOhassp() {
-		return ohassp;
-	}
-
-	/**
 	 * @return the organisationInfo
 	 */
 	public OrganisationInfo getOrganisationInfo() {
 		return organisationInfo;
-	}
-
-	public ProgramCetTvetInfo getProgramCetTvetInfo() {
-		return programCetTvetInfo;
 	}
 
 	/**
@@ -279,12 +169,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		return uploadDoc;
 	}
 
-	/**
-	 * @return the workExperience
-	 */
-	public WorkExperienceProgram getWorkExperience() {
-		return workExperience;
-	}
 
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo)
@@ -298,35 +182,35 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		organisationInfo = new OrganisationInfo(menuContextInfo);
 
 		if (programType.isCetTvet()) {
-			setProgramCetTvetInfo(new ProgramCetTvetInfo(menuContextInfo));
+			setProgram(new ProgramCetTvetInfo(menuContextInfo));
 		} else if (ProgramType.INTERNSHIP == programType) {
-			internship = new InternshipProgram(menuContextInfo);
+			setProgram(new InternshipProgram(menuContextInfo));
 		} else if (ProgramType.CANDIDACY == programType) {
-			setCandidacy(new CandidacyProgram(menuContextInfo));
+			setProgram(new CandidacyProgram(menuContextInfo));
 		} else if (ProgramType.EXPERIENCE == programType) {
-			setWorkExperience(new WorkExperienceProgram(menuContextInfo));
+			setProgram(new WorkExperienceProgram(menuContextInfo));
 		} else if (ProgramType.DEV_PROGRAM == programType) {
-			setMedp(new MedpProgram());
+			setProgram(new MedpProgram());
 		} else if (ProgramType.ARTISAN_AIDES == programType) {
-			setArtisanAides(new ArtisanAidesProgram());
+			setProgram(new ArtisanAidesProgram());
 		} else if (ProgramType.ARTISAN_DEV == programType) {
-			setArtisanDev(new ArtisanDevProgram(menuContextInfo));
+			setProgram(new ArtisanDevProgram(menuContextInfo));
 		} else if (ProgramType.CENTRE_SPECIALISATION == programType) {
-			setCentreOfSpecialisation(new CentreOfSpecialisationProgram(menuContextInfo));
+			setProgram(new CentreOfSpecialisationProgram(menuContextInfo));
 		} else if (ProgramType.ARTISAN_RPL == programType) {
-			setArtisanRPL(new ArtisanRPLProgram());
+			setProgram(new ArtisanRPLProgram());
 		} else if (ProgramType.NON_ARTISAN_DEV == programType) {
-			setNonArtisanDev(new NonArtisanDevProgram(menuContextInfo));
+			setProgram(new NonArtisanDevProgram(menuContextInfo));
 		} else if (ProgramType.NON_ARTISAN_DEV_RPL == programType) {
-			setNonArtisanDevRPL(new NonArtisanDevRPLProgram(menuContextInfo));
+			setProgram(new NonArtisanDevRPLProgram(menuContextInfo));
 		} else if (ProgramType.NCV_GRADUATES == programType) {
-			setNcvGraduates(new NcvGraduatesProgram(menuContextInfo));
+			setProgram(new NcvGraduatesProgram(menuContextInfo));
 		} else if (ProgramType.AET == programType) {
-			setAet(new AetProgram(menuContextInfo));
+			setProgram(new AetProgram(menuContextInfo));
 		} else if (ProgramType.OHASSP == programType) {
-			setOhassp(new OhasspProgram());
+			setProgram(new OhasspProgram());
 		} else if (ProgramType.INHOUSE_TRAINING == programType) {
-			setInhouseTraining(new InhouseTrainingProgram());
+			setProgram(new InhouseTrainingProgram());
 		}
 
 		employerDeclarationInfo = new EmployerDeclarationInfo();
@@ -360,53 +244,12 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @param aet the aet to set
-	 */
-	public void setAet(AetProgram aet) {
-		this.aet = aet;
-	}
-
-	/**
 	 * @param alternateProgramContact the alternateProgramContact to set
 	 */
 	public void setAlternateProgramContact(AddressInfo alternateProgramContact) {
 		this.alternateProgramContact = alternateProgramContact;
 	}
 
-	/**
-	 * @param artisanAides the artisanAides to set
-	 */
-	public void setArtisanAides(ArtisanAidesProgram artisanAidesProgram) {
-		this.artisanAides = artisanAidesProgram;
-	}
-
-	/**
-	 * @param artisanDev the artisanDev to set
-	 */
-	public void setArtisanDev(ArtisanDevProgram artisanDev) {
-		this.artisanDev = artisanDev;
-	}
-
-	/**
-	 * @param artisanRPL the artisanRPL to set
-	 */
-	public void setArtisanRPL(ArtisanRPLProgram artisanRPL) {
-		this.artisanRPL = artisanRPL;
-	}
-
-	/**
-	 * @param candidacy the candidacy to set
-	 */
-	public void setCandidacy(CandidacyProgram candidacy) {
-		this.candidacy = candidacy;
-	}
-
-	/**
-	 * @param centreOfSpecialisation the centreOfSpecialisation to set
-	 */
-	public void setCentreOfSpecialisation(CentreOfSpecialisationProgram centreOfSpecialisation) {
-		this.centreOfSpecialisation = centreOfSpecialisation;
-	}
 
 	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
 		this.employerDeclarationInfo = employerDeclarationInfo;
@@ -420,70 +263,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @param inhouseTraining the inhouseTraining to set
-	 */
-	public void setInhouseTraining(InhouseTrainingProgram inhouseTraining) {
-		this.inhouseTraining = inhouseTraining;
-	}
-
-	/**
-	 * @param internship the internship to set
-	 */
-	public void setInternship(InternshipProgram internship) {
-		this.internship = internship;
-	}
-
-	/**
-	 * @param medp the medp to set
-	 */
-	public void setMedp(MedpProgram medp) {
-		this.medp = medp;
-	}
-
-	/**
 	 * @param programMasterDataID the programMasterDataID to set
 	 */
 	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
 	}
 
-	/**
-	 * @param ncvGraduates the ncvGraduates to set
-	 */
-	public void setNcvGraduates(NcvGraduatesProgram ncvGraduates) {
-		this.ncvGraduates = ncvGraduates;
-	}
-
-	/**
-	 * @param nonArtisanDev the nonArtisanDev to set
-	 */
-	public void setNonArtisanDev(NonArtisanDevProgram nonArtisanDev) {
-		this.nonArtisanDev = nonArtisanDev;
-	}
-
-	/**
-	 * @param nonArtisanDevRPL the nonArtisanDevRPL to set
-	 */
-	public void setNonArtisanDevRPL(NonArtisanDevRPLProgram nonArtisanDevRPL) {
-		this.nonArtisanDevRPL = nonArtisanDevRPL;
-	}
-
-	/**
-	 * @param ohassp the ohassp to set
-	 */
-	public void setOhassp(OhasspProgram ohassp) {
-		this.ohassp = ohassp;
-	}
 
 	/**
 	 * @param organisationInfo the organisationInfo to set
 	 */
 	public void setOrganisationInfo(OrganisationInfo organisationInfo) {
 		this.organisationInfo = organisationInfo;
-	}
-
-	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
-		this.programCetTvetInfo = programCetTvetInfo;
 	}
 
 	/**
@@ -510,13 +301,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setUploadDoc(UploadDocComponent uploadDoc) {
 		this.uploadDoc = uploadDoc;
-	}
-
-	/**
-	 * @param workExperience the workExperience to set
-	 */
-	public void setWorkExperience(WorkExperienceProgram workExperience) {
-		this.workExperience = workExperience;
 	}
 
  	private void saveAppFormCommonPart(X_ZZ_Application_Form applicationForm) {
@@ -552,10 +336,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			alternateProgramContact.saveForm(trxName, applicationForm);
 		}
 
+		program.saveForm(trxName, applicationForm);
+		
 		recordId = applicationForm.getZZ_Application_Form_ID();
 		tableId = applicationForm.get_Table_ID();
-		
-		
 		
 		showDialog();
 
@@ -577,5 +361,19 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);
 		}
+	}
+
+	/**
+	 * @return the program
+	 */
+	public IProgram getProgram() {
+		return program;
+	}
+
+	/**
+	 * @param program the program to set
+	 */
+	public void setProgram(IProgram program) {
+		this.program = program;
 	}
 }
