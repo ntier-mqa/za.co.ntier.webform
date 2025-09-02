@@ -80,7 +80,7 @@ public enum ProgramType {
 			case CET:
 			case TVET:
 			case TVET_BURSARS:
-				return "program/programCetTvetInfo.zul";
+				return "program/cetTvet.zul";
 			default:
 				return null;
 		}

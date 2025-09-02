@@ -16,17 +16,7 @@ import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
-public class ProgramCetTvetInfo implements ISaveForm, IProgram {
-	public static final String COL_NAME_titleHeaderText = "titleHeaderText";
-	public static final String COL_NAME_customizeDetaileTemplate = "customizeDetaileTemplate";
-	public static final String DetaileTemplate_LecturersExposedIndustry = "Lecturers exposed to industry";
-
-	public static final String ATTSUBAnnexureCustomize = "Attribute Sub Annexure Customize";
-	public static final String SUBAnnexure_TradeBeneficiaries = "TradeBeneficiaries";
-
-	public static final String ATTSUBAnnexureColumnType = "Attribute Sub Annexure Column Type";
-
-	public static final String SUBAnnexureColumnType_Number = "Number";
+public class CetTvetProgram implements ISaveForm, IProgram {
 	private MenuContextInfo menuContextInfo;
 
 	private List<AnnexureInfo> annexureInfos;
@@ -35,7 +25,7 @@ public class ProgramCetTvetInfo implements ISaveForm, IProgram {
 	private List<LearnerInputInfo> tradeInfo;
 
 	@SuppressWarnings("unchecked")
-	public ProgramCetTvetInfo(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
+	public CetTvetProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this.setMenuContextInfo(menuContextInfo);
 

@@ -39,7 +39,7 @@ import za.co.ntier.webform.form.bean.program.NcvGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
-import za.co.ntier.webform.form.bean.program.ProgramCetTvetInfo;
+import za.co.ntier.webform.form.bean.program.CetTvetProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -183,7 +183,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		organisationInfo = new OrganisationInfo(menuContextInfo);
 
 		if (programType.isCetTvet()) {
-			setProgram(new ProgramCetTvetInfo(menuContextInfo));
+			setProgram(new CetTvetProgram(menuContextInfo));
 		} else if (ProgramType.INTERNSHIP == programType) {
 			setProgram(new InternshipProgram(menuContextInfo));
 		} else if (ProgramType.CANDIDACY == programType) {

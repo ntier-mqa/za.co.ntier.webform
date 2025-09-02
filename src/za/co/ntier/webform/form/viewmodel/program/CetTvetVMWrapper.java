@@ -9,14 +9,14 @@ import org.zkoss.zk.ui.event.InputEvent;
 
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
-import za.co.ntier.webform.form.bean.program.ProgramCetTvetInfo;
+import za.co.ntier.webform.form.bean.program.CetTvetProgram;
 
 /**
  * If super has an init method but its ChildViewModel doesn't, you can
  * add @Init(superclass=true) on the ChildViewModel to use super's init.
  */
 @Init(superclass = true)
-public class ProgramCetTvetInfoVMWrapper extends ProgramVMWrapper<ProgramCetTvetInfo>{
+public class CetTvetVMWrapper extends ProgramVMWrapper<CetTvetProgram>{
 	private String addSubLineLabel = "add more";
 
 	@Command
