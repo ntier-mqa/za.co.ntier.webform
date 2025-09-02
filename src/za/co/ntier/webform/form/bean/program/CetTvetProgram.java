@@ -59,6 +59,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 					List.of(ColumnInfo.getColPositiveNumber("Requested Programme"),
 							ColumnInfo.getColPositiveNumber("Number of managers")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -71,6 +72,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 					List.of(ColumnInfo.getColPositiveNumber("Requested Programme")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -85,6 +87,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 					List.of(ColumnInfo.getColPositiveNumber("Field of Study"),
 							ColumnInfo.getColPositiveNumber("Number of learners")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -99,6 +102,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 					List.of(ColumnInfo.getColPositiveNumber("Requested Programme"),
 							ColumnInfo.getColPositiveNumber("Number of managers")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -113,6 +117,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 					"Please supply the list of possible fields of study for this WIL",
 					List.of(ColumnInfo.getColPositiveNumber("Field of Study:"),
 							ColumnInfo.getColPositiveNumber("Number of learners applied for:")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -151,6 +156,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 				subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 						List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
 								ColumnInfo.getColPositiveNumber("Number of learners")));
+				subAnnexure.setShowAddButton(true);
 				annexure.setSubAnnexure(subAnnexure);
 
 				annexureInfos.add(annexure);

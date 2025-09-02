@@ -152,6 +152,7 @@ public class AnnexureInfo implements ISaveForm{
 
 	private String sectionHeader;
 	private boolean showTotal = false;
+	private boolean showAddButton = false;
 
 	private AnnexureInfo subAnnexure;
 
@@ -284,21 +285,24 @@ public class AnnexureInfo implements ISaveForm{
 		BindUtils.postNotifyChange(row.get(col), "fileName");
 	}
 
-	public void valueNumChange(ColumnInfo<?> detailCol) {
-		int total = 0;
-		for (Map<ColumnInfo<?>, Object> row : rows) {
-			if (row.get(detailCol) != null) {
-				total += (int) row.get(detailCol);
-			}
-		}
-		totalRow.put(detailCol, total);
-		BindUtils.postNotifyChange(this, "*");
-	}
-
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/**
+	 * @return the showAddButton
+	 */
+	public boolean isShowAddButton() {
+		return showAddButton;
+	}
+
+	/**
+	 * @param showAddButton the showAddButton to set
+	 */
+	public void setShowAddButton(boolean showAddButton) {
+		this.showAddButton = showAddButton;
 	}
 
 }

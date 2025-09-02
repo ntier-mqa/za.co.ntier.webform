@@ -53,4 +53,9 @@ public class AnnexureTableVMWrapper {
 			@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
 		annexure.uploadFile(row, col, event);
 	}
+	
+	@Command
+	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure) {
+		annexure.addRow();
+	}
 }

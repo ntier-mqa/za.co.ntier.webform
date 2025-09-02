@@ -2,9 +2,18 @@
 <?import za.co.ntier.webform.form.bean.DataType ?>
 <?import org.adempiere.webui.AdempiereWebUI ?>
 
-<nodom
-	viewModel="@id('vmAnnexure') @init('za.co.ntier.webform.form.viewmodel.component.AnnexureTableVMWrapper')">
+<?variable-resolver class="za.co.ntier.webform.form.ViewModelResolver"?>
 
+<nodom
+	viewModel="@id('vmAnnexure') @init(vmAnnexureTableVMWrapper)">
+
+	<hlayout
+		if="${vmAnnexure.annexureInfo.sectionHeader ne null}" 
+		sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="@init(vmAnnexure.annexureInfo.sectionHeader)" />
+	</hlayout>
+			
 	<hlayout if="${vmAnnexure.annexureInfo.tableTitle ne null}">
 		<label value="@init(vmAnnexure.annexureInfo.tableTitle)" />
 	</hlayout>
@@ -108,7 +117,11 @@
 							</div>
 
 						</nodom>
-
+						
+						<button sclass="btn-circle"
+										if="${ rowStatus.last and detailColStatus.last and vmAnnexure.annexureInfo.showAddButton}"
+										iconSclass="z-icon-plus" label=""
+										onClick="@command('addDetailLine', annexure=vmAnnexure.annexureInfo)" />
 					</div>
 				</template>
 			</nodom>
