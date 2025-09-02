@@ -2,35 +2,32 @@
 
 <nodom
 	viewModel="@id('vmOrgSize') @init('za.co.ntier.webform.form.viewmodel.OrganisationSizeVMWrapper')">
-	
+
 	<hlayout sclass="subSectionHeader">
 		<label sclass="subSectionHeaderTitle"
 			value="OTHER ORGANISATION INFO" />
 		<label
 			value="(please select the correct option pertaining to the company size)" />
 	</hlayout>
-	
+
 	<div sclass="grid-table grid-table-auto-2">
-		
-		
-			<div sclass="grid-cell">
-				<label value="@init(vmOrgSize.orgSizeInfo.numOfEmployerTitle)" />
-			</div>
-			<div sclass="grid-cell">
-				<textbox
-	                value="@bind(vmOrgSize.orgSizeInfo.numOfEmployer)"/>
-			</div>
-		
-		
-			<div sclass="grid-cell">
-				<label
-					value="@init(vmOrgSize.orgSizeInfo.submittedWSPTitle)" />
-			</div>
-			<div sclass="grid-cell">
-				<label
-					value="@load(vmOrgSize.orgSizeInfo.submittedWSPText)" />
-			</div>
-		
-		
+
+
+		<div sclass="grid-cell">
+			<label value="@init(vmOrgSize.orgSizeInfo.numOfEmployerTitle)" />
+		</div>
+		<div sclass="grid-cell">
+			<textbox value="@bind(vmOrgSize.orgSizeInfo.numOfEmployer)" />
+		</div>
+
+
+		<div sclass="grid-cell">
+			<label value="@init(vmOrgSize.orgSizeInfo.submittedWSPTitle)" />
+		</div>
+		<div sclass="grid-cell">
+			<label value="@load(vmOrgSize.orgSizeInfo.submittedWSPText)" />
+		</div>
+
+
 	</div>
 </nodom>

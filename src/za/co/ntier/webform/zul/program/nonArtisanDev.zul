@@ -2,11 +2,11 @@
 
 <nodom xmlns:n="native"
 	viewModel="@id('vmNonArtisanDev') @init('za.co.ntier.webform.form.viewmodel.program.NonArtisanDevVMWrapper')">
-		<hlayout sclass="sectionHeader">
+	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
 			value="NON-ARTISAN DEVELOPMENT GRANT" />
 	</hlayout>
-	
+
 	<div>
 		<label value="Note 1:" />
 		<label

@@ -2,12 +2,12 @@
 
 <nodom xmlns:n="native"
 	viewModel="@id('vmCentreOfSpecialisation') @init('za.co.ntier.webform.form.viewmodel.program.CentreOfSpecialisationVMWrapper')">
-	
+
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
 			value="CENTRE OF SPECIALISATION GRANT" />
 	</hlayout>
-	
+
 	<div>
 		<label sclass="note" value="Note:" />
 		<label

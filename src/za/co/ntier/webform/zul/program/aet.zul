@@ -3,8 +3,7 @@
 <nodom xmlns:n="native"
 	viewModel="@id('vmAet') @init('za.co.ntier.webform.form.viewmodel.program.AetVMWrapper')">
 	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle"
-			value="AET GRANT"/>
+		<label sclass="sectionHeaderTitle" value="AET GRANT" />
 	</hlayout>
 	<div>
 		<label value="Note:" />

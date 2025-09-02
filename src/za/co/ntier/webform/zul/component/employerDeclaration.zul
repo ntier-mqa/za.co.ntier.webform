@@ -2,24 +2,29 @@
 
 <nodom xmlns:n="native"
 	viewModel="@id('vmEmployerDeclaration') @init('za.co.ntier.webform.form.viewmodel.EmployerDeclarationInfoVMWrapper')">
-	
+
 	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle"
-			value="DECLARATION" />
+		<label sclass="sectionHeaderTitle" value="DECLARATION" />
 	</hlayout>
-  	<label style="padding:20px 50px 0px;  display: block;  font-size: large;" value="I declare that as the duly authorised representative of the Organisation confirms that Organisation will comply with the general rules and criteria hereunder and further confirmed that all the information provided in this application is true and accurate"/>
-  	
-  	<div sclass="grid-container">
-  		<div sclass="form-field">
-  			<label sclass="label" value="Name and Surname"/>
-  			<textbox placeholder="" value="@bind(vmEmployerDeclaration.employerDeclarationInfo.userName)"/>
-  		</div>
-  		<div sclass="form-field">
-  			<label sclass="label" value="Date"/>
-			<datebox format="short" valueInLocalDate="@bind(vmEmployerDeclaration.employerDeclarationInfo.localDate)"/>
-  		</div>
-  		<div sclass="form-field" style="padding-left: 0px;padding-right: 0px">
-  			<checkbox sclass="icon-on-right" label="Click here to acknowledge commitment"/>
-  		</div>
-  	</div>
+	<label
+		style="padding:20px 50px 0px;  display: block;  font-size: large;"
+		value="I declare that as the duly authorised representative of the Organisation confirms that Organisation will comply with the general rules and criteria hereunder and further confirmed that all the information provided in this application is true and accurate" />
+
+	<div sclass="grid-container">
+		<div sclass="form-field">
+			<label sclass="label" value="Name and Surname" />
+			<textbox placeholder=""
+				value="@bind(vmEmployerDeclaration.employerDeclarationInfo.userName)" />
+		</div>
+		<div sclass="form-field">
+			<label sclass="label" value="Date" />
+			<datebox format="short"
+				valueInLocalDate="@bind(vmEmployerDeclaration.employerDeclarationInfo.localDate)" />
+		</div>
+		<div sclass="form-field"
+			style="padding-left: 0px;padding-right: 0px">
+			<checkbox sclass="icon-on-right"
+				label="Click here to acknowledge commitment" />
+		</div>
+	</div>
 </nodom>

@@ -6,9 +6,9 @@
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
 			value="MANAGEMENT AND EXECUTIVE DEVELOPMENT PROGRAMME (MEDP) SPECIFIC
-GUIDELINES"/>
+GUIDELINES" />
 	</hlayout>
-	
+
 	<div>
 		<label
 			value="To support qualifying HDSA employees with Management and Executive Development
@@ -39,8 +39,7 @@ GUIDELINES"/>
 	Executive Development Programme (MEDP)" />
 		</div>
 		<div sclass="grid-cell">
-			<textbox
-				value="@bind(vmMedp.program.noOfLearners)"
+			<textbox value="@bind(vmMedp.program.noOfLearners)"
 				sclass="form-control" />
 		</div>
 

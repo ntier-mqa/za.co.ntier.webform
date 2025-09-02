@@ -5,10 +5,8 @@
 <nodom
 	viewModel="@id('vmAnnexure') @init('za.co.ntier.webform.form.viewmodel.AnnexureTableVMWrapper')">
 
-	<hlayout
-		if="${vmAnnexure.annexureInfo.tableTitle ne null}">
-		<label
-			value="@init(vmAnnexure.annexureInfo.tableTitle)" />
+	<hlayout if="${vmAnnexure.annexureInfo.tableTitle ne null}">
+		<label value="@init(vmAnnexure.annexureInfo.tableTitle)" />
 	</hlayout>
 	<div
 		sclass="@init(('grid-table grid-table-' += vmAnnexure.annexureInfo.columnInfos.size() ))"
@@ -38,8 +36,8 @@
 						</nodom>
 						<nodom if="${detailCol.dataType == DataType.PositiveNumber}">
 							<intbox value="@bind(row[detailCol])"
-								constraint="no negative" 
-								onChange="@command('numChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )"/>
+								constraint="no negative"
+								onChange="@command('numChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )" />
 						</nodom>
 						<nodom if="${detailCol.dataType == DataType.TwoValues}">
 
@@ -98,15 +96,16 @@
 						</nodom>
 
 						<nodom if="${detailCol.dataType == DataType.FileUpload}">
-							<div style="display: flex;flex-direction: column; width:100%;align-items:center">
+							<div
+								style="display: flex;flex-direction: column; width:100%;align-items:center">
 
-							<fileupload sclass="text-wrap w-100"
-								iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
-								label="@load(detailCol.btText)"
-								onUpload="@command('uploadFile', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol)" 
-								upload = "@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))"/>
-							<label value="@load(row[detailCol].fileName)" />
-</div>
+								<fileupload sclass="text-wrap w-100"
+									iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
+									label="@load(detailCol.btText)"
+									onUpload="@command('uploadFile', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol)"
+									upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
+								<label value="@load(row[detailCol].fileName)" />
+							</div>
 
 						</nodom>
 

@@ -53,30 +53,34 @@
 									<intbox value="@bind(row[detailCol])"
 										constraint="no negative" />
 								</nodom>
-								<nodom
-									if="${detailCol.dataType == DataType.TwoValues}">
-									
-									<div style="display: flex;flex-direction: column; width:100%;">
-										<div style="height:50%; border-bottom: black solid 1px; padding-top: 5px; padding-bottom: 10px;">
+								<nodom if="${detailCol.dataType == DataType.TwoValues}">
+
+									<div
+										style="display: flex;flex-direction: column; width:100%;">
+										<div
+											style="height:50%; border-bottom: black solid 1px; padding-top: 5px; padding-bottom: 10px;">
 											<intbox value="@bind(row[detailCol][0])"
 												constraint="no negative" />
-											
+
 										</div>
-										<div style="height:50%; padding-top: 10px; padding-bottom: 5px;">
+										<div
+											style="height:50%; padding-top: 10px; padding-bottom: 5px;">
 											<intbox value="@bind(row[detailCol][1])"
 												constraint="no negative" />
-											
+
 										</div>
 									</div>
 								</nodom>
-								<nodom
-									if="${detailCol.dataType == DataType.TwoTitles}">
-									
-									<div style="display: flex;flex-direction: column; width:100%;">
-										<div style="height:50%; border-bottom: black solid 1px; padding-top: 5px; padding-bottom: 10px;">
+								<nodom if="${detailCol.dataType == DataType.TwoTitles}">
+
+									<div
+										style="display: flex;flex-direction: column; width:100%;">
+										<div
+											style="height:50%; border-bottom: black solid 1px; padding-top: 5px; padding-bottom: 10px;">
 											<label value="@init(row[detailCol][0])" />
 										</div>
-										<div style="height:50%; padding-top: 10px; padding-bottom: 5px;">
+										<div
+											style="height:50%; padding-top: 10px; padding-bottom: 5px;">
 											<label value="@init(row[detailCol][1])" />
 										</div>
 									</div>
@@ -114,9 +118,9 @@
 			<!-- sub annexure -->
 			<nodom if="${annexure.subAnnexure ne null}">
 
-	
-				<label if="${annexure.subAnnexure.sectionHeader ne null}" sclass=""
-					value="@init(annexure.subAnnexure.sectionHeader)" />
+
+				<label if="${annexure.subAnnexure.sectionHeader ne null}"
+					sclass="" value="@init(annexure.subAnnexure.sectionHeader)" />
 
 
 				<div
@@ -148,12 +152,11 @@
 									<nodom
 										if="${detailCol.dataType == DataType.PositiveNumber}">
 										<intbox value="@bind(row[detailCol])"
-											constraint="no negative" 
-											onChange="@command('subAnnexureNumChange', subAnnexure=annexure.subAnnexure, col = detailCol )"/>
+											constraint="no negative"
+											onChange="@command('subAnnexureNumChange', subAnnexure=annexure.subAnnexure, col = detailCol )" />
 									</nodom>
-									<nodom
-										if="${detailCol.dataType == DataType.List}">
-										
+									<nodom if="${detailCol.dataType == DataType.List}">
+
 										<listbox mold="select"
 											model="@load(detailCol.dataProvider)"
 											selectedItem="@bind(row[detailCol])">
@@ -163,12 +166,11 @@
 										</listbox>
 
 									</nodom>
-									
+
 									<button sclass="btn-circle"
-										if ="${ rowStatus.last and detailColStatus.last }"
-										iconSclass="z-icon-plus"
-								        label=""
-								        onClick="@command('addSubLine', subAnnexure=annexure.subAnnexure)" />
+										if="${ rowStatus.last and detailColStatus.last }"
+										iconSclass="z-icon-plus" label=""
+										onClick="@command('addSubLine', subAnnexure=annexure.subAnnexure)" />
 								</div>
 							</template>
 						</nodom>
@@ -177,7 +179,8 @@
 						<!-- total fix me -->
 
 						<nodom children="@bind(annexure.subAnnexure.columnInfos)"
-						if = "${rowStatus.last}">>
+							if="${rowStatus.last}">
+							>
 							<template name="children" var="totalCol">
 								<div sclass="grid-cell grid-sub-footer grid-footer-cell"
 									visible="@load((annexure.subAnnexure.isShowTotal() and rowStatus.last))">

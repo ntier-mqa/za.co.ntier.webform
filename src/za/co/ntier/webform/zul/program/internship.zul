@@ -2,18 +2,15 @@
 <?import za.co.ntier.webform.form.bean.program.InternshipProgram ?>
 <nodom
 	viewModel="@id('vmInternship') @init('za.co.ntier.webform.form.viewmodel.program.InternshipVMWrapper')">
-	
+
 	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle"
-			value="INTERNSHIP"/>
+		<label sclass="sectionHeaderTitle" value="INTERNSHIP" />
 	</hlayout>
-	
-	<include
-		annexureInfo="@load(vmInternship.program.disciplines)"
+
+	<include annexureInfo="@load(vmInternship.program.disciplines)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
-		
-	<include
-		annexureInfo="@load(vmInternship.program.trade)"
+
+	<include annexureInfo="@load(vmInternship.program.trade)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
-		
+
 </nodom>

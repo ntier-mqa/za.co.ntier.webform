@@ -12,8 +12,7 @@
 		<label value="Artisan RPL is paid upon completion." />
 	</div>
 
-	<include
-		annexureInfo="@load(vmArtisanRPL.program.allLearners)"
+	<include annexureInfo="@load(vmArtisanRPL.program.allLearners)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 </nodom>

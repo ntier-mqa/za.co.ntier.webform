@@ -4,89 +4,82 @@
 
 <nodom
 	viewModel="@id('vmOrgInfo') @init('za.co.ntier.webform.form.viewmodel.OrganisationInfoVMWrapper')">
-	
-       	<hlayout sclass="sectionHeader">
-			<label sclass="sectionHeaderTitle"
-				value="ORGANISATION INFORMATION" />
-		</hlayout>
-       	
-		<div sclass="grid-container">
-       		<div sclass="form-field">
-       			<label
-       				sclass="label" 
-					value="@init(vmOrgInfo.organisationInfo.sdlNumberTitle)" />
-				<textbox
-					value="@bind(vmOrgInfo.organisationInfo.sdlNumber)" 
-					onChange="@command('sdlNumberChange')"
-					placeholder="0000000000000"/>
-       		</div>
-       		
-       		<div if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}" 
-       				sclass="form-field">
-       			<label 
-       				sclass="label" 
-       				value="@init(vmOrgInfo.organisationInfo.orgNameTitle)"/>
-		  		<textbox
-					value="@bind(vmOrgInfo.organisationInfo.orgName)" />
-       		</div>
-       		
-       		<div if="${vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
-       				sclass="form-field">
-       			<label 
-       				sclass="label" 
-       				value="@init(vmOrgInfo.organisationInfo.cetTvetNameTitle)"/>
-       			<listbox 
-	       				mold="select" 
-	       				sclass=""
-						model="@load(vmOrgInfo.organisationInfo.cetTvetColleges)"
-						selectedItem="@bind(vmOrgInfo.organisationInfo.cetTvetCollegeSelected)">
-					<template name="model" var="item">
-						<listitem label="@load(item.name)" />
-					</template>
-				</listbox>
-       		</div>
-       		
-       		<div
-       				sclass="form-field">
-       			<label
-       				sclass="label" 
-					value="@init(vmOrgInfo.organisationInfo.siteSDLNumberTitle)" />
-				<textbox
-					value="@bind(vmOrgInfo.organisationInfo.siteSDLNumber)" />
-       		</div>
-       		
-       		<div if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
-       				sclass="form-field">
-       			<label
-       				sclass="label" 
-					value="@init(vmOrgInfo.organisationInfo.orgRegistrationNumberTitle)" />
-				<textbox
-					value="@bind(vmOrgInfo.organisationInfo.orgRegistrationNumber)" />
-       		</div>
-       		
-       		<div if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
-       				sclass="form-field">
-       			<label
-       				sclass="label" 
-					value="@init(vmOrgInfo.organisationInfo.orgTaxNumberTitle)" />
-					
-				<textbox sclass="form-control"
-					value="@bind(vmOrgInfo.organisationInfo.orgTaxNumber)" />
-       		</div>
-       		
-       		<div if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
-       				sclass="form-field">
-       			<label
-       				sclass="label"
-					value="@load(vmOrgInfo.organisationInfo.fileNameVATCer)" />
-					
-       			<fileupload  sclass="text-wrap w-100"
-				 	iconSclass="z-icon-arrow-up-from-bracket z-icon-solid" label=" VAT Exempt Cert."
-					onUpload="@command('uploadFile', media=event.media)">
-				</fileupload>		
-       		</div>
-       	</div>
-	        	
+
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="ORGANISATION INFORMATION" />
+	</hlayout>
+
+	<div sclass="grid-container">
+		<div sclass="form-field">
+			<label sclass="label"
+				value="@init(vmOrgInfo.organisationInfo.sdlNumberTitle)" />
+			<textbox value="@bind(vmOrgInfo.organisationInfo.sdlNumber)"
+				onChange="@command('sdlNumberChange')" placeholder="0000000000000" />
+		</div>
+
+		<div
+			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			sclass="form-field">
+			<label sclass="label"
+				value="@init(vmOrgInfo.organisationInfo.orgNameTitle)" />
+			<textbox value="@bind(vmOrgInfo.organisationInfo.orgName)" />
+		</div>
+
+		<div
+			if="${vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			sclass="form-field">
+			<label sclass="label"
+				value="@init(vmOrgInfo.organisationInfo.cetTvetNameTitle)" />
+			<listbox mold="select" sclass=""
+				model="@load(vmOrgInfo.organisationInfo.cetTvetColleges)"
+				selectedItem="@bind(vmOrgInfo.organisationInfo.cetTvetCollegeSelected)">
+				<template name="model" var="item">
+					<listitem label="@load(item.name)" />
+				</template>
+			</listbox>
+		</div>
+
+		<div sclass="form-field">
+			<label sclass="label"
+				value="@init(vmOrgInfo.organisationInfo.siteSDLNumberTitle)" />
+			<textbox
+				value="@bind(vmOrgInfo.organisationInfo.siteSDLNumber)" />
+		</div>
+
+		<div
+			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			sclass="form-field">
+			<label sclass="label"
+				value="@init(vmOrgInfo.organisationInfo.orgRegistrationNumberTitle)" />
+			<textbox
+				value="@bind(vmOrgInfo.organisationInfo.orgRegistrationNumber)" />
+		</div>
+
+		<div
+			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			sclass="form-field">
+			<label sclass="label"
+				value="@init(vmOrgInfo.organisationInfo.orgTaxNumberTitle)" />
+
+			<textbox sclass="form-control"
+				value="@bind(vmOrgInfo.organisationInfo.orgTaxNumber)" />
+		</div>
+
+		<div
+			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			sclass="form-field">
+			<label sclass="label"
+				value="@load(vmOrgInfo.organisationInfo.fileNameVATCer)" />
+
+			<fileupload sclass="text-wrap w-100"
+				iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
+				label=" VAT Exempt Cert."
+				onUpload="@command('uploadFile', media=event.media)" />
+
+		</div>
+	</div>
+
 
 	<include
 		addressInfo="@load(vmOrgInfo.organisationInfo.physicalAddressInfo)"
@@ -95,8 +88,8 @@
 	<include
 		addressInfo="@load(vmOrgInfo.organisationInfo.postAddressInfo)"
 		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
-	
-	<include 
+
+	<include
 		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
 		orgSizeInfo="@load(vmOrgInfo.organisationInfo.orgSizeInfo)"
 		src="@load((WebForm.getBundleResourcePath('component/organisationSize.zul')))" />

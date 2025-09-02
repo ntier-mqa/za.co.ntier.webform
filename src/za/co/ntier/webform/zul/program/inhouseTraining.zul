@@ -4,10 +4,9 @@
 	viewModel="@id('vmInhouseTraining') @init('za.co.ntier.webform.form.viewmodel.program.InhouseTrainingVMWrapper')">
 
 	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle"
-			value="IN-HOUSE TRAINING"/>
+		<label sclass="sectionHeaderTitle" value="IN-HOUSE TRAINING" />
 	</hlayout>
-	
+
 	<div>
 		<label sclass="note" value="Note 1:" />
 		<label
@@ -20,7 +19,8 @@
 			value="Only Mines or Mining contractors contracted to conduct mining activities may apply for the
 grants" />
 	</div>
-	
-	<include annexureInfo="@load(vmInhouseTraining.program.inhouse)"
+
+	<include
+		annexureInfo="@load(vmInhouseTraining.program.inhouse)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

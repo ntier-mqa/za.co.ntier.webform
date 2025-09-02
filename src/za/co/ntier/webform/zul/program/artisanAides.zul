@@ -3,15 +3,14 @@
 <nodom xmlns:n="native"
 	viewModel="@id('vmArtisanAides') @init('za.co.ntier.webform.form.viewmodel.program.ArtisanAidesVMWrapper')">
 	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle"
-			value="ARTISAN AIDES GRANT"/>
+		<label sclass="sectionHeaderTitle" value="ARTISAN AIDES GRANT" />
 	</hlayout>
-	
+
 	<div>
 		<label sclass="note" value="Note:" />
 		<label value="Artisan Aides is paid upon completion" />
 	</div>
-	
+
 	<div sclass="subSectionHeader">
 		<label sclass="subSectionHeaderTitle" value="QUALIFICATION" />
 
@@ -24,7 +23,6 @@
 		<label sclass="subSectionHeaderTitle" value="SKILLS PROGRAMME" />
 
 	</div>
-	<include
-		annexureInfo="@load(vmArtisanAides.program.skill)"
+	<include annexureInfo="@load(vmArtisanAides.program.skill)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>
