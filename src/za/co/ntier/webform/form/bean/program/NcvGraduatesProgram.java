@@ -33,7 +33,7 @@ public class NcvGraduatesProgram implements ISaveForm {
 	}
 
 	@Override
-	public void saveForm(X_ZZ_Application_Form applicationForm) {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		// TODO Auto-generated method stub
 		
 	}
