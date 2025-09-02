@@ -2,7 +2,10 @@ package za.co.ntier.webform.form.viewmodel;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import org.apache.commons.lang3.RandomUtils;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -199,7 +202,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
     @NotifyChange("showDialog")
 	public void submitApplication() throws IOException {
 		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, null);
-		applicationForm.setName("test" + RandomUtils.nextInt());
+		
+		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
+		DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+		applicationForm.setName( loginUser .getName() + LocalDateTime.now().format(dtf));
 		
 		applicationForm.setUserName(employerDeclarationInfo.getUserName());
 		applicationForm.setDateDoc(employerDeclarationInfo.getDate());
@@ -212,7 +218,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		applicationForm.setNumberEmployees(organisationInfo.getOrgSizeInfo().getNumOfEmployer());
 		applicationForm.setZZ_HasWSPSubmited(organisationInfo.getOrgSizeInfo().isSubmittedWSP());
-		applicationForm.setZZ_HasPivotalPlanSubmited(organisationInfo.getOrgSizeInfo().isSubmittedPivotal());
 		
 		applicationForm.saveEx();
 		
