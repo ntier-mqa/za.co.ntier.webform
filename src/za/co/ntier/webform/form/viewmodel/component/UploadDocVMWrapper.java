@@ -1,8 +1,8 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.viewmodel.component;
 
 import org.zkoss.bind.annotation.Init;
 
-import za.co.ntier.webform.form.bean.UploadDocComponent;
+import za.co.ntier.webform.form.bean.component.UploadDocComponent;
 
 /**
  * If super has an init method but its ChildViewModel doesn't, you can

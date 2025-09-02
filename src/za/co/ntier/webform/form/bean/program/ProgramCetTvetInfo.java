@@ -8,11 +8,11 @@ import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.AddressInfo;
-import za.co.ntier.webform.form.bean.AnnexureInfo;
-import za.co.ntier.webform.form.bean.ColumnInfo;
-import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.component.AddressInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 

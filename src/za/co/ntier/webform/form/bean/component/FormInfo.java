@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import org.compiere.model.MYear;
 import org.compiere.util.Env;

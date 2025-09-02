@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.viewmodel.component;
 
 import java.io.IOException;
 import java.util.Map;
@@ -12,8 +12,8 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
-import za.co.ntier.webform.form.bean.AnnexureInfo;
-import za.co.ntier.webform.form.bean.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
 
 public class AnnexureTableVMWrapper {
 	private AnnexureInfo annexureInfo;

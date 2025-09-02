@@ -7,8 +7,8 @@ import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.InputEvent;
 
-import za.co.ntier.webform.form.bean.AnnexureInfo;
-import za.co.ntier.webform.form.bean.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.program.ProgramCetTvetInfo;
 
 /**

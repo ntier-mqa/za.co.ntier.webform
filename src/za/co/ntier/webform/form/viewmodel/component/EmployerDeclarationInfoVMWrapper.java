@@ -1,9 +1,9 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.viewmodel.component;
 
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
-import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
+import za.co.ntier.webform.form.bean.component.EmployerDeclarationInfo;
 
 public class EmployerDeclarationInfoVMWrapper {
 	private EmployerDeclarationInfo employerDeclarationInfo;

@@ -19,13 +19,13 @@ import org.zkoss.zul.Tabbox;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
-import za.co.ntier.webform.form.bean.AddressInfo;
-import za.co.ntier.webform.form.bean.Dialog;
-import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
-import za.co.ntier.webform.form.bean.FormInfo;
-import za.co.ntier.webform.form.bean.OrganisationInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.form.bean.UploadDocComponent;
+import za.co.ntier.webform.form.bean.component.AddressInfo;
+import za.co.ntier.webform.form.bean.component.Dialog;
+import za.co.ntier.webform.form.bean.component.EmployerDeclarationInfo;
+import za.co.ntier.webform.form.bean.component.FormInfo;
+import za.co.ntier.webform.form.bean.component.OrganisationInfo;
+import za.co.ntier.webform.form.bean.component.UploadDocComponent;
 import za.co.ntier.webform.form.bean.program.AetProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
@@ -41,6 +41,7 @@ import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.ProgramCetTvetInfo;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
+import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class DiscretionaryGrantsApplicationProgramVM {

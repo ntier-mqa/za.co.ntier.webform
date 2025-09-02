@@ -3,7 +3,7 @@
 <?import org.adempiere.webui.AdempiereWebUI ?>
 
 <nodom
-	viewModel="@id('vmAnnexure') @init('za.co.ntier.webform.form.viewmodel.AnnexureTableVMWrapper')">
+	viewModel="@id('vmAnnexure') @init('za.co.ntier.webform.form.viewmodel.component.AnnexureTableVMWrapper')">
 
 	<hlayout if="${vmAnnexure.annexureInfo.tableTitle ne null}">
 		<label value="@init(vmAnnexure.annexureInfo.tableTitle)" />

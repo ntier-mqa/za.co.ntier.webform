@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +14,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class AnnexureInfo implements ISaveForm{

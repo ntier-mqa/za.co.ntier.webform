@@ -7,7 +7,7 @@
 	</hlayout>
 
 	<div
-		viewModel="@id('vmGeneralAppRule') @init('za.co.ntier.webform.form.viewmodel.GeneralAppRuleVMWrapper')">
+		viewModel="@id('vmGeneralAppRule') @init('za.co.ntier.webform.form.viewmodel.component.GeneralAppRuleVMWrapper')">
 
 		<n:ol sclass="generalAppRules">
 

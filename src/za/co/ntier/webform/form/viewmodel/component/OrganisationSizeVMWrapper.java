@@ -1,9 +1,9 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.viewmodel.component;
 
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
-import za.co.ntier.webform.form.bean.OrganisationSizeInfo;
+import za.co.ntier.webform.form.bean.component.OrganisationSizeInfo;
 
 public class OrganisationSizeVMWrapper {
 

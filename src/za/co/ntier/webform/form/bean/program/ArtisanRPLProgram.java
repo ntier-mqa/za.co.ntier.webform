@@ -4,9 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
-import za.co.ntier.webform.form.bean.AnnexureInfo;
-import za.co.ntier.webform.form.bean.ColumnInfo;
-import za.co.ntier.webform.form.bean.ProjectInput;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class ArtisanRPLProgram implements ISaveForm, IProgram {

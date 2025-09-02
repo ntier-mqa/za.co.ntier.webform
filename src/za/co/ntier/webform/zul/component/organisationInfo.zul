@@ -3,7 +3,7 @@
 <?import za.co.ntier.webform.form.bean.ProgramType ?>
 
 <nodom
-	viewModel="@id('vmOrgInfo') @init('za.co.ntier.webform.form.viewmodel.OrganisationInfoVMWrapper')">
+	viewModel="@id('vmOrgInfo') @init('za.co.ntier.webform.form.viewmodel.component.OrganisationInfoVMWrapper')">
 
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"

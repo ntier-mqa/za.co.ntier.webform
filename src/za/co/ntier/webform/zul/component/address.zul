@@ -2,7 +2,7 @@
 <?import za.co.ntier.webform.form.MasterUtil?>
 
 <nodom
-	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.AddressInfoVMWrapper')">
+	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.component.AddressInfoVMWrapper')">
 
 	<hlayout sclass="subSectionHeader">
 		<label sclass="subSectionHeaderTitle"

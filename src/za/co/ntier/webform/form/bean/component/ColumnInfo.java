@@ -1,7 +1,9 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.util.List;
 import java.util.Map.Entry;
+
+import za.co.ntier.webform.form.bean.DataType;
 
 public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {

@@ -24,8 +24,8 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.zkoss.util.media.Media;
 
-import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.model.X_ZZ_Disciplines;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 import za.co.ntier.webform.model.X_ZZ_Learnerships;

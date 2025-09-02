@@ -3,7 +3,7 @@
 <?import org.adempiere.webui.AdempiereWebUI ?>
 
 <nodom
-	viewModel="@id('vmDialog') @init('za.co.ntier.webform.form.viewmodel.DialogVMWrapper')">
+	viewModel="@id('vmDialog') @init('za.co.ntier.webform.form.viewmodel.component.DialogVMWrapper')">
 	
 	<window  width="50%" mode="modal"
 		sclass="mqaWebFormRelate modal-dialog"
