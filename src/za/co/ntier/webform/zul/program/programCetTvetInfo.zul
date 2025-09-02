@@ -2,16 +2,16 @@
 <?import za.co.ntier.webform.form.bean.LearnerInputInfo?>
 <?import za.co.ntier.webform.form.bean.ProgramType?>
 <?import za.co.ntier.webform.form.MasterUtil?>
-<?import za.co.ntier.webform.form.bean.ProgramCetTvetInfo?>
+<?import za.co.ntier.webform.form.bean.program.ProgramCetTvetInfo?>
 <?import za.co.ntier.webform.form.bean.DataType?>
 
 
 
 <nodom
-	viewModel="@id('vmProgramCetTvetInfo') @init('za.co.ntier.webform.form.viewmodel.ProgramCetTvetInfoVMWrapper')">
+	viewModel="@id('vmProgramCetTvetInfo') @init('za.co.ntier.webform.form.viewmodel.program.ProgramCetTvetInfoVMWrapper')">
 
 	<div
-		children="@load(vmProgramCetTvetInfo.programCetTvetInfo.annexureInfos)">
+		children="@load(vmProgramCetTvetInfo.program.annexureInfos)">
 
 		<!-- for each annexure -->
 		<template name="children" var="annexure">

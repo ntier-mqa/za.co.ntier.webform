@@ -23,7 +23,6 @@ import za.co.ntier.webform.form.bean.Dialog;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.form.bean.OrganisationInfo;
-import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.UploadDocComponent;
 import za.co.ntier.webform.form.bean.program.AetProgram;
@@ -39,6 +38,7 @@ import za.co.ntier.webform.form.bean.program.NcvGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
+import za.co.ntier.webform.form.bean.program.ProgramCetTvetInfo;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 

@@ -1,19 +1,22 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.viewmodel.program;
 
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
-import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.InputEvent;
 
 import za.co.ntier.webform.form.bean.AnnexureInfo;
 import za.co.ntier.webform.form.bean.ColumnInfo;
-import za.co.ntier.webform.form.bean.ProgramCetTvetInfo;
+import za.co.ntier.webform.form.bean.program.ProgramCetTvetInfo;
 
-public class ProgramCetTvetInfoVMWrapper {
-	private ProgramCetTvetInfo programCetTvetInfo;
+/**
+ * If super has an init method but its ChildViewModel doesn't, you can
+ * add @Init(superclass=true) on the ChildViewModel to use super's init.
+ */
+@Init(superclass = true)
+public class ProgramCetTvetInfoVMWrapper extends ProgramVMWrapper<ProgramCetTvetInfo>{
 	private String addSubLineLabel = "add more";
 
 	@Command
@@ -25,22 +28,11 @@ public class ProgramCetTvetInfoVMWrapper {
 		return addSubLineLabel;
 	}
 
-	public ProgramCetTvetInfo getProgramCetTvetInfo() {
-		return programCetTvetInfo;
-	}
-
-	@Init
-	public void init(@ExecutionArgParam("programCetTvetInfo") ProgramCetTvetInfo programCetTvetInfo) {
-		this.setProgramCetTvetInfo(programCetTvetInfo);
-	}
 
 	public void setAddSubLineLabel(String addSubLineLabel) {
 		this.addSubLineLabel = addSubLineLabel;
 	}
 
-	public void setProgramCetTvetInfo(ProgramCetTvetInfo programCetTvetInfo) {
-		this.programCetTvetInfo = programCetTvetInfo;
-	}
 
 	@Command
 	public void subAnnexureNumChange(@BindingParam("subAnnexure") AnnexureInfo subAnnexure,

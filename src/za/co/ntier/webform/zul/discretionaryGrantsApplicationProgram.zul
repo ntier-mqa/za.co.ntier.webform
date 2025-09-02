@@ -63,8 +63,8 @@
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
 						<include if="${vm.programType.isCetTvet()}"
-							programCetTvetInfo="@load(vm.programCetTvetInfo)"
-							src="@load((WebForm.getBundleResourcePath('component/programCetTvetInfo.zul')))" />
+							program="@load(vm.programCetTvetInfo)"
+							src="@load((WebForm.getBundleResourcePath('program/programCetTvetInfo.zul')))" />
 
 						<include if="${vm.programType eq ProgramType.CANDIDACY}"
 							program="@load(vm.candidacy)"
