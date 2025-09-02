@@ -11,13 +11,15 @@ import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 /**
  * base on bpartner, a Organisation is a bpartner
  */
-public class OrganisationInfo {
+public class OrganisationInfo implements ISaveForm {
 	private AddressInfo alternateOrgContact;
 	private String orgName;
 	private String orgNameTitle = "Organisation Name";
@@ -363,5 +365,34 @@ public class OrganisationInfo {
 		setFileNameVATCer(media.getName());
 		fullPathVATCer = MasterUtil.saveUploadFile(media);
 
+	}
+
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		applicationForm.setZZ_SDL_No(getSdlNumber());
+		applicationForm.setZZ_Side_SDL_No(getSiteSDLNumber());
+		applicationForm.setZZ_VAT(getOrgTaxNumber());
+		applicationForm.setOrgName(getOrgName());
+		applicationForm.setC_BPartner_ID(getbPartnerId());
+
+		if (getOrgSizeInfo() != null) {
+			getOrgSizeInfo().saveForm(trxName, applicationForm);
+		}
+		
+		if (physicalAddressInfo != null) {
+			physicalAddressInfo.saveForm(trxName, applicationForm);
+		}
+		
+		if (postAddressInfo != null) {
+			postAddressInfo.saveForm(trxName, applicationForm);
+		}
+		
+		if (orgContact != null) {
+			orgContact.saveForm(trxName, applicationForm);
+		}
+		
+		if (alternateOrgContact != null) {
+			alternateOrgContact.saveForm(trxName, applicationForm);
+		}
 	}
 }

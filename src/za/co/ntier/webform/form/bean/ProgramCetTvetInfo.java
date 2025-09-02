@@ -4,11 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
-public class ProgramCetTvetInfo {
+public class ProgramCetTvetInfo implements ISaveForm {
 	public static final String COL_NAME_titleHeaderText = "titleHeaderText";
 	public static final String COL_NAME_customizeDetaileTemplate = "customizeDetaileTemplate";
 	public static final String DetaileTemplate_LecturersExposedIndustry = "Lecturers exposed to industry";
@@ -198,5 +200,11 @@ public class ProgramCetTvetInfo {
 
 	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
 		this.tradeInfo = tradeInfo;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 }

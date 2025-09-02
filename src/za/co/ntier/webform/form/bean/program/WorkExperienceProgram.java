@@ -2,12 +2,14 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.AddressInfo;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramInput;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
-public class WorkExperienceProgram {
+public class WorkExperienceProgram implements ISaveForm {
 
 	private Integer noOfLearners;
 	private AddressInfo vacationContact;
@@ -59,6 +61,12 @@ public class WorkExperienceProgram {
 	 */
 	public void setVacationContact(AddressInfo vacationContact) {
 		this.vacationContact = vacationContact;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

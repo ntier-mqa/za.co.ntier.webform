@@ -3,12 +3,14 @@ package za.co.ntier.webform.form.bean.program;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.AnnexureInfo;
 import za.co.ntier.webform.form.bean.ColumnInfo;
 import za.co.ntier.webform.form.bean.ProjectInput;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
-public class NonArtisanDevRPLProgram {
+public class NonArtisanDevRPLProgram implements ISaveForm {
 	private AnnexureInfo totalNumApplied;
 
 	public NonArtisanDevRPLProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException,
@@ -31,6 +33,12 @@ public class NonArtisanDevRPLProgram {
 	 */
 	public void setTotalNumApplied(AnnexureInfo totalNumApplied) {
 		this.totalNumApplied = totalNumApplied;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

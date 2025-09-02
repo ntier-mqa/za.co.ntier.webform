@@ -3,11 +3,13 @@ package za.co.ntier.webform.form.bean.program;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ColumnInfo;
 import za.co.ntier.webform.form.bean.ProjectInput;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
-public class NcvGraduatesProgram {
+public class NcvGraduatesProgram implements ISaveForm {
 	private ProjectInput unemployed;
 
 	public NcvGraduatesProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
@@ -28,5 +30,11 @@ public class NcvGraduatesProgram {
 	 */
 	public void setUnemployed(ProjectInput unemployed) {
 		this.unemployed = unemployed;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 }

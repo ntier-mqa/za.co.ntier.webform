@@ -1,6 +1,9 @@
 package za.co.ntier.webform.form.bean;
 
-public class OrganisationSizeInfo {
+import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
+
+public class OrganisationSizeInfo implements ISaveForm {
 	private boolean isSubmittedWSP;
 	private int numOfEmployer;
 
@@ -69,5 +72,12 @@ public class OrganisationSizeInfo {
 	 */
 	public void setSubmittedWSPTitle(String submittedWSPTitle) {
 		this.submittedWSPTitle = submittedWSPTitle;
+	}
+
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		applicationForm.setNumberEmployees(getNumOfEmployer());
+		applicationForm.setZZ_HasWSPSubmited(isSubmittedWSP());
+		
 	}
 }

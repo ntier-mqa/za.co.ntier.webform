@@ -17,7 +17,7 @@ import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 public class WebForm extends ADForm {
 
 	private static final long serialVersionUID = -5402852171052424756L;
-
+	public static final String zulPathRool = "/za/co/ntier/webform/zul/";
 	public static final String programMasterDataUUMenuContextKey = "+"
 			+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
 
@@ -28,7 +28,7 @@ public class WebForm extends ADForm {
 	public static final String menuContextInfoKey = "menuContextInfo";
 	public static String getBundleResourcePath(String zulPath) {
 		if (!zulPath.startsWith("/")) {// relative path
-			zulPath = "/za/co/ntier/webform/zul/" + zulPath;
+			zulPath = zulPathRool + zulPath;
 		}
 		return WebForm.class.getResource(zulPath).toString();
 	}

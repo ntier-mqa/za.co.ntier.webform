@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.DataType ?>
+<?import org.adempiere.webui.AdempiereWebUI ?>
+
+<nodom
+	viewModel="@id('vmDialog') @init('za.co.ntier.webform.form.viewmodel.DialogVMWrapper')">
+	
+	<window  width="50%" mode="modal"
+		sclass="mqaWebFormRelate modal-dialog"
+		title="@init(vmDialog.component.title)"
+		position="center,center" 
+		visible="@bind(vmDialog.component.visible)">
+		
+		<div style="display: flex; flex-direction: column; 
+			padding-bottom: 15px;justify-content: space-between;
+			height:100%	">
+			
+			<div style="display: flex; flex-direction: column; padding: 10px;overflow-y:auto;">
+				
+				<label value="The application form has been created." />
+				<a 
+	                style="text-decoration: underline; color: blue;"
+	                onClick="@command('openAppForm')">Open Form</a>
+	                
+	             <label value="@load(vmDialog.moreInfo)" />
+			</div>
+			<div class="modal-footer" style="flex-grow:0">
+				<button sclass="btn btn-primary" label="OK"
+					onClick="@command('closeDialog')" />
+			</div>
+		</div>
+	</window>
+</nodom>

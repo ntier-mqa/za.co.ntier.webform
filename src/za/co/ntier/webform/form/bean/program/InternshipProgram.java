@@ -2,10 +2,11 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramInput;
 
-public class InternshipProgram extends CandidacyProgram {
+public class InternshipProgram extends CandidacyProgram implements ISaveForm {
 	private ProgramInput trade;
 
 	public InternshipProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,

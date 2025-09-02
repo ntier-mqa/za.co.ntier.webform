@@ -3,11 +3,13 @@ package za.co.ntier.webform.form.bean.program;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.bean.AnnexureInfo;
 import za.co.ntier.webform.form.bean.ColumnInfo;
 import za.co.ntier.webform.form.bean.ProjectInput;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
-public class ArtisanAidesProgram {
+public class ArtisanAidesProgram implements ISaveForm {
 	private AnnexureInfo qualification;
 	private AnnexureInfo skill;
 
@@ -51,6 +53,12 @@ public class ArtisanAidesProgram {
 	 */
 	public void setSkill(AnnexureInfo skill) {
 		this.skill = skill;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

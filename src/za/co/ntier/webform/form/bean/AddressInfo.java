@@ -7,12 +7,16 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 import org.compiere.model.MRegion;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.model.X_ZZ_FormContact;
 
-public class AddressInfo {
+public class AddressInfo implements ISaveForm {
 	private AddressType addressCategory;
 
 	// Street name and number
@@ -566,4 +570,29 @@ public class AddressInfo {
 		return (programType != null && programType.isShowAddressSiteField()) || addressCategory == AddressType.VACATION;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		int applicationFormID = applicationForm.getZZ_Application_Form_ID();
+		
+		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
+		contact.setZZ_Application_Form_ID(applicationFormID);
+		if (getProvinceSelected() != null)
+			contact.setC_Region_ID(getProvinceSelected().getC_Region_ID());
+
+		if (getAreaSelected() != null)
+			contact.setC_City_ID(getAreaSelected().getC_City_ID());
+
+		contact.setPostal(getPostalCode());
+
+		contact.setZZ_SideName(getSiteName());
+		contact.setAddress(getAddressLine());
+
+		contact.setContactName(getNameSiteRepresentative());
+		contact.setZZ_Designation(getRepresentativeDesignation());
+		contact.setPhone(getMobileNumber());
+		contact.setPhone2(getLandlineNumber());
+		contact.setEMail(getEmail());
+		contact.setZZ_ContactType(getAddressCategory().toString());
+		contact.saveEx(trxName);
+	}
 }

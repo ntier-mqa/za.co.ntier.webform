@@ -2,10 +2,12 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramInput;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
-public class CandidacyProgram {
+public class CandidacyProgram implements ISaveForm{
 	private ProgramInput disciplines;
 
 	public CandidacyProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
@@ -33,5 +35,11 @@ public class CandidacyProgram {
 	 */
 	public void setDisciplines(ProgramInput disciplines) {
 		this.disciplines = disciplines;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 }

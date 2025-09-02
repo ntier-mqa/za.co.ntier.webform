@@ -3,13 +3,15 @@ package za.co.ntier.webform.form.bean.program;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.AnnexureInfo;
 import za.co.ntier.webform.form.bean.ColumnInfo;
 import za.co.ntier.webform.form.bean.ProgramInput;
 import za.co.ntier.webform.form.bean.ProjectInput;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
-public class ArtisanDevProgram {
+public class ArtisanDevProgram implements ISaveForm {
 	private AnnexureInfo totalNumApplied;
 
 	private ProgramInput trade;
@@ -49,6 +51,12 @@ public class ArtisanDevProgram {
 	 */
 	public void setTrade(ProgramInput trade) {
 		this.trade = trade;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

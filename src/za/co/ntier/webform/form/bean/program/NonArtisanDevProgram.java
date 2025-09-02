@@ -2,11 +2,13 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramInput;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
-public class NonArtisanDevProgram {
+public class NonArtisanDevProgram implements ISaveForm {
 	private ProgramInput generalLearnership;
 	private ProgramInput firLearnership;
 
@@ -46,6 +48,12 @@ public class NonArtisanDevProgram {
 	 */
 	public void setGeneralLearnership(ProgramInput generalLearnership) {
 		this.generalLearnership = generalLearnership;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -188,17 +188,4 @@
 
 		</tabpanels>
 	</tabbox>
-
-	<window title="Done" width="300px" mode="modal"
-		position="center,center" if="${vm.showDialog}">
-
-		<div class="modal-body">
-			<label value="The application form has been created." />
-		</div>
-		<div class="modal-footer">
-			<button sclass="btn btn-primary" label="OK"
-				onClick="@command('closeDialog')" />
-		</div>
-
-	</window>
 </div>

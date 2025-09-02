@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
@@ -11,12 +13,13 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Tabbox;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.AddressInfo;
+import za.co.ntier.webform.form.bean.Dialog;
 import za.co.ntier.webform.form.bean.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.FormInfo;
 import za.co.ntier.webform.form.bean.OrganisationInfo;
@@ -38,7 +41,6 @@ import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormContact;
 
 public class DiscretionaryGrantsApplicationProgramVM {
 	private InternshipProgram internship;
@@ -67,8 +69,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	private MenuContextInfo menuContextInfo;
 
-	private boolean showDialog = false;
-
 	private int recordId;
 
 	private int tableId;
@@ -87,11 +87,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	}
 
-	@Command
-	@NotifyChange("showDialog")
-	public void closeDialog() {
-		setShowDialog(false);
-	}
 	/*
 	 * public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo
 	 * disciplineTableInfo, int applicationFormID) throws IOException { for
@@ -126,29 +121,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 * 
 	 * return null; }
 	 */
-
-	public X_ZZ_FormContact createFormContact(AddressInfo addressInfo, int applicationFormID) {
-		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
-		contact.setZZ_Application_Form_ID(applicationFormID);
-		if (addressInfo.getProvinceSelected() != null)
-			contact.setC_Region_ID(addressInfo.getProvinceSelected().getC_Region_ID());
-
-		if (addressInfo.getAreaSelected() != null)
-			contact.setC_City_ID(addressInfo.getAreaSelected().getC_City_ID());
-
-		contact.setPostal(addressInfo.getPostalCode());
-
-		contact.setZZ_SideName(addressInfo.getSiteName());
-		contact.setAddress(addressInfo.getAddressLine());
-
-		contact.setContactName(addressInfo.getNameSiteRepresentative());
-		contact.setZZ_Designation(addressInfo.getRepresentativeDesignation());
-		contact.setPhone(addressInfo.getMobileNumber());
-		contact.setPhone2(addressInfo.getLandlineNumber());
-		contact.setEMail(addressInfo.getEmail());
-		contact.setZZ_ContactType(addressInfo.getAddressCategory().toString());
-		return contact;
-	}
 
 	/**
 	 * @return the aet
@@ -371,10 +343,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	}
 
-	public boolean isShowDialog() {
-		return showDialog;
-	}
-
 	public boolean isShowUploadDoc() {
 		return uploadDoc != null && uploadDoc.getUploadDoc().getRows().size() > 0;
 	}
@@ -533,10 +501,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.recordId = recordId;
 	}
 
-	public void setShowDialog(boolean showDialog) {
-		this.showDialog = showDialog;
-	}
-
 	public void setTableId(int tableId) {
 		this.tableId = tableId;
 	}
@@ -555,52 +519,63 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.workExperience = workExperience;
 	}
 
-	@Command(value = "submitApplication")
-	@NotifyChange("showDialog")
-	public void submitApplication() throws IOException {
-		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, null);
-
-		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
+ 	private void saveAppFormCommonPart(X_ZZ_Application_Form applicationForm) {
+ 		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
 		DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-		applicationForm.setName(loginUser.getName() + LocalDateTime.now().format(dtf));
-
-		applicationForm.setUserName(employerDeclarationInfo.getUserName());
-		applicationForm.setDateDoc(employerDeclarationInfo.getDate());
-
-		applicationForm.setZZ_SDL_No(organisationInfo.getSdlNumber());
-		applicationForm.setZZ_Side_SDL_No(organisationInfo.getSiteSDLNumber());
-		applicationForm.setZZ_VAT(organisationInfo.getOrgTaxNumber());
-		applicationForm.setOrgName(organisationInfo.getOrgName());
-		applicationForm.setC_BPartner_ID(organisationInfo.getbPartnerId());
-
-		applicationForm.setNumberEmployees(organisationInfo.getOrgSizeInfo().getNumOfEmployer());
-		applicationForm.setZZ_HasWSPSubmited(organisationInfo.getOrgSizeInfo().isSubmittedWSP());
-
+		applicationForm.setName(loginUser.getName() + " - " + LocalDateTime.now().format(dtf));
+ 	}
+	 	
+	@Command(value = "submitApplication")
+	public void submitApplication() throws IOException {
+		String trxName = null;
+		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, trxName);
+		
+		saveAppFormCommonPart(applicationForm);
+		
 		applicationForm.saveEx();
+		
+		if (employerDeclarationInfo != null) {
+			employerDeclarationInfo.saveForm(trxName, applicationForm);
+		}
 
-		X_ZZ_FormContact contact = createFormContact(organisationInfo.getPhysicalAddressInfo(),
-				applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
+		if (organisationInfo != null){
+			organisationInfo.saveForm(trxName, applicationForm);
+		}
+		
+		applicationForm.saveEx();
+		
+		if (programContact != null) {
+			programContact.saveForm(trxName, applicationForm);
+		}
 
-		contact = createFormContact(organisationInfo.getPostAddressInfo(), applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-
-		contact = createFormContact(organisationInfo.getOrgContact(), applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-
-		contact = createFormContact(organisationInfo.getAlternateOrgContact(),
-				applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-
-		contact = createFormContact(programContact, applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
-
-		contact = createFormContact(alternateProgramContact, applicationForm.getZZ_Application_Form_ID());
-		contact.saveEx();
+		if (alternateProgramContact != null) {
+			alternateProgramContact.saveForm(trxName, applicationForm);
+		}
 
 		recordId = applicationForm.getZZ_Application_Form_ID();
 		tableId = applicationForm.get_Table_ID();
-		setShowDialog(true);
+		
+		
+		
+		showDialog();
 
+	}
+	
+	protected void showDialog() {
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		// Set the context class loader to this bundle's class loader to ensure that
+		// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
+		// used in ZUL files can be found.
+		String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");
+		Map<String, Object> args = new HashMap<>();
+		args.put(ComponentVMWrapper.ComponentKey, new Dialog("Successfully submitted the application form", tableId, recordId, true));
+		
+		Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
+		try {
+			
+			Executions.createComponents(zulPathRelative, null, args);
+		} finally {
+			Thread.currentThread().setContextClassLoader(cl);
+		}
 	}
 }

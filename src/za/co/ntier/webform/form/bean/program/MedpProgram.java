@@ -1,6 +1,9 @@
 package za.co.ntier.webform.form.bean.program;
 
-public class MedpProgram {
+import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
+
+public class MedpProgram implements ISaveForm {
 	private int noOfLearners;
 
 	/**
@@ -15,5 +18,11 @@ public class MedpProgram {
 	 */
 	public void setNoOfLearners(int noOfLearners) {
 		this.noOfLearners = noOfLearners;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 }

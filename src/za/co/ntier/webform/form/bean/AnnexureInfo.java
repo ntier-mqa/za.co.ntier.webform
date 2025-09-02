@@ -12,9 +12,11 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
-public class AnnexureInfo {
+public class AnnexureInfo implements ISaveForm{
 	public static Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
 		return AnnexureInfo.createDetailRow(columnInfos, null);
 	}
@@ -290,6 +292,12 @@ public class AnnexureInfo {
 		}
 		totalRow.put(detailCol, total);
 		BindUtils.postNotifyChange(this, "*");
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

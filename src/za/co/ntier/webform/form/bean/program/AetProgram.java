@@ -2,11 +2,13 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
 
+import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramInput;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
-public class AetProgram {
+public class AetProgram implements ISaveForm {
 	private ProgramInput aetLearnership;
 
 	public AetProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
@@ -27,6 +29,12 @@ public class AetProgram {
 	 */
 	public void setAetLearnership(ProgramInput aetLearnership) {
 		this.aetLearnership = aetLearnership;
+	}
+
+	@Override
+	public void saveForm(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
