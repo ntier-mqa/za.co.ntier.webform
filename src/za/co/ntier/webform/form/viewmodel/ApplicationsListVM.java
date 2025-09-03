@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.adempiere.webui.desktop.DefaultDesktop;
-import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.BindingParam;
@@ -17,7 +17,6 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class ApplicationsListVM {
@@ -82,6 +81,16 @@ public class ApplicationsListVM {
        // desktop.setPredefinedContextVariables(menuContext);
        // desktop.openForm(1000000);
     }
+    
+    public String programTitle(X_ZZ_Application_Form app) {
+        if (app == null || app.getZZ_Program_Master_Data_ID() == 0) return "";
+        PO p = MTable.get(Env.getCtx(), "ZZ_Program_Master_Data")
+                     .getPO(app.getZZ_Program_Master_Data_ID(), null);
+        if (p == null) return "";
+        String title = p.get_ValueAsString("Title");
+        return (title != null && !title.isEmpty()) ? title : "";
+    }
+
     
 	
 }
