@@ -1,6 +1,6 @@
 package za.co.ntier.webform.form.bean.component;
 
-public class UploadInfo {
+public class UploadData {
 	private String fileName;
 	private String fullPath;
 

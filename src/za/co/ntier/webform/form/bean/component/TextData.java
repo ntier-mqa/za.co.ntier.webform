@@ -1,0 +1,61 @@
+package za.co.ntier.webform.form.bean.component;
+
+import java.util.Map;
+
+
+public class TextData {
+	private String text;
+	private AnnexureInfo annexure;
+	private Map<ColumnInfo<?>, Object> row;
+
+	public TextData(AnnexureInfo annexure, Map<ColumnInfo<?>, Object> row, String text) {
+		this.text = text;
+		this.annexure = annexure;
+		this.setRow(row);
+	}
+	
+	/**
+	 * @return the text
+	 */
+	public String getText() {
+		return text;
+	}
+
+	/**
+	 * @param text the text to set
+	 */
+	public void setText(String text) {
+		this.text = text;
+		
+	}
+	
+	
+
+	/**
+	 * @return the annexure
+	 */
+	public AnnexureInfo getAnnexure() {
+		return annexure;
+	}
+
+	/**
+	 * @param annexure the annexure to set
+	 */
+	public void setAnnexure(AnnexureInfo annexure) {
+		this.annexure = annexure;
+	}
+
+	/**
+	 * @return the row
+	 */
+	public Map<ColumnInfo<?>, Object> getRow() {
+		return row;
+	}
+
+	/**
+	 * @param row the row to set
+	 */
+	public void setRow(Map<ColumnInfo<?>, Object> row) {
+		this.row = row;
+	}
+}

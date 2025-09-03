@@ -9,8 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BP_Group;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MCity;
@@ -107,7 +109,7 @@ public class MasterUtil {
 		}
 		return cetColleges;
 	}
-
+	private static final List<MCity> tmpAllCity = new ArrayList<>();
 	public static List<MCity> getCities() {
 		if (s_Cities.isEmpty()) {
 
@@ -121,11 +123,34 @@ public class MasterUtil {
 
 			List<MCity> cityInfos = citisQuery.list();
 			s_Cities.put(Integer.MIN_VALUE, cityInfos);
+			
+			tmpAllCity.clear();
+			s_Cities.get(Integer.MIN_VALUE).stream().limit(MasterUtil.limitItem).forEach(city -> {
+				tmpAllCity.add(city);
+			}); 
+			
 		}
-
-		return s_Cities.get(Integer.MIN_VALUE);
+		return tmpAllCity;
+		//return s_Cities.get(Integer.MIN_VALUE);
 	}
 
+	public static List<MCity> getCitiesByPostal(String postalCode) {
+		
+		if (StringUtils.isNotEmpty(postalCode)) {
+			List<MCity> areaFilters = new ArrayList<>();
+			MasterUtil.getCities().stream()
+					.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
+					.limit(MasterUtil.limitItem).forEach(city -> {
+						areaFilters.add(city);
+					});
+			return areaFilters;
+		}else {
+			return getCities();
+		}
+		
+		
+	}
+	
 	public static char getOffsetChar(char c, int offset) {
 
 		return (char) (c + offset);

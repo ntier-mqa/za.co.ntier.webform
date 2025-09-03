@@ -7,6 +7,7 @@ import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class InhouseTrainingProgram implements ISaveForm, IProgram{
@@ -17,7 +18,7 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 		this.setInhouse(AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 				List.of(ColumnInfo.getColLabel("Name of Programme"),
 						ColumnInfo.getColPositiveNumber("No of Learners applied for"),
-						ColumnInfo.getColPositiveNumber("Site Postal Code"),
+						ColumnInfo.getColPostal(ProgramInput.PostalCodeLabel),
 						ColumnInfo.getColArea("Area",
 								MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList())),
 				"Inhouse /Industry/Company based short courses"));

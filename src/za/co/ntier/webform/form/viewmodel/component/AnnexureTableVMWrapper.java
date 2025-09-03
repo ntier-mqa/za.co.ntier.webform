@@ -10,6 +10,7 @@ import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
@@ -37,7 +38,22 @@ public class AnnexureTableVMWrapper {
 		else
 			this.isSubAnnexure = isSubAnnexure;
 	}
-
+	
+	@Command
+	public void postalChange(@BindingParam("annexure") AnnexureInfo annexure,
+			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
+			@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
+		annexure.postalChange(row, col, event);
+	}
+	
+	@Command
+	public void areaSelect(@BindingParam("annexure") AnnexureInfo annexure,
+			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
+			@ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
+		annexure.areaSelect(row, col, event);
+	}
+	
+	
 	@Command
 	public void numChange(@BindingParam("annexure") AnnexureInfo annexure,
 			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,

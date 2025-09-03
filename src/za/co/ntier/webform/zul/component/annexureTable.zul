@@ -48,6 +48,16 @@
 								constraint="no negative"
 								onChange="@command('numChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )" />
 						</nodom>
+						
+						<nodom if="${detailCol.dataType == DataType.Postal}">
+							<textbox value="@bind(row[detailCol].postal)"
+								constraint="/\d+/: Please enter digits only"/>
+								<!--onChange="@command('postalChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )"  -->
+						</nodom>
+						<nodom if="${detailCol.dataType == DataType.LearnerInfo}">
+							<label value="@init(row[detailCol].learnerInputText)" />
+						</nodom>
+						
 						<nodom if="${detailCol.dataType == DataType.TwoValues}">
 
 							<div
@@ -95,8 +105,9 @@
 						<nodom if="${detailCol.dataType == DataType.Area}">
 
 							<listbox mold="select"
-								model="@load(detailCol.dataProvider)"
-								selectedItem="@bind(row[detailCol])">
+								model="@load(row[detailCol].dataProvider)"
+								selectedItem="@bind(row[detailCol].selectedArea)">
+								<!-- onSelect="@command('areaSelect', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )" -->
 								<template name="model" var="item">
 									<listitem label="@load(item.name)" />
 								</template>
@@ -134,16 +145,10 @@
 				<template name="children" var="totalCol">
 					<div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-footer':'grid-cell grid-footer-cell'))"
 						visible="@load((vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last))">
-						<nodom if="${totalCol.dataType == DataType.Label}">
-							<label
-								value="@init(vmAnnexure.annexureInfo.totalRow[totalCol])" />
-						</nodom>
-
-						<nodom if="${totalCol.dataType == DataType.PositiveNumber}">
-							<label
+						
+						<label
 								value="@load(vmAnnexure.annexureInfo.totalRow[totalCol])" />
-						</nodom>
-
+						
 					</div>
 				</template>
 			</nodom>

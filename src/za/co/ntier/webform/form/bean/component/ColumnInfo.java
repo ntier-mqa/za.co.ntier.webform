@@ -48,6 +48,16 @@ public class ColumnInfo<T> {
 		return new ColumnInfo<Entry<Integer, Integer>>(title, DataType.TwoValues);
 
 	}
+	
+	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title) {
+		return new ColumnInfo<LearnerInputInfo>(title, DataType.LearnerInfo);
+
+	}
+	
+	public static <T> ColumnInfo<T> getColPostal(String title) {
+		return new ColumnInfo<T>(title, DataType.Postal);
+
+	}
 
 	private String title;
 

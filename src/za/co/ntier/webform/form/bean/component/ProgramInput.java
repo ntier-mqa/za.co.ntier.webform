@@ -10,7 +10,20 @@ import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class ProgramInput extends AnnexureInfo {
-
+	public static final String TradeLabel = "Trade";
+	public static final String DisciplineLabel = "Discipline";
+	public static final String LearnershipLabel = "Learnership Type";
+	public static final String PostalCodeLabel = "Site Postal Code";
+	public static final String NumEmployedLearnersTitle = "No. of Employed Learners";
+	public static final String NumUnEmployedLearnersTitle = "No. of Unemployed Learners";
+	public static final String NumLearnersTitle = "No. of Learners";
+	public static final String WPATitle = "WPA";
+	public static final String WPAButtonText = "WPA";
+	public static final String AccredTitle = "Accreditation";
+	public static final String AccredButtonText = "Accred./SLA";
+	public static final String AreaTitle = "Area";
+	
+	
 	public static ProgramInput getDisciplines(int programMasterDataID, String tableTitle) throws NoSuchMethodException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		return ProgramInput.getTradeDiscipline(false, programMasterDataID, tableTitle);
@@ -26,27 +39,28 @@ public class ProgramInput extends AnnexureInfo {
 		boolean hasAccred = (boolean) rObjs.get(2);
 
 		List<ColumnInfo<?>> columns = new ArrayList<>();
-		columns.add(ColumnInfo.getColLabel("Learnership Type"));
-		columns.add(ColumnInfo.getColPositiveNumber("No. of employed Learners"));
-		columns.add(ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"));
+		columns.add(ColumnInfo.getColLearnerInfo(LearnershipLabel));
+		columns.add(ColumnInfo.getColPositiveNumber(NumEmployedLearnersTitle));
+		columns.add(ColumnInfo.getColPositiveNumber(NumUnEmployedLearnersTitle));
+		columns.add(ColumnInfo.getColPostal(PostalCodeLabel));
 
 		columns.add(
-				ColumnInfo.getColArea("Area", MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList()));
+				ColumnInfo.getColArea(AreaTitle, MasterUtil.getCities()));
 
 		if (hasWPAReq) {
-			columns.add(ColumnInfo.getColFileUpload("WPA", "WPA"));
+			columns.add(ColumnInfo.getColFileUpload(WPATitle, WPAButtonText));
 		}
 
 		if (hasAccred) {
-			columns.add(ColumnInfo.getColFileUpload("Accreditation", "Accred./SLA"));
+			columns.add(ColumnInfo.getColFileUpload(AccredTitle, AccredButtonText));
 		}
 
 		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
 
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
-			rowDataInits.put(columns.get(0), learnerInputInfo.getLearnerInputText());
-			Map<ColumnInfo<?>, Object> newRow = AnnexureInfo.createDetailRow(columns, rowDataInits);
+			rowDataInits.put(columns.get(0), learnerInputInfo);
+			Map<ColumnInfo<?>, Object> newRow = programInput.createDetailRow(columns, rowDataInits);
 			programInput.getRows().add(newRow);
 		}
 		return programInput;
@@ -69,19 +83,19 @@ public class ProgramInput extends AnnexureInfo {
 		boolean hasAccred = (boolean) rObjs.get(2);
 
 		List<ColumnInfo<?>> columns = new ArrayList<>();
-		columns.add(ColumnInfo.getColLabel("Trade"));
-		columns.add(ColumnInfo.getColPositiveNumber("No. of Learners"));
-		columns.add(ColumnInfo.getColPositiveNumber("Site Postal Code"));
+		columns.add(ColumnInfo.getColLearnerInfo(isTrade ? TradeLabel : DisciplineLabel));
+		columns.add(ColumnInfo.getColPositiveNumber(NumLearnersTitle));
+		columns.add(ColumnInfo.getColPostal(PostalCodeLabel));
 
 		columns.add(
-				ColumnInfo.getColArea("Area", MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList()));
+				ColumnInfo.getColArea(AreaTitle, MasterUtil.getCities()));
 
 		if (hasWPAReq) {
-			columns.add(ColumnInfo.getColFileUpload("WPA", "WPA"));
+			columns.add(ColumnInfo.getColFileUpload(WPATitle, "WPA"));
 		}
 
 		if (hasAccred) {
-			columns.add(ColumnInfo.getColFileUpload("Accreditation", "Accred./SLA"));
+			columns.add(ColumnInfo.getColFileUpload(AccredTitle, "Accred./SLA"));
 		}
 
 		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
@@ -89,8 +103,8 @@ public class ProgramInput extends AnnexureInfo {
 
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
-			rowDataInits.put(columns.get(0), learnerInputInfo.getLearnerInputText());
-			Map<ColumnInfo<?>, Object> newRow = AnnexureInfo.createDetailRow(columns, rowDataInits);
+			rowDataInits.put(columns.get(0), learnerInputInfo);
+			Map<ColumnInfo<?>, Object> newRow = programInput.createDetailRow(columns, rowDataInits);
 			programInput.getRows().add(newRow);
 		}
 		return programInput;

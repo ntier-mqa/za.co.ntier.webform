@@ -147,17 +147,12 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 			tradeInfo = (List<LearnerInputInfo>) rObjs.get(0);
 			if (tradeInfo != null) {
-				annexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class,
-						"TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",
-						List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-								ColumnInfo.getColPositiveNumber("Total Number of beneficiaries applying for")),
-						"TVETtvet unemployed bursars support funding application");
 
-				subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
+				annexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, "TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",
 						List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
 								ColumnInfo.getColPositiveNumber("Number of learners")));
-				subAnnexure.setShowAddButton(true);
-				annexure.setSubAnnexure(subAnnexure);
+				annexure.setShowAddButton(true);
+				annexure.getTotalRow().put(annexure.getColumnInfos().get(0), "Total Number of beneficiaries applying for");
 
 				annexureInfos.add(annexure);
 			}

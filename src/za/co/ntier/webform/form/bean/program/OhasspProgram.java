@@ -7,6 +7,7 @@ import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class OhasspProgram implements ISaveForm, IProgram {
@@ -17,8 +18,8 @@ public class OhasspProgram implements ISaveForm, IProgram {
 		setHealthSafetySkills(AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 				List.of(ColumnInfo.getColLabel("Name of Programme"),
 						ColumnInfo.getColPositiveNumber("No of 18.1 Employed Learners"),
-						ColumnInfo.getColPositiveNumber("Site Postal Code"),
-						ColumnInfo.getColArea("Area",
+						ColumnInfo.getColPostal(ProgramInput.PostalCodeLabel),
+						ColumnInfo.getColArea(ProgramInput.AreaTitle,
 								MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList())),
 				"Occupational Health and Safety Skills Programmes"));
 	}
