@@ -224,6 +224,15 @@ public interface I_ZZ_Application_Form
 	  */
 	public String getValue();
 
+    /** Column name ZZTotalNumberApplied */
+    public static final String COLUMNNAME_ZZTotalNumberApplied = "ZZTotalNumberApplied";
+
+	/** Set Total Number Applied For	  */
+	public void setZZTotalNumberApplied (int ZZTotalNumberApplied);
+
+	/** Get Total Number Applied For	  */
+	public int getZZTotalNumberApplied();
+
     /** Column name ZZ_Application_Form_ID */
     public static final String COLUMNNAME_ZZ_Application_Form_ID = "ZZ_Application_Form_ID";
 
@@ -241,15 +250,6 @@ public interface I_ZZ_Application_Form
 
 	/** Get ZZ_Application_Form_UU	  */
 	public String getZZ_Application_Form_UU();
-
-    /** Column name ZZ_DisciplineTotalLearners */
-    public static final String COLUMNNAME_ZZ_DisciplineTotalLearners = "ZZ_DisciplineTotalLearners";
-
-	/** Set Discipline Total Learners	  */
-	public void setZZ_DisciplineTotalLearners (int ZZ_DisciplineTotalLearners);
-
-	/** Get Discipline Total Learners	  */
-	public int getZZ_DisciplineTotalLearners();
 
     /** Column name ZZ_DocStatus */
     public static final String COLUMNNAME_ZZ_DocStatus = "ZZ_DocStatus";
@@ -321,15 +321,6 @@ public interface I_ZZ_Application_Form
 
 	/** Get Side SDL Number	  */
 	public String getZZ_Side_SDL_No();
-
-    /** Column name ZZ_TradeTotalLearners */
-    public static final String COLUMNNAME_ZZ_TradeTotalLearners = "ZZ_TradeTotalLearners";
-
-	/** Set Trade Total Learners	  */
-	public void setZZ_TradeTotalLearners (int ZZ_TradeTotalLearners);
-
-	/** Get Trade Total Learners	  */
-	public int getZZ_TradeTotalLearners();
 
     /** Column name ZZ_VAT */
     public static final String COLUMNNAME_ZZ_VAT = "ZZ_VAT";

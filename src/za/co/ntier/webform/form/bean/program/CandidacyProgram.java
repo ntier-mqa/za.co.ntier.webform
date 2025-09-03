@@ -77,6 +77,7 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 		
 		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(ProgramInput.NumEmployedLearnersTitle, disciplines);
 		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(ProgramInput.NumUnEmployedLearnersTitle, disciplines);
+		int totalLearners = 0;
 		
 		for (Map<ColumnInfo<?>, Object> row : disciplines.getRows()) {
 			IntData nunLearners = null;
@@ -113,14 +114,17 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 			
 			if (nunLearners != null && nunLearners.getValue() != null && nunLearners.getValue() != 0) {
 				formDisciplines.setZZ_LearnersNo(nunLearners.getValue());
+				totalLearners += nunLearners.getValue();
 			}
 			
 			if (nunEmployer != null && nunEmployer.getValue() != null && nunEmployer.getValue() != 0) {
 				formDisciplines.setZZNoEmployedLearners(nunEmployer.getValue());
+				totalLearners += nunEmployer.getValue();
 			}
 			
 			if (nunUnEmployer != null && nunUnEmployer.getValue() != null && nunUnEmployer.getValue() != 0) {
 				formDisciplines.setZZNoUnEmployedLearners(nunUnEmployer.getValue());
+				totalLearners += nunUnEmployer.getValue();
 			}
 				
 			
@@ -158,5 +162,10 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 			
 			formDisciplines.saveEx(trxName);
 		}
+		
+		
+		totalLearners += applicationForm.getZZTotalNumberApplied();
+		applicationForm.setZZTotalNumberApplied(totalLearners);
+		applicationForm.saveEx(trxName);
 	}
 }

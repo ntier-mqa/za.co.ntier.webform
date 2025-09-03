@@ -32,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250903L;
+	private static final long serialVersionUID = 20250904L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -280,6 +280,24 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
+	/** Set Total Number Applied For.
+		@param ZZTotalNumberApplied Total Number Applied For
+	*/
+	public void setZZTotalNumberApplied (int ZZTotalNumberApplied)
+	{
+		set_Value (COLUMNNAME_ZZTotalNumberApplied, Integer.valueOf(ZZTotalNumberApplied));
+	}
+
+	/** Get Total Number Applied For.
+		@return Total Number Applied For	  */
+	public int getZZTotalNumberApplied()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZTotalNumberApplied);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Application Form.
 		@param ZZ_Application_Form_ID Application Form
 	*/
@@ -314,24 +332,6 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getZZ_Application_Form_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ZZ_Application_Form_UU);
-	}
-
-	/** Set Discipline Total Learners.
-		@param ZZ_DisciplineTotalLearners Discipline Total Learners
-	*/
-	public void setZZ_DisciplineTotalLearners (int ZZ_DisciplineTotalLearners)
-	{
-		set_Value (COLUMNNAME_ZZ_DisciplineTotalLearners, Integer.valueOf(ZZ_DisciplineTotalLearners));
-	}
-
-	/** Get Discipline Total Learners.
-		@return Discipline Total Learners	  */
-	public int getZZ_DisciplineTotalLearners()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_DisciplineTotalLearners);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Approved By Manager Finance Consumables = AC */
@@ -494,24 +494,6 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getZZ_Side_SDL_No()
 	{
 		return (String)get_Value(COLUMNNAME_ZZ_Side_SDL_No);
-	}
-
-	/** Set Trade Total Learners.
-		@param ZZ_TradeTotalLearners Trade Total Learners
-	*/
-	public void setZZ_TradeTotalLearners (int ZZ_TradeTotalLearners)
-	{
-		set_Value (COLUMNNAME_ZZ_TradeTotalLearners, Integer.valueOf(ZZ_TradeTotalLearners));
-	}
-
-	/** Get Trade Total Learners.
-		@return Trade Total Learners	  */
-	public int getZZ_TradeTotalLearners()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_TradeTotalLearners);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	/** Set VAT.

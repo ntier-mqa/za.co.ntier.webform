@@ -16,12 +16,12 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 
 	public ArtisanAidesProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		qualification = ProjectInput.getProject("QUALIFICATION",
+		qualification = ProjectInput.getProject(null,
 				List.of(ColumnInfo.getColPositiveNumber("No. of Employed Learners"),
 						ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"),
 						ColumnInfo.getColPositiveNumber("Total No. of Learners Applied For")));
 
-		skill = ProjectInput.getProject("SKILLS PROGRAMME",
+		skill = ProjectInput.getProject(null,
 				List.of(ColumnInfo.getColPositiveNumber("No. of Employed Learners"),
 						ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"),
 						ColumnInfo.getColPositiveNumber("Total No. of Learners Applied For")));
