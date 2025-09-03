@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.viewmodel.component;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.Media;
 
-import za.co.ntier.webform.form.bean.OrganisationInfo;
+import za.co.ntier.webform.form.bean.component.OrganisationInfo;
 
 public class OrganisationInfoVMWrapper {
 	private OrganisationInfo organisationInfo;

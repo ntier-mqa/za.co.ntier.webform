@@ -1,14 +1,14 @@
 package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
-
+import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.ProgramInput;
+import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
-public class NonArtisanDevProgram implements ISaveForm {
+public class NonArtisanDevProgram implements ISaveForm, IProgram {
 	private ProgramInput generalLearnership;
 	private ProgramInput firLearnership;
 

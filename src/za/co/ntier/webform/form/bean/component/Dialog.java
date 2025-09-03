@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 public class Dialog {
 	private int tableId;

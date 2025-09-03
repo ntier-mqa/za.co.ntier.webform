@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.viewmodel.component;
 
 import java.util.ArrayList;
 import java.util.List;

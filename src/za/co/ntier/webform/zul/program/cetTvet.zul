@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.MasterUtil?>
+<?import za.co.ntier.webform.form.bean.component.LearnerInputInfo?>
+<?import za.co.ntier.webform.form.bean.ProgramType?>
+<?import za.co.ntier.webform.form.MasterUtil?>
+<?import za.co.ntier.webform.form.bean.DataType?>
+
+
+
+<nodom
+	viewModel="@id('vmCetTvet') @init('za.co.ntier.webform.form.viewmodel.program.CetTvetVMWrapper')">
+
+	<div
+		children="@load(vmCetTvet.program.annexureInfos)">
+
+		<!-- for each annexure -->
+		<template name="children" var="annexure">
+			<include annexureInfo="@load(annexure)"
+				src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+
+
+
+		</template>
+
+
+
+	</div>
+</nodom>

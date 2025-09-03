@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -48,7 +48,7 @@ public class LearnerInputInfo {
 		this.isUploadAccred = args.get(3) != null && "Y".equalsIgnoreCase((String) args.get(3));
 		this.learnerInputText = (String) args.get(4);
 
-		setAreas(MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList());
+		//setAreas(MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList());
 	}
 
 	/**

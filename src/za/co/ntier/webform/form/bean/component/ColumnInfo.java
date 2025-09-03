@@ -1,7 +1,9 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.util.List;
 import java.util.Map.Entry;
+
+import za.co.ntier.webform.form.bean.DataType;
 
 public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {
@@ -44,6 +46,16 @@ public class ColumnInfo<T> {
 
 	public static ColumnInfo<Entry<Integer, Integer>> getColTwoValue(String title) {
 		return new ColumnInfo<Entry<Integer, Integer>>(title, DataType.TwoValues);
+
+	}
+	
+	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title) {
+		return new ColumnInfo<LearnerInputInfo>(title, DataType.LearnerInfo);
+
+	}
+	
+	public static <T> ColumnInfo<T> getColPostal(String title) {
+		return new ColumnInfo<T>(title, DataType.Postal);
 
 	}
 

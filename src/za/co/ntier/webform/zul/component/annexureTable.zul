@@ -2,9 +2,18 @@
 <?import za.co.ntier.webform.form.bean.DataType ?>
 <?import org.adempiere.webui.AdempiereWebUI ?>
 
-<nodom
-	viewModel="@id('vmAnnexure') @init('za.co.ntier.webform.form.viewmodel.AnnexureTableVMWrapper')">
+<?variable-resolver class="za.co.ntier.webform.form.ViewModelResolver"?>
 
+<nodom
+	viewModel="@id('vmAnnexure') @init(vmAnnexureTableVMWrapper)">
+
+	<hlayout
+		if="${vmAnnexure.annexureInfo.sectionHeader ne null}" 
+		sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle"
+			value="@init(vmAnnexure.annexureInfo.sectionHeader)" />
+	</hlayout>
+			
 	<hlayout if="${vmAnnexure.annexureInfo.tableTitle ne null}">
 		<label value="@init(vmAnnexure.annexureInfo.tableTitle)" />
 	</hlayout>
@@ -16,7 +25,7 @@
 			<nodom if="${rowStatus.first}">
 				<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
 					<template name="children" var="titleCol">
-						<div sclass="grid-cell grid-header-cell">
+						<div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-header':'grid-cell grid-header-cell'))">
 							<label value="@init(titleCol.title)" />
 						</div>
 					</template>
@@ -35,10 +44,20 @@
 							<textbox value="@bind(row[detailCol])" />
 						</nodom>
 						<nodom if="${detailCol.dataType == DataType.PositiveNumber}">
-							<intbox value="@bind(row[detailCol])"
+							<intbox value="@bind(row[detailCol].value)"
 								constraint="no negative"
 								onChange="@command('numChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )" />
 						</nodom>
+						
+						<nodom if="${detailCol.dataType == DataType.Postal}">
+							<textbox value="@bind(row[detailCol].postal)"
+								constraint="/\d+/: Please enter digits only"/>
+								<!--onChange="@command('postalChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )"  -->
+						</nodom>
+						<nodom if="${detailCol.dataType == DataType.LearnerInfo}">
+							<label value="@init(row[detailCol].learnerInputText)" />
+						</nodom>
+						
 						<nodom if="${detailCol.dataType == DataType.TwoValues}">
 
 							<div
@@ -86,8 +105,9 @@
 						<nodom if="${detailCol.dataType == DataType.Area}">
 
 							<listbox mold="select"
-								model="@load(detailCol.dataProvider)"
-								selectedItem="@bind(row[detailCol])">
+								model="@load(row[detailCol].dataProvider)"
+								selectedItem="@bind(row[detailCol].selectedArea)">
+								<!-- onSelect="@command('areaSelect', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )" -->
 								<template name="model" var="item">
 									<listitem label="@load(item.name)" />
 								</template>
@@ -108,7 +128,11 @@
 							</div>
 
 						</nodom>
-
+						
+						<button sclass="btn-circle"
+										if="${ rowStatus.last and detailColStatus.last and vmAnnexure.annexureInfo.showAddButton}"
+										iconSclass="z-icon-plus" label=""
+										onClick="@command('addDetailLine', annexure=vmAnnexure.annexureInfo)" />
 					</div>
 				</template>
 			</nodom>
@@ -119,18 +143,19 @@
 			<nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)"
 				if="${vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last}">
 				<template name="children" var="totalCol">
-					<div sclass="grid-cell grid-footer-cell"
+					<div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-footer':'grid-cell grid-footer-cell'))"
 						visible="@load((vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last))">
-						<nodom if="${totalCol.dataType == DataType.Label}">
+						
+						<nodom if="${totalCol.dataType eq DataType.PositiveNumber}">
 							<label
-								value="@init(vmAnnexure.annexureInfo.totalRow[totalCol])" />
+								value="@load(vmAnnexure.annexureInfo.totalRow[totalCol].value)" />
 						</nodom>
-
-						<nodom if="${totalCol.dataType == DataType.PositiveNumber}">
+						<nodom if="${totalCol.dataType ne DataType.PositiveNumber}">
 							<label
 								value="@load(vmAnnexure.annexureInfo.totalRow[totalCol])" />
 						</nodom>
-
+						
+						
 					</div>
 				</template>
 			</nodom>
@@ -139,4 +164,13 @@
 
 
 	</div>
+	
+	<!-- sub annexure -->
+	<nodom if="${vmAnnexure.annexureInfo.subAnnexure ne null}">
+		<include 
+			annexureInfo="@load(vmAnnexure.annexureInfo.subAnnexure)"
+			isSubAnnexure="@init('true')"
+			src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+		
+	</nodom>
 </nodom>

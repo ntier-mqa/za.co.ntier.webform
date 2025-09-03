@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,6 +14,8 @@ import org.zkoss.util.media.Media;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.bean.AddressType;
+import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 /**

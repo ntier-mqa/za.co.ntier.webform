@@ -46,5 +46,43 @@ public enum ProgramType {
 	public String toString() {
 		return programType;
 	}
-
+	
+	public String getZulPath() {
+		switch (this) {
+			case CANDIDACY:
+				return "program/candidacy.zul";
+			case INTERNSHIP:
+				return "program/internship.zul";
+			case EXPERIENCE:
+				return "program/workExperience.zul";
+			case DEV_PROGRAM:
+				return "program/medp.zul";
+			case ARTISAN_AIDES:
+				return "program/artisanAides.zul";
+			case ARTISAN_DEV:
+				return "program/artisanDev.zul";
+			case CENTRE_SPECIALISATION:
+				return "program/centreOfSpecialisation.zul";
+			case ARTISAN_RPL:
+				return "program/artisanRPL.zul";
+			case NON_ARTISAN_DEV:
+				return "program/nonArtisanDev.zul";
+			case NON_ARTISAN_DEV_RPL:
+				return "program/nonArtisanDevRPL.zul";
+			case NCV_GRADUATES:
+				return "program/ncvGraduates.zul";
+			case AET:
+				return "program/aet.zul";
+			case OHASSP:
+				return "program/ohassp.zul";
+			case INHOUSE_TRAINING:
+				return "program/inhouseTraining.zul";
+			case CET:
+			case TVET:
+			case TVET_BURSARS:
+				return "program/cetTvet.zul";
+			default:
+				return null;
+		}
+	}
 }

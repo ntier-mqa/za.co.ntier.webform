@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;

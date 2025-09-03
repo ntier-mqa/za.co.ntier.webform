@@ -31,7 +31,7 @@ public class X_ZZDocumentUpload extends PO implements I_ZZDocumentUpload, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250901L;
+	private static final long serialVersionUID = 20250903L;
 
     /** Standard Constructor */
     public X_ZZDocumentUpload (Properties ctx, int ZZDocumentUpload_ID, String trxName)

@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -24,14 +24,14 @@ public class UploadInput extends AnnexureInfo {
 		List<ColumnInfo<?>> columns = new ArrayList<>();
 		columns.add(ColumnInfo.getColLabel("Document Name"));
 		columns.add(ColumnInfo.getColFileUpload("", "doc"));
-
+		
 		UploadInput uploadInput = AnnexureInfo.getAnnexureInfo(UploadInput.class, columns, false);
 
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
 
 		for (X_ZZDocumentUpload docUpload : docUploads) {
 			rowDataInits.put(columns.get(0), docUpload.getName());
-			Map<ColumnInfo<?>, Object> newRow = AnnexureInfo.createDetailRow(columns, rowDataInits);
+			Map<ColumnInfo<?>, Object> newRow = uploadInput.createDetailRow(columns, rowDataInits);
 			uploadInput.getRows().add(newRow);
 		}
 		return uploadInput;

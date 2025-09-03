@@ -4,28 +4,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.AddressInfo;
-import za.co.ntier.webform.form.bean.AnnexureInfo;
-import za.co.ntier.webform.form.bean.ColumnInfo;
-import za.co.ntier.webform.form.bean.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.bean.component.AddressInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
-public class ProgramCetTvetInfo implements ISaveForm {
-	public static final String COL_NAME_titleHeaderText = "titleHeaderText";
-	public static final String COL_NAME_customizeDetaileTemplate = "customizeDetaileTemplate";
-	public static final String DetaileTemplate_LecturersExposedIndustry = "Lecturers exposed to industry";
-
-	public static final String ATTSUBAnnexureCustomize = "Attribute Sub Annexure Customize";
-	public static final String SUBAnnexure_TradeBeneficiaries = "TradeBeneficiaries";
-
-	public static final String ATTSUBAnnexureColumnType = "Attribute Sub Annexure Column Type";
-
-	public static final String SUBAnnexureColumnType_Number = "Number";
+public class CetTvetProgram implements ISaveForm, IProgram {
 	private MenuContextInfo menuContextInfo;
 
 	private List<AnnexureInfo> annexureInfos;
@@ -34,7 +25,7 @@ public class ProgramCetTvetInfo implements ISaveForm {
 	private List<LearnerInputInfo> tradeInfo;
 
 	@SuppressWarnings("unchecked")
-	public ProgramCetTvetInfo(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
+	public CetTvetProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this.setMenuContextInfo(menuContextInfo);
 
@@ -68,6 +59,7 @@ public class ProgramCetTvetInfo implements ISaveForm {
 			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 					List.of(ColumnInfo.getColPositiveNumber("Requested Programme"),
 							ColumnInfo.getColPositiveNumber("Number of managers")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -80,6 +72,7 @@ public class ProgramCetTvetInfo implements ISaveForm {
 
 			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 					List.of(ColumnInfo.getColPositiveNumber("Requested Programme")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -94,6 +87,7 @@ public class ProgramCetTvetInfo implements ISaveForm {
 			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 					List.of(ColumnInfo.getColPositiveNumber("Field of Study"),
 							ColumnInfo.getColPositiveNumber("Number of learners")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -108,6 +102,7 @@ public class ProgramCetTvetInfo implements ISaveForm {
 			subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
 					List.of(ColumnInfo.getColPositiveNumber("Requested Programme"),
 							ColumnInfo.getColPositiveNumber("Number of managers")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -122,6 +117,7 @@ public class ProgramCetTvetInfo implements ISaveForm {
 					"Please supply the list of possible fields of study for this WIL",
 					List.of(ColumnInfo.getColPositiveNumber("Field of Study:"),
 							ColumnInfo.getColPositiveNumber("Number of learners applied for:")));
+			subAnnexure.setShowAddButton(true);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -151,16 +147,12 @@ public class ProgramCetTvetInfo implements ISaveForm {
 
 			tradeInfo = (List<LearnerInputInfo>) rObjs.get(0);
 			if (tradeInfo != null) {
-				annexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class,
-						"TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",
-						List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-								ColumnInfo.getColPositiveNumber("Total Number of beneficiaries applying for")),
-						"TVETtvet unemployed bursars support funding application");
 
-				subAnnexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
+				annexure = AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, "TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",
 						List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
 								ColumnInfo.getColPositiveNumber("Number of learners")));
-				annexure.setSubAnnexure(subAnnexure);
+				annexure.setShowAddButton(true);
+				annexure.getTotalRow().put(annexure.getColumnInfos().get(0), "Total Number of beneficiaries applying for");
 
 				annexureInfos.add(annexure);
 			}

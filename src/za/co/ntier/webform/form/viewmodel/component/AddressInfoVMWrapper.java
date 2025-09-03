@@ -1,9 +1,9 @@
-package za.co.ntier.webform.form.viewmodel;
+package za.co.ntier.webform.form.viewmodel.component;
 
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
-import za.co.ntier.webform.form.bean.AddressInfo;
+import za.co.ntier.webform.form.bean.component.AddressInfo;
 
 public class AddressInfoVMWrapper {
 	private AddressInfo addressInfo;

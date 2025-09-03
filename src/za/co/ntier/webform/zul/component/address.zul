@@ -2,7 +2,7 @@
 <?import za.co.ntier.webform.form.MasterUtil?>
 
 <nodom
-	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.AddressInfoVMWrapper')">
+	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.component.AddressInfoVMWrapper')">
 
 	<hlayout sclass="subSectionHeader">
 		<label sclass="subSectionHeaderTitle"
@@ -89,7 +89,8 @@
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
 
-			<textbox value="@bind(vmAddress.addressInfo.mobileNumber)" />
+			<textbox value="@bind(vmAddress.addressInfo.mobileNumber)" 
+				type="tel"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
@@ -97,7 +98,8 @@
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.landlineNumberTitle)" />
 
-			<textbox value="@bind(vmAddress.addressInfo.landlineNumber)" />
+			<textbox value="@bind(vmAddress.addressInfo.landlineNumber)" 
+				type="tel"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
@@ -105,7 +107,9 @@
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.emailTitle)" />
 
-			<textbox value="@bind(vmAddress.addressInfo.email)" />
+			<textbox value="@bind(vmAddress.addressInfo.email)"
+				type="email" 
+				constraint="/.+@.+\.[a-z]+/: Please enter an e-mail address"/>
 		</div>
 	</div>
 

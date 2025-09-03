@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ public class ProjectInput extends AnnexureInfo {
 			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
 		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
-		columnInfos.add(ColumnInfo.getColPositiveNumber("Site Postal Code"));
+		columnInfos.add(ColumnInfo.getColPostal(ProgramInput.PostalCodeLabel));
 		columnInfos.add(
-				ColumnInfo.getColArea("Area", MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList()));
+				ColumnInfo.getColArea(ProgramInput.AreaTitle, MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList()));
 
 		return AnnexureInfo.getAnnexureInfoOneLine(ProjectInput.class, secctionTitle, columnInfos, null);
 

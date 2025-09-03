@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean;
+package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -8,20 +8,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.BindingParam;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class AnnexureInfo implements ISaveForm{
-	public static Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
-		return AnnexureInfo.createDetailRow(columnInfos, null);
+	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
+		return createDetailRow(columnInfos, null);
 	}
 
-	public static Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos,
+	@SuppressWarnings("unchecked")
+	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos,
 			Map<ColumnInfo<?>, Object> rowDataInits) {
 		Map<ColumnInfo<?>, Object> newRow = new HashMap<>();
 
@@ -39,9 +47,19 @@ public class AnnexureInfo implements ISaveForm{
 					cellData = Arrays.asList(null, null);
 
 				} else if (columnInfo.getDataType() == DataType.FileUpload) {
-					cellData = new UploadInfo();
+					cellData = new UploadData();
 
+				} else if (columnInfo.getDataType() == DataType.Area) {
+					AreaData areaData = new AreaData(this, newRow);
+					areaData.setDataProvider((List<MCity>)columnInfo.getDataProvider());
+					cellData = areaData;
+				} else if (columnInfo.getDataType() == DataType.Postal) {
+					PostalData textData = new PostalData(this, newRow, null);
+					cellData = textData;
+				}else if (columnInfo.getDataType() == DataType.PositiveNumber) {
+					cellData = new IntData(this, newRow, null);
 				}
+
 			}
 			newRow.put(columnInfo, cellData);
 
@@ -64,15 +82,15 @@ public class AnnexureInfo implements ISaveForm{
 		if (isShowTotal) {
 			Map<ColumnInfo<?>, Object> totalRow = new HashMap<>();
 			for (ColumnInfo<?> columnInfo : columnInfos) {
-				if (columnInfo.getDataType() == DataType.Label) {
-					if (columnInfos.indexOf(columnInfo) == 0) {
-						totalRow.put(columnInfos.get(0), "Total");
-					}
-				} else if (columnInfo.getDataType() == DataType.PositiveNumber) {
-					totalRow.put(columnInfo, 0);
+				if (columnInfo.getDataType() == DataType.PositiveNumber) {
+					totalRow.put(columnInfo, new IntData(annexureInfo, totalRow, 0));
 				} else {
 					totalRow.put(columnInfo, null);
 				}
+			}
+			
+			if (totalRow.get(columnInfos.get(0)) == null) {
+				totalRow.put(columnInfos.get(0), "Total");
 			}
 
 			annexureInfo.setTotalRow(totalRow);
@@ -132,7 +150,7 @@ public class AnnexureInfo implements ISaveForm{
 			}
 		}
 
-		Map<ColumnInfo<?>, Object> fistRow = AnnexureInfo.createDetailRow(columnInfos, rowDataInits);
+		Map<ColumnInfo<?>, Object> fistRow = annexureInfo.createDetailRow(columnInfos, rowDataInits);
 		annexureInfo.getRows().add(fistRow);
 		annexureInfo.setSectionHeader(sectionHeader);
 		return annexureInfo;
@@ -151,6 +169,7 @@ public class AnnexureInfo implements ISaveForm{
 
 	private String sectionHeader;
 	private boolean showTotal = false;
+	private boolean showAddButton = false;
 
 	private AnnexureInfo subAnnexure;
 
@@ -215,13 +234,15 @@ public class AnnexureInfo implements ISaveForm{
 		if (col.getDataType() == DataType.PositiveNumber) {
 			Integer total = 0;
 			for (Map<ColumnInfo<?>, Object> r : getRows()) {
-				if (r.get(col) != null) {
-					total += (int) r.get(col);
+				IntData intData = (IntData)r.get(col);
+				if (intData.getValue() != null) {
+					total += intData.getValue();
 				}
 			}
-
-			totalRow.put(col, total);
-			BindUtils.postNotifyChange(this, "totalRow");
+			
+			IntData totalValue = (IntData)totalRow.get(col);
+			totalValue.setValue(total);
+			BindUtils.postNotifyChange(totalValue, "value");
 		}
 
 	}
@@ -276,28 +297,65 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 	public void uploadFile(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, UploadEvent event) throws IOException {
-		UploadInfo uploadInfoObj = (UploadInfo) row.get(col);
+		UploadData uploadInfoObj = (UploadData) row.get(col);
 		uploadInfoObj.setFileName(event.getMedia().getName());
 		uploadInfoObj.setFullPath(MasterUtil.saveUploadFile(event.getMedia()));
 
 		BindUtils.postNotifyChange(row.get(col), "fileName");
 	}
 
-	public void valueNumChange(ColumnInfo<?> detailCol) {
-		int total = 0;
-		for (Map<ColumnInfo<?>, Object> row : rows) {
-			if (row.get(detailCol) != null) {
-				total += (int) row.get(detailCol);
-			}
-		}
-		totalRow.put(detailCol, total);
-		BindUtils.postNotifyChange(this, "*");
+	public void postalChange (Map<ColumnInfo<?>, Object> row, 
+			ColumnInfo<?> col,
+			InputEvent event){
+		
 	}
-
+	
+	public void areaSelect (Map<ColumnInfo<?>, Object> row, 
+			ColumnInfo<?> col,
+			SelectEvent<?, ?> event){
+		
+	}
+	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * @return the showAddButton
+	 */
+	public boolean isShowAddButton() {
+		return showAddButton;
+	}
+
+	/**
+	 * @param showAddButton the showAddButton to set
+	 */
+	public void setShowAddButton(boolean showAddButton) {
+		this.showAddButton = showAddButton;
+	}
+
+	public static ColumnInfo<?> lookupColByDataType(DataType dataType, AnnexureInfo annexure){
+		return lookupCol(dataType, null, annexure);
+	}
+	
+	public static ColumnInfo<?> lookupColByTitle(String colName, AnnexureInfo annexure){
+		return lookupCol(null, colName, annexure);
+	}
+	
+	protected static ColumnInfo<?> lookupCol(DataType dataType, String colName, AnnexureInfo annexure){
+		ColumnInfo<?> foundCol = null;
+		for (ColumnInfo<?> col : annexure.getColumnInfos()) {
+			if (dataType != null && dataType.equals(col.getDataType())){
+				return  col;
+			}
+			
+			if (colName != null && colName.equals(col.getTitle())){
+				return  col;
+			}
+		}
+		
+		return foundCol;
+	}
 }
