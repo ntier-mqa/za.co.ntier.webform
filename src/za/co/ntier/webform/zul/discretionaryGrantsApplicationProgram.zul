@@ -34,10 +34,11 @@
 					<div sclass="formBottomPanel">
 						<button label="Cancel Application"
 							iconSclass="z-icon-xmark" onClick="@command('cancelApp')" />
-
 						<button label="Save &amp; Continue" sclass="icon-on-right"
-							iconSclass="z-icon-arrow-right"
-							onClick="@command('nextTab', tab=formTab)" />
+						        iconSclass="z-icon-arrow-right"
+						        disabled="@load(not vm.employerDeclarationInfo.acknowledged)"
+						        onClick="@command('nextTab', tab=formTab)" />
+
 					</div>
 				</div>
 			</tabpanel>

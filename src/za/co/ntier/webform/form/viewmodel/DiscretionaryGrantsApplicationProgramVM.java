@@ -14,6 +14,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Tabbox;
 
 import za.co.ntier.webform.form.IProgram;
@@ -32,6 +33,7 @@ import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanRPLProgram;
 import za.co.ntier.webform.form.bean.program.CandidacyProgram;
 import za.co.ntier.webform.form.bean.program.CentreOfSpecialisationProgram;
+import za.co.ntier.webform.form.bean.program.CetTvetProgram;
 import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
 import za.co.ntier.webform.form.bean.program.MedpProgram;
@@ -39,7 +41,6 @@ import za.co.ntier.webform.form.bean.program.NcvGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
-import za.co.ntier.webform.form.bean.program.CetTvetProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -234,6 +235,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	@Command
 	public void nextTab(@BindingParam("tab") Tabbox tab) {
+		// Only enforce this when we are on the Declaration tab (index 0).
+	    // Adjust if you change tab order.
+		// Martin Added 
+	    if (tab.getSelectedIndex() == 0) {
+	        if (!Boolean.TRUE.equals(getEmployerDeclarationInfo().getAcknowledged())) {
+	            Clients.showNotification(
+	                "Please tick the acknowledgement checkbox before continuing.",
+	                "error", null, "end_center", 3000
+	            );
+	            return;
+	        }
+	    }
 		int currentIndex = tab.getSelectedIndex();
 		tab.setSelectedIndex(currentIndex + 1);
 	}

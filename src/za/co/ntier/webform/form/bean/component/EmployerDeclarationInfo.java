@@ -9,6 +9,11 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class EmployerDeclarationInfo implements ISaveForm {
 	private String userName;
 	private LocalDate localDate;
+	
+	private Boolean acknowledged;  // use Boolean, not boolean, so null is handled
+
+    public Boolean getAcknowledged() { return acknowledged; }
+    public void setAcknowledged(Boolean acknowledged) { this.acknowledged = acknowledged; }
 
 	public Timestamp getDate() {
 		if (localDate == null)
