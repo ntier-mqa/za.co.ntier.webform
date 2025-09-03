@@ -251,6 +251,15 @@ public interface I_ZZ_Application_Form
 	/** Get Discipline Total Learners	  */
 	public int getZZ_DisciplineTotalLearners();
 
+    /** Column name ZZ_DocStatus */
+    public static final String COLUMNNAME_ZZ_DocStatus = "ZZ_DocStatus";
+
+	/** Set Document Status	  */
+	public void setZZ_DocStatus (String ZZ_DocStatus);
+
+	/** Get Document Status	  */
+	public String getZZ_DocStatus();
+
     /** Column name ZZ_HasPivotalPlanSubmited */
     public static final String COLUMNNAME_ZZ_HasPivotalPlanSubmited = "ZZ_HasPivotalPlanSubmited";
 
@@ -285,6 +294,15 @@ public interface I_ZZ_Application_Form
 
 	/** Get Organisation Registration Number 	  */
 	public String getZZ_Org_Reg_No();
+
+    /** Column name ZZ_Program_Master_Data_ID */
+    public static final String COLUMNNAME_ZZ_Program_Master_Data_ID = "ZZ_Program_Master_Data_ID";
+
+	/** Set Program Master Data	  */
+	public void setZZ_Program_Master_Data_ID (int ZZ_Program_Master_Data_ID);
+
+	/** Get Program Master Data	  */
+	public int getZZ_Program_Master_Data_ID();
 
     /** Column name ZZ_SDL_No */
     public static final String COLUMNNAME_ZZ_SDL_No = "ZZ_SDL_No";

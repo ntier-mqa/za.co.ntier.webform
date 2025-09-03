@@ -32,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250822L;
+	private static final long serialVersionUID = 20250903L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -334,6 +334,56 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 		return ii.intValue();
 	}
 
+	/** Approved By Manager Finance Consumables = AC */
+	public static final String ZZ_DOCSTATUS_ApprovedByManagerFinanceConsumables = "AC";
+	/** Approved = AP */
+	public static final String ZZ_DOCSTATUS_Approved = "AP";
+	/** Completed = CO */
+	public static final String ZZ_DOCSTATUS_Completed = "CO";
+	/** Draft = DR */
+	public static final String ZZ_DOCSTATUS_Draft = "DR";
+	/** In Progress = IP */
+	public static final String ZZ_DOCSTATUS_InProgress = "IP";
+	/** Not Approved By Manager Finance Consumables = NC */
+	public static final String ZZ_DOCSTATUS_NotApprovedByManagerFinanceConsumables = "NC";
+	/** Not Approved By SDL Finance Mgr = ND */
+	public static final String ZZ_DOCSTATUS_NotApprovedBySDLFinanceMgr = "ND";
+	/** Not Approved By IT Manager = NI */
+	public static final String ZZ_DOCSTATUS_NotApprovedByITManager = "NI";
+	/** Not Approved by LM = NL */
+	public static final String ZZ_DOCSTATUS_NotApprovedByLM = "NL";
+	/** Not Recommended = NR */
+	public static final String ZZ_DOCSTATUS_NotRecommended = "NR";
+	/** Not Approved by Snr Admin Finance = NS */
+	public static final String ZZ_DOCSTATUS_NotApprovedBySnrAdminFinance = "NS";
+	/** Recommended = RC */
+	public static final String ZZ_DOCSTATUS_Recommended = "RC";
+	/** Submitted to Manager Finance Consumables = SC */
+	public static final String ZZ_DOCSTATUS_SubmittedToManagerFinanceConsumables = "SC";
+	/** Submitted To SDL Finance Mgr = SD */
+	public static final String ZZ_DOCSTATUS_SubmittedToSDLFinanceMgr = "SD";
+	/** Submitted To IT Manager = SI */
+	public static final String ZZ_DOCSTATUS_SubmittedToITManager = "SI";
+	/** Submitted To IT Admin = ST */
+	public static final String ZZ_DOCSTATUS_SubmittedToITAdmin = "ST";
+	/** Submitted = SU */
+	public static final String ZZ_DOCSTATUS_Submitted = "SU";
+	/** Set Document Status.
+		@param ZZ_DocStatus Document Status
+	*/
+	public void setZZ_DocStatus (String ZZ_DocStatus)
+	{
+
+		set_Value (COLUMNNAME_ZZ_DocStatus, ZZ_DocStatus);
+	}
+
+	/** Get Document Status.
+		@return Document Status	  */
+	public String getZZ_DocStatus()
+	{
+		return (String)get_Value(COLUMNNAME_ZZ_DocStatus);
+	}
+
 	/** Set Has Pivotal Plan Submited.
 		@param ZZ_HasPivotalPlanSubmited Has the organisation submitted the Pivotal Plan and Report In previous financial year?
 	*/
@@ -393,6 +443,27 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getZZ_Org_Reg_No()
 	{
 		return (String)get_Value(COLUMNNAME_ZZ_Org_Reg_No);
+	}
+
+	/** Set Program Master Data.
+		@param ZZ_Program_Master_Data_ID Program Master Data
+	*/
+	public void setZZ_Program_Master_Data_ID (int ZZ_Program_Master_Data_ID)
+	{
+		if (ZZ_Program_Master_Data_ID < 1)
+			set_Value (COLUMNNAME_ZZ_Program_Master_Data_ID, null);
+		else
+			set_Value (COLUMNNAME_ZZ_Program_Master_Data_ID, Integer.valueOf(ZZ_Program_Master_Data_ID));
+	}
+
+	/** Get Program Master Data.
+		@return Program Master Data	  */
+	public int getZZ_Program_Master_Data_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_Program_Master_Data_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set SDL Number.
