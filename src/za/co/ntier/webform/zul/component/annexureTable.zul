@@ -44,7 +44,7 @@
 							<textbox value="@bind(row[detailCol])" />
 						</nodom>
 						<nodom if="${detailCol.dataType == DataType.PositiveNumber}">
-							<intbox value="@bind(row[detailCol])"
+							<intbox value="@bind(row[detailCol].value)"
 								constraint="no negative"
 								onChange="@command('numChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )" />
 						</nodom>
@@ -146,8 +146,15 @@
 					<div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-footer':'grid-cell grid-footer-cell'))"
 						visible="@load((vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last))">
 						
-						<label
+						<nodom if="${totalCol.dataType eq DataType.PositiveNumber}">
+							<label
+								value="@load(vmAnnexure.annexureInfo.totalRow[totalCol].value)" />
+						</nodom>
+						<nodom if="${totalCol.dataType ne DataType.PositiveNumber}">
+							<label
 								value="@load(vmAnnexure.annexureInfo.totalRow[totalCol])" />
+						</nodom>
+						
 						
 					</div>
 				</template>

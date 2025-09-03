@@ -56,6 +56,8 @@ public class AnnexureInfo implements ISaveForm{
 				} else if (columnInfo.getDataType() == DataType.Postal) {
 					PostalData textData = new PostalData(this, newRow, null);
 					cellData = textData;
+				}else if (columnInfo.getDataType() == DataType.PositiveNumber) {
+					cellData = new IntData(this, newRow, null);
 				}
 
 			}
@@ -81,7 +83,7 @@ public class AnnexureInfo implements ISaveForm{
 			Map<ColumnInfo<?>, Object> totalRow = new HashMap<>();
 			for (ColumnInfo<?> columnInfo : columnInfos) {
 				if (columnInfo.getDataType() == DataType.PositiveNumber) {
-					totalRow.put(columnInfo, 0);
+					totalRow.put(columnInfo, new IntData(annexureInfo, totalRow, 0));
 				} else {
 					totalRow.put(columnInfo, null);
 				}
@@ -232,13 +234,15 @@ public class AnnexureInfo implements ISaveForm{
 		if (col.getDataType() == DataType.PositiveNumber) {
 			Integer total = 0;
 			for (Map<ColumnInfo<?>, Object> r : getRows()) {
-				if (r.get(col) != null) {
-					total += (int) r.get(col);
+				IntData intData = (IntData)r.get(col);
+				if (intData.getValue() != null) {
+					total += intData.getValue();
 				}
 			}
-
-			totalRow.put(col, total);
-			BindUtils.postNotifyChange(this, "totalRow");
+			
+			IntData totalValue = (IntData)totalRow.get(col);
+			totalValue.setValue(total);
+			BindUtils.postNotifyChange(totalValue, "value");
 		}
 
 	}
