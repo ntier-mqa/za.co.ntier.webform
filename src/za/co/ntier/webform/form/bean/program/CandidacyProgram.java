@@ -17,7 +17,9 @@ import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AreaData;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
+import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.form.bean.component.UploadData;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -68,7 +70,7 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 		ColumnInfo<?> accredColl = null;
 		
 		disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, disciplines);
-		nunLearnersColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, disciplines);
+		nunLearnersColl = AnnexureInfo.lookupColByDataType(DataType.PositiveNumber, disciplines);
 		areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, disciplines);
 		postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, disciplines);
 		wpaColl = AnnexureInfo.lookupColByTitle(ProgramInput.WPATitle, disciplines);
@@ -76,21 +78,21 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 		
 		
 		for (Map<ColumnInfo<?>, Object> row : disciplines.getRows()) {
-			Integer nunLearners = (Integer)row.get(nunLearnersColl);
-			if (nunLearners == null || nunLearners == 0) 
+			IntData nunLearners = (IntData)row.get(nunLearnersColl);
+			if (nunLearners.getValue() == null || nunLearners.getValue().intValue() == 0)
 				continue;
 			
 			X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null); formDisciplines.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
 			
-			formDisciplines.setZZ_LearnersNo(nunLearners);
+			formDisciplines.setZZ_LearnersNo(nunLearners.getValue());
 			
 			MCity area = ((AreaData)row.get(areaColl)).getSelectedArea();
 			if (area != null)
 				formDisciplines.setC_City_ID(area.getC_City_ID());
 			
-			String postalCode= (String)row.get(postalColl);
-			if (postalCode != null)
-				formDisciplines.setPostal(postalCode);
+			PostalData postalCode = (PostalData)row.get(postalColl);
+			if (postalCode.getPostal() != null)
+				formDisciplines.setPostal(postalCode.getPostal());
 			
 			formDisciplines.setZZ_DisciplineType(disciplineType);
 			
