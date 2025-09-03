@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.bean.program;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
@@ -51,9 +52,9 @@ public class NonArtisanDevProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+		CandidacyProgram.saveFormLearnership(trxName, applicationForm, generalLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership);
+		CandidacyProgram.saveFormLearnership(trxName, applicationForm, firLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership);
 	}
 
 }

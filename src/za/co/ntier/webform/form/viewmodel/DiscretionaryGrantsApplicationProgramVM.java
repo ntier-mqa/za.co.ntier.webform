@@ -327,6 +327,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public void submitApplication() throws IOException {
 		String trxName = null;
 		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, trxName);
+		applicationForm.setAD_Org_ID(menuContextInfo.getProgramMasterData().getAD_Org_ID());
 		applicationForm.setZZ_Program_Master_Data_ID(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID());
 		
 		saveAppFormCommonPart(applicationForm);

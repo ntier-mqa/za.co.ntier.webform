@@ -173,6 +173,42 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		return (String)get_Value(COLUMNNAME_Postal);
 	}
 
+	/** Set No Employed Learners.
+		@param ZZNoEmployedLearners No Employed Learners
+	*/
+	public void setZZNoEmployedLearners (int ZZNoEmployedLearners)
+	{
+		set_Value (COLUMNNAME_ZZNoEmployedLearners, Integer.valueOf(ZZNoEmployedLearners));
+	}
+
+	/** Get No Employed Learners.
+		@return No Employed Learners	  */
+	public int getZZNoEmployedLearners()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoEmployedLearners);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set No UnEmployed Learners.
+		@param ZZNoUnEmployedLearners No UnEmployed Learners
+	*/
+	public void setZZNoUnEmployedLearners (int ZZNoUnEmployedLearners)
+	{
+		set_Value (COLUMNNAME_ZZNoUnEmployedLearners, Integer.valueOf(ZZNoUnEmployedLearners));
+	}
+
+	/** Get No UnEmployed Learners.
+		@return No UnEmployed Learners	  */
+	public int getZZNoUnEmployedLearners()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoUnEmployedLearners);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Accred File.
 		@param ZZ_AccredFile Accred File
 	*/
@@ -320,6 +356,34 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 	public int getZZ_LearnersNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_LearnersNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_ZZ_Learnerships getZZ_Learnerships() throws RuntimeException
+	{
+		return (I_ZZ_Learnerships)MTable.get(getCtx(), I_ZZ_Learnerships.Table_ID)
+			.getPO(getZZ_Learnerships_ID(), get_TrxName());
+	}
+
+	/** Set Learnerships.
+		@param ZZ_Learnerships_ID Learnerships master
+	*/
+	public void setZZ_Learnerships_ID (int ZZ_Learnerships_ID)
+	{
+		if (ZZ_Learnerships_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_ZZ_Learnerships_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_ZZ_Learnerships_ID, Integer.valueOf(ZZ_Learnerships_ID));
+	}
+
+	/** Get Learnerships.
+		@return Learnerships master
+	  */
+	public int getZZ_Learnerships_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_Learnerships_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

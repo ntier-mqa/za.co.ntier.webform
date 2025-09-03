@@ -152,6 +152,24 @@ public interface I_ZZ_FormDiscipline
 	  */
 	public int getUpdatedBy();
 
+    /** Column name ZZNoEmployedLearners */
+    public static final String COLUMNNAME_ZZNoEmployedLearners = "ZZNoEmployedLearners";
+
+	/** Set No Employed Learners	  */
+	public void setZZNoEmployedLearners (int ZZNoEmployedLearners);
+
+	/** Get No Employed Learners	  */
+	public int getZZNoEmployedLearners();
+
+    /** Column name ZZNoUnEmployedLearners */
+    public static final String COLUMNNAME_ZZNoUnEmployedLearners = "ZZNoUnEmployedLearners";
+
+	/** Set No UnEmployed Learners	  */
+	public void setZZNoUnEmployedLearners (int ZZNoUnEmployedLearners);
+
+	/** Get No UnEmployed Learners	  */
+	public int getZZNoUnEmployedLearners();
+
     /** Column name ZZ_AccredFile */
     public static final String COLUMNNAME_ZZ_AccredFile = "ZZ_AccredFile";
 
@@ -222,6 +240,21 @@ public interface I_ZZ_FormDiscipline
 	  * Number of learners applying should be based on
 	  */
 	public int getZZ_LearnersNo();
+
+    /** Column name ZZ_Learnerships_ID */
+    public static final String COLUMNNAME_ZZ_Learnerships_ID = "ZZ_Learnerships_ID";
+
+	/** Set Learnerships.
+	  * Learnerships master
+	  */
+	public void setZZ_Learnerships_ID (int ZZ_Learnerships_ID);
+
+	/** Get Learnerships.
+	  * Learnerships master
+	  */
+	public int getZZ_Learnerships_ID();
+
+	public I_ZZ_Learnerships getZZ_Learnerships() throws RuntimeException;
 
     /** Column name ZZ_Trade_ID */
     public static final String COLUMNNAME_ZZ_Trade_ID = "ZZ_Trade_ID";
