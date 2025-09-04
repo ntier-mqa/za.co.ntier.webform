@@ -338,6 +338,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (alternateProgramContact != null) {
 			alternateProgramContact.saveForm(trxName, applicationForm);
 		}
+		
+		if(uploadDoc != null) {
+			uploadDoc.saveForm(trxName, applicationForm);
+		}
 
 		program.saveForm(trxName, applicationForm);
 		
