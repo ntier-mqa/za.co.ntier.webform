@@ -128,7 +128,9 @@
 							</div>
 
 						</nodom>
-						
+						<nodom if="${detailCol.dataType == DataType.DocUploadDef}">
+							<label value="@init(row[detailCol].name)" />
+						</nodom>
 						<button sclass="btn-circle"
 										if="${ rowStatus.last and detailColStatus.last and vmAnnexure.annexureInfo.showAddButton}"
 										iconSclass="z-icon-plus" label=""

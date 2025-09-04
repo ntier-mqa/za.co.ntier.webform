@@ -13,7 +13,7 @@ import za.co.ntier.webform.model.I_ZZDocumentUpload;
 import za.co.ntier.webform.model.X_ZZDocumentUpload;
 
 public class UploadInput extends AnnexureInfo {
-
+	public static final String DocUploadTitle = "Document Name";
 	public static UploadInput getUploadInput(int programMasterDataID) throws NoSuchMethodException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// query upload info
@@ -22,7 +22,7 @@ public class UploadInput extends AnnexureInfo {
 				.setParameters(programMasterDataID).list();
 
 		List<ColumnInfo<?>> columns = new ArrayList<>();
-		columns.add(ColumnInfo.getColLabel("Document Name"));
+		columns.add(ColumnInfo.getColDocUpload(DocUploadTitle));
 		columns.add(ColumnInfo.getColFileUpload("", "doc"));
 		
 		UploadInput uploadInput = AnnexureInfo.getAnnexureInfo(UploadInput.class, columns, false);
@@ -30,7 +30,7 @@ public class UploadInput extends AnnexureInfo {
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
 
 		for (X_ZZDocumentUpload docUpload : docUploads) {
-			rowDataInits.put(columns.get(0), docUpload.getName());
+			rowDataInits.put(columns.get(0), docUpload);
 			Map<ColumnInfo<?>, Object> newRow = uploadInput.createDetailRow(columns, rowDataInits);
 			uploadInput.getRows().add(newRow);
 		}

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import za.co.ntier.webform.form.bean.DataType;
+import za.co.ntier.webform.model.X_ZZDocumentUpload;
 
 public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {
@@ -56,6 +57,11 @@ public class ColumnInfo<T> {
 	
 	public static <T> ColumnInfo<T> getColPostal(String title) {
 		return new ColumnInfo<T>(title, DataType.Postal);
+
+	}
+	
+	public static ColumnInfo<X_ZZDocumentUpload> getColDocUpload(String title) {
+		return new ColumnInfo<X_ZZDocumentUpload>(title, DataType.DocUploadDef);
 
 	}
 
