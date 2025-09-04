@@ -6,6 +6,7 @@ import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -15,7 +16,7 @@ public class OhasspProgram implements ISaveForm, IProgram {
 
 	public OhasspProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		setHealthSafetySkills(AnnexureInfo.getAnnexureInfoOneLine(AnnexureInfo.class, null,
+		setHealthSafetySkills(CetTvetOneLineInput.getAnnexureInfoOneLine(null,
 				List.of(ColumnInfo.getColLabel("Name of Programme"),
 						ColumnInfo.getColPositiveNumber("No of 18.1 Employed Learners"),
 						ColumnInfo.getColPostal(ProgramInput.PostalCodeLabel),

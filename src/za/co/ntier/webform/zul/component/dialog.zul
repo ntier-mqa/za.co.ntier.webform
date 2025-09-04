@@ -17,11 +17,10 @@
 			
 			<div style="display: flex; flex-direction: column; padding: 10px;overflow-y:auto;">
 				
-				<label value="The application form has been created." />
-				<a 
-	                style="text-decoration: underline; color: blue;"
-	                onClick="@command('openAppForm')">Open Form</a>
-	                
+				<label value="The application form has been summited." />
+				<label value="@load(('Your Application Reference No is:' += vmDialog.component.documentNo))" />
+				<label value="Please note this for future queries"></label>
+				    
 	             <label value="@load(vmDialog.moreInfo)" />
 			</div>
 			<div class="modal-footer" style="flex-grow:0">

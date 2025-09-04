@@ -31,7 +31,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250903L;
+	private static final long serialVersionUID = 20250904L;
 
     /** Standard Constructor */
     public X_ZZAnnexure (Properties ctx, int ZZAnnexure_ID, String trxName)
@@ -39,6 +39,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       super (ctx, ZZAnnexure_ID, trxName);
       /** if (ZZAnnexure_ID == 0)
         {
+			setName (null);
 			setZZAnnexure_ID (0);
         } */
     }
@@ -49,6 +50,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       super (ctx, ZZAnnexure_ID, trxName, virtualColumns);
       /** if (ZZAnnexure_ID == 0)
         {
+			setName (null);
 			setZZAnnexure_ID (0);
         } */
     }
@@ -59,6 +61,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       super (ctx, ZZAnnexure_UU, trxName);
       /** if (ZZAnnexure_UU == null)
         {
+			setName (null);
 			setZZAnnexure_ID (0);
         } */
     }
@@ -69,6 +72,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       super (ctx, ZZAnnexure_UU, trxName, virtualColumns);
       /** if (ZZAnnexure_UU == null)
         {
+			setName (null);
 			setZZAnnexure_ID (0);
         } */
     }
@@ -97,43 +101,24 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_ZZAnnexure[")
-        .append(get_ID()).append("]");
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
-	/** Set Line.
-		@param LineNo Line No
+	/** Set Name.
+		@param Name Alphanumeric identifier of the entity
 	*/
-	public void setLineNo (int LineNo)
+	public void setName (String Name)
 	{
-		set_Value (COLUMNNAME_LineNo, Integer.valueOf(LineNo));
+		set_Value (COLUMNNAME_Name, Name);
 	}
 
-	/** Get Line.
-		@return Line No
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
 	  */
-	public int getLineNo()
+	public String getName()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_LineNo);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Title.
-		@param Title Name this entity is referred to as
-	*/
-	public void setTitle (String Title)
-	{
-		set_Value (COLUMNNAME_Title, Title);
-	}
-
-	/** Get Title.
-		@return Name this entity is referred to as
-	  */
-	public String getTitle()
-	{
-		return (String)get_Value(COLUMNNAME_Title);
+		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Annexure Definition.
@@ -172,246 +157,104 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 		return (String)get_Value(COLUMNNAME_ZZAnnexure_UU);
 	}
 
-	/** Number Of Beneficiaries Applying For = Beneficiaries */
-	public static final String ZZFIRST_NumberOfBeneficiariesApplyingFor = "Beneficiaries";
-	/** Discipline Applying For = Discipline */
-	public static final String ZZFIRST_DisciplineApplyingFor = "Discipline";
-	/** Programme Applying For = Programme */
-	public static final String ZZFIRST_ProgrammeApplyingFor = "Programme";
-	/** Total Number Of Beneficiaries Applying For = Total Number Beneficiaries */
-	public static final String ZZFIRST_TotalNumberOfBeneficiariesApplyingFor = "Total Number Beneficiaries";
-	/** Set First Column.
-		@param ZZFirst First Column
+	/** Set Number Of Beneficiaries Applying.
+		@param ZZBeneficiaries Number Of Beneficiaries Applying For
 	*/
-	public void setZZFirst (String ZZFirst)
+	public void setZZBeneficiaries (int ZZBeneficiaries)
 	{
-
-		set_Value (COLUMNNAME_ZZFirst, ZZFirst);
+		set_Value (COLUMNNAME_ZZBeneficiaries, Integer.valueOf(ZZBeneficiaries));
 	}
 
-	/** Get First Column.
-		@return First Column	  */
-	public String getZZFirst()
-	{
-		return (String)get_Value(COLUMNNAME_ZZFirst);
-	}
-
-	/** Number of learners = Learners */
-	public static final String ZZFIRSTSUBCOLUMN_NumberOfLearners = "Learners";
-	/** Number of learners applied for = Learners Applied */
-	public static final String ZZFIRSTSUBCOLUMN_NumberOfLearnersAppliedFor = "Learners Applied";
-	/** Number of lecturers = Lecturers */
-	public static final String ZZFIRSTSUBCOLUMN_NumberOfLecturers = "Lecturers";
-	/** Number of managers = Managers */
-	public static final String ZZFIRSTSUBCOLUMN_NumberOfManagers = "Managers";
-	/** Requested Programme = Programme */
-	public static final String ZZFIRSTSUBCOLUMN_RequestedProgramme = "Programme";
-	/** Field of Study = Study */
-	public static final String ZZFIRSTSUBCOLUMN_FieldOfStudy = "Study";
-	/** Set First Subcolumn.
-		@param ZZFirstSubcolumn First Subcolumn
-	*/
-	public void setZZFirstSubcolumn (String ZZFirstSubcolumn)
-	{
-
-		set_Value (COLUMNNAME_ZZFirstSubcolumn, ZZFirstSubcolumn);
-	}
-
-	/** Get First Subcolumn.
-		@return First Subcolumn	  */
-	public String getZZFirstSubcolumn()
-	{
-		return (String)get_Value(COLUMNNAME_ZZFirstSubcolumn);
-	}
-
-	/** Number Of Beneficiaries Applying For = Beneficiaries */
-	public static final String ZZFOURTH_NumberOfBeneficiariesApplyingFor = "Beneficiaries";
-	/** Discipline Applying For = Discipline */
-	public static final String ZZFOURTH_DisciplineApplyingFor = "Discipline";
-	/** Programme Applying For = Programme */
-	public static final String ZZFOURTH_ProgrammeApplyingFor = "Programme";
-	/** Total Number Of Beneficiaries Applying For = Total Number Beneficiaries */
-	public static final String ZZFOURTH_TotalNumberOfBeneficiariesApplyingFor = "Total Number Beneficiaries";
-	/** Set Fourth Column.
-		@param ZZFourth Fourth Column
-	*/
-	public void setZZFourth (String ZZFourth)
-	{
-
-		set_Value (COLUMNNAME_ZZFourth, ZZFourth);
-	}
-
-	/** Get Fourth Column.
-		@return Fourth Column	  */
-	public String getZZFourth()
-	{
-		return (String)get_Value(COLUMNNAME_ZZFourth);
-	}
-
-	/** Number of learners = Learners */
-	public static final String ZZFOURTHSUBCOLUMN_NumberOfLearners = "Learners";
-	/** Number of learners applied for = Learners Applied */
-	public static final String ZZFOURTHSUBCOLUMN_NumberOfLearnersAppliedFor = "Learners Applied";
-	/** Number of lecturers = Lecturers */
-	public static final String ZZFOURTHSUBCOLUMN_NumberOfLecturers = "Lecturers";
-	/** Number of managers = Managers */
-	public static final String ZZFOURTHSUBCOLUMN_NumberOfManagers = "Managers";
-	/** Requested Programme = Programme */
-	public static final String ZZFOURTHSUBCOLUMN_RequestedProgramme = "Programme";
-	/** Field of Study = Study */
-	public static final String ZZFOURTHSUBCOLUMN_FieldOfStudy = "Study";
-	/** Set Fourth Subcolumn.
-		@param ZZFourthSubcolumn Fourth Subcolumn
-	*/
-	public void setZZFourthSubcolumn (String ZZFourthSubcolumn)
-	{
-
-		set_Value (COLUMNNAME_ZZFourthSubcolumn, ZZFourthSubcolumn);
-	}
-
-	/** Get Fourth Subcolumn.
-		@return Fourth Subcolumn	  */
-	public String getZZFourthSubcolumn()
-	{
-		return (String)get_Value(COLUMNNAME_ZZFourthSubcolumn);
-	}
-
-	/** Set Header.
-		@param ZZHeader Header Annexure
-	*/
-	public void setZZHeader (String ZZHeader)
-	{
-		set_Value (COLUMNNAME_ZZHeader, ZZHeader);
-	}
-
-	/** Get Header.
-		@return Header Annexure
+	/** Get Number Of Beneficiaries Applying.
+		@return Number Of Beneficiaries Applying For
 	  */
-	public String getZZHeader()
+	public int getZZBeneficiaries()
 	{
-		return (String)get_Value(COLUMNNAME_ZZHeader);
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZBeneficiaries);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
-	/** Number Of Beneficiaries Applying For = Beneficiaries */
-	public static final String ZZSECOND_NumberOfBeneficiariesApplyingFor = "Beneficiaries";
-	/** Discipline Applying For = Discipline */
-	public static final String ZZSECOND_DisciplineApplyingFor = "Discipline";
-	/** Programme Applying For = Programme */
-	public static final String ZZSECOND_ProgrammeApplyingFor = "Programme";
-	/** Total Number Of Beneficiaries Applying For = Total Number Beneficiaries */
-	public static final String ZZSECOND_TotalNumberOfBeneficiariesApplyingFor = "Total Number Beneficiaries";
-	/** Set Second Column.
-		@param ZZSecond Second Column
+	/** Set Discipline Applying.
+		@param ZZDiscipline Number of beneficiaries applying for
 	*/
-	public void setZZSecond (String ZZSecond)
+	public void setZZDiscipline (int ZZDiscipline)
 	{
-
-		set_Value (COLUMNNAME_ZZSecond, ZZSecond);
+		set_Value (COLUMNNAME_ZZDiscipline, Integer.valueOf(ZZDiscipline));
 	}
 
-	/** Get Second Column.
-		@return Second Column	  */
-	public String getZZSecond()
+	/** Get Discipline Applying.
+		@return Number of beneficiaries applying for
+	  */
+	public int getZZDiscipline()
 	{
-		return (String)get_Value(COLUMNNAME_ZZSecond);
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZDiscipline);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
-	/** Number of learners = Learners */
-	public static final String ZZSECONDSUBCOLUMN_NumberOfLearners = "Learners";
-	/** Number of learners applied for = Learners Applied */
-	public static final String ZZSECONDSUBCOLUMN_NumberOfLearnersAppliedFor = "Learners Applied";
-	/** Number of lecturers = Lecturers */
-	public static final String ZZSECONDSUBCOLUMN_NumberOfLecturers = "Lecturers";
-	/** Number of managers = Managers */
-	public static final String ZZSECONDSUBCOLUMN_NumberOfManagers = "Managers";
-	/** Requested Programme = Programme */
-	public static final String ZZSECONDSUBCOLUMN_RequestedProgramme = "Programme";
-	/** Field of Study = Study */
-	public static final String ZZSECONDSUBCOLUMN_FieldOfStudy = "Study";
-	/** Set Second Subcolumn.
-		@param ZZSecondSubcolumn Second Subcolumn
+	/** Set Programme Applying.
+		@param ZZProgramme Programme Applying For
 	*/
-	public void setZZSecondSubcolumn (String ZZSecondSubcolumn)
+	public void setZZProgramme (int ZZProgramme)
 	{
-
-		set_Value (COLUMNNAME_ZZSecondSubcolumn, ZZSecondSubcolumn);
+		set_Value (COLUMNNAME_ZZProgramme, Integer.valueOf(ZZProgramme));
 	}
 
-	/** Get Second Subcolumn.
-		@return Second Subcolumn	  */
-	public String getZZSecondSubcolumn()
+	/** Get Programme Applying.
+		@return Programme Applying For
+	  */
+	public int getZZProgramme()
 	{
-		return (String)get_Value(COLUMNNAME_ZZSecondSubcolumn);
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZProgramme);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
-	/** Number Of Beneficiaries Applying For = Beneficiaries */
-	public static final String ZZTHIRD_NumberOfBeneficiariesApplyingFor = "Beneficiaries";
-	/** Discipline Applying For = Discipline */
-	public static final String ZZTHIRD_DisciplineApplyingFor = "Discipline";
-	/** Programme Applying For = Programme */
-	public static final String ZZTHIRD_ProgrammeApplyingFor = "Programme";
-	/** Total Number Of Beneficiaries Applying For = Total Number Beneficiaries */
-	public static final String ZZTHIRD_TotalNumberOfBeneficiariesApplyingFor = "Total Number Beneficiaries";
-	/** Set Third Column.
-		@param ZZThird Third Column
+	/** Set Total Number Beneficiaries.
+		@param ZZTotalBeneficiaries Total Number of beneficiaries applying for
 	*/
-	public void setZZThird (String ZZThird)
+	public void setZZTotalBeneficiaries (int ZZTotalBeneficiaries)
 	{
-
-		set_Value (COLUMNNAME_ZZThird, ZZThird);
+		set_Value (COLUMNNAME_ZZTotalBeneficiaries, Integer.valueOf(ZZTotalBeneficiaries));
 	}
 
-	/** Get Third Column.
-		@return Third Column	  */
-	public String getZZThird()
+	/** Get Total Number Beneficiaries.
+		@return Total Number of beneficiaries applying for
+	  */
+	public int getZZTotalBeneficiaries()
 	{
-		return (String)get_Value(COLUMNNAME_ZZThird);
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZTotalBeneficiaries);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
-	/** Number of learners = Learners */
-	public static final String ZZTHIRDSUBCOLUMN_NumberOfLearners = "Learners";
-	/** Number of learners applied for = Learners Applied */
-	public static final String ZZTHIRDSUBCOLUMN_NumberOfLearnersAppliedFor = "Learners Applied";
-	/** Number of lecturers = Lecturers */
-	public static final String ZZTHIRDSUBCOLUMN_NumberOfLecturers = "Lecturers";
-	/** Number of managers = Managers */
-	public static final String ZZTHIRDSUBCOLUMN_NumberOfManagers = "Managers";
-	/** Requested Programme = Programme */
-	public static final String ZZTHIRDSUBCOLUMN_RequestedProgramme = "Programme";
-	/** Field of Study = Study */
-	public static final String ZZTHIRDSUBCOLUMN_FieldOfStudy = "Study";
-	/** Set Third Subcolumn.
-		@param ZZThirdSubcolumn Third Subcolumn
+	public I_ZZ_Application_Form getZZ_Application_Form() throws RuntimeException
+	{
+		return (I_ZZ_Application_Form)MTable.get(getCtx(), I_ZZ_Application_Form.Table_ID)
+			.getPO(getZZ_Application_Form_ID(), get_TrxName());
+	}
+
+	/** Set Application Form.
+		@param ZZ_Application_Form_ID Application Form
 	*/
-	public void setZZThirdSubcolumn (String ZZThirdSubcolumn)
+	public void setZZ_Application_Form_ID (int ZZ_Application_Form_ID)
 	{
-
-		set_Value (COLUMNNAME_ZZThirdSubcolumn, ZZThirdSubcolumn);
-	}
-
-	/** Get Third Subcolumn.
-		@return Third Subcolumn	  */
-	public String getZZThirdSubcolumn()
-	{
-		return (String)get_Value(COLUMNNAME_ZZThirdSubcolumn);
-	}
-
-	/** Set Program Master Data.
-		@param ZZ_Program_Master_Data_ID Program Master Data
-	*/
-	public void setZZ_Program_Master_Data_ID (int ZZ_Program_Master_Data_ID)
-	{
-		if (ZZ_Program_Master_Data_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_ZZ_Program_Master_Data_ID, null);
+		if (ZZ_Application_Form_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_ZZ_Application_Form_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_ZZ_Program_Master_Data_ID, Integer.valueOf(ZZ_Program_Master_Data_ID));
+			set_ValueNoCheck (COLUMNNAME_ZZ_Application_Form_ID, Integer.valueOf(ZZ_Application_Form_ID));
 	}
 
-	/** Get Program Master Data.
-		@return Program Master Data	  */
-	public int getZZ_Program_Master_Data_ID()
+	/** Get Application Form.
+		@return Application Form	  */
+	public int getZZ_Application_Form_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_Program_Master_Data_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_Application_Form_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

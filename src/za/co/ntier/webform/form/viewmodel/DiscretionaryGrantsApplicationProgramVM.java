@@ -68,6 +68,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	private ProgramType programType;
 
+	private String documentNo;
+
 	@Command
 	public void cancelApp() {
 
@@ -347,6 +349,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		recordId = applicationForm.getZZ_Application_Form_ID();
 		tableId = applicationForm.get_Table_ID();
+		setDocumentNo(applicationForm.getDocumentNo());
 		
 		showDialog();
 
@@ -359,7 +362,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		// used in ZUL files can be found.
 		String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");
 		Map<String, Object> args = new HashMap<>();
-		args.put(ComponentVMWrapper.ComponentKey, new Dialog("Successfully submitted the application form", tableId, recordId, true));
+		args.put(ComponentVMWrapper.ComponentKey, new Dialog("Successfully submitted the application form", tableId, recordId, documentNo, true));
 		
 		Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
 		try {
@@ -382,5 +385,19 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setProgram(IProgram program) {
 		this.program = program;
+	}
+
+	/**
+	 * @return the documentNo
+	 */
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
+	/**
+	 * @param documentNo the documentNo to set
+	 */
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
 	}
 }
