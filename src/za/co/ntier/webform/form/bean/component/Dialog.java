@@ -5,11 +5,13 @@ public class Dialog {
 	private int recordId;
 	private boolean visible = false;
 	private String title;
-	public Dialog(String title, int tableId, int recordId, boolean visible) {
+	private String documentNo;
+	public Dialog(String title, int tableId, int recordId, String documentNo, boolean visible) {
 		this.tableId = tableId;
 		this.recordId = recordId;
 		this.visible = visible;
 		this.title = title;
+		this.setDocumentNo(documentNo);
 	}
 	/**
 	 * @return the tableId
@@ -58,5 +60,17 @@ public class Dialog {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	/**
+	 * @return the documentNo
+	 */
+	public String getDocumentNo() {
+		return documentNo;
+	}
+	/**
+	 * @param documentNo the documentNo to set
+	 */
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
 	}
 }

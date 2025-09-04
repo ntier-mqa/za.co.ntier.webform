@@ -21,11 +21,11 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.model.*;
 
-/** Generated Model for ZZAnnexure
+/** Generated Model for ZZDocumentUploadFile
  *  @author iDempiere (generated)
  *  @version Release 12 - $Id$ */
-@org.adempiere.base.Model(table="ZZAnnexure")
-public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
+@org.adempiere.base.Model(table="ZZDocumentUploadFile")
+public class X_ZZDocumentUploadFile extends PO implements I_ZZDocumentUploadFile, I_Persistent
 {
 
 	/**
@@ -34,51 +34,51 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	private static final long serialVersionUID = 20250904L;
 
     /** Standard Constructor */
-    public X_ZZAnnexure (Properties ctx, int ZZAnnexure_ID, String trxName)
+    public X_ZZDocumentUploadFile (Properties ctx, int ZZDocumentUploadFile_ID, String trxName)
     {
-      super (ctx, ZZAnnexure_ID, trxName);
-      /** if (ZZAnnexure_ID == 0)
+      super (ctx, ZZDocumentUploadFile_ID, trxName);
+      /** if (ZZDocumentUploadFile_ID == 0)
         {
 			setName (null);
-			setZZAnnexure_ID (0);
+			setZZDocumentUploadFile_ID (0);
         } */
     }
 
     /** Standard Constructor */
-    public X_ZZAnnexure (Properties ctx, int ZZAnnexure_ID, String trxName, String ... virtualColumns)
+    public X_ZZDocumentUploadFile (Properties ctx, int ZZDocumentUploadFile_ID, String trxName, String ... virtualColumns)
     {
-      super (ctx, ZZAnnexure_ID, trxName, virtualColumns);
-      /** if (ZZAnnexure_ID == 0)
+      super (ctx, ZZDocumentUploadFile_ID, trxName, virtualColumns);
+      /** if (ZZDocumentUploadFile_ID == 0)
         {
 			setName (null);
-			setZZAnnexure_ID (0);
+			setZZDocumentUploadFile_ID (0);
         } */
     }
 
     /** Standard Constructor */
-    public X_ZZAnnexure (Properties ctx, String ZZAnnexure_UU, String trxName)
+    public X_ZZDocumentUploadFile (Properties ctx, String ZZDocumentUploadFile_UU, String trxName)
     {
-      super (ctx, ZZAnnexure_UU, trxName);
-      /** if (ZZAnnexure_UU == null)
+      super (ctx, ZZDocumentUploadFile_UU, trxName);
+      /** if (ZZDocumentUploadFile_UU == null)
         {
 			setName (null);
-			setZZAnnexure_ID (0);
+			setZZDocumentUploadFile_ID (0);
         } */
     }
 
     /** Standard Constructor */
-    public X_ZZAnnexure (Properties ctx, String ZZAnnexure_UU, String trxName, String ... virtualColumns)
+    public X_ZZDocumentUploadFile (Properties ctx, String ZZDocumentUploadFile_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, ZZAnnexure_UU, trxName, virtualColumns);
-      /** if (ZZAnnexure_UU == null)
+      super (ctx, ZZDocumentUploadFile_UU, trxName, virtualColumns);
+      /** if (ZZDocumentUploadFile_UU == null)
         {
 			setName (null);
-			setZZAnnexure_ID (0);
+			setZZDocumentUploadFile_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_ZZAnnexure (Properties ctx, ResultSet rs, String trxName)
+    public X_ZZDocumentUploadFile (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -100,7 +100,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 
     public String toString()
     {
-      StringBuilder sb = new StringBuilder ("X_ZZAnnexure[")
+      StringBuilder sb = new StringBuilder ("X_ZZDocumentUploadFile[")
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
@@ -121,116 +121,83 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set Annexure Definition.
-		@param ZZAnnexure_ID Annexure Definition
+	/** Set Document Upload File.
+		@param ZZDocumentUploadFile_ID Document Upload File
 	*/
-	public void setZZAnnexure_ID (int ZZAnnexure_ID)
+	public void setZZDocumentUploadFile_ID (int ZZDocumentUploadFile_ID)
 	{
-		if (ZZAnnexure_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_ZZAnnexure_ID, null);
+		if (ZZDocumentUploadFile_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_ZZDocumentUploadFile_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_ZZAnnexure_ID, Integer.valueOf(ZZAnnexure_ID));
+			set_ValueNoCheck (COLUMNNAME_ZZDocumentUploadFile_ID, Integer.valueOf(ZZDocumentUploadFile_ID));
 	}
 
-	/** Get Annexure Definition.
-		@return Annexure Definition	  */
-	public int getZZAnnexure_ID()
+	/** Get Document Upload File.
+		@return Document Upload File	  */
+	public int getZZDocumentUploadFile_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZAnnexure_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZDocumentUploadFile_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set ZZAnnexure_UU.
-		@param ZZAnnexure_UU ZZAnnexure_UU
+	/** Set ZZDocumentUploadFile_UU.
+		@param ZZDocumentUploadFile_UU ZZDocumentUploadFile_UU
 	*/
-	public void setZZAnnexure_UU (String ZZAnnexure_UU)
+	public void setZZDocumentUploadFile_UU (String ZZDocumentUploadFile_UU)
 	{
-		set_Value (COLUMNNAME_ZZAnnexure_UU, ZZAnnexure_UU);
+		set_Value (COLUMNNAME_ZZDocumentUploadFile_UU, ZZDocumentUploadFile_UU);
 	}
 
-	/** Get ZZAnnexure_UU.
-		@return ZZAnnexure_UU	  */
-	public String getZZAnnexure_UU()
+	/** Get ZZDocumentUploadFile_UU.
+		@return ZZDocumentUploadFile_UU	  */
+	public String getZZDocumentUploadFile_UU()
 	{
-		return (String)get_Value(COLUMNNAME_ZZAnnexure_UU);
+		return (String)get_Value(COLUMNNAME_ZZDocumentUploadFile_UU);
 	}
 
-	/** Set Number Of Beneficiaries Applying.
-		@param ZZBeneficiaries Number Of Beneficiaries Applying For
+	public I_ZZDocumentUpload getZZDocumentUpload() throws RuntimeException
+	{
+		return (I_ZZDocumentUpload)MTable.get(getCtx(), I_ZZDocumentUpload.Table_ID)
+			.getPO(getZZDocumentUpload_ID(), get_TrxName());
+	}
+
+	/** Set Document Upload.
+		@param ZZDocumentUpload_ID Document Upload
 	*/
-	public void setZZBeneficiaries (int ZZBeneficiaries)
+	public void setZZDocumentUpload_ID (int ZZDocumentUpload_ID)
 	{
-		set_Value (COLUMNNAME_ZZBeneficiaries, Integer.valueOf(ZZBeneficiaries));
+		if (ZZDocumentUpload_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_ZZDocumentUpload_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_ZZDocumentUpload_ID, Integer.valueOf(ZZDocumentUpload_ID));
 	}
 
-	/** Get Number Of Beneficiaries Applying.
-		@return Number Of Beneficiaries Applying For
+	/** Get Document Upload.
+		@return Document Upload	  */
+	public int getZZDocumentUpload_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZDocumentUpload_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Document Uploaded.
+		@param ZZDocumentUploaded Binary Of Document Upload
+	*/
+	public void setZZDocumentUploaded (byte[] ZZDocumentUploaded)
+	{
+		set_Value (COLUMNNAME_ZZDocumentUploaded, ZZDocumentUploaded);
+	}
+
+	/** Get Document Uploaded.
+		@return Binary Of Document Upload
 	  */
-	public int getZZBeneficiaries()
+	public byte[] getZZDocumentUploaded()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZBeneficiaries);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Discipline Applying.
-		@param ZZDiscipline Number of beneficiaries applying for
-	*/
-	public void setZZDiscipline (int ZZDiscipline)
-	{
-		set_Value (COLUMNNAME_ZZDiscipline, Integer.valueOf(ZZDiscipline));
-	}
-
-	/** Get Discipline Applying.
-		@return Number of beneficiaries applying for
-	  */
-	public int getZZDiscipline()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZDiscipline);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Programme Applying.
-		@param ZZProgramme Programme Applying For
-	*/
-	public void setZZProgramme (int ZZProgramme)
-	{
-		set_Value (COLUMNNAME_ZZProgramme, Integer.valueOf(ZZProgramme));
-	}
-
-	/** Get Programme Applying.
-		@return Programme Applying For
-	  */
-	public int getZZProgramme()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZProgramme);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Total Number Beneficiaries.
-		@param ZZTotalBeneficiaries Total Number of beneficiaries applying for
-	*/
-	public void setZZTotalBeneficiaries (int ZZTotalBeneficiaries)
-	{
-		set_Value (COLUMNNAME_ZZTotalBeneficiaries, Integer.valueOf(ZZTotalBeneficiaries));
-	}
-
-	/** Get Total Number Beneficiaries.
-		@return Total Number of beneficiaries applying for
-	  */
-	public int getZZTotalBeneficiaries()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZTotalBeneficiaries);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (byte[])get_Value(COLUMNNAME_ZZDocumentUploaded);
 	}
 
 	public I_ZZ_Application_Form getZZ_Application_Form() throws RuntimeException

@@ -21,18 +21,18 @@ import java.sql.Timestamp;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for ZZAnnexure
+/** Generated Interface for ZZSubAnnex
  *  @author iDempiere (generated) 
  *  @version Release 12
  */
 @SuppressWarnings("all")
-public interface I_ZZAnnexure 
+public interface I_ZZSubAnnex 
 {
 
-    /** TableName=ZZAnnexure */
-    public static final String Table_Name = "ZZAnnexure";
+    /** TableName=ZZSubAnnex */
+    public static final String Table_Name = "ZZSubAnnex";
 
-    /** AD_Table_ID=1000059 */
+    /** AD_Table_ID=1000060 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -93,19 +93,6 @@ public interface I_ZZAnnexure
 	  */
 	public boolean isActive();
 
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
-
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
-
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
-
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -131,66 +118,61 @@ public interface I_ZZAnnexure
 	/** Get Annexure Definition	  */
 	public int getZZAnnexure_ID();
 
-    /** Column name ZZAnnexure_UU */
-    public static final String COLUMNNAME_ZZAnnexure_UU = "ZZAnnexure_UU";
+	public I_ZZAnnexure getZZAnnexure() throws RuntimeException;
 
-	/** Set ZZAnnexure_UU	  */
-	public void setZZAnnexure_UU (String ZZAnnexure_UU);
+    /** Column name ZZFieldStudy */
+    public static final String COLUMNNAME_ZZFieldStudy = "ZZFieldStudy";
 
-	/** Get ZZAnnexure_UU	  */
-	public String getZZAnnexure_UU();
+	/** Set Field Of Study	  */
+	public void setZZFieldStudy (int ZZFieldStudy);
 
-    /** Column name ZZBeneficiaries */
-    public static final String COLUMNNAME_ZZBeneficiaries = "ZZBeneficiaries";
+	/** Get Field Of Study	  */
+	public int getZZFieldStudy();
 
-	/** Set Number Of Beneficiaries Applying.
-	  * Number Of Beneficiaries Applying For
-	  */
-	public void setZZBeneficiaries (int ZZBeneficiaries);
+    /** Column name ZZLearners */
+    public static final String COLUMNNAME_ZZLearners = "ZZLearners";
 
-	/** Get Number Of Beneficiaries Applying.
-	  * Number Of Beneficiaries Applying For
-	  */
-	public int getZZBeneficiaries();
+	/** Set Number Of learners	  */
+	public void setZZLearners (int ZZLearners);
 
-    /** Column name ZZDiscipline */
-    public static final String COLUMNNAME_ZZDiscipline = "ZZDiscipline";
+	/** Get Number Of learners	  */
+	public int getZZLearners();
 
-	/** Set Discipline Applying.
-	  * Number of beneficiaries applying for
-	  */
-	public void setZZDiscipline (int ZZDiscipline);
+    /** Column name ZZManagers */
+    public static final String COLUMNNAME_ZZManagers = "ZZManagers";
 
-	/** Get Discipline Applying.
-	  * Number of beneficiaries applying for
-	  */
-	public int getZZDiscipline();
+	/** Set Number Of Managers	  */
+	public void setZZManagers (int ZZManagers);
 
-    /** Column name ZZProgramme */
-    public static final String COLUMNNAME_ZZProgramme = "ZZProgramme";
+	/** Get Number Of Managers	  */
+	public int getZZManagers();
 
-	/** Set Programme Applying.
-	  * Programme Applying For
-	  */
-	public void setZZProgramme (int ZZProgramme);
+    /** Column name ZZRequestedProgramme */
+    public static final String COLUMNNAME_ZZRequestedProgramme = "ZZRequestedProgramme";
 
-	/** Get Programme Applying.
-	  * Programme Applying For
-	  */
-	public int getZZProgramme();
+	/** Set Requested Programme	  */
+	public void setZZRequestedProgramme (int ZZRequestedProgramme);
 
-    /** Column name ZZTotalBeneficiaries */
-    public static final String COLUMNNAME_ZZTotalBeneficiaries = "ZZTotalBeneficiaries";
+	/** Get Requested Programme	  */
+	public int getZZRequestedProgramme();
 
-	/** Set Total Number Beneficiaries.
-	  * Total Number of beneficiaries applying for
-	  */
-	public void setZZTotalBeneficiaries (int ZZTotalBeneficiaries);
+    /** Column name ZZSubAnnex_ID */
+    public static final String COLUMNNAME_ZZSubAnnex_ID = "ZZSubAnnex_ID";
 
-	/** Get Total Number Beneficiaries.
-	  * Total Number of beneficiaries applying for
-	  */
-	public int getZZTotalBeneficiaries();
+	/** Set Sub Annex	  */
+	public void setZZSubAnnex_ID (int ZZSubAnnex_ID);
+
+	/** Get Sub Annex	  */
+	public int getZZSubAnnex_ID();
+
+    /** Column name ZZSubAnnex_UU */
+    public static final String COLUMNNAME_ZZSubAnnex_UU = "ZZSubAnnex_UU";
+
+	/** Set ZZSubAnnex_UU	  */
+	public void setZZSubAnnex_UU (String ZZSubAnnex_UU);
+
+	/** Get ZZSubAnnex_UU	  */
+	public String getZZSubAnnex_UU();
 
     /** Column name ZZ_Application_Form_ID */
     public static final String COLUMNNAME_ZZ_Application_Form_ID = "ZZ_Application_Form_ID";
@@ -202,4 +184,15 @@ public interface I_ZZAnnexure
 	public int getZZ_Application_Form_ID();
 
 	public I_ZZ_Application_Form getZZ_Application_Form() throws RuntimeException;
+
+    /** Column name ZZ_Trade_ID */
+    public static final String COLUMNNAME_ZZ_Trade_ID = "ZZ_Trade_ID";
+
+	/** Set Trade	  */
+	public void setZZ_Trade_ID (int ZZ_Trade_ID);
+
+	/** Get Trade	  */
+	public int getZZ_Trade_ID();
+
+	public I_ZZ_Trade getZZ_Trade() throws RuntimeException;
 }

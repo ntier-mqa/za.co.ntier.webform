@@ -98,43 +98,6 @@ public class AnnexureInfo implements ISaveForm{
 		return annexureInfo;
 	}
 
-	/**
-	 * for CetTvet sub, show total but not row header
-	 *
-	 * @param sectionHeader
-	 * @param columnInfos
-	 * @return
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws NoSuchMethodException
-	 */
-	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
-			List<ColumnInfo<?>> columnInfos) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return AnnexureInfo.getAnnexureInfoOneLine(clazz, sectionHeader, columnInfos, null, true, null);
-	}
-
-	/**
-	 * for CetTvet master, show row title but not total
-	 *
-	 * @param sectionHeader
-	 * @param columnInfos
-	 * @param rowTitle
-	 * @return
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws NoSuchMethodException
-	 */
-	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
-			List<ColumnInfo<?>> columnInfos, String rowTitle) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return AnnexureInfo.getAnnexureInfoOneLine(clazz, sectionHeader, columnInfos, rowTitle, false, null);
-	}
-
 	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
 			List<ColumnInfo<?>> columnInfos, String rowTitle, boolean isShowTotal, List<String> twoTitleValue)
 			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
@@ -154,12 +117,6 @@ public class AnnexureInfo implements ISaveForm{
 		annexureInfo.getRows().add(fistRow);
 		annexureInfo.setSectionHeader(sectionHeader);
 		return annexureInfo;
-	}
-
-	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
-			List<ColumnInfo<?>> columnInfos, String rowTitle, List<String> twoTitleValue) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return getAnnexureInfoOneLine(clazz, sectionHeader, columnInfos, rowTitle, false, twoTitleValue);
 	}
 
 	private String tableTitle;

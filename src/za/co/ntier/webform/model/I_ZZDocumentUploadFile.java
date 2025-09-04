@@ -21,18 +21,18 @@ import java.sql.Timestamp;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for ZZAnnexure
+/** Generated Interface for ZZDocumentUploadFile
  *  @author iDempiere (generated) 
  *  @version Release 12
  */
 @SuppressWarnings("all")
-public interface I_ZZAnnexure 
+public interface I_ZZDocumentUploadFile 
 {
 
-    /** TableName=ZZAnnexure */
-    public static final String Table_Name = "ZZAnnexure";
+    /** TableName=ZZDocumentUploadFile */
+    public static final String Table_Name = "ZZDocumentUploadFile";
 
-    /** AD_Table_ID=1000059 */
+    /** AD_Table_ID=1000061 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -122,75 +122,47 @@ public interface I_ZZAnnexure
 	  */
 	public int getUpdatedBy();
 
-    /** Column name ZZAnnexure_ID */
-    public static final String COLUMNNAME_ZZAnnexure_ID = "ZZAnnexure_ID";
+    /** Column name ZZDocumentUploadFile_ID */
+    public static final String COLUMNNAME_ZZDocumentUploadFile_ID = "ZZDocumentUploadFile_ID";
 
-	/** Set Annexure Definition	  */
-	public void setZZAnnexure_ID (int ZZAnnexure_ID);
+	/** Set Document Upload File	  */
+	public void setZZDocumentUploadFile_ID (int ZZDocumentUploadFile_ID);
 
-	/** Get Annexure Definition	  */
-	public int getZZAnnexure_ID();
+	/** Get Document Upload File	  */
+	public int getZZDocumentUploadFile_ID();
 
-    /** Column name ZZAnnexure_UU */
-    public static final String COLUMNNAME_ZZAnnexure_UU = "ZZAnnexure_UU";
+    /** Column name ZZDocumentUploadFile_UU */
+    public static final String COLUMNNAME_ZZDocumentUploadFile_UU = "ZZDocumentUploadFile_UU";
 
-	/** Set ZZAnnexure_UU	  */
-	public void setZZAnnexure_UU (String ZZAnnexure_UU);
+	/** Set ZZDocumentUploadFile_UU	  */
+	public void setZZDocumentUploadFile_UU (String ZZDocumentUploadFile_UU);
 
-	/** Get ZZAnnexure_UU	  */
-	public String getZZAnnexure_UU();
+	/** Get ZZDocumentUploadFile_UU	  */
+	public String getZZDocumentUploadFile_UU();
 
-    /** Column name ZZBeneficiaries */
-    public static final String COLUMNNAME_ZZBeneficiaries = "ZZBeneficiaries";
+    /** Column name ZZDocumentUpload_ID */
+    public static final String COLUMNNAME_ZZDocumentUpload_ID = "ZZDocumentUpload_ID";
 
-	/** Set Number Of Beneficiaries Applying.
-	  * Number Of Beneficiaries Applying For
+	/** Set Document Upload	  */
+	public void setZZDocumentUpload_ID (int ZZDocumentUpload_ID);
+
+	/** Get Document Upload	  */
+	public int getZZDocumentUpload_ID();
+
+	public I_ZZDocumentUpload getZZDocumentUpload() throws RuntimeException;
+
+    /** Column name ZZDocumentUploaded */
+    public static final String COLUMNNAME_ZZDocumentUploaded = "ZZDocumentUploaded";
+
+	/** Set Document Uploaded.
+	  * Binary Of Document Upload
 	  */
-	public void setZZBeneficiaries (int ZZBeneficiaries);
+	public void setZZDocumentUploaded (byte[] ZZDocumentUploaded);
 
-	/** Get Number Of Beneficiaries Applying.
-	  * Number Of Beneficiaries Applying For
+	/** Get Document Uploaded.
+	  * Binary Of Document Upload
 	  */
-	public int getZZBeneficiaries();
-
-    /** Column name ZZDiscipline */
-    public static final String COLUMNNAME_ZZDiscipline = "ZZDiscipline";
-
-	/** Set Discipline Applying.
-	  * Number of beneficiaries applying for
-	  */
-	public void setZZDiscipline (int ZZDiscipline);
-
-	/** Get Discipline Applying.
-	  * Number of beneficiaries applying for
-	  */
-	public int getZZDiscipline();
-
-    /** Column name ZZProgramme */
-    public static final String COLUMNNAME_ZZProgramme = "ZZProgramme";
-
-	/** Set Programme Applying.
-	  * Programme Applying For
-	  */
-	public void setZZProgramme (int ZZProgramme);
-
-	/** Get Programme Applying.
-	  * Programme Applying For
-	  */
-	public int getZZProgramme();
-
-    /** Column name ZZTotalBeneficiaries */
-    public static final String COLUMNNAME_ZZTotalBeneficiaries = "ZZTotalBeneficiaries";
-
-	/** Set Total Number Beneficiaries.
-	  * Total Number of beneficiaries applying for
-	  */
-	public void setZZTotalBeneficiaries (int ZZTotalBeneficiaries);
-
-	/** Get Total Number Beneficiaries.
-	  * Total Number of beneficiaries applying for
-	  */
-	public int getZZTotalBeneficiaries();
+	public byte[] getZZDocumentUploaded();
 
     /** Column name ZZ_Application_Form_ID */
     public static final String COLUMNNAME_ZZ_Application_Form_ID = "ZZ_Application_Form_ID";

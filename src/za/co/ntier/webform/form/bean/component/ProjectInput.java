@@ -31,8 +31,7 @@ public class ProjectInput extends AnnexureInfo {
 		columnInfos.add(ColumnInfo.getColPostal(ProgramInput.PostalCodeLabel));
 		columnInfos.add(
 				ColumnInfo.getColArea(ProgramInput.AreaTitle, MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList()));
-
-		return AnnexureInfo.getAnnexureInfoOneLine(ProjectInput.class, secctionTitle, columnInfos, null);
+		return AnnexureInfo.getAnnexureInfoOneLine(ProjectInput.class, secctionTitle, columnInfos, null, false, null);
 
 	}
 }
