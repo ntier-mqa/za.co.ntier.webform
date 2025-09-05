@@ -311,4 +311,19 @@ public class AnnexureInfo implements ISaveForm{
 
 		BindUtils.postNotifyChange(row.get(col), "fileName");
 	}
+
+	public static Integer getIntegerValue(Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, ColumnInfo<?> colInfo) {
+		
+		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
+			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
+			return cellData.getValue();
+		}
+		
+		return null;
+	}
+
+
+	public static Integer getIntegerValue(AnnexureInfo cetTvetOneLineInput, ColumnInfo<?> col) {
+		return AnnexureInfo.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
+	}
 }

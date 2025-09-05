@@ -19,11 +19,7 @@ package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZLearnersApplied
  *  @author iDempiere (generated)
@@ -109,6 +105,34 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
       return sb.toString();
     }
 
+	public org.compiere.model.I_C_City getC_City() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_City)MTable.get(getCtx(), org.compiere.model.I_C_City.Table_ID)
+			.getPO(getC_City_ID(), get_TrxName());
+	}
+
+	/** Set City.
+		@param C_City_ID City
+	*/
+	public void setC_City_ID (int C_City_ID)
+	{
+		if (C_City_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_City_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_City_ID, Integer.valueOf(C_City_ID));
+	}
+
+	/** Get City.
+		@return City
+	  */
+	public int getC_City_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_City_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/
@@ -123,6 +147,22 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set ZIP.
+		@param Postal Postal code
+	*/
+	public void setPostal (String Postal)
+	{
+		set_Value (COLUMNNAME_Postal, Postal);
+	}
+
+	/** Get ZIP.
+		@return Postal code
+	  */
+	public String getPostal()
+	{
+		return (String)get_Value(COLUMNNAME_Postal);
 	}
 
 	/** Set Learners Applied.

@@ -28,7 +28,7 @@ public class AetProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
-		CandidacyProgram.saveFormLearnership(trxName, applicationForm, aetLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership);
+		ProgramInput.saveFormLearnership(trxName, applicationForm, aetLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership);
 		
 	}
 

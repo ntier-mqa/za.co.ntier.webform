@@ -28,7 +28,7 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
+		ProjectInput.saveProjectInput(trxName, applicationForm, unemployed);
 		
 	}
 

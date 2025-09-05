@@ -5,14 +5,13 @@ import java.util.List;
 
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
-import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class ArtisanAidesProgram implements ISaveForm, IProgram {
-	private AnnexureInfo qualification;
-	private AnnexureInfo skill;
+	private ProjectInput qualification;
+	private ProjectInput skill;
 
 	public ArtisanAidesProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -31,34 +30,35 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	/**
 	 * @return the qualification
 	 */
-	public AnnexureInfo getQualification() {
+	public ProjectInput getQualification() {
 		return qualification;
 	}
 
 	/**
 	 * @return the skill
 	 */
-	public AnnexureInfo getSkill() {
+	public ProjectInput getSkill() {
 		return skill;
 	}
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
+		ProjectInput.saveProjectInput(trxName, applicationForm, qualification);
+		ProjectInput.saveProjectInput(trxName, applicationForm, skill);
 		
 	}
 
 	/**
 	 * @param qualification the qualification to set
 	 */
-	public void setQualification(AnnexureInfo qualification) {
+	public void setQualification(ProjectInput qualification) {
 		this.qualification = qualification;
 	}
 
 	/**
 	 * @param skill the skill to set
 	 */
-	public void setSkill(AnnexureInfo skill) {
+	public void setSkill(ProjectInput skill) {
 		this.skill = skill;
 	}
 

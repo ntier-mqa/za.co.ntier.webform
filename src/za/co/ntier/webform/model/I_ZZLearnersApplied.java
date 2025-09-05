@@ -18,8 +18,7 @@ package za.co.ntier.webform.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import org.compiere.model.MTable;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ZZLearnersApplied
@@ -65,6 +64,21 @@ public interface I_ZZLearnersApplied
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_City_ID */
+    public static final String COLUMNNAME_C_City_ID = "C_City_ID";
+
+	/** Set City.
+	  * City
+	  */
+	public void setC_City_ID (int C_City_ID);
+
+	/** Get City.
+	  * City
+	  */
+	public int getC_City_ID();
+
+	public org.compiere.model.I_C_City getC_City() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -106,6 +120,19 @@ public interface I_ZZLearnersApplied
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Postal */
+    public static final String COLUMNNAME_Postal = "Postal";
+
+	/** Set ZIP.
+	  * Postal code
+	  */
+	public void setPostal (String Postal);
+
+	/** Get ZIP.
+	  * Postal code
+	  */
+	public String getPostal();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

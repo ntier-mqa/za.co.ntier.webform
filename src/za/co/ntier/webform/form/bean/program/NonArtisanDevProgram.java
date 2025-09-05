@@ -40,8 +40,8 @@ public class NonArtisanDevProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
-		CandidacyProgram.saveFormLearnership(trxName, applicationForm, generalLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership);
-		CandidacyProgram.saveFormLearnership(trxName, applicationForm, firLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership);
+		ProgramInput.saveFormLearnership(trxName, applicationForm, generalLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership);
+		ProgramInput.saveFormLearnership(trxName, applicationForm, firLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership);
 	}
 
 	/**

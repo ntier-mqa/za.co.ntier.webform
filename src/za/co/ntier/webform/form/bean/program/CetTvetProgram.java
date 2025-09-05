@@ -18,7 +18,6 @@ import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.CetTvetMultiLineInput;
 import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
-import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZSubAnnex;
@@ -102,7 +101,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 					"ANNEXURE F  (Applicable to TVET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colProgrammeTitle)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colProgrammeApplyTitle)),
 					"TVET Managers receiving training on curriculum related studies");
 
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
@@ -175,31 +174,6 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		return annexureInfos;
 	}
 
-	private Integer getIntegerValue(CetTvetMultiLineInput cetTvetOneLineInput, Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, ColumnInfo<?> colInfo) {
-		
-		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
-			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
-			return cellData.getValue();
-		}
-		
-		return null;
-	}
-
-	private Integer getIntegerValue(CetTvetMultiLineInput cetTvetOneLineInput, Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, String colName) {
-		ColumnInfo<?> colInfo = AnnexureInfo.lookupColByTitle(colName, cetTvetOneLineInput);
-		
-		return getIntegerValue(cetTvetOneLineInput, cetTvetMultiLineRow, colInfo);
-	}
-
-	private Integer getIntegerValue(CetTvetOneLineInput cetTvetOneLineInput, ColumnInfo<?> col) {
-		if (col != null && col.getDataType() == DataType.PositiveNumber && cetTvetOneLineInput.getRows().get(0).get(col) != null) {
-			IntData cellData = (IntData)cetTvetOneLineInput.getRows().get(0).get(col);
-			return cellData.getValue();
-		}
-		
-		return null;
-	}
-
 	public MenuContextInfo getMenuContextInfo() {
 		return menuContextInfo;
 	}
@@ -227,6 +201,9 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cetTvetOneLineInput);
 		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colFieldStudyTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colNoLearners, cetTvetOneLineInput);
+		
+		
 		Integer cellData = null;
 		
 		
@@ -246,7 +223,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 				hasData = true;
 			}
 			
-			cellData = getIntegerValue(cetTvetOneLineInput, row, CetTvetMultiLineInput.colNoLearners);
+			cellData = AnnexureInfo.getIntegerValue(row, colNoLearners);
 			if (cellData != null && cellData != 0) {
 				subAnnex.setZZLearners(cellData);
 				hasData = true;
@@ -276,19 +253,19 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		ColumnInfo<?> colBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colNoBeneficiariesTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colTotalBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colTotalNoBeneficiariesTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colDiscipline = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colDisciplineTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgrammeTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgrammeApplyTitle, cetTvetOneLineInput);
 		
 		X_ZZAnnexure annexure = new X_ZZAnnexure(Env.getCtx(), 0, trxName);
 		
 		boolean hasData = false;
 		
-		Integer cellData = getIntegerValue(cetTvetOneLineInput, colBeneficiaries);
+		Integer cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colBeneficiaries);
 		if (cellData != null && cellData != 0) {
 			annexure.setZZBeneficiaries(cellData);
 			hasData = true;
 		}
 		
-		cellData = getIntegerValue(cetTvetOneLineInput, colTotalBeneficiaries);
+		cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colTotalBeneficiaries);
 		if (cellData != null && cellData != 0) {
 			annexure.setZZTotalBeneficiaries(cellData);
 			hasData = true;
@@ -300,7 +277,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			hasData = true;
 		}
 		
-		cellData = getIntegerValue(cetTvetOneLineInput, colProgramme);
+		cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colProgramme);
 		if (cellData != null && cellData != 0) {
 			annexure.setZZProgramme(cellData);
 			hasData = true;

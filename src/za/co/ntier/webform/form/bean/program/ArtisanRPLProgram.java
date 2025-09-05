@@ -5,13 +5,12 @@ import java.util.List;
 
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
-import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class ArtisanRPLProgram implements ISaveForm, IProgram {
-	private AnnexureInfo allLearners;
+	private ProjectInput allLearners;
 
 	public ArtisanRPLProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -23,20 +22,20 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 	/**
 	 * @return the allLearners
 	 */
-	public AnnexureInfo getAllLearners() {
+	public ProjectInput getAllLearners() {
 		return allLearners;
 	}
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
+		ProjectInput.saveProjectInput(trxName, applicationForm, allLearners);
 		
 	}
 
 	/**
 	 * @param allLearners the allLearners to set
 	 */
-	public void setAllLearners(AnnexureInfo allLearners) {
+	public void setAllLearners(ProjectInput allLearners) {
 		this.allLearners = allLearners;
 	}
 

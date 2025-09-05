@@ -35,7 +35,7 @@ public class InternshipProgram extends CandidacyProgram implements ISaveForm, IP
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
 		super.saveForm(trxName, applicationForm);
-		CandidacyProgram.saveFormDisciplines(trxName, applicationForm, trade, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
+		ProgramInput.saveFormDisciplines(trxName, applicationForm, trade, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
 	}
 	
 	/**
