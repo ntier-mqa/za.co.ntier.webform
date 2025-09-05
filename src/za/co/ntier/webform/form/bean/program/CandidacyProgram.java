@@ -26,45 +26,6 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class CandidacyProgram implements ISaveForm, IProgram{
-	private ProgramInput disciplines;
-
-	public CandidacyProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
-		this.setDisciplines(ProgramInput.getDisciplines(
-				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
-
-				"""
-										List of disciplines supported for Internships which the number of learners applying should
-						be based on.
-										"""));
-
-	}
-
-	/**
-	 * @return the disciplines
-	 */
-	public ProgramInput getDisciplines() {
-		return disciplines;
-	}
-
-	/**
-	 * @param disciplines the disciplines to set
-	 */
-	public void setDisciplines(ProgramInput disciplines) {
-		this.disciplines = disciplines;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
-		CandidacyProgram.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
-		
-	}
-	
-	public static void saveFormLearnership(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput learnership, String learnershipType) throws IOException {
-		saveFormDisciplines(trxName, applicationForm, learnership, learnershipType);
-	}
-	
 	public static void saveFormDisciplines(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput disciplines, String disciplineType) throws IOException {
 		
 		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, disciplines);
@@ -167,5 +128,44 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 		totalLearners += applicationForm.getZZTotalNumberApplied();
 		applicationForm.setZZTotalNumberApplied(totalLearners);
 		applicationForm.saveEx(trxName);
+	}
+
+	public static void saveFormLearnership(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput learnership, String learnershipType) throws IOException {
+		saveFormDisciplines(trxName, applicationForm, learnership, learnershipType);
+	}
+
+	private ProgramInput disciplines;
+
+	public CandidacyProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+		this.setDisciplines(ProgramInput.getDisciplines(
+				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
+
+				"""
+										List of disciplines supported for Internships which the number of learners applying should
+						be based on.
+										"""));
+
+	}
+
+	/**
+	 * @return the disciplines
+	 */
+	public ProgramInput getDisciplines() {
+		return disciplines;
+	}
+	
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+		CandidacyProgram.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
+		
+	}
+	
+	/**
+	 * @param disciplines the disciplines to set
+	 */
+	public void setDisciplines(ProgramInput disciplines) {
+		this.disciplines = disciplines;
 	}
 }

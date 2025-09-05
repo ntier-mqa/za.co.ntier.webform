@@ -27,17 +27,17 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 		return allLearners;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param allLearners the allLearners to set
 	 */
 	public void setAllLearners(AnnexureInfo allLearners) {
 		this.allLearners = allLearners;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

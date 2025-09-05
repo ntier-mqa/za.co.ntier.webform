@@ -10,8 +10,8 @@ import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
 
 public class PostalData{
-	private String postal;
 	private AnnexureInfo annexure;
+	private String postal;
 	private Map<ColumnInfo<?>, Object> row;
 	
 	public PostalData(AnnexureInfo annexure, Map<ColumnInfo<?>, Object> row, String postal) {
@@ -20,8 +20,11 @@ public class PostalData{
 		this.row = row;
 	}
 	
-	public void setPostalInternal(String postal) {
-		this.postal = postal;
+	/**
+	 * @return the postal
+	 */
+	public String getPostal() {
+		return postal;
 	}
 	
 	
@@ -48,11 +51,8 @@ public class PostalData{
 		
 	}
 
-	/**
-	 * @return the postal
-	 */
-	public String getPostal() {
-		return postal;
+	public void setPostalInternal(String postal) {
+		this.postal = postal;
 	}
 	
 }

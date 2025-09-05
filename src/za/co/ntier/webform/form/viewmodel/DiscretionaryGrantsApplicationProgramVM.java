@@ -46,30 +46,30 @@ import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class DiscretionaryGrantsApplicationProgramVM {
-	private IProgram program;
+	private AddressInfo alternateProgramContact;
 	
-	private OrganisationInfo organisationInfo;
+	private String documentNo;
 
-	private UploadDocComponent uploadDoc;
+	private EmployerDeclarationInfo employerDeclarationInfo;
 
 	private FormInfo formInfo;
 
 	private MenuContextInfo menuContextInfo;
 
-	private int recordId;
+	private OrganisationInfo organisationInfo;
 
-	private int tableId;
+	private IProgram program;
 
-	private EmployerDeclarationInfo employerDeclarationInfo;
-
-	private AddressInfo alternateProgramContact;
 	private AddressInfo programContact;
+
+	private ProgramType programType;
+	private int recordId;
 
 	// --- Getters and Setters for Data Binding ---
 
-	private ProgramType programType;
+	private int tableId;
 
-	private String documentNo;
+	private UploadDocComponent uploadDoc;
 
 	@Command
 	public void cancelApp() {
@@ -118,6 +118,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		return alternateProgramContact;
 	}
 
+	/**
+	 * @return the documentNo
+	 */
+	public String getDocumentNo() {
+		return documentNo;
+	}
+
 	public EmployerDeclarationInfo getEmployerDeclarationInfo() {
 		return employerDeclarationInfo;
 	}
@@ -144,6 +151,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
+	 * @return the program
+	 */
+	public IProgram getProgram() {
+		return program;
+	}
+
+	/**
 	 * @return the programContact
 	 */
 	public AddressInfo getProgramContact() {
@@ -162,6 +176,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		return "Submit Application";
 	}
 
+
 	public int getTableId() {
 		return tableId;
 	}
@@ -172,7 +187,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public UploadDocComponent getUploadDoc() {
 		return uploadDoc;
 	}
-
 
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo)
@@ -253,11 +267,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		tab.setSelectedIndex(currentIndex + 1);
 	}
 
+
 	@Command
 	public void prevTab(@BindingParam("tab") Tabbox tab) {
 		int currentIndex = tab.getSelectedIndex();
 		tab.setSelectedIndex(currentIndex - 1);
 	}
+
+	private void saveAppFormCommonPart(X_ZZ_Application_Form applicationForm) {
+ 		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
+		DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+		applicationForm.setName(loginUser.getName() + " - " + LocalDateTime.now().format(dtf));
+ 	}
 
 	/**
 	 * @param alternateProgramContact the alternateProgramContact to set
@@ -266,6 +287,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.alternateProgramContact = alternateProgramContact;
 	}
 
+
+	/**
+	 * @param documentNo the documentNo to set
+	 */
+	public void setDocumentNo(String documentNo) {
+		this.documentNo = documentNo;
+	}
 
 	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
 		this.employerDeclarationInfo = employerDeclarationInfo;
@@ -285,7 +313,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.menuContextInfo = menuContextInfo;
 	}
 
-
 	/**
 	 * @param organisationInfo the organisationInfo to set
 	 */
@@ -294,16 +321,23 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
+	 * @param program the program to set
+	 */
+	public void setProgram(IProgram program) {
+		this.program = program;
+	}
+
+ 	/**
 	 * @param programContact the programContact to set
 	 */
 	public void setProgramContact(AddressInfo programContact) {
 		this.programContact = programContact;
 	}
-
+	 	
 	public void setProgramType(ProgramType programType) {
 		this.programType = programType;
 	}
-
+	
 	public void setRecordId(int recordId) {
 		this.recordId = recordId;
 	}
@@ -319,12 +353,24 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.uploadDoc = uploadDoc;
 	}
 
- 	private void saveAppFormCommonPart(X_ZZ_Application_Form applicationForm) {
- 		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
-		DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-		applicationForm.setName(loginUser.getName() + " - " + LocalDateTime.now().format(dtf));
- 	}
-	 	
+	protected void showDialog() {
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		// Set the context class loader to this bundle's class loader to ensure that
+		// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
+		// used in ZUL files can be found.
+		String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");
+		Map<String, Object> args = new HashMap<>();
+		args.put(ComponentVMWrapper.ComponentKey, new Dialog("Successfully submitted the application form", tableId, recordId, documentNo, true));
+		
+		Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
+		try {
+			
+			Executions.createComponents(zulPathRelative, null, args);
+		} finally {
+			Thread.currentThread().setContextClassLoader(cl);
+		}
+	}
+
 	@Command(value = "submitApplication")
 	public void submitApplication() throws IOException {
 		String trxName = null;
@@ -366,51 +412,5 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		showDialog();
 
-	}
-	
-	protected void showDialog() {
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		// Set the context class loader to this bundle's class loader to ensure that
-		// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
-		// used in ZUL files can be found.
-		String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");
-		Map<String, Object> args = new HashMap<>();
-		args.put(ComponentVMWrapper.ComponentKey, new Dialog("Successfully submitted the application form", tableId, recordId, documentNo, true));
-		
-		Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
-		try {
-			
-			Executions.createComponents(zulPathRelative, null, args);
-		} finally {
-			Thread.currentThread().setContextClassLoader(cl);
-		}
-	}
-
-	/**
-	 * @return the program
-	 */
-	public IProgram getProgram() {
-		return program;
-	}
-
-	/**
-	 * @param program the program to set
-	 */
-	public void setProgram(IProgram program) {
-		this.program = program;
-	}
-
-	/**
-	 * @return the documentNo
-	 */
-	public String getDocumentNo() {
-		return documentNo;
-	}
-
-	/**
-	 * @param documentNo the documentNo to set
-	 */
-	public void setDocumentNo(String documentNo) {
-		this.documentNo = documentNo;
 	}
 }

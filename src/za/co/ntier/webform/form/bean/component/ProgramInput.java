@@ -10,18 +10,18 @@ import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class ProgramInput extends AnnexureInfo {
-	public static final String colTradeLabel = "Trade";
+	public static final String btAccredText = "Accred./SLA";
+	public static final String btWPAText = "WPA";
+	public static final String colAccredLabel = "Accreditation";
+	public static final String colAreaLabel = "Area";
 	public static final String colDisciplineLabel = "Discipline";
 	public static final String colLearnershipLabel = "Learnership Type";
-	public static final String colPostalCodeLabel = "Site Postal Code";
 	public static final String colNoEmployedLabel = "No. of Employed Learners";
-	public static final String colNoUnEmployedLabel = "No. of Unemployed Learners";
 	public static final String colNoLearnersLabel = "No. of Learners";
-	public static final String colAreaLabel = "Area";
+	public static final String colNoUnEmployedLabel = "No. of Unemployed Learners";
+	public static final String colPostalCodeLabel = "Site Postal Code";
+	public static final String colTradeLabel = "Trade";
 	public static final String colWPALabel = "WPA";
-	public static final String colAccredLabel = "Accreditation";
-	public static final String btWPAText = "WPA";
-	public static final String btAccredText = "Accred./SLA";
 	
 	public static ProgramInput getDisciplines(int programMasterDataID, String tableTitle) throws NoSuchMethodException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {

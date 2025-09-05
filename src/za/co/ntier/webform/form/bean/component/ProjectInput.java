@@ -7,11 +7,11 @@ import java.util.List;
 import za.co.ntier.webform.form.MasterUtil;
 
 public class ProjectInput extends AnnexureInfo {
+	public static final String colNameProgrammeLabel = "Name of Programme";
 	public static final String colNoEmployedLabel = "No. of Employed Learners";
+	public static final String colNoLearnersLable = "No of Learners applied for";
 	public static final String colNoUnEmployedLabel =  "No. of Unemployed Learners";
 	public static final String colTotalLearnersLabel = "Total No. of Learners Applied For";
-	public static final String colNameProgrammeLabel = "Name of Programme";
-	public static final String colNoLearnersLable = "No of Learners applied for";
 	
 	
 	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos) throws NoSuchMethodException,
@@ -19,6 +19,15 @@ public class ProjectInput extends AnnexureInfo {
 		return ProjectInput.getProject(null, initColumnInfos);
 	}
 
+	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String rowTitle) throws NoSuchMethodException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
+		columnInfos.add(ColumnInfo.getColPostal(ProgramInput.colPostalCodeLabel));
+		columnInfos.add(
+				ColumnInfo.getColArea(ProgramInput.colAreaLabel, MasterUtil.getInitCities()));
+		return AnnexureInfo.getAnnexureInfoOneLine(ProjectInput.class, null, columnInfos, rowTitle, false, null);
+	}
+	
 	/**
 	 * no row title, no total, has section title
 	 * 
@@ -40,14 +49,5 @@ public class ProjectInput extends AnnexureInfo {
 				ColumnInfo.getColArea(ProgramInput.colAreaLabel, MasterUtil.getInitCities()));
 		return AnnexureInfo.getAnnexureInfoOneLine(ProjectInput.class, secctionTitle, columnInfos, null, false, null);
 
-	}
-	
-	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String rowTitle) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
-		columnInfos.add(ColumnInfo.getColPostal(ProgramInput.colPostalCodeLabel));
-		columnInfos.add(
-				ColumnInfo.getColArea(ProgramInput.colAreaLabel, MasterUtil.getInitCities()));
-		return AnnexureInfo.getAnnexureInfoOneLine(ProjectInput.class, null, columnInfos, rowTitle, false, null);
 	}
 }

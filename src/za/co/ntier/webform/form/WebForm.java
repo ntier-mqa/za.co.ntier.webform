@@ -16,16 +16,16 @@ import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 @org.idempiere.ui.zk.annotation.Form(name = "za.co.ntier.webform.form.EmployerApplicationForm")
 public class WebForm extends ADForm {
 
-	private static final long serialVersionUID = -5402852171052424756L;
-	public static final String zulPathRool = "/za/co/ntier/webform/zul/";
+	public static final String isUploadWPAForNVCMenuContextKey = "+uploadWPAForNVC";
+	public static final String menuContextInfoKey = "menuContextInfo";
 	public static final String programMasterDataUUMenuContextKey = "+"
 			+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
 
 	public static final String programTypeMenuContextKey = "+programType";
 
-	public static final String isUploadWPAForNVCMenuContextKey = "+uploadWPAForNVC";
+	private static final long serialVersionUID = -5402852171052424756L;
 
-	public static final String menuContextInfoKey = "menuContextInfo";
+	public static final String zulPathRool = "/za/co/ntier/webform/zul/";
 	public static String getBundleResourcePath(String zulPath) {
 		if (!zulPath.startsWith("/")) {// relative path
 			zulPath = zulPathRool + zulPath;

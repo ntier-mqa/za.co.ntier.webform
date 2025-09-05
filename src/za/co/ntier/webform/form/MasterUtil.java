@@ -36,10 +36,17 @@ import za.co.ntier.webform.model.X_ZZ_Program_Trade;
 import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class MasterUtil {
-	public static final int limitItem = 30;
 	public static final List<KeyNamePair> districtMunicipalities;
+	public static final int limitItem = 30;
 	public static final List<KeyNamePair> localMunicipalities;
 	public static final List<KeyNamePair> municipalityTypes;
+
+	private static CCache<ProgramType, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
+			I_C_BPartner.Table_Name + "_CetTvetCollege", 2);
+
+	private static CCache<Integer, List<MCity>> s_Cities = new CCache<>(MCity.Table_Name + "_DisciplineHDSA", 1);
+	private static CCache<Integer, List<MRegion>> s_Regions = new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
+	private static final List<MCity> tmpAllCity = new ArrayList<>();
 
 	static {
 		municipalityTypes = Arrays.asList(new KeyNamePair(1, "Rural"), new KeyNamePair(2, "Urban"));
@@ -89,12 +96,6 @@ public class MasterUtil {
 				new KeyNamePair(39, "Central Karoo"), new KeyNamePair(40, "Cape Winelands"),
 				new KeyNamePair(41, "Eden"), new KeyNamePair(42, "Overberg"), new KeyNamePair(43, "West Coast"));
 	}
-
-	private static CCache<Integer, List<MCity>> s_Cities = new CCache<>(MCity.Table_Name + "_DisciplineHDSA", 1);
-	private static CCache<Integer, List<MRegion>> s_Regions = new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
-	private static CCache<ProgramType, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
-			I_C_BPartner.Table_Name + "_CetTvetCollege", 2);
-
 	public static List<X_C_BPartner> getCetColleges() {
 		List<X_C_BPartner> cetColleges = s_CetTvetCollege.get(ProgramType.CET);
 		if (cetColleges == null) {
@@ -108,7 +109,6 @@ public class MasterUtil {
 		}
 		return cetColleges;
 	}
-	private static final List<MCity> tmpAllCity = new ArrayList<>();
 	
 	public static List<MCity> getCities() {
 		if (s_Cities.isEmpty()) {
@@ -134,13 +134,6 @@ public class MasterUtil {
 		//return s_Cities.get(Integer.MIN_VALUE);
 	}
 
-	public static List<MCity> getInitCities(){
-		if (tmpAllCity.isEmpty()) {
-			getCities();
-		}
-		return tmpAllCity;
-	}
-	
 	public static List<MCity> getCitiesByPostal(String postalCode) {
 		List<MCity> areaFilters = new ArrayList<>();
 		if (StringUtils.isNotEmpty(postalCode)) {
@@ -158,6 +151,13 @@ public class MasterUtil {
 		}
 		
 		
+	}
+	
+	public static List<MCity> getInitCities(){
+		if (tmpAllCity.isEmpty()) {
+			getCities();
+		}
+		return tmpAllCity;
 	}
 	
 	public static char getOffsetChar(char c, int offset) {

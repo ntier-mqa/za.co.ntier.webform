@@ -26,16 +26,16 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 		return unemployed;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param unemployed the unemployed to set
 	 */
 	public void setUnemployed(ProjectInput unemployed) {
 		this.unemployed = unemployed;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 }

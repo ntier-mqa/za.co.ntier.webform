@@ -1,11 +1,11 @@
 package za.co.ntier.webform.form.bean.component;
 
 public class Dialog {
-	private int tableId;
-	private int recordId;
-	private boolean visible = false;
-	private String title;
 	private String documentNo;
+	private int recordId;
+	private int tableId;
+	private String title;
+	private boolean visible = false;
 	public Dialog(String title, int tableId, int recordId, String documentNo, boolean visible) {
 		this.tableId = tableId;
 		this.recordId = recordId;
@@ -14,16 +14,10 @@ public class Dialog {
 		this.setDocumentNo(documentNo);
 	}
 	/**
-	 * @return the tableId
+	 * @return the documentNo
 	 */
-	public int getTableId() {
-		return tableId;
-	}
-	/**
-	 * @param tableId the tableId to set
-	 */
-	public void setTableId(int tableId) {
-		this.tableId = tableId;
+	public String getDocumentNo() {
+		return documentNo;
 	}
 	/**
 	 * @return the recordId
@@ -32,22 +26,10 @@ public class Dialog {
 		return recordId;
 	}
 	/**
-	 * @param recordId the recordId to set
+	 * @return the tableId
 	 */
-	public void setRecordId(int recordId) {
-		this.recordId = recordId;
-	}
-	/**
-	 * @return the visible
-	 */
-	public boolean isVisible() {
-		return visible;
-	}
-	/**
-	 * @param visible the visible to set
-	 */
-	public void setVisible(boolean visible) {
-		this.visible = visible;
+	public int getTableId() {
+		return tableId;
 	}
 	/**
 	 * @return the title
@@ -56,21 +38,39 @@ public class Dialog {
 		return title;
 	}
 	/**
-	 * @param title the title to set
+	 * @return the visible
 	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	/**
-	 * @return the documentNo
-	 */
-	public String getDocumentNo() {
-		return documentNo;
+	public boolean isVisible() {
+		return visible;
 	}
 	/**
 	 * @param documentNo the documentNo to set
 	 */
 	public void setDocumentNo(String documentNo) {
 		this.documentNo = documentNo;
+	}
+	/**
+	 * @param recordId the recordId to set
+	 */
+	public void setRecordId(int recordId) {
+		this.recordId = recordId;
+	}
+	/**
+	 * @param tableId the tableId to set
+	 */
+	public void setTableId(int tableId) {
+		this.tableId = tableId;
+	}
+	/**
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	/**
+	 * @param visible the visible to set
+	 */
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

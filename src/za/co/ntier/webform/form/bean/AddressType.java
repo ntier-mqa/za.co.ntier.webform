@@ -6,7 +6,7 @@ public enum AddressType {
 	MAIN(X_ZZ_FormContact.ZZ_CONTACTTYPE_Main), MAIN_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_MainAlter),
 	ORG(X_ZZ_FormContact.ZZ_CONTACTTYPE_Org), ORG_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_OrgAlter),
 	PHYSICAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_Physical), POSTAL(X_ZZ_FormContact.ZZ_CONTACTTYPE_Postal),
-	VACATION(X_ZZ_FormContact.ZZ_CONTACTTYPE_Vacation), UNKNOWN("UNKNOWN CONTACT TYPE");
+	UNKNOWN("UNKNOWN CONTACT TYPE"), VACATION(X_ZZ_FormContact.ZZ_CONTACTTYPE_Vacation);
 
 	String contactType;
 

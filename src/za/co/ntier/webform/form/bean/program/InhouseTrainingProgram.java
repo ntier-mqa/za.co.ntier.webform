@@ -30,16 +30,16 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 		return inhouse;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param inhouse the inhouse to set
 	 */
 	public void setInhouse(AnnexureInfo inhouse) {
 		this.inhouse = inhouse;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 }

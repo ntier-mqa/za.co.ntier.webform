@@ -42,6 +42,12 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 		return skill;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param qualification the qualification to set
 	 */
@@ -54,12 +60,6 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	 */
 	public void setSkill(AnnexureInfo skill) {
 		this.skill = skill;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

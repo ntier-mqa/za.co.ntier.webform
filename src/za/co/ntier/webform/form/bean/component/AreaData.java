@@ -10,14 +10,21 @@ import za.co.ntier.webform.form.bean.DataType;
 
 
 public class AreaData {
-	private MCity selectedArea;
-	private List<MCity> dataProvider;
 	private AnnexureInfo annexure;
+	private List<MCity> dataProvider;
 	private Map<ColumnInfo<?>, Object> row;
+	private MCity selectedArea;
 	
 	public AreaData(AnnexureInfo annexure, Map<ColumnInfo<?>, Object> row){
 		this.annexure = annexure;
 		this.row = row;
+	}
+
+	/**
+	 * @return the annexure
+	 */
+	public AnnexureInfo getAnnexure() {
+		return annexure;
 	}
 
 	/**
@@ -28,10 +35,10 @@ public class AreaData {
 	}
 
 	/**
-	 * @param dataProvider the dataProvider to set
+	 * @return the row
 	 */
-	public void setDataProvider(List<MCity> dataProvider) {
-		this.dataProvider = dataProvider;
+	public Map<ColumnInfo<?>, Object> getRow() {
+		return row;
 	}
 
 	/**
@@ -40,11 +47,28 @@ public class AreaData {
 	public MCity getSelectedArea() {
 		return selectedArea;
 	}
-
-	public void setSelectedAreaInternal(MCity selectedArea) {
-		this.selectedArea = selectedArea;
-	}
 	
+	/**
+	 * @param annexure the annexure to set
+	 */
+	public void setAnnexure(AnnexureInfo annexure) {
+		this.annexure = annexure;
+	}
+
+	/**
+	 * @param dataProvider the dataProvider to set
+	 */
+	public void setDataProvider(List<MCity> dataProvider) {
+		this.dataProvider = dataProvider;
+	}
+
+	/**
+	 * @param row the row to set
+	 */
+	public void setRow(Map<ColumnInfo<?>, Object> row) {
+		this.row = row;
+	}
+
 	/**
 	 * @param selectedArea the selectedArea to set
 	 */
@@ -67,32 +91,8 @@ public class AreaData {
 		}		
 	}
 
-	/**
-	 * @return the annexure
-	 */
-	public AnnexureInfo getAnnexure() {
-		return annexure;
-	}
-
-	/**
-	 * @param annexure the annexure to set
-	 */
-	public void setAnnexure(AnnexureInfo annexure) {
-		this.annexure = annexure;
-	}
-
-	/**
-	 * @return the row
-	 */
-	public Map<ColumnInfo<?>, Object> getRow() {
-		return row;
-	}
-
-	/**
-	 * @param row the row to set
-	 */
-	public void setRow(Map<ColumnInfo<?>, Object> row) {
-		this.row = row;
+	public void setSelectedAreaInternal(MCity selectedArea) {
+		this.selectedArea = selectedArea;
 	}
 
 	

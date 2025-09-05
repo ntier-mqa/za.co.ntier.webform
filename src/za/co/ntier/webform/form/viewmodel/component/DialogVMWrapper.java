@@ -22,6 +22,13 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
 		BindUtils.postNotifyChange(this.getComponent(), "visible");
 	}
 	
+	/**
+	 * @return the moreInfo
+	 */
+	public String getMoreInfo() {
+		return moreInfo;
+	}
+
 	@Command
 	@NotifyChange("visible")
 	public void openAppForm() {
@@ -32,13 +39,6 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
 			moreInfo = e.getMessage();
 			BindUtils.postNotifyChange(this, "moreInfo");
 		}	
-	}
-
-	/**
-	 * @return the moreInfo
-	 */
-	public String getMoreInfo() {
-		return moreInfo;
 	}
 
 	/**

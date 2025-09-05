@@ -36,29 +36,37 @@ public class AddressInfo implements ISaveForm {
 
 	private String emailTitle = "E-mail";
 
+	private boolean isAlternate;
 	private String landlineNumber;
+
 	private String landlineNumberTitle = "Alternative Number";
 
 	private KeyNamePair localMunicipalitySelected;
-
 	private String mobileNumber;
+
 	private String mobileNumberTitle = "Tel Number";
 
 	private String nameSiteRepresentative;
 
 	private String nameSiteRepresentativeTitle = "Name and Surname";
 
+	private String orgName;
+
+	private String orgNameTitle = "Organisation Name";
+
 	private String postAddress;
 
 	private String postAddressTitle = "Post Address";
-
+	
 	private String postalCode;
 
 	private String postalCodeTitle = "Postal Code";
 
-	private MRegion provinceSelected;
-	
+	private ProgramType programType;
+
 	private Collection<MRegion> provinces;
+
+	private MRegion provinceSelected;
 
 	private String provinceTitle = "Province";
 
@@ -69,14 +77,6 @@ public class AddressInfo implements ISaveForm {
 	private String siteName;
 
 	private String siteNameTitle = "Site Name";
-
-	private String orgName;
-
-	private String orgNameTitle = "Organisation Name";
-
-	private ProgramType programType;
-
-	private boolean isAlternate;
 
 	public AddressInfo(AddressType addressCategory, MRegion provinceSelected) {
 		this.addressCategory = addressCategory;
@@ -91,11 +91,6 @@ public class AddressInfo implements ISaveForm {
 		init();
 	}
 	
-	private void init() {
-		areas = MasterUtil.getInitCities();
-		provinces = MasterUtil.getRegions();
-	}
-
 	public AddressType getAddressCategory() {
 		return this.addressCategory;
 	}
@@ -252,6 +247,13 @@ public class AddressInfo implements ISaveForm {
 	}
 
 	/**
+	 * @return the provinces
+	 */
+	public Collection<MRegion> getProvinces() {
+		return provinces;
+	}
+
+	/**
 	 * @return the provinceSelected
 	 */
 	public MRegion getProvinceSelected() {
@@ -291,6 +293,37 @@ public class AddressInfo implements ISaveForm {
 	 */
 	public String getSiteNameTitle() {
 		return siteNameTitle;
+	}
+
+	private void init() {
+		areas = MasterUtil.getInitCities();
+		provinces = MasterUtil.getRegions();
+	}
+
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		int applicationFormID = applicationForm.getZZ_Application_Form_ID();
+		
+		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
+		contact.setZZ_Application_Form_ID(applicationFormID);
+		if (getProvinceSelected() != null)
+			contact.setC_Region_ID(getProvinceSelected().getC_Region_ID());
+
+		if (getAreaSelected() != null)
+			contact.setC_City_ID(getAreaSelected().getC_City_ID());
+
+		contact.setPostal(getPostalCode());
+
+		contact.setZZ_SideName(getSiteName());
+		contact.setAddress(getAddressLine());
+
+		contact.setContactName(getNameSiteRepresentative());
+		contact.setZZ_Designation(getRepresentativeDesignation());
+		contact.setPhone(getMobileNumber());
+		contact.setPhone2(getLandlineNumber());
+		contact.setEMail(getEmail());
+		contact.setZZ_ContactType(getAddressCategory().toString());
+		contact.saveEx(trxName);
 	}
 
 	public void setAddressCategory(AddressType addressCategory) {
@@ -489,6 +522,13 @@ public class AddressInfo implements ISaveForm {
 	}
 
 	/**
+	 * @param provinces the provinces to set
+	 */
+	public void setProvinces(Collection<MRegion> provinces) {
+		this.provinces = provinces;
+	}
+
+	/**
 	 * @param provinceSelected the provinceSelected to set
 	 */
 	@NotifyChange({ "areas", "areaSelected", "postalCode" })
@@ -588,45 +628,5 @@ public class AddressInfo implements ISaveForm {
 
 	public boolean showSiteName() {
 		return (programType != null && programType.isShowAddressSiteField()) || addressCategory == AddressType.VACATION;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		int applicationFormID = applicationForm.getZZ_Application_Form_ID();
-		
-		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
-		contact.setZZ_Application_Form_ID(applicationFormID);
-		if (getProvinceSelected() != null)
-			contact.setC_Region_ID(getProvinceSelected().getC_Region_ID());
-
-		if (getAreaSelected() != null)
-			contact.setC_City_ID(getAreaSelected().getC_City_ID());
-
-		contact.setPostal(getPostalCode());
-
-		contact.setZZ_SideName(getSiteName());
-		contact.setAddress(getAddressLine());
-
-		contact.setContactName(getNameSiteRepresentative());
-		contact.setZZ_Designation(getRepresentativeDesignation());
-		contact.setPhone(getMobileNumber());
-		contact.setPhone2(getLandlineNumber());
-		contact.setEMail(getEmail());
-		contact.setZZ_ContactType(getAddressCategory().toString());
-		contact.saveEx(trxName);
-	}
-
-	/**
-	 * @return the provinces
-	 */
-	public Collection<MRegion> getProvinces() {
-		return provinces;
-	}
-
-	/**
-	 * @param provinces the provinces to set
-	 */
-	public void setProvinces(Collection<MRegion> provinces) {
-		this.provinces = provinces;
 	}
 }

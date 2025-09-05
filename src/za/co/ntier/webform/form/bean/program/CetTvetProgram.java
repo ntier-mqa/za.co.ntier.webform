@@ -26,10 +26,10 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class CetTvetProgram implements ISaveForm, IProgram {
-	private MenuContextInfo menuContextInfo;
+	private AddressInfo addressInfo;
 
 	private List<AnnexureInfo> annexureInfos;
-	private AddressInfo addressInfo;
+	private MenuContextInfo menuContextInfo;
 
 	private List<LearnerInputInfo> tradeInfo;
 
@@ -175,31 +175,37 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		return annexureInfos;
 	}
 
+	private Integer getIntegerValue(CetTvetMultiLineInput cetTvetOneLineInput, Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, ColumnInfo<?> colInfo) {
+		
+		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
+			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
+			return cellData.getValue();
+		}
+		
+		return null;
+	}
+
+	private Integer getIntegerValue(CetTvetMultiLineInput cetTvetOneLineInput, Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, String colName) {
+		ColumnInfo<?> colInfo = AnnexureInfo.lookupColByTitle(colName, cetTvetOneLineInput);
+		
+		return getIntegerValue(cetTvetOneLineInput, cetTvetMultiLineRow, colInfo);
+	}
+
+	private Integer getIntegerValue(CetTvetOneLineInput cetTvetOneLineInput, ColumnInfo<?> col) {
+		if (col != null && col.getDataType() == DataType.PositiveNumber && cetTvetOneLineInput.getRows().get(0).get(col) != null) {
+			IntData cellData = (IntData)cetTvetOneLineInput.getRows().get(0).get(col);
+			return cellData.getValue();
+		}
+		
+		return null;
+	}
+
 	public MenuContextInfo getMenuContextInfo() {
 		return menuContextInfo;
 	}
 
 	public List<LearnerInputInfo> getTradeInfo() {
 		return tradeInfo;
-	}
-
-	public void setAddressInfo(AddressInfo addressInfo) {
-		this.addressInfo = addressInfo;
-	}
-
-	/**
-	 * @param annexureInfos the annexureInfos to set
-	 */
-	public void setAnnexureInfos(List<AnnexureInfo> annexureInfos) {
-		this.annexureInfos = annexureInfos;
-	}
-
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
-
-	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
-		this.tradeInfo = tradeInfo;
 	}
 
 	@Override
@@ -216,7 +222,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		}
 		
 	}
-	
+
 	public void saveMultilineInput(String trxName, X_ZZ_Application_Form applicationForm, X_ZZAnnexure zzAnnexure, CetTvetMultiLineInput cetTvetOneLineInput) {
 		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cetTvetOneLineInput);
 		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cetTvetOneLineInput);
@@ -309,28 +315,22 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		return annexure;
 	}
 	
-	private Integer getIntegerValue(CetTvetMultiLineInput cetTvetOneLineInput, Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, String colName) {
-		ColumnInfo<?> colInfo = AnnexureInfo.lookupColByTitle(colName, cetTvetOneLineInput);
-		
-		return getIntegerValue(cetTvetOneLineInput, cetTvetMultiLineRow, colInfo);
-	}
-
-	private Integer getIntegerValue(CetTvetMultiLineInput cetTvetOneLineInput, Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, ColumnInfo<?> colInfo) {
-		
-		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
-			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
-			return cellData.getValue();
-		}
-		
-		return null;
+	public void setAddressInfo(AddressInfo addressInfo) {
+		this.addressInfo = addressInfo;
 	}
 	
-	private Integer getIntegerValue(CetTvetOneLineInput cetTvetOneLineInput, ColumnInfo<?> col) {
-		if (col != null && col.getDataType() == DataType.PositiveNumber && cetTvetOneLineInput.getRows().get(0).get(col) != null) {
-			IntData cellData = (IntData)cetTvetOneLineInput.getRows().get(0).get(col);
-			return cellData.getValue();
-		}
-		
-		return null;
+	/**
+	 * @param annexureInfos the annexureInfos to set
+	 */
+	public void setAnnexureInfos(List<AnnexureInfo> annexureInfos) {
+		this.annexureInfos = annexureInfos;
+	}
+
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
+	}
+	
+	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
+		this.tradeInfo = tradeInfo;
 	}
 }

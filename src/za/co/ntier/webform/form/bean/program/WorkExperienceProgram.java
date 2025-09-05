@@ -12,9 +12,9 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class WorkExperienceProgram implements ISaveForm, IProgram {
 
+	private ProgramInput disciplines;
 	private Integer noOfLearners;
 	private AddressInfo vacationContact;
-	private ProgramInput disciplines;
 
 	public WorkExperienceProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -46,6 +46,12 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		return vacationContact;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		vacationContact.saveForm(trxName, applicationForm);
+		
+	}
+
 	/**
 	 * @param disciplines the disciplines to set
 	 */
@@ -62,12 +68,6 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	 */
 	public void setVacationContact(AddressInfo vacationContact) {
 		this.vacationContact = vacationContact;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		vacationContact.saveForm(trxName, applicationForm);
-		
 	}
 
 }

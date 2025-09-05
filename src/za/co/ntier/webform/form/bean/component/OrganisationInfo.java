@@ -23,28 +23,28 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
  */
 public class OrganisationInfo implements ISaveForm {
 	private AddressInfo alternateOrgContact;
-	private String orgName;
-	private String orgNameTitle = "Organisation Name";
-	private String orgTaxNumber;
-	private String orgTaxNumberTitle = "Tax ID";
-
+	private int bPartnerId;
+	private X_C_BPartner cetTvetCollegeSelected;
 	private String fileNameVATCer;
 	private String fullPathVATCer;
+
+	private MenuContextInfo menuContextInfo;
 	private AddressInfo orgContact;
+	private String orgName;
+	private String orgNameTitle = "Organisation Name";
 	private String orgRegistrationNumber;
 	private String orgRegistrationNumberTitle = "Registration No";
 	private OrganisationSizeInfo orgSizeInfo;
+	private String orgTaxNumber;
+	private String orgTaxNumberTitle = "Tax ID";
 	private AddressInfo physicalAddressInfo;
 	private AddressInfo postAddressInfo;
 	private String sdlNumber;
 	private String sdlNumberTitle = "Skills Development Levy (SDL) Number (Paying or Exempted)";
+
 	private String siteSDLNumber;
+
 	private String siteSDLNumberTitle = "Site SDL Number (if applicable)";
-	private int bPartnerId;
-
-	private MenuContextInfo menuContextInfo;
-
-	private X_C_BPartner cetTvetCollegeSelected;
 
 	public OrganisationInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
@@ -209,6 +209,35 @@ public class OrganisationInfo implements ISaveForm {
 		return siteSDLNumberTitle;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		applicationForm.setZZ_SDL_No(getSdlNumber());
+		applicationForm.setZZ_Side_SDL_No(getSiteSDLNumber());
+		applicationForm.setZZ_VAT(getOrgTaxNumber());
+		applicationForm.setOrgName(getOrgName());
+		applicationForm.setC_BPartner_ID(getbPartnerId());
+
+		if (getOrgSizeInfo() != null) {
+			getOrgSizeInfo().saveForm(trxName, applicationForm);
+		}
+		
+		if (physicalAddressInfo != null) {
+			physicalAddressInfo.saveForm(trxName, applicationForm);
+		}
+		
+		if (postAddressInfo != null) {
+			postAddressInfo.saveForm(trxName, applicationForm);
+		}
+		
+		if (orgContact != null) {
+			orgContact.saveForm(trxName, applicationForm);
+		}
+		
+		if (alternateOrgContact != null) {
+			alternateOrgContact.saveForm(trxName, applicationForm);
+		}
+	}
+
 	public void sdlNumberChange() {
 		X_C_BPartner bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
 				String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null).setParameters(sdlNumber).first();
@@ -367,34 +396,5 @@ public class OrganisationInfo implements ISaveForm {
 		setFileNameVATCer(media.getName());
 		fullPathVATCer = MasterUtil.saveUploadFile(media);
 
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		applicationForm.setZZ_SDL_No(getSdlNumber());
-		applicationForm.setZZ_Side_SDL_No(getSiteSDLNumber());
-		applicationForm.setZZ_VAT(getOrgTaxNumber());
-		applicationForm.setOrgName(getOrgName());
-		applicationForm.setC_BPartner_ID(getbPartnerId());
-
-		if (getOrgSizeInfo() != null) {
-			getOrgSizeInfo().saveForm(trxName, applicationForm);
-		}
-		
-		if (physicalAddressInfo != null) {
-			physicalAddressInfo.saveForm(trxName, applicationForm);
-		}
-		
-		if (postAddressInfo != null) {
-			postAddressInfo.saveForm(trxName, applicationForm);
-		}
-		
-		if (orgContact != null) {
-			orgContact.saveForm(trxName, applicationForm);
-		}
-		
-		if (alternateOrgContact != null) {
-			alternateOrgContact.saveForm(trxName, applicationForm);
-		}
 	}
 }

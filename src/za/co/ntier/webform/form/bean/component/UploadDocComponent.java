@@ -31,13 +31,6 @@ public class UploadDocComponent implements ISaveForm {
 		return uploadDoc;
 	}
 
-	/**
-	 * @param uploadDoc the uploadDoc to set
-	 */
-	public void setUploadDoc(UploadInput uploadDoc) {
-		this.uploadDoc = uploadDoc;
-	}
-
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
 		for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
@@ -62,6 +55,13 @@ public class UploadDocComponent implements ISaveForm {
 			
 		}
 		
+	}
+
+	/**
+	 * @param uploadDoc the uploadDoc to set
+	 */
+	public void setUploadDoc(UploadInput uploadDoc) {
+		this.uploadDoc = uploadDoc;
 	}
 
 }

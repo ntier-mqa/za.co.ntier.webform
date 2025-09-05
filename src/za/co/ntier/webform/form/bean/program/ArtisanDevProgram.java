@@ -40,6 +40,12 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 		return trade;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param totalNumApplied the totalNumApplied to set
 	 */
@@ -52,12 +58,6 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 	 */
 	public void setTrade(ProgramInput trade) {
 		this.trade = trade;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

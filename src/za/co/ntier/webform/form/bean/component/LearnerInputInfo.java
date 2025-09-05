@@ -16,25 +16,25 @@ import org.zkoss.util.media.Media;
 import za.co.ntier.webform.form.MasterUtil;
 
 public class LearnerInputInfo {
-	private int learnerInputProgramID;
-	private int learnerInputID;
-	private String learnerInputText;
-
-	private String fileNameWPA;
-	private boolean isUploadWPA = false;
-	private String fullPathWPA;
-	private String fullPathAccred;
-	private boolean isUploadAccred = false;
-	private String fileNameAccred;
-	private String postalCode;
-	private MRegion province;
 	private Collection<MCity> areas;
 	private MCity areaSelected;
+	private String fileNameAccred;
 
-	private Integer noLearners = null;
+	private String fileNameWPA;
+	private String fullPathAccred;
+	private String fullPathWPA;
+	private boolean isUploadAccred = false;
+	private boolean isUploadWPA = false;
+	private int learnerInputID;
+	private int learnerInputProgramID;
+	private String learnerInputText;
 	private Integer noEmployed = null;
-	private Integer noUnEmployed = null;
+	private Integer noLearners = null;
+
 	private Integer noTotalApply = null;
+	private Integer noUnEmployed = null;
+	private String postalCode;
+	private MRegion province;
 
 	public LearnerInputInfo() {
 

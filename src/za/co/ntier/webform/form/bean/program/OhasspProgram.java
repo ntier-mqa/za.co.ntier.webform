@@ -34,17 +34,17 @@ public class OhasspProgram implements ISaveForm, IProgram {
 		return healthSafetySkills;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param healthSafetySkills the healthSafetySkills to set
 	 */
 	public void setHealthSafetySkills(AnnexureInfo healthSafetySkills) {
 		this.healthSafetySkills = healthSafetySkills;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

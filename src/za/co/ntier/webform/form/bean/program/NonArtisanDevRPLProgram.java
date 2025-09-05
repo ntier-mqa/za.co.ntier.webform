@@ -29,17 +29,17 @@ public class NonArtisanDevRPLProgram implements ISaveForm, IProgram {
 		return totalNumApplied;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param totalNumApplied the totalNumApplied to set
 	 */
 	public void setTotalNumApplied(AnnexureInfo totalNumApplied) {
 		this.totalNumApplied = totalNumApplied;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
