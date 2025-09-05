@@ -1,21 +1,16 @@
 package za.co.ntier.webform.form.bean.program;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.CollegeRadio;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements ISaveForm, IProgram{
-	private Boolean isCollegeRegistered = true;
-	private Boolean isCollegeRecognised= true;
-	private Boolean isCollegeSla = true;
-	
-	private List<CollegeRadio> collegeValues = List.of(new CollegeRadio("YES", Boolean.TRUE),
-			new CollegeRadio("NO", Boolean.FALSE));
+	private Boolean isCollegeRegistered = Boolean.TRUE;
+	private Boolean isCollegeRecognised= Boolean.FALSE;
+	private Boolean isCollegeSla = null;
 	
 	public CentreOfSpecialisationProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -24,63 +19,73 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 	
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException{
 		super.saveForm(trxName, applicationForm);
-		//save radio
+		applicationForm.setZZCollegeRecognised(convert(isCollegeRecognised));
+		applicationForm.setZZCollegeRegistered(convert(isCollegeRegistered));
+		applicationForm.setZZCollegeSla(convert(isCollegeSla));
+		applicationForm.saveEx(trxName);
 	}
 
 	/**
 	 * @return the isCollegeRegistered
 	 */
-	public Boolean getCollegeRegistered() {
-		return isCollegeRegistered;
+	public String getCollegeRegistered() {
+		return convert(this.isCollegeRegistered);
 	}
 
 	/**
 	 * @param isCollegeRegistered the isCollegeRegistered to set
 	 */
-	public void setCollegeRegistered(Boolean isCollegeRegistered) {
-		this.isCollegeRegistered = isCollegeRegistered;
+	public void setCollegeRegistered(String isCollegeRegistered) {
+		this.isCollegeRegistered = convert(isCollegeRegistered);
 	}
 
 	/**
 	 * @return the isCollegeRecognised
 	 */
-	public Boolean getCollegeRecognised() {
-		return isCollegeRecognised;
+	public String getCollegeRecognised() {
+		return convert(this.isCollegeRecognised);
 	}
 
 	/**
 	 * @param isCollegeRecognised the isCollegeRecognised to set
 	 */
-	public void setCollegeRecognised(Boolean isCollegeRecognised) {
-		this.isCollegeRecognised = isCollegeRecognised;
+	public void setCollegeRecognised(String isCollegeRecognised) {
+		this.isCollegeRecognised = convert(isCollegeRecognised);
 	}
 
 	/**
 	 * @return the isCollegeSla
 	 */
-	public Boolean getCollegeSla() {
-		return isCollegeSla;
+	public String getCollegeSla() {
+		return convert(isCollegeSla);
 	}
 
 	/**
 	 * @param isCollegeSla the isCollegeSla to set
 	 */
-	public void setCollegeSla(Boolean isCollegeSla) {
-		this.isCollegeSla = isCollegeSla;
+	public void setCollegeSla(String isCollegeSla) {
+		this.isCollegeSla = convert(isCollegeSla);
 	}
 
-	/**
-	 * @return the collegeValues
-	 */
-	public List<CollegeRadio> getCollegeValues() {
-		return collegeValues;
+	public static Boolean convert(String value) {
+		Boolean converted = null;
+		if (value == null)
+			converted = null;
+		else if ("Y".equals(value))
+			converted = Boolean.TRUE;
+		else if ("N".equals(value))
+			converted = Boolean.FALSE;
+		else
+			throw new IllegalArgumentException("need Y/N string");
+		
+		return converted;
 	}
-
-	/**
-	 * @param collegeValues the collegeValues to set
-	 */
-	public void setCollegeValues(List<CollegeRadio> collegeValues) {
-		this.collegeValues = collegeValues;
+	
+	public static String convert(Boolean value) {
+		if (value == null) {
+			return null;
+		}
+		
+		return value?"Y":"N";
 	}
-
 }

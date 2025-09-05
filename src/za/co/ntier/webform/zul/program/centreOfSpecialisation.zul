@@ -23,12 +23,12 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
 		</div>
 		<div sclass="grid-cell">
 			<radiogroup id="dhet" 
-				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeRegistered)"
-				children="@load(vmCentreOfSpecialisation.program.collegeValues)">
-				<template name="children" var = "collegeValue">
-					<radio label="@init(collegeValue.label)" radiogroup="dhet"  value="@load(collegeValue.value)"/>
-				</template>
+				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeRegistered)">
+				<radio label="YES" radiogroup="dhet"  value="Y"/>	
+				<radio label="NO" radiogroup="dhet"  value="N"/>	
 			</radiogroup>
+			
+			
 		</div>
 
 		<div sclass="grid-cell">
@@ -37,11 +37,9 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
 		</div>
 		<div sclass="grid-cell">
 			<radiogroup id="cos" 
-				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeRecognised)"
-				children="@load(vmCentreOfSpecialisation.program.collegeValues)">
-				<template name="children" var = "collegeValue">
-					<radio label="@init(collegeValue.label)" radiogroup="cos"  value="@load(collegeValue.value)"/>
-				</template>
+				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeRecognised)">
+				<radio label="YES" radiogroup="cos"  value="Y"/>	
+				<radio label="NO" radiogroup="cos"  value="N"/>	
 			</radiogroup>
 		</div>
 
@@ -51,12 +49,11 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
 		</div>
 		<div sclass="grid-cell">
 			<radiogroup id="mms" 
-				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeSla)"
-				children="@load(vmCentreOfSpecialisation.program.collegeValues)">
-				<template name="children" var = "collegeValue">
-					<radio label="@init(collegeValue.label)" radiogroup="mms"  value="@load(collegeValue.value)"/>
-				</template>
+				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeSla)">
+				<radio label="YES" radiogroup="mms"  value="Y"/>	
+				<radio label="NO" radiogroup="mms"  value="N"/>	
 			</radiogroup>
+			
 			
 		</div>
 
