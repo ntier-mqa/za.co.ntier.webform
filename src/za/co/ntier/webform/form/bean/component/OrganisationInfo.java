@@ -249,14 +249,17 @@ public class OrganisationInfo implements ISaveForm {
 			orgRegistrationNumber = bPartner.getReferenceNo();
 			BindUtils.postNotifyChange(this, "orgName", "orgTaxNumber", "orgRegistrationNumber");
 
-			orgSizeInfo.setNumOfEmployer(bPartner.get_ValueAsInt("ZZ_Number_Of_Employees"));
+			if (orgSizeInfo != null) {
+				orgSizeInfo.setNumOfEmployer(bPartner.get_ValueAsInt("ZZ_Number_Of_Employees"));
 
-			int prevApprovedCount = DB.getSQLValueEx(null, String.format(
-					"SELECT Count (*) FROM ZZ_WSP_ATR_Approvals WHERE C_BPartner_ID = ? AND ZZ_Grant_Status = 'A'"),
-					bPartner.getC_BPartner_ID());
+				int prevApprovedCount = DB.getSQLValueEx(null, String.format(
+						"SELECT Count (*) FROM ZZ_WSP_ATR_Approvals WHERE C_BPartner_ID = ? AND ZZ_Grant_Status = 'A'"),
+						bPartner.getC_BPartner_ID());
 
-			orgSizeInfo.setSubmittedWSP(prevApprovedCount > 0);
-			BindUtils.postNotifyChange(orgSizeInfo, "submittedWSPText", "numOfEmployer");
+				orgSizeInfo.setSubmittedWSP(prevApprovedCount > 0);
+				BindUtils.postNotifyChange(orgSizeInfo, "submittedWSPText", "numOfEmployer");
+			}
+			
 
 			bPartnerId = bPartner.getC_BPartner_ID();
 		} else {
