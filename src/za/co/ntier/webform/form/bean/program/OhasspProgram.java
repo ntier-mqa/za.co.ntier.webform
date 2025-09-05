@@ -21,7 +21,7 @@ public class OhasspProgram implements ISaveForm, IProgram {
 						ColumnInfo.getColPositiveNumber("No of 18.1 Employed Learners"),
 						ColumnInfo.getColPostal(ProgramInput.PostalCodeLabel),
 						ColumnInfo.getColArea(ProgramInput.AreaTitle,
-								MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList())),
+								MasterUtil.getInitCities())),
 				"Occupational Health and Safety Skills Programmes"));
 	}
 

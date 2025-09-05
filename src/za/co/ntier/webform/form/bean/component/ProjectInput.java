@@ -30,7 +30,7 @@ public class ProjectInput extends AnnexureInfo {
 		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
 		columnInfos.add(ColumnInfo.getColPostal(ProgramInput.PostalCodeLabel));
 		columnInfos.add(
-				ColumnInfo.getColArea(ProgramInput.AreaTitle, MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList()));
+				ColumnInfo.getColArea(ProgramInput.AreaTitle, MasterUtil.getInitCities()));
 		return AnnexureInfo.getAnnexureInfoOneLine(ProjectInput.class, secctionTitle, columnInfos, null, false, null);
 
 	}

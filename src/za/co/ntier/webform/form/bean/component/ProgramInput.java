@@ -45,7 +45,7 @@ public class ProgramInput extends AnnexureInfo {
 		columns.add(ColumnInfo.getColPostal(PostalCodeLabel));
 
 		columns.add(
-				ColumnInfo.getColArea(AreaTitle, MasterUtil.getCities()));
+				ColumnInfo.getColArea(AreaTitle, MasterUtil.getInitCities()));
 
 		if (hasWPAReq) {
 			columns.add(ColumnInfo.getColFileUpload(WPATitle, WPAButtonText));
@@ -88,7 +88,7 @@ public class ProgramInput extends AnnexureInfo {
 		columns.add(ColumnInfo.getColPostal(PostalCodeLabel));
 
 		columns.add(
-				ColumnInfo.getColArea(AreaTitle, MasterUtil.getCities()));
+				ColumnInfo.getColArea(AreaTitle, MasterUtil.getInitCities()));
 
 		if (hasWPAReq) {
 			columns.add(ColumnInfo.getColFileUpload(WPATitle, "WPA"));

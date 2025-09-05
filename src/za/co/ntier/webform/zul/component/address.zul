@@ -58,7 +58,7 @@
 				value="@init(vmAddress.addressInfo.provinceTitle)" />
 
 			<listbox mold="select"
-				model="@load((MasterUtil.getRegions()))"
+				model="@load((vmAddress.addressInfo.provinces))"
 				selectedItem="@bind(vmAddress.addressInfo.provinceSelected)">
 				<template name="model" var="item">
 					<listitem label="@load(item.name)" />

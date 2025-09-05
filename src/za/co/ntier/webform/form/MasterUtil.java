@@ -110,6 +110,7 @@ public class MasterUtil {
 		return cetColleges;
 	}
 	private static final List<MCity> tmpAllCity = new ArrayList<>();
+	
 	public static List<MCity> getCities() {
 		if (s_Cities.isEmpty()) {
 
@@ -130,10 +131,17 @@ public class MasterUtil {
 			}); 
 			
 		}
-		return tmpAllCity;
+		return s_Cities.get(Integer.MIN_VALUE);
 		//return s_Cities.get(Integer.MIN_VALUE);
 	}
 
+	public static List<MCity> getInitCities(){
+		if (tmpAllCity.isEmpty()) {
+			getCities();
+		}
+		return tmpAllCity;
+	}
+	
 	public static List<MCity> getCitiesByPostal(String postalCode) {
 		
 		if (StringUtils.isNotEmpty(postalCode)) {
@@ -145,7 +153,7 @@ public class MasterUtil {
 					});
 			return areaFilters;
 		}else {
-			return getCities();
+			return getInitCities();
 		}
 		
 		

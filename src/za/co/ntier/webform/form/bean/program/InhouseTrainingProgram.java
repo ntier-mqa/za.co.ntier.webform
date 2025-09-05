@@ -21,7 +21,7 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 						ColumnInfo.getColPositiveNumber("No of Learners applied for"),
 						ColumnInfo.getColPostal(ProgramInput.PostalCodeLabel),
 						ColumnInfo.getColArea("Area",
-								MasterUtil.getCities().stream().limit(MasterUtil.limitItem).toList())),
+								MasterUtil.getInitCities())),
 				"Inhouse /Industry/Company based short courses"));
 
 	}
