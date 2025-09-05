@@ -2,6 +2,7 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
@@ -14,9 +15,9 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 
 	public ArtisanRPLProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		allLearners = ProjectInput.getProject(List.of(ColumnInfo.getColPositiveNumber("No. of Employed Learners"),
-				ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"),
-				ColumnInfo.getColPositiveNumber("Total No. of Learners Applied For")));
+		allLearners = ProjectInput.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel),
+				ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel),
+				ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)));
 	}
 
 	/**

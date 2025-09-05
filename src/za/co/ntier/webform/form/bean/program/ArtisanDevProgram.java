@@ -2,6 +2,7 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -21,7 +22,7 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 		setTrade(ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), null));
 
 		setTotalNumApplied(ProjectInput
-				.getProject(List.of(ColumnInfo.getColPositiveNumber("Total Number of Learners Applied For"))));
+				.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel))));
 
 	}
 

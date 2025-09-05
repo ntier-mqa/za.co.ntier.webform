@@ -3,7 +3,6 @@ package za.co.ntier.webform.form.bean.component;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
 

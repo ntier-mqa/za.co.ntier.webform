@@ -4,10 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class CetTvetOneLineInput extends AnnexureInfo{
-	public static final String colBeneficiaries = "Number Of Beneficiaries Applying For";
-	public static final String colTotalBeneficiaries = "Total Number of beneficiaries applying for";
-	public static final String colDiscipline = "Discipline Applying For";
-	public static final String colProgramme = "Programme Applying For";
+	public static final String colNoBeneficiariesTitle = "Number Of Beneficiaries Applying For";
+	public static final String colTotalNoBeneficiariesTitle = "Total Number of beneficiaries applying for";
+	public static final String colDisciplineTitle = "Discipline Applying For";
+	public static final String colProgrammeTitle = "Programme Applying For";
 	public static CetTvetOneLineInput getCetTvetOneLineInput(String sectionHeader,
 			List<ColumnInfo<?>> columnInfos, String rowTitle, List<String> twoTitleValue) throws NoSuchMethodException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {

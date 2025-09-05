@@ -68,15 +68,15 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 	public static void saveFormDisciplines(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput disciplines, String disciplineType) throws IOException {
 		
 		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, disciplines);
-		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(ProgramInput.NumLearnersTitle, disciplines);
+		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(ProgramInput.colNoLearnersLabel, disciplines);
 		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, disciplines);
 		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, disciplines);
-		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ProgramInput.WPATitle, disciplines);
-		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(ProgramInput.AccredTitle, disciplines);
+		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ProgramInput.colWPALabel, disciplines);
+		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(ProgramInput.colAccredLabel, disciplines);
 		
 		
-		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(ProgramInput.NumEmployedLearnersTitle, disciplines);
-		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(ProgramInput.NumUnEmployedLearnersTitle, disciplines);
+		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(ProgramInput.colNoEmployedLabel, disciplines);
+		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(ProgramInput.colNoUnEmployedLabel, disciplines);
 		int totalLearners = 0;
 		
 		for (Map<ColumnInfo<?>, Object> row : disciplines.getRows()) {
@@ -113,7 +113,7 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 			X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null); formDisciplines.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
 			
 			if (nunLearners != null && nunLearners.getValue() != null && nunLearners.getValue() != 0) {
-				formDisciplines.setZZ_LearnersNo(nunLearners.getValue());
+				formDisciplines.setZZNoLearners(nunLearners.getValue());
 				totalLearners += nunLearners.getValue();
 			}
 			

@@ -10,10 +10,6 @@ import java.util.Map;
 
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.ContextParam;
-import org.zkoss.bind.annotation.ContextType;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;

@@ -24,7 +24,6 @@ import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class CetTvetProgram implements ISaveForm, IProgram {
 	private MenuContextInfo menuContextInfo;
@@ -46,7 +45,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
 					"ANNEXURE A (Applicable to CET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colBeneficiaries)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle)),
 					"CET learners funded to access AET Programmes");
 
 			annexureInfos.add(annexure);
@@ -54,8 +53,8 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
 					"ANNEXURE B (Applicable to CET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colBeneficiaries),
-							ColumnInfo.getColText(CetTvetOneLineInput.colDiscipline)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
+							ColumnInfo.getColText(CetTvetOneLineInput.colDisciplineTitle)),
 					"Number of TVET Colleges and HEI graduates that entered CET Internships");
 
 			annexureInfos.add(annexure);
@@ -63,12 +62,12 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
 					"ANNEXURE C (Applicable to CET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colBeneficiaries)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle)),
 					"CET Managers receiving training on curriculum related studies");
 
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgramme),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colManagers)));
+					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle),
+							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoManagersTitle)));
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -76,11 +75,11 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
 					"ANNEXURE D (Applicable to CET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colBeneficiaries)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle)),
 					"Number of CET Colleges lecturers awarded skills development programmes");
 
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgramme)));
+					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle)));
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -88,13 +87,13 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
 					"ANNEXURE E (Applicable to TVET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colBeneficiaries),
-							ColumnInfo.getColText(CetTvetOneLineInput.colDiscipline)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
+							ColumnInfo.getColText(CetTvetOneLineInput.colDisciplineTitle)),
 					"Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)");
 
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colFieldStudy),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colLearners)));
+					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colFieldStudyTitle),
+							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners)));
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -102,13 +101,13 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
 					"ANNEXURE F  (Applicable to TVET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colBeneficiaries),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colProgramme)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colProgrammeTitle)),
 					"TVET Managers receiving training on curriculum related studies");
 
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgramme),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colManagers)));
+					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle),
+							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoManagersTitle)));
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -116,13 +115,13 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
 					"ANNEXURE G (Applicable to TVET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colTotalBeneficiaries)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colTotalNoBeneficiariesTitle)),
 					"Number of TVET students requiring Work Integrated Learning to complete their work integrated learning placements (WIL)");
 
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(
 					"Please supply the list of possible fields of study for this WIL",
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colFieldStudy),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colLearners)));
+					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colFieldStudyTitle),
+							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners)));
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -130,7 +129,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
 					"ANNEXURE H (Applicable to TVET Colleges)",
 					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colTotalBeneficiaries)),
+							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colTotalNoBeneficiariesTitle)),
 					"TVET Lecturers to be awarded bursaries to further their studies");
 
 			annexureInfos.add(annexure);
@@ -155,7 +154,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 				annexure = CetTvetMultiLineInput.getCetTvetMultiLineInput("TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",
 						List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
-								ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colLearners)));
+								ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners)));
 				annexure.getTotalRow().put(annexure.getColumnInfos().get(0), "Total Number of beneficiaries applying for");
 
 				annexureInfos.add(annexure);
@@ -220,8 +219,8 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	
 	public void saveMultilineInput(String trxName, X_ZZ_Application_Form applicationForm, X_ZZAnnexure zzAnnexure, CetTvetMultiLineInput cetTvetOneLineInput) {
 		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cetTvetOneLineInput);
-		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgramme, cetTvetOneLineInput);
-		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colFieldStudy, cetTvetOneLineInput);
+		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colFieldStudyTitle, cetTvetOneLineInput);
 		Integer cellData = null;
 		
 		
@@ -241,7 +240,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 				hasData = true;
 			}
 			
-			cellData = getIntegerValue(cetTvetOneLineInput, row, CetTvetMultiLineInput.colLearners);
+			cellData = getIntegerValue(cetTvetOneLineInput, row, CetTvetMultiLineInput.colNoLearners);
 			if (cellData != null && cellData != 0) {
 				subAnnex.setZZLearners(cellData);
 				hasData = true;
@@ -268,10 +267,10 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	}
 	
 	public X_ZZAnnexure saveOnelineInput(String trxName, X_ZZ_Application_Form applicationForm, CetTvetOneLineInput cetTvetOneLineInput) {
-		ColumnInfo<?> colBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colBeneficiaries, cetTvetOneLineInput);
-		ColumnInfo<?> colTotalBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colTotalBeneficiaries, cetTvetOneLineInput);
-		ColumnInfo<?> colDiscipline = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colDiscipline, cetTvetOneLineInput);
-		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgramme, cetTvetOneLineInput);
+		ColumnInfo<?> colBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colNoBeneficiariesTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colTotalBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colTotalNoBeneficiariesTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colDiscipline = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colDisciplineTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgrammeTitle, cetTvetOneLineInput);
 		
 		X_ZZAnnexure annexure = new X_ZZAnnexure(Env.getCtx(), 0, trxName);
 		
