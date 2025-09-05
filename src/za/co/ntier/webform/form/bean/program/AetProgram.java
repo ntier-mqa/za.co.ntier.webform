@@ -26,17 +26,17 @@ public class AetProgram implements ISaveForm, IProgram {
 		return aetLearnership;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+		ProgramInput.saveFormLearnership(trxName, applicationForm, aetLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership);
+		
+	}
+
 	/**
 	 * @param aetLearnership the aetLearnership to set
 	 */
 	public void setAetLearnership(ProgramInput aetLearnership) {
 		this.aetLearnership = aetLearnership;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
-		CandidacyProgram.saveFormLearnership(trxName, applicationForm, aetLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership);
-		
 	}
 
 }

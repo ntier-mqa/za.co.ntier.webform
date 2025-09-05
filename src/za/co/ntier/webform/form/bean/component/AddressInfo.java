@@ -36,25 +36,35 @@ public class AddressInfo implements ISaveForm {
 
 	private String emailTitle = "E-mail";
 
+	private boolean isAlternate;
 	private String landlineNumber;
+
 	private String landlineNumberTitle = "Alternative Number";
 
 	private KeyNamePair localMunicipalitySelected;
-
 	private String mobileNumber;
+
 	private String mobileNumberTitle = "Tel Number";
 
 	private String nameSiteRepresentative;
 
 	private String nameSiteRepresentativeTitle = "Name and Surname";
 
+	private String orgName;
+
+	private String orgNameTitle = "Organisation Name";
+
 	private String postAddress;
 
 	private String postAddressTitle = "Post Address";
-
+	
 	private String postalCode;
 
 	private String postalCodeTitle = "Postal Code";
+
+	private ProgramType programType;
+
+	private Collection<MRegion> provinces;
 
 	private MRegion provinceSelected;
 
@@ -68,25 +78,19 @@ public class AddressInfo implements ISaveForm {
 
 	private String siteNameTitle = "Site Name";
 
-	private String orgName;
-
-	private String orgNameTitle = "Organisation Name";
-
-	private ProgramType programType;
-
-	private boolean isAlternate;
-
 	public AddressInfo(AddressType addressCategory, MRegion provinceSelected) {
 		this.addressCategory = addressCategory;
 		this.provinceSelected = provinceSelected;
+		init();
 	}
 
 	public AddressInfo(ProgramType programType, boolean isAlternate, MRegion provinceSelected) {
 		this(isAlternate ? AddressType.MAIN_ALTER : AddressType.MAIN, provinceSelected);
 		this.isAlternate = isAlternate;
 		this.programType = programType;
+		init();
 	}
-
+	
 	public AddressType getAddressCategory() {
 		return this.addressCategory;
 	}
@@ -243,6 +247,13 @@ public class AddressInfo implements ISaveForm {
 	}
 
 	/**
+	 * @return the provinces
+	 */
+	public Collection<MRegion> getProvinces() {
+		return provinces;
+	}
+
+	/**
 	 * @return the provinceSelected
 	 */
 	public MRegion getProvinceSelected() {
@@ -284,6 +295,37 @@ public class AddressInfo implements ISaveForm {
 		return siteNameTitle;
 	}
 
+	private void init() {
+		areas = MasterUtil.getInitCities();
+		provinces = MasterUtil.getRegions();
+	}
+
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		int applicationFormID = applicationForm.getZZ_Application_Form_ID();
+		
+		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
+		contact.setZZ_Application_Form_ID(applicationFormID);
+		if (getProvinceSelected() != null)
+			contact.setC_Region_ID(getProvinceSelected().getC_Region_ID());
+
+		if (getAreaSelected() != null)
+			contact.setC_City_ID(getAreaSelected().getC_City_ID());
+
+		contact.setPostal(getPostalCode());
+
+		contact.setZZ_SideName(getSiteName());
+		contact.setAddress(getAddressLine());
+
+		contact.setContactName(getNameSiteRepresentative());
+		contact.setZZ_Designation(getRepresentativeDesignation());
+		contact.setPhone(getMobileNumber());
+		contact.setPhone2(getLandlineNumber());
+		contact.setEMail(getEmail());
+		contact.setZZ_ContactType(getAddressCategory().toString());
+		contact.saveEx(trxName);
+	}
+
 	public void setAddressCategory(AddressType addressCategory) {
 		this.addressCategory = addressCategory;
 	}
@@ -318,6 +360,8 @@ public class AddressInfo implements ISaveForm {
 		if (areaSelected != null) {
 			postalCode = areaSelected.getPostal();
 			provinceSelected = MRegion.get(areaSelected.getC_Region_ID());
+			provinces = new ArrayList<>();
+			provinces.add(provinceSelected);
 		} else {
 			postalCode = null;
 			provinceSelected = null;
@@ -425,37 +469,42 @@ public class AddressInfo implements ISaveForm {
 	/**
 	 * @param postalCode the postalCode to set
 	 */
-	@NotifyChange({ "provinceSelected", "areas" })
+	@NotifyChange({ "provinceSelected", "areas", "provinces"})
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 
 		Collection<MCity> areaFilters = new ArrayList<>();
+		Collection<MRegion> provinceFilters = new ArrayList<>();
 
 		if (StringUtils.isNotEmpty(postalCode)) {
 			MasterUtil.getCities().stream()
 					.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
 					.limit(MasterUtil.limitItem).forEach(city -> {
 						areaFilters.add(city);
+						MRegion linkRegion = MRegion.get(city.getC_Region_ID());
+						if (!provinceFilters.contains(linkRegion))
+							provinceFilters.add(linkRegion);
 					});
 		}
 
 		areaSelected = null;
-
+		provinceSelected = null;
 		if (!areaFilters.isEmpty()) {
-			provinceSelected = MRegion.get(areaFilters.iterator().next().getC_Region_ID());
 			if (areaFilters.size() == 1) {
 				areaSelected = areaFilters.iterator().next();
 			}
+			
+			if (provinceFilters.size() == 1) {
+				provinceSelected = provinceFilters.iterator().next();
+			}
+			
+			areas = areaFilters;
+			provinces = provinceFilters;
 		} else {
-			MasterUtil.getCities().stream().limit(MasterUtil.limitItem).forEach(city -> {
-				areaFilters.add(city);
-			});
+			areas = MasterUtil.getInitCities();
 
-			provinceSelected = null;
+			provinces = MasterUtil.getRegions();
 		}
-
-		areas = areaFilters;
-
 	}
 
 	/**
@@ -473,6 +522,13 @@ public class AddressInfo implements ISaveForm {
 	}
 
 	/**
+	 * @param provinces the provinces to set
+	 */
+	public void setProvinces(Collection<MRegion> provinces) {
+		this.provinces = provinces;
+	}
+
+	/**
 	 * @param provinceSelected the provinceSelected to set
 	 */
 	@NotifyChange({ "areas", "areaSelected", "postalCode" })
@@ -480,9 +536,11 @@ public class AddressInfo implements ISaveForm {
 		this.provinceSelected = provinceSelected;
 
 		areaSelected = null;
-
+		postalCode = null;
+		
 		if (provinceSelected == null) {
-			areas = null;
+			areas = MasterUtil.getInitCities();
+			provinces = MasterUtil.getRegions();
 			postalCode = null;
 		} else {
 			List<MCity> areaFilters = new ArrayList<>();
@@ -494,9 +552,9 @@ public class AddressInfo implements ISaveForm {
 
 			areas = areaFilters;
 			if (!areas.isEmpty()) {
-				postalCode = areaFilters.iterator().next().getPostal();
 				if (areaFilters.size() == 1) {
 					areaSelected = areaFilters.iterator().next();
+					postalCode = areaSelected.getPostal();
 				}
 			}
 		}
@@ -570,31 +628,5 @@ public class AddressInfo implements ISaveForm {
 
 	public boolean showSiteName() {
 		return (programType != null && programType.isShowAddressSiteField()) || addressCategory == AddressType.VACATION;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		int applicationFormID = applicationForm.getZZ_Application_Form_ID();
-		
-		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
-		contact.setZZ_Application_Form_ID(applicationFormID);
-		if (getProvinceSelected() != null)
-			contact.setC_Region_ID(getProvinceSelected().getC_Region_ID());
-
-		if (getAreaSelected() != null)
-			contact.setC_City_ID(getAreaSelected().getC_City_ID());
-
-		contact.setPostal(getPostalCode());
-
-		contact.setZZ_SideName(getSiteName());
-		contact.setAddress(getAddressLine());
-
-		contact.setContactName(getNameSiteRepresentative());
-		contact.setZZ_Designation(getRepresentativeDesignation());
-		contact.setPhone(getMobileNumber());
-		contact.setPhone2(getLandlineNumber());
-		contact.setEMail(getEmail());
-		contact.setZZ_ContactType(getAddressCategory().toString());
-		contact.saveEx(trxName);
 	}
 }

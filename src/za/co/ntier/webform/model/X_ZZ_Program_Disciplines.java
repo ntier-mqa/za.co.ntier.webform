@@ -19,7 +19,11 @@ package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.model.*;
+
+import org.compiere.model.I_Persistent;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 
 /** Generated Model for ZZ_Program_Disciplines
  *  @author iDempiere (generated)

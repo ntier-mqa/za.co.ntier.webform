@@ -16,14 +16,24 @@ public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColDate(String title) {
 		return new ColumnInfo<T>(title, DataType.Date);
 	}
+	public static ColumnInfo<X_ZZDocumentUpload> getColDocUpload(String title) {
+		return new ColumnInfo<X_ZZDocumentUpload>(title, DataType.DocUploadDef);
+
+	}
 	public static <T> ColumnInfo<T> getColFileUpload(String title, String btText) {
 		ColumnInfo<T> colInfo = new ColumnInfo<T>(title, DataType.FileUpload);
 		colInfo.setBtText(btText);
 		return colInfo;
 
 	}
+
 	public static <T> ColumnInfo<T> getColLabel(String title) {
 		return new ColumnInfo<T>(title, DataType.Label);
+	}
+
+	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title) {
+		return new ColumnInfo<LearnerInputInfo>(title, DataType.LearnerInfo);
+
 	}
 
 	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider) {
@@ -36,42 +46,32 @@ public class ColumnInfo<T> {
 		return new ColumnInfo<T>(title, DataType.PositiveNumber);
 	}
 
-	public static <T> ColumnInfo<T> getColText(String title) {
-		return new ColumnInfo<T>(title, DataType.Text);
-	}
-
-	public static ColumnInfo<Entry<String, String>> getColTwoTitle(String title) {
-		return new ColumnInfo<Entry<String, String>>(title, DataType.TwoTitles);
-
-	}
-
-	public static ColumnInfo<Entry<Integer, Integer>> getColTwoValue(String title) {
-		return new ColumnInfo<Entry<Integer, Integer>>(title, DataType.TwoValues);
-
-	}
-	
-	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title) {
-		return new ColumnInfo<LearnerInputInfo>(title, DataType.LearnerInfo);
-
-	}
-	
 	public static <T> ColumnInfo<T> getColPostal(String title) {
 		return new ColumnInfo<T>(title, DataType.Postal);
 
 	}
 	
-	public static ColumnInfo<X_ZZDocumentUpload> getColDocUpload(String title) {
-		return new ColumnInfo<X_ZZDocumentUpload>(title, DataType.DocUploadDef);
+	public static <T> ColumnInfo<T> getColText(String title) {
+		return new ColumnInfo<T>(title, DataType.Text);
+	}
+	
+	public static ColumnInfo<Entry<String, String>> getColTwoTitle(String title) {
+		return new ColumnInfo<Entry<String, String>>(title, DataType.TwoTitles);
+
+	}
+	
+	public static ColumnInfo<Entry<Integer, Integer>> getColTwoValue(String title) {
+		return new ColumnInfo<Entry<Integer, Integer>>(title, DataType.TwoValues);
 
 	}
 
-	private String title;
-
-	private DataType dataType;
+	private String btText;
 
 	private List<T> dataProvider;
 
-	private String btText;
+	private DataType dataType;
+
+	private String title;
 
 	public ColumnInfo(String colTitle, DataType dataType) {
 		this.title = colTitle;

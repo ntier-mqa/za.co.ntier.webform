@@ -13,16 +13,16 @@ public class MedpProgram implements ISaveForm, IProgram {
 		return noOfLearners;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * @param noOfLearners the noOfLearners to set
 	 */
 	public void setNoOfLearners(int noOfLearners) {
 		this.noOfLearners = noOfLearners;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 }

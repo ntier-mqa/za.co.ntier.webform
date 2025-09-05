@@ -19,7 +19,11 @@ package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.model.*;
+
+import org.compiere.model.I_Persistent;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 
 /** Generated Model for ZZ_FormDiscipline
  *  @author iDempiere (generated)
@@ -31,7 +35,7 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250903L;
+	private static final long serialVersionUID = 20250905L;
 
     /** Standard Constructor */
     public X_ZZ_FormDiscipline (Properties ctx, int ZZ_FormDiscipline_ID, String trxName)
@@ -191,6 +195,25 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		return ii.intValue();
 	}
 
+	/** Set No Learners.
+		@param ZZNoLearners Number of learners applying should be based on
+	*/
+	public void setZZNoLearners (int ZZNoLearners)
+	{
+		set_Value (COLUMNNAME_ZZNoLearners, Integer.valueOf(ZZNoLearners));
+	}
+
+	/** Get No Learners.
+		@return Number of learners applying should be based on
+	  */
+	public int getZZNoLearners()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLearners);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set No UnEmployed Learners.
 		@param ZZNoUnEmployedLearners No UnEmployed Learners
 	*/
@@ -340,25 +363,6 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 	public String getZZ_FormDiscipline_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ZZ_FormDiscipline_UU);
-	}
-
-	/** Set Learners No.
-		@param ZZ_LearnersNo Number of learners applying should be based on
-	*/
-	public void setZZ_LearnersNo (int ZZ_LearnersNo)
-	{
-		set_Value (COLUMNNAME_ZZ_LearnersNo, Integer.valueOf(ZZ_LearnersNo));
-	}
-
-	/** Get Learners No.
-		@return Number of learners applying should be based on
-	  */
-	public int getZZ_LearnersNo()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_LearnersNo);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	public I_ZZ_Learnerships getZZ_Learnerships() throws RuntimeException

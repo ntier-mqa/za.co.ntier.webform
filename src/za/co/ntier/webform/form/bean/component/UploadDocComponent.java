@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,13 +31,6 @@ public class UploadDocComponent implements ISaveForm {
 		return uploadDoc;
 	}
 
-	/**
-	 * @param uploadDoc the uploadDoc to set
-	 */
-	public void setUploadDoc(UploadInput uploadDoc) {
-		this.uploadDoc = uploadDoc;
-	}
-
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
 		for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
@@ -63,6 +55,13 @@ public class UploadDocComponent implements ISaveForm {
 			
 		}
 		
+	}
+
+	/**
+	 * @param uploadDoc the uploadDoc to set
+	 */
+	public void setUploadDoc(UploadInput uploadDoc) {
+		this.uploadDoc = uploadDoc;
 	}
 
 }

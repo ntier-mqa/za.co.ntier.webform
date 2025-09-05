@@ -2,6 +2,7 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -31,16 +32,16 @@ public class InternshipProgram extends CandidacyProgram implements ISaveForm, IP
 		return trade;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+		super.saveForm(trxName, applicationForm);
+		ProgramInput.saveFormDisciplines(trxName, applicationForm, trade, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
+	}
+	
 	/**
 	 * @param trade the trade to set
 	 */
 	public void setTrade(ProgramInput trade) {
 		this.trade = trade;
-	}
-	
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
-		super.saveForm(trxName, applicationForm);
-		CandidacyProgram.saveFormDisciplines(trxName, applicationForm, trade, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
 	}
 }

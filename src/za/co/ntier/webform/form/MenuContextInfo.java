@@ -4,11 +4,11 @@ import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 
 public class MenuContextInfo {
+	private String formTitle;
 	private boolean isUploadWPAForNVC;
 	private I_ZZ_Program_Master_Data programMasterData;
 	private ProgramType programType;
 	private String zulPath;
-	private String formTitle;
 
 	public MenuContextInfo(ProgramType programType, String zulPath, I_ZZ_Program_Master_Data programMasterData,
 			boolean isUploadWPAForNVC, String formTitle) {

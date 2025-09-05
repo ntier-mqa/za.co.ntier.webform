@@ -24,6 +24,33 @@ public class ApplicationsListVM {
     private ListModelList<X_ZZ_Application_Form> applications;
     private MenuContextInfo menuContextInfo;
 
+    @Command
+    public void editSelected(@BindingParam("application") X_ZZ_Application_Form app) {
+        if (app == null) return;
+
+        Map<String,Object> args = new HashMap<>();
+        args.put("applicationId", app.getZZ_Application_Form_ID());
+        args.put("menuContextInfo", menuContextInfo);
+
+        String menuContext = "zulPath=/za/co/ntier/webform/zul/discretionaryGrantsApplicationProgram.zul\n"
+        		+ "formTitle=" + menuContextInfo.getFormTitle() + "\n"
+        		+ "ZZ_Program_Master_Data_UU=" + menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_UU() + "\n"
+        		+ "programType=" + menuContextInfo.getProgramType() + "\n"
+        		+ "ZZ_Application_Form_UU=" + app.getZZ_Application_Form_UU();
+        
+
+        
+       // DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+       // desktop.setPredefinedContextVariables(menuContext);
+       // desktop.openForm(1000000);
+    }
+
+    // IMPORTANT: return ListModel so <grid model="..."> works
+    public ListModel<X_ZZ_Application_Form> getApplications() {
+        return applications;
+    }
+
+    
     @Init
     public void init(@ExecutionArgParam("menuContextInfo") MenuContextInfo menuContextInfo) {
         this.menuContextInfo = menuContextInfo;
@@ -53,33 +80,6 @@ public class ApplicationsListVM {
             .list();
 
         this.applications = new ListModelList<>(loaded);
-    }
-
-    // IMPORTANT: return ListModel so <grid model="..."> works
-    public ListModel<X_ZZ_Application_Form> getApplications() {
-        return applications;
-    }
-
-    
-    @Command
-    public void editSelected(@BindingParam("application") X_ZZ_Application_Form app) {
-        if (app == null) return;
-
-        Map<String,Object> args = new HashMap<>();
-        args.put("applicationId", app.getZZ_Application_Form_ID());
-        args.put("menuContextInfo", menuContextInfo);
-
-        String menuContext = "zulPath=/za/co/ntier/webform/zul/discretionaryGrantsApplicationProgram.zul\n"
-        		+ "formTitle=" + menuContextInfo.getFormTitle() + "\n"
-        		+ "ZZ_Program_Master_Data_UU=" + menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_UU() + "\n"
-        		+ "programType=" + menuContextInfo.getProgramType() + "\n"
-        		+ "ZZ_Application_Form_UU=" + app.getZZ_Application_Form_UU();
-        
-
-        
-       // DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
-       // desktop.setPredefinedContextVariables(menuContext);
-       // desktop.openForm(1000000);
     }
     
     public String programTitle(X_ZZ_Application_Form app) {

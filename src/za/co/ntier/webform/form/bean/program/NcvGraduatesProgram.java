@@ -2,6 +2,7 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -14,7 +15,7 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 
 	public NcvGraduatesProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		setUnemployed(ProjectInput.getProject(List.of(ColumnInfo.getColPositiveNumber("No. of Unemployed Learners"))));
+		setUnemployed(ProjectInput.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel))));
 
 	}
 
@@ -25,16 +26,16 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 		return unemployed;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		ProjectInput.saveProjectInput(trxName, applicationForm, unemployed);
+		
+	}
+
 	/**
 	 * @param unemployed the unemployed to set
 	 */
 	public void setUnemployed(ProjectInput unemployed) {
 		this.unemployed = unemployed;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
 	}
 }

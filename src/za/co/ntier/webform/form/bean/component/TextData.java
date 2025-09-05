@@ -4,9 +4,9 @@ import java.util.Map;
 
 
 public class TextData {
-	private String text;
 	private AnnexureInfo annexure;
 	private Map<ColumnInfo<?>, Object> row;
+	private String text;
 
 	public TextData(AnnexureInfo annexure, Map<ColumnInfo<?>, Object> row, String text) {
 		this.text = text;
@@ -15,27 +15,26 @@ public class TextData {
 	}
 	
 	/**
-	 * @return the text
-	 */
-	public String getText() {
-		return text;
-	}
-
-	/**
-	 * @param text the text to set
-	 */
-	public void setText(String text) {
-		this.text = text;
-		
-	}
-	
-	
-
-	/**
 	 * @return the annexure
 	 */
 	public AnnexureInfo getAnnexure() {
 		return annexure;
+	}
+
+	/**
+	 * @return the row
+	 */
+	public Map<ColumnInfo<?>, Object> getRow() {
+		return row;
+	}
+	
+	
+
+	/**
+	 * @return the text
+	 */
+	public String getText() {
+		return text;
 	}
 
 	/**
@@ -46,16 +45,17 @@ public class TextData {
 	}
 
 	/**
-	 * @return the row
-	 */
-	public Map<ColumnInfo<?>, Object> getRow() {
-		return row;
-	}
-
-	/**
 	 * @param row the row to set
 	 */
 	public void setRow(Map<ColumnInfo<?>, Object> row) {
 		this.row = row;
+	}
+
+	/**
+	 * @param text the text to set
+	 */
+	public void setText(String text) {
+		this.text = text;
+		
 	}
 }

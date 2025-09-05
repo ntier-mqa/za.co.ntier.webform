@@ -18,29 +18,28 @@ package za.co.ntier.webform.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import org.compiere.model.MTable;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for ZZ_FormDiscipline
+/** Generated Interface for ZZLearnersApplied
  *  @author iDempiere (generated) 
  *  @version Release 12
  */
 @SuppressWarnings("all")
-public interface I_ZZ_FormDiscipline 
+public interface I_ZZLearnersApplied 
 {
 
-    /** TableName=ZZ_FormDiscipline */
-    public static final String Table_Name = "ZZ_FormDiscipline";
+    /** TableName=ZZLearnersApplied */
+    public static final String Table_Name = "ZZLearnersApplied";
 
-    /** AD_Table_ID=1000049 */
+    /** AD_Table_ID=1000062 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 4 - System 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(4);
 
     /** Load Meta Data */
 
@@ -80,21 +79,6 @@ public interface I_ZZ_FormDiscipline
 
 	public org.compiere.model.I_C_City getC_City() throws RuntimeException;
 
-    /** Column name C_Region_ID */
-    public static final String COLUMNNAME_C_Region_ID = "C_Region_ID";
-
-	/** Set Region.
-	  * Identifies a geographical Region
-	  */
-	public void setC_Region_ID (int C_Region_ID);
-
-	/** Get Region.
-	  * Identifies a geographical Region
-	  */
-	public int getC_Region_ID();
-
-	public org.compiere.model.I_C_Region getC_Region() throws RuntimeException;
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -123,6 +107,19 @@ public interface I_ZZ_FormDiscipline
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
+
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
 
     /** Column name Postal */
     public static final String COLUMNNAME_Postal = "Postal";
@@ -153,6 +150,44 @@ public interface I_ZZ_FormDiscipline
 	  */
 	public int getUpdatedBy();
 
+    /** Column name ZZLearnersApplied_ID */
+    public static final String COLUMNNAME_ZZLearnersApplied_ID = "ZZLearnersApplied_ID";
+
+	/** Set Learners Applied.
+	  * For input &quot;
+No of Learners applied for&quot;
+, &quot;
+No. of Unemployed Learners&quot;
+,  &quot;
+Total Number of Learners Applied For&quot;
+, &quot;
+No. of employed Learners&quot;
+
+	  */
+	public void setZZLearnersApplied_ID (int ZZLearnersApplied_ID);
+
+	/** Get Learners Applied.
+	  * For input &quot;
+No of Learners applied for&quot;
+, &quot;
+No. of Unemployed Learners&quot;
+,  &quot;
+Total Number of Learners Applied For&quot;
+, &quot;
+No. of employed Learners&quot;
+
+	  */
+	public int getZZLearnersApplied_ID();
+
+    /** Column name ZZLearnersApplied_UU */
+    public static final String COLUMNNAME_ZZLearnersApplied_UU = "ZZLearnersApplied_UU";
+
+	/** Set ZZLearnersApplied_UU	  */
+	public void setZZLearnersApplied_UU (String ZZLearnersApplied_UU);
+
+	/** Get ZZLearnersApplied_UU	  */
+	public String getZZLearnersApplied_UU();
+
     /** Column name ZZNoEmployedLearners */
     public static final String COLUMNNAME_ZZNoEmployedLearners = "ZZNoEmployedLearners";
 
@@ -175,6 +210,15 @@ public interface I_ZZ_FormDiscipline
 	  */
 	public int getZZNoLearners();
 
+    /** Column name ZZNoTotalLearners */
+    public static final String COLUMNNAME_ZZNoTotalLearners = "ZZNoTotalLearners";
+
+	/** Set Total No Learners Applied For	  */
+	public void setZZNoTotalLearners (int ZZNoTotalLearners);
+
+	/** Get Total No Learners Applied For	  */
+	public int getZZNoTotalLearners();
+
     /** Column name ZZNoUnEmployedLearners */
     public static final String COLUMNNAME_ZZNoUnEmployedLearners = "ZZNoUnEmployedLearners";
 
@@ -183,15 +227,6 @@ public interface I_ZZ_FormDiscipline
 
 	/** Get No UnEmployed Learners	  */
 	public int getZZNoUnEmployedLearners();
-
-    /** Column name ZZ_AccredFile */
-    public static final String COLUMNNAME_ZZ_AccredFile = "ZZ_AccredFile";
-
-	/** Set Accred File	  */
-	public void setZZ_AccredFile (byte[] ZZ_AccredFile);
-
-	/** Get Accred File	  */
-	public byte[] getZZ_AccredFile();
 
     /** Column name ZZ_Application_Form_ID */
     public static final String COLUMNNAME_ZZ_Application_Form_ID = "ZZ_Application_Form_ID";
@@ -203,77 +238,4 @@ public interface I_ZZ_FormDiscipline
 	public int getZZ_Application_Form_ID();
 
 	public I_ZZ_Application_Form getZZ_Application_Form() throws RuntimeException;
-
-    /** Column name ZZ_DisciplineType */
-    public static final String COLUMNNAME_ZZ_DisciplineType = "ZZ_DisciplineType";
-
-	/** Set Discipline Type	  */
-	public void setZZ_DisciplineType (String ZZ_DisciplineType);
-
-	/** Get Discipline Type	  */
-	public String getZZ_DisciplineType();
-
-    /** Column name ZZ_Disciplines_ID */
-    public static final String COLUMNNAME_ZZ_Disciplines_ID = "ZZ_Disciplines_ID";
-
-	/** Set Disciplines	  */
-	public void setZZ_Disciplines_ID (int ZZ_Disciplines_ID);
-
-	/** Get Disciplines	  */
-	public int getZZ_Disciplines_ID();
-
-	public I_ZZ_Disciplines getZZ_Disciplines() throws RuntimeException;
-
-    /** Column name ZZ_FormDiscipline_ID */
-    public static final String COLUMNNAME_ZZ_FormDiscipline_ID = "ZZ_FormDiscipline_ID";
-
-	/** Set Form Discipline	  */
-	public void setZZ_FormDiscipline_ID (int ZZ_FormDiscipline_ID);
-
-	/** Get Form Discipline	  */
-	public int getZZ_FormDiscipline_ID();
-
-    /** Column name ZZ_FormDiscipline_UU */
-    public static final String COLUMNNAME_ZZ_FormDiscipline_UU = "ZZ_FormDiscipline_UU";
-
-	/** Set ZZ_FormDiscipline_UU	  */
-	public void setZZ_FormDiscipline_UU (String ZZ_FormDiscipline_UU);
-
-	/** Get ZZ_FormDiscipline_UU	  */
-	public String getZZ_FormDiscipline_UU();
-
-    /** Column name ZZ_Learnerships_ID */
-    public static final String COLUMNNAME_ZZ_Learnerships_ID = "ZZ_Learnerships_ID";
-
-	/** Set Learnerships.
-	  * Learnerships master
-	  */
-	public void setZZ_Learnerships_ID (int ZZ_Learnerships_ID);
-
-	/** Get Learnerships.
-	  * Learnerships master
-	  */
-	public int getZZ_Learnerships_ID();
-
-	public I_ZZ_Learnerships getZZ_Learnerships() throws RuntimeException;
-
-    /** Column name ZZ_Trade_ID */
-    public static final String COLUMNNAME_ZZ_Trade_ID = "ZZ_Trade_ID";
-
-	/** Set Trade	  */
-	public void setZZ_Trade_ID (int ZZ_Trade_ID);
-
-	/** Get Trade	  */
-	public int getZZ_Trade_ID();
-
-	public I_ZZ_Trade getZZ_Trade() throws RuntimeException;
-
-    /** Column name ZZ_WPAFile */
-    public static final String COLUMNNAME_ZZ_WPAFile = "ZZ_WPAFile";
-
-	/** Set WPA File	  */
-	public void setZZ_WPAFile (byte[] ZZ_WPAFile);
-
-	/** Get WPA File	  */
-	public byte[] getZZ_WPAFile();
 }

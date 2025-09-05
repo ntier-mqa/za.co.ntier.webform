@@ -46,6 +46,13 @@ public class OrganisationSizeInfo implements ISaveForm {
 		return isSubmittedWSP;
 	}
 
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		applicationForm.setNumberEmployees(getNumOfEmployer());
+		applicationForm.setZZ_HasWSPSubmited(isSubmittedWSP());
+		
+	}
+
 	/**
 	 * @param numOfEmployer the numOfEmployer to set
 	 */
@@ -72,12 +79,5 @@ public class OrganisationSizeInfo implements ISaveForm {
 	 */
 	public void setSubmittedWSPTitle(String submittedWSPTitle) {
 		this.submittedWSPTitle = submittedWSPTitle;
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		applicationForm.setNumberEmployees(getNumOfEmployer());
-		applicationForm.setZZ_HasWSPSubmited(isSubmittedWSP());
-		
 	}
 }
