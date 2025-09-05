@@ -1,7 +1,9 @@
 package za.co.ntier.webform.form.viewmodel.component;
 
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.session.SessionManager;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
@@ -15,12 +17,15 @@ import za.co.ntier.webform.form.bean.component.Dialog;
  */
 @Init(superclass = true)
 public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
+	private static final int EMPLOYER_APP_AD_FORM_ID = 1000000; // your WebForm AD_Form_ID
 	private String moreInfo;
+	
 	@Command
 	public void closeDialog() {
 		getComponent().setVisible(false);
 		BindUtils.postNotifyChange(this.getComponent(), "visible");
 	}
+	
 	
 	@Command
 	@NotifyChange("visible")
@@ -47,4 +52,30 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
 	public void setMoreInfo(String moreInfo) {
 		this.moreInfo = moreInfo;
 	}
+	
+	 
+
+	@Command("closeDialogAndOpenList")
+    public void closeDialogAndOpenList() {
+        // Close the modal via the bound component's 'visible' property
+        if (getComponent() != null) {
+            getComponent().setVisible(false);
+            BindUtils.postNotifyChange(null, null, getComponent(), "visible");
+        }
+        
+        // 2) close the CURRENT tab first
+        DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+        desktop.closeActiveWindow();  // <— closes the active AD Form tab
+
+        // Open ApplicationsList.zul via WebForm context
+        String ctx = ""
+            + "zulPath=/za/co/ntier/webform/zul/program/ApplicationsList.zul\n"
+            + "formTitle=Applications\n"
+            + "ZZ_Program_Master_Data_UU=a3db65ee-97d9-429d-9734-aca9e89dd3af\n"
+            + "programType=UNKNOWN\n";
+
+       
+        desktop.setPredefinedContextVariables(ctx);
+        desktop.openForm(EMPLOYER_APP_AD_FORM_ID);
+    }
 }

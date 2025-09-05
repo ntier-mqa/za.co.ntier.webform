@@ -21,7 +21,10 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.addressLineTitle)" />
-			<textbox value="@bind(vmAddress.addressInfo.addressLine)" />
+			<textbox
+		      value="@bind(vmAddress.addressInfo.addressLine) @save(vmAddress.addressInfo.addressLine, after='onChanging')"
+		      constraint="no empty: Please enter the street address"
+			 />
 		</div>
 
 		<div if="${vmAddress.addressInfo.showPostalAddress()}"
@@ -36,7 +39,11 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.postalCodeTitle)" />
-			<textbox value="@bind(vmAddress.addressInfo.postalCode)" />
+			<textbox
+      				value="@bind(vmAddress.addressInfo.postalCode) @save(vmAddress.addressInfo.postalCode, after='onChanging')"
+      				constraint="/^[0-9]{4,6}$/: Enter a valid postal code"
+			
+			 />
 		</div>
 
 		<div if="${vmAddress.addressInfo.showGeographicAddress()}"

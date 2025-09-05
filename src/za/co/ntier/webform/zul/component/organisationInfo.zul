@@ -12,10 +12,12 @@
 
 	<div sclass="grid-container">
 		<div sclass="form-field">
-			<label sclass="label"
-				value="@init(vmOrgInfo.organisationInfo.sdlNumberTitle)" />
-			<textbox value="@bind(vmOrgInfo.organisationInfo.sdlNumber)"
-				onChange="@command('sdlNumberChange')" placeholder="0000000000000" />
+		<label sclass="label" value="@init(vmOrgInfo.organisationInfo.sdlNumberTitle)" /> 
+		<textbox value="@bind(vmOrgInfo.organisationInfo.sdlNumber)" 
+		onChange="@command('sdlNumberChange')" 
+		placeholder="0000000000000" />
+				
+				
 		</div>
 
 		<div
@@ -23,7 +25,10 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmOrgInfo.organisationInfo.orgNameTitle)" />
-			<textbox value="@bind(vmOrgInfo.organisationInfo.orgName)" />
+			<textbox
+			  value="@bind(vmOrgInfo.organisationInfo.orgName) @save(vmOrgInfo.organisationInfo.orgName, after='onChanging')"
+			  constraint="no empty: Please enter the organisation name" />
+
 		</div>
 
 		<div
@@ -52,8 +57,12 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmOrgInfo.organisationInfo.orgRegistrationNumberTitle)" />
+			
 			<textbox
-				value="@bind(vmOrgInfo.organisationInfo.orgRegistrationNumber)" />
+				  value="@bind(vmOrgInfo.organisationInfo.orgRegistrationNumber)
+				         @save(vmOrgInfo.organisationInfo.orgRegistrationNumber, after='onChanging')"
+				  constraint="no empty: Please enter the registration number"
+				   />
 		</div>
 
 		<div
@@ -63,7 +72,11 @@
 				value="@init(vmOrgInfo.organisationInfo.orgTaxNumberTitle)" />
 
 			<textbox sclass="form-control"
-				value="@bind(vmOrgInfo.organisationInfo.orgTaxNumber)" />
+				value="@bind(vmOrgInfo.organisationInfo.orgTaxNumber)
+				       @save(vmOrgInfo.organisationInfo.orgTaxNumber, after='onChanging')"
+				  constraint="no empty: Please enter the tax ID"
+				
+				/>
 		</div>
 
 		<div

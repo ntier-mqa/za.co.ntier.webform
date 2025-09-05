@@ -12,6 +12,9 @@ import za.co.ntier.webform.form.bean.component.OrganisationInfo;
 
 public class OrganisationInfoVMWrapper {
 	private OrganisationInfo organisationInfo;
+	
+
+
 
 	/**
 	 * @return the organisationInfo

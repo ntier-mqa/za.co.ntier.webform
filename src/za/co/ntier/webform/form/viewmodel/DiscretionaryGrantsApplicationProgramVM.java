@@ -44,6 +44,8 @@ import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import org.zkoss.bind.annotation.GlobalCommand;
+import org.zkoss.bind.annotation.NotifyChange;
 
 public class DiscretionaryGrantsApplicationProgramVM {
 	private IProgram program;
@@ -70,6 +72,12 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private ProgramType programType;
 
 	private String documentNo;
+	
+	 @GlobalCommand
+	    @NotifyChange({"organisationInfo"})
+	    public void orgInfoChanged() {
+	        // no-op; forces parent binder to re-evaluate bindings using organisationInfo.*
+	    }
 
 	@Command
 	public void cancelApp() {

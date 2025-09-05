@@ -53,9 +53,21 @@
 						<button label="Back" iconSclass="z-icon-arrow-left"
 							onClick="@command('prevTab', tab=formTab)" />
 
-						<button label="Save &amp; Continue" sclass="icon-on-right"
-							iconSclass="z-icon-arrow-right"
-							onClick="@command('nextTab', tab=formTab)" />
+						
+							<button label="Save &amp; Continue" sclass="icon-on-right"
+						        iconSclass="z-icon-arrow-right"
+						        disabled="@load(
+						          (!vm.programType.isCetTvet() and empty vm.organisationInfo.orgName)
+						          or (vm.programType.isCetTvet() and vm.organisationInfo.cetTvetCollegeSelected == null)
+						          or (!vm.programType.isCetTvet() and empty vm.organisationInfo.orgRegistrationNumber)
+						           or (!vm.programType.isCetTvet() and empty vm.organisationInfo.orgTaxNumber)
+						           or ( vm.organisationInfo.physicalAddressInfo.showLineAddress() and
+               							empty vm.organisationInfo.physicalAddressInfo.addressLine ) 
+               					   or ( vm.organisationInfo.physicalAddressInfo.showGeographicAddress() and 
+              							 empty vm.organisationInfo.physicalAddressInfo.postalCode)
+						        )"
+						        onClick="@command('nextTab', tab=formTab)" />
+							
 					</div>
 				</div>
 			</tabpanel>
@@ -72,9 +84,19 @@
 						<button label="Back" iconSclass="z-icon-arrow-left"
 							onClick="@command('prevTab', tab=formTab)" />
 
+						
 						<button label="Save &amp; Continue" sclass="icon-on-right"
-							iconSclass="z-icon-arrow-right"
-							onClick="@command('nextTab', tab=formTab)" />
+					        iconSclass="z-icon-arrow-right"
+					        disabled="@load(
+					          vm.programType.isDev_Program()
+					           and (empty vm.program.noOfLearners or vm.program.noOfLearners le 0))"
+					        
+					        onClick="@command('nextTab', tab=formTab)" />
+					        
+					   
+					    
+
+						
 					</div>
 				</div>
 			</tabpanel>
@@ -100,9 +122,31 @@
 						</nodom>
 
 						<nodom if="${!vm.isShowUploadDoc()}">
-							<button label="Submit Application"
+							
+								
+								
+						<button label="Submit Application"
 								iconSclass="z-icon-gear" sclass="icon-on-right"
-								onClick="@command('submitApplication')" />
+						        disabled="@load(
+						          
+						           vm.programType.isShowMainAddress() and (
+									            
+									            (vm.programContact.showLineAddress() and empty vm.programContact.addressLine)
+									            or (vm.programContact.showGeographicAddress() and (
+									                empty vm.programContact.postalCode
+									                or empty vm.programContact.areaSelected
+									                or empty vm.programContact.provinceSelected
+									            ))
+									           
+									            or (vm.programContact.showContact() and (
+									                empty vm.programContact.nameSiteRepresentative
+									                or empty vm.programContact.mobileNumber
+									                or empty vm.programContact.email
+									            ))
+									          )
+						        )"
+						        onClick="@command('submitApplication')" />
+								
 						</nodom>
 					</div>
 				</div>

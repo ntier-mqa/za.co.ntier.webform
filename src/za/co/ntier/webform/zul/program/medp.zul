@@ -39,8 +39,15 @@ GUIDELINES" />
 	Executive Development Programme (MEDP)" />
 		</div>
 		<div sclass="grid-cell">
-			<textbox value="@bind(vmMedp.program.noOfLearners)"
-				sclass="form-control" />
+			
+				
+			
+         
+         <intbox
+			  value="@bind(vmMedp.program.noOfLearners)
+			         @save(vmMedp.program.noOfLearners, after='onChanging')"
+			    constraint="/^[1-9]\d*$/: Please enter a valid number (≥1)" />
+         
 		</div>
 
 
