@@ -76,7 +76,7 @@ public class ApplicationsListVM {
           //  .setParameters(userId, programMasterDataId)
             .setParameters(userId)
             .setClient_ID()
-            .setOrderBy("Created DESC")
+            .setOrderBy("AD_Org_ID,DocumentNo")
             .list();
 
         this.applications = new ListModelList<>(loaded);
@@ -89,6 +89,15 @@ public class ApplicationsListVM {
         if (p == null) return "";
         String title = p.get_ValueAsString("Title");
         return (title != null && !title.isEmpty()) ? title : "";
+    }
+    
+    public String getOrgName(X_ZZ_Application_Form app) {
+        if (app == null || app.getAD_Org_ID() <= 0) return "";
+        PO p = MTable.get(Env.getCtx(), "AD_Org")
+                     .getPO(app.getAD_Org_ID(), null);
+        if (p == null) return "";
+        String name = p.get_ValueAsString("Name");
+        return (name != null && !name.isEmpty()) ? name : "";
     }
 
     

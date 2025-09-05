@@ -11,8 +11,11 @@
 
 <grid model="@init(vmList.applications)" sizedByContent="true" emptyMessage="No applications found">
   <columns>
-    <column label="Application #" width="160px"/>
-    <column label="Program Title" width="460px"/>
+    <column label="Application #" width="80px"/>
+    <column label="Program Title" width="260px"/>
+    <column label="Organisation" width="160px"/>
+    <column label="SDL number" width="120px"/>
+    <column label="Total Applied For" width="100px"/>
     <column label="Submitted"/>
     <column label="Status"/>
     <column label="Action" width="90px" align="center"/>
@@ -23,6 +26,9 @@
         <!-- If you didn't set DocumentNo when saving, use 'name' instead -->
         <label value="@load(each.documentNo)"/>
         <label value="@load(vmList.programTitle(each))"/>
+        <label value="@load(vmList.getOrgName(each))"/>
+        <label value="@load(each.ZZ_SDL_No)"/>
+        <label value="@load(each.ZZTotalNumberApplied)"/>
         <label value="@load(each.dateDoc)"/>
         <!-- If the getter is getZZ_DocStatus(), use bracket syntax -->
         <label value="@load(each['ZZ_DocStatus'])"/>
