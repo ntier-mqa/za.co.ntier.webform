@@ -156,15 +156,15 @@ public interface I_ZZAnnexure
     /** Column name ZZDiscipline */
     public static final String COLUMNNAME_ZZDiscipline = "ZZDiscipline";
 
-	/** Set Discipline Applying.
-	  * Number of beneficiaries applying for
+	/** Set Discipline Applying For.
+	  * Discipline Applying For
 	  */
-	public void setZZDiscipline (int ZZDiscipline);
+	public void setZZDiscipline (String ZZDiscipline);
 
-	/** Get Discipline Applying.
-	  * Number of beneficiaries applying for
+	/** Get Discipline Applying For.
+	  * Discipline Applying For
 	  */
-	public int getZZDiscipline();
+	public String getZZDiscipline();
 
     /** Column name ZZProgramme */
     public static final String COLUMNNAME_ZZProgramme = "ZZProgramme";

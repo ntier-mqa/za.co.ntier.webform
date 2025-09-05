@@ -12,8 +12,8 @@ public class EmployerDeclarationInfo implements ISaveForm {
 	
 	private Boolean acknowledged;  // use Boolean, not boolean, so null is handled
 
-    public Boolean getAcknowledged() { return acknowledged; }
-    public void setAcknowledged(Boolean acknowledged) { this.acknowledged = acknowledged; }
+    
+    
 
 	public Timestamp getDate() {
 		if (localDate == null)
@@ -41,5 +41,19 @@ public class EmployerDeclarationInfo implements ISaveForm {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		applicationForm.setUserName(getUserName());
 		applicationForm.setDateDoc(getDate());
+	}
+
+	/**
+	 * @return the acknowledged
+	 */
+	public Boolean getAcknowledged() {
+		return acknowledged;
+	}
+
+	/**
+	 * @param acknowledged the acknowledged to set
+	 */
+	public void setAcknowledged(Boolean acknowledged) {
+		this.acknowledged = acknowledged;
 	}
 }

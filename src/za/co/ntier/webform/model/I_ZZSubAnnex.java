@@ -124,10 +124,10 @@ public interface I_ZZSubAnnex
     public static final String COLUMNNAME_ZZFieldStudy = "ZZFieldStudy";
 
 	/** Set Field Of Study	  */
-	public void setZZFieldStudy (int ZZFieldStudy);
+	public void setZZFieldStudy (String ZZFieldStudy);
 
 	/** Get Field Of Study	  */
-	public int getZZFieldStudy();
+	public String getZZFieldStudy();
 
     /** Column name ZZLearners */
     public static final String COLUMNNAME_ZZLearners = "ZZLearners";
@@ -151,10 +151,10 @@ public interface I_ZZSubAnnex
     public static final String COLUMNNAME_ZZRequestedProgramme = "ZZRequestedProgramme";
 
 	/** Set Requested Programme	  */
-	public void setZZRequestedProgramme (int ZZRequestedProgramme);
+	public void setZZRequestedProgramme (String ZZRequestedProgramme);
 
 	/** Get Requested Programme	  */
-	public int getZZRequestedProgramme();
+	public String getZZRequestedProgramme();
 
     /** Column name ZZSubAnnex_ID */
     public static final String COLUMNNAME_ZZSubAnnex_ID = "ZZSubAnnex_ID";

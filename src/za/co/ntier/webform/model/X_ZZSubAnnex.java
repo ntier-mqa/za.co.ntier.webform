@@ -131,19 +131,16 @@ public class X_ZZSubAnnex extends PO implements I_ZZSubAnnex, I_Persistent
 	/** Set Field Of Study.
 		@param ZZFieldStudy Field Of Study
 	*/
-	public void setZZFieldStudy (int ZZFieldStudy)
+	public void setZZFieldStudy (String ZZFieldStudy)
 	{
-		set_Value (COLUMNNAME_ZZFieldStudy, Integer.valueOf(ZZFieldStudy));
+		set_Value (COLUMNNAME_ZZFieldStudy, ZZFieldStudy);
 	}
 
 	/** Get Field Of Study.
 		@return Field Of Study	  */
-	public int getZZFieldStudy()
+	public String getZZFieldStudy()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZFieldStudy);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_ZZFieldStudy);
 	}
 
 	/** Set Number Of learners.
@@ -185,19 +182,16 @@ public class X_ZZSubAnnex extends PO implements I_ZZSubAnnex, I_Persistent
 	/** Set Requested Programme.
 		@param ZZRequestedProgramme Requested Programme
 	*/
-	public void setZZRequestedProgramme (int ZZRequestedProgramme)
+	public void setZZRequestedProgramme (String ZZRequestedProgramme)
 	{
-		set_Value (COLUMNNAME_ZZRequestedProgramme, Integer.valueOf(ZZRequestedProgramme));
+		set_Value (COLUMNNAME_ZZRequestedProgramme, ZZRequestedProgramme);
 	}
 
 	/** Get Requested Programme.
 		@return Requested Programme	  */
-	public int getZZRequestedProgramme()
+	public String getZZRequestedProgramme()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZRequestedProgramme);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_ZZRequestedProgramme);
 	}
 
 	/** Set Sub Annex.

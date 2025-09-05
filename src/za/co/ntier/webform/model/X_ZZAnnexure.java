@@ -31,7 +31,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250904L;
+	private static final long serialVersionUID = 20250905L;
 
     /** Standard Constructor */
     public X_ZZAnnexure (Properties ctx, int ZZAnnexure_ID, String trxName)
@@ -176,23 +176,20 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Discipline Applying.
-		@param ZZDiscipline Number of beneficiaries applying for
+	/** Set Discipline Applying For.
+		@param ZZDiscipline Discipline Applying For
 	*/
-	public void setZZDiscipline (int ZZDiscipline)
+	public void setZZDiscipline (String ZZDiscipline)
 	{
-		set_Value (COLUMNNAME_ZZDiscipline, Integer.valueOf(ZZDiscipline));
+		set_Value (COLUMNNAME_ZZDiscipline, ZZDiscipline);
 	}
 
-	/** Get Discipline Applying.
-		@return Number of beneficiaries applying for
+	/** Get Discipline Applying For.
+		@return Discipline Applying For
 	  */
-	public int getZZDiscipline()
+	public String getZZDiscipline()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_ZZDiscipline);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_ZZDiscipline);
 	}
 
 	/** Set Programme Applying.
