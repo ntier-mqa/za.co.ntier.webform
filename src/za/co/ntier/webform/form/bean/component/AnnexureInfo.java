@@ -98,6 +98,7 @@ public class AnnexureInfo implements ISaveForm{
 	private List<Map<ColumnInfo<?>, Object>> rows;
 
 	private String sectionHeader;
+	private String subSectionHeader;
 	private boolean showAddButton = false;
 	private boolean showTotal = false;
 
@@ -325,5 +326,19 @@ public class AnnexureInfo implements ISaveForm{
 
 	public static Integer getIntegerValue(AnnexureInfo cetTvetOneLineInput, ColumnInfo<?> col) {
 		return AnnexureInfo.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
+	}
+
+	/**
+	 * @return the subSectionHeader
+	 */
+	public String getSubSectionHeader() {
+		return subSectionHeader;
+	}
+
+	/**
+	 * @param subSectionHeader the subSectionHeader to set
+	 */
+	public void setSubSectionHeader(String subSectionHeader) {
+		this.subSectionHeader = subSectionHeader;
 	}
 }

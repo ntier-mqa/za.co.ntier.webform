@@ -15,7 +15,8 @@ public class MedpProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
+		applicationForm.setZZTotalNumberApplied(noOfLearners);
+		applicationForm.saveEx(trxName);
 		
 	}
 

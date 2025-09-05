@@ -20,11 +20,7 @@ package za.co.ntier.webform.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZ_Application_Form
  *  @author iDempiere (generated)
@@ -36,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250904L;
+	private static final long serialVersionUID = 20250905L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -282,6 +278,75 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
+	}
+
+	/** ZZCollegeRecognised AD_Reference_ID=319 */
+	public static final int ZZCOLLEGERECOGNISED_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ZZCOLLEGERECOGNISED_No = "N";
+	/** Yes = Y */
+	public static final String ZZCOLLEGERECOGNISED_Yes = "Y";
+	/** Set College Recognised.
+		@param ZZCollegeRecognised Is the TVET College recognised as a centre of specialisation
+	*/
+	public void setZZCollegeRecognised (String ZZCollegeRecognised)
+	{
+
+		set_Value (COLUMNNAME_ZZCollegeRecognised, ZZCollegeRecognised);
+	}
+
+	/** Get College Recognised.
+		@return Is the TVET College recognised as a centre of specialisation
+	  */
+	public String getZZCollegeRecognised()
+	{
+		return (String)get_Value(COLUMNNAME_ZZCollegeRecognised);
+	}
+
+	/** ZZCollegeRegistered AD_Reference_ID=319 */
+	public static final int ZZCOLLEGEREGISTERED_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ZZCOLLEGEREGISTERED_No = "N";
+	/** Yes = Y */
+	public static final String ZZCOLLEGEREGISTERED_Yes = "Y";
+	/** Set College Registered.
+		@param ZZCollegeRegistered Is the TVET College registered with the DHET?
+	*/
+	public void setZZCollegeRegistered (String ZZCollegeRegistered)
+	{
+
+		set_Value (COLUMNNAME_ZZCollegeRegistered, ZZCollegeRegistered);
+	}
+
+	/** Get College Registered.
+		@return Is the TVET College registered with the DHET?
+	  */
+	public String getZZCollegeRegistered()
+	{
+		return (String)get_Value(COLUMNNAME_ZZCollegeRegistered);
+	}
+
+	/** ZZCollegeSla AD_Reference_ID=319 */
+	public static final int ZZCOLLEGESLA_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ZZCOLLEGESLA_No = "N";
+	/** Yes = Y */
+	public static final String ZZCOLLEGESLA_Yes = "Y";
+	/** Set College SLA.
+		@param ZZCollegeSla Does the TVET College have an SLA with a company within the Yes  No MMS
+	*/
+	public void setZZCollegeSla (String ZZCollegeSla)
+	{
+
+		set_Value (COLUMNNAME_ZZCollegeSla, ZZCollegeSla);
+	}
+
+	/** Get College SLA.
+		@return Does the TVET College have an SLA with a company within the Yes  No MMS
+	  */
+	public String getZZCollegeSla()
+	{
+		return (String)get_Value(COLUMNNAME_ZZCollegeSla);
 	}
 
 	/** Set Total Number Applied For.

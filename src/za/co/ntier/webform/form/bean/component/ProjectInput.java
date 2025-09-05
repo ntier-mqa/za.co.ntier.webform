@@ -58,7 +58,7 @@ public class ProjectInput extends AnnexureInfo {
 	}
 	
 	public static void saveProjectInput(String trxName, X_ZZ_Application_Form applicationForm, ProjectInput projectInput) {
-		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(ProjectInput.colNameProgrammeLabel, projectInput);
+		ColumnInfo<?> colNameProgramme = AnnexureInfo.lookupColByTitle(ProjectInput.colNameProgrammeLabel, projectInput);
 		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoEmployedLabel, projectInput);
 		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoUnEmployedLabel, projectInput);
 		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(ProjectInput.colNoLearnersLable, projectInput);
@@ -96,10 +96,15 @@ public class ProjectInput extends AnnexureInfo {
 			hasData = true;
 		}
 		
-		String rowTitle = (String)row.get(colProgramme);
+		String rowTitle = (String)row.get(colNameProgramme);
 		if (rowTitle != null) {
 			learnersApplied.setName(rowTitle);
-			hasData = true;
+		}else if (projectInput.getSubSectionHeader() != null) {
+			learnersApplied.setName(projectInput.getSubSectionHeader());
+		}else if (projectInput.getSectionHeader() != null) {
+			learnersApplied.setName(projectInput.getSectionHeader());
+		}else {
+			learnersApplied.setName("Project");
 		}
 		
 		if (hasData) {
@@ -108,10 +113,6 @@ public class ProjectInput extends AnnexureInfo {
 			MCity area = ((AreaData)row.get(areaColl)).getSelectedArea();
 			if (area != null)
 				learnersApplied.setC_City_ID(area.getC_City_ID());
-			
-			if (learnersApplied.getName() == null) {
-				learnersApplied.setName("name");
-			}
 			
 			PostalData postalCode = (PostalData)row.get(postalColl);
 			if (postalCode.getPostal() != null)

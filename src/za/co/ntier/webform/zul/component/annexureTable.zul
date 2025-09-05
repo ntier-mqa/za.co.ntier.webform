@@ -13,6 +13,15 @@
 		<label sclass="sectionHeaderTitle"
 			value="@init(vmAnnexure.annexureInfo.sectionHeader)" />
 	</hlayout>
+	
+	<div
+		if="${vmAnnexure.annexureInfo.subSectionHeader ne null}" 
+		sclass="subSectionHeader">
+		<label 
+			sclass="subSectionHeaderTitle" 
+			value="@init(vmAnnexure.annexureInfo.subSectionHeader)" />
+
+	</div>
 			
 	<hlayout if="${vmAnnexure.annexureInfo.tableTitle ne null}">
 		<label value="@init(vmAnnexure.annexureInfo.tableTitle)" />

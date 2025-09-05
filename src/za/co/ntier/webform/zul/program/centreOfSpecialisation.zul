@@ -16,45 +16,48 @@ the MQA funding policy. Preference will be given to the following trades that ar
 to MQA SPOI list, (Diesel Mechanic and Millwright)" />
 	</div>
 
-	<div sclass="grid-table grid-table-auto-3">
+	<div sclass="grid-table grid-table-auto-2">
 
 		<div sclass="grid-cell">
 			<label value="Is the TVET College registered with the DHET?" />
 		</div>
 		<div sclass="grid-cell">
-			<radio label="YES" radiogroup="dhet" />
+			<radiogroup id="dhet" 
+				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeRegistered)"
+				children="@load(vmCentreOfSpecialisation.program.collegeValues)">
+				<template name="children" var = "collegeValue">
+					<radio label="@init(collegeValue.label)" radiogroup="dhet"  value="@load(collegeValue.value)"/>
+				</template>
+			</radiogroup>
 		</div>
-		<div sclass="grid-cell">
-			<radio label="NO" radiogroup="dhet" />
-			<radiogroup id="dhet" />
-		</div>
-
-
 
 		<div sclass="grid-cell">
 			<label
 				value="Is the TVET College recognised as a centre of specialisation" />
 		</div>
 		<div sclass="grid-cell">
-			<radio label="YES" radiogroup="cos" />
+			<radiogroup id="cos" 
+				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeRecognised)"
+				children="@load(vmCentreOfSpecialisation.program.collegeValues)">
+				<template name="children" var = "collegeValue">
+					<radio label="@init(collegeValue.label)" radiogroup="cos"  value="@load(collegeValue.value)"/>
+				</template>
+			</radiogroup>
 		</div>
-		<div sclass="grid-cell">
-			<radio label="NO" radiogroup="cos" />
-			<radiogroup id="cos" />
-		</div>
-
-
 
 		<div sclass="grid-cell">
 			<label
 				value="Does the TVET College have an SLA with a company within the MMS" />
 		</div>
 		<div sclass="grid-cell">
-			<radio label="YES" radiogroup="mms" />
-		</div>
-		<div sclass="grid-cell">
-			<radio label="NO" radiogroup="mms" />
-			<radiogroup id="mms" />
+			<radiogroup id="mms" 
+				selectedItem="@bind(vmCentreOfSpecialisation.program.collegeSla)"
+				children="@load(vmCentreOfSpecialisation.program.collegeValues)">
+				<template name="children" var = "collegeValue">
+					<radio label="@init(collegeValue.label)" radiogroup="mms"  value="@load(collegeValue.value)"/>
+				</template>
+			</radiogroup>
+			
 		</div>
 
 	</div>

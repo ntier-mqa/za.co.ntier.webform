@@ -53,7 +53,8 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
 		vacationContact.saveForm(trxName, applicationForm);
 		ProgramInput.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
-		
+		applicationForm.setZZTotalNumberApplied(noOfLearners);
+		applicationForm.saveEx(trxName);
 	}
 
 	/**

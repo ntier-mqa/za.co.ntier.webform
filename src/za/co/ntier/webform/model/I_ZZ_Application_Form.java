@@ -18,8 +18,7 @@ package za.co.ntier.webform.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import org.compiere.model.MTable;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ZZ_Application_Form
@@ -224,6 +223,45 @@ public interface I_ZZ_Application_Form
 	  * Search key for the record in the format required - must be unique
 	  */
 	public String getValue();
+
+    /** Column name ZZCollegeRecognised */
+    public static final String COLUMNNAME_ZZCollegeRecognised = "ZZCollegeRecognised";
+
+	/** Set College Recognised.
+	  * Is the TVET College recognised as a centre of specialisation
+	  */
+	public void setZZCollegeRecognised (String ZZCollegeRecognised);
+
+	/** Get College Recognised.
+	  * Is the TVET College recognised as a centre of specialisation
+	  */
+	public String getZZCollegeRecognised();
+
+    /** Column name ZZCollegeRegistered */
+    public static final String COLUMNNAME_ZZCollegeRegistered = "ZZCollegeRegistered";
+
+	/** Set College Registered.
+	  * Is the TVET College registered with the DHET?
+	  */
+	public void setZZCollegeRegistered (String ZZCollegeRegistered);
+
+	/** Get College Registered.
+	  * Is the TVET College registered with the DHET?
+	  */
+	public String getZZCollegeRegistered();
+
+    /** Column name ZZCollegeSla */
+    public static final String COLUMNNAME_ZZCollegeSla = "ZZCollegeSla";
+
+	/** Set College SLA.
+	  * Does the TVET College have an SLA with a company within the Yes  No MMS
+	  */
+	public void setZZCollegeSla (String ZZCollegeSla);
+
+	/** Get College SLA.
+	  * Does the TVET College have an SLA with a company within the Yes  No MMS
+	  */
+	public String getZZCollegeSla();
 
     /** Column name ZZTotalNumberApplied */
     public static final String COLUMNNAME_ZZTotalNumberApplied = "ZZTotalNumberApplied";

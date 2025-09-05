@@ -11,18 +11,10 @@
 		<label value="Artisan Aides is paid upon completion" />
 	</div>
 
-	<div sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle" value="QUALIFICATION" />
-
-	</div>
 	<include
 		annexureInfo="@load(vmArtisanAides.program.qualification)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
-	<div sclass="subSectionHeader">
-		<label sclass="subSectionHeaderTitle" value="SKILLS PROGRAMME" />
-
-	</div>
 	<include annexureInfo="@load(vmArtisanAides.program.skill)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>
