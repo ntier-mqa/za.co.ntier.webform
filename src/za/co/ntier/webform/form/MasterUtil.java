@@ -143,17 +143,19 @@ public class MasterUtil {
 	}
 	
 	public static List<MCity> getCitiesByPostal(String postalCode) {
-		
+		List<MCity> areaFilters = new ArrayList<>();
 		if (StringUtils.isNotEmpty(postalCode)) {
-			List<MCity> areaFilters = new ArrayList<>();
 			MasterUtil.getCities().stream()
 					.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
 					.limit(MasterUtil.limitItem).forEach(city -> {
 						areaFilters.add(city);
 					});
-			return areaFilters;
-		}else {
+		}
+
+		if (areaFilters.isEmpty()) {
 			return getInitCities();
+		}else {
+			return areaFilters;
 		}
 		
 		

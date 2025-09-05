@@ -3,6 +3,7 @@ package za.co.ntier.webform.form.bean.component;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
 
@@ -29,14 +30,19 @@ public class PostalData{
 		this.postal = postal;
 		
 		if (annexure != null && row != null) {
-
 			ColumnInfo<?> areaCol = AnnexureInfo.lookupColByDataType(DataType.Area, annexure);
 			if (areaCol != null) {
 				List<MCity> citys = MasterUtil.getCitiesByPostal(postal);
+				
 				AreaData areaData = (AreaData) row.get(areaCol);
 				areaData.setDataProvider(citys);
+				
 				areaData.setSelectedAreaInternal(null);
+				if (citys.size() == 1) {
+					areaData.setSelectedAreaInternal(citys.get(0));
+				}
 				BindUtils.postNotifyChange(areaData, "dataProvider");
+				
 			}
 			
 		}
