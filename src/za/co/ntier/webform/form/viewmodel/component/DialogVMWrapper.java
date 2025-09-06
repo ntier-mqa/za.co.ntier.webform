@@ -1,15 +1,14 @@
 package za.co.ntier.webform.form.viewmodel.component;
 
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.exception.ApplicationException;
-import org.adempiere.webui.session.SessionManager;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
 import za.co.ntier.webform.form.bean.component.Dialog;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 /**
  * If super has an init method but its ChildViewModel doesn't, you can
@@ -17,7 +16,8 @@ import za.co.ntier.webform.form.bean.component.Dialog;
  */
 @Init(superclass = true)
 public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
-	public static final int EMPLOYER_APP_AD_FORM_ID = 1000000; // your WebForm AD_Form_ID
+	
+
 	private String moreInfo;
 	
 	@Command
@@ -62,25 +62,7 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
             getComponent().setVisible(false);
             BindUtils.postNotifyChange(null, null, getComponent(), "visible");
         }
-        
-        // 2) close the CURRENT tab first
-        DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
-        desktop.closeActiveWindow();  // <— closes the active AD Form tab
-
-        // Open ApplicationsList.zul via WebForm context
-        String ctx = ""
-            + "zulPath=/za/co/ntier/webform/zul/program/ApplicationsList.zul\n"
-            + "formTitle=Applications\n"
-            + "ZZ_Program_Master_Data_UU=a3db65ee-97d9-429d-9734-aca9e89dd3af\n"
-            + "programType=UNKNOWN\n";
-
-       
-        desktop.setPredefinedContextVariables(ctx);
-        Object win = desktop.findWindow(EMPLOYER_APP_AD_FORM_ID);
-        if (win == null)
-        	desktop.openForm(EMPLOYER_APP_AD_FORM_ID);
-        else {
-        
-        }
+        DiscretionaryGrantsApplicationProgramVM.showAppList();
     }
+
 }

@@ -9,15 +9,17 @@ public class MenuContextInfo {
 	private I_ZZ_Program_Master_Data programMasterData;
 	private ProgramType programType;
 	private String zulPath;
+	private String applicationFormUU;
 
 	public MenuContextInfo(ProgramType programType, String zulPath, I_ZZ_Program_Master_Data programMasterData,
-			boolean isUploadWPAForNVC, String formTitle) {
+			boolean isUploadWPAForNVC, String formTitle, String applicationFormUU) {
 		super();
 		this.programType = programType;
 		this.zulPath = zulPath;
 		this.programMasterData = programMasterData;
 		this.isUploadWPAForNVC = isUploadWPAForNVC;
 		this.setFormTitle(formTitle);
+		this.setApplicationFormUU(applicationFormUU);
 	}
 
 	/**
@@ -88,5 +90,19 @@ public class MenuContextInfo {
 	 */
 	public void setZulPath(String zulPath) {
 		this.zulPath = zulPath;
+	}
+
+	/**
+	 * @return the applicationFormUU
+	 */
+	public String getApplicationFormUU() {
+		return applicationFormUU;
+	}
+
+	/**
+	 * @param applicationFormUU the applicationFormUU to set
+	 */
+	public void setApplicationFormUU(String applicationFormUU) {
+		this.applicationFormUU = applicationFormUU;
 	}
 }

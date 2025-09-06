@@ -36,7 +36,7 @@ public class OrganisationInfo implements ISaveForm {
 	private String orgRegistrationNumberTitle = "Registration No";
 	private OrganisationSizeInfo orgSizeInfo;
 	private String orgTaxNumber;
-	private String orgTaxNumberTitle = "Tax ID";
+	private String orgTaxNumberTitle = "VAT No  (type Not Available if there is no vat number  and attach proof of exemption)";
 	private AddressInfo physicalAddressInfo;
 	private AddressInfo postAddressInfo;
 	private String sdlNumber;

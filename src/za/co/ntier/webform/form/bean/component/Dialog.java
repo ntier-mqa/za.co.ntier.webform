@@ -5,12 +5,14 @@ public class Dialog {
 	private int recordId;
 	private int tableId;
 	private String title;
+	private String msg;
 	private boolean visible = false;
-	public Dialog(String title, int tableId, int recordId, String documentNo, boolean visible) {
+	public Dialog(String title, String msg, int tableId, int recordId, String documentNo, boolean visible) {
 		this.tableId = tableId;
 		this.recordId = recordId;
 		this.visible = visible;
 		this.title = title;
+		this.setMsg(msg);
 		this.setDocumentNo(documentNo);
 	}
 	/**
@@ -72,5 +74,17 @@ public class Dialog {
 	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+	/**
+	 * @return the msg
+	 */
+	public String getMsg() {
+		return msg;
+	}
+	/**
+	 * @param msg the msg to set
+	 */
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 }

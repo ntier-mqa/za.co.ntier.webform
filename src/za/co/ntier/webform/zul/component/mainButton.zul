@@ -17,7 +17,8 @@
 			if="${vmMainButton.component.tabType ne TabType.FirstTab}"
 			label="Back" 
 			iconSclass="z-icon-arrow-left"
-			onClick="@command('prevTab')" />
+			onClick="@command('prevTab')" 
+			/>
 
 		<button 
 			if="${vmMainButton.component.tabType ne TabType.FirstTab}"
@@ -35,6 +36,7 @@
 		<button 
 			if="${vmMainButton.component.tabType eq TabType.LastTab}"
 			label="Submit Application"
+			disabled="@load(not vm.employerDeclarationInfo.acknowledged)"
 			iconSclass="z-icon-gear" sclass="icon-on-right"
 	        onClick="@command('submitApplication')" />
 	</div>

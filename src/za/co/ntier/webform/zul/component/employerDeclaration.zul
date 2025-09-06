@@ -13,9 +13,8 @@
 	<div sclass="grid-container">
 		<div sclass="form-field">
 			<label sclass="label" value="Name and Surname" />
-			<textbox placeholder=""
-				value="@bind(vmEmployerDeclaration.employerDeclarationInfo.userName)" 
-				constraint="no empty: Please enter your full name"/>
+			<label 
+				value="@init(vmEmployerDeclaration.employerDeclarationInfo.userName)"/>
 		</div>
 		<div sclass="form-field">
 			<label sclass="label" value="Date" />

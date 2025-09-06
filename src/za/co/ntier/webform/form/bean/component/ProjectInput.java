@@ -1,10 +1,14 @@
 package za.co.ntier.webform.form.bean.component;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 
 import za.co.ntier.webform.form.MasterUtil;
@@ -57,7 +61,7 @@ public class ProjectInput extends AnnexureInfo {
 
 	}
 	
-	public static void saveProjectInput(String trxName, X_ZZ_Application_Form applicationForm, ProjectInput projectInput) {
+	public static void saveProjectInput(String trxName, X_ZZ_Application_Form applicationForm, ProjectInput projectInput) throws IOException {
 		ColumnInfo<?> colNameProgramme = AnnexureInfo.lookupColByTitle(ProjectInput.colNameProgrammeLabel, projectInput);
 		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoEmployedLabel, projectInput);
 		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoUnEmployedLabel, projectInput);
@@ -66,6 +70,7 @@ public class ProjectInput extends AnnexureInfo {
 		
 		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, projectInput);
 		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, projectInput);
+		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ProgramInput.colWPALabel, projectInput);
 		
 		X_ZZLearnersApplied learnersApplied = new X_ZZLearnersApplied(null, 0, trxName);
 		Map<ColumnInfo<?>, Object> row = projectInput.getRows().get(0);
@@ -105,6 +110,11 @@ public class ProjectInput extends AnnexureInfo {
 			learnersApplied.setName(projectInput.getSectionHeader());
 		}else {
 			learnersApplied.setName("Project");
+		}
+		
+		UploadData wpaUploadInfo = (UploadData)row.get(wpaColl);		
+		if (wpaUploadInfo != null && StringUtils.isNoneEmpty(wpaUploadInfo.getFullPath())) {
+			learnersApplied.setZZ_WPAFile(Files.readAllBytes(Paths.get(wpaUploadInfo.getFullPath()))); 
 		}
 		
 		if (hasData) {

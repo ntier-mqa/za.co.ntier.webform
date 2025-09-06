@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.desktop.DefaultDesktop;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -40,9 +42,9 @@ public class ApplicationsListVM {
         
 
         
-       // DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
-       // desktop.setPredefinedContextVariables(menuContext);
-       // desktop.openForm(1000000);
+       DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+       desktop.setPredefinedContextVariables(menuContext);
+       desktop.openForm(1000000);
     }
 
     // IMPORTANT: return ListModel so <grid model="..."> works

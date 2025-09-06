@@ -31,7 +31,7 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250905L;
+	private static final long serialVersionUID = 20250906L;
 
     /** Standard Constructor */
     public X_ZZLearnersApplied (Properties ctx, int ZZLearnersApplied_ID, String trxName)
@@ -84,7 +84,7 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
     }
 
     /** AccessLevel
-      * @return 4 - System
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -300,5 +300,20 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set WPA File.
+		@param ZZ_WPAFile WPA File
+	*/
+	public void setZZ_WPAFile (byte[] ZZ_WPAFile)
+	{
+		set_Value (COLUMNNAME_ZZ_WPAFile, ZZ_WPAFile);
+	}
+
+	/** Get WPA File.
+		@return WPA File	  */
+	public byte[] getZZ_WPAFile()
+	{
+		return (byte[])get_Value(COLUMNNAME_ZZ_WPAFile);
 	}
 }

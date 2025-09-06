@@ -217,10 +217,12 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 				hasData = true;
 			}
 			
-			cellDataStr = (String)row.get(colFieldStudy);
-			if (cellDataStr != null) {
-				subAnnex.setZZFieldStudy(cellDataStr);
-				hasData = true;
+			if (colFieldStudy.getDataType() != DataType.List) {
+				cellDataStr = (String)row.get(colFieldStudy);
+				if (cellDataStr != null) {
+					subAnnex.setZZFieldStudy(cellDataStr);
+					hasData = true;
+				}
 			}
 			
 			cellData = AnnexureInfo.getIntegerValue(row, colNoLearners);

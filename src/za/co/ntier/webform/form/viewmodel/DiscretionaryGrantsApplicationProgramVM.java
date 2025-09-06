@@ -9,10 +9,9 @@ import java.util.Map;
 
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
-import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
@@ -45,10 +44,7 @@ import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
-import za.co.ntier.webform.form.viewmodel.component.DialogVMWrapper;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import org.zkoss.bind.annotation.GlobalCommand;
-import org.zkoss.bind.annotation.NotifyChange;
 
 public class DiscretionaryGrantsApplicationProgramVM {
 	private AddressInfo alternateProgramContact;
@@ -160,6 +156,12 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		setMenuContextInfo(menuContextInfo);
 		programType = menuContextInfo.getProgramType();
+		
+		if (StringUtils.isNotBlank(menuContextInfo.getApplicationFormUU())) {
+			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), menuContextInfo.getApplicationFormUU(), null);
+		}
+
+		
 		setFormInfo(new FormInfo(menuContextInfo));
 
 		organisationInfo = new OrganisationInfo(menuContextInfo);
@@ -196,7 +198,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			setProgram(new InhouseTrainingProgram());
 		}
 
-		employerDeclarationInfo = new EmployerDeclarationInfo();
+		employerDeclarationInfo = new EmployerDeclarationInfo(applicationForm);
 
 		// main contact
 		if (programType.isShowMainAddress())
@@ -294,14 +296,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.uploadDoc = uploadDoc;
 	}
 
-	protected void showDialog() {
+	protected void showDialog(String title, String msg) {
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		// Set the context class loader to this bundle's class loader to ensure that
 		// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
 		// used in ZUL files can be found.
 		String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");
 		Map<String, Object> args = new HashMap<>();
-		args.put(ComponentVMWrapper.ComponentKey, new Dialog("Successfully submitted the application form", tableId, recordId, documentNo, true));
+		args.put(ComponentVMWrapper.ComponentKey, new Dialog(title, msg, tableId, recordId, documentNo, true));
 		
 		Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
 		try {
@@ -313,25 +315,24 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	public void deleteApp() {
-
+		if (applicationForm != null) {
+			try {
+				applicationForm.deleteEx(true);
+				showAppList();
+			}catch (Exception e) {
+				Clients.showNotification(
+		                "Can't Delete application form:" + e.getMessage(),
+		                "error", null, "end_center", 0, true);
+			}
+		}else {
+			showAppList();
+		}
+		
 	}
 	
-	public void saveClose() {
-		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
-        desktop.closeActiveWindow();  // <— closes the active AD Form tab
-
-        // Open ApplicationsList.zul via WebForm context
-        String ctx = ""
-            + "zulPath=/za/co/ntier/webform/zul/program/ApplicationsList.zul\n"
-            + "formTitle=Applications\n"
-            + "ZZ_Program_Master_Data_UU=a3db65ee-97d9-429d-9734-aca9e89dd3af\n"
-            + "programType=UNKNOWN\n";
-
-       
-        desktop.setPredefinedContextVariables(ctx);
-        Object win = desktop.findWindow(DialogVMWrapper.EMPLOYER_APP_AD_FORM_ID);
-        desktop.openForm(DialogVMWrapper.EMPLOYER_APP_AD_FORM_ID);
-        
+	public void saveClose() throws IOException {
+		saveAppForm(true, "Successfully save the application form",
+				"The application form has been saved.");
 	}
 	
 	public void prevTab(Tabbox tab) {
@@ -340,28 +341,32 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 	
 	public void nextTab(Tabbox tab) {
-		// Only enforce this when we are on the Declaration tab (index 0).
-	    // Adjust if you change tab order.
-		// Martin Added 
-	    if (tab.getSelectedIndex() == 0) {
-	        if (!Boolean.TRUE.equals(getEmployerDeclarationInfo().getAcknowledged())) {
-	            Clients.showNotification(
-	                "Please tick the acknowledgement checkbox before continuing.",
-	                "error", null, "end_center", 3000
-	            );
-	            return;
-	        }
-	    }
 		int currentIndex = tab.getSelectedIndex();
 		tab.setSelectedIndex(currentIndex + 1);
 	}
 
+	private X_ZZ_Application_Form applicationForm;
 	
 	public void submitApplication() throws IOException {
+		saveAppForm(false, "Successfully submitted the application form",
+				"The application form has been submitted.");
+
+	}
+	
+	public void saveAppForm(boolean isSave, String title, String msg) throws IOException {
 		String trxName = null;
-		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, trxName);
+		
+		if (applicationForm == null) 
+			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, trxName);
+		
 		applicationForm.setAD_Org_ID(menuContextInfo.getProgramMasterData().getAD_Org_ID());
 		applicationForm.setZZ_Program_Master_Data_ID(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID());
+		
+		if (isSave) {
+			applicationForm.setZZ_DocStatus(X_ZZ_Application_Form.ZZ_DOCSTATUS_Draft);
+		}else {
+			applicationForm.setZZ_DocStatus(X_ZZ_Application_Form.ZZ_DOCSTATUS_Submitted);
+		}
 		
 		saveAppFormCommonPart(applicationForm);
 		
@@ -395,7 +400,38 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		tableId = applicationForm.get_Table_ID();
 		setDocumentNo(applicationForm.getDocumentNo());
 		
-		showDialog();
+		showDialog(title, msg);
+	}
 
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+	}
+	public static final int EMPLOYER_APP_AD_FORM_ID = 1000000; // your WebForm AD_Form_ID
+	
+	public static void showAppList(){
+		// 2) close the CURRENT tab first
+        DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+        desktop.closeActiveWindow();  // <— closes the active AD Form tab
+
+        // Open ApplicationsList.zul via WebForm context
+        String ctx = ""
+            + "zulPath=/za/co/ntier/webform/zul/program/ApplicationsList.zul\n"
+            + "formTitle=Applications\n"
+            + "ZZ_Program_Master_Data_UU=a3db65ee-97d9-429d-9734-aca9e89dd3af\n"
+            + "programType=UNKNOWN\n";
+
+       
+        desktop.setPredefinedContextVariables(ctx);
+        desktop.openForm(EMPLOYER_APP_AD_FORM_ID);
 	}
 }

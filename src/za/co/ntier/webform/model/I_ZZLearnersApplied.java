@@ -37,9 +37,9 @@ public interface I_ZZLearnersApplied
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
 
@@ -238,4 +238,13 @@ No. of employed Learners&quot;
 	public int getZZ_Application_Form_ID();
 
 	public I_ZZ_Application_Form getZZ_Application_Form() throws RuntimeException;
+
+    /** Column name ZZ_WPAFile */
+    public static final String COLUMNNAME_ZZ_WPAFile = "ZZ_WPAFile";
+
+	/** Set WPA File	  */
+	public void setZZ_WPAFile (byte[] ZZ_WPAFile);
+
+	/** Get WPA File	  */
+	public byte[] getZZ_WPAFile();
 }

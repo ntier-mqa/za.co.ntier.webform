@@ -20,7 +20,8 @@ public class WebForm extends ADForm {
 	public static final String menuContextInfoKey = "menuContextInfo";
 	public static final String programMasterDataUUMenuContextKey = "+"
 			+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
-
+	
+	public static final String applicationFormUUKey="+ApplicationFormUU";
 	public static final String programTypeMenuContextKey = "+programType";
 
 	private static final long serialVersionUID = -5402852171052424756L;
@@ -80,15 +81,18 @@ public class WebForm extends ADForm {
 
 		String uploadWPAForNVCValue = Env.getContext(Env.getCtx(), m_WindowNo, isUploadWPAForNVCMenuContextKey);
 
-		boolean isUploadWPAForNVC = uploadWPAForNVCValue != null && "Y".equalsIgnoreCase(uploadWPAForNVCValue);
+		boolean isUploadWPAForNVC = uploadWPAForNVCValue != null && ("Y".equalsIgnoreCase(uploadWPAForNVCValue) ||
+				"true".equalsIgnoreCase(uploadWPAForNVCValue));
 
 		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataUUValue,
 				null);
 
 		String formTitle = Env.getContext(Env.getCtx(), m_WindowNo, "+formTitle");
 
+		String applicationFormUU = Env.getContext(Env.getCtx(), m_WindowNo, applicationFormUUKey);
+		
 		MenuContextInfo menuContextInfo = new MenuContextInfo(ProgramType.valueOf(programTypeValue), zulPath,
-				masterData, isUploadWPAForNVC, formTitle);
+				masterData, isUploadWPAForNVC, formTitle, applicationFormUU);
 
 		return menuContextInfo;
 	}

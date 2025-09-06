@@ -9,7 +9,6 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
-import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 

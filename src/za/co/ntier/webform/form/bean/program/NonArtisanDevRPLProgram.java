@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.bean.program;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class NonArtisanDevRPLProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
 		ProjectInput.saveProjectInput(trxName, applicationForm, totalNumApplied);
 		
 	}
