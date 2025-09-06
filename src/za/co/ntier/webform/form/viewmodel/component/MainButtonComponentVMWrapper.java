@@ -1,0 +1,62 @@
+package za.co.ntier.webform.form.viewmodel.component;
+
+import java.io.IOException;
+
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ExecutionArgParam;
+import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Tabbox;
+
+import za.co.ntier.webform.form.bean.MainButtonComponent;
+import za.co.ntier.webform.form.bean.TabType;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
+
+public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonComponent> {
+	@Init(superclass = false)
+	public void init(@ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM applicationProgramVM,
+			@ExecutionArgParam("tabType") TabType tabType,
+			@ExecutionArgParam("tab") Tabbox tab
+			) {
+		setComponent(new MainButtonComponent(applicationProgramVM, tabType, tab));
+	}
+	
+	
+	@Command
+	public void prevTab() {
+		getComponent().getApplicationProgramVM().prevTab(getComponent().getTab());
+	}
+	
+	@Command
+	public void nextTab() {
+		// Only enforce this when we are on the Declaration tab (index 0).
+	    // Adjust if you change tab order.
+		// Martin Added 
+	    if (getComponent().getTab().getSelectedIndex() == 0) {
+	        if (!Boolean.TRUE.equals(getComponent().getApplicationProgramVM().getEmployerDeclarationInfo().getAcknowledged())) {
+	            Clients.showNotification(
+	                "Please tick the acknowledgement checkbox before continuing.",
+	                "error", null, "end_center", 3000
+	            );
+	            return;
+	        }
+	    }
+		int currentIndex = getComponent().getTab().getSelectedIndex();
+		getComponent().getTab().setSelectedIndex(currentIndex + 1);
+	}
+	
+	@Command(value = "saveClose")
+	public void saveClose() throws IOException {
+		getComponent().getApplicationProgramVM().saveClose();
+	}
+	
+	@Command(value = "deleteAppForm")
+	public void deleteAppForm() throws IOException {
+		getComponent().getApplicationProgramVM().deleteApp();
+	}
+	
+	@Command(value = "submitApplication")
+	public void submitApplication() throws IOException {
+		getComponent().getApplicationProgramVM().submitApplication();
+	}
+}

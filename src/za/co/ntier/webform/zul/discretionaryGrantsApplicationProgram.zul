@@ -2,6 +2,8 @@
 <?import za.co.ntier.webform.form.WebForm ?>
 <?import za.co.ntier.webform.form.bean.ProgramType ?>
 <?import za.co.ntier.webform.form.viewmodel.program.ProgramVMWrapper ?>
+<?import za.co.ntier.webform.form.bean.TabType ?>
+
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
@@ -31,15 +33,11 @@
 							src="@load((WebForm.getBundleResourcePath('component/employerDeclaration.zul')))" />
 					</div>
 
-					<div sclass="formBottomPanel">
-						<button label="Cancel Application"
-							iconSclass="z-icon-xmark" onClick="@command('cancelApp')" />
-						<button label="Save &amp; Continue" sclass="icon-on-right"
-						        iconSclass="z-icon-arrow-right"
-						        disabled="@load(not vm.employerDeclarationInfo.acknowledged)"
-						        onClick="@command('nextTab', tab=formTab)" />
-
-					</div>
+					<include
+							tabType="@init(TabType.FirstTab)"
+							tab="@init(formTab)"
+							applicationProgramVM="@load(vm)"
+							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 				</div>
 			</tabpanel>
 
@@ -49,26 +47,12 @@
 						<include organisationInfo="@load(vm.organisationInfo)"
 							src="@load((WebForm.getBundleResourcePath('component/organisationInfo.zul')))" />
 					</div>
-					<div sclass="formBottomPanel">
-						<button label="Back" iconSclass="z-icon-arrow-left"
-							onClick="@command('prevTab', tab=formTab)" />
-
-						
-							<button label="Save &amp; Continue" sclass="icon-on-right"
-						        iconSclass="z-icon-arrow-right"
-						        disabled="@load(
-						          (!vm.programType.isCetTvet() and empty vm.organisationInfo.orgName)
-						          or (vm.programType.isCetTvet() and vm.organisationInfo.cetTvetCollegeSelected == null)
-						          or (!vm.programType.isCetTvet() and empty vm.organisationInfo.orgRegistrationNumber)
-						           or (!vm.programType.isCetTvet() and empty vm.organisationInfo.orgTaxNumber)
-						           or ( vm.organisationInfo.physicalAddressInfo.showLineAddress() and
-               							empty vm.organisationInfo.physicalAddressInfo.addressLine ) 
-               					   or ( vm.organisationInfo.physicalAddressInfo.showGeographicAddress() and 
-              							 empty vm.organisationInfo.physicalAddressInfo.postalCode)
-						        )"
-						        onClick="@command('nextTab', tab=formTab)" />
-							
-					</div>
+					
+					<include
+							tabType="@init(TabType.MidTab)"
+							tab="@init(formTab)"
+							applicationProgramVM="@load(vm)"
+							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 				</div>
 			</tabpanel>
 
@@ -80,24 +64,13 @@
 							program="@load(vm.program)"
 							src="@load((WebForm.getBundleResourcePath(vm.programType.zulPath)))" />
 					</div>
-					<div sclass="formBottomPanel">
-						<button label="Back" iconSclass="z-icon-arrow-left"
-							onClick="@command('prevTab', tab=formTab)" />
-
-						
-						<button label="Save &amp; Continue" sclass="icon-on-right"
-					        iconSclass="z-icon-arrow-right"
-					        disabled="@load(
-					          vm.programType.isDev_Program()
-					           and (empty vm.program.noOfLearners or vm.program.noOfLearners le 0))"
-					        
-					        onClick="@command('nextTab', tab=formTab)" />
-					        
-					   
-					    
-
-						
-					</div>
+					
+					<include
+							tabType="@init(TabType.MidTab)"
+							tab="@init(formTab)"
+							applicationProgramVM="@load(vm)"
+							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
+							
 				</div>
 			</tabpanel>
 			<tabpanel style="color:#CC3300;overflow: scroll;">
@@ -111,44 +84,13 @@
 							addressInfo="@load(vm.alternateProgramContact)"
 							src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 					</div>
-					<div sclass="formBottomPanel">
-						<button label="Back" iconSclass="z-icon-arrow-left"
-							onClick="@command('prevTab', tab=formTab)" />
-
-						<nodom if="${vm.isShowUploadDoc()}">
-							<button label="Save &amp; Continue" sclass="icon-on-right"
-								iconSclass="z-icon-arrow-right"
-								onClick="@command('nextTab', tab=formTab)" />
-						</nodom>
-
-						<nodom if="${!vm.isShowUploadDoc()}">
-							
-								
-								
-						<button label="Submit Application"
-								iconSclass="z-icon-gear" sclass="icon-on-right"
-						        disabled="@load(
-						          
-						           vm.programType.isShowMainAddress() and (
-									            
-									            (vm.programContact.showLineAddress() and empty vm.programContact.addressLine)
-									            or (vm.programContact.showGeographicAddress() and (
-									                empty vm.programContact.postalCode
-									                or empty vm.programContact.areaSelected
-									                or empty vm.programContact.provinceSelected
-									            ))
-									           
-									            or (vm.programContact.showContact() and (
-									                empty vm.programContact.nameSiteRepresentative
-									                or empty vm.programContact.mobileNumber
-									                or empty vm.programContact.email
-									            ))
-									          )
-						        )"
-						        onClick="@command('submitApplication')" />
-								
-						</nodom>
-					</div>
+					
+					<include
+							tabType="@init(vm.showUploadDoc?TabType.MidTab:TabType.LastTab)"
+							tab="@init(formTab)"
+							applicationProgramVM="@load(vm)"
+							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
+					
 				</div>
 			</tabpanel>
 
@@ -160,14 +102,13 @@
 						<include component="@load(vm.uploadDoc)"
 							src="@load((WebForm.getBundleResourcePath('component/uploadDoc.zul')))" />
 					</div>
-					<div sclass="formBottomPanel">
-						<button label="Back" iconSclass="z-icon-arrow-left"
-							onClick="@command('prevTab', tab=formTab)" />
-
-						<button label="Submit Application" iconSclass="z-icon-gear"
-							sclass="icon-on-right" onClick="@command('submitApplication')" />
-					</div>
-				</div>
+					
+					<include
+							tabType="@init(TabType.LastTab)"
+							tab="@init(formTab)"
+							applicationProgramVM="@load(vm)"
+							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
+									</div>
 			</tabpanel>
 
 

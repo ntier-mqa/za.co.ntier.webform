@@ -17,7 +17,7 @@ import za.co.ntier.webform.form.bean.component.Dialog;
  */
 @Init(superclass = true)
 public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
-	private static final int EMPLOYER_APP_AD_FORM_ID = 1000000; // your WebForm AD_Form_ID
+	public static final int EMPLOYER_APP_AD_FORM_ID = 1000000; // your WebForm AD_Form_ID
 	private String moreInfo;
 	
 	@Command
@@ -76,6 +76,11 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
 
        
         desktop.setPredefinedContextVariables(ctx);
-        desktop.openForm(EMPLOYER_APP_AD_FORM_ID);
+        Object win = desktop.findWindow(EMPLOYER_APP_AD_FORM_ID);
+        if (win == null)
+        	desktop.openForm(EMPLOYER_APP_AD_FORM_ID);
+        else {
+        
+        }
     }
 }

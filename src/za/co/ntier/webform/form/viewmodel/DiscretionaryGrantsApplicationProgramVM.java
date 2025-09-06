@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adempiere.webui.desktop.DefaultDesktop;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.BindingParam;
@@ -43,6 +45,7 @@ import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
+import za.co.ntier.webform.form.viewmodel.component.DialogVMWrapper;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.NotifyChange;
@@ -72,46 +75,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private int tableId;
 
 	private UploadDocComponent uploadDoc;
-
-	@Command
-	public void cancelApp() {
-
-	}
-
-	/*
-	 * public List<X_ZZ_FormDiscipline> createDiscipline(LearnerInputTableInfo
-	 * disciplineTableInfo, int applicationFormID) throws IOException { for
-	 * (LearnerInputInfo discipline : disciplineTableInfo.getLearnerInputInfos()) {
-	 * if (discipline.getNoLearners() == null) continue;
-	 * 
-	 * X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(),
-	 * 0, null); formDisciplines.setZZ_Application_Form_ID(applicationFormID);
-	 * formDisciplines.setZZ_LearnersNo(discipline.getNoLearners());
-	 * 
-	 * if (discipline.getAreaSelected() != null)
-	 * formDisciplines.setC_City_ID(discipline.getAreaSelected().getC_City_ID());
-	 * 
-	 * if (discipline.getProvince() != null)
-	 * formDisciplines.setC_Region_ID(discipline.getProvince().getC_Region_ID());
-	 * 
-	 * formDisciplines.setPostal(discipline.getPostalCode());
-	 * formDisciplines.setZZ_DisciplineType(disciplineTableInfo.getLearnerInputType(
-	 * )); if (disciplineTableInfo.isTrade()) {
-	 * formDisciplines.setZZ_Trade_ID(discipline.getLearnerInputID()); }else {
-	 * formDisciplines.setZZ_Disciplines_ID(discipline.getLearnerInputID()); }
-	 * 
-	 * if (StringUtils.isNoneEmpty(discipline.getFullPathWPA())) {
-	 * formDisciplines.setZZ_WPAFile(Files.readAllBytes(Paths.get(discipline.
-	 * getFullPathWPA()))); }
-	 * 
-	 * if (StringUtils.isNoneEmpty(discipline.getFullPathAccred())) {
-	 * formDisciplines.setZZ_AccredFile((Files.readAllBytes(Paths.get(discipline.
-	 * getFullPathAccred())))); }
-	 * 
-	 * formDisciplines.saveEx(); }
-	 * 
-	 * return null; }
-	 */
 
 	/**
 	 * @return the alternateProgramContact
@@ -251,30 +214,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		return uploadDoc != null && uploadDoc.getUploadDoc().getRows().size() > 0;
 	}
 
-	@Command
-	public void nextTab(@BindingParam("tab") Tabbox tab) {
-		// Only enforce this when we are on the Declaration tab (index 0).
-	    // Adjust if you change tab order.
-		// Martin Added 
-	    if (tab.getSelectedIndex() == 0) {
-	        if (!Boolean.TRUE.equals(getEmployerDeclarationInfo().getAcknowledged())) {
-	            Clients.showNotification(
-	                "Please tick the acknowledgement checkbox before continuing.",
-	                "error", null, "end_center", 3000
-	            );
-	            return;
-	        }
-	    }
-		int currentIndex = tab.getSelectedIndex();
-		tab.setSelectedIndex(currentIndex + 1);
-	}
-
-
-	@Command
-	public void prevTab(@BindingParam("tab") Tabbox tab) {
-		int currentIndex = tab.getSelectedIndex();
-		tab.setSelectedIndex(currentIndex - 1);
-	}
 
 	private void saveAppFormCommonPart(X_ZZ_Application_Form applicationForm) {
  		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
@@ -373,7 +312,51 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 	}
 
-	@Command(value = "submitApplication")
+	public void deleteApp() {
+
+	}
+	
+	public void saveClose() {
+		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+        desktop.closeActiveWindow();  // <— closes the active AD Form tab
+
+        // Open ApplicationsList.zul via WebForm context
+        String ctx = ""
+            + "zulPath=/za/co/ntier/webform/zul/program/ApplicationsList.zul\n"
+            + "formTitle=Applications\n"
+            + "ZZ_Program_Master_Data_UU=a3db65ee-97d9-429d-9734-aca9e89dd3af\n"
+            + "programType=UNKNOWN\n";
+
+       
+        desktop.setPredefinedContextVariables(ctx);
+        Object win = desktop.findWindow(DialogVMWrapper.EMPLOYER_APP_AD_FORM_ID);
+        desktop.openForm(DialogVMWrapper.EMPLOYER_APP_AD_FORM_ID);
+        
+	}
+	
+	public void prevTab(Tabbox tab) {
+		int currentIndex = tab.getSelectedIndex();
+		tab.setSelectedIndex(currentIndex - 1);
+	}
+	
+	public void nextTab(Tabbox tab) {
+		// Only enforce this when we are on the Declaration tab (index 0).
+	    // Adjust if you change tab order.
+		// Martin Added 
+	    if (tab.getSelectedIndex() == 0) {
+	        if (!Boolean.TRUE.equals(getEmployerDeclarationInfo().getAcknowledged())) {
+	            Clients.showNotification(
+	                "Please tick the acknowledgement checkbox before continuing.",
+	                "error", null, "end_center", 3000
+	            );
+	            return;
+	        }
+	    }
+		int currentIndex = tab.getSelectedIndex();
+		tab.setSelectedIndex(currentIndex + 1);
+	}
+
+	
 	public void submitApplication() throws IOException {
 		String trxName = null;
 		X_ZZ_Application_Form applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, trxName);
