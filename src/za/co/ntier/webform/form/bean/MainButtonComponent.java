@@ -8,12 +8,24 @@ public class MainButtonComponent {
 	private	DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
 	private	TabType tabType;
 	private Tabbox tab;
+
+
+	private boolean continueDisabled; // defaults to false
+	private boolean submitDisabled;   // defaults to false
+
+
+
+
 	public MainButtonComponent(DiscretionaryGrantsApplicationProgramVM applicationProgramVM, TabType tabType, Tabbox tab) {
 		this.applicationProgramVM = applicationProgramVM;
 		this.tabType = tabType;
 		this.setTab(tab);
 	}
-	
+	public boolean isContinueDisabled() { return continueDisabled; }
+	public void setContinueDisabled(boolean continueDisabled) { this.continueDisabled = continueDisabled; }
+
+	public boolean isSubmitDisabled() { return submitDisabled; }
+	public void setSubmitDisabled(boolean submitDisabled) { this.submitDisabled = submitDisabled; }
 	/**
 	 * @return the applicationProgramVM
 	 */

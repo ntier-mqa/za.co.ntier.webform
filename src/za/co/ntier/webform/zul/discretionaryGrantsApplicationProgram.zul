@@ -36,7 +36,9 @@
 					<include
 							tabType="@init(TabType.FirstTab)"
 							tab="@init(formTab)"
-							applicationProgramVM="@load(vm)"
+							applicationProgramVM="@load(vm)"							
+  							continueGate="@init('DECLARATION')"
+  							submitGate="@init('NONE')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 				</div>
 			</tabpanel>
@@ -45,13 +47,16 @@
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
 						<include organisationInfo="@load(vm.organisationInfo)"
+							applicationProgramVM="@init(vm)"
 							src="@load((WebForm.getBundleResourcePath('component/organisationInfo.zul')))" />
 					</div>
 					
 					<include
 							tabType="@init(TabType.MidTab)"
 							tab="@init(formTab)"
-							applicationProgramVM="@load(vm)"
+							applicationProgramVM="@init(vm)"
+  							continueGate="@init('ORG')" 
+  							submitGate="@init('NONE')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 				</div>
 			</tabpanel>
@@ -69,6 +74,8 @@
 							tabType="@init(TabType.MidTab)"
 							tab="@init(formTab)"
 							applicationProgramVM="@load(vm)"
+							continueGate="@init('PROGRAM')"
+  							submitGate="@init('NONE')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 							
 				</div>
@@ -76,19 +83,27 @@
 			<tabpanel style="color:#CC3300;overflow: scroll;">
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
+					
+							
 						<include if="${vm.programType.isShowMainAddress()}"
-							addressInfo="@load(vm.programContact)"
-							src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
-
-						<include if="${vm.programType.isShowMainAddressAlter()}"
-							addressInfo="@load(vm.alternateProgramContact)"
-							src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
+							  addressInfo="@load(vm.programContact)"
+							  applicationProgramVM="@init(vm)"                 
+							  notifyTarget="@init('programContactComplete')"   
+							  src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
+							
+							<include if="${vm.programType.isShowMainAddressAlter()}"
+							  addressInfo="@load(vm.alternateProgramContact)"
+							  applicationProgramVM="@init(vm)"
+							  notifyTarget="@init('programContactComplete')"
+							  src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 					</div>
 					
 					<include
-							tabType="@init(vm.showUploadDoc?TabType.MidTab:TabType.LastTab)"
+							tabType="@init(vm.showUploadDoc ? TabType.MidTab : TabType.LastTab)"
 							tab="@init(formTab)"
 							applicationProgramVM="@load(vm)"
+  							continueGate="@init('NONE')"   
+  							submitGate="@init(vm.showUploadDoc ? 'NONE' : 'CONTACT')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 					
 				</div>
@@ -107,6 +122,8 @@
 							tabType="@init(TabType.LastTab)"
 							tab="@init(formTab)"
 							applicationProgramVM="@load(vm)"
+							continueGate="@init('NONE')"
+  							submitGate="@init('NONE')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 									</div>
 			</tabpanel>

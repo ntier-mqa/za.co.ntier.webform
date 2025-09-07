@@ -8,7 +8,7 @@ import za.co.ntier.webform.form.WebForm;
 
 public class ComponentVMWrapper<T> {
 	public static final String ComponentKey = "component";
-	private T component;
+	protected T component;  // Martin changed to protected
 
 	/**
 	 * @return the component

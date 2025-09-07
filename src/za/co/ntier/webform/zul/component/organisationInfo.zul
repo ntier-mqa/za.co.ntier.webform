@@ -49,7 +49,8 @@
 			<label sclass="label"
 				value="@init(vmOrgInfo.organisationInfo.siteSDLNumberTitle)" />
 			<textbox
-				value="@bind(vmOrgInfo.organisationInfo.siteSDLNumber)" />
+				value="@bind(vmOrgInfo.organisationInfo.siteSDLNumber)
+				@save(vmOrgInfo.organisationInfo.siteSDLNumber, after='onChanging')" />
 		</div>
 
 		<div
@@ -94,13 +95,20 @@
 	</div>
 
 
+
+		
 	<include
 		addressInfo="@load(vmOrgInfo.organisationInfo.physicalAddressInfo)"
+		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"  
+		notifyTarget="@init('organisationComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
+		
 	<include
-		addressInfo="@load(vmOrgInfo.organisationInfo.postAddressInfo)"
-		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
+	    addressInfo="@load(vmOrgInfo.organisationInfo.postAddressInfo)"
+	    applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
+	    notifyTarget="@init('organisationComplete')"
+	    src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 	<include
 		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"

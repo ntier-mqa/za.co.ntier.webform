@@ -22,7 +22,8 @@
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.addressLineTitle)" />
 			<textbox
-		      value="@bind(vmAddress.addressInfo.addressLine) @save(vmAddress.addressInfo.addressLine, after='onChanging')"
+		      value="@bind(vmAddress.addressInfo.addressLine, save-on='onChanging') "
+		      onChanging="@command('notifyParentCompleteness')"
 		      constraint="no empty: Please enter the street address"
 			 />
 		</div>
@@ -31,7 +32,10 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.postAddressTitle)" />
-			<textbox value="@bind(vmAddress.addressInfo.postAddress)" />
+			<textbox value="@bind(vmAddress.addressInfo.postAddress, save-on='onChanging')" 
+			onChanging="@command('notifyParentCompleteness')"
+			constraint="no empty: Please enter the postal address"
+			/>
 
 		</div>
 
@@ -40,7 +44,8 @@
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.postalCodeTitle)" />
 			<textbox
-      				value="@bind(vmAddress.addressInfo.postalCode) @save(vmAddress.addressInfo.postalCode, after='onChanging')"
+      				value="@bind(vmAddress.addressInfo.postalCode, save-on='onChanging')"
+      				onChanging="@command('notifyParentCompleteness')"
       				constraint="/^[0-9]{4,6}$/: Enter a valid postal code"
 			
 			 />
@@ -52,7 +57,8 @@
 				value="@init(vmAddress.addressInfo.areaTitle)" />
 			<listbox mold="select"
 				model="@load(vmAddress.addressInfo.areas)"
-				selectedItem="@bind(vmAddress.addressInfo.areaSelected)">
+				selectedItem="@bind(vmAddress.addressInfo.areaSelected, save-on='onSelect')"
+				onSelect="@command('notifyParentCompleteness')">
 				<template name="model" var="item">
 					<listitem label="@load(item.name)" />
 				</template>
@@ -66,7 +72,8 @@
 
 			<listbox mold="select"
 				model="@load((vmAddress.addressInfo.provinces))"
-				selectedItem="@bind(vmAddress.addressInfo.provinceSelected)">
+				selectedItem="@bind(vmAddress.addressInfo.provinceSelected, save-on='onSelect')"
+				onSelect="@command('notifyParentCompleteness')">
 				<template name="model" var="item">
 					<listitem label="@load(item.name)" />
 				</template>

@@ -9,6 +9,7 @@ import org.compiere.model.X_C_BPartner;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.ISaveForm;
@@ -51,7 +52,7 @@ public class OrganisationInfo implements ISaveForm {
 		postAddressInfo = new AddressInfo(AddressType.POSTAL, null);
 
 		physicalAddressInfo = new AddressInfo(AddressType.PHYSICAL, null);
-		
+
 		//orgSizeInfo = new OrganisationSizeInfo();
 		if (!menuContextInfo.getProgramType().isCetTvet()) {
 			orgSizeInfo = new OrganisationSizeInfo();  
@@ -221,19 +222,19 @@ public class OrganisationInfo implements ISaveForm {
 		if (getOrgSizeInfo() != null) {
 			getOrgSizeInfo().saveForm(trxName, applicationForm);
 		}
-		
+
 		if (physicalAddressInfo != null) {
 			physicalAddressInfo.saveForm(trxName, applicationForm);
 		}
-		
+
 		if (postAddressInfo != null) {
 			postAddressInfo.saveForm(trxName, applicationForm);
 		}
-		
+
 		if (orgContact != null) {
 			orgContact.saveForm(trxName, applicationForm);
 		}
-		
+
 		if (alternateOrgContact != null) {
 			alternateOrgContact.saveForm(trxName, applicationForm);
 		}
@@ -259,13 +260,15 @@ public class OrganisationInfo implements ISaveForm {
 				orgSizeInfo.setSubmittedWSP(prevApprovedCount > 0);
 				BindUtils.postNotifyChange(orgSizeInfo, "submittedWSPText", "numOfEmployer");
 			}
-			
+
 
 			bPartnerId = bPartner.getC_BPartner_ID();
 		} else {
 			bPartnerId = 0;
 		}
 	}
+
+	
 
 	/**
 	 * @param alternateOrgContact the alternateOrgContact to set

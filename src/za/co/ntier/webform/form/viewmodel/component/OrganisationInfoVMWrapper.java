@@ -9,28 +9,34 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.bean.component.OrganisationInfo;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class OrganisationInfoVMWrapper {
 	private OrganisationInfo organisationInfo;
+	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
 	
 
 
 
-	/**
-	 * @return the organisationInfo
-	 */
-	public OrganisationInfo getOrganisationInfo() {
-		return organisationInfo;
-	}
+	
 
 	@Init
-	public void init(@ExecutionArgParam("organisationInfo") OrganisationInfo organisationInfo) {
-		this.organisationInfo = organisationInfo;
+	public void init(@ExecutionArgParam("organisationInfo") OrganisationInfo orgInfo,
+	        @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM) {
+		 this.organisationInfo = orgInfo;
+	     this.applicationProgramVM = appVM;
 	}
 
 	@Command
 	public void sdlNumberChange() {
 		organisationInfo.sdlNumberChange();
+	}
+	
+	/**
+	 * @return the organisationInfo
+	 */
+	public OrganisationInfo getOrganisationInfo() {
+		return organisationInfo;
 	}
 
 	/**
@@ -44,4 +50,6 @@ public class OrganisationInfoVMWrapper {
 	public void uploadFile(@BindingParam("media") Media media) throws IOException {
 		organisationInfo.uploadFile(media);
 	}
+	
+	public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM(){ return applicationProgramVM; }
 }

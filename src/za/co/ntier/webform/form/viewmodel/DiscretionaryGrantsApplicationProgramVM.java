@@ -12,6 +12,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
+import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
@@ -209,6 +210,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			alternateProgramContact = new AddressInfo(programType, true, null);
 
 		uploadDoc = new UploadDocComponent(menuContextInfo);
+		
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "declarationComplete");
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "organisationComplete");
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "programComplete");
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "programContactComplete");
 
 	}
 
@@ -240,6 +246,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	public void setEmployerDeclarationInfo(EmployerDeclarationInfo employerDeclarationInfo) {
 		this.employerDeclarationInfo = employerDeclarationInfo;
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "declarationComplete");
 	}
 
 	/**
@@ -261,6 +268,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setOrganisationInfo(OrganisationInfo organisationInfo) {
 		this.organisationInfo = organisationInfo;
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "organisationComplete");
 	}
 
 	/**
@@ -268,6 +276,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setProgram(IProgram program) {
 		this.program = program;
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "programComplete");
 	}
 
  	/**
@@ -275,10 +284,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public void setProgramContact(AddressInfo programContact) {
 		this.programContact = programContact;
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "programContactComplete");
 	}
 	 	
 	public void setProgramType(ProgramType programType) {
 		this.programType = programType;
+		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "organisationComplete");
+	    org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "programComplete");
+	    org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "programContactComplete");
 	}
 	
 	public void setRecordId(int recordId) {
@@ -434,4 +447,89 @@ public class DiscretionaryGrantsApplicationProgramVM {
         desktop.setPredefinedContextVariables(ctx);
         desktop.openForm(EMPLOYER_APP_AD_FORM_ID);
 	}
+	
+
+	@DependsOn("employerDeclarationInfo.acknowledged")
+	public boolean isDeclarationComplete() {
+	    return employerDeclarationInfo != null && Boolean.TRUE.equals(employerDeclarationInfo.getAcknowledged());
+	}
+
+	@DependsOn({
+		  "programType",
+		  "organisationInfo.orgName",
+		  "organisationInfo.orgRegistrationNumber",
+		  "organisationInfo.orgTaxNumber",
+		  "organisationInfo.physicalAddressInfo.addressLine",
+		  "organisationInfo.physicalAddressInfo.postalCode",
+		  "organisationInfo.cetTvetCollegeSelected",
+		  "organisationInfo.sdlNumber",
+		  "organisationInfo.siteSDLNumber",
+		  "organisationInfo.postAddressInfo.postAddress",   
+		  "organisationInfo.postAddressInfo.postalCode"
+		})
+	public boolean isOrganisationComplete() {
+		boolean colOk = true;
+		boolean orgOk = true;
+	    if (programType.isCetTvet()) {
+	    	colOk = organisationInfo.getCetTvetCollegeSelected() != null;
+	    } else {
+	    	 orgOk = notEmpty(organisationInfo.getOrgName())  
+	    			 && notEmpty(organisationInfo.getOrgTaxNumber())
+	    			 && notEmpty(organisationInfo.getOrgRegistrationNumber());
+	    }
+	    orgOk = orgOk
+	        && notEmpty(organisationInfo.getSdlNumber())
+	        && notEmpty(organisationInfo.getSiteSDLNumber());
+	    boolean addrOk = (!organisationInfo.getPhysicalAddressInfo().showLineAddress()
+	                      || notEmpty(organisationInfo.getPhysicalAddressInfo().getAddressLine()))
+	        && (!organisationInfo.getPhysicalAddressInfo().showGeographicAddress()
+	                      || notEmpty(organisationInfo.getPhysicalAddressInfo().getPostalCode()));
+	    boolean postalOk = (!organisationInfo.getPostAddressInfo().showPostalAddress()
+                || notEmpty(organisationInfo.getPostAddressInfo().getPostAddress()))
+	    		&& (!organisationInfo.getPostAddressInfo().showGeographicAddress()
+                || notEmpty(organisationInfo.getPostAddressInfo().getPostalCode()));
+	    boolean provincesPhysicalOk = organisationInfo.getPhysicalAddressInfo().getProvinceSelected() != null  &&
+	    		notEmpty(organisationInfo.getPhysicalAddressInfo().getProvinceSelected().getName());
+	    boolean provincesPostalOk = (!organisationInfo.getPostAddressInfo().showPostalAddress()
+	    		|| (organisationInfo.getPostAddressInfo().getProvinceSelected() != null &&
+	    				notEmpty(organisationInfo.getPostAddressInfo().getProvinceSelected().getName())
+	    				));
+	    return orgOk && addrOk && colOk && postalOk && provincesPhysicalOk && provincesPostalOk;
+	}
+
+	@DependsOn({ "programType", "program" /* covers program.noOfLearners when replaced */ })
+	public boolean isProgramComplete() {
+	    if (programType.isDev_Program()) {
+	        Integer n = ((MedpProgram) program).getNoOfLearners();
+	        return n != null && n > 0;
+	    }
+	    return true;
+	}
+
+	@DependsOn({
+		  "programType",
+		  "programContact.addressLine",
+		  "programContact.postalCode",
+		  "programContact.areaSelected",
+		  "programContact.provinceSelected",
+		  "programContact.nameSiteRepresentative",
+		  "programContact.mobileNumber",
+		  "programContact.email"
+		})
+	public boolean isProgramContactComplete() {
+	    if (!programType.isShowMainAddress()) return true;
+	    boolean lineOk = !programContact.showLineAddress() || notEmpty(programContact.getAddressLine());
+	    boolean geoOk = !programContact.showGeographicAddress() ||
+	        (notEmpty(programContact.getPostalCode())
+	         && programContact.getAreaSelected() != null
+	         && programContact.getProvinceSelected() != null);
+	    boolean contactOk = !programContact.showContact() ||
+	        (notEmpty(programContact.getNameSiteRepresentative())
+	         && notEmpty(programContact.getMobileNumber())
+	         && notEmpty(programContact.getEmail()));
+	    return lineOk && geoOk && contactOk;
+	}
+
+	private boolean notEmpty(String s){ return s != null && !s.trim().isEmpty(); }
+
 }

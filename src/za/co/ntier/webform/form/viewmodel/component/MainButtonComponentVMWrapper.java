@@ -3,6 +3,7 @@ package za.co.ntier.webform.form.viewmodel.component;
 import java.io.IOException;
 
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.util.Clients;
@@ -13,12 +14,21 @@ import za.co.ntier.webform.form.bean.TabType;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonComponent> {
+	
+	  // Passed in via @init from the parent ZUL (static per panel)
+    private String continueGate; // "DECLARATION", "ORG", "PROGRAM", "NONE"
+    private String submitGate;   // "CONTACT", "NONE"
 	@Init(superclass = false)
-	public void init(@ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM applicationProgramVM,
-			@ExecutionArgParam("tabType") TabType tabType,
-			@ExecutionArgParam("tab") Tabbox tab
+	public void init(
+		    @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM applicationProgramVM,
+		    @ExecutionArgParam("tabType") TabType tabType,
+		    @ExecutionArgParam("tab") Tabbox tab,
+		    @ExecutionArgParam("continueGate") String continueGate,   // <-- add
+		    @ExecutionArgParam("submitGate")   String submitGate      // <-- add
 			) {
 		setComponent(new MainButtonComponent(applicationProgramVM, tabType, tab));
+		this.continueGate = (continueGate != null) ? continueGate : "NONE"; // <-- set
+		this.submitGate   = (submitGate   != null) ? submitGate   : "NONE"; // <-- set
 	}
 	
 	
@@ -59,4 +69,33 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 	public void submitApplication() throws IOException {
 		getComponent().getApplicationProgramVM().submitApplication();
 	}
+	
+	 // === Reactive disabled flags ===
+    @DependsOn({
+        "component.applicationProgramVM.declarationComplete",
+        "component.applicationProgramVM.organisationComplete",
+        "component.applicationProgramVM.programComplete",
+        "component.applicationProgramVM.programContactComplete"
+    })
+    public boolean isNextDisabled() {
+        DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
+        switch (continueGate) {
+            case "DECLARATION": return !vm.isDeclarationComplete();
+            case "ORG":         return !vm.isOrganisationComplete();
+            case "PROGRAM":     return !vm.isProgramComplete();
+            case "PROGRAMCONTACT": return !vm.isProgramContactComplete();
+            default:            return false;
+        }
+    }
+
+    @DependsOn({
+        "component.applicationProgramVM.programContactComplete"
+    })
+    public boolean isSubmitDisabled() {
+        DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
+        switch (submitGate) {
+            case "CONTACT": return !vm.isProgramContactComplete();
+            default:        return false;
+        }
+    }
 }
