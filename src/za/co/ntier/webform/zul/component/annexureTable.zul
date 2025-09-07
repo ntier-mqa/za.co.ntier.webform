@@ -50,7 +50,8 @@
 							<label value="@init(row[detailCol])" />
 						</nodom>
 						<nodom if="${detailCol.dataType == DataType.Text}">
-							<textbox value="@bind(row[detailCol])" />
+							<textbox value="@bind(row[detailCol], save-on='onChanging')" 
+							onChanging="@command('notifyProgramComplete')"/>
 						</nodom>
 						<nodom if="${detailCol.dataType == DataType.PositiveNumber}">
 							<intbox value="@bind(row[detailCol].value)"
@@ -104,7 +105,8 @@
 
 							<listbox mold="select"
 								model="@load(detailCol.dataProvider)"
-								selectedItem="@bind(row[detailCol])">
+								selectedItem="@bind(row[detailCol], save-on='onSelect')"
+								onSelect="@command('notifyProgramComplete')">
 								<template name="model" var="item">
 									<listitem label="@load(item.learnerInputText)" />
 								</template>

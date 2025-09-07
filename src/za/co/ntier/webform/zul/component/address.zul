@@ -14,7 +14,10 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.siteNameTitle)" />
-			<textbox value="@bind(vmAddress.addressInfo.siteName)" />
+			<textbox
+				value="@bind(vmAddress.addressInfo.siteName, save-on='onChanging')"
+				onChanging="@command('notifyParentCompleteness')"
+				constraint="no empty: Please enter the site name"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showLineAddress()}"
@@ -86,26 +89,32 @@
 				value="@init(vmAddress.addressInfo.nameSiteRepresentativeTitle)" />
 
 			<textbox
-				value="@bind(vmAddress.addressInfo.nameSiteRepresentative)" />
+				value="@bind(vmAddress.addressInfo.nameSiteRepresentative, save-on='onChanging')"
+				onChanging="@command('notifyParentCompleteness')"
+				constraint="no empty: Please enter a name"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.representativeDesignationTitle)" />
-
+			
 			<textbox
-				value="@bind(vmAddress.addressInfo.representativeDesignation)" />
+				value="@bind(vmAddress.addressInfo.representativeDesignation, save-on='onChanging')"
+				onChanging="@command('notifyParentCompleteness')"
+				constraint="no empty: Please enter a designation"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
-
-			<textbox value="@bind(vmAddress.addressInfo.mobileNumber)" 
+		
+			<textbox
+				value="@bind(vmAddress.addressInfo.mobileNumber, save-on='onChanging')"
+				onChanging="@command('notifyParentCompleteness')"
 				type="tel"
-				constraint="/\d(10)/: Please enter 10 digit for phone"/>
+				constraint="/^\s*\d{10}\s*$/: Please enter a 10 digit phone"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
@@ -113,19 +122,23 @@
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.landlineNumberTitle)" />
 
-			<textbox value="@bind(vmAddress.addressInfo.landlineNumber)" 
+			
+			<textbox
+				value="@bind(vmAddress.addressInfo.landlineNumber, save-on='onChanging')"
+				onChanging="@command('notifyParentCompleteness')"
 				type="tel"
-				constraint="/\d(10)/: Please enter 10 digit for phone"/>
+				constraint="/^\s*\d{10}\s*$/: Please enter a 10 digit phone"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.emailTitle)" />
-
-			<textbox value="@bind(vmAddress.addressInfo.email)"
-				type="email" 
-				constraint="/.+@.+\.[a-z]+/: Please enter an e-mail address"/>
+			<textbox
+			  value="@bind(vmAddress.addressInfo.email, save-on='onChanging')"
+			  onChanging="@command('notifyParentCompleteness')"
+			  type="email"
+			  constraint="/^\s*[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\s*$/ : Please enter an e-mail address"/>
 		</div>
 	</div>
 

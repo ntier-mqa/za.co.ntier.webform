@@ -3,6 +3,7 @@ package za.co.ntier.webform.form.viewmodel.component;
 import java.io.IOException;
 import java.util.Map;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -15,15 +16,19 @@ import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class AnnexureTableVMWrapper {
 	private AnnexureInfo annexureInfo;
 
 	private boolean isSubAnnexure = false;
+	
+	 private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
 
 	@Command
 	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure) {
 		annexure.addRow();
+		notifyProgramComplete();
 	}
 	
 	@Command
@@ -31,6 +36,7 @@ public class AnnexureTableVMWrapper {
 			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
 			@ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
 		annexure.areaSelect(row, col, event);
+		notifyProgramComplete(); 
 	}
 	
 	/**
@@ -42,16 +48,24 @@ public class AnnexureTableVMWrapper {
 	
 	@Init
 	public void init(@ExecutionArgParam("annexureInfo") AnnexureInfo annexureInfo,
-			@ExecutionArgParam("isSubAnnexure") Boolean isSubAnnexure
+			@ExecutionArgParam("isSubAnnexure") Boolean isSubAnnexure,
+			 @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM
 			) {
 		this.setAnnexureInfo(annexureInfo);
 		if (isSubAnnexure == null)
 			this.isSubAnnexure = false;
 		else
 			this.isSubAnnexure = isSubAnnexure;
+		this.applicationProgramVM = appVM;
 	}
 	
-	
+	/** Notify parent VM that program completeness may have changed */
+    @Command
+    public void notifyProgramComplete() { // <-- ADD
+        if (applicationProgramVM != null) {
+            BindUtils.postNotifyChange(null, null, applicationProgramVM, "programComplete");
+        }
+    }
 	/**
 	 * @return the isSubAnnexure
 	 */
@@ -66,6 +80,7 @@ public class AnnexureTableVMWrapper {
 		if (annexure.isShowTotal()) {
 			annexure.numChange(row, col, event);
 		}
+		notifyProgramComplete();
 
 	}
 
@@ -74,6 +89,7 @@ public class AnnexureTableVMWrapper {
 			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
 			@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
 		annexure.postalChange(row, col, event);
+		notifyProgramComplete(); 
 	}
 	
 	/**

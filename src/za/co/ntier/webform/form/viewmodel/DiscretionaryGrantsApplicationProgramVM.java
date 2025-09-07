@@ -22,8 +22,11 @@ import org.zkoss.zul.Tabbox;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
+import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.Dialog;
 import za.co.ntier.webform.form.bean.component.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.component.FormInfo;
@@ -497,8 +500,12 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    return orgOk && addrOk && colOk && postalOk && provincesPhysicalOk && provincesPostalOk;
 	}
 
-	@DependsOn({ "programType", "program" /* covers program.noOfLearners when replaced */ })
+	@DependsOn("program") // re-evaluate when program/annexure rows change (notified from table VM)
 	public boolean isProgramComplete() {
+	    if (programType == ProgramType.TVET_BURSARS) {
+	        return isTvetBursarsRowsValid();
+	    }
+	    // keep your existing rules for other program types
 	    if (programType.isDev_Program()) {
 	        Integer n = ((MedpProgram) program).getNoOfLearners();
 	        return n != null && n > 0;
@@ -506,30 +513,158 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    return true;
 	}
 
+
+	@SuppressWarnings("unchecked")
+	private boolean isTvetBursarsRowsValid() {
+	    if (!(program instanceof CetTvetProgram)) return false;
+	    CetTvetProgram p = (CetTvetProgram) program;
+
+	    // try every annexure until we find the one that carries these two columns
+	    for (AnnexureInfo a : p.getAnnexureInfos()) {
+	        ColumnInfo fosCol = findCol(a, "Field of Study", "Programme", "Program", "Qualification", "Course");
+	        ColumnInfo nolCol = findCol(a, "No of Learners", "No. of Learners", "Number of Learners", "Learners");
+	        if (fosCol == null || nolCol == null) continue;
+
+	        int okRows = 0;
+	        for (var row : a.getRows()) {
+	            Object fosCell = row.get(fosCol);
+	            Object nolCell = row.get(nolCol);
+
+	            boolean fosBlank = isFieldOfStudyBlank(fosCol.getDataType(), fosCell);
+	            Integer learners = getLearners(nolCol.getDataType(), nolCell);
+
+	            boolean learnersBlank = (learners == null);
+	            boolean bothBlank = fosBlank && learnersBlank;
+
+	            if (bothBlank) {
+	                // ignore the row
+	                continue;
+	            }
+	            // partial or invalid count → fail
+	            if (fosBlank || learners == null || learners <= 0) {
+	                return false;
+	            }
+	            // both present and learners > 0
+	            okRows++;
+	        }
+	        // must have at least one complete row
+	        return okRows >= 1;
+	    }
+	    // didn't find matching annexure/columns
+	    return false;
+	}
+
+	private ColumnInfo findCol(AnnexureInfo a, String... aliases) {
+	    for (ColumnInfo c : a.getColumnInfos()) {
+	        String t = (c.getTitle() != null ? c.getTitle() : "").trim().toLowerCase();
+	        for (String alias : aliases) {
+	            if (t.equals(alias.toLowerCase())) return c;
+	        }
+	    }
+	    return null;
+	}
+
+	private boolean isFieldOfStudyBlank(DataType dt, Object cell) {
+	    if (cell == null) return true;
+	    switch (dt) {
+	        case Text:
+	            return ((String)cell).trim().isEmpty();
+	        case List:
+	            // selection required; any non-null item counts as filled
+	            return false;
+	        case Label:
+	        default:
+	            // treat other types defensively
+	            return (cell.toString().trim().isEmpty());
+	    }
+	}
+
+	private Integer getLearners(DataType dt, Object cell) {
+	    if (cell == null) return null;
+	    switch (dt) {
+	        case PositiveNumber:
+	            // your ZUL uses row[col].value for numbers
+	            try {
+	                Object v = cell.getClass().getMethod("getValue").invoke(cell);
+	                if (v instanceof Number) return ((Number)v).intValue();
+	            } catch (Exception ignore) {}
+	            return null;
+	        case Text:
+	            try {
+	                String s = ((String)cell).trim();
+	                if (s.isEmpty()) return null;
+	                return Integer.parseInt(s);
+	            } catch (Exception e) { return null; }
+	        default:
+	            return null;
+	    }
+	}
+
+
+	private boolean notEmpty(String s){ return s != null && !s.trim().isEmpty(); }
+	
 	@DependsOn({
 		  "programType",
+
+		  // MAIN contact
+		  "programContact.siteName",
 		  "programContact.addressLine",
+		  "programContact.postAddress",
 		  "programContact.postalCode",
 		  "programContact.areaSelected",
 		  "programContact.provinceSelected",
 		  "programContact.nameSiteRepresentative",
+		  "programContact.representativeDesignation",
 		  "programContact.mobileNumber",
-		  "programContact.email"
-		})
-	public boolean isProgramContactComplete() {
-	    if (!programType.isShowMainAddress()) return true;
-	    boolean lineOk = !programContact.showLineAddress() || notEmpty(programContact.getAddressLine());
-	    boolean geoOk = !programContact.showGeographicAddress() ||
-	        (notEmpty(programContact.getPostalCode())
-	         && programContact.getAreaSelected() != null
-	         && programContact.getProvinceSelected() != null);
-	    boolean contactOk = !programContact.showContact() ||
-	        (notEmpty(programContact.getNameSiteRepresentative())
-	         && notEmpty(programContact.getMobileNumber())
-	         && notEmpty(programContact.getEmail()));
-	    return lineOk && geoOk && contactOk;
-	}
+		  "programContact.landlineNumber",
+		  "programContact.email",
 
-	private boolean notEmpty(String s){ return s != null && !s.trim().isEmpty(); }
+		  // ALTERNATE contact (only enforced if shown)
+		  "alternateProgramContact.siteName",
+		  "alternateProgramContact.addressLine",
+		  "alternateProgramContact.postAddress",
+		  "alternateProgramContact.postalCode",
+		  "alternateProgramContact.areaSelected",
+		  "alternateProgramContact.provinceSelected",
+		  "alternateProgramContact.nameSiteRepresentative",
+		  "alternateProgramContact.representativeDesignation",
+		  "alternateProgramContact.mobileNumber",
+		  "alternateProgramContact.landlineNumber",
+		  "alternateProgramContact.email"
+		})
+		public boolean isProgramContactComplete() {
+		    if (!programType.isShowMainAddress()) return true;
+
+		    boolean mainOk = isAddressBlockComplete(programContact);
+
+		    boolean altOk = true;
+		    if (programType.isShowMainAddressAlter()) {
+		        altOk = isAddressBlockComplete(alternateProgramContact);
+		    }
+
+		    return mainOk && altOk;
+		}
+
+		private boolean isAddressBlockComplete(AddressInfo a) {
+		    boolean siteOk   = !a.showSiteName()        || notEmpty(a.getSiteName());
+		    boolean lineOk   = !a.showLineAddress()     || notEmpty(a.getAddressLine());
+		    boolean postOk   = !a.showPostalAddress()   || notEmpty(a.getPostAddress());
+		    boolean geoOk    = !a.showGeographicAddress() ||
+		                       (notEmpty(a.getPostalCode())
+		                        && a.getAreaSelected() != null
+		                        && a.getProvinceSelected() != null);
+		    boolean contactOk = !a.showContact() || (
+		            notEmpty(a.getNameSiteRepresentative()) &&
+		            notEmpty(a.getRepresentativeDesignation()) &&
+		            isTenDigits(a.getMobileNumber()) &&
+		            isTenDigits(a.getLandlineNumber()) &&
+		            isEmail(a.getEmail())
+		    );
+		    return siteOk && lineOk && postOk && geoOk && contactOk;
+		}
+
+		private boolean isTenDigits(String s) { return s != null && s.matches("^\\d{10}$"); }
+		private boolean isEmail(String s)     { return s != null && s.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$"); }
+
 
 }

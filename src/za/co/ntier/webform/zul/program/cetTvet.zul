@@ -15,6 +15,7 @@
 		<!-- for each annexure -->
 		<template name="children" var="annexure">
 			<include annexureInfo="@load(annexure)"
+			applicationProgramVM="@init(vmCetTvet.applicationProgramVM)" 
 				src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 

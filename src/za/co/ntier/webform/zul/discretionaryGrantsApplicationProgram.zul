@@ -67,6 +67,7 @@
 						<!-- DGA_Form_Cluster 2 for 2025-2026 FY.pdf -->
 						<include
 							program="@load(vm.program)"
+							applicationProgramVM="@init(vm)"     
 							src="@load((WebForm.getBundleResourcePath(vm.programType.zulPath)))" />
 					</div>
 					
@@ -102,7 +103,7 @@
 							tabType="@init(vm.showUploadDoc ? TabType.MidTab : TabType.LastTab)"
 							tab="@init(formTab)"
 							applicationProgramVM="@load(vm)"
-  							continueGate="@init('NONE')"   
+  							continueGate="@init('PROGRAMCONTACT')"   
   							submitGate="@init(vm.showUploadDoc ? 'NONE' : 'CONTACT')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 					
