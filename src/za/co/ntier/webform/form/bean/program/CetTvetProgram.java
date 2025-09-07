@@ -160,7 +160,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			}
 		}
 
-		addressInfo = new AddressInfo(menuContextInfo.getProgramType(), false, null);
+		addressInfo = new AddressInfo(menuContextInfo.getProgramType(), false);
 	}
 
 	public AddressInfo getAddressInfo() {
@@ -184,6 +184,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 		for (AnnexureInfo annexure : annexureInfos) {
 			if (annexure instanceof CetTvetOneLineInput) {
 				X_ZZAnnexure zzAnnexure = saveOnelineInput(trxName, applicationForm, (CetTvetOneLineInput)annexure);
@@ -195,8 +196,19 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			}
 		}
 		
+		if (addressInfo != null)
+			addressInfo.saveForm(trxName, applicationForm);
 	}
 
+	private X_ZZ_Application_Form applicationForm;
+	
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+		if (addressInfo != null) {
+			addressInfo.initComponent(applicationForm);
+		}
+	}
+	
 	public void saveMultilineInput(String trxName, X_ZZ_Application_Form applicationForm, X_ZZAnnexure zzAnnexure, CetTvetMultiLineInput cetTvetOneLineInput) {
 		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cetTvetOneLineInput);
 		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cetTvetOneLineInput);
@@ -311,5 +323,19 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	
 	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
 		this.tradeInfo = tradeInfo;
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
 }

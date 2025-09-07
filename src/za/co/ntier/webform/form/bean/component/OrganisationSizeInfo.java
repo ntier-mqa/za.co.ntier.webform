@@ -4,8 +4,11 @@ import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class OrganisationSizeInfo implements ISaveForm {
+	/**
+	 * case no submitted WSP treat as false
+	 */
 	private boolean isSubmittedWSP;
-	private int numOfEmployer;
+	private Integer numOfEmployer;
 
 	private String numOfEmployerTitle = "Number of Employees";
 
@@ -17,7 +20,9 @@ public class OrganisationSizeInfo implements ISaveForm {
 	/**
 	 * @return the numOfEmployer
 	 */
-	public int getNumOfEmployer() {
+	public Integer getNumOfEmployer() {
+		if (numOfEmployer == null || numOfEmployer == 0)
+			return null;
 		return numOfEmployer;
 	}
 
@@ -46,18 +51,37 @@ public class OrganisationSizeInfo implements ISaveForm {
 		return isSubmittedWSP;
 	}
 
+	private X_ZZ_Application_Form applicationForm;
+	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		applicationForm.setNumberEmployees(getNumOfEmployer());
+		if(getNumOfEmployer() == null) {
+			applicationForm.set_ValueOfColumn(X_ZZ_Application_Form.COLUMNNAME_NumberEmployees, null);
+		}else
+			applicationForm.setNumberEmployees(getNumOfEmployer());
 		applicationForm.setZZ_HasWSPSubmited(isSubmittedWSP());
 		
 	}
 
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+		if (applicationForm != null) {
+			setNumOfEmployer(applicationForm.getNumberEmployees());
+			setSubmittedWSP(applicationForm.isZZ_HasWSPSubmited());
+		}else {
+			setNumOfEmployer(null);
+			setSubmittedWSP(false);			
+		}
+		
+	}
 	/**
 	 * @param numOfEmployer the numOfEmployer to set
 	 */
-	public void setNumOfEmployer(int numOfEmployer) {
-		this.numOfEmployer = numOfEmployer;
+	public void setNumOfEmployer(Integer numOfEmployer) {
+		if (numOfEmployer == null ||numOfEmployer == 0)
+			this.numOfEmployer = null;
+		else
+			this.numOfEmployer = numOfEmployer;
 	}
 
 	/**
@@ -79,5 +103,19 @@ public class OrganisationSizeInfo implements ISaveForm {
 	 */
 	public void setSubmittedWSPTitle(String submittedWSPTitle) {
 		this.submittedWSPTitle = submittedWSPTitle;
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
 }

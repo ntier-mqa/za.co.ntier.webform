@@ -31,7 +31,7 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.postAddressTitle)" />
-			<textbox value="@bind(vmAddress.addressInfo.postAddress)" />
+			<textbox value="@bind(vmAddress.addressInfo.addressLine)" />
 
 		</div>
 

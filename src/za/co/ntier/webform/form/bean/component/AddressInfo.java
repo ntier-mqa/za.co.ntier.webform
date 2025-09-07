@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 import org.compiere.model.MRegion;
+import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.zkoss.bind.annotation.NotifyChange;
@@ -78,14 +80,15 @@ public class AddressInfo implements ISaveForm {
 
 	private String siteNameTitle = "Site Name";
 
-	public AddressInfo(AddressType addressCategory, MRegion provinceSelected) {
+	private X_ZZ_Application_Form applicationForm;
+	
+	public AddressInfo(AddressType addressCategory) {
 		this.addressCategory = addressCategory;
-		this.provinceSelected = provinceSelected;
 		init();
 	}
 
-	public AddressInfo(ProgramType programType, boolean isAlternate, MRegion provinceSelected) {
-		this(isAlternate ? AddressType.MAIN_ALTER : AddressType.MAIN, provinceSelected);
+	public AddressInfo(ProgramType programType, boolean isAlternate) {
+		this(isAlternate ? AddressType.MAIN_ALTER : AddressType.MAIN);
 		this.isAlternate = isAlternate;
 		this.programType = programType;
 		init();
@@ -295,35 +298,78 @@ public class AddressInfo implements ISaveForm {
 		return siteNameTitle;
 	}
 
-	private void init() {
+	private X_ZZ_FormContact formContact;
+	
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+		if (applicationForm != null) {
+			Query formContactQuery = MTable.get(X_ZZ_FormContact.Table_ID).createQuery(
+					String.format("%s = ? AND %s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, X_ZZ_FormContact.COLUMNNAME_ZZ_ContactType)
+					, null);
+			
+			formContact = formContactQuery.setOrderBy(X_ZZ_FormContact.COLUMNNAME_ZZ_FormContact_ID).setParameters(applicationForm.getZZ_Application_Form_ID(), getAddressCategory().toString()).first();
+		}
+		
+		if (formContact != null) {
+			if (formContact.getC_Region_ID() != 0)
+				provinceSelected = MRegion.get(formContact.getC_Region_ID());
+			
+			if (formContact.getC_City_ID() != 0) {
+				areaSelected = MCity.get(formContact.getC_City_ID());
+			}
+			
+			this.postalCode = formContact.getPostal();
+			
+			setSiteName(formContact.getZZ_SideName());
+			
+			setAddressLine(formContact.getAddress());
+
+			setNameSiteRepresentative(formContact.getContactName());
+			setRepresentativeDesignation(formContact.getZZ_Designation());
+			setMobileNumber(formContact.getPhone());
+			setLandlineNumber(formContact.getPhone2());
+			setEmail(formContact.getEMail());
+		}
+		
+		 
+	}
+	
+	protected void init() {
 		areas = MasterUtil.getInitCities();
 		provinces = MasterUtil.getRegions();
-	}
+		
+	} 
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		int applicationFormID = applicationForm.getZZ_Application_Form_ID();
 		
-		X_ZZ_FormContact contact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
-		contact.setZZ_Application_Form_ID(applicationFormID);
+		if (formContact == null) {
+			formContact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
+			formContact.setZZ_Application_Form_ID(applicationFormID);
+		}
+			
+		
 		if (getProvinceSelected() != null)
-			contact.setC_Region_ID(getProvinceSelected().getC_Region_ID());
+			formContact.setC_Region_ID(getProvinceSelected().getC_Region_ID());
 
 		if (getAreaSelected() != null)
-			contact.setC_City_ID(getAreaSelected().getC_City_ID());
+			formContact.setC_City_ID(getAreaSelected().getC_City_ID());
 
-		contact.setPostal(getPostalCode());
+		formContact.setPostal(getPostalCode());
+		
+//		formContact.setPostal(getPostalCode());
 
-		contact.setZZ_SideName(getSiteName());
-		contact.setAddress(getAddressLine());
+		formContact.setZZ_SideName(getSiteName());
+		formContact.setAddress(getAddressLine());
 
-		contact.setContactName(getNameSiteRepresentative());
-		contact.setZZ_Designation(getRepresentativeDesignation());
-		contact.setPhone(getMobileNumber());
-		contact.setPhone2(getLandlineNumber());
-		contact.setEMail(getEmail());
-		contact.setZZ_ContactType(getAddressCategory().toString());
-		contact.saveEx(trxName);
+		formContact.setContactName(getNameSiteRepresentative());
+		formContact.setZZ_Designation(getRepresentativeDesignation());
+		formContact.setPhone(getMobileNumber());
+		formContact.setPhone2(getLandlineNumber());
+		formContact.setEMail(getEmail());
+		formContact.setZZ_ContactType(getAddressCategory().toString());
+		formContact.saveEx(trxName);
 	}
 
 	public void setAddressCategory(AddressType addressCategory) {
@@ -628,5 +674,19 @@ public class AddressInfo implements ISaveForm {
 
 	public boolean showSiteName() {
 		return (programType != null && programType.isShowAddressSiteField()) || addressCategory == AddressType.VACATION;
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
 }

@@ -14,20 +14,21 @@ public class EmployerDeclarationInfo implements ISaveForm {
 	private LocalDate localDate;
 	
 	private String userName;
-
+	private X_ZZ_Application_Form applicationForm;
     
-	public EmployerDeclarationInfo(X_ZZ_Application_Form appForm) {
-		initForm(appForm);
+	public EmployerDeclarationInfo() {
+		
 	}
 
-	public void initForm(X_ZZ_Application_Form appForm) {
-		if (appForm != null) {
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.setApplicationForm(applicationForm);
+		if (applicationForm != null) {
 			acknowledged = true;
-			if (appForm.getDateDoc() != null) {
-				localDate = appForm.getDateDoc().toLocalDateTime().toLocalDate();
+			if (applicationForm.getDateDoc() != null) {
+				localDate = applicationForm.getDateDoc().toLocalDateTime().toLocalDate();
 			}
 			
-			userName = appForm.getUserName();
+			userName = applicationForm.getUserName();
 		}
 		
 		if(localDate == null) {
@@ -80,5 +81,19 @@ public class EmployerDeclarationInfo implements ISaveForm {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
 }

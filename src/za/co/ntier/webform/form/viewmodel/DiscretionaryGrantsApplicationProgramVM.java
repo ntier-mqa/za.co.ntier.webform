@@ -161,11 +161,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), menuContextInfo.getApplicationFormUU(), null);
 		}
 		
-		employerDeclarationInfo = new EmployerDeclarationInfo(applicationForm);
+		employerDeclarationInfo = new EmployerDeclarationInfo();
+		employerDeclarationInfo.initComponent(applicationForm);
 		
-		setFormInfo(new FormInfo(menuContextInfo));
+		formInfo = new FormInfo(menuContextInfo);
 
 		organisationInfo = new OrganisationInfo(menuContextInfo);
+		organisationInfo.initComponent(applicationForm);
 
 		if (programType.isCetTvet()) {
 			setProgram(new CetTvetProgram(menuContextInfo));
@@ -202,12 +204,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 
 		// main contact
-		if (programType.isShowMainAddress())
-			programContact = new AddressInfo(programType, false, null);
+		if (programType.isShowMainAddress()) {
+			programContact = new AddressInfo(programType, false);
+			programContact.initComponent(applicationForm);
+		}
+			
 
 		// main alternate contact
-		if (programType.isShowMainAddressAlter())
-			alternateProgramContact = new AddressInfo(programType, true, null);
+		if (programType.isShowMainAddressAlter()) {
+			alternateProgramContact = new AddressInfo(programType, true);
+			alternateProgramContact.initComponent(applicationForm);
+		}
+			
 
 		uploadDoc = new UploadDocComponent(menuContextInfo);
 
@@ -371,8 +379,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		saveAppFormCommonPart(applicationForm);
 		
-		applicationForm.saveEx();
-		
 		if (employerDeclarationInfo != null) {
 			employerDeclarationInfo.saveForm(trxName, applicationForm);
 		}
@@ -380,8 +386,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (organisationInfo != null){
 			organisationInfo.saveForm(trxName, applicationForm);
 		}
-		
-		applicationForm.saveEx();
+
+		applicationForm.saveEx(trxName);
 		
 		if (programContact != null) {
 			programContact.saveForm(trxName, applicationForm);
@@ -396,6 +402,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 
 		program.saveForm(trxName, applicationForm);
+		
+		applicationForm.saveEx();
 		
 		recordId = applicationForm.getZZ_Application_Form_ID();
 		tableId = applicationForm.get_Table_ID();

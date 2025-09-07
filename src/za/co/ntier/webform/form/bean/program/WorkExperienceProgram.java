@@ -20,7 +20,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 
 	public WorkExperienceProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		setVacationContact(new AddressInfo(AddressType.VACATION, null));
+		setVacationContact(new AddressInfo(AddressType.VACATION));
 		this.setDisciplines(ProgramInput.getDisciplines(
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
 
@@ -50,12 +50,21 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+		this.setApplicationForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
 		ProgramInput.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
 		applicationForm.setZZTotalNumberApplied(noOfLearners);
 		applicationForm.saveEx(trxName);
 	}
-
+	
+	private X_ZZ_Application_Form applicationForm;
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.setApplicationForm(applicationForm);
+		if (vacationContact != null) {
+			vacationContact.initComponent(applicationForm);
+		}
+	}
+	
 	/**
 	 * @param disciplines the disciplines to set
 	 */
@@ -72,6 +81,20 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	 */
 	public void setVacationContact(AddressInfo vacationContact) {
 		this.vacationContact = vacationContact;
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
 
 }
