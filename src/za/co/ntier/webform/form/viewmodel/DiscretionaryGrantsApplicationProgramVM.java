@@ -160,7 +160,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (StringUtils.isNotBlank(menuContextInfo.getApplicationFormUU())) {
 			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), menuContextInfo.getApplicationFormUU(), null);
 		}
-
+		
+		employerDeclarationInfo = new EmployerDeclarationInfo(applicationForm);
 		
 		setFormInfo(new FormInfo(menuContextInfo));
 
@@ -198,7 +199,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			setProgram(new InhouseTrainingProgram());
 		}
 
-		employerDeclarationInfo = new EmployerDeclarationInfo(applicationForm);
+		
 
 		// main contact
 		if (programType.isShowMainAddress())

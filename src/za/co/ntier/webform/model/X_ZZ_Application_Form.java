@@ -20,11 +20,7 @@ package za.co.ntier.webform.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZ_Application_Form
  *  @author iDempiere (generated)
@@ -36,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250905L;
+	private static final long serialVersionUID = 20250907L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -351,6 +347,56 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getZZCollegeSla()
 	{
 		return (String)get_Value(COLUMNNAME_ZZCollegeSla);
+	}
+
+	/** AET = AET */
+	public static final String ZZPROGRAMTYPE_AET = "AET";
+	/** ARTISAN_AIDES = ARTISAN_AIDES */
+	public static final String ZZPROGRAMTYPE_ARTISAN_AIDES = "ARTISAN_AIDES";
+	/** ARTISAN_DEV = ARTISAN_DEV */
+	public static final String ZZPROGRAMTYPE_ARTISAN_DEV = "ARTISAN_DEV";
+	/** ARTISAN_RPL = ARTISAN_RPL */
+	public static final String ZZPROGRAMTYPE_ARTISAN_RPL = "ARTISAN_RPL";
+	/** CANDIDACY = CANDIDACY */
+	public static final String ZZPROGRAMTYPE_CANDIDACY = "CANDIDACY";
+	/** CENTRE_SPECIALISATION = CENTRE_SPECIALISATION */
+	public static final String ZZPROGRAMTYPE_CENTRE_SPECIALISATION = "CENTRE_SPECIALISATION";
+	/** CET = CET */
+	public static final String ZZPROGRAMTYPE_CET = "CET";
+	/** DEV_PROGRAM = DEV_PROGRAM */
+	public static final String ZZPROGRAMTYPE_DEV_PROGRAM = "DEV_PROGRAM";
+	/** EXPERIENCE = EXPERIENCE */
+	public static final String ZZPROGRAMTYPE_EXPERIENCE = "EXPERIENCE";
+	/** INHOUSE_TRAINING = INHOUSE_TRAINING */
+	public static final String ZZPROGRAMTYPE_INHOUSE_TRAINING = "INHOUSE_TRAINING";
+	/** INTERNSHIP = INTERNSHIP */
+	public static final String ZZPROGRAMTYPE_INTERNSHIP = "INTERNSHIP";
+	/** NCV_GRADUATES = NCV_GRADUATES */
+	public static final String ZZPROGRAMTYPE_NCV_GRADUATES = "NCV_GRADUATES";
+	/** NON_ARTISAN_DEV = NON_ARTISAN_DEV */
+	public static final String ZZPROGRAMTYPE_NON_ARTISAN_DEV = "NON_ARTISAN_DEV";
+	/** NON_ARTISAN_DEV_RPL = NON_ARTISAN_DEV_RPL */
+	public static final String ZZPROGRAMTYPE_NON_ARTISAN_DEV_RPL = "NON_ARTISAN_DEV_RPL";
+	/** OHASSP = OHASSP */
+	public static final String ZZPROGRAMTYPE_OHASSP = "OHASSP";
+	/** TVET = TVET */
+	public static final String ZZPROGRAMTYPE_TVET = "TVET";
+	/** TVET_BURSARS = TVET_BURSARS */
+	public static final String ZZPROGRAMTYPE_TVET_BURSARS = "TVET_BURSARS";
+	/** Set Program Type.
+		@param ZZProgramType Program Type
+	*/
+	public void setZZProgramType (String ZZProgramType)
+	{
+
+		set_Value (COLUMNNAME_ZZProgramType, ZZProgramType);
+	}
+
+	/** Get Program Type.
+		@return Program Type	  */
+	public String getZZProgramType()
+	{
+		return (String)get_Value(COLUMNNAME_ZZProgramType);
 	}
 
 	/** Set Total Number Applied For.

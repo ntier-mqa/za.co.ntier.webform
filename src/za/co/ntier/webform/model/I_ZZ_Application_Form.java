@@ -18,8 +18,7 @@ package za.co.ntier.webform.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import org.compiere.model.MTable;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ZZ_Application_Form
@@ -263,6 +262,15 @@ public interface I_ZZ_Application_Form
 	  * Does the TVET College have an SLA with a company within the Yes  No MMS
 	  */
 	public String getZZCollegeSla();
+
+    /** Column name ZZProgramType */
+    public static final String COLUMNNAME_ZZProgramType = "ZZProgramType";
+
+	/** Set Program Type	  */
+	public void setZZProgramType (String ZZProgramType);
+
+	/** Get Program Type	  */
+	public String getZZProgramType();
 
     /** Column name ZZTotalNumberApplied */
     public static final String COLUMNNAME_ZZTotalNumberApplied = "ZZTotalNumberApplied";

@@ -19,7 +19,10 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.model.I_ZZ_Application_Form;
+import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
 
 public class ApplicationsListVM {
 
@@ -30,18 +33,18 @@ public class ApplicationsListVM {
     public void editSelected(@BindingParam("application") X_ZZ_Application_Form app) {
         if (app == null) return;
 
+        X_ZZ_Program_Master_Data programDefine = new X_ZZ_Program_Master_Data(Env.getCtx(), app.getZZ_Program_Master_Data_ID(), null);
+        
         Map<String,Object> args = new HashMap<>();
         args.put("applicationId", app.getZZ_Application_Form_ID());
         args.put("menuContextInfo", menuContextInfo);
 
         String menuContext = "zulPath=/za/co/ntier/webform/zul/discretionaryGrantsApplicationProgram.zul\n"
-        		+ "formTitle=" + menuContextInfo.getFormTitle() + "\n"
-        		+ "ZZ_Program_Master_Data_UU=" + menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_UU() + "\n"
-        		+ "programType=" + menuContextInfo.getProgramType() + "\n"
-        		+ "ZZ_Application_Form_UU=" + app.getZZ_Application_Form_UU();
-        
-
-        
+        		+ "formTitle=" + programDefine.getTitle() + "\n"
+        		+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU + "=" + programDefine.getZZ_Program_Master_Data_UU() + "\n"
+        		+ "programType=" + app.getZZProgramType() + "\n"
+        		+ I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU + "=" + app.getZZ_Application_Form_UU();
+                
        DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
        desktop.setPredefinedContextVariables(menuContext);
        desktop.openForm(1000000);
