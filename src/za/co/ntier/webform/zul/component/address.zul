@@ -35,7 +35,7 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.postAddressTitle)" />
-			<textbox value="@bind(vmAddress.addressInfo.postAddress, save-on='onChanging')" 
+			<textbox value="@bind(vmAddress.addressInfo.addressLine, save-on='onChanging')" 
 			onChanging="@command('notifyParentCompleteness')"
 			constraint="no empty: Please enter the postal address"
 			/>

@@ -20,11 +20,7 @@ package za.co.ntier.webform.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZ_Application_Form
  *  @author iDempiere (generated)
@@ -36,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250905L;
+	private static final long serialVersionUID = 20250907L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -138,9 +134,9 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
 		if (C_BPartner_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
 	/** Get Business Partner.
@@ -223,7 +219,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	*/
 	public void setNumberEmployees (int NumberEmployees)
 	{
-		set_ValueNoCheck (COLUMNNAME_NumberEmployees, Integer.valueOf(NumberEmployees));
+		set_Value (COLUMNNAME_NumberEmployees, Integer.valueOf(NumberEmployees));
 	}
 
 	/** Get Employees.
@@ -242,7 +238,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	*/
 	public void setOrgName (String OrgName)
 	{
-		set_ValueNoCheck (COLUMNNAME_OrgName, OrgName);
+		set_Value (COLUMNNAME_OrgName, OrgName);
 	}
 
 	/** Get Organization Name.
@@ -282,6 +278,33 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
+	}
+
+	public org.compiere.model.I_C_BPartner getZZCetTvetCollege() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getZZCetTvetCollege_ID(), get_TrxName());
+	}
+
+	/** Set Cet/Tvet College.
+		@param ZZCetTvetCollege_ID Cet/Tvet College
+	*/
+	public void setZZCetTvetCollege_ID (int ZZCetTvetCollege_ID)
+	{
+		if (ZZCetTvetCollege_ID < 1)
+			set_Value (COLUMNNAME_ZZCetTvetCollege_ID, null);
+		else
+			set_Value (COLUMNNAME_ZZCetTvetCollege_ID, Integer.valueOf(ZZCetTvetCollege_ID));
+	}
+
+	/** Get Cet/Tvet College.
+		@return Cet/Tvet College	  */
+	public int getZZCetTvetCollege_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZCetTvetCollege_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** ZZCollegeRecognised AD_Reference_ID=319 */
@@ -351,6 +374,56 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getZZCollegeSla()
 	{
 		return (String)get_Value(COLUMNNAME_ZZCollegeSla);
+	}
+
+	/** AET = AET */
+	public static final String ZZPROGRAMTYPE_AET = "AET";
+	/** ARTISAN_AIDES = ARTISAN_AIDES */
+	public static final String ZZPROGRAMTYPE_ARTISAN_AIDES = "ARTISAN_AIDES";
+	/** ARTISAN_DEV = ARTISAN_DEV */
+	public static final String ZZPROGRAMTYPE_ARTISAN_DEV = "ARTISAN_DEV";
+	/** ARTISAN_RPL = ARTISAN_RPL */
+	public static final String ZZPROGRAMTYPE_ARTISAN_RPL = "ARTISAN_RPL";
+	/** CANDIDACY = CANDIDACY */
+	public static final String ZZPROGRAMTYPE_CANDIDACY = "CANDIDACY";
+	/** CENTRE_SPECIALISATION = CENTRE_SPECIALISATION */
+	public static final String ZZPROGRAMTYPE_CENTRE_SPECIALISATION = "CENTRE_SPECIALISATION";
+	/** CET = CET */
+	public static final String ZZPROGRAMTYPE_CET = "CET";
+	/** DEV_PROGRAM = DEV_PROGRAM */
+	public static final String ZZPROGRAMTYPE_DEV_PROGRAM = "DEV_PROGRAM";
+	/** EXPERIENCE = EXPERIENCE */
+	public static final String ZZPROGRAMTYPE_EXPERIENCE = "EXPERIENCE";
+	/** INHOUSE_TRAINING = INHOUSE_TRAINING */
+	public static final String ZZPROGRAMTYPE_INHOUSE_TRAINING = "INHOUSE_TRAINING";
+	/** INTERNSHIP = INTERNSHIP */
+	public static final String ZZPROGRAMTYPE_INTERNSHIP = "INTERNSHIP";
+	/** NCV_GRADUATES = NCV_GRADUATES */
+	public static final String ZZPROGRAMTYPE_NCV_GRADUATES = "NCV_GRADUATES";
+	/** NON_ARTISAN_DEV = NON_ARTISAN_DEV */
+	public static final String ZZPROGRAMTYPE_NON_ARTISAN_DEV = "NON_ARTISAN_DEV";
+	/** NON_ARTISAN_DEV_RPL = NON_ARTISAN_DEV_RPL */
+	public static final String ZZPROGRAMTYPE_NON_ARTISAN_DEV_RPL = "NON_ARTISAN_DEV_RPL";
+	/** OHASSP = OHASSP */
+	public static final String ZZPROGRAMTYPE_OHASSP = "OHASSP";
+	/** TVET = TVET */
+	public static final String ZZPROGRAMTYPE_TVET = "TVET";
+	/** TVET_BURSARS = TVET_BURSARS */
+	public static final String ZZPROGRAMTYPE_TVET_BURSARS = "TVET_BURSARS";
+	/** Set Program Type.
+		@param ZZProgramType Program Type
+	*/
+	public void setZZProgramType (String ZZProgramType)
+	{
+
+		set_Value (COLUMNNAME_ZZProgramType, ZZProgramType);
+	}
+
+	/** Get Program Type.
+		@return Program Type	  */
+	public String getZZProgramType()
+	{
+		return (String)get_Value(COLUMNNAME_ZZProgramType);
 	}
 
 	/** Set Total Number Applied For.
