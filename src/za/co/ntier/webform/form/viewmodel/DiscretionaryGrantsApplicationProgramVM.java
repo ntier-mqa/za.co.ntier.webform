@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -488,7 +489,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 		
 		public String getAppFormSubmitedDate() {
-			return applicationForm.getUpdated().toLocalDateTime().format(dtf);
+			return applicationForm.getUpdated().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS).format(dtf);
 		}
 		
 	}

@@ -311,11 +311,28 @@ public class AddressInfo implements ISaveForm {
 		}
 		
 		if (formContact != null) {
-			if (formContact.getC_Region_ID() != 0)
-				provinceSelected = MRegion.get(formContact.getC_Region_ID());
+			if (formContact.getC_Region_ID() != 0) {
+				for (MRegion province : provinces) {
+					if(province.getC_Region_ID() == formContact.getC_Region_ID()) {
+						provinceSelected = province;
+						break;
+					}
+				}
+				
+			}
+				
 			
 			if (formContact.getC_City_ID() != 0) {
-				areaSelected = MCity.get(formContact.getC_City_ID());
+				for (MCity area: MasterUtil.getCities()) {
+					if(area.getC_City_ID() == formContact.getC_City_ID()) {
+						areaSelected = area;
+						if (!areas.contains(area)) {
+							areas.add(area);
+						}
+						break;
+					}
+				}
+				
 			}
 			
 			this.postalCode = formContact.getPostal();
