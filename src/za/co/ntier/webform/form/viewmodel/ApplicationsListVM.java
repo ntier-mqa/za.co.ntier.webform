@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.MBPartner;
+import org.compiere.model.MOrg;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -28,6 +30,8 @@ public class ApplicationsListVM {
 
     private ListModelList<X_ZZ_Application_Form> applications;
     private MenuContextInfo menuContextInfo;
+    // Simple cache: SDL -> Org Name (avoids repeated queries while the list is shown)
+    private final Map<String, String> orgNameBySdlCache = new HashMap<>();
 
     @Command
     public void editSelected(@BindingParam("application") X_ZZ_Application_Form app) {
@@ -94,16 +98,73 @@ public class ApplicationsListVM {
         if (p == null) return "";
         String title = p.get_ValueAsString("Title");
         return (title != null && !title.isEmpty()) ? title : "";
+    }    
+
+    
+    /**
+     * Organisation column:
+     * 1) Take SDL from the application (ZZ_SDL_No)
+     * 2) Find C_BPartner where Value = SDL (client-scoped)
+     * 3) Use that BP's AD_Org_ID to fetch AD_Org.Name
+     */
+    public String getOrgName(X_ZZ_Application_Form app) {
+        if (app == null) return "";
+
+        String sdl = app.getZZ_SDL_No();
+        if (sdl == null || sdl.trim().isEmpty()) return "";
+
+        // cache
+        String cached = orgNameBySdlCache.get(sdl);
+        if (cached != null) return cached;
+
+        // Find BP by Value (SDL)
+        MBPartner bp = new Query(Env.getCtx(), MBPartner.Table_Name, "Value=?", null)
+                .setParameters(sdl.trim())
+                .setClient_ID()          // respect AD_Client_ID
+                .firstOnly();
+
+        if (bp == null) {
+            orgNameBySdlCache.put(sdl, "");
+            return "";
+        }
+
+        
+
+        
+        String name = (bp != null && bp.getName() != null) ? bp.getName() : "";
+
+        orgNameBySdlCache.put(sdl, name);
+        return name;
     }
     
-    public String getOrgName(X_ZZ_Application_Form app) {
-        if (app == null || app.getAD_Org_ID() <= 0) return "";
-        PO p = MTable.get(Env.getCtx(), "AD_Org")
-                     .getPO(app.getAD_Org_ID(), null);
-        if (p == null) return "";
-        String name = p.get_ValueAsString("Name");
-        return (name != null && !name.isEmpty()) ? name : "";
-    }
+ // in ApplicationsListVM
+
+ // constant for your list
+ private static final int DOCSTATUS_REF_ID = 1000006;
+
+ // cache: code -> name (e.g., "DR" -> "Draft")
+ private final Map<String, String> docStatusNameCache = new HashMap<>();
+
+ public String getStatusName(X_ZZ_Application_Form app) {
+     if (app == null) return "";
+     String code = app.getZZ_DocStatus();
+     if (code == null || code.isEmpty()) return "";
+
+     String cached = docStatusNameCache.get(code);
+     if (cached != null) return cached;
+
+     PO refList = new Query(Env.getCtx(), "AD_Ref_List",
+             "AD_Reference_ID=? AND Value=? AND AD_Client_ID=?", null)
+             .setParameters(DOCSTATUS_REF_ID, code,0)
+             .first();
+
+     String name = (refList != null) ? refList.get_ValueAsString("Name") : "";
+     if (name == null) name = "";
+
+     docStatusNameCache.put(code, name);
+     return name;
+ }
+
 
     
 	

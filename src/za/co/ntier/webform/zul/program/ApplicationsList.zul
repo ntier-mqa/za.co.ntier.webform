@@ -31,7 +31,7 @@
         <label value="@load(each.ZZTotalNumberApplied)"/>
         <label value="@load(each.dateDoc)"/>
         <!-- If the getter is getZZ_DocStatus(), use bracket syntax -->
-        <label value="@load(each['ZZ_DocStatus'])"/>
+        <label value="@load(vmList.getStatusName(each))"/>
         <button label="Edit"
                 sclass="btn btn-sm btn-primary"
                 onClick="@command('editSelected', application=each)"/>
