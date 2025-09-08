@@ -660,7 +660,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		private boolean isAddressBlockComplete(AddressInfo a) {
 		    boolean siteOk   = !a.showSiteName()        || notEmpty(a.getSiteName());
 		    boolean lineOk   = !a.showLineAddress()     || notEmpty(a.getAddressLine());
-		    boolean postOk   = !a.showPostalAddress()   || notEmpty(a.getPostAddress());
+		    boolean postOk   = !a.showPostalAddress()   ||  notEmpty(a.getAddressLine()); //notEmpty(a.getPostAddress());
 		    boolean geoOk    = !a.showGeographicAddress() ||
 		                       (notEmpty(a.getPostalCode())
 		                        && a.getAreaSelected() != null
