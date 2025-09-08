@@ -365,8 +365,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public void saveAppForm(boolean isSave, String title, String msg) throws IOException {
 		String trxName = null;
 		
-		if (applicationForm == null) 
+		if (applicationForm == null) {
 			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, trxName);
+			applicationForm.setZZProgramType(programType.toString());
+		}
+			
 		
 		applicationForm.setAD_Org_ID(menuContextInfo.getProgramMasterData().getAD_Org_ID());
 		applicationForm.setZZ_Program_Master_Data_ID(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID());
@@ -383,11 +386,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			employerDeclarationInfo.saveForm(trxName, applicationForm);
 		}
 
+		applicationForm.saveEx(trxName);// save here to get id when save address on org info
+		
 		if (organisationInfo != null){
 			organisationInfo.saveForm(trxName, applicationForm);
 		}
-
-		applicationForm.saveEx(trxName);
 		
 		if (programContact != null) {
 			programContact.saveForm(trxName, applicationForm);

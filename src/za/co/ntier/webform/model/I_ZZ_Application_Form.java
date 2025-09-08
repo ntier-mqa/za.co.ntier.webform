@@ -224,6 +224,17 @@ public interface I_ZZ_Application_Form
 	  */
 	public String getValue();
 
+    /** Column name ZZCetTvetCollege_ID */
+    public static final String COLUMNNAME_ZZCetTvetCollege_ID = "ZZCetTvetCollege_ID";
+
+	/** Set Cet/Tvet College	  */
+	public void setZZCetTvetCollege_ID (int ZZCetTvetCollege_ID);
+
+	/** Get Cet/Tvet College	  */
+	public int getZZCetTvetCollege_ID();
+
+	public org.compiere.model.I_C_BPartner getZZCetTvetCollege() throws RuntimeException;
+
     /** Column name ZZCollegeRecognised */
     public static final String COLUMNNAME_ZZCollegeRecognised = "ZZCollegeRecognised";
 

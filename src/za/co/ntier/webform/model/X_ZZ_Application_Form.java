@@ -134,9 +134,9 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
 		if (C_BPartner_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
 	/** Get Business Partner.
@@ -219,7 +219,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	*/
 	public void setNumberEmployees (int NumberEmployees)
 	{
-		set_ValueNoCheck (COLUMNNAME_NumberEmployees, Integer.valueOf(NumberEmployees));
+		set_Value (COLUMNNAME_NumberEmployees, Integer.valueOf(NumberEmployees));
 	}
 
 	/** Get Employees.
@@ -238,7 +238,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	*/
 	public void setOrgName (String OrgName)
 	{
-		set_ValueNoCheck (COLUMNNAME_OrgName, OrgName);
+		set_Value (COLUMNNAME_OrgName, OrgName);
 	}
 
 	/** Get Organization Name.
@@ -278,6 +278,33 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
+	}
+
+	public org.compiere.model.I_C_BPartner getZZCetTvetCollege() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getZZCetTvetCollege_ID(), get_TrxName());
+	}
+
+	/** Set Cet/Tvet College.
+		@param ZZCetTvetCollege_ID Cet/Tvet College
+	*/
+	public void setZZCetTvetCollege_ID (int ZZCetTvetCollege_ID)
+	{
+		if (ZZCetTvetCollege_ID < 1)
+			set_Value (COLUMNNAME_ZZCetTvetCollege_ID, null);
+		else
+			set_Value (COLUMNNAME_ZZCetTvetCollege_ID, Integer.valueOf(ZZCetTvetCollege_ID));
+	}
+
+	/** Get Cet/Tvet College.
+		@return Cet/Tvet College	  */
+	public int getZZCetTvetCollege_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZCetTvetCollege_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** ZZCollegeRecognised AD_Reference_ID=319 */

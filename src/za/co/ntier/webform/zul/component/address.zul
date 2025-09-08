@@ -98,7 +98,7 @@
 
 			<textbox value="@bind(vmAddress.addressInfo.mobileNumber)" 
 				type="tel"
-				constraint="/\d(10)/: Please enter 10 digit for phone"/>
+				constraint="/\d{10}/: Please enter 10 digit for phone"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
@@ -108,7 +108,7 @@
 
 			<textbox value="@bind(vmAddress.addressInfo.landlineNumber)" 
 				type="tel"
-				constraint="/\d(10)/: Please enter 10 digit for phone"/>
+				constraint="/\d{10}/: Please enter 10 digit for phone"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"

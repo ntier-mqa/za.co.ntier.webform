@@ -11,9 +11,9 @@
 		value="I declare that as the duly authorised representative of the Organisation confirms that Organisation will comply with the general rules and criteria hereunder and further confirmed that all the information provided in this application is true and accurate" />
 
 	<div sclass="grid-container">
-		<div sclass="form-field">
+		<div sclass="form-field" style="justify-content:space-between">
 			<label sclass="label" value="Name and Surname" />
-			<label 
+			<label style="flex-grow:1;padding-top:10px;padding-left:10px"
 				value="@init(vmEmployerDeclaration.employerDeclarationInfo.userName)"/>
 		</div>
 		<div sclass="form-field">

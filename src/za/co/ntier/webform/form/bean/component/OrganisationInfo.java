@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.compiere.model.I_C_BPartner;
+import org.compiere.model.MBPartner;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.DB;
@@ -36,7 +37,7 @@ public class OrganisationInfo implements ISaveForm {
 	private String orgRegistrationNumberTitle = "Registration No";
 	private OrganisationSizeInfo orgSizeInfo;
 	private String orgTaxNumber;
-	private String orgTaxNumberTitle = "VAT No  (type Not Available if there is no vat number  and attach proof of exemption)";
+	private String orgTaxNumberTitle = "VAT No";
 	private AddressInfo physicalAddressInfo;
 	private AddressInfo postAddressInfo;
 	private String sdlNumber;
@@ -218,7 +219,12 @@ public class OrganisationInfo implements ISaveForm {
 		applicationForm.setZZ_VAT(getOrgTaxNumber());
 		applicationForm.setOrgName(getOrgName());
 		applicationForm.setC_BPartner_ID(getbPartnerId());
-
+		
+		if (cetTvetCollegeSelected == null) {
+			applicationForm.setZZCetTvetCollege_ID(0);	
+		}else {
+			applicationForm.setZZCetTvetCollege_ID(cetTvetCollegeSelected.getC_BPartner_ID());
+		}
 		if (getOrgSizeInfo() != null) {
 			getOrgSizeInfo().saveForm(trxName, applicationForm);
 		}
@@ -249,6 +255,10 @@ public class OrganisationInfo implements ISaveForm {
 			setOrgTaxNumber(applicationForm.getZZ_VAT());
 			setOrgName(applicationForm.getOrgName());
 			setbPartnerId(applicationForm.getC_BPartner_ID());
+			
+			if (applicationForm.getZZCetTvetCollege_ID() != 0) {
+				cetTvetCollegeSelected = MBPartner.get(Env.getCtx(), applicationForm.getZZCetTvetCollege_ID());
+			}
 		}
 
 		
