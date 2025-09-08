@@ -34,6 +34,7 @@
         <label value="@load(vmList.getStatusName(each))"/>
         <button label="Edit"
                 sclass="btn btn-sm btn-primary"
+                disabled="@load(!vmList.canEdit(each))"
                 onClick="@command('editSelected', application=each)"/>
       </row>
     </template>
