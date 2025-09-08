@@ -2,6 +2,7 @@ package za.co.ntier.webform.form.bean.component;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
@@ -11,7 +12,7 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class EmployerDeclarationInfo implements ISaveForm {
 	private Boolean acknowledged;  // use Boolean, not boolean, so null is handled
-	private LocalDate localDate;
+	private LocalDateTime localDate;
 	
 	private String userName;
 	private X_ZZ_Application_Form applicationForm;
@@ -25,14 +26,14 @@ public class EmployerDeclarationInfo implements ISaveForm {
 		if (applicationForm != null) {
 			acknowledged = true;
 			if (applicationForm.getDateDoc() != null) {
-				localDate = applicationForm.getDateDoc().toLocalDateTime().toLocalDate();
+				localDate = applicationForm.getDateDoc().toLocalDateTime();
 			}
 			
 			userName = applicationForm.getUserName();
 		}
 		
 		if(localDate == null) {
-			localDate = LocalDate.now();
+			localDate = LocalDateTime.now();
 		}
 		
 		if (userName == null) {
@@ -51,10 +52,10 @@ public class EmployerDeclarationInfo implements ISaveForm {
 		if (localDate == null)
 			return null;
 		
-		return Timestamp.valueOf(localDate.atStartOfDay());
+		return Timestamp.valueOf(localDate);
 	}
 
-	public LocalDate getLocalDate() {
+	public LocalDateTime getLocalDate() {
 		return localDate;
 	}
 
@@ -75,7 +76,7 @@ public class EmployerDeclarationInfo implements ISaveForm {
 		this.acknowledged = acknowledged;
 	}
 
-	public void setLocalDate(LocalDate localDate) {
+	public void setLocalDate(LocalDateTime localDate) {
 		this.localDate = localDate;
 	}
 

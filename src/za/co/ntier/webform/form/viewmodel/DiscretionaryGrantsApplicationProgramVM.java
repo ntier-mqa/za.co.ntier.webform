@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.adempiere.model.GenericPO;
 import org.adempiere.webui.desktop.DefaultDesktop;
@@ -17,8 +16,6 @@ import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.DependsOn;
@@ -243,10 +240,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		return uploadDoc != null && uploadDoc.getUploadDoc().getRows().size() > 0;
 	}
 
-
+	public static DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+	
 	private void saveAppFormCommonPart(X_ZZ_Application_Form applicationForm) {
  		MUser loginUser = MUser.get(Env.getAD_User_ID(Env.getCtx()));
-		DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 		applicationForm.setName(loginUser.getName() + " - " + LocalDateTime.now().format(dtf));
  	}
 
@@ -490,6 +487,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			return applicationForm.getDocumentNo();
 		}
 		
+		public String getAppFormSubmitedDate() {
+			return applicationForm.getUpdated().toLocalDateTime().format(dtf);
+		}
+		
 	}
 	
 	private static final CLogger log = CLogger.getCLogger(DiscretionaryGrantsApplicationProgramVM.class);
@@ -590,15 +591,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	private boolean isTvetBursarsRowsValid() {
 	    if (!(program instanceof CetTvetProgram)) return false;
 	    CetTvetProgram p = (CetTvetProgram) program;
 
 	    // try every annexure until we find the one that carries these two columns
 	    for (AnnexureInfo a : p.getAnnexureInfos()) {
-	        ColumnInfo fosCol = findCol(a, "Field of Study", "Programme", "Program", "Qualification", "Course");
-	        ColumnInfo nolCol = findCol(a, "No of Learners", "No. of Learners", "Number of Learners", "Learners");
+	        ColumnInfo<?> fosCol = findCol(a, "Field of Study", "Programme", "Program", "Qualification", "Course");
+	        ColumnInfo<?> nolCol = findCol(a, "No of Learners", "No. of Learners", "Number of Learners", "Learners");
 	        if (fosCol == null || nolCol == null) continue;
 
 	        int okRows = 0;
@@ -630,8 +630,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    return false;
 	}
 
-	private ColumnInfo findCol(AnnexureInfo a, String... aliases) {
-	    for (ColumnInfo c : a.getColumnInfos()) {
+	private ColumnInfo<?> findCol(AnnexureInfo a, String... aliases) {
+	    for (ColumnInfo<?> c : a.getColumnInfos()) {
 	        String t = (c.getTitle() != null ? c.getTitle() : "").trim().toLowerCase();
 	        for (String alias : aliases) {
 	            if (t.equals(alias.toLowerCase())) return c;

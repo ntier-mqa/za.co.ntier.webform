@@ -9,6 +9,7 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
+import za.co.ntier.webform.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
@@ -53,7 +54,10 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		this.setApplicationForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
 		ProgramInput.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
-		applicationForm.setZZTotalNumberApplied(noOfLearners);
+		if (noOfLearners == null)
+			applicationForm.set_ValueOfColumn(I_ZZ_Application_Form.COLUMNNAME_ZZTotalNumberApplied, null);
+		else
+			applicationForm.setZZTotalNumberApplied(noOfLearners);
 		applicationForm.saveEx(trxName);
 	}
 	

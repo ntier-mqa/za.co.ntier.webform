@@ -1,9 +1,11 @@
 package za.co.ntier.webform.form.bean.program;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.compiere.util.Env;
 
@@ -185,17 +187,22 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
+		int total = 0;
 		for (AnnexureInfo annexure : annexureInfos) {
+			int areaTotal = 0;
 			if (annexure instanceof CetTvetOneLineInput) {
-				X_ZZAnnexure zzAnnexure = saveOnelineInput(trxName, applicationForm, (CetTvetOneLineInput)annexure);
+				Entry<X_ZZAnnexure, Integer> result = saveOnelineInput(trxName, applicationForm, (CetTvetOneLineInput)annexure);
+				areaTotal = result.getValue();
 				if (annexure.getSubAnnexure() != null) {
-					saveMultilineInput(trxName, applicationForm, zzAnnexure, (CetTvetMultiLineInput)annexure.getSubAnnexure());
+					saveMultilineInput(trxName, applicationForm, result.getKey(), (CetTvetMultiLineInput)annexure.getSubAnnexure());
 				}
 			}else if (annexure instanceof CetTvetMultiLineInput) {
-				saveMultilineInput(trxName, applicationForm, null, (CetTvetMultiLineInput)annexure);
+				areaTotal = saveMultilineInput(trxName, applicationForm, null, (CetTvetMultiLineInput)annexure);
 			}
+			
+			total += areaTotal;
 		}
-		
+		applicationForm.setZZTotalNumberApplied(total);
 		if (addressInfo != null)
 			addressInfo.saveForm(trxName, applicationForm);
 	}
@@ -209,13 +216,13 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		}
 	}
 	
-	public void saveMultilineInput(String trxName, X_ZZ_Application_Form applicationForm, X_ZZAnnexure zzAnnexure, CetTvetMultiLineInput cetTvetOneLineInput) {
+	public int saveMultilineInput(String trxName, X_ZZ_Application_Form applicationForm, X_ZZAnnexure zzAnnexure, CetTvetMultiLineInput cetTvetOneLineInput) {
 		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cetTvetOneLineInput);
 		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colFieldStudyTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colNoLearners, cetTvetOneLineInput);
 		
-		
+		int total = 0;
 		Integer cellData = null;
 		
 		
@@ -240,6 +247,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			cellData = AnnexureInfo.getIntegerValue(row, colNoLearners);
 			if (cellData != null && cellData != 0) {
 				subAnnex.setZZLearners(cellData);
+				total += cellData;
 				hasData = true;
 			}
 			
@@ -260,28 +268,30 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			}
 		}
 		
-		
+		return total;
 	}
 	
-	public X_ZZAnnexure saveOnelineInput(String trxName, X_ZZ_Application_Form applicationForm, CetTvetOneLineInput cetTvetOneLineInput) {
+	public Entry<X_ZZAnnexure, Integer> saveOnelineInput(String trxName, X_ZZ_Application_Form applicationForm, CetTvetOneLineInput cetTvetOneLineInput) {
 		ColumnInfo<?> colBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colNoBeneficiariesTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colTotalBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colTotalNoBeneficiariesTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colDiscipline = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colDisciplineTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgrammeApplyTitle, cetTvetOneLineInput);
 		
 		X_ZZAnnexure annexure = new X_ZZAnnexure(Env.getCtx(), 0, trxName);
-		
+		int total = 0;
 		boolean hasData = false;
 		
 		Integer cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colBeneficiaries);
 		if (cellData != null && cellData != 0) {
 			annexure.setZZBeneficiaries(cellData);
+			total += cellData;
 			hasData = true;
 		}
 		
 		cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colTotalBeneficiaries);
 		if (cellData != null && cellData != 0) {
 			annexure.setZZTotalBeneficiaries(cellData);
+			total += cellData;
 			hasData = true;
 		}
 		
@@ -294,6 +304,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colProgramme);
 		if (cellData != null && cellData != 0) {
 			annexure.setZZProgramme(cellData);
+			total += cellData;
 			hasData = true;
 		}
 		
@@ -303,7 +314,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure.saveEx(trxName);
 		}
 		
-		return annexure;
+		return new AbstractMap.SimpleEntry<>(annexure, total);
 	}
 	
 	public void setAddressInfo(AddressInfo addressInfo) {

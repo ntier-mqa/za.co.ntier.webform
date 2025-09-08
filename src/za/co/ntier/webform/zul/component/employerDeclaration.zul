@@ -18,8 +18,8 @@
 		</div>
 		<div sclass="form-field">
 			<label sclass="label" value="Date" />
-			<datebox format="short"
-				valueInLocalDate="@bind(vmEmployerDeclaration.employerDeclarationInfo.localDate)" 
+			<datebox format="short+short"
+				valueInLocalDateTime="@bind(vmEmployerDeclaration.employerDeclarationInfo.localDate)" 
 	 		/>
 		</div>
 		<div sclass="form-field"

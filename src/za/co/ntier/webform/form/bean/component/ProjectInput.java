@@ -76,29 +76,33 @@ public class ProjectInput extends AnnexureInfo {
 		Map<ColumnInfo<?>, Object> row = projectInput.getRows().get(0);
 		
 		boolean hasData = false;
-
+		int total = 0;
 		Integer cellData = AnnexureInfo.getIntegerValue(row, colNoEmployed);
 		if (cellData != null && cellData != 0) {
 			learnersApplied.setZZNoEmployedLearners(cellData);
 			hasData = true;
+			total += cellData;
 		}
 		
 		cellData = AnnexureInfo.getIntegerValue(row, colNoUnEmployed);
 		if (cellData != null && cellData != 0) {
 			learnersApplied.setZZNoUnEmployedLearners(cellData);
 			hasData = true;
+			total += cellData;
 		}
 		
 		cellData = AnnexureInfo.getIntegerValue(row, colNoLearners);
 		if (cellData != null && cellData != 0) {
 			learnersApplied.setZZNoLearners(cellData);
 			hasData = true;
+			total += cellData;
 		}
 		
 		cellData = AnnexureInfo.getIntegerValue(row, colTotalLearners);
 		if (cellData != null && cellData != 0) {
 			learnersApplied.setZZNoTotalLearners(cellData);
 			hasData = true;
+			total += cellData;
 		}
 		
 		String rowTitle = (String)row.get(colNameProgramme);
@@ -130,5 +134,7 @@ public class ProjectInput extends AnnexureInfo {
 			
 			learnersApplied.saveEx(trxName);
 		}
+		
+		applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
 	}
 }
