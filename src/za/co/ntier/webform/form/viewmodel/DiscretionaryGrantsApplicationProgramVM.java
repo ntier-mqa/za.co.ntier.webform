@@ -180,7 +180,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		organisationInfo.initComponent(applicationForm);
 
 		if (programType.isCetTvet()) {
-			setProgram(new CetTvetProgram(menuContextInfo));
+			setProgram(new CetTvetProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.INTERNSHIP == programType) {
 			setProgram(new InternshipProgram(menuContextInfo));
 		} else if (ProgramType.CANDIDACY == programType) {

@@ -3,10 +3,14 @@ package za.co.ntier.webform.form.bean.program;
 import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
+import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.util.Env;
 
 import za.co.ntier.webform.form.IProgram;
@@ -17,14 +21,19 @@ import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.CetTvetMultiLineInput;
 import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
+import za.co.ntier.webform.model.I_ZZSubAnnex;
+import za.co.ntier.webform.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
+import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class CetTvetProgram implements ISaveForm, IProgram {
 	private AddressInfo addressInfo;
@@ -35,10 +44,11 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	private List<LearnerInputInfo> tradeInfo;
 
 	@SuppressWarnings("unchecked")
-	public CetTvetProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
+	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) throws NoSuchMethodException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		this.setMenuContextInfo(menuContextInfo);
-
+		this.applicationForm = applicationForm;
+		
 		annexureInfos = new ArrayList<>();
 		AnnexureInfo annexure = null;
 		AnnexureInfo subAnnexure = null;
@@ -68,7 +78,8 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
 					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoManagersTitle)));
+							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoManagersTitle))
+					);
 			annexure.setSubAnnexure(subAnnexure);
 
 			annexureInfos.add(annexure);
@@ -153,9 +164,17 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			tradeInfo = (List<LearnerInputInfo>) rObjs.get(0);
 			if (tradeInfo != null) {
 
-				annexure = CetTvetMultiLineInput.getCetTvetMultiLineInput("TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",
-						List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
-								ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners)));
+				List<ColumnInfo<?>> cols = List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
+						ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners));
+				
+				List<AnnexureRow<X_ZZSubAnnex>> initRows = null;
+				if (applicationForm != null)		
+					initRows = loadInitRow(cols, true);
+				
+				Supplier<Map<ColumnInfo<?>, Object>> supplierRowSubAnnex = () -> new AnnexureRow<X_ZZSubAnnex>();
+				
+				annexure = CetTvetMultiLineInput.getCetTvetMultiLineInput("TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",cols, initRows, supplierRowSubAnnex);
+				
 				annexure.getTotalRow().put(annexure.getColumnInfos().get(0), "Total Number of beneficiaries applying for");
 
 				annexureInfos.add(annexure);
@@ -163,6 +182,59 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		}
 
 		addressInfo = new AddressInfo(menuContextInfo.getProgramType(), false);
+	}
+	
+	public List<AnnexureRow<X_ZZSubAnnex>> loadInitRow(List<ColumnInfo<?>> cols, boolean isDirectSubAnnex) {
+		Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID), null);
+		directSubAnnexQuery.setParameters(applicationForm.getZZ_Application_Form_ID());
+		List<X_ZZSubAnnex> subAnnexs = directSubAnnexQuery.list();
+		
+		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cols);
+		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cols);
+		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colFieldStudyTitle, cols);
+		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colNoLearners, cols);
+		
+		List<AnnexureRow<X_ZZSubAnnex>> rowDataInits = new ArrayList<>();
+		
+		for (X_ZZSubAnnex subAnnex : subAnnexs) {
+			AnnexureRow<X_ZZSubAnnex> rowInit = new AnnexureRow<>();
+			rowInit.setData(subAnnex);
+			if(colTrade != null) {
+				if(subAnnex.getZZ_Trade_ID() == 0)
+					rowInit.put(colTrade, null);
+				else {
+					for (Object tradeObj : colTrade.getDataProvider()) {
+						LearnerInputInfo trade = (LearnerInputInfo)tradeObj;
+						if (trade.getLearnerInputID() == subAnnex.getZZ_Trade_ID()){
+							rowInit.put(colTrade, trade);
+							break;
+						}
+						
+					}
+					
+				}
+			}
+			
+			if (colFieldStudy != null && colFieldStudy.getDataType() != DataType.List) {
+				rowInit.put(colFieldStudy, subAnnex.getZZFieldStudy());
+			}
+			
+			if (colRequestedProgramme != null) {
+				rowInit.put(colFieldStudy, subAnnex.getZZRequestedProgramme());
+			}
+			
+			if (colNoLearners != null) {
+				if (subAnnex.get_Value(I_ZZSubAnnex.COLUMNNAME_ZZLearners) == null)
+					rowInit.put(colNoLearners, new IntData(rowInit, null));
+				else
+					rowInit.put(colNoLearners, new IntData(rowInit, subAnnex.getZZLearners()));
+
+			}
+			
+			rowDataInits.add(rowInit);
+		}
+		
+		return rowDataInits;
 	}
 
 	public AddressInfo getAddressInfo() {
@@ -226,8 +298,16 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		Integer cellData = null;
 		
 		
-		for (Map<ColumnInfo<?>, Object> row : cetTvetOneLineInput.getRows()) {
-			X_ZZSubAnnex subAnnex = new X_ZZSubAnnex(Env.getCtx(), 0, trxName);
+		for (Map<ColumnInfo<?>, Object> rowObj : cetTvetOneLineInput.getRows()) {
+			@SuppressWarnings("unchecked")
+			AnnexureRow<X_ZZSubAnnex> row = (AnnexureRow<X_ZZSubAnnex>)rowObj;
+			
+			X_ZZSubAnnex subAnnex = null;
+			if (row.getData() == null) {
+				subAnnex = new X_ZZSubAnnex(Env.getCtx(), 0, trxName);
+			}else
+				subAnnex = row.getData();
+			
 			boolean hasData = false;
 			
 			String cellDataStr = (String)row.get(colRequestedProgramme);
@@ -265,6 +345,9 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 					subAnnex.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
 				
 				subAnnex.saveEx(trxName);
+				
+				if (row.getData() == null)
+					row.setData(subAnnex);
 			}
 		}
 		

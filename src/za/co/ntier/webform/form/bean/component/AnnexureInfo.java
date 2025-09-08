@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
@@ -49,7 +50,7 @@ public class AnnexureInfo implements ISaveForm{
 		}
 		return annexureInfo;
 	}
-
+	
 	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
 			List<ColumnInfo<?>> columnInfos, String rowTitle, boolean isShowTotal, List<String> twoTitleValue)
 			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
@@ -72,8 +73,13 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 	protected static ColumnInfo<?> lookupCol(DataType dataType, String colName, AnnexureInfo annexure){
+		return lookupCol(dataType, colName, annexure.getColumnInfos());
+	}
+	
+	protected static ColumnInfo<?> lookupCol(DataType dataType, String colName, List<ColumnInfo<?>> cols){
 		ColumnInfo<?> foundCol = null;
-		for (ColumnInfo<?> col : annexure.getColumnInfos()) {
+		
+		for (ColumnInfo<?> col : cols) {
 			if (dataType != null && dataType.equals(col.getDataType())){
 				return  col;
 			}
@@ -86,8 +92,16 @@ public class AnnexureInfo implements ISaveForm{
 		return foundCol;
 	}
 
+	public static ColumnInfo<?> lookupColByDataType(DataType dataType, List<ColumnInfo<?>> cols){
+		return lookupCol(dataType, null, cols);
+	}
+	
 	public static ColumnInfo<?> lookupColByDataType(DataType dataType, AnnexureInfo annexure){
 		return lookupCol(dataType, null, annexure);
+	}
+	
+	public static ColumnInfo<?> lookupColByTitle(String colName, List<ColumnInfo<?>> cols){
+		return lookupCol(null, colName, cols);
 	}
 
 	public static ColumnInfo<?> lookupColByTitle(String colName, AnnexureInfo annexure){
@@ -114,12 +128,21 @@ public class AnnexureInfo implements ISaveForm{
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
+	public Supplier<Map<ColumnInfo<?>, Object>> getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(Supplier<Map<ColumnInfo<?>, Object>> supplier) {
+		this.supplier = supplier;
+	}
+
 	public void areaSelect (Map<ColumnInfo<?>, Object> row, 
 			ColumnInfo<?> col,
 			SelectEvent<?, ?> event){
 		
 	}
 
+	private Supplier<Map<ColumnInfo<?>, Object>> supplier;
 	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
 		return createDetailRow(columnInfos, null);
 	}
@@ -127,13 +150,19 @@ public class AnnexureInfo implements ISaveForm{
 	@SuppressWarnings("unchecked")
 	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos,
 			Map<ColumnInfo<?>, Object> rowDataInits) {
-		Map<ColumnInfo<?>, Object> newRow = new HashMap<>();
+		if(rowDataInits == null) {
+			if (supplier != null) {
+				rowDataInits = supplier.get();
+			}else {
+				rowDataInits = new HashMap<>();
+			}
+		}
 
 		for (ColumnInfo<?> columnInfo : columnInfos) {
 			Object cellData = null;
-			if (rowDataInits != null) {
-				cellData = rowDataInits.get(columnInfo);
-			}
+			
+			cellData = rowDataInits.get(columnInfo);
+			
 			if (cellData == null) {
 
 				if (columnInfo.getDataType() == DataType.TwoTitles) {
@@ -146,22 +175,22 @@ public class AnnexureInfo implements ISaveForm{
 					cellData = new UploadData();
 
 				} else if (columnInfo.getDataType() == DataType.Area) {
-					AreaData areaData = new AreaData(this, newRow);
+					AreaData areaData = new AreaData(this, rowDataInits);
 					areaData.setDataProvider((List<MCity>)columnInfo.getDataProvider());
 					cellData = areaData;
 				} else if (columnInfo.getDataType() == DataType.Postal) {
-					PostalData textData = new PostalData(this, newRow, null);
+					PostalData textData = new PostalData(this, rowDataInits, null);
 					cellData = textData;
 				}else if (columnInfo.getDataType() == DataType.PositiveNumber) {
-					cellData = new IntData(this, newRow, null);
+					cellData = new IntData(this, rowDataInits, null);
 				}
 
 			}
-			newRow.put(columnInfo, cellData);
+			rowDataInits.put(columnInfo, cellData);
 
 		}
 
-		return newRow;
+		return rowDataInits;
 	}
 
 	/**

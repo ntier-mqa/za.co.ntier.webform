@@ -13,6 +13,10 @@ public class IntData {
 		this.setRow(row);
 	}
 	
+	public IntData(Map<ColumnInfo<?>, Object> row, Integer value) {
+		this(null, row, value);
+	}
+	
 	/**
 	 * @return the annexure
 	 */

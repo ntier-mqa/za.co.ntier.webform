@@ -37,7 +37,7 @@ import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class MasterUtil {
 	public static final List<KeyNamePair> districtMunicipalities;
-	public static final int limitItem = 50;
+	public static final int limitItem = 100;
 	public static final List<KeyNamePair> localMunicipalities;
 	public static final List<KeyNamePair> municipalityTypes;
 
