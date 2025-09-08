@@ -198,12 +198,12 @@ public class ApplicationsListVM {
 						"FROM zz_open_application oa " +
 						"WHERE oa.isactive='Y' " +
 						"  AND oa.zz_programs IS NOT NULL " +
-						"  AND ? BETWEEN oa.startdate AND oa.enddate " +
+						"  AND now() BETWEEN oa.startdate AND oa.enddate " +
 						"  AND POSITION(',' || ? || ',' IN ',' || oa.zz_programs || ',') > 0 " +
 						"  AND oa.zz_docstatus = 'AP'" +
 						"LIMIT 1";
 
-		int found = DB.getSQLValueEx(null, sql, dateDoc, String.valueOf(programId));
+		int found = DB.getSQLValueEx(null, sql,  String.valueOf(programId));
 		boolean ok = (found > 0); // 1 if exists; -1/0 means no match
 		editableCache.put(appId, ok);
 		return ok;
