@@ -27,9 +27,10 @@ public class UploadInput extends AnnexureInfo {
 		
 		UploadInput uploadInput = AnnexureInfo.getAnnexureInfo(UploadInput.class, columns, false);
 
-		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
+		Map<ColumnInfo<?>, Object> rowDataInits = null;
 
 		for (X_ZZDocumentUpload docUpload : docUploads) {
+			rowDataInits = new HashMap<>();
 			rowDataInits.put(columns.get(0), docUpload);
 			Map<ColumnInfo<?>, Object> newRow = uploadInput.createDetailRow(columns, rowDataInits);
 			uploadInput.getRows().add(newRow);
