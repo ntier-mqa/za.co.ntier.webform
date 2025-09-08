@@ -1,7 +1,5 @@
 package za.co.ntier.webform.form.bean.component;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;

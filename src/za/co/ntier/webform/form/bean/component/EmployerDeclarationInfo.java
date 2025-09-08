@@ -1,7 +1,6 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.compiere.model.MUser;

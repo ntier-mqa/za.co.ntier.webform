@@ -1,6 +1,5 @@
 package za.co.ntier.webform.form.bean.component;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class CetTvetOneLineInput extends AnnexureInfo{

@@ -1,9 +1,7 @@
 package za.co.ntier.webform.form.bean.program;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,7 +31,6 @@ import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class CetTvetProgram implements ISaveForm, IProgram {
 	private AddressInfo addressInfo;

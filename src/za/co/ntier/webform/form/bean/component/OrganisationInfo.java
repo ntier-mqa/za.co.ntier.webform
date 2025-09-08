@@ -10,7 +10,6 @@ import org.compiere.model.X_C_BPartner;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.ISaveForm;
