@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.exception.ApplicationException;
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -22,10 +24,16 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class AnnexureInfo implements ISaveForm{
 	public static <T extends AnnexureInfo> T getAnnexureInfo(Class<T> clazz, List<ColumnInfo<?>> columnInfos,
-			boolean isShowTotal) throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+			boolean isShowTotal){
 
-		T annexureInfo = clazz.getDeclaredConstructor().newInstance();
+		T annexureInfo;
+		try {
+			annexureInfo = clazz.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+			throw new ApplicationException(e.getMessage(), e);
+		}
 		annexureInfo.setShowTotal(isShowTotal);
 		annexureInfo.setColumnInfos(columnInfos);
 
@@ -52,9 +60,7 @@ public class AnnexureInfo implements ISaveForm{
 	}
 	
 	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
-			List<ColumnInfo<?>> columnInfos, String rowTitle, boolean isShowTotal, List<String> twoTitleValue)
-			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException {
+			List<ColumnInfo<?>> columnInfos, String rowTitle, boolean isShowTotal, List<String> twoTitleValue){
 		T annexureInfo = AnnexureInfo.getAnnexureInfo(clazz, columnInfos, isShowTotal);
 
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
@@ -334,10 +340,15 @@ public class AnnexureInfo implements ISaveForm{
 		this.totalRow = totalRow;
 	}
 	
-	public void uploadFile(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, UploadEvent event) throws IOException {
+	public void uploadFile(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, UploadEvent event) {
 		UploadData uploadInfoObj = (UploadData) row.get(col);
 		uploadInfoObj.setFileName(event.getMedia().getName());
-		uploadInfoObj.setFullPath(MasterUtil.saveUploadFile(event.getMedia()));
+		try {
+			uploadInfoObj.setFullPath(MasterUtil.saveUploadFile(event.getMedia()));
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new AdempiereException(e.getMessage(), e);
+		}
 
 		BindUtils.postNotifyChange(row.get(col), "fileName");
 	}

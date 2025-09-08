@@ -44,8 +44,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	private List<LearnerInputInfo> tradeInfo;
 
 	@SuppressWarnings("unchecked")
-	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
 		this.setMenuContextInfo(menuContextInfo);
 		this.applicationForm = applicationForm;
 		

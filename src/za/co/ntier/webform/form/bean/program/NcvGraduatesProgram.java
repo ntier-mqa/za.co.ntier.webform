@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -15,8 +17,7 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class NcvGraduatesProgram implements ISaveForm, IProgram {
 	private ProjectInput unemployed;
 
-	public NcvGraduatesProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public NcvGraduatesProgram(MenuContextInfo menuContextInfo) {
 		if (menuContextInfo.getIsUploadWPAForNVC()) {
 			setUnemployed(ProjectInput.getProject(
 					List.of(
@@ -42,7 +43,7 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		ProjectInput.saveProjectInput(trxName, applicationForm, unemployed);
 		
 	}

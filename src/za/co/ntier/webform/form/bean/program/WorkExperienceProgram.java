@@ -3,6 +3,8 @@ package za.co.ntier.webform.form.bean.program;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.adempiere.exceptions.AdempiereException;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -19,8 +21,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	private Integer noOfLearners;
 	private AddressInfo vacationContact;
 
-	public WorkExperienceProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public WorkExperienceProgram(MenuContextInfo menuContextInfo) {
 		setVacationContact(new AddressInfo(AddressType.VACATION));
 		this.setDisciplines(ProgramInput.getDisciplines(
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
@@ -50,7 +51,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		this.setApplicationForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
 		ProgramInput.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);

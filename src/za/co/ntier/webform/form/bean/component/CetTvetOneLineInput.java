@@ -15,21 +15,14 @@ public class CetTvetOneLineInput extends AnnexureInfo{
 	 * @param columnInfos
 	 * @param rowTitle
 	 * @return
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws NoSuchMethodException
 	 */
 	public static CetTvetOneLineInput getAnnexureInfoOneLine(String sectionHeader,
-			List<ColumnInfo<?>> columnInfos, String rowTitle) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			List<ColumnInfo<?>> columnInfos, String rowTitle) {
 		return AnnexureInfo.getAnnexureInfoOneLine(CetTvetOneLineInput.class, sectionHeader, columnInfos, rowTitle, false, null);
 	}
 
 	public static CetTvetOneLineInput getCetTvetOneLineInput(String sectionHeader,
-			List<ColumnInfo<?>> columnInfos, String rowTitle, List<String> twoTitleValue) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			List<ColumnInfo<?>> columnInfos, String rowTitle, List<String> twoTitleValue) {
 		return AnnexureInfo.getAnnexureInfoOneLine(CetTvetOneLineInput.class, sectionHeader, columnInfos, rowTitle, false, twoTitleValue);
 	}
 

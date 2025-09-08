@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
@@ -14,8 +16,7 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	private ProjectInput qualification;
 	private ProjectInput skill;
 
-	public ArtisanAidesProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public ArtisanAidesProgram() {
 		qualification = ProjectInput.getProject(null,
 				List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel),
 						ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel),
@@ -44,7 +45,7 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		ProjectInput.saveProjectInput(trxName, applicationForm, qualification);
 		ProjectInput.saveProjectInput(trxName, applicationForm, skill);
 		

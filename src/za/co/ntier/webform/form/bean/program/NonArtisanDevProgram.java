@@ -3,6 +3,8 @@ package za.co.ntier.webform.form.bean.program;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.adempiere.exceptions.AdempiereException;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -14,8 +16,7 @@ public class NonArtisanDevProgram implements ISaveForm, IProgram {
 	private ProgramInput firLearnership;
 	private ProgramInput generalLearnership;
 
-	public NonArtisanDevProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public NonArtisanDevProgram(MenuContextInfo menuContextInfo){
 		setGeneralLearnership(ProgramInput.getLearnership(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership,
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()));
 
@@ -39,7 +40,7 @@ public class NonArtisanDevProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		ProgramInput.saveFormLearnership(trxName, applicationForm, generalLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership);
 		ProgramInput.saveFormLearnership(trxName, applicationForm, firLearnership, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership);
 	}

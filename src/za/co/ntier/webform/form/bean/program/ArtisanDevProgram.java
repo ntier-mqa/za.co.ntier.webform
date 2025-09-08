@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -18,8 +20,7 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 
 	private ProgramInput trade;
 
-	public ArtisanDevProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public ArtisanDevProgram(MenuContextInfo menuContextInfo){
 		setTrade(ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), null));
 
 		setTotalNumApplied(ProjectInput
@@ -42,7 +43,7 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		ProjectInput.saveProjectInput(trxName, applicationForm, totalNumApplied);
 		ProgramInput.saveFormDisciplines(trxName, applicationForm, trade, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
 		

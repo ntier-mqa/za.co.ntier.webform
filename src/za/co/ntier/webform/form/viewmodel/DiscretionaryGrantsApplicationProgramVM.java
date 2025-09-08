@@ -161,9 +161,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	@Init
-	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo)
-			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException {
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 
 		setMenuContextInfo(menuContextInfo);
 		programType = menuContextInfo.getProgramType();

@@ -2,6 +2,8 @@ package za.co.ntier.webform.form.bean.program;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.adempiere.exceptions.AdempiereException;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -12,12 +14,11 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 	private Boolean isCollegeRecognised= Boolean.FALSE;
 	private Boolean isCollegeSla = null;
 	
-	public CentreOfSpecialisationProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public CentreOfSpecialisationProgram(MenuContextInfo menuContextInfo)  {
 		super(menuContextInfo);
 	}
 	
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException{
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		super.saveForm(trxName, applicationForm);
 		applicationForm.setZZCollegeRecognised(convert(isCollegeRecognised));
 		applicationForm.setZZCollegeRegistered(convert(isCollegeRegistered));

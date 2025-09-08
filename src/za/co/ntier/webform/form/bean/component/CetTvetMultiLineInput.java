@@ -16,8 +16,7 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 	
 	
 	public static <T> CetTvetMultiLineInput getCetTvetMultiLineInput(String sectionHeader,
-			List<ColumnInfo<?>> columnInfos) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			List<ColumnInfo<?>> columnInfos) {
 		return getCetTvetMultiLineInput(sectionHeader, columnInfos, null, null);
 	}
 	/**
@@ -26,15 +25,9 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 	 * @param sectionHeader
 	 * @param columnInfos
 	 * @return
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws NoSuchMethodException
 	 */
 	public static <T> CetTvetMultiLineInput getCetTvetMultiLineInput(String sectionHeader,
-			List<ColumnInfo<?>> columnInfos, List<AnnexureRow<T>>  initRows, Supplier<Map<ColumnInfo<?>, Object>> emptyRowSupplier) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			List<ColumnInfo<?>> columnInfos, List<AnnexureRow<T>>  initRows, Supplier<Map<ColumnInfo<?>, Object>> emptyRowSupplier) {
 		
 		boolean isShowTotalLine = false;
 		for (ColumnInfo<?> col : columnInfos) {
