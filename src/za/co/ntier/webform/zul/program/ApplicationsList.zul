@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- A simple list of candidacy applications for the logged‑in user -->
 <zk xmlns:n="native">
+
   <div
       viewModel="@id('vmList') @init('za.co.ntier.webform.form.viewmodel.ApplicationsListVM')">
     <hlayout sclass="sectionHeader">
@@ -14,8 +15,15 @@
     <column label="Application #" width="80px"/>
     <column label="Program Title" width="260px"/>
     <column label="Organisation" width="160px"/>
-    <column label="SDL number" width="120px"/>
-    <column label="Total Applied For" width="100px"/>
+    <column label="SDL number" width="100px"/>
+	<column width="84px" align="left">
+	  <label value="Total&#10;Applied For"
+	         multiline="true"
+	         style="display:block; text-align:left; line-height:1.1; padding:0 4px; font-size:11px; box-sizing:border-box;"/>
+	</column>
+
+
+
     <column label="Submitted"/>
     <column label="Status"/>
     <column label="Action" width="90px" align="center"/>
@@ -28,9 +36,9 @@
         <label value="@load(vmList.programTitle(each))"/>
         <label value="@load(vmList.getOrgName(each))"/>
         <label value="@load(each.ZZ_SDL_No)"/>
-        <label value="@load(each.ZZTotalNumberApplied)"/>
+        <label value="@load(each.ZZTotalNumberApplied)"
+              style="display:block; text-align:left; padding:0 4px;"/>        
         <label value="@load(each.dateDoc)"/>
-        <!-- If the getter is getZZ_DocStatus(), use bracket syntax -->
         <label value="@load(vmList.getStatusName(each))"/>
         <button label="Edit"
                 sclass="btn btn-sm btn-primary"
