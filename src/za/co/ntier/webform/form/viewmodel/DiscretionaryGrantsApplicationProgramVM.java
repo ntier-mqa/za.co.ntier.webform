@@ -6,11 +6,20 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
+import org.adempiere.model.GenericPO;
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MBPartner;
+import org.compiere.model.MClient;
+import org.compiere.model.MMailText;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -428,8 +437,63 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		tableId = applicationForm.get_Table_ID();
 		setDocumentNo(applicationForm.getDocumentNo());
 		
+		// sent email
 		showDialog(title, msg);
+		
+		sentEmail();
 	}
+
+	public void sentEmail() {
+		EmailPoInfo emailPoInfo = new EmailPoInfo();
+		
+		MMailText submitedEmail = new MMailText(Env.getCtx(), "bb8d6f79-4bea-448d-a55e-43f52116a03c", null);
+		MClient client = MClient.get(Env.getCtx());
+		MUser from = MUser.get(Env.getCtx(), FROM_EMAIL_USER_ID);
+		submitedEmail.setPO(emailPoInfo);
+		
+		int loginId = Env.getAD_User_ID(Env.getCtx());
+		MUser receiver = MUser.get(loginId);
+		submitedEmail.setUser(receiver);
+		if (!client.sendEMail(from, receiver, submitedEmail.getMailHeader(), submitedEmail.getMailText(), null, submitedEmail.isHtml())) {
+			log.fine("Problem Sending Email.  Please contact Support");
+		}
+		
+		if(applicationForm.getC_BPartner_ID() != 0) {
+			MBPartner partner = MBPartner.get(Env.getCtx(), applicationForm.getC_BPartner_ID());
+			MUser[] contacts = partner.getContacts(false);
+			if (contacts.length > 0 && contacts[0].getAD_User_ID() != loginId) {
+				receiver = contacts[0];
+				submitedEmail.setUser(receiver);
+				if (!client.sendEMail(from, receiver, submitedEmail.getMailHeader(), submitedEmail.getMailText(), null, submitedEmail.isHtml())) {
+					log.fine("Problem Sending Email.  Please contact Support");
+				}
+			}
+				
+		}
+		
+
+	}
+	
+	public class EmailPoInfo extends GenericPO {
+
+		public EmailPoInfo() {
+			super(MUser.Table_Name, Env.getCtx(), 0);
+		}
+
+		private static final long serialVersionUID = -433026634223871908L;
+
+		public String getAppFormTitle(){
+			return menuContextInfo.getProgramMasterData().getTitle();
+		}
+		
+		public String getAppFormDocno(){
+			return applicationForm.getDocumentNo();
+		}
+		
+	}
+	
+	private static final CLogger log = CLogger.getCLogger(DiscretionaryGrantsApplicationProgramVM.class);
+	public static final int FROM_EMAIL_USER_ID = MSysConfig.getIntValue("FROM_EMAIL_USER_ID",1000011);
 
 	/**
 	 * @return the applicationForm
