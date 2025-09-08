@@ -479,7 +479,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		  "organisationInfo.cetTvetCollegeSelected",
 		  "organisationInfo.sdlNumber",
 		  "organisationInfo.siteSDLNumber",
-		  "organisationInfo.postAddressInfo.postAddress",   
+		//  "organisationInfo.postAddressInfo.postAddress",   
 		  "organisationInfo.postAddressInfo.postalCode"
 		})
 	public boolean isOrganisationComplete() {
@@ -500,7 +500,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	        && (!organisationInfo.getPhysicalAddressInfo().showGeographicAddress()
 	                      || notEmpty(organisationInfo.getPhysicalAddressInfo().getPostalCode()));
 	    boolean postalOk = (!organisationInfo.getPostAddressInfo().showPostalAddress()
-                || notEmpty(organisationInfo.getPostAddressInfo().getPostAddress()))
+                || notEmpty(organisationInfo.getPostAddressInfo().getAddressLine()))
 	    		&& (!organisationInfo.getPostAddressInfo().showGeographicAddress()
                 || notEmpty(organisationInfo.getPostAddressInfo().getPostalCode()));
 	    boolean provincesPhysicalOk = organisationInfo.getPhysicalAddressInfo().getProvinceSelected() != null  &&
@@ -621,7 +621,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		  // MAIN contact
 		  "programContact.siteName",
 		  "programContact.addressLine",
-		  "programContact.postAddress",
+		//  "programContact.postAddress",
 		  "programContact.postalCode",
 		  "programContact.areaSelected",
 		  "programContact.provinceSelected",
@@ -634,7 +634,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		  // ALTERNATE contact (only enforced if shown)
 		  "alternateProgramContact.siteName",
 		  "alternateProgramContact.addressLine",
-		  "alternateProgramContact.postAddress",
+		//  "alternateProgramContact.postAddress",
 		  "alternateProgramContact.postalCode",
 		  "alternateProgramContact.areaSelected",
 		  "alternateProgramContact.provinceSelected",
