@@ -87,6 +87,7 @@ public class ApplicationsListVM {
 				//  .setParameters(userId, programMasterDataId)
 				.setParameters(userId)
 				.setClient_ID()
+				.setOnlyActiveRecords(true)
 				.setOrderBy("AD_Org_ID,DocumentNo")
 				.list();
 

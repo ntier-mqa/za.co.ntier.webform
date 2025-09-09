@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
@@ -134,7 +135,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public void deleteApp() {
 		if (applicationForm != null) {
 			try {
-				applicationForm.deleteEx(true);
+				applicationForm.setIsActive(false);
+				applicationForm.saveEx(null);
 				showAppList();
 			}catch (Exception e) {
 				Clients.showNotification(
@@ -271,6 +273,9 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		if (StringUtils.isNotBlank(menuContextInfo.getApplicationFormUU())) {
 			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), menuContextInfo.getApplicationFormUU(), null);
+			if (!applicationForm.isActive()) {
+				throw new AdempiereException("document is deleted");
+			}
 		}
 		
 		employerDeclarationInfo = new EmployerDeclarationInfo();
