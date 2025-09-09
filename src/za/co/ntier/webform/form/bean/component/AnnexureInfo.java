@@ -72,8 +72,7 @@ public class AnnexureInfo implements ISaveForm{
 			}
 		}
 
-		Map<ColumnInfo<?>, Object> fistRow = annexureInfo.createDetailRow(columnInfos, rowDataInits);
-		annexureInfo.getRows().add(fistRow);
+		annexureInfo.createDetailRow(columnInfos, rowDataInits);
 		annexureInfo.setSectionHeader(sectionHeader);
 		return annexureInfo;
 	}
@@ -130,16 +129,15 @@ public class AnnexureInfo implements ISaveForm{
 
 	public void addRow() {
 		Map<ColumnInfo<?>, Object> row = createDetailRow(getColumnInfos());
-		getRows().add(row);
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
 	public Supplier<Map<ColumnInfo<?>, Object>> getSupplier() {
-		return supplier;
+		return rowInitSupplier;
 	}
 
 	public void setSupplier(Supplier<Map<ColumnInfo<?>, Object>> supplier) {
-		this.supplier = supplier;
+		this.rowInitSupplier = supplier;
 	}
 
 	public void areaSelect (Map<ColumnInfo<?>, Object> row, 
@@ -148,20 +146,23 @@ public class AnnexureInfo implements ISaveForm{
 		
 	}
 
-	private Supplier<Map<ColumnInfo<?>, Object>> supplier;
+	private Supplier<Map<ColumnInfo<?>, Object>> rowInitSupplier;
 	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
 		return createDetailRow(columnInfos, null);
 	}
 
+	protected Map<ColumnInfo<?>, Object> createEmptyRow(){
+		return rowInitSupplier != null?rowInitSupplier.get():new HashMap<>();
+		
+	}
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos,
 			Map<ColumnInfo<?>, Object> rowDataInits) {
 		if(rowDataInits == null) {
-			if (supplier != null) {
-				rowDataInits = supplier.get();
-			}else {
-				rowDataInits = new HashMap<>();
-			}
+			rowDataInits = createEmptyRow();
 		}
 
 		for (ColumnInfo<?> columnInfo : columnInfos) {
@@ -196,6 +197,7 @@ public class AnnexureInfo implements ISaveForm{
 
 		}
 
+		getRows().add(rowDataInits);
 		return rowDataInits;
 	}
 

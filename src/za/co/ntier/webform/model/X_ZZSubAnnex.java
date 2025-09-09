@@ -19,11 +19,7 @@ package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZSubAnnex
  *  @author iDempiere (generated)
@@ -35,7 +31,7 @@ public class X_ZZSubAnnex extends PO implements I_ZZSubAnnex, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250904L;
+	private static final long serialVersionUID = 20250909L;
 
     /** Standard Constructor */
     public X_ZZSubAnnex (Properties ctx, int ZZSubAnnex_ID, String trxName)
@@ -132,6 +128,25 @@ public class X_ZZSubAnnex extends PO implements I_ZZSubAnnex, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Number Of Beneficiaries Applying.
+		@param ZZBeneficiaries Number Of Beneficiaries Applying For
+	*/
+	public void setZZBeneficiaries (int ZZBeneficiaries)
+	{
+		set_Value (COLUMNNAME_ZZBeneficiaries, Integer.valueOf(ZZBeneficiaries));
+	}
+
+	/** Get Number Of Beneficiaries Applying.
+		@return Number Of Beneficiaries Applying For
+	  */
+	public int getZZBeneficiaries()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZBeneficiaries);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Field Of Study.
 		@param ZZFieldStudy Field Of Study
 	*/
@@ -178,6 +193,25 @@ public class X_ZZSubAnnex extends PO implements I_ZZSubAnnex, I_Persistent
 	public int getZZManagers()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ZZManagers);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Programme Applying.
+		@param ZZProgramme Programme Applying For
+	*/
+	public void setZZProgramme (int ZZProgramme)
+	{
+		set_Value (COLUMNNAME_ZZProgramme, Integer.valueOf(ZZProgramme));
+	}
+
+	/** Get Programme Applying.
+		@return Programme Applying For
+	  */
+	public int getZZProgramme()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZProgramme);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -232,6 +266,25 @@ public class X_ZZSubAnnex extends PO implements I_ZZSubAnnex, I_Persistent
 	public String getZZSubAnnex_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ZZSubAnnex_UU);
+	}
+
+	/** Set Total Number Beneficiaries.
+		@param ZZTotalBeneficiaries Total Number of beneficiaries applying for
+	*/
+	public void setZZTotalBeneficiaries (int ZZTotalBeneficiaries)
+	{
+		set_Value (COLUMNNAME_ZZTotalBeneficiaries, Integer.valueOf(ZZTotalBeneficiaries));
+	}
+
+	/** Get Total Number Beneficiaries.
+		@return Total Number of beneficiaries applying for
+	  */
+	public int getZZTotalBeneficiaries()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZTotalBeneficiaries);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public I_ZZ_Application_Form getZZ_Application_Form() throws RuntimeException

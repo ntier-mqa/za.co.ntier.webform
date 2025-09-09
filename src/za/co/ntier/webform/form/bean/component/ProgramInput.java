@@ -66,8 +66,8 @@ public class ProgramInput extends AnnexureInfo {
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
 			rowDataInits = new HashMap<>();
 			rowDataInits.put(columns.get(0), learnerInputInfo);
-			Map<ColumnInfo<?>, Object> newRow = programInput.createDetailRow(columns, rowDataInits);
-			programInput.getRows().add(newRow);
+			programInput.createDetailRow(columns, rowDataInits);
+			
 		}
 		return programInput;
 	}
@@ -108,8 +108,8 @@ public class ProgramInput extends AnnexureInfo {
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
 			rowDataInits = new HashMap<>();
 			rowDataInits.put(columns.get(0), learnerInputInfo);
-			Map<ColumnInfo<?>, Object> newRow = programInput.createDetailRow(columns, rowDataInits);
-			programInput.getRows().add(newRow);
+			programInput.createDetailRow(columns, rowDataInits);
+			
 		}
 		return programInput;
 	}
