@@ -200,7 +200,27 @@ public class AnnexureInfo implements ISaveForm{
 		return rowDataInits;
 	}
 	
-	
+	public void updateTotal() {
+		if (!showTotal)
+			return;
+		
+		for (ColumnInfo<?> col:getColumnInfos()) {
+			if (col.getDataType() == DataType.PositiveNumber) {
+				Integer total = 0;
+				for (Map<ColumnInfo<?>, Object> r : getRows()) {
+					IntData intData = (IntData)r.get(col);
+					if (intData.getValue() != null) {
+						total += intData.getValue();
+					}
+				}
+				
+				IntData totalValue = (IntData)totalRow.get(col);
+				totalValue.setValue(total);
+				//BindUtils.postNotifyChange(totalValue, "value");
+			}
+		}
+		
+	}
 	
 	protected Map<ColumnInfo<?>, Object> createEmptyRow(){
 		return rowInitSupplier != null?rowInitSupplier.get():new HashMap<>();

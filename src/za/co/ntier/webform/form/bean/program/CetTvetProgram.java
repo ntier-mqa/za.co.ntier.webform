@@ -316,7 +316,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		if (colProgramme != null && annexureDao.getZZProgramme() > 0) {
 			((IntData)newRow.get(colProgramme)).setValue(annexureDao.getZZProgramme());
 		}
-		
+		annexure.updateTotal();
 		return annexureDao;
 	}
 
@@ -344,7 +344,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 					for (Object tradeObj : colTrade.getDataProvider()) {
 						LearnerInputInfo trade = (LearnerInputInfo)tradeObj;
 						if (trade.getLearnerInputID() == subAnnex.getZZ_Trade_ID()){
-							newRow.put(colTrade, colNoLearners);
+							newRow.put(colTrade, trade);
 							break;
 						}
 						
@@ -387,6 +387,8 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			
 			
 		}
+		
+		subAnnexure.updateTotal();
 	}
 
 	public void loadInitRowSubAnnex(X_ZZ_Application_Form parent, AnnexureInfo subAnnex, List<ColumnInfo<?>> cols) {

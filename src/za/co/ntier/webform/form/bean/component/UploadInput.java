@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.compiere.model.MTable;
 import org.compiere.util.Env;
 
+import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.I_ZZDocumentUpload;
+import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZDocumentUpload;
+import za.co.ntier.webform.model.X_ZZDocumentUploadFile;
 
 public class UploadInput extends AnnexureInfo {
 	public static final String DocUploadTitle = "Document Name";
@@ -23,15 +27,14 @@ public class UploadInput extends AnnexureInfo {
 		columns.add(ColumnInfo.getColDocUpload(DocUploadTitle));
 		columns.add(ColumnInfo.getColFileUpload("", "doc"));
 		
+		Supplier<Map<ColumnInfo<?>, Object>> supplierRowAnnexure = () -> new AnnexureRow<X_ZZDocumentUploadFile>();
+		
 		UploadInput uploadInput = AnnexureInfo.getAnnexureInfo(UploadInput.class, columns, false);
-
-		Map<ColumnInfo<?>, Object> rowDataInits = null;
+		uploadInput.setSupplier(supplierRowAnnexure);
 
 		for (X_ZZDocumentUpload docUpload : docUploads) {
-			rowDataInits = new HashMap<>();
-			rowDataInits.put(columns.get(0), docUpload);
-			uploadInput.createDetailRow(columns, rowDataInits);
-			
+			Map<ColumnInfo<?>, Object> row = uploadInput.createDetailRow(columns);
+			row.put(columns.get(0), docUpload);
 		}
 		return uploadInput;
 	}

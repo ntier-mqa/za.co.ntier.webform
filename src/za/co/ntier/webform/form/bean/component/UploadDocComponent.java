@@ -24,8 +24,10 @@ public class UploadDocComponent implements ISaveForm {
 
 	private UploadInput uploadDoc;
 
-	public UploadDocComponent(MenuContextInfo menuContextInfo) {
+	public UploadDocComponent(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		uploadDoc = UploadInput.getUploadInput(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID());
+		this.applicationForm = applicationForm;
+		initComponent(applicationForm);
 	}
 
 	/**
@@ -43,6 +45,9 @@ public class UploadDocComponent implements ISaveForm {
 	}
 	
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		ColumnInfo<?> uploadDefCol = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
+		ColumnInfo<?> uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload, uploadDoc);
+		
 		this.applicationForm = applicationForm;
 		if(applicationForm != null) {
 			Query uploadDocQuery = MTable.get(X_ZZDocumentUploadFile.Table_ID).createQuery(
@@ -52,18 +57,40 @@ public class UploadDocComponent implements ISaveForm {
 			List<X_ZZDocumentUploadFile> documentUploadFiles = uploadDocQuery.
 					setOrderBy(X_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID).
 					setParameters(applicationForm.getZZ_Application_Form_ID()).list();
+			
+			for(Map<ColumnInfo<?>, Object> rowObj : uploadDoc.getRows()) {
+				@SuppressWarnings("unchecked")
+				AnnexureRow<X_ZZDocumentUploadFile> row = (AnnexureRow<X_ZZDocumentUploadFile>)rowObj;
+				
+				X_ZZDocumentUpload docDef = (X_ZZDocumentUpload)row.get(uploadDefCol);
+				
+				for (X_ZZDocumentUploadFile documentUploadFile : documentUploadFiles) {
+					if (documentUploadFile.getZZDocumentUpload_ID() == docDef.getZZDocumentUpload_ID()) {
+						UploadData uploadData = (UploadData) row.get(uploadFileCol);
+						uploadData.setFileName(documentUploadFile.getName());
+						row.setData(documentUploadFile);
+						break;
+					}
+				}
+			}
 		}
-		
-		
 	}
 	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
+			AnnexureRow<X_ZZDocumentUploadFile> row = (AnnexureRow<X_ZZDocumentUploadFile>)uploadRow;
+			
+			
 			ColumnInfo<?> uploadDefCol = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
 			ColumnInfo<?> uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload, uploadDoc);
 			
-			X_ZZDocumentUploadFile docUploadedFile = new X_ZZDocumentUploadFile(Env.getCtx(), 0, trxName);
+			X_ZZDocumentUploadFile docUploadedFile = row.getData();
+			if (docUploadedFile == null) {
+				docUploadedFile = new X_ZZDocumentUploadFile(Env.getCtx(), 0, trxName);
+				row.setData(docUploadedFile);
+			}
+			
 			docUploadedFile.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
 			
 			if (uploadDefCol != null) {

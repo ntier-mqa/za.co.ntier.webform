@@ -329,7 +329,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 			
 
-		uploadDoc = new UploadDocComponent(menuContextInfo);
+		uploadDoc = new UploadDocComponent(menuContextInfo, applicationForm);
 		
 		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "declarationComplete");
 		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "organisationComplete");
@@ -585,8 +585,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		// sent email
 		showDialog(title, msg);
-		
-		sentEmail();
+		if (!isSave)
+			sentEmail();
 	}
 	
 	private void saveAppFormCommonPart(X_ZZ_Application_Form applicationForm) {
