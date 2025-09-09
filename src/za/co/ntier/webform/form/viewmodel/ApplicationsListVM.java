@@ -31,8 +31,6 @@ public class ApplicationsListVM {
 
 	private ListModelList<X_ZZ_Application_Form> applications;
 	private MenuContextInfo menuContextInfo;
-	// Simple cache: SDL -> Org Name (avoids repeated queries while the list is shown)
-	private final Map<String, String> orgNameBySdlCache = new HashMap<>();
 
 	//In the class:
 	private final Map<Integer, Boolean> editableCache = new HashMap<>();
@@ -113,31 +111,13 @@ public class ApplicationsListVM {
 	 */
 	public String getOrgName(X_ZZ_Application_Form app) {
 		if (app == null) return "";
-
-		String sdl = app.getZZ_SDL_No();
-		if (sdl == null || sdl.trim().isEmpty()) return "";
-
-		// cache
-		String cached = orgNameBySdlCache.get(sdl);
-		if (cached != null) return cached;
-
-		// Find BP by Value (SDL)
-		MBPartner bp = new Query(Env.getCtx(), MBPartner.Table_Name, "Value=?", null)
-				.setParameters(sdl.trim())
-				.setClient_ID()          // respect AD_Client_ID
-				.firstOnly();
-
-		if (bp == null) {
-			orgNameBySdlCache.put(sdl, "");
-			return "";
+		String name = "";
+		if (app.getC_BPartner_ID() > 0)  {
+			MBPartner bp = (MBPartner) app.getC_BPartner();
+			name = (bp != null && bp.getName() != null) ? bp.getName() : "";
+		} else {
+			name = app.getOrgName();
 		}
-
-
-
-
-		String name = (bp != null && bp.getName() != null) ? bp.getName() : "";
-
-		orgNameBySdlCache.put(sdl, name);
 		return name;
 	}
 
