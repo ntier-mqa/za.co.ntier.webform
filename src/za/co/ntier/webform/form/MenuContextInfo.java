@@ -4,12 +4,12 @@ import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 
 public class MenuContextInfo {
+	private String applicationFormUU;
 	private String formTitle;
 	private boolean isUploadWPAForNVC;
 	private I_ZZ_Program_Master_Data programMasterData;
 	private ProgramType programType;
 	private String zulPath;
-	private String applicationFormUU;
 
 	public MenuContextInfo(ProgramType programType, String zulPath, I_ZZ_Program_Master_Data programMasterData,
 			boolean isUploadWPAForNVC, String formTitle, String applicationFormUU) {
@@ -20,6 +20,13 @@ public class MenuContextInfo {
 		this.isUploadWPAForNVC = isUploadWPAForNVC;
 		this.setFormTitle(formTitle);
 		this.setApplicationFormUU(applicationFormUU);
+	}
+
+	/**
+	 * @return the applicationFormUU
+	 */
+	public String getApplicationFormUU() {
+		return applicationFormUU;
 	}
 
 	/**
@@ -58,6 +65,13 @@ public class MenuContextInfo {
 	}
 
 	/**
+	 * @param applicationFormUU the applicationFormUU to set
+	 */
+	public void setApplicationFormUU(String applicationFormUU) {
+		this.applicationFormUU = applicationFormUU;
+	}
+
+	/**
 	 * @param formTitle the formTitle to set
 	 */
 	public void setFormTitle(String formTitle) {
@@ -90,19 +104,5 @@ public class MenuContextInfo {
 	 */
 	public void setZulPath(String zulPath) {
 		this.zulPath = zulPath;
-	}
-
-	/**
-	 * @return the applicationFormUU
-	 */
-	public String getApplicationFormUU() {
-		return applicationFormUU;
-	}
-
-	/**
-	 * @param applicationFormUU the applicationFormUU to set
-	 */
-	public void setApplicationFormUU(String applicationFormUU) {
-		this.applicationFormUU = applicationFormUU;
 	}
 }

@@ -18,6 +18,12 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 	  // Passed in via @init from the parent ZUL (static per panel)
     private String continueGate; // "DECLARATION", "ORG", "PROGRAM", "NONE"
     private String submitGate;   // "CONTACT", "NONE"
+	@Command(value = "deleteAppForm")
+	public void deleteAppForm() throws IOException {
+		getComponent().getApplicationProgramVM().deleteApp();
+	}
+	
+	
 	@Init(superclass = false)
 	public void init(
 		    @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM applicationProgramVM,
@@ -31,11 +37,34 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 		this.submitGate   = (submitGate   != null) ? submitGate   : "NONE"; // <-- set
 	}
 	
+	// === Reactive disabled flags ===
+    @DependsOn({
+        "component.applicationProgramVM.declarationComplete",
+        "component.applicationProgramVM.organisationComplete",
+        "component.applicationProgramVM.programComplete",
+        "component.applicationProgramVM.programContactComplete"
+    })
+    public boolean isNextDisabled() {
+        DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
+        switch (continueGate) {
+            case "DECLARATION": return !vm.isDeclarationComplete();
+            case "ORG":         return !vm.isOrganisationComplete();
+            case "PROGRAM":     return !vm.isProgramComplete();
+            case "PROGRAMCONTACT": return !vm.isProgramContactComplete();
+            default:            return false;
+        }
+    }
 	
-	@Command
-	public void prevTab() {
-		getComponent().getApplicationProgramVM().prevTab(getComponent().getTab());
-	}
+	@DependsOn({
+        "component.applicationProgramVM.programContactComplete"
+    })
+    public boolean isSubmitDisabled() {
+        DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
+        switch (submitGate) {
+            case "CONTACT": return !vm.isProgramContactComplete();
+            default:        return false;
+        }
+    }
 	
 	@Command
 	public void nextTab() {
@@ -55,47 +84,18 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 		getComponent().getTab().setSelectedIndex(currentIndex + 1);
 	}
 	
-	@Command(value = "saveClose")
+	@Command
+	public void prevTab() {
+		getComponent().getApplicationProgramVM().prevTab(getComponent().getTab());
+	}
+	
+	 @Command(value = "saveClose")
 	public void saveClose() throws IOException {
 		getComponent().getApplicationProgramVM().saveClose();
 	}
-	
-	@Command(value = "deleteAppForm")
-	public void deleteAppForm() throws IOException {
-		getComponent().getApplicationProgramVM().deleteApp();
-	}
-	
-	@Command(value = "submitApplication")
+
+    @Command(value = "submitApplication")
 	public void submitApplication() throws IOException {
 		getComponent().getApplicationProgramVM().submitApplication();
 	}
-	
-	 // === Reactive disabled flags ===
-    @DependsOn({
-        "component.applicationProgramVM.declarationComplete",
-        "component.applicationProgramVM.organisationComplete",
-        "component.applicationProgramVM.programComplete",
-        "component.applicationProgramVM.programContactComplete"
-    })
-    public boolean isNextDisabled() {
-        DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
-        switch (continueGate) {
-            case "DECLARATION": return !vm.isDeclarationComplete();
-            case "ORG":         return !vm.isOrganisationComplete();
-            case "PROGRAM":     return !vm.isProgramComplete();
-            case "PROGRAMCONTACT": return !vm.isProgramContactComplete();
-            default:            return false;
-        }
-    }
-
-    @DependsOn({
-        "component.applicationProgramVM.programContactComplete"
-    })
-    public boolean isSubmitDisabled() {
-        DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
-        switch (submitGate) {
-            case "CONTACT": return !vm.isProgramContactComplete();
-            default:        return false;
-        }
-    }
 }

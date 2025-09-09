@@ -24,11 +24,13 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
  */
 public class OrganisationInfo implements ISaveForm {
 	private AddressInfo alternateOrgContact;
+	private X_ZZ_Application_Form applicationForm;
 	private int bPartnerId;
+	private List<X_C_BPartner> cetTvetColleges;
 	private X_C_BPartner cetTvetCollegeSelected;
+
 	private String fileNameVATCer;
 	private String fullPathVATCer;
-
 	private MenuContextInfo menuContextInfo;
 	private AddressInfo orgContact;
 	private String orgName;
@@ -41,13 +43,13 @@ public class OrganisationInfo implements ISaveForm {
 	private AddressInfo physicalAddressInfo;
 	private AddressInfo postAddressInfo;
 	private String sdlNumber;
-	private String sdlNumberTitle = "Skills Development Levy (SDL) Number (Paying or Exempted)";
-	private X_ZZ_Application_Form applicationForm;
 	
+	private String sdlNumberTitle = "Skills Development Levy (SDL) Number (Paying or Exempted)";
+
 	private String siteSDLNumber;
 
 	private String siteSDLNumberTitle = "Site SDL Number (if applicable)";
-
+	
 	public OrganisationInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
 		postAddressInfo = new AddressInfo(AddressType.POSTAL);
@@ -68,7 +70,7 @@ public class OrganisationInfo implements ISaveForm {
 			cetTvetColleges = MasterUtil.getTvetColleges();
 		}
 	}
-	
+
 	/**
 	 * @return the alternateOrgContact
 	 */
@@ -76,12 +78,17 @@ public class OrganisationInfo implements ISaveForm {
 		return alternateOrgContact;
 	}
 
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+	
 	public int getbPartnerId() {
 		return bPartnerId;
 	}
 
-	private List<X_C_BPartner> cetTvetColleges;
-	
 	public List<X_C_BPartner> getCetTvetColleges() {
 		return cetTvetColleges;
 	}
@@ -213,46 +220,6 @@ public class OrganisationInfo implements ISaveForm {
 		return siteSDLNumberTitle;
 	}
 
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		applicationForm.setZZ_SDL_No(getSdlNumber());
-		applicationForm.setZZ_Side_SDL_No(getSiteSDLNumber());
-		applicationForm.setZZ_VAT(getOrgTaxNumber());
-		applicationForm.setOrgName(getOrgName());
-		applicationForm.setC_BPartner_ID(getbPartnerId());
-		
-		if(menuContextInfo.getProgramType().isCetTvet()) {
-			if (cetTvetCollegeSelected == null) {
-				applicationForm.setC_BPartner_ID(0);
-				applicationForm.setOrgName(null);
-			}else {
-				applicationForm.setC_BPartner_ID(cetTvetCollegeSelected.getC_BPartner_ID());
-				MBPartner partner = MBPartner.get(Env.getCtx(), applicationForm.getC_BPartner_ID());
-				applicationForm.setOrgName(partner.getName());
-			}
-		}
-		
-		if (getOrgSizeInfo() != null) {
-			getOrgSizeInfo().saveForm(trxName, applicationForm);
-		}
-
-		if (physicalAddressInfo != null) {
-			physicalAddressInfo.saveForm(trxName, applicationForm);
-		}
-
-		if (postAddressInfo != null) {
-			postAddressInfo.saveForm(trxName, applicationForm);
-		}
-
-		if (orgContact != null) {
-			orgContact.saveForm(trxName, applicationForm);
-		}
-
-		if (alternateOrgContact != null) {
-			alternateOrgContact.saveForm(trxName, applicationForm);
-		}
-	}
-
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
 
@@ -298,6 +265,48 @@ public class OrganisationInfo implements ISaveForm {
 	}
 
 	
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		applicationForm.setZZ_SDL_No(getSdlNumber());
+		applicationForm.setZZ_Side_SDL_No(getSiteSDLNumber());
+		applicationForm.setZZ_VAT(getOrgTaxNumber());
+		applicationForm.setOrgName(getOrgName());
+		applicationForm.setC_BPartner_ID(getbPartnerId());
+		
+		if(menuContextInfo.getProgramType().isCetTvet()) {
+			if (cetTvetCollegeSelected == null) {
+				applicationForm.setC_BPartner_ID(0);
+				applicationForm.setOrgName(null);
+			}else {
+				applicationForm.setC_BPartner_ID(cetTvetCollegeSelected.getC_BPartner_ID());
+				MBPartner partner = MBPartner.get(Env.getCtx(), applicationForm.getC_BPartner_ID());
+				applicationForm.setOrgName(partner.getName());
+			}
+		}
+		
+		if (getOrgSizeInfo() != null) {
+			getOrgSizeInfo().saveForm(trxName, applicationForm);
+		}
+
+		if (physicalAddressInfo != null) {
+			physicalAddressInfo.saveForm(trxName, applicationForm);
+		}
+
+		if (postAddressInfo != null) {
+			postAddressInfo.saveForm(trxName, applicationForm);
+		}
+
+		if (orgContact != null) {
+			orgContact.saveForm(trxName, applicationForm);
+		}
+
+		if (alternateOrgContact != null) {
+			alternateOrgContact.saveForm(trxName, applicationForm);
+		}
+	}
+
+	
+
 	public void sdlNumberChange() {
 		X_C_BPartner bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
 				String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null).setParameters(sdlNumber).first();
@@ -326,8 +335,6 @@ public class OrganisationInfo implements ISaveForm {
 		}
 	}
 
-	
-
 	/**
 	 * @param alternateOrgContact the alternateOrgContact to set
 	 */
@@ -335,8 +342,22 @@ public class OrganisationInfo implements ISaveForm {
 		this.alternateOrgContact = alternateOrgContact;
 	}
 
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+	}
+
 	public void setbPartnerId(int bPartnerId) {
 		this.bPartnerId = bPartnerId;
+	}
+
+	/**
+	 * @param cetTvetColleges the cetTvetColleges to set
+	 */
+	public void setCetTvetColleges(List<X_C_BPartner> cetTvetColleges) {
+		this.cetTvetColleges = cetTvetColleges;
 	}
 
 	public void setCetTvetCollegeSelected(X_C_BPartner cetTvetCollegeSelected) {
@@ -461,26 +482,5 @@ public class OrganisationInfo implements ISaveForm {
 		setFileNameVATCer(media.getName());
 		fullPathVATCer = MasterUtil.saveUploadFile(media);
 
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
-	/**
-	 * @param applicationForm the applicationForm to set
-	 */
-	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
-	}
-
-	/**
-	 * @param cetTvetColleges the cetTvetColleges to set
-	 */
-	public void setCetTvetColleges(List<X_C_BPartner> cetTvetColleges) {
-		this.cetTvetColleges = cetTvetColleges;
 	}
 }

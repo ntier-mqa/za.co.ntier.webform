@@ -12,8 +12,10 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class WorkExperienceProgram implements ISaveForm, IProgram {
 
+	private X_ZZ_Application_Form applicationForm;
 	private ProgramInput disciplines;
 	private Integer noOfLearners;
+
 	private AddressInfo vacationContact;
 
 	public WorkExperienceProgram(MenuContextInfo menuContextInfo) {
@@ -28,6 +30,13 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	}
 
 	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+
+	/**
 	 * @return the disciplines
 	 */
 	public ProgramInput getDisciplines() {
@@ -37,14 +46,20 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	public Integer getNoOfLearners() {
 		return noOfLearners;
 	}
-
+	
 	/**
 	 * @return the vacationContact
 	 */
 	public AddressInfo getVacationContact() {
 		return vacationContact;
 	}
-
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.setApplicationForm(applicationForm);
+		if (vacationContact != null) {
+			vacationContact.initComponent(applicationForm);
+		}
+	}
+	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		this.setApplicationForm(applicationForm);
@@ -56,15 +71,14 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 			applicationForm.setZZTotalNumberApplied(noOfLearners);
 		applicationForm.saveEx(trxName);
 	}
-	
-	private X_ZZ_Application_Form applicationForm;
-	public void initComponent(X_ZZ_Application_Form applicationForm) {
-		this.setApplicationForm(applicationForm);
-		if (vacationContact != null) {
-			vacationContact.initComponent(applicationForm);
-		}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
-	
+
 	/**
 	 * @param disciplines the disciplines to set
 	 */
@@ -81,20 +95,6 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	 */
 	public void setVacationContact(AddressInfo vacationContact) {
 		this.vacationContact = vacationContact;
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
-	/**
-	 * @param applicationForm the applicationForm to set
-	 */
-	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
 	}
 
 }

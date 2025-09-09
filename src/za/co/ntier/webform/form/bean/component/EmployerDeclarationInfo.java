@@ -11,15 +11,44 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class EmployerDeclarationInfo implements ISaveForm {
 	private Boolean acknowledged;  // use Boolean, not boolean, so null is handled
-	private LocalDateTime localDate;
-	
-	private String userName;
 	private X_ZZ_Application_Form applicationForm;
+	
+	private LocalDateTime localDate;
+	private String userName;
     
 	public EmployerDeclarationInfo() {
 		
 	}
 
+	/**
+	 * @return the acknowledged
+	 */
+	public Boolean getAcknowledged() {
+		return acknowledged;
+	}
+	
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+
+	public Timestamp getDate() {
+		if (localDate == null)
+			return null;
+		
+		return Timestamp.valueOf(localDate);
+	}
+
+	public LocalDateTime getLocalDate() {
+		return localDate;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+	
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
 		this.setApplicationForm(applicationForm);
 		if (applicationForm != null) {
@@ -40,39 +69,24 @@ public class EmployerDeclarationInfo implements ISaveForm {
 		}	
 	}
 	
-	/**
-	 * @return the acknowledged
-	 */
-	public Boolean getAcknowledged() {
-		return acknowledged;
-	}
-
-	public Timestamp getDate() {
-		if (localDate == null)
-			return null;
-		
-		return Timestamp.valueOf(localDate);
-	}
-
-	public LocalDateTime getLocalDate() {
-		return localDate;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		applicationForm.setUserName(getUserName());
 		applicationForm.setDateDoc(getDate());
 	}
-	
+
 	/**
 	 * @param acknowledged the acknowledged to set
 	 */
 	public void setAcknowledged(Boolean acknowledged) {
 		this.acknowledged = acknowledged;
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
 
 	public void setLocalDate(LocalDateTime localDate) {
@@ -81,19 +95,5 @@ public class EmployerDeclarationInfo implements ISaveForm {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
-	/**
-	 * @param applicationForm the applicationForm to set
-	 */
-	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
 	}
 }

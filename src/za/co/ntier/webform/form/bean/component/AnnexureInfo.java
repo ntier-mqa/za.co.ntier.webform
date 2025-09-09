@@ -77,6 +77,20 @@ public class AnnexureInfo implements ISaveForm{
 		return annexureInfo;
 	}
 
+	public static Integer getIntegerValue(AnnexureInfo cetTvetOneLineInput, ColumnInfo<?> col) {
+		return AnnexureInfo.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
+	}
+	
+	public static Integer getIntegerValue(Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, ColumnInfo<?> colInfo) {
+		
+		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
+			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
+			return cellData.getValue();
+		}
+		
+		return null;
+	}
+
 	protected static ColumnInfo<?> lookupCol(DataType dataType, String colName, AnnexureInfo annexure){
 		return lookupCol(dataType, colName, annexure.getColumnInfos());
 	}
@@ -96,32 +110,34 @@ public class AnnexureInfo implements ISaveForm{
 		
 		return foundCol;
 	}
-
-	public static ColumnInfo<?> lookupColByDataType(DataType dataType, List<ColumnInfo<?>> cols){
-		return lookupCol(dataType, null, cols);
-	}
 	
 	public static ColumnInfo<?> lookupColByDataType(DataType dataType, AnnexureInfo annexure){
 		return lookupCol(dataType, null, annexure);
 	}
-	
-	public static ColumnInfo<?> lookupColByTitle(String colName, List<ColumnInfo<?>> cols){
-		return lookupCol(null, colName, cols);
+
+	public static ColumnInfo<?> lookupColByDataType(DataType dataType, List<ColumnInfo<?>> cols){
+		return lookupCol(dataType, null, cols);
 	}
 
 	public static ColumnInfo<?> lookupColByTitle(String colName, AnnexureInfo annexure){
 		return lookupCol(null, colName, annexure);
 	}
+	public static ColumnInfo<?> lookupColByTitle(String colName, List<ColumnInfo<?>> cols){
+		return lookupCol(null, colName, cols);
+	}
 
 	private List<ColumnInfo<?>> columnInfos;
+	private Supplier<Map<ColumnInfo<?>, Object>> rowInitSupplier;
 	private List<Map<ColumnInfo<?>, Object>> rows;
-
 	private String sectionHeader;
-	private String subSectionHeader;
+
 	private boolean showAddButton = false;
+
 	private boolean showTotal = false;
 
 	private AnnexureInfo subAnnexure;
+
+	private String subSectionHeader;
 
 	private String tableTitle;
 
@@ -132,32 +148,15 @@ public class AnnexureInfo implements ISaveForm{
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
-	public Supplier<Map<ColumnInfo<?>, Object>> getSupplier() {
-		return rowInitSupplier;
-	}
-
-	public void setSupplier(Supplier<Map<ColumnInfo<?>, Object>> supplier) {
-		this.rowInitSupplier = supplier;
-	}
-
 	public void areaSelect (Map<ColumnInfo<?>, Object> row, 
 			ColumnInfo<?> col,
 			SelectEvent<?, ?> event){
 		
 	}
-
-	private Supplier<Map<ColumnInfo<?>, Object>> rowInitSupplier;
 	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
 		return createDetailRow(columnInfos, null);
 	}
 
-	protected Map<ColumnInfo<?>, Object> createEmptyRow(){
-		return rowInitSupplier != null?rowInitSupplier.get():new HashMap<>();
-		
-	}
-	
-	
-	
 	@SuppressWarnings("unchecked")
 	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos,
 			Map<ColumnInfo<?>, Object> rowDataInits) {
@@ -200,6 +199,13 @@ public class AnnexureInfo implements ISaveForm{
 		getRows().add(rowDataInits);
 		return rowDataInits;
 	}
+	
+	
+	
+	protected Map<ColumnInfo<?>, Object> createEmptyRow(){
+		return rowInitSupplier != null?rowInitSupplier.get():new HashMap<>();
+		
+	}
 
 	/**
 	 * @return the columnInfos
@@ -227,6 +233,17 @@ public class AnnexureInfo implements ISaveForm{
 	 */
 	public AnnexureInfo getSubAnnexure() {
 		return subAnnexure;
+	}
+
+	/**
+	 * @return the subSectionHeader
+	 */
+	public String getSubSectionHeader() {
+		return subSectionHeader;
+	}
+
+	public Supplier<Map<ColumnInfo<?>, Object>> getSupplier() {
+		return rowInitSupplier;
 	}
 
 	/**
@@ -285,28 +302,28 @@ public class AnnexureInfo implements ISaveForm{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	/**
 	 * @param columnInfos the columnInfos to set
 	 */
 	public void setColumnInfos(List<ColumnInfo<?>> columnInfos) {
 		this.columnInfos = columnInfos;
 	}
-
+	
 	/**
 	 * @param rows the rows to set
 	 */
 	public void setRows(List<Map<ColumnInfo<?>, Object>> rows) {
 		this.rows = rows;
 	}
-	
+
 	/**
 	 * @param sectionHeader the sectionHeader to set
 	 */
 	public void setSectionHeader(String sectionHeader) {
 		this.sectionHeader = sectionHeader;
 	}
-	
+
 	/**
 	 * @param showAddButton the showAddButton to set
 	 */
@@ -320,13 +337,25 @@ public class AnnexureInfo implements ISaveForm{
 	public void setShowTotal(boolean showTotal) {
 		this.showTotal = showTotal;
 	}
-
+	
 	/**
 	 * @param subAnnexure the subAnnexure to set
 	 */
 	public void setSubAnnexure(AnnexureInfo subAnnexure) {
 		this.subAnnexure = subAnnexure;
 	}
+	
+	/**
+	 * @param subSectionHeader the subSectionHeader to set
+	 */
+	public void setSubSectionHeader(String subSectionHeader) {
+		this.subSectionHeader = subSectionHeader;
+	}
+
+	public void setSupplier(Supplier<Map<ColumnInfo<?>, Object>> supplier) {
+		this.rowInitSupplier = supplier;
+	}
+
 
 	/**
 	 * @param tableTitle the tableTitle to set
@@ -334,14 +363,14 @@ public class AnnexureInfo implements ISaveForm{
 	public void setTableTitle(String tableTitle) {
 		this.tableTitle = tableTitle;
 	}
-	
+
 	/**
 	 * @param totalRow the totalRow to set
 	 */
 	public void setTotalRow(Map<ColumnInfo<?>, Object> totalRow) {
 		this.totalRow = totalRow;
 	}
-	
+
 	public void uploadFile(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, UploadEvent event) {
 		UploadData uploadInfoObj = (UploadData) row.get(col);
 		uploadInfoObj.setFileName(event.getMedia().getName());
@@ -353,34 +382,5 @@ public class AnnexureInfo implements ISaveForm{
 		}
 
 		BindUtils.postNotifyChange(row.get(col), "fileName");
-	}
-
-	public static Integer getIntegerValue(Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, ColumnInfo<?> colInfo) {
-		
-		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
-			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
-			return cellData.getValue();
-		}
-		
-		return null;
-	}
-
-
-	public static Integer getIntegerValue(AnnexureInfo cetTvetOneLineInput, ColumnInfo<?> col) {
-		return AnnexureInfo.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
-	}
-
-	/**
-	 * @return the subSectionHeader
-	 */
-	public String getSubSectionHeader() {
-		return subSectionHeader;
-	}
-
-	/**
-	 * @param subSectionHeader the subSectionHeader to set
-	 */
-	public void setSubSectionHeader(String subSectionHeader) {
-		this.subSectionHeader = subSectionHeader;
 	}
 }

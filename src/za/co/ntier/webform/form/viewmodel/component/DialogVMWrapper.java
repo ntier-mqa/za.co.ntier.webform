@@ -26,13 +26,23 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
 		BindUtils.postNotifyChange(this.getComponent(), "visible");
 	}
 
+	@Command("closeDialogAndOpenList")
+    public void closeDialogAndOpenList() {
+        // Close the modal via the bound component's 'visible' property
+        if (getComponent() != null) {
+            getComponent().setVisible(false);
+            BindUtils.postNotifyChange(null, null, getComponent(), "visible");
+        }
+        DiscretionaryGrantsApplicationProgramVM.showAppList();
+    }
+
+
 	/**
 	 * @return the moreInfo
 	 */
 	public String getMoreInfo() {
 		return moreInfo;
 	}
-
 
 	@Command
 	@NotifyChange("visible")
@@ -45,6 +55,8 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
 			BindUtils.postNotifyChange(this, "moreInfo");
 		}	
 	}
+	
+	 
 
 	/**
 	 * @param moreInfo the moreInfo to set
@@ -52,17 +64,5 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
 	public void setMoreInfo(String moreInfo) {
 		this.moreInfo = moreInfo;
 	}
-	
-	 
-
-	@Command("closeDialogAndOpenList")
-    public void closeDialogAndOpenList() {
-        // Close the modal via the bound component's 'visible' property
-        if (getComponent() != null) {
-            getComponent().setVisible(false);
-            BindUtils.postNotifyChange(null, null, getComponent(), "visible");
-        }
-        DiscretionaryGrantsApplicationProgramVM.showAppList();
-    }
 
 }

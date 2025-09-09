@@ -14,9 +14,12 @@ import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramV
 public class CetTvetVMWrapper extends ProgramVMWrapper<CetTvetProgram>{
 	
 
-    private CetTvetProgram program;
     private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
+    private CetTvetProgram program;
 
+    public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM() { return applicationProgramVM; }
+
+    public CetTvetProgram getProgram() { return program; }
     @Init
     public void init(
         @ExecutionArgParam("program") CetTvetProgram program,
@@ -25,7 +28,4 @@ public class CetTvetVMWrapper extends ProgramVMWrapper<CetTvetProgram>{
         this.program = program;
         this.applicationProgramVM = appVM;
     }
-
-    public CetTvetProgram getProgram() { return program; }
-    public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM() { return applicationProgramVM; }
 }

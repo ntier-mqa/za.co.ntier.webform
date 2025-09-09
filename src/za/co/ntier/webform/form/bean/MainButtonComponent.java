@@ -6,12 +6,12 @@ import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramV
 
 public class MainButtonComponent {
 	private	DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
-	private	TabType tabType;
-	private Tabbox tab;
-
-
 	private boolean continueDisabled; // defaults to false
 	private boolean submitDisabled;   // defaults to false
+
+
+	private Tabbox tab;
+	private	TabType tabType;
 
 
 
@@ -21,36 +21,12 @@ public class MainButtonComponent {
 		this.tabType = tabType;
 		this.setTab(tab);
 	}
-	public boolean isContinueDisabled() { return continueDisabled; }
-	public void setContinueDisabled(boolean continueDisabled) { this.continueDisabled = continueDisabled; }
-
-	public boolean isSubmitDisabled() { return submitDisabled; }
-	public void setSubmitDisabled(boolean submitDisabled) { this.submitDisabled = submitDisabled; }
 	/**
 	 * @return the applicationProgramVM
 	 */
 	public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM() {
 		return applicationProgramVM;
 	}
-	/**
-	 * @param applicationProgramVM the applicationProgramVM to set
-	 */
-	public void setApplicationProgramVM(DiscretionaryGrantsApplicationProgramVM applicationProgramVM) {
-		this.applicationProgramVM = applicationProgramVM;
-	}
-	/**
-	 * @return the tabType
-	 */
-	public TabType getTabType() {
-		return tabType;
-	}
-	/**
-	 * @param tabType the tabType to set
-	 */
-	public void setTabType(TabType tabType) {
-		this.tabType = tabType;
-	}
-
 	/**
 	 * @return the tab
 	 */
@@ -59,9 +35,33 @@ public class MainButtonComponent {
 	}
 
 	/**
+	 * @return the tabType
+	 */
+	public TabType getTabType() {
+		return tabType;
+	}
+	public boolean isContinueDisabled() { return continueDisabled; }
+	public boolean isSubmitDisabled() { return submitDisabled; }
+	/**
+	 * @param applicationProgramVM the applicationProgramVM to set
+	 */
+	public void setApplicationProgramVM(DiscretionaryGrantsApplicationProgramVM applicationProgramVM) {
+		this.applicationProgramVM = applicationProgramVM;
+	}
+	public void setContinueDisabled(boolean continueDisabled) { this.continueDisabled = continueDisabled; }
+	public void setSubmitDisabled(boolean submitDisabled) { this.submitDisabled = submitDisabled; }
+
+	/**
 	 * @param tab the tab to set
 	 */
 	public void setTab(Tabbox tab) {
 		this.tab = tab;
+	}
+
+	/**
+	 * @param tabType the tabType to set
+	 */
+	public void setTabType(TabType tabType) {
+		this.tabType = tabType;
 	}
 }

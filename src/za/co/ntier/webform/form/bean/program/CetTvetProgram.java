@@ -37,10 +37,12 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	private AddressInfo addressInfo;
 
 	private List<AnnexureInfo> annexureInfos;
+	private X_ZZ_Application_Form applicationForm;
+
 	private MenuContextInfo menuContextInfo;
 
+	
 	private List<LearnerInputInfo> tradeInfo;
-
 	
 	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
 		this.setMenuContextInfo(menuContextInfo);
@@ -228,10 +230,43 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		addressInfo = new AddressInfo(menuContextInfo.getProgramType(), false);
 	}
 	
+	public AddressInfo getAddressInfo() {
+		return addressInfo;
+	}
+	
+	/**
+	 * @return the annexureInfos
+	 */
+	public List<AnnexureInfo> getAnnexureInfos() {
+		return annexureInfos;
+	}
+	
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+	
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
+	}
+
+	public List<LearnerInputInfo> getTradeInfo() {
+		return tradeInfo;
+	}
+
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+		if (addressInfo != null) {
+			addressInfo.initComponent(applicationForm);
+		}
+	}
+
 	public X_ZZAnnexure loadInitRowAnnexure(AnnexureInfo annexure, List<ColumnInfo<?>> cols, String title, String rowTitle) {
 		return loadInitRowAnnexure(annexure, cols, title, rowTitle, null);
 	}
-	
+
 	public X_ZZAnnexure loadInitRowAnnexure(AnnexureInfo annexure, List<ColumnInfo<?>> cols, String title, String rowTitle, List<String> twoTitleValue) {
 		X_ZZAnnexure annexureDao = null;
 		
@@ -284,29 +319,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		
 		return annexureDao;
 	}
-	
-	public void loadInitRowSubAnnex(X_ZZAnnexure parent, AnnexureInfo subAnnex, List<ColumnInfo<?>> cols) {
-		List<X_ZZSubAnnex> subAnnexs = null;
-		if (parent != null) {
-			Query subAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZAnnexure_ID), null);
-			subAnnexQuery.setParameters(parent.getZZAnnexure_ID());
-			subAnnexs = subAnnexQuery.list();
-		}
-		
-		loadInitRowSubAnnex(subAnnexs, subAnnex, cols);
-	}
-	
-	public void loadInitRowSubAnnex(X_ZZ_Application_Form parent, AnnexureInfo subAnnex, List<ColumnInfo<?>> cols) {
-		List<X_ZZSubAnnex> subAnnexs = null;
-		if (parent != null) {
-			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID), null);
-			directSubAnnexQuery.setParameters(applicationForm.getZZ_Application_Form_ID());
-			subAnnexs = directSubAnnexQuery.list();
-		}
-		
-		loadInitRowSubAnnex(subAnnexs, subAnnex, cols);
-	}
-	
+
 	public void loadInitRowSubAnnex(List<X_ZZSubAnnex> subAnnexs, AnnexureInfo subAnnexure, List<ColumnInfo<?>> cols) {
 		if (subAnnexs == null || subAnnexs.size() == 0) {
 			subAnnexure.createDetailRow(cols);
@@ -376,25 +389,28 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		}
 	}
 
-	public AddressInfo getAddressInfo() {
-		return addressInfo;
+	public void loadInitRowSubAnnex(X_ZZ_Application_Form parent, AnnexureInfo subAnnex, List<ColumnInfo<?>> cols) {
+		List<X_ZZSubAnnex> subAnnexs = null;
+		if (parent != null) {
+			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID), null);
+			directSubAnnexQuery.setParameters(applicationForm.getZZ_Application_Form_ID());
+			subAnnexs = directSubAnnexQuery.list();
+		}
+		
+		loadInitRowSubAnnex(subAnnexs, subAnnex, cols);
 	}
-
-	/**
-	 * @return the annexureInfos
-	 */
-	public List<AnnexureInfo> getAnnexureInfos() {
-		return annexureInfos;
+	
+	public void loadInitRowSubAnnex(X_ZZAnnexure parent, AnnexureInfo subAnnex, List<ColumnInfo<?>> cols) {
+		List<X_ZZSubAnnex> subAnnexs = null;
+		if (parent != null) {
+			Query subAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZAnnexure_ID), null);
+			subAnnexQuery.setParameters(parent.getZZAnnexure_ID());
+			subAnnexs = subAnnexQuery.list();
+		}
+		
+		loadInitRowSubAnnex(subAnnexs, subAnnex, cols);
 	}
-
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
-
-	public List<LearnerInputInfo> getTradeInfo() {
-		return tradeInfo;
-	}
-
+	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
@@ -417,15 +433,8 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		if (addressInfo != null)
 			addressInfo.saveForm(trxName, applicationForm);
 	}
-
-	private X_ZZ_Application_Form applicationForm;
 	
-	public void initComponent(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
-		if (addressInfo != null) {
-			addressInfo.initComponent(applicationForm);
-		}
-	}
+	
 	
 	public int saveMultilineInput(String trxName, X_ZZ_Application_Form applicationForm, X_ZZAnnexure zzAnnexure, CetTvetMultiLineInput cetTvetOneLineInput) {
 		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cetTvetOneLineInput);
@@ -525,8 +534,6 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		return total;
 	}
 	
-	
-	
 	public Entry<X_ZZAnnexure, Integer> saveOnelineInput(String trxName, X_ZZ_Application_Form applicationForm, CetTvetOneLineInput cetTvetOneLineInput) {
 		ColumnInfo<?> colBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colNoBeneficiariesTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colTotalBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colTotalNoBeneficiariesTitle, cetTvetOneLineInput);
@@ -583,33 +590,26 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	public void setAddressInfo(AddressInfo addressInfo) {
 		this.addressInfo = addressInfo;
 	}
-	
+
 	/**
 	 * @param annexureInfos the annexureInfos to set
 	 */
 	public void setAnnexureInfos(List<AnnexureInfo> annexureInfos) {
 		this.annexureInfos = annexureInfos;
 	}
-
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
 	
-	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
-		this.tradeInfo = tradeInfo;
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
 	/**
 	 * @param applicationForm the applicationForm to set
 	 */
 	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
+	}
+
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
+	}
+
+	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
+		this.tradeInfo = tradeInfo;
 	}
 }

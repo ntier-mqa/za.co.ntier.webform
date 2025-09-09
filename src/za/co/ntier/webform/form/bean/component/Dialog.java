@@ -2,10 +2,10 @@ package za.co.ntier.webform.form.bean.component;
 
 public class Dialog {
 	private String documentNo;
+	private String msg;
 	private int recordId;
 	private int tableId;
 	private String title;
-	private String msg;
 	private boolean visible = false;
 	public Dialog(String title, String msg, int tableId, int recordId, String documentNo, boolean visible) {
 		this.tableId = tableId;
@@ -20,6 +20,12 @@ public class Dialog {
 	 */
 	public String getDocumentNo() {
 		return documentNo;
+	}
+	/**
+	 * @return the msg
+	 */
+	public String getMsg() {
+		return msg;
 	}
 	/**
 	 * @return the recordId
@@ -52,6 +58,12 @@ public class Dialog {
 		this.documentNo = documentNo;
 	}
 	/**
+	 * @param msg the msg to set
+	 */
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	/**
 	 * @param recordId the recordId to set
 	 */
 	public void setRecordId(int recordId) {
@@ -74,17 +86,5 @@ public class Dialog {
 	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-	}
-	/**
-	 * @return the msg
-	 */
-	public String getMsg() {
-		return msg;
-	}
-	/**
-	 * @param msg the msg to set
-	 */
-	public void setMsg(String msg) {
-		this.msg = msg;
 	}
 }

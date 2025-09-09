@@ -21,9 +21,9 @@ import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramV
 public class AnnexureTableVMWrapper {
 	private AnnexureInfo annexureInfo;
 
-	private boolean isSubAnnexure = false;
+	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
 	
-	 private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
+	 private boolean isSubAnnexure = false;
 
 	@Command
 	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure) {
@@ -59,6 +59,12 @@ public class AnnexureTableVMWrapper {
 		this.applicationProgramVM = appVM;
 	}
 	
+	/**
+	 * @return the isSubAnnexure
+	 */
+	public boolean isSubAnnexure() {
+		return isSubAnnexure;
+	}
 	/** Notify parent VM that program completeness may have changed */
     @Command
     public void notifyProgramComplete() { // <-- ADD
@@ -66,12 +72,6 @@ public class AnnexureTableVMWrapper {
             BindUtils.postNotifyChange(null, null, applicationProgramVM, "programComplete");
         }
     }
-	/**
-	 * @return the isSubAnnexure
-	 */
-	public boolean isSubAnnexure() {
-		return isSubAnnexure;
-	}
 
 	@Command
 	public void numChange(@BindingParam("annexure") AnnexureInfo annexure,

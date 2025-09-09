@@ -1,11 +1,8 @@
 package za.co.ntier.webform.form.bean.component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import za.co.ntier.webform.form.bean.DataType;
 
 public class CetTvetOneLineInput extends AnnexureInfo{
 	public static final String colDisciplineTitle = "Discipline Applying For";

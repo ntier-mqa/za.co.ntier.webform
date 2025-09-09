@@ -16,11 +16,6 @@ public enum ProgramType {
 		this.programType = programType;
 	}
 
-	public boolean isDev_Program() {
-		return ProgramType.DEV_PROGRAM.equals(this);
-	}
-	
-
 	public String getZulPath() {
 		switch (this) {
 			case CANDIDACY:
@@ -59,9 +54,14 @@ public enum ProgramType {
 				return null;
 		}
 	}
+	
 
 	public boolean isCetTvet() {
 		return ProgramType.CET.equals(this) || ProgramType.TVET.equals(this) || ProgramType.TVET_BURSARS.equals(this);
+	}
+
+	public boolean isDev_Program() {
+		return ProgramType.DEV_PROGRAM.equals(this);
 	}
 
 	public boolean isShowAddressOrgField() {

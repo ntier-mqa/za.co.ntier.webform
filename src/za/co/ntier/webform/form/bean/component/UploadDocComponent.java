@@ -20,10 +20,19 @@ import za.co.ntier.webform.model.X_ZZDocumentUploadFile;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class UploadDocComponent implements ISaveForm {
+	private X_ZZ_Application_Form applicationForm;
+
 	private UploadInput uploadDoc;
 
 	public UploadDocComponent(MenuContextInfo menuContextInfo) {
 		uploadDoc = UploadInput.getUploadInput(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID());
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
 	}
 
 	/**
@@ -32,7 +41,22 @@ public class UploadDocComponent implements ISaveForm {
 	public UploadInput getUploadDoc() {
 		return uploadDoc;
 	}
-
+	
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+		if(applicationForm != null) {
+			Query uploadDocQuery = MTable.get(X_ZZDocumentUploadFile.Table_ID).createQuery(
+					String.format("%s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID)
+					, null);
+			
+			List<X_ZZDocumentUploadFile> documentUploadFiles = uploadDocQuery.
+					setOrderBy(X_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID).
+					setParameters(applicationForm.getZZ_Application_Form_ID()).list();
+		}
+		
+		
+	}
+	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
@@ -64,42 +88,18 @@ public class UploadDocComponent implements ISaveForm {
 		
 	}
 
-	private X_ZZ_Application_Form applicationForm;
-	
-	public void initComponent(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
-		if(applicationForm != null) {
-			Query uploadDocQuery = MTable.get(X_ZZDocumentUploadFile.Table_ID).createQuery(
-					String.format("%s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID)
-					, null);
-			
-			List<X_ZZDocumentUploadFile> documentUploadFiles = uploadDocQuery.
-					setOrderBy(X_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID).
-					setParameters(applicationForm.getZZ_Application_Form_ID()).list();
-		}
-		
-		
-	}
-	
-	/**
-	 * @param uploadDoc the uploadDoc to set
-	 */
-	public void setUploadDoc(UploadInput uploadDoc) {
-		this.uploadDoc = uploadDoc;
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
 	/**
 	 * @param applicationForm the applicationForm to set
 	 */
 	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
+	}
+
+	/**
+	 * @param uploadDoc the uploadDoc to set
+	 */
+	public void setUploadDoc(UploadInput uploadDoc) {
+		this.uploadDoc = uploadDoc;
 	}
 
 }
