@@ -185,7 +185,7 @@ public class ApplicationsListVM {
 
 		int found = DB.getSQLValueEx(null, sql,  String.valueOf(programId));
 		boolean ok = (found > 0); // 1 if exists; -1/0 means no match
-		editableCache.put(appId, true);
-		return true;
+		editableCache.put(appId, ok);
+		return ok;
 	}
 }

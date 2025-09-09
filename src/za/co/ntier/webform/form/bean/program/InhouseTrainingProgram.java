@@ -1,7 +1,5 @@
 package za.co.ntier.webform.form.bean.program;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import za.co.ntier.webform.form.IProgram;
@@ -13,8 +11,7 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class InhouseTrainingProgram implements ISaveForm, IProgram{
 	private ProjectInput inhouse;
 
-	public InhouseTrainingProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public InhouseTrainingProgram() {
 		this.setInhouse(ProjectInput.getProject(
 				List.of(ColumnInfo.getColLabel(ProjectInput.colNameProgrammeLabel),
 						ColumnInfo.getColPositiveNumber(ProjectInput.colNoLearnersLable)
@@ -31,7 +28,7 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		ProjectInput.saveProjectInput(trxName, applicationForm, inhouse);
 		
 	}

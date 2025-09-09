@@ -4,18 +4,27 @@ import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class OrganisationSizeInfo implements ISaveForm {
+	private X_ZZ_Application_Form applicationForm;
 	/**
 	 * case no submitted WSP treat as false
 	 */
 	private boolean isSubmittedWSP;
+
 	private Integer numOfEmployer;
 
 	private String numOfEmployerTitle = "Number of Employees";
 
-	private String submittedWSPTitle = "Has the organisation submitted the WSP/ATR In previous financial year?";
+	private String submittedWSPTitle = "Has the organisation submitted the WSP/ATR In previous financial year?";;
 
 	public OrganisationSizeInfo() {
-	};
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
 
 	/**
 	 * @return the numOfEmployer
@@ -43,26 +52,7 @@ public class OrganisationSizeInfo implements ISaveForm {
 	public String getSubmittedWSPTitle() {
 		return submittedWSPTitle;
 	}
-
-	/**
-	 * @return the isSubmittedWSP
-	 */
-	public boolean isSubmittedWSP() {
-		return isSubmittedWSP;
-	}
-
-	private X_ZZ_Application_Form applicationForm;
 	
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		if(getNumOfEmployer() == null) {
-			applicationForm.set_ValueOfColumn(X_ZZ_Application_Form.COLUMNNAME_NumberEmployees, null);
-		}else
-			applicationForm.setNumberEmployees(getNumOfEmployer());
-		applicationForm.setZZ_HasWSPSubmited(isSubmittedWSP());
-		
-	}
-
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
 		if (applicationForm != null) {
@@ -74,6 +64,30 @@ public class OrganisationSizeInfo implements ISaveForm {
 		}
 		
 	}
+
+	/**
+	 * @return the isSubmittedWSP
+	 */
+	public boolean isSubmittedWSP() {
+		return isSubmittedWSP;
+	}
+	@Override
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		if(getNumOfEmployer() == null) {
+			applicationForm.set_ValueOfColumn(X_ZZ_Application_Form.COLUMNNAME_NumberEmployees, null);
+		}else
+			applicationForm.setNumberEmployees(getNumOfEmployer());
+		applicationForm.setZZ_HasWSPSubmited(isSubmittedWSP());
+		
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+	}
+
 	/**
 	 * @param numOfEmployer the numOfEmployer to set
 	 */
@@ -103,19 +117,5 @@ public class OrganisationSizeInfo implements ISaveForm {
 	 */
 	public void setSubmittedWSPTitle(String submittedWSPTitle) {
 		this.submittedWSPTitle = submittedWSPTitle;
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
-	/**
-	 * @param applicationForm the applicationForm to set
-	 */
-	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
 	}
 }

@@ -1,8 +1,5 @@
 package za.co.ntier.webform.form.bean.program;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -15,12 +12,13 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class WorkExperienceProgram implements ISaveForm, IProgram {
 
+	private X_ZZ_Application_Form applicationForm;
 	private ProgramInput disciplines;
 	private Integer noOfLearners;
+
 	private AddressInfo vacationContact;
 
-	public WorkExperienceProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public WorkExperienceProgram(MenuContextInfo menuContextInfo) {
 		setVacationContact(new AddressInfo(AddressType.VACATION));
 		this.setDisciplines(ProgramInput.getDisciplines(
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
@@ -29,6 +27,13 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 										List of disciplines supported for practical training which the number of learners applying
 						should be based on
 										"""));
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
 	}
 
 	/**
@@ -41,16 +46,22 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	public Integer getNoOfLearners() {
 		return noOfLearners;
 	}
-
+	
 	/**
 	 * @return the vacationContact
 	 */
 	public AddressInfo getVacationContact() {
 		return vacationContact;
 	}
-
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.setApplicationForm(applicationForm);
+		if (vacationContact != null) {
+			vacationContact.initComponent(applicationForm);
+		}
+	}
+	
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		this.setApplicationForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
 		ProgramInput.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
@@ -60,15 +71,14 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 			applicationForm.setZZTotalNumberApplied(noOfLearners);
 		applicationForm.saveEx(trxName);
 	}
-	
-	private X_ZZ_Application_Form applicationForm;
-	public void initComponent(X_ZZ_Application_Form applicationForm) {
-		this.setApplicationForm(applicationForm);
-		if (vacationContact != null) {
-			vacationContact.initComponent(applicationForm);
-		}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
-	
+
 	/**
 	 * @param disciplines the disciplines to set
 	 */
@@ -85,20 +95,6 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	 */
 	public void setVacationContact(AddressInfo vacationContact) {
 		this.vacationContact = vacationContact;
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
-	/**
-	 * @param applicationForm the applicationForm to set
-	 */
-	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
 	}
 
 }

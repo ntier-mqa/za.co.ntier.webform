@@ -1,13 +1,13 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 
@@ -24,13 +24,11 @@ public class ProjectInput extends AnnexureInfo {
 	public static final String colTotalLearnersLabel = "Total No. of Learners Applied For";
 	
 	
-	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos) {
 		return ProjectInput.getProject(null, initColumnInfos);
 	}
 
-	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String rowTitle) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String rowTitle) {
 		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
 		columnInfos.add(ColumnInfo.getColPostal(ProgramInput.colPostalCodeLabel));
 		columnInfos.add(
@@ -44,15 +42,8 @@ public class ProjectInput extends AnnexureInfo {
 	 * @param secctionTitle
 	 * @param initColumnInfos
 	 * @return
-	 * @throws NoSuchMethodException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
 	 */
-	public static ProjectInput getProject(String secctionTitle, List<ColumnInfo<?>> initColumnInfos)
-			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException {
+	public static ProjectInput getProject(String secctionTitle, List<ColumnInfo<?>> initColumnInfos){
 		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
 		columnInfos.add(ColumnInfo.getColPostal(ProgramInput.colPostalCodeLabel));
 		columnInfos.add(
@@ -61,7 +52,7 @@ public class ProjectInput extends AnnexureInfo {
 
 	}
 	
-	public static void saveProjectInput(String trxName, X_ZZ_Application_Form applicationForm, ProjectInput projectInput) throws IOException {
+	public static void saveProjectInput(String trxName, X_ZZ_Application_Form applicationForm, ProjectInput projectInput) {
 		ColumnInfo<?> colNameProgramme = AnnexureInfo.lookupColByTitle(ProjectInput.colNameProgrammeLabel, projectInput);
 		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoEmployedLabel, projectInput);
 		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoUnEmployedLabel, projectInput);
@@ -118,7 +109,12 @@ public class ProjectInput extends AnnexureInfo {
 		
 		UploadData wpaUploadInfo = (UploadData)row.get(wpaColl);		
 		if (wpaUploadInfo != null && StringUtils.isNoneEmpty(wpaUploadInfo.getFullPath())) {
-			learnersApplied.setZZ_WPAFile(Files.readAllBytes(Paths.get(wpaUploadInfo.getFullPath()))); 
+			try {
+				learnersApplied.setZZ_WPAFile(Files.readAllBytes(Paths.get(wpaUploadInfo.getFullPath())));
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new ApplicationException(e.getMessage(), e);
+			} 
 		}
 		
 		if (hasData) {

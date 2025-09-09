@@ -28,6 +28,8 @@ public class AddressInfo implements ISaveForm {
 
 	private String addressLineTitle = "Street Name and Number";
 
+	private X_ZZ_Application_Form applicationForm;
+
 	private Collection<MCity> areas;
 
 	private MCity areaSelected;
@@ -37,13 +39,15 @@ public class AddressInfo implements ISaveForm {
 	private String email;
 
 	private String emailTitle = "E-mail";
+	private X_ZZ_FormContact formContact;
 
 	private boolean isAlternate;
-	private String landlineNumber;
 
+	private String landlineNumber;
 	private String landlineNumberTitle = "Alternative Number";
 
 	private KeyNamePair localMunicipalitySelected;
+
 	private String mobileNumber;
 
 	private String mobileNumberTitle = "Tel Number";
@@ -55,11 +59,11 @@ public class AddressInfo implements ISaveForm {
 	private String orgName;
 
 	private String orgNameTitle = "Organisation Name";
-
+	
 	private String postAddress;
 
 	private String postAddressTitle = "Post Address";
-	
+
 	private String postalCode;
 
 	private String postalCodeTitle = "Postal Code";
@@ -77,23 +81,21 @@ public class AddressInfo implements ISaveForm {
 	private String representativeDesignationTitle = "Designation";
 
 	private String siteName;
-
+	
 	private String siteNameTitle = "Site Name";
 
-	private X_ZZ_Application_Form applicationForm;
-	
 	public AddressInfo(AddressType addressCategory) {
 		this.addressCategory = addressCategory;
 		init();
 	}
-
+	
 	public AddressInfo(ProgramType programType, boolean isAlternate) {
 		this(isAlternate ? AddressType.MAIN_ALTER : AddressType.MAIN);
 		this.isAlternate = isAlternate;
 		this.programType = programType;
 		init();
 	}
-	
+
 	public AddressType getAddressCategory() {
 		return this.addressCategory;
 	}
@@ -114,6 +116,13 @@ public class AddressInfo implements ISaveForm {
 
 	public String getAddressTitle() {
 		return addressCategory.getAddressTitle(programType, isAlternate);
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
 	}
 
 	/**
@@ -290,16 +299,20 @@ public class AddressInfo implements ISaveForm {
 	public String getSiteName() {
 		return siteName;
 	}
-
+	
 	/**
 	 * @return the siteNameTitle
 	 */
 	public String getSiteNameTitle() {
 		return siteNameTitle;
 	}
-
-	private X_ZZ_FormContact formContact;
 	
+	protected void init() {
+		areas = MasterUtil.getInitCities();
+		provinces = MasterUtil.getRegions();
+		
+	} 
+
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
 		if (applicationForm != null) {
@@ -350,12 +363,6 @@ public class AddressInfo implements ISaveForm {
 		
 		 
 	}
-	
-	protected void init() {
-		areas = MasterUtil.getInitCities();
-		provinces = MasterUtil.getRegions();
-		
-	} 
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
@@ -405,6 +412,13 @@ public class AddressInfo implements ISaveForm {
 	 */
 	public void setAddressLineTitle(String addressLineTitle) {
 		this.addressLineTitle = addressLineTitle;
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
 
 	/**
@@ -691,19 +705,5 @@ public class AddressInfo implements ISaveForm {
 
 	public boolean showSiteName() {
 		return (programType != null && programType.isShowAddressSiteField()) || addressCategory == AddressType.VACATION;
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
-	/**
-	 * @param applicationForm the applicationForm to set
-	 */
-	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
 	}
 }

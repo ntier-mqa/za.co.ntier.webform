@@ -1,8 +1,5 @@
 package za.co.ntier.webform.form.bean.program;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -13,8 +10,7 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 public class InternshipProgram extends CandidacyProgram implements ISaveForm, IProgram {
 	private ProgramInput trade;
 
-	public InternshipProgram(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public InternshipProgram(MenuContextInfo menuContextInfo) {
 		super(menuContextInfo);
 		this.trade = ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
 
@@ -33,7 +29,7 @@ public class InternshipProgram extends CandidacyProgram implements ISaveForm, IP
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		super.saveForm(trxName, applicationForm);
 		ProgramInput.saveFormDisciplines(trxName, applicationForm, trade, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
 	}

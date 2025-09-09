@@ -1,12 +1,15 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.util.Env;
 
 import za.co.ntier.webform.form.ISaveForm;
@@ -17,11 +20,19 @@ import za.co.ntier.webform.model.X_ZZDocumentUploadFile;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class UploadDocComponent implements ISaveForm {
+	private X_ZZ_Application_Form applicationForm;
+
 	private UploadInput uploadDoc;
 
-	public UploadDocComponent(MenuContextInfo menuContextInfo) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		setUploadDoc(UploadInput.getUploadInput(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()));
+	public UploadDocComponent(MenuContextInfo menuContextInfo) {
+		uploadDoc = UploadInput.getUploadInput(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID());
+	}
+
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
 	}
 
 	/**
@@ -30,9 +41,24 @@ public class UploadDocComponent implements ISaveForm {
 	public UploadInput getUploadDoc() {
 		return uploadDoc;
 	}
-
+	
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+		if(applicationForm != null) {
+			Query uploadDocQuery = MTable.get(X_ZZDocumentUploadFile.Table_ID).createQuery(
+					String.format("%s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID)
+					, null);
+			
+			List<X_ZZDocumentUploadFile> documentUploadFiles = uploadDocQuery.
+					setOrderBy(X_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID).
+					setParameters(applicationForm.getZZ_Application_Form_ID()).list();
+		}
+		
+		
+	}
+	
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
 			ColumnInfo<?> uploadDefCol = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
 			ColumnInfo<?> uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload, uploadDoc);
@@ -48,13 +74,25 @@ public class UploadDocComponent implements ISaveForm {
 			UploadData uploadData = (UploadData) uploadRow.get(uploadFileCol);
 			
 			if (uploadData != null && StringUtils.isNoneEmpty(uploadData.getFullPath())) {
-				docUploadedFile.setZZDocumentUploaded(Files.readAllBytes(Paths.get(uploadData.getFullPath())));
+				try {
+					docUploadedFile.setZZDocumentUploaded(Files.readAllBytes(Paths.get(uploadData.getFullPath())));
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new ApplicationException(e.getMessage(), e);
+				}
 				docUploadedFile.setName(uploadData.getFileName());
 				docUploadedFile.saveEx(trxName);
 			}
 			
 		}
 		
+	}
+
+	/**
+	 * @param applicationForm the applicationForm to set
+	 */
+	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
 	}
 
 	/**

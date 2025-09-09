@@ -1,7 +1,5 @@
 package za.co.ntier.webform.form.bean.program;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import za.co.ntier.webform.form.IProgram;
@@ -13,8 +11,7 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class ArtisanRPLProgram implements ISaveForm, IProgram {
 	private ProjectInput allLearners;
 
-	public ArtisanRPLProgram() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public ArtisanRPLProgram() {
 		allLearners = ProjectInput.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel),
 				ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel),
 				ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)));
@@ -28,7 +25,7 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) throws IOException {
+	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		ProjectInput.saveProjectInput(trxName, applicationForm, allLearners);
 		
 	}

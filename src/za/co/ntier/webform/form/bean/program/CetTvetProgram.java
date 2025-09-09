@@ -1,14 +1,13 @@
 package za.co.ntier.webform.form.bean.program;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -27,153 +26,200 @@ import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
+import za.co.ntier.webform.model.I_ZZAnnexure;
 import za.co.ntier.webform.model.I_ZZSubAnnex;
-import za.co.ntier.webform.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class CetTvetProgram implements ISaveForm, IProgram {
 	private AddressInfo addressInfo;
 
 	private List<AnnexureInfo> annexureInfos;
+	private X_ZZ_Application_Form applicationForm;
+
 	private MenuContextInfo menuContextInfo;
 
+	
 	private List<LearnerInputInfo> tradeInfo;
-
-	@SuppressWarnings("unchecked")
-	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	
+	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
 		this.setMenuContextInfo(menuContextInfo);
 		this.applicationForm = applicationForm;
 		
 		annexureInfos = new ArrayList<>();
 		AnnexureInfo annexure = null;
 		AnnexureInfo subAnnexure = null;
+		List<ColumnInfo<?>> cols = null;
+		Supplier<Map<ColumnInfo<?>, Object>> supplierRowSubAnnex = () -> new AnnexureRow<X_ZZSubAnnex>();
+		Supplier<Map<ColumnInfo<?>, Object>> supplierRowAnnexure = () -> new AnnexureRow<X_ZZAnnexure>();
+		String title = null;
+		String rowTitle = null;
+		X_ZZAnnexure annexureDap = null;
+		
 		if (menuContextInfo.getProgramType() == ProgramType.CET) {
-			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
-					"ANNEXURE A (Applicable to CET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle)),
-					"CET learners funded to access AET Programmes");
-
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
+			title = "ANNEXURE A (Applicable to CET Colleges)";
+			rowTitle = "CET learners funded to access AET Programmes";
+			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
+					title, cols, supplierRowAnnexure);
+			
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle);
 			annexureInfos.add(annexure);
 
-			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
-					"ANNEXURE B (Applicable to CET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
-							ColumnInfo.getColText(CetTvetOneLineInput.colDisciplineTitle)),
-					"Number of TVET Colleges and HEI graduates that entered CET Internships");
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
+					ColumnInfo.getColText(CetTvetOneLineInput.colDisciplineTitle));
+			title = "ANNEXURE B (Applicable to CET Colleges)";
+			rowTitle = "Number of TVET Colleges and HEI graduates that entered CET Internships";
+			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
+					title, cols, supplierRowAnnexure);
 
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle);
 			annexureInfos.add(annexure);
 
-			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
-					"ANNEXURE C (Applicable to CET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle)),
-					"CET Managers receiving training on curriculum related studies");
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
+			title = "ANNEXURE C (Applicable to CET Colleges)";
+			rowTitle = "CET Managers receiving training on curriculum related studies";
+			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
+					title, cols, supplierRowAnnexure);
 
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle);
+			annexureInfos.add(annexure);
+			
+			cols = List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle),
+					ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoManagersTitle));
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoManagersTitle))
-					);
+					cols,
+					supplierRowSubAnnex);
+			
+			loadInitRowSubAnnex(annexureDap, subAnnexure, cols);
 			annexure.setSubAnnexure(subAnnexure);
+			
 
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
+			title = "ANNEXURE D (Applicable to CET Colleges)";
+			rowTitle = "Number of CET Colleges lecturers awarded skills development programmes";
+			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
+					title, cols, supplierRowAnnexure);
+
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle);
 			annexureInfos.add(annexure);
-
-			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
-					"ANNEXURE D (Applicable to CET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle)),
-					"Number of CET Colleges lecturers awarded skills development programmes");
-
+			
+			cols = List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle));
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle)));
+					cols,
+					supplierRowSubAnnex);
+			
+			loadInitRowSubAnnex(annexureDap, subAnnexure, cols);
 			annexure.setSubAnnexure(subAnnexure);
-
-			annexureInfos.add(annexure);
+			
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET) {
-			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
-					"ANNEXURE E (Applicable to TVET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
-							ColumnInfo.getColText(CetTvetOneLineInput.colDisciplineTitle)),
-					"Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)");
+			
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
+					ColumnInfo.getColText(CetTvetOneLineInput.colDisciplineTitle));
+			title = "ANNEXURE E (Applicable to TVET Colleges)";
+			rowTitle = "Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)";
+			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
+					title, cols, supplierRowAnnexure);
 
-			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colFieldStudyTitle),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners)));
-			annexure.setSubAnnexure(subAnnexure);
-
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle);
 			annexureInfos.add(annexure);
-
-			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
-					"ANNEXURE F  (Applicable to TVET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colProgrammeApplyTitle)),
-					"TVET Managers receiving training on curriculum related studies");
-
+			
+			cols = List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colFieldStudyTitle),
+					ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners));
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoManagersTitle)));
+					cols,
+					supplierRowSubAnnex);
+			
+			loadInitRowSubAnnex(annexureDap, subAnnexure, cols);
 			annexure.setSubAnnexure(subAnnexure);
+			
 
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colProgrammeApplyTitle));
+			title = "ANNEXURE F  (Applicable to TVET Colleges)";
+			rowTitle = "TVET Managers receiving training on curriculum related studies";
+			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
+					title, cols, supplierRowAnnexure);
+			
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle);
 			annexureInfos.add(annexure);
+			
+			cols = List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colRequestedProgrammeTitle),
+					ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoManagersTitle));
+			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(null,
+					cols,
+					supplierRowSubAnnex);
+			
+			loadInitRowSubAnnex(annexureDap, subAnnexure, cols);
+			annexure.setSubAnnexure(subAnnexure);
+			
 
-			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
-					"ANNEXURE G (Applicable to TVET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colTotalNoBeneficiariesTitle)),
-					"Number of TVET students requiring Work Integrated Learning to complete their work integrated learning placements (WIL)");
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colTotalNoBeneficiariesTitle));
+			title = "ANNEXURE G (Applicable to TVET Colleges)";
+			rowTitle = "Number of TVET students requiring Work Integrated Learning to complete their work integrated learning placements (WIL)";
+			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
+					title, cols, supplierRowAnnexure);
 
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle);
+			annexureInfos.add(annexure);
+			
+			cols = List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colFieldStudyTitle),
+					ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners));
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(
 					"Please supply the list of possible fields of study for this WIL",
-					List.of(ColumnInfo.getColText(CetTvetMultiLineInput.colFieldStudyTitle),
-							ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners)));
+					cols,
+					supplierRowSubAnnex);
+			
+			loadInitRowSubAnnex(annexureDap, subAnnexure, cols);
 			annexure.setSubAnnexure(subAnnexure);
 
-			annexureInfos.add(annexure);
-
-			annexure = CetTvetOneLineInput.getAnnexureInfoOneLine(
-					"ANNEXURE H (Applicable to TVET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colTotalNoBeneficiariesTitle)),
-					"TVET Lecturers to be awarded bursaries to further their studies");
-
-			annexureInfos.add(annexure);
-
-			List<String> twoTitleFirstRow = List.of("Occupational Health and Safety", "Other, specify");
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colTotalNoBeneficiariesTitle));
+			title = "ANNEXURE H (Applicable to TVET Colleges)";
+			rowTitle = "TVET Lecturers to be awarded bursaries to further their studies";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
-					"ANNEXURE I (Applicable to TVET Colleges)",
-					List.of(ColumnInfo.getColLabel("Name of the Intervention"),
-							ColumnInfo.getColTwoValue("Total Number of beneficiaries applying for"),
-							ColumnInfo.getColTwoTitle("Programme Applied for")),
-					"Lecturers exposed to industry through skills programmes", twoTitleFirstRow);
+					title, cols, supplierRowAnnexure);
 
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle);
+			annexureInfos.add(annexure);
+
+			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
+					ColumnInfo.getColTwoValue("Total Number of beneficiaries applying for"),
+					ColumnInfo.getColTwoTitle("Programme Applied for"));
+			List<String> twoTitleFirstRow = List.of("Occupational Health and Safety", "Other, specify");
+			title =  "ANNEXURE I (Applicable to TVET Colleges)";
+			rowTitle = "Lecturers exposed to industry through skills programmes";
+			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
+					title, cols, supplierRowAnnexure);
+			
+			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle, twoTitleFirstRow);
 			annexureInfos.add(annexure);
 
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS) {
 			List<Object> rObjs = MasterUtil.queryLearnerInputInfos(
 					menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
 					X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
-
-			tradeInfo = (List<LearnerInputInfo>) rObjs.get(0);
+			
+			@SuppressWarnings("unchecked")
+			List<LearnerInputInfo> tradeObj = (List<LearnerInputInfo>) rObjs.get(0);
+			tradeInfo = tradeObj;
 			if (tradeInfo != null) {
 
-				List<ColumnInfo<?>> cols = List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
+				cols = List.of(ColumnInfo.getColList("Field of Study", tradeInfo),
 						ColumnInfo.getColPositiveNumber(CetTvetMultiLineInput.colNoLearners));
 				
-				List<AnnexureRow<X_ZZSubAnnex>> initRows = null;
-				if (applicationForm != null)		
-					initRows = loadInitRow(cols, true);
+				annexure = CetTvetMultiLineInput.getCetTvetMultiLineInput("TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",cols, supplierRowSubAnnex);
 				
-				Supplier<Map<ColumnInfo<?>, Object>> supplierRowSubAnnex = () -> new AnnexureRow<X_ZZSubAnnex>();
-				
-				annexure = CetTvetMultiLineInput.getCetTvetMultiLineInput("TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION",cols, initRows, supplierRowSubAnnex);
+				loadInitRowSubAnnex(applicationForm, annexure, cols);
 				
 				annexure.getTotalRow().put(annexure.getColumnInfos().get(0), "Total Number of beneficiaries applying for");
 
@@ -184,70 +230,24 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		addressInfo = new AddressInfo(menuContextInfo.getProgramType(), false);
 	}
 	
-	public List<AnnexureRow<X_ZZSubAnnex>> loadInitRow(List<ColumnInfo<?>> cols, boolean isDirectSubAnnex) {
-		Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID), null);
-		directSubAnnexQuery.setParameters(applicationForm.getZZ_Application_Form_ID());
-		List<X_ZZSubAnnex> subAnnexs = directSubAnnexQuery.list();
-		
-		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cols);
-		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cols);
-		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colFieldStudyTitle, cols);
-		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colNoLearners, cols);
-		
-		List<AnnexureRow<X_ZZSubAnnex>> rowDataInits = new ArrayList<>();
-		
-		for (X_ZZSubAnnex subAnnex : subAnnexs) {
-			AnnexureRow<X_ZZSubAnnex> rowInit = new AnnexureRow<>();
-			rowInit.setData(subAnnex);
-			if(colTrade != null) {
-				if(subAnnex.getZZ_Trade_ID() == 0)
-					rowInit.put(colTrade, null);
-				else {
-					for (Object tradeObj : colTrade.getDataProvider()) {
-						LearnerInputInfo trade = (LearnerInputInfo)tradeObj;
-						if (trade.getLearnerInputID() == subAnnex.getZZ_Trade_ID()){
-							rowInit.put(colTrade, trade);
-							break;
-						}
-						
-					}
-					
-				}
-			}
-			
-			if (colFieldStudy != null && colFieldStudy.getDataType() != DataType.List) {
-				rowInit.put(colFieldStudy, subAnnex.getZZFieldStudy());
-			}
-			
-			if (colRequestedProgramme != null) {
-				rowInit.put(colFieldStudy, subAnnex.getZZRequestedProgramme());
-			}
-			
-			if (colNoLearners != null) {
-				if (subAnnex.get_Value(I_ZZSubAnnex.COLUMNNAME_ZZLearners) == null)
-					rowInit.put(colNoLearners, new IntData(rowInit, null));
-				else
-					rowInit.put(colNoLearners, new IntData(rowInit, subAnnex.getZZLearners()));
-
-			}
-			
-			rowDataInits.add(rowInit);
-		}
-		
-		return rowDataInits;
-	}
-
 	public AddressInfo getAddressInfo() {
 		return addressInfo;
 	}
-
+	
 	/**
 	 * @return the annexureInfos
 	 */
 	public List<AnnexureInfo> getAnnexureInfos() {
 		return annexureInfos;
 	}
-
+	
+	/**
+	 * @return the applicationForm
+	 */
+	public X_ZZ_Application_Form getApplicationForm() {
+		return applicationForm;
+	}
+	
 	public MenuContextInfo getMenuContextInfo() {
 		return menuContextInfo;
 	}
@@ -256,6 +256,161 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		return tradeInfo;
 	}
 
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		this.applicationForm = applicationForm;
+		if (addressInfo != null) {
+			addressInfo.initComponent(applicationForm);
+		}
+	}
+
+	public X_ZZAnnexure loadInitRowAnnexure(AnnexureInfo annexure, List<ColumnInfo<?>> cols, String title, String rowTitle) {
+		return loadInitRowAnnexure(annexure, cols, title, rowTitle, null);
+	}
+
+	public X_ZZAnnexure loadInitRowAnnexure(AnnexureInfo annexure, List<ColumnInfo<?>> cols, String title, String rowTitle, List<String> twoTitleValue) {
+		X_ZZAnnexure annexureDao = null;
+		
+		if (applicationForm != null) {
+			Query annexureQuery = MTable.get(X_ZZAnnexure.Table_ID).createQuery(String.format("%s = ? AND %s = ?", 
+					I_ZZAnnexure.COLUMNNAME_ZZ_Application_Form_ID, I_ZZAnnexure.COLUMNNAME_Name), null);
+			annexureQuery.setParameters(applicationForm.getZZ_Application_Form_ID(), title);
+			annexureQuery.setOrderBy(X_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);
+			annexureDao = annexureQuery.first();
+		}
+		
+		@SuppressWarnings("unchecked")
+		AnnexureRow<X_ZZAnnexure> newRow = (AnnexureRow<X_ZZAnnexure>)annexure.createDetailRow(cols);
+		
+		if (title != null && cols.get(0).getDataType() == DataType.Label) {
+			newRow.put(cols.get(0), rowTitle);
+		}
+		
+		ColumnInfo<?> colTwoValue = AnnexureInfo.lookupColByDataType(DataType.TwoTitles, cols);
+		if (twoTitleValue != null && colTwoValue != null) { 
+			newRow.put(colTwoValue, twoTitleValue);
+		}
+		
+		if (annexureDao == null) {
+			return null;
+		}
+		
+		ColumnInfo<?> colBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colNoBeneficiariesTitle, cols);
+		ColumnInfo<?> colTotalBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colTotalNoBeneficiariesTitle, cols);
+		ColumnInfo<?> colDiscipline = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colDisciplineTitle, cols);
+		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgrammeApplyTitle, cols);
+		
+		newRow.setData(annexureDao);
+		
+		if (colBeneficiaries != null && annexureDao.getZZBeneficiaries() > 0) {
+			((IntData)newRow.get(colBeneficiaries)).setValue(annexureDao.getZZBeneficiaries());
+		}
+		
+		if (colTotalBeneficiaries != null && annexureDao.getZZTotalBeneficiaries() > 0) {
+			((IntData)newRow.get(colTotalBeneficiaries)).setValue(annexureDao.getZZTotalBeneficiaries());
+		}
+		
+		if (colDiscipline != null) {
+			newRow.put(colDiscipline, annexureDao.getZZDiscipline());
+		}
+		
+		if (colProgramme != null && annexureDao.getZZProgramme() > 0) {
+			((IntData)newRow.get(colProgramme)).setValue(annexureDao.getZZProgramme());
+		}
+		
+		return annexureDao;
+	}
+
+	public void loadInitRowSubAnnex(List<X_ZZSubAnnex> subAnnexs, AnnexureInfo subAnnexure, List<ColumnInfo<?>> cols) {
+		if (subAnnexs == null || subAnnexs.size() == 0) {
+			subAnnexure.createDetailRow(cols);
+			return;
+		}
+
+		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cols);
+		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cols);
+		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colFieldStudyTitle, cols);
+		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colNoLearners, cols);
+		ColumnInfo<?> colNoManager = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colNoManagersTitle, cols);
+		ColumnInfo<?> colNoBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colNoBeneficiariesTitle, cols);
+		ColumnInfo<?> colProgrammeApply = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgrammeApplyTitle, cols);
+		ColumnInfo<?> colTotalNoBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colTotalNoBeneficiariesTitle, cols);
+		
+		for (X_ZZSubAnnex subAnnex : subAnnexs) {
+			@SuppressWarnings("unchecked")
+			AnnexureRow<X_ZZSubAnnex> newRow = (AnnexureRow<X_ZZSubAnnex>)subAnnexure.createDetailRow(cols);
+			newRow.setData(subAnnex);
+			if(colTrade != null) {
+				if(subAnnex.getZZ_Trade_ID() != 0) {
+					for (Object tradeObj : colTrade.getDataProvider()) {
+						LearnerInputInfo trade = (LearnerInputInfo)tradeObj;
+						if (trade.getLearnerInputID() == subAnnex.getZZ_Trade_ID()){
+							newRow.put(colTrade, colNoLearners);
+							break;
+						}
+						
+					}
+				}
+			}
+			
+			if (colRequestedProgramme != null) {
+				newRow.put(colRequestedProgramme, subAnnex.getZZRequestedProgramme());
+			}
+			
+			if (colFieldStudy != null && colFieldStudy.getDataType() != DataType.List) {
+				newRow.put(colFieldStudy, subAnnex.getZZFieldStudy());
+			}
+			
+			if (colNoLearners != null && subAnnex.getZZLearners() > 0) {
+				((IntData)newRow.get(colNoLearners)).setValue(subAnnex.getZZLearners());
+
+			}
+			
+			if (colNoManager != null && subAnnex.getZZManagers() > 0) {
+				((IntData)newRow.get(colNoManager)).setValue(subAnnex.getZZManagers());
+
+			}
+			
+			if (colNoBeneficiaries != null && subAnnex.getZZBeneficiaries() > 0) {
+				((IntData)newRow.get(colNoBeneficiaries)).setValue(subAnnex.getZZBeneficiaries());
+
+			}
+			
+			if (colTotalNoBeneficiaries != null && subAnnex.getZZTotalBeneficiaries() > 0) {
+				((IntData)newRow.get(colTotalNoBeneficiaries)).setValue(subAnnex.getZZTotalBeneficiaries());
+
+			}
+			
+			if (colProgrammeApply != null && subAnnex.getZZProgramme() > 0) {
+				((IntData)newRow.get(colProgrammeApply)).setValue(subAnnex.getZZProgramme());
+
+			}
+			
+			
+		}
+	}
+
+	public void loadInitRowSubAnnex(X_ZZ_Application_Form parent, AnnexureInfo subAnnex, List<ColumnInfo<?>> cols) {
+		List<X_ZZSubAnnex> subAnnexs = null;
+		if (parent != null) {
+			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID), null);
+			directSubAnnexQuery.setParameters(applicationForm.getZZ_Application_Form_ID());
+			subAnnexs = directSubAnnexQuery.list();
+		}
+		
+		loadInitRowSubAnnex(subAnnexs, subAnnex, cols);
+	}
+	
+	public void loadInitRowSubAnnex(X_ZZAnnexure parent, AnnexureInfo subAnnex, List<ColumnInfo<?>> cols) {
+		List<X_ZZSubAnnex> subAnnexs = null;
+		if (parent != null) {
+			Query subAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZAnnexure_ID), null);
+			subAnnexQuery.setParameters(parent.getZZAnnexure_ID());
+			subAnnexs = subAnnexQuery.list();
+		}
+		
+		loadInitRowSubAnnex(subAnnexs, subAnnex, cols);
+	}
+	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
@@ -278,21 +433,18 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		if (addressInfo != null)
 			addressInfo.saveForm(trxName, applicationForm);
 	}
-
-	private X_ZZ_Application_Form applicationForm;
 	
-	public void initComponent(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
-		if (addressInfo != null) {
-			addressInfo.initComponent(applicationForm);
-		}
-	}
+	
 	
 	public int saveMultilineInput(String trxName, X_ZZ_Application_Form applicationForm, X_ZZAnnexure zzAnnexure, CetTvetMultiLineInput cetTvetOneLineInput) {
 		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cetTvetOneLineInput);
 		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colRequestedProgrammeTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colFieldStudyTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colNoLearners, cetTvetOneLineInput);
+		ColumnInfo<?> colNoManager = AnnexureInfo.lookupColByTitle(CetTvetMultiLineInput.colNoManagersTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colNoBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colNoBeneficiariesTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colProgrammeApply = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgrammeApplyTitle, cetTvetOneLineInput);
+		ColumnInfo<?> colTotalNoBeneficiaries = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colTotalNoBeneficiariesTitle, cetTvetOneLineInput);
 		
 		int total = 0;
 		Integer cellData = null;
@@ -316,7 +468,35 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 				hasData = true;
 			}
 			
-			if (colFieldStudy.getDataType() != DataType.List) {
+			cellData = AnnexureInfo.getIntegerValue(row, colProgrammeApply);
+			if (cellData != null && cellData != 0) {
+				subAnnex.setZZProgramme(cellData);
+				total += cellData;
+				hasData = true;
+			}
+			
+			cellData = AnnexureInfo.getIntegerValue(row, colNoManager);
+			if (cellData != null && cellData != 0) {
+				subAnnex.setZZManagers(cellData);
+				total += cellData;
+				hasData = true;
+			}
+			
+			cellData = AnnexureInfo.getIntegerValue(row, colNoBeneficiaries);
+			if (cellData != null && cellData != 0) {
+				subAnnex.setZZBeneficiaries(cellData);
+				total += cellData;
+				hasData = true;
+			}
+			
+			cellData = AnnexureInfo.getIntegerValue(row, colTotalNoBeneficiaries);
+			if (cellData != null && cellData != 0) {
+				subAnnex.setZZTotalBeneficiaries(cellData);
+				total += cellData;
+				hasData = true;
+			}
+			
+			if (colFieldStudy != null && colFieldStudy.getDataType() != DataType.List) {
 				cellDataStr = (String)row.get(colFieldStudy);
 				if (cellDataStr != null) {
 					subAnnex.setZZFieldStudy(cellDataStr);
@@ -360,7 +540,13 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		ColumnInfo<?> colDiscipline = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colDisciplineTitle, cetTvetOneLineInput);
 		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(CetTvetOneLineInput.colProgrammeApplyTitle, cetTvetOneLineInput);
 		
-		X_ZZAnnexure annexure = new X_ZZAnnexure(Env.getCtx(), 0, trxName);
+		@SuppressWarnings("unchecked")	
+		AnnexureRow<X_ZZAnnexure> row = (AnnexureRow<X_ZZAnnexure>)cetTvetOneLineInput.getRows().get(0);
+		
+		X_ZZAnnexure annexure = row.getData();
+		if (annexure == null)
+			annexure= new X_ZZAnnexure(Env.getCtx(), 0, trxName);
+		
 		int total = 0;
 		boolean hasData = false;
 		
@@ -379,7 +565,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		}
 		
 		String cellDataStr = (String)cetTvetOneLineInput.getRows().get(0).get(colDiscipline);
-		if (cellData != null && cellData != 0) {
+		if (StringUtils.isNoneBlank(cellDataStr)) {
 			annexure.setZZDiscipline(cellDataStr);
 			hasData = true;
 		}
@@ -395,6 +581,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure.setName(cetTvetOneLineInput.getSectionHeader());
 			annexure.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
 			annexure.saveEx(trxName);
+			row.setData(annexure);
 		}
 		
 		return new AbstractMap.SimpleEntry<>(annexure, total);
@@ -403,33 +590,26 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	public void setAddressInfo(AddressInfo addressInfo) {
 		this.addressInfo = addressInfo;
 	}
-	
+
 	/**
 	 * @param annexureInfos the annexureInfos to set
 	 */
 	public void setAnnexureInfos(List<AnnexureInfo> annexureInfos) {
 		this.annexureInfos = annexureInfos;
 	}
-
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
 	
-	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
-		this.tradeInfo = tradeInfo;
-	}
-
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
-
 	/**
 	 * @param applicationForm the applicationForm to set
 	 */
 	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
+	}
+
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
+	}
+
+	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
+		this.tradeInfo = tradeInfo;
 	}
 }

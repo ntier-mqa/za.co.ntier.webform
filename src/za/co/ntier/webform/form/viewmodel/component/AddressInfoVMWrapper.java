@@ -28,16 +28,16 @@ public class AddressInfoVMWrapper {
 		this.addressInfo = addressInfo;
 	}
 
-	/**
-	 * @param addressInfo the addressInfo to set
-	 */
-	public void setAddressInfo(AddressInfo addressInfo) {
-		this.addressInfo = addressInfo;
-	}
 	@Command
     public void notifyParentCompleteness() {
         if (applicationProgramVM != null && notifyTarget != null) {
             org.zkoss.bind.BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
         }
     }
+	/**
+	 * @param addressInfo the addressInfo to set
+	 */
+	public void setAddressInfo(AddressInfo addressInfo) {
+		this.addressInfo = addressInfo;
+	}
 }

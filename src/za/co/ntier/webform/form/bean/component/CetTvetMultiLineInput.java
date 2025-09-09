@@ -1,7 +1,5 @@
 package za.co.ntier.webform.form.bean.component;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -14,27 +12,14 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 	public static final String colNoManagersTitle = "Number of managers";
 	public static final String colRequestedProgrammeTitle = "Requested Programme";
 	
-	
-	public static <T> CetTvetMultiLineInput getCetTvetMultiLineInput(String sectionHeader,
-			List<ColumnInfo<?>> columnInfos) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return getCetTvetMultiLineInput(sectionHeader, columnInfos, null, null);
-	}
 	/**
 	 * for CetTvet sub, show total but not row header
 	 *
 	 * @param sectionHeader
 	 * @param columnInfos
 	 * @return
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws NoSuchMethodException
 	 */
-	public static <T> CetTvetMultiLineInput getCetTvetMultiLineInput(String sectionHeader,
-			List<ColumnInfo<?>> columnInfos, List<AnnexureRow<T>>  initRows, Supplier<Map<ColumnInfo<?>, Object>> emptyRowSupplier) throws NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public static <T> CetTvetMultiLineInput getCetTvetMultiLineInput(String sectionHeader, List<ColumnInfo<?>> columnInfos, Supplier<Map<ColumnInfo<?>, Object>> emptyRowSupplier) {
 		
 		boolean isShowTotalLine = false;
 		for (ColumnInfo<?> col : columnInfos) {
@@ -45,22 +30,12 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 		}
 		
 		CetTvetMultiLineInput annexureInfo = AnnexureInfo.getAnnexureInfo(CetTvetMultiLineInput.class, columnInfos, isShowTotalLine);
-		annexureInfo.setSupplier(emptyRowSupplier);
 		
-		if (initRows == null || initRows.size() == 0) {
-			Map<ColumnInfo<?>, Object> row = annexureInfo.createDetailRow(columnInfos);
-			annexureInfo.getRows().add(row);
-		}else {
-			for (Map<ColumnInfo<?>, Object> initRow : initRows) {
-				Map<ColumnInfo<?>, Object> row = annexureInfo.createDetailRow(columnInfos, initRow);
-				annexureInfo.getRows().add(row);
-			}
-		}
+		annexureInfo.setSupplier(emptyRowSupplier);
 				
 		annexureInfo.setSectionHeader(sectionHeader);
 		
 		annexureInfo.setShowAddButton(true);
-		
 		
 		return annexureInfo;
 	}

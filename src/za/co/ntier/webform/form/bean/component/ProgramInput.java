@@ -1,7 +1,6 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 import org.compiere.util.Env;
@@ -32,15 +32,12 @@ public class ProgramInput extends AnnexureInfo {
 	public static final String colTradeLabel = "Trade";
 	public static final String colWPALabel = "WPA";
 	
-	public static ProgramInput getDisciplines(int programMasterDataID, String tableTitle) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public static ProgramInput getDisciplines(int programMasterDataID, String tableTitle){
 		return ProgramInput.getTradeDiscipline(false, programMasterDataID, tableTitle);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static ProgramInput getLearnership(String learnershipType, int programMasterDataID)
-			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException {
+	public static ProgramInput getLearnership(String learnershipType, int programMasterDataID){
 		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, learnershipType);
 		List<LearnerInputInfo> learnerInputInfos = (List<LearnerInputInfo>) rObjs.get(0);
 		boolean hasWPAReq = (boolean) rObjs.get(1);
@@ -65,24 +62,22 @@ public class ProgramInput extends AnnexureInfo {
 
 		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
 
-		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
+		Map<ColumnInfo<?>, Object> rowDataInits = null;
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
+			rowDataInits = new HashMap<>();
 			rowDataInits.put(columns.get(0), learnerInputInfo);
-			Map<ColumnInfo<?>, Object> newRow = programInput.createDetailRow(columns, rowDataInits);
-			programInput.getRows().add(newRow);
+			programInput.createDetailRow(columns, rowDataInits);
+			
 		}
 		return programInput;
 	}
 
-	public static ProgramInput getTrade(int programMasterDataID, String tableTitle) throws NoSuchMethodException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public static ProgramInput getTrade(int programMasterDataID, String tableTitle){
 		return ProgramInput.getTradeDiscipline(true, programMasterDataID, tableTitle);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ProgramInput getTradeDiscipline(boolean isTrade, int programMasterDataID, String tableTitle)
-			throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException {
+	private static ProgramInput getTradeDiscipline(boolean isTrade, int programMasterDataID, String tableTitle){
 		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID,
 				isTrade ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade
 						: X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
@@ -109,16 +104,17 @@ public class ProgramInput extends AnnexureInfo {
 		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
 		programInput.setTableTitle(tableTitle);
 
-		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
+		Map<ColumnInfo<?>, Object> rowDataInits = null;
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
+			rowDataInits = new HashMap<>();
 			rowDataInits.put(columns.get(0), learnerInputInfo);
-			Map<ColumnInfo<?>, Object> newRow = programInput.createDetailRow(columns, rowDataInits);
-			programInput.getRows().add(newRow);
+			programInput.createDetailRow(columns, rowDataInits);
+			
 		}
 		return programInput;
 	}
 
-	public static void saveFormDisciplines(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput disciplines, String disciplineType) throws IOException {
+	public static void saveFormDisciplines(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput disciplines, String disciplineType)  {
 		
 		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, disciplines);
 		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(colNoLearnersLabel, disciplines);
@@ -204,13 +200,23 @@ public class ProgramInput extends AnnexureInfo {
 			UploadData wpaUploadInfo = (UploadData)row.get(wpaColl);
 			
 			if (wpaUploadInfo != null && StringUtils.isNoneEmpty(wpaUploadInfo.getFullPath())) {
-				formDisciplines.setZZ_WPAFile(Files.readAllBytes(Paths.get(wpaUploadInfo.getFullPath()))); 
+				try {
+					formDisciplines.setZZ_WPAFile(Files.readAllBytes(Paths.get(wpaUploadInfo.getFullPath())));
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new ApplicationException(e.getMessage(), e);
+				} 
 			}
 			
 			UploadData accredUploadInfo = (UploadData)row.get(accredColl);
 			
 			if (accredUploadInfo != null && StringUtils.isNoneEmpty(accredUploadInfo.getFullPath())) {
-				formDisciplines.setZZ_AccredFile(Files.readAllBytes(Paths.get(accredUploadInfo.getFullPath()))); 
+				try {
+					formDisciplines.setZZ_AccredFile(Files.readAllBytes(Paths.get(accredUploadInfo.getFullPath())));
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new ApplicationException(e.getMessage(), e);
+				} 
 			}
 			
 			formDisciplines.saveEx(trxName);
@@ -222,7 +228,7 @@ public class ProgramInput extends AnnexureInfo {
 		applicationForm.saveEx(trxName);
 	}
 
-	public static void saveFormLearnership(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput learnership, String learnershipType) throws IOException {
+	public static void saveFormLearnership(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput learnership, String learnershipType) {
 		saveFormDisciplines(trxName, applicationForm, learnership, learnershipType);
 	}
 }

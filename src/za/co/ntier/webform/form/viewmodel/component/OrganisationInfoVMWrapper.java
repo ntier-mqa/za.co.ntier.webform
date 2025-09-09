@@ -12,14 +12,23 @@ import za.co.ntier.webform.form.bean.component.OrganisationInfo;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class OrganisationInfoVMWrapper {
-	private OrganisationInfo organisationInfo;
 	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
+	private OrganisationInfo organisationInfo;
 	
 
 
 
 	
 
+	public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM(){ return applicationProgramVM; }
+
+	/**
+	 * @return the organisationInfo
+	 */
+	public OrganisationInfo getOrganisationInfo() {
+		return organisationInfo;
+	}
+	
 	@Init
 	public void init(@ExecutionArgParam("organisationInfo") OrganisationInfo orgInfo,
 	        @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM) {
@@ -31,13 +40,6 @@ public class OrganisationInfoVMWrapper {
 	public void sdlNumberChange() {
 		organisationInfo.sdlNumberChange();
 	}
-	
-	/**
-	 * @return the organisationInfo
-	 */
-	public OrganisationInfo getOrganisationInfo() {
-		return organisationInfo;
-	}
 
 	/**
 	 * @param organisationInfo the organisationInfo to set
@@ -45,11 +47,9 @@ public class OrganisationInfoVMWrapper {
 	public void setOrganisationInfo(OrganisationInfo organisationInfo) {
 		this.organisationInfo = organisationInfo;
 	}
-
+	
 	@Command
 	public void uploadFile(@BindingParam("media") Media media) throws IOException {
 		organisationInfo.uploadFile(media);
 	}
-	
-	public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM(){ return applicationProgramVM; }
 }

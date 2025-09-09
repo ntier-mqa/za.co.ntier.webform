@@ -18,8 +18,7 @@ package za.co.ntier.webform.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import org.compiere.model.MTable;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ZZSubAnnex
@@ -121,6 +120,19 @@ public interface I_ZZSubAnnex
 
 	public I_ZZAnnexure getZZAnnexure() throws RuntimeException;
 
+    /** Column name ZZBeneficiaries */
+    public static final String COLUMNNAME_ZZBeneficiaries = "ZZBeneficiaries";
+
+	/** Set Number Of Beneficiaries Applying.
+	  * Number Of Beneficiaries Applying For
+	  */
+	public void setZZBeneficiaries (int ZZBeneficiaries);
+
+	/** Get Number Of Beneficiaries Applying.
+	  * Number Of Beneficiaries Applying For
+	  */
+	public int getZZBeneficiaries();
+
     /** Column name ZZFieldStudy */
     public static final String COLUMNNAME_ZZFieldStudy = "ZZFieldStudy";
 
@@ -148,6 +160,19 @@ public interface I_ZZSubAnnex
 	/** Get Number Of Managers	  */
 	public int getZZManagers();
 
+    /** Column name ZZProgramme */
+    public static final String COLUMNNAME_ZZProgramme = "ZZProgramme";
+
+	/** Set Programme Applying.
+	  * Programme Applying For
+	  */
+	public void setZZProgramme (int ZZProgramme);
+
+	/** Get Programme Applying.
+	  * Programme Applying For
+	  */
+	public int getZZProgramme();
+
     /** Column name ZZRequestedProgramme */
     public static final String COLUMNNAME_ZZRequestedProgramme = "ZZRequestedProgramme";
 
@@ -174,6 +199,19 @@ public interface I_ZZSubAnnex
 
 	/** Get ZZSubAnnex_UU	  */
 	public String getZZSubAnnex_UU();
+
+    /** Column name ZZTotalBeneficiaries */
+    public static final String COLUMNNAME_ZZTotalBeneficiaries = "ZZTotalBeneficiaries";
+
+	/** Set Total Number Beneficiaries.
+	  * Total Number of beneficiaries applying for
+	  */
+	public void setZZTotalBeneficiaries (int ZZTotalBeneficiaries);
+
+	/** Get Total Number Beneficiaries.
+	  * Total Number of beneficiaries applying for
+	  */
+	public int getZZTotalBeneficiaries();
 
     /** Column name ZZ_Application_Form_ID */
     public static final String COLUMNNAME_ZZ_Application_Form_ID = "ZZ_Application_Form_ID";
