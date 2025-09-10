@@ -14,9 +14,12 @@
     <div style="display:flex;flex-direction:column;padding-bottom:15px;justify-content:space-between;height:100%">
       <div style="display:flex;flex-direction:column;padding:10px;overflow-y:auto;">
         <label value="@load(vmDialog.component.msg)"/>
+        
+        <nodom if = "${vmDialog.component.recordId ne null}">
         <label value="@load(('Your Application Reference No is:' += vmDialog.component.documentNo))"/>
         <label value="Please note this for future queries"/>
         <label value="@load(vmDialog.moreInfo)"/>
+        </nodom>
       </div>
 
       <div sclass="modal-footer" style="flex-grow:0">  

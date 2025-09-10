@@ -3,6 +3,7 @@ package za.co.ntier.webform.form.bean.component;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MBPartner;
 import org.compiere.model.Query;
@@ -17,6 +18,7 @@ import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 /**
@@ -50,8 +52,11 @@ public class OrganisationInfo implements ISaveForm {
 
 	private String siteSDLNumberTitle = "Site SDL Number (if applicable)";
 	
-	public OrganisationInfo(MenuContextInfo menuContextInfo) {
+	private DiscretionaryGrantsApplicationProgramVM discretionaryGrantsApplicationProgramVM;
+	
+	public OrganisationInfo(MenuContextInfo menuContextInfo, DiscretionaryGrantsApplicationProgramVM discretionaryGrantsApplicationProgramVM) {
 		this.menuContextInfo = menuContextInfo;
+		this.discretionaryGrantsApplicationProgramVM = discretionaryGrantsApplicationProgramVM;
 		postAddressInfo = new AddressInfo(AddressType.POSTAL);
 		physicalAddressInfo = new AddressInfo(AddressType.PHYSICAL);
 		//orgSizeInfo = new OrganisationSizeInfo();
@@ -308,8 +313,16 @@ public class OrganisationInfo implements ISaveForm {
 	
 
 	public void sdlNumberChange() {
-		X_C_BPartner bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
-				String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null).setParameters(sdlNumber).first();
+		X_C_BPartner bPartner = null;
+		if (StringUtils.isNoneBlank(sdlNumber)) {
+			if(discretionaryGrantsApplicationProgramVM.checkExistAppForm(sdlNumber)) {
+				return;
+			}
+			
+			bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
+					String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null).setParameters(sdlNumber).first();
+		}
+		
 
 		if (bPartner != null) {
 			orgName = bPartner.getName();
@@ -362,6 +375,9 @@ public class OrganisationInfo implements ISaveForm {
 
 	public void setCetTvetCollegeSelected(X_C_BPartner cetTvetCollegeSelected) {
 		this.cetTvetCollegeSelected = cetTvetCollegeSelected;
+		if (cetTvetCollegeSelected != null) {
+			discretionaryGrantsApplicationProgramVM.checkExistAppForm(cetTvetCollegeSelected);
+		}
 	}
 
 	/**

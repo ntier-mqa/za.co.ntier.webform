@@ -18,8 +18,7 @@ package za.co.ntier.webform.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import org.compiere.model.MTable;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ZZ_Program_Master_Data
@@ -203,6 +202,15 @@ public interface I_ZZ_Program_Master_Data
 	  */
 	public int getUpdatedBy();
 
+    /** Column name ZZSupportInfo */
+    public static final String COLUMNNAME_ZZSupportInfo = "ZZSupportInfo";
+
+	/** Set Support Info	  */
+	public void setZZSupportInfo (String ZZSupportInfo);
+
+	/** Get Support Info	  */
+	public String getZZSupportInfo();
+
     /** Column name ZZ_Criteria */
     public static final String COLUMNNAME_ZZ_Criteria = "ZZ_Criteria";
 
@@ -211,6 +219,24 @@ public interface I_ZZ_Program_Master_Data
 
 	/** Get Criteria	  */
 	public String getZZ_Criteria();
+
+    /** Column name ZZ_Date_Approved */
+    public static final String COLUMNNAME_ZZ_Date_Approved = "ZZ_Date_Approved";
+
+	/** Set Date Approved	  */
+	public void setZZ_Date_Approved (Timestamp ZZ_Date_Approved);
+
+	/** Get Date Approved	  */
+	public Timestamp getZZ_Date_Approved();
+
+    /** Column name ZZ_Date_Submitted */
+    public static final String COLUMNNAME_ZZ_Date_Submitted = "ZZ_Date_Submitted";
+
+	/** Set Date Submitted	  */
+	public void setZZ_Date_Submitted (Timestamp ZZ_Date_Submitted);
+
+	/** Get Date Submitted	  */
+	public Timestamp getZZ_Date_Submitted();
 
     /** Column name ZZ_DocAction */
     public static final String COLUMNNAME_ZZ_DocAction = "ZZ_DocAction";
@@ -247,4 +273,15 @@ public interface I_ZZ_Program_Master_Data
 
 	/** Get ZZ_Program_Master_Data_UU	  */
 	public String getZZ_Program_Master_Data_UU();
+
+    /** Column name ZZ_Snr_Mgr_LP_ID */
+    public static final String COLUMNNAME_ZZ_Snr_Mgr_LP_ID = "ZZ_Snr_Mgr_LP_ID";
+
+	/** Set Snr Mgr LP	  */
+	public void setZZ_Snr_Mgr_LP_ID (int ZZ_Snr_Mgr_LP_ID);
+
+	/** Get Snr Mgr LP	  */
+	public int getZZ_Snr_Mgr_LP_ID();
+
+	public org.compiere.model.I_AD_User getZZ_Snr_Mgr_LP() throws RuntimeException;
 }

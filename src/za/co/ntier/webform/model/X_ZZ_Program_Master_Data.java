@@ -18,12 +18,9 @@
 package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZ_Program_Master_Data
  *  @author iDempiere (generated)
@@ -35,7 +32,7 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250903L;
+	private static final long serialVersionUID = 20250910L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Master_Data (Properties ctx, int ZZ_Program_Master_Data_ID, String trxName)
@@ -43,7 +40,6 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
       super (ctx, ZZ_Program_Master_Data_ID, trxName);
       /** if (ZZ_Program_Master_Data_ID == 0)
         {
-			setName (null);
 			setZZ_Program_Master_Data_ID (0);
         } */
     }
@@ -54,7 +50,6 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
       super (ctx, ZZ_Program_Master_Data_ID, trxName, virtualColumns);
       /** if (ZZ_Program_Master_Data_ID == 0)
         {
-			setName (null);
 			setZZ_Program_Master_Data_ID (0);
         } */
     }
@@ -65,7 +60,6 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
       super (ctx, ZZ_Program_Master_Data_UU, trxName);
       /** if (ZZ_Program_Master_Data_UU == null)
         {
-			setName (null);
 			setZZ_Program_Master_Data_ID (0);
         } */
     }
@@ -76,7 +70,6 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
       super (ctx, ZZ_Program_Master_Data_UU, trxName, virtualColumns);
       /** if (ZZ_Program_Master_Data_UU == null)
         {
-			setName (null);
 			setZZ_Program_Master_Data_ID (0);
         } */
     }
@@ -256,6 +249,21 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
 		return (String)get_Value(COLUMNNAME_Title);
 	}
 
+	/** Set Support Info.
+		@param ZZSupportInfo Support Info
+	*/
+	public void setZZSupportInfo (String ZZSupportInfo)
+	{
+		set_Value (COLUMNNAME_ZZSupportInfo, ZZSupportInfo);
+	}
+
+	/** Get Support Info.
+		@return Support Info	  */
+	public String getZZSupportInfo()
+	{
+		return (String)get_Value(COLUMNNAME_ZZSupportInfo);
+	}
+
 	/** Levy paying = LP */
 	public static final String ZZ_CRITERIA_LevyPaying = "LP";
 	/** Organization in MQA sector = OS */
@@ -278,6 +286,38 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
 		return (String)get_Value(COLUMNNAME_ZZ_Criteria);
 	}
 
+	/** Set Date Approved.
+		@param ZZ_Date_Approved Date Approved
+	*/
+	public void setZZ_Date_Approved (Timestamp ZZ_Date_Approved)
+	{
+		set_Value (COLUMNNAME_ZZ_Date_Approved, ZZ_Date_Approved);
+	}
+
+	/** Get Date Approved.
+		@return Date Approved	  */
+	public Timestamp getZZ_Date_Approved()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_ZZ_Date_Approved);
+	}
+
+	/** Set Date Submitted.
+		@param ZZ_Date_Submitted Date Submitted
+	*/
+	public void setZZ_Date_Submitted (Timestamp ZZ_Date_Submitted)
+	{
+		set_Value (COLUMNNAME_ZZ_Date_Submitted, ZZ_Date_Submitted);
+	}
+
+	/** Get Date Submitted.
+		@return Date Submitted	  */
+	public Timestamp getZZ_Date_Submitted()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_ZZ_Date_Submitted);
+	}
+
+	/** Exec Approve = AE */
+	public static final String ZZ_DOCACTION_ExecApprove = "AE";
 	/** Approve/Do Not Approve = AP */
 	public static final String ZZ_DOCACTION_ApproveDoNotApprove = "AP";
 	/** Complete = CO */
@@ -290,6 +330,10 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
 	public static final String ZZ_DOCACTION_SubmitToManagerFinanceConsumables = "SC";
 	/** Submit to SDL Finance Mgr = SD */
 	public static final String ZZ_DOCACTION_SubmitToSDLFinanceMgr = "SD";
+	/** Submit to Snr Mgr LP = SL */
+	public static final String ZZ_DOCACTION_SubmitToSnrMgrLP = "SL";
+	/** Submit to Recommender = SR */
+	public static final String ZZ_DOCACTION_SubmitToRecommender = "SR";
 	/** Submit to Line Manager = SU */
 	public static final String ZZ_DOCACTION_SubmitToLineManager = "SU";
 	/** Set Document Action.
@@ -392,5 +436,32 @@ public class X_ZZ_Program_Master_Data extends PO implements I_ZZ_Program_Master_
 	public String getZZ_Program_Master_Data_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ZZ_Program_Master_Data_UU);
+	}
+
+	public org.compiere.model.I_AD_User getZZ_Snr_Mgr_LP() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getZZ_Snr_Mgr_LP_ID(), get_TrxName());
+	}
+
+	/** Set Snr Mgr LP.
+		@param ZZ_Snr_Mgr_LP_ID Snr Mgr LP
+	*/
+	public void setZZ_Snr_Mgr_LP_ID (int ZZ_Snr_Mgr_LP_ID)
+	{
+		if (ZZ_Snr_Mgr_LP_ID < 1)
+			set_Value (COLUMNNAME_ZZ_Snr_Mgr_LP_ID, null);
+		else
+			set_Value (COLUMNNAME_ZZ_Snr_Mgr_LP_ID, Integer.valueOf(ZZ_Snr_Mgr_LP_ID));
+	}
+
+	/** Get Snr Mgr LP.
+		@return Snr Mgr LP	  */
+	public int getZZ_Snr_Mgr_LP_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZ_Snr_Mgr_LP_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

@@ -1,10 +1,12 @@
 package za.co.ntier.webform.form.viewmodel;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -16,7 +18,10 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.Query;
+import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.DependsOn;
@@ -55,6 +60,7 @@ import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
+import za.co.ntier.webform.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class DiscretionaryGrantsApplicationProgramVM {
@@ -274,8 +280,9 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (StringUtils.isNotBlank(menuContextInfo.getApplicationFormUU())) {
 			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), menuContextInfo.getApplicationFormUU(), null);
 			if (!applicationForm.isActive()) {
-				throw new AdempiereException("document is deleted");
+				showDialog("Deleted Application Form", "This application form is deleted");
 			}
+			
 		}
 		
 		employerDeclarationInfo = new EmployerDeclarationInfo();
@@ -283,7 +290,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 		formInfo = new FormInfo(menuContextInfo);
 
-		organisationInfo = new OrganisationInfo(menuContextInfo);
+		organisationInfo = new OrganisationInfo(menuContextInfo, this);
 		organisationInfo.initComponent(applicationForm);
 
 		if (programType.isCetTvet()) {
@@ -538,6 +545,31 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		tab.setSelectedIndex(currentIndex - 1);
 	}
 	
+	public boolean checkExistAppForm(String sdnNo){
+		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Program_Master_Data_ID, I_ZZ_Application_Form.COLUMNNAME_ZZ_SDL_No);
+		Query existAppFormQuery = MTable.get(I_ZZ_Application_Form.Table_ID).createQuery(existAppFormWhere, null);
+		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), sdnNo).list();
+		if (exitsAppForms.size() > 0) {
+			showDialog("Exist Application Form", 
+					String.format("An application for %s already exists. It was created by User: %s", sdnNo, exitsAppForms.get(0).getUserName()));
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean checkExistAppForm(X_C_BPartner bparter){
+		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Program_Master_Data_ID, I_ZZ_Application_Form.COLUMNNAME_C_BPartner_ID);
+		Query existAppFormQuery = MTable.get(I_ZZ_Application_Form.Table_ID).createQuery(existAppFormWhere, null);
+		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), bparter.getC_BPartner_ID()).list();
+		if (exitsAppForms.size() > 0) {
+			showDialog("Exist Application Form", 
+					String.format("An application for %s already exists. It was created by User: %s", bparter.getName(), exitsAppForms.get(0).getUserName()));
+			return true;
+		}
+		return false;
+	}
+	
+	
 	public void saveAppForm(boolean isSave, String title, String msg) throws IOException {
 		String trxName = null;
 		
@@ -582,6 +614,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		program.saveForm(trxName, applicationForm);
 		
+		if(!isSave) {
+			applicationForm.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));
+		}
+		
 		applicationForm.saveEx();
 		
 		recordId = applicationForm.getZZ_Application_Form_ID();
@@ -589,7 +625,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		setDocumentNo(applicationForm.getDocumentNo());
 		
 		// sent email
-		showDialog(title, msg);
+		showSubmitedDialog(title, msg);
 		if (!isSave)
 			sentEmail();
 	}
@@ -723,13 +759,23 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 
 		protected void showDialog(String title, String msg) {
+			Dialog dialog = new Dialog(title, msg);
+			showDialog(dialog);
+		}
+		
+		protected void showSubmitedDialog(String title, String msg) {
+			Dialog dialog = new Dialog(title, msg, tableId, recordId, applicationForm.getDocumentNo());
+			showDialog(dialog);
+		}
+		
+		protected void showDialog(Dialog dialog) {
 			ClassLoader cl = Thread.currentThread().getContextClassLoader();
 			// Set the context class loader to this bundle's class loader to ensure that
 			// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
 			// used in ZUL files can be found.
 			String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");
 			Map<String, Object> args = new HashMap<>();
-			args.put(ComponentVMWrapper.ComponentKey, new Dialog(title, msg, tableId, recordId, documentNo, true));
+			args.put(ComponentVMWrapper.ComponentKey, dialog);
 			
 			Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
 			try {

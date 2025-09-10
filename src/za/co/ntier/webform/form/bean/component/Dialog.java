@@ -3,13 +3,21 @@ package za.co.ntier.webform.form.bean.component;
 public class Dialog {
 	private String documentNo;
 	private String msg;
-	private int recordId;
-	private int tableId;
+	private Integer recordId;
+	private Integer tableId;
 	private String title;
 	private boolean visible = false;
-	public Dialog(String title, String msg, int tableId, int recordId, String documentNo, boolean visible) {
-		this.tableId = tableId;
-		this.recordId = recordId;
+	public Dialog(String title, String msg) {
+		this(title, msg, null, null, null, true);
+	}
+	
+	public Dialog(String title, String msg, Integer tableId, Integer recordId, String documentNo) {
+		this(title, msg, tableId, recordId, documentNo, true);
+	}
+	
+	private Dialog(String title, String msg, Integer tableId, Integer recordId, String documentNo, boolean visible) {
+		this.setTableId(tableId);
+		this.setRecordId(recordId);
 		this.visible = visible;
 		this.title = title;
 		this.setMsg(msg);
@@ -27,18 +35,7 @@ public class Dialog {
 	public String getMsg() {
 		return msg;
 	}
-	/**
-	 * @return the recordId
-	 */
-	public int getRecordId() {
-		return recordId;
-	}
-	/**
-	 * @return the tableId
-	 */
-	public int getTableId() {
-		return tableId;
-	}
+	
 	/**
 	 * @return the title
 	 */
@@ -64,18 +61,6 @@ public class Dialog {
 		this.msg = msg;
 	}
 	/**
-	 * @param recordId the recordId to set
-	 */
-	public void setRecordId(int recordId) {
-		this.recordId = recordId;
-	}
-	/**
-	 * @param tableId the tableId to set
-	 */
-	public void setTableId(int tableId) {
-		this.tableId = tableId;
-	}
-	/**
 	 * @param title the title to set
 	 */
 	public void setTitle(String title) {
@@ -86,5 +71,29 @@ public class Dialog {
 	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+	/**
+	 * @return the recordId
+	 */
+	public Integer getRecordId() {
+		return recordId;
+	}
+	/**
+	 * @param recordId the recordId to set
+	 */
+	public void setRecordId(Integer recordId) {
+		this.recordId = recordId;
+	}
+	/**
+	 * @return the tableId
+	 */
+	public Integer getTableId() {
+		return tableId;
+	}
+	/**
+	 * @param tableId the tableId to set
+	 */
+	public void setTableId(Integer tableId) {
+		this.tableId = tableId;
 	}
 }
