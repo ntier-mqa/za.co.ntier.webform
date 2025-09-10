@@ -838,13 +838,17 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		tab.setSelectedIndex(currentIndex - 1);
 	}
 	
-	public boolean checkExistAppForm(String sdnNo){
-		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Program_Master_Data_ID, I_ZZ_Application_Form.COLUMNNAME_ZZ_SDL_No);
+	public boolean checkExistAppForm(String registrationNumber){
+		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, I_ZZ_Application_Form.COLUMNNAME_ZZ_Org_Reg_No);
 		Query existAppFormQuery = MTable.get(I_ZZ_Application_Form.Table_ID).createQuery(existAppFormWhere, null);
-		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), sdnNo).list();
+		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true)
+				.setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), registrationNumber)
+				.list();
 		if (exitsAppForms.size() > 0) {
 			showDialog("Exist Application Form", 
-					String.format("An application for %s already exists. It was created by User: %s", sdnNo, exitsAppForms.get(0).getUserName()));
+					String.format("An application for %s already exists. It was created by User: %s at %s", registrationNumber, 
+					exitsAppForms.get(0).getUserName(), 
+					exitsAppForms.get(0).getCreated().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS).format(dtf)));
 			return true;
 		}
 		return false;

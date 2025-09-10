@@ -315,10 +315,6 @@ public class OrganisationInfo implements ISaveForm {
 	public void sdlNumberChange() {
 		X_C_BPartner bPartner = null;
 		if (StringUtils.isNoneBlank(sdlNumber)) {
-			if(discretionaryGrantsApplicationProgramVM.checkExistAppForm(sdlNumber)) {
-				return;
-			}
-			
 			bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
 					String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null).setParameters(sdlNumber).first();
 		}
@@ -343,6 +339,10 @@ public class OrganisationInfo implements ISaveForm {
 
 
 			bPartnerId = bPartner.getC_BPartner_ID();
+			
+			if(discretionaryGrantsApplicationProgramVM.checkExistAppForm(bPartner)) {
+				return;
+			}
 		} else {
 			bPartnerId = 0;
 		}
@@ -422,6 +422,9 @@ public class OrganisationInfo implements ISaveForm {
 	 */
 	public void setOrgRegistrationNumber(String orgRegistrationNumber) {
 		this.orgRegistrationNumber = orgRegistrationNumber;
+		if (!menuContextInfo.getProgramType().isCetTvet() && StringUtils.isNoneBlank(orgRegistrationNumber)) {
+			discretionaryGrantsApplicationProgramVM.checkExistAppForm(orgRegistrationNumber);
+		}
 	}
 
 	/**
