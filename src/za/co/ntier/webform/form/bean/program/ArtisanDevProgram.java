@@ -20,7 +20,7 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 		setTrade(ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), applicationForm, null));
 
 		setTotalNumApplied(ProjectInput
-				.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel))));
+				.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)), applicationForm));
 
 	}
 

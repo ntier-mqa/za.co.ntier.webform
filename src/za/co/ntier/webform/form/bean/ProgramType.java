@@ -85,9 +85,5 @@ public enum ProgramType {
 				&& this != NCV_GRADUATES && this != AET && this != OHASSP && this != INHOUSE_TRAINING && this != TVET
 				&& this != CET && this != TVET_BURSARS;
 	}
-	
-	@Override
-	public String toString() {
-		return programType;
-	}
+
 }

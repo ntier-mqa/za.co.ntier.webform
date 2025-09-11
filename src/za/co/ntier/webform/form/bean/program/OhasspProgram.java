@@ -11,11 +11,11 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class OhasspProgram implements ISaveForm, IProgram {
 	private ProjectInput healthSafetySkills;
 
-	public OhasspProgram()  {
+	public OhasspProgram(X_ZZ_Application_Form applicationForm)  {
 		setHealthSafetySkills(ProjectInput.getProject(
 				List.of(ColumnInfo.getColLabel(ProjectInput.colNameProgrammeLabel),
 						ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel)),
-				"Occupational Health and Safety Skills Programmes"));
+				"Occupational Health and Safety Skills Programmes", applicationForm));
 	}
 
 	/**

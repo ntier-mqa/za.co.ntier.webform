@@ -304,25 +304,25 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		} else if (ProgramType.DEV_PROGRAM == programType) {
 			setProgram(new MedpProgram());
 		} else if (ProgramType.ARTISAN_AIDES == programType) {
-			setProgram(new ArtisanAidesProgram());
+			setProgram(new ArtisanAidesProgram(applicationForm));
 		} else if (ProgramType.ARTISAN_DEV == programType) {
 			setProgram(new ArtisanDevProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.CENTRE_SPECIALISATION == programType) {
 			setProgram(new CentreOfSpecialisationProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.ARTISAN_RPL == programType) {
-			setProgram(new ArtisanRPLProgram());
+			setProgram(new ArtisanRPLProgram(applicationForm));
 		} else if (ProgramType.NON_ARTISAN_DEV == programType) {
 			setProgram(new NonArtisanDevProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.NON_ARTISAN_DEV_RPL == programType) {
-			setProgram(new NonArtisanDevRPLProgram(menuContextInfo));
+			setProgram(new NonArtisanDevRPLProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.NCV_GRADUATES == programType) {
-			setProgram(new NcvGraduatesProgram(menuContextInfo));
+			setProgram(new NcvGraduatesProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.AET == programType) {
 			setProgram(new AetProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.OHASSP == programType) {
-			setProgram(new OhasspProgram());
+			setProgram(new OhasspProgram(applicationForm));
 		} else if (ProgramType.INHOUSE_TRAINING == programType) {
-			setProgram(new InhouseTrainingProgram());
+			setProgram(new InhouseTrainingProgram(applicationForm));
 		}
 
 		

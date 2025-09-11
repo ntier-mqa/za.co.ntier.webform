@@ -66,8 +66,6 @@ public class WebForm extends ADForm {
 		Map<String, Object> args = new HashMap<>();
 		args.put(menuContextInfoKey, menuContextInfo);
 
-		String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
-
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		// Set the context class loader to this bundle's class loader to ensure that
 		// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
@@ -76,6 +74,7 @@ public class WebForm extends ADForm {
 		Component inc = null;
 		try {
 			Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
+			String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
 			inc = Executions.createComponents(zulPathRelative, null, args);
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);
