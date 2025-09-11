@@ -296,29 +296,29 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (programType.isCetTvet()) {
 			setProgram(new CetTvetProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.INTERNSHIP == programType) {
-			setProgram(new InternshipProgram(menuContextInfo));
+			setProgram(new InternshipProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.CANDIDACY == programType) {
-			setProgram(new CandidacyProgram(menuContextInfo));
+			setProgram(new CandidacyProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.EXPERIENCE == programType) {
-			setProgram(new WorkExperienceProgram(menuContextInfo));
+			setProgram(new WorkExperienceProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.DEV_PROGRAM == programType) {
 			setProgram(new MedpProgram());
 		} else if (ProgramType.ARTISAN_AIDES == programType) {
 			setProgram(new ArtisanAidesProgram());
 		} else if (ProgramType.ARTISAN_DEV == programType) {
-			setProgram(new ArtisanDevProgram(menuContextInfo));
+			setProgram(new ArtisanDevProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.CENTRE_SPECIALISATION == programType) {
-			setProgram(new CentreOfSpecialisationProgram(menuContextInfo));
+			setProgram(new CentreOfSpecialisationProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.ARTISAN_RPL == programType) {
 			setProgram(new ArtisanRPLProgram());
 		} else if (ProgramType.NON_ARTISAN_DEV == programType) {
-			setProgram(new NonArtisanDevProgram(menuContextInfo));
+			setProgram(new NonArtisanDevProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.NON_ARTISAN_DEV_RPL == programType) {
 			setProgram(new NonArtisanDevRPLProgram(menuContextInfo));
 		} else if (ProgramType.NCV_GRADUATES == programType) {
 			setProgram(new NcvGraduatesProgram(menuContextInfo));
 		} else if (ProgramType.AET == programType) {
-			setProgram(new AetProgram(menuContextInfo));
+			setProgram(new AetProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.OHASSP == programType) {
 			setProgram(new OhasspProgram());
 		} else if (ProgramType.INHOUSE_TRAINING == programType) {

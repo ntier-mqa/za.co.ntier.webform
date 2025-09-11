@@ -31,8 +31,8 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 	
 	private Boolean isCollegeSla = null;
 
-	public CentreOfSpecialisationProgram(MenuContextInfo menuContextInfo)  {
-		super(menuContextInfo);
+	public CentreOfSpecialisationProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm)  {
+		super(menuContextInfo, applicationForm);
 	}
 
 	/**

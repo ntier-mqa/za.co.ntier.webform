@@ -10,9 +10,10 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 public class InternshipProgram extends CandidacyProgram implements ISaveForm, IProgram {
 	private ProgramInput trade;
 
-	public InternshipProgram(MenuContextInfo menuContextInfo) {
-		super(menuContextInfo);
+	public InternshipProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		super(menuContextInfo, applicationForm);
 		this.trade = ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
+				applicationForm,
 
 				"""
 										List of disciplines supported for Artisan Internships which the number of learners applying

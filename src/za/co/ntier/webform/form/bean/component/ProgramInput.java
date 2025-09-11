@@ -7,14 +7,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
+import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.util.Env;
 
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
+import za.co.ntier.webform.model.I_ZZ_FormDiscipline;
+import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
@@ -32,20 +37,20 @@ public class ProgramInput extends AnnexureInfo {
 	public static final String colTradeLabel = "Trade";
 	public static final String colWPALabel = "WPA";
 	
-	public static ProgramInput getDisciplines(int programMasterDataID, String tableTitle){
-		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, programMasterDataID, tableTitle);
+	public static ProgramInput getDisciplines(int programMasterDataID, X_ZZ_Application_Form applicationForm, String tableTitle){
+		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, programMasterDataID, applicationForm, tableTitle);
 	}
 
-	public static ProgramInput getTrade(int programMasterDataID, String tableTitle){
-		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade, programMasterDataID, tableTitle);
+	public static ProgramInput getTrade(int programMasterDataID, X_ZZ_Application_Form applicationForm, String tableTitle){
+		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade, programMasterDataID, applicationForm, tableTitle);
 	}
 
-	public static ProgramInput getLearnership(String learnershipType, int programMasterDataID){
-		return ProgramInput.getTradeDiscipline(learnershipType, programMasterDataID, null);
+	public static ProgramInput getLearnership(String learnershipType, X_ZZ_Application_Form applicationForm, int programMasterDataID){
+		return ProgramInput.getTradeDiscipline(learnershipType, programMasterDataID, applicationForm, null);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static ProgramInput getTradeDiscipline(String disciplineType, int programMasterDataID, String tableTitle){
+	private static ProgramInput getTradeDiscipline(String disciplineType, int programMasterDataID, X_ZZ_Application_Form applicationForm, String tableTitle){
 		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, disciplineType);
 		List<LearnerInputInfo> learnerInputInfos = (List<LearnerInputInfo>) rObjs.get(0);
 		boolean hasWPAReq = (boolean) rObjs.get(1);
@@ -81,15 +86,69 @@ public class ProgramInput extends AnnexureInfo {
 			columns.add(ColumnInfo.getColFileUpload(colAccredLabel, btAccredText));
 		}
 
+		String whereFormDiscipline = String.format("%s = ?", 
+				I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Application_Form_ID);
+		Query queryFormDiscipline = MTable.get(X_ZZ_FormDiscipline.Table_ID).createQuery(whereFormDiscipline, null);
+		List<X_ZZ_FormDiscipline> formDisciplines = queryFormDiscipline.setParameters(applicationForm.getZZ_Application_Form_ID()).list(); 
+		
 		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
+		Supplier<Map<ColumnInfo<?>, Object>> supplierRowFormDiscipline = () -> new AnnexureRow<X_ZZ_FormDiscipline>();
+		programInput.setSupplier(supplierRowFormDiscipline);
 		programInput.setTableTitle(tableTitle);
 
-		Map<ColumnInfo<?>, Object> rowDataInits = null;
+		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, programInput);
+		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(colNoLearnersLabel, programInput);
+		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, programInput);
+		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, programInput);
+		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(colWPALabel, programInput);
+		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(colAccredLabel, programInput);
+		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(colNoEmployedLabel, programInput);
+		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(colNoUnEmployedLabel, programInput);
+		
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
-			rowDataInits = new HashMap<>();
-			rowDataInits.put(columns.get(0), learnerInputInfo);
-			programInput.createDetailRow(columns, rowDataInits);
+			AnnexureRow<X_ZZ_FormDiscipline> row = (AnnexureRow<X_ZZ_FormDiscipline>)programInput.createDetailRow(columns);
 			
+			for(X_ZZ_FormDiscipline formDiscipline : formDisciplines) {
+				if (formDiscipline.getZZ_FormDiscipline_ID() == learnerInputInfo.getLearnerInputID()) {
+					row.setData(formDiscipline);
+					break;
+				}
+			}
+			X_ZZ_FormDiscipline formDisciplineSaved = row.getData();
+			
+			row.put(columns.get(0), learnerInputInfo);
+			
+			if(nunLearnersColl != null && formDisciplineSaved != null && formDisciplineSaved.getZZNoLearners() > 0) {
+				((IntData)row.get(nunLearnersColl)).setValue(formDisciplineSaved.getZZNoLearners());
+			}
+			
+			if(numEmployedColl != null && formDisciplineSaved != null && formDisciplineSaved.getZZNoEmployedLearners() > 0) {
+				((IntData)row.get(numEmployedColl)).setValue(formDisciplineSaved.getZZNoEmployedLearners());
+			}
+			
+			if(numUnEmployedColl != null && formDisciplineSaved != null && formDisciplineSaved.getZZNoUnEmployedLearners() > 0) {
+				((IntData)row.get(numUnEmployedColl)).setValue(formDisciplineSaved.getZZNoUnEmployedLearners());
+			}
+			
+			if(areaColl != null && formDisciplineSaved != null && formDisciplineSaved.getC_City_ID() > 0) {
+				AreaData areaData = (AreaData)row.get(areaColl);
+				for(MCity area : areaData.getDataProvider()) {
+					if (area.getC_City_ID() == formDisciplineSaved.getC_City_ID()) {
+						areaData.setSelectedAreaInternal(area);
+					}
+				}
+			}
+			
+			/*
+			if(postalColl != null && formDisciplineSaved != null && StringUtils.isNoneBlank(formDisciplineSaved.getPostal())) {
+				PostalData postal = (PostalData)row.get(postalColl);
+				postal.setPostalInternal(formDisciplineSaved.getPostal());
+			}
+		
+			if(wpaColl != null && formDisciplineSaved != null && formDisciplineSaved.getname > 0) {
+				((IntData)row.get(numUnEmployedColl)).setValue(formDisciplineSaved.getZZNoUnEmployedLearners());
+			}
+			*/
 		}
 		return programInput;
 	}
@@ -108,7 +167,9 @@ public class ProgramInput extends AnnexureInfo {
 		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(colNoUnEmployedLabel, disciplines);
 		int totalLearners = 0;
 		
-		for (Map<ColumnInfo<?>, Object> row : disciplines.getRows()) {
+		for (Map<ColumnInfo<?>, Object> rowObj : disciplines.getRows()) {
+			AnnexureRow<X_ZZ_FormDiscipline> row = (AnnexureRow<X_ZZ_FormDiscipline>)rowObj;
+			
 			IntData nunLearners = null;
 			if (nunLearnersColl != null) {
 				nunLearners = (IntData)row.get(nunLearnersColl);
@@ -139,7 +200,14 @@ public class ProgramInput extends AnnexureInfo {
 					(nunUnEmployer.getValue() == null || nunUnEmployer.getValue() == 0))
 				continue;
 			
-			X_ZZ_FormDiscipline formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null); formDisciplines.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+			
+			X_ZZ_FormDiscipline formDisciplines = row.getData();
+			if (formDisciplines != null) {
+				formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null);
+			}
+			
+			
+			formDisciplines.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
 			
 			if (nunLearners != null && nunLearners.getValue() != null && nunLearners.getValue() != 0) {
 				formDisciplines.setZZNoLearners(nunLearners.getValue());

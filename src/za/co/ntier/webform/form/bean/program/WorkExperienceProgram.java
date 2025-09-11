@@ -18,11 +18,11 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 
 	private AddressInfo vacationContact;
 
-	public WorkExperienceProgram(MenuContextInfo menuContextInfo) {
+	public WorkExperienceProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		setVacationContact(new AddressInfo(AddressType.VACATION));
 		this.setDisciplines(ProgramInput.getDisciplines(
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
-
+				applicationForm,
 				"""
 										List of disciplines supported for practical training which the number of learners applying
 						should be based on
