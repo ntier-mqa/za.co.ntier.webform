@@ -33,22 +33,43 @@ public class ProgramInput extends AnnexureInfo {
 	public static final String colWPALabel = "WPA";
 	
 	public static ProgramInput getDisciplines(int programMasterDataID, String tableTitle){
-		return ProgramInput.getTradeDiscipline(false, programMasterDataID, tableTitle);
+		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, programMasterDataID, tableTitle);
 	}
 
-	@SuppressWarnings("unchecked")
+	public static ProgramInput getTrade(int programMasterDataID, String tableTitle){
+		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade, programMasterDataID, tableTitle);
+	}
+
 	public static ProgramInput getLearnership(String learnershipType, int programMasterDataID){
-		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, learnershipType);
+		return ProgramInput.getTradeDiscipline(learnershipType, programMasterDataID, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static ProgramInput getTradeDiscipline(String disciplineType, int programMasterDataID, String tableTitle){
+		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, disciplineType);
 		List<LearnerInputInfo> learnerInputInfos = (List<LearnerInputInfo>) rObjs.get(0);
 		boolean hasWPAReq = (boolean) rObjs.get(1);
 		boolean hasAccred = (boolean) rObjs.get(2);
 
 		List<ColumnInfo<?>> columns = new ArrayList<>();
-		columns.add(ColumnInfo.getColLearnerInfo(colLearnershipLabel));
-		columns.add(ColumnInfo.getColPositiveNumber(colNoEmployedLabel));
-		columns.add(ColumnInfo.getColPositiveNumber(colNoUnEmployedLabel));
+		
+		if ((X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership.equals(disciplineType) ||
+				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership.equals(disciplineType) ||
+				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership.equals(disciplineType))) {
+			columns.add(ColumnInfo.getColLearnerInfo(colLearnershipLabel));
+			columns.add(ColumnInfo.getColPositiveNumber(colNoEmployedLabel));
+			columns.add(ColumnInfo.getColPositiveNumber(colNoUnEmployedLabel));
+		}else {
+			if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade.equals(disciplineType)) {
+				columns.add(ColumnInfo.getColLearnerInfo(colTradeLabel));
+			}else {
+				columns.add(ColumnInfo.getColLearnerInfo(colDisciplineLabel));
+			}
+			
+			columns.add(ColumnInfo.getColPositiveNumber(colNoLearnersLabel));
+		}
+		
 		columns.add(ColumnInfo.getColPostal(colPostalCodeLabel));
-
 		columns.add(
 				ColumnInfo.getColArea(colAreaLabel, MasterUtil.getInitCities()));
 
@@ -58,47 +79,6 @@ public class ProgramInput extends AnnexureInfo {
 
 		if (hasAccred) {
 			columns.add(ColumnInfo.getColFileUpload(colAccredLabel, btAccredText));
-		}
-
-		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
-
-		Map<ColumnInfo<?>, Object> rowDataInits = null;
-		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
-			rowDataInits = new HashMap<>();
-			rowDataInits.put(columns.get(0), learnerInputInfo);
-			programInput.createDetailRow(columns, rowDataInits);
-			
-		}
-		return programInput;
-	}
-
-	public static ProgramInput getTrade(int programMasterDataID, String tableTitle){
-		return ProgramInput.getTradeDiscipline(true, programMasterDataID, tableTitle);
-	}
-
-	@SuppressWarnings("unchecked")
-	private static ProgramInput getTradeDiscipline(boolean isTrade, int programMasterDataID, String tableTitle){
-		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID,
-				isTrade ? X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade
-						: X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
-		List<LearnerInputInfo> learnerInputInfos = (List<LearnerInputInfo>) rObjs.get(0);
-		boolean hasWPAReq = (boolean) rObjs.get(1);
-		boolean hasAccred = (boolean) rObjs.get(2);
-
-		List<ColumnInfo<?>> columns = new ArrayList<>();
-		columns.add(ColumnInfo.getColLearnerInfo(isTrade ? colTradeLabel : colDisciplineLabel));
-		columns.add(ColumnInfo.getColPositiveNumber(colNoLearnersLabel));
-		columns.add(ColumnInfo.getColPostal(colPostalCodeLabel));
-
-		columns.add(
-				ColumnInfo.getColArea(colAreaLabel, MasterUtil.getInitCities()));
-
-		if (hasWPAReq) {
-			columns.add(ColumnInfo.getColFileUpload(colWPALabel, "WPA"));
-		}
-
-		if (hasAccred) {
-			columns.add(ColumnInfo.getColFileUpload(colAccredLabel, "Accred./SLA"));
 		}
 
 		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
