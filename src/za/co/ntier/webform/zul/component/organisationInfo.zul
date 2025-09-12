@@ -113,16 +113,24 @@
 	<include
 		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
 		orgSizeInfo="@load(vmOrgInfo.organisationInfo.orgSizeInfo)"
+		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"     
+  		notifyTarget="@init('organisationComplete')"   
 		src="@load((WebForm.getBundleResourcePath('component/organisationSize.zul')))" />
 
+		
 	<include
 		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
 		addressInfo="@load(vmOrgInfo.organisationInfo.orgContact)"
+		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
+		notifyTarget="@init('organisationComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
+		
 	<include
-		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
-		addressInfo="@load(vmOrgInfo.organisationInfo.alternateOrgContact)"
-		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
+	    if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+	    addressInfo="@load(vmOrgInfo.organisationInfo.alternateOrgContact)"
+	    applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
+	    notifyTarget="@init('organisationComplete')"
+	    src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 </nodom>

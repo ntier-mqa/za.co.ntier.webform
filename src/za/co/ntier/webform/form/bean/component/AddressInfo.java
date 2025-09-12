@@ -546,7 +546,7 @@ public class AddressInfo implements ISaveForm {
 	/**
 	 * @param postalCode the postalCode to set
 	 */
-	@NotifyChange({ "provinceSelected", "areas", "provinces"})
+	@NotifyChange({ "areaSelected", "provinceSelected", "areas", "provinces" })
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 

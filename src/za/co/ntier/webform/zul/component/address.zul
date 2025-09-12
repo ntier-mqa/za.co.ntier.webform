@@ -14,44 +14,46 @@
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.siteNameTitle)" />
+			
 			<textbox
-				value="@bind(vmAddress.addressInfo.siteName, save-on='onChanging')"
-				onChanging="@command('notifyParentCompleteness')"
-				constraint="no empty: Please enter the site name"/>
+			  value="@load(vmAddress.addressInfo.siteName)"
+			  onChanging="@command('fieldChanging', field='siteName', val=event.value)"
+			  constraint="no empty: Please enter the site name"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showLineAddress()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.addressLineTitle)" />
+			  value="@init(vmAddress.addressInfo.addressLineTitle)" />
+			
 			<textbox
-		      value="@bind(vmAddress.addressInfo.addressLine, save-on='onChanging') "
-		      onChanging="@command('notifyParentCompleteness')"
-		      constraint="no empty: Please enter the street address"
-			 />
+			  value="@load(vmAddress.addressInfo.addressLine)"
+			  onChanging="@command('fieldChanging', field='addressLine', val=event.value)"
+			  constraint="no empty: Please enter the street address"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showPostalAddress()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.postAddressTitle)" />
-			<textbox value="@bind(vmAddress.addressInfo.addressLine, save-on='onChanging')" 
-			onChanging="@command('notifyParentCompleteness')"
-			constraint="no empty: Please enter the postal address"
-			/>
+			  value="@init(vmAddress.addressInfo.postAddressTitle)" />
+			<textbox
+			  value="@load(vmAddress.addressInfo.addressLine)"
+			  onChanging="@command('fieldChanging', field='addressLine', val=event.value)"
+			  constraint="no empty: Please enter the street address"/>
+			
 
 		</div>
 
 		<div if="${vmAddress.addressInfo.showGeographicAddress()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.postalCodeTitle)" />
-			<textbox
-      				value="@bind(vmAddress.addressInfo.postalCode, save-on='onChanging')"
-      				onChanging="@command('notifyParentCompleteness')"
-      				constraint="/^[0-9]{4,6}$/: Enter a valid postal code"
+			  value="@init(vmAddress.addressInfo.postalCodeTitle)" />
 			
-			 />
+			<textbox
+			  value="@bind(vmAddress.addressInfo.postalCode)
+              @save(vmAddress.addressInfo.postalCode, before='onChanging')"
+  			  onChanging="@command('notifyParentCompleteness')"
+			  constraint="/^[0-9]{4,6}$/: Enter a valid postal code"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showGeographicAddress()}"
@@ -59,12 +61,13 @@
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.areaTitle)" />
 			<listbox mold="select"
-				model="@load(vmAddress.addressInfo.areas)"
-				selectedItem="@bind(vmAddress.addressInfo.areaSelected, save-on='onSelect')"
-				onSelect="@command('notifyParentCompleteness')">
-				<template name="model" var="item">
-					<listitem label="@load(item.name)" />
-				</template>
+			  model="@load(vmAddress.addressInfo.areas)"
+			  selectedItem="@bind(vmAddress.addressInfo.areaSelected, save-on='onSelect')"
+  			  onSelect="@command('notifyParentCompleteness')">
+			  <template name="model" var="item">
+			    <!-- pass the actual MCity object -->
+			    <listitem label="@load(item.name)" value="@load(item)"/>
+			  </template>
 			</listbox>
 		</div>
 
@@ -74,12 +77,13 @@
 				value="@init(vmAddress.addressInfo.provinceTitle)" />
 
 			<listbox mold="select"
-				model="@load((vmAddress.addressInfo.provinces))"
-				selectedItem="@bind(vmAddress.addressInfo.provinceSelected, save-on='onSelect')"
-				onSelect="@command('notifyParentCompleteness')">
-				<template name="model" var="item">
-					<listitem label="@load(item.name)" />
-				</template>
+			  model="@load(vmAddress.addressInfo.provinces)"
+			  selectedItem="@bind(vmAddress.addressInfo.provinceSelected, save-on='onSelect')"
+  			  onSelect="@command('notifyParentCompleteness')">
+			  <template name="model" var="item">
+			    <!-- pass the actual MRegion object -->
+			    <listitem label="@load(item.name)" value="@load(item)"/>
+			  </template>
 			</listbox>
 		</div>
 
@@ -89,9 +93,9 @@
 				value="@init(vmAddress.addressInfo.nameSiteRepresentativeTitle)" />
 
 			<textbox
-				value="@bind(vmAddress.addressInfo.nameSiteRepresentative, save-on='onChanging')"
-				onChanging="@command('notifyParentCompleteness')"
-				constraint="no empty: Please enter a name"/>
+			  value="@load(vmAddress.addressInfo.nameSiteRepresentative)"
+			  onChanging="@command('fieldChanging', field='nameSiteRepresentative', val=event.value)"
+			  constraint="no empty: Please enter a name"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
@@ -100,9 +104,9 @@
 				value="@init(vmAddress.addressInfo.representativeDesignationTitle)" />
 			
 			<textbox
-				value="@bind(vmAddress.addressInfo.representativeDesignation, save-on='onChanging')"
-				onChanging="@command('notifyParentCompleteness')"
-				constraint="no empty: Please enter a designation"/>
+			  value="@load(vmAddress.addressInfo.representativeDesignation)"
+			  onChanging="@command('fieldChanging', field='representativeDesignation', val=event.value)"
+			  constraint="no empty: Please enter a designation"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
@@ -111,10 +115,10 @@
 				value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
 		
 			<textbox
-				value="@bind(vmAddress.addressInfo.mobileNumber, save-on='onChanging')"
-				onChanging="@command('notifyParentCompleteness')"
-				type="tel"
-				constraint="/^\s*\d{10}\s*$/: Please enter a 10 digit phone"/>
+			  value="@load(vmAddress.addressInfo.mobileNumber)"
+			  onChanging="@command('fieldChanging', field='mobileNumber', val=event.value)"
+			  type="tel"
+			  constraint="/^\s*\d{10}\s*$/: Please enter a 10 digit phone"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
@@ -124,10 +128,10 @@
 
 			
 			<textbox
-				value="@bind(vmAddress.addressInfo.landlineNumber, save-on='onChanging')"
-				onChanging="@command('notifyParentCompleteness')"
-				type="tel"
-				constraint="/^\s*\d{10}\s*$/: Please enter a 10 digit phone"/>
+			  value="@load(vmAddress.addressInfo.landlineNumber)"
+			  onChanging="@command('fieldChanging', field='landlineNumber', val=event.value)"
+			  type="tel"
+			  constraint="/^\s*\d{10}\s*$/: Please enter a 10 digit phone"/>
 		</div>
 
 		<div if="${vmAddress.addressInfo.showContact()}"
@@ -135,10 +139,10 @@
 			<label sclass="label"
 				value="@init(vmAddress.addressInfo.emailTitle)" />
 			<textbox
-			  value="@bind(vmAddress.addressInfo.email, save-on='onChanging')"
-			  onChanging="@command('notifyParentCompleteness')"
+			  value="@load(vmAddress.addressInfo.email)"
+			  onChanging="@command('fieldChanging', field='email', val=event.value)"
 			  type="email"
-			  constraint="/^\s*[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\s*$/ : Please enter an e-mail address"/>
+			  constraint="/^\s*[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\s*$/: Please enter an e-mail address"/>
 		</div>
 	</div>
 

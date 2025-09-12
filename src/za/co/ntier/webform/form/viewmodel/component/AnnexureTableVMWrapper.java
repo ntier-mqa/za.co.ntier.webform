@@ -22,15 +22,16 @@ public class AnnexureTableVMWrapper {
 	private AnnexureInfo annexureInfo;
 
 	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
-	
-	 private boolean isSubAnnexure = false;
+	private String notifyTarget;
+
+	private boolean isSubAnnexure = false;
 
 	@Command
 	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure) {
 		annexure.addRow();
 		notifyProgramComplete();
 	}
-	
+
 	@Command
 	public void areaSelect(@BindingParam("annexure") AnnexureInfo annexure,
 			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
@@ -38,18 +39,19 @@ public class AnnexureTableVMWrapper {
 		annexure.areaSelect(row, col, event);
 		notifyProgramComplete(); 
 	}
-	
+
 	/**
 	 * @return the annexureInfo
 	 */
 	public AnnexureInfo getAnnexureInfo() {
 		return annexureInfo;
 	}
-	
+
 	@Init
 	public void init(@ExecutionArgParam("annexureInfo") AnnexureInfo annexureInfo,
 			@ExecutionArgParam("isSubAnnexure") Boolean isSubAnnexure,
-			 @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM
+			@ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM,
+			@ExecutionArgParam("notifyTarget") String notifyTarget
 			) {
 		this.setAnnexureInfo(annexureInfo);
 		if (isSubAnnexure == null)
@@ -57,8 +59,9 @@ public class AnnexureTableVMWrapper {
 		else
 			this.isSubAnnexure = isSubAnnexure;
 		this.applicationProgramVM = appVM;
+		this.notifyTarget = notifyTarget;
 	}
-	
+
 	/**
 	 * @return the isSubAnnexure
 	 */
@@ -66,12 +69,12 @@ public class AnnexureTableVMWrapper {
 		return isSubAnnexure;
 	}
 	/** Notify parent VM that program completeness may have changed */
-    @Command
-    public void notifyProgramComplete() { // <-- ADD
-        if (applicationProgramVM != null) {
-            BindUtils.postNotifyChange(null, null, applicationProgramVM, "programComplete");
-        }
-    }
+	@Command
+	public void notifyProgramComplete() { 
+		if (applicationProgramVM != null && notifyTarget != null) {
+			org.zkoss.bind.BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
+		}
+	}
 
 	@Command
 	public void numChange(@BindingParam("annexure") AnnexureInfo annexure,
@@ -91,7 +94,7 @@ public class AnnexureTableVMWrapper {
 		annexure.postalChange(row, col, event);
 		notifyProgramComplete(); 
 	}
-	
+
 	/**
 	 * @param annexureInfo the annexureInfo to set
 	 */

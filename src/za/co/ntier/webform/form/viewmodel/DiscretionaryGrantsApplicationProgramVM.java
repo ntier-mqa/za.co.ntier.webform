@@ -392,6 +392,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	@DependsOn({
 		  "programType",
+		  "organisationInfo.physicalAddressInfo.areaSelected",
+		  "organisationInfo.physicalAddressInfo.provinceSelected",
+		  "organisationInfo.postAddressInfo.areaSelected",
+		  "organisationInfo.postAddressInfo.provinceSelected",
 		  "organisationInfo.orgName",
 		  "organisationInfo.orgRegistrationNumber",
 		  "organisationInfo.orgTaxNumber",
@@ -400,9 +404,23 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		  "organisationInfo.cetTvetCollegeSelected",
 		  "organisationInfo.sdlNumber",
 		  "organisationInfo.siteSDLNumber",
-		//  "organisationInfo.postAddressInfo.postAddress",   
-		  "organisationInfo.postAddressInfo.postalCode"
+		  "organisationInfo.postAddressInfo.postalCode",
+		  "organisationInfo.orgSizeInfo.numOfEmployer", 
+		  // orgContact (all required)
+		  "organisationInfo.orgContact.nameSiteRepresentative",
+		  "organisationInfo.orgContact.representativeDesignation",
+		  "organisationInfo.orgContact.mobileNumber",
+		  "organisationInfo.orgContact.landlineNumber",
+		  "organisationInfo.orgContact.email",
+
+		  // alternateOrgContact (all required)
+		  "organisationInfo.alternateOrgContact.nameSiteRepresentative",
+		  "organisationInfo.alternateOrgContact.representativeDesignation",
+		  "organisationInfo.alternateOrgContact.mobileNumber",
+		  "organisationInfo.alternateOrgContact.landlineNumber",
+		  "organisationInfo.alternateOrgContact.email"
 		})
+	
 	public boolean isOrganisationComplete() {
 		boolean colOk = true;
 		boolean orgOk = true;
@@ -415,7 +433,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    }
 	    orgOk = orgOk
 	        && notEmpty(organisationInfo.getSdlNumber())
-	        && notEmpty(organisationInfo.getSiteSDLNumber());
+	        && notEmpty(organisationInfo.getSiteSDLNumber());	    
+	    Integer n = organisationInfo.getOrgSizeInfo() != null
+	            ? organisationInfo.getOrgSizeInfo().getNumOfEmployer()
+	            : null;
+	    orgOk = orgOk && n != null && n > 0;
 	    boolean addrOk = (!organisationInfo.getPhysicalAddressInfo().showLineAddress()
 	                      || notEmpty(organisationInfo.getPhysicalAddressInfo().getAddressLine()))
 	        && (!organisationInfo.getPhysicalAddressInfo().showGeographicAddress()
@@ -430,7 +452,24 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    		|| (organisationInfo.getPostAddressInfo().getProvinceSelected() != null &&
 	    				notEmpty(organisationInfo.getPostAddressInfo().getProvinceSelected().getName())
 	    				));
-	    return orgOk && addrOk && colOk && postalOk && provincesPhysicalOk && provincesPostalOk;
+	    // orgContact required (only if contact section is shown)
+	    boolean orgContactOk = !organisationInfo.getOrgContact().showContact()
+	        || (notEmpty(organisationInfo.getOrgContact().getNameSiteRepresentative())
+	            && notEmpty(organisationInfo.getOrgContact().getRepresentativeDesignation())
+	            && notEmpty(organisationInfo.getOrgContact().getMobileNumber())
+	            && notEmpty(organisationInfo.getOrgContact().getLandlineNumber())
+	            && notEmpty(organisationInfo.getOrgContact().getEmail()));
+
+	    // alternateOrgContact required (only if shown)
+	    boolean altContactOk = !organisationInfo.getAlternateOrgContact().showContact()
+	        || (notEmpty(organisationInfo.getAlternateOrgContact().getNameSiteRepresentative())
+	            && notEmpty(organisationInfo.getAlternateOrgContact().getRepresentativeDesignation())
+	            && notEmpty(organisationInfo.getAlternateOrgContact().getMobileNumber())
+	            && notEmpty(organisationInfo.getAlternateOrgContact().getLandlineNumber())
+	            && notEmpty(organisationInfo.getAlternateOrgContact().getEmail()));
+	    return orgOk && addrOk && colOk && postalOk
+	            && provincesPhysicalOk && provincesPostalOk
+	            && orgContactOk && altContactOk;
 	}
 
 	@DependsOn("program") // re-evaluate when program/annexure rows change (notified from table VM)
@@ -442,6 +481,9 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    if (programType.isDev_Program()) {
 	        Integer n = ((MedpProgram) program).getNoOfLearners();
 	        return n != null && n > 0;
+	    }
+	    if (programType == ProgramType.ARTISAN_AIDES) {
+	        return isArtisanAidesValid();   
 	    }
 	    return true;
 	}
@@ -532,6 +574,121 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    // didn't find matching annexure/columns
 	    return false;
 	}
+	
+	private boolean isArtisanAidesValid() {
+	    if (!(program instanceof ArtisanAidesProgram)) return false;
+	    ArtisanAidesProgram p = (ArtisanAidesProgram) program;
+
+	    AnnexureInfo qual  = p.getQualification();
+	    AnnexureInfo skill = p.getSkill();
+
+	    boolean qualOk  = qual  == null ? true : validateArtisanAnnexure_NoProgramme(qual);
+	    boolean skillOk = skill == null ? true : validateArtisanAnnexure_NoProgramme(skill);
+
+	    // At least one annexure must have a valid row
+	    return (qualOk && skillOk) && (hasValidRow_NoProgramme(qual) || hasValidRow_NoProgramme(skill));
+	}
+
+	
+	private boolean validateArtisanAnnexure_NoProgramme(AnnexureInfo a) {
+	    if (a == null) return true;
+
+	    ColumnInfo<?> employedCol   = findCol(a, "No. of Employed Learners", "Employed", "No Employed", "Employed Learners");
+	    ColumnInfo<?> unemployedCol = findCol(a, "No. of Unemployed Learners", "Unemployed", "No Unemployed", "Unemployed Learners");
+	    ColumnInfo<?> totalCol      = findCol(a, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
+	    ColumnInfo<?> postalCol     = findCol(a, "Site Postal Code", "Postal Code", "Site Postal");
+	    ColumnInfo<?> areaCol       = findCol(a, "Area");
+
+	    // Must at least have the three counts; location is also required by your UI
+	    if (employedCol == null || unemployedCol == null || totalCol == null || postalCol == null || areaCol == null) {
+	        return false;
+	    }
+
+	    int validRows = 0;
+	    for (var row : a.getRows()) {
+	        Integer employed   = getLearners(employedCol.getDataType(),   row.get(employedCol));
+	        Integer unemployed = getLearners(unemployedCol.getDataType(), row.get(unemployedCol));
+	        Integer total      = getLearners(totalCol.getDataType(),      row.get(totalCol));
+
+	        // postal stored as PostalData; area stored as AreaData (from your AnnexureInfo)
+	        String postal = null;
+	        Object postalCell = row.get(postalCol);
+	        if (postalCell != null) {
+	            try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
+	        }
+
+	        Object areaCell = row.get(areaCol);
+	        Object areaSelected = null;
+	        if (areaCell != null) {
+	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
+	        }
+
+	        boolean allBlank = (employed == null && unemployed == null && total == null && postal == null && areaSelected == null);
+	        if (allBlank) {
+	            // Ignore empty line
+	            continue;
+	        }
+
+	        // Mandatory rules:
+	        //  - counts present and consistent
+	        //  - at least one count > 0
+	        //  - location filled (postal + area)
+	        boolean countsPresent = employed != null && unemployed != null && total != null;
+	        boolean countsPositive = (employed != null && unemployed != null && total != null) &&
+	                                 (employed > 0 || unemployed > 0); // (or require both > 0 if needed)
+	        boolean countsConsistent = (employed != null && unemployed != null && total != null) &&
+	                                   (employed + unemployed == total);
+
+	        boolean locationOk = (postal != null && !postal.trim().isEmpty() && areaSelected != null);
+
+	        boolean rowValid = countsPresent && countsPositive && countsConsistent && locationOk;
+	        if (!rowValid) return false;  // any partially filled/invalid row fails
+	        validRows++;
+	    }
+
+	    // Need at least one valid row in this annexure (qualification or skills)
+	    return validRows >= 1;
+	}
+
+	private boolean hasValidRow_NoProgramme(AnnexureInfo a) {
+	    if (a == null) return false;
+
+	    ColumnInfo<?> employedCol   = findCol(a, "No. of Employed Learners", "Employed", "No Employed", "Employed Learners");
+	    ColumnInfo<?> unemployedCol = findCol(a, "No. of Unemployed Learners", "Unemployed", "No Unemployed", "Unemployed Learners");
+	    ColumnInfo<?> totalCol      = findCol(a, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
+	    ColumnInfo<?> postalCol     = findCol(a, "Site Postal Code", "Postal Code", "Site Postal");
+	    ColumnInfo<?> areaCol       = findCol(a, "Area");
+	    if (employedCol == null || unemployedCol == null || totalCol == null || postalCol == null || areaCol == null) return false;
+
+	    for (var row : a.getRows()) {
+	        Integer employed   = getLearners(employedCol.getDataType(),   row.get(employedCol));
+	        Integer unemployed = getLearners(unemployedCol.getDataType(), row.get(unemployedCol));
+	        Integer total      = getLearners(totalCol.getDataType(),      row.get(totalCol));
+
+	        String postal = null;
+	        Object postalCell = row.get(postalCol);
+	        if (postalCell != null) {
+	            try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
+	        }
+
+	        Object areaCell = row.get(areaCol);
+	        Object areaSelected = null;
+	        if (areaCell != null) {
+	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
+	        }
+
+	        if (employed != null && unemployed != null && total != null &&
+	            (employed > 0 || unemployed > 0) &&
+	            employed + unemployed == total &&
+	            postal != null && !postal.trim().isEmpty() &&
+	            areaSelected != null) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+
 	
 	public void nextTab(Tabbox tab) {
 		int currentIndex = tab.getSelectedIndex();
