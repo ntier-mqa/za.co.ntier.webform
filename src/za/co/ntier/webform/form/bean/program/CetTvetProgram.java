@@ -61,7 +61,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		if (menuContextInfo.getProgramType() == ProgramType.CET) {
 			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
-			title = "ANNEXURE A (Applicable to CET Colleges)";
+			title = "ANNEXURE A";
 			rowTitle = "CET learners funded to access AET Programmes";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
 					title, cols, supplierRowAnnexure);
@@ -72,7 +72,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
 					ColumnInfo.getColText(CetTvetOneLineInput.colDisciplineTitle));
-			title = "ANNEXURE B (Applicable to CET Colleges)";
+			title = "ANNEXURE B";
 			rowTitle = "Number of TVET Colleges and HEI graduates that entered CET Internships";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
 					title, cols, supplierRowAnnexure);
@@ -82,7 +82,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
-			title = "ANNEXURE C (Applicable to CET Colleges)";
+			title = "ANNEXURE C";
 			rowTitle = "CET Managers receiving training on curriculum related studies";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
 					title, cols, supplierRowAnnexure);
@@ -102,7 +102,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
-			title = "ANNEXURE D (Applicable to CET Colleges)";
+			title = "ANNEXURE D";
 			rowTitle = "Number of CET Colleges lecturers awarded skills development programmes";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
 					title, cols, supplierRowAnnexure);
