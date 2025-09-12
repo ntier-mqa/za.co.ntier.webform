@@ -17,10 +17,14 @@ MQA SPOI list, (Diesel Mechanic and Millwright)" />
 	</div>
 
 	<include annexureInfo="@load(vmArtisanDev.program.trade)"
+		applicationProgramVM="@init(vmArtisanDev.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 	<include
 		annexureInfo="@load(vmArtisanDev.program.totalNumApplied)"
+		applicationProgramVM="@init(vmArtisanDev.applicationProgramVM)"
+  		notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 

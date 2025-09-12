@@ -1,14 +1,28 @@
 package za.co.ntier.webform.form.viewmodel.program;
 
+import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
 
-/**
- * If super has an init method but its ChildViewModel doesn't, you can
- * add @Init(superclass=true) on the ChildViewModel to use super's init.
- */
-@Init(superclass = true)
+/** Use super's @Init and also capture args used by the ZUL includes */
+
 public class ArtisanDevVMWrapper extends ProgramVMWrapper<ArtisanDevProgram> {
 
+    private ArtisanDevProgram program;
+    private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
+
+    @Init(superclass = true)
+    public void init(
+        @ExecutionArgParam("program") ArtisanDevProgram program,
+        @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM
+    ) {
+        this.program = program;
+        this.applicationProgramVM = appVM;
+    }
+
+    // getters used by ZUL
+    public ArtisanDevProgram getProgram() { return program; }
+    public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM() { return applicationProgramVM; }
 }
+

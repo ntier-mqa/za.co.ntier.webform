@@ -485,6 +485,9 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    if (programType == ProgramType.ARTISAN_AIDES) {
 	        return isArtisanAidesValid();   
 	    }
+	    if (programType == ProgramType.ARTISAN_DEV) {
+	        return isArtisanDevValid();       // <-- add this
+	    }
 	    return true;
 	}
 	
@@ -686,6 +689,139 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	        }
 	    }
 	    return false;
+	}
+	
+	private boolean isArtisanDevValid() {
+	    if (!(program instanceof ArtisanDevProgram)) return false;
+	    ArtisanDevProgram p = (ArtisanDevProgram) program;
+
+	    // main “trade” grid
+	    AnnexureInfo trade = p.getTrade();
+	    // the “Total No. of Learners Applied For” one-liner at the bottom
+	    AnnexureInfo total = p.getTotalNumApplied();
+
+	    boolean tradeOk = trade == null ? true : validateArtisanDevTrade(trade);
+	    boolean totalOk = total == null ? true : validateArtisanDevTotal(total, trade);
+
+	    // require at least one valid trade row and the total row coherent (if present)
+	    return tradeOk && totalOk && hasValidArtisanDevRow(trade);
+	}
+
+	private boolean validateArtisanDevTrade(AnnexureInfo a) {
+	    if (a == null) return true;
+
+	    ColumnInfo<?> tradeCol   = findCol(a, "Trade"); // label column (not mandatory itself)
+	    ColumnInfo<?> learnersCol= findCol(a, "No. of Learners", "No of Learners", "Learners");
+	    ColumnInfo<?> postalCol  = findCol(a, "Site Postal Code", "Postal Code");
+	    ColumnInfo<?> areaCol    = findCol(a, "Area");
+
+	    // these three are required for a filled row
+	    if (learnersCol == null || postalCol == null || areaCol == null) return false;
+
+	    for (var row : a.getRows()) {
+	        Integer learners = getLearners(learnersCol.getDataType(), row.get(learnersCol));
+
+	        String postal = null;
+	        Object postalCell = row.get(postalCol);
+	        if (postalCell != null) {
+	            try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
+	        }
+
+	        Object areaCell = row.get(areaCol);
+	        Object areaSelected = null;
+	        if (areaCell != null) {
+	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
+	        }
+
+	        boolean emptyLine = (learners == null && (postal == null || postal.isBlank()) && areaSelected == null);
+	        if (emptyLine) continue; // ignore blanks
+
+	        // row is considered filled → must be valid
+	        if (learners == null || learners <= 0) return false;
+	        if (postal == null || postal.isBlank()) return false;
+	        if (areaSelected == null) return false;
+	    }
+	    return true;
+	}
+
+	private boolean hasValidArtisanDevRow(AnnexureInfo a) {
+	    if (a == null) return false;
+	    ColumnInfo<?> learnersCol= findCol(a, "No. of Learners", "No of Learners", "Learners");
+	    ColumnInfo<?> postalCol  = findCol(a, "Site Postal Code", "Postal Code");
+	    ColumnInfo<?> areaCol    = findCol(a, "Area");
+	    if (learnersCol == null || postalCol == null || areaCol == null) return false;
+
+	    for (var row : a.getRows()) {
+	        Integer learners = getLearners(learnersCol.getDataType(), row.get(learnersCol));
+	        String postal = null;
+	        Object postalCell = row.get(postalCol);
+	        if (postalCell != null) {
+	            try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
+	        }
+	        Object areaCell = row.get(areaCol);
+	        Object areaSelected = null;
+	        if (areaCell != null) {
+	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
+	        }
+
+	        if (learners != null && learners > 0
+	                && postal != null && !postal.isBlank()
+	                && areaSelected != null) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+	private boolean validateArtisanDevTotal(AnnexureInfo total, AnnexureInfo trade) {
+	    if (total == null) return true;
+
+	    // total grid looks like: [Total No. of Learners Applied For | Site Postal Code | Area]
+	    ColumnInfo<?> totalCol  = findCol(total, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
+	    ColumnInfo<?> postalCol = findCol(total, "Site Postal Code", "Postal Code");
+	    ColumnInfo<?> areaCol   = findCol(total, "Area");
+	    if (totalCol == null || postalCol == null || areaCol == null) return false;
+
+	    if (total.getRows().isEmpty()) return false;
+	    var row = total.getRows().get(0);
+
+	    Integer totalLearners = getLearners(totalCol.getDataType(), row.get(totalCol));
+
+	    String postal = null;
+	    Object postalCell = row.get(postalCol);
+	    if (postalCell != null) {
+	        try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
+	    }
+	    Object areaCell = row.get(areaCol);
+	    Object areaSelected = null;
+	    if (areaCell != null) {
+	        try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
+	    }
+
+	    // if the line is entirely blank, allow it (some programs don’t require the bottom summary)
+	    boolean blank = (totalLearners == null && (postal == null || postal.isBlank()) && areaSelected == null);
+	    if (blank) return true;
+
+	    // otherwise, it must be valid and (optionally) coherent with the sum of trade rows
+	    if (totalLearners == null || totalLearners <= 0) return false;
+	    if (postal == null || postal.isBlank()) return false;
+	    if (areaSelected == null) return false;
+
+	    // Optional coherence check: sum of trade learners equals total
+	    if (trade != null) {
+	        ColumnInfo<?> learnersCol = findCol(trade, "No. of Learners", "No of Learners", "Learners");
+	        if (learnersCol != null) {
+	            int sum = 0;
+	            for (var r : trade.getRows()) {
+	                Integer n = getLearners(learnersCol.getDataType(), r.get(learnersCol));
+	                if (n != null) sum += n;
+	            }
+	            if (sum > 0 && totalLearners != sum) {
+	                return false; // enforce consistency; drop this if not required
+	            }
+	        }
+	    }
+	    return true;
 	}
 
 
