@@ -12,7 +12,6 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Div;
 
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 import za.co.ntier.webform.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
@@ -38,20 +37,6 @@ public class WebForm extends ADForm {
 		}
 		
 		URL url = WebForm.class.getResource(zulPath);
-		if (url == null) {
-			ClassLoader threadLoader = Thread.currentThread().getContextClassLoader();
-			log.info("url error:" + threadLoader.toString());
-			
-			if (threadLoader != WebForm.class.getClassLoader()) {
-				try {
-					Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
-					url = WebForm.class.getResource(zulPath);
-				} finally {
-					Thread.currentThread().setContextClassLoader(threadLoader);
-				}
-			}
-				
-		}
 		return url.toString();
 	}
 	MenuContextInfo menuContextInfo;
@@ -65,21 +50,9 @@ public class WebForm extends ADForm {
 	protected void initForm() {
 		Map<String, Object> args = new HashMap<>();
 		args.put(menuContextInfoKey, menuContextInfo);
-
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		// Set the context class loader to this bundle's class loader to ensure that
-		// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
-		// used in ZUL files can be found.
-		
-		Component inc = null;
-		try {
-			Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
-			String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
-			inc = Executions.createComponents(zulPathRelative, null, args);
-			int i =2;
-		} finally {
-			Thread.currentThread().setContextClassLoader(cl);
-		}
+			
+		String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
+		Component inc = Executions.createComponents(zulPathRelative, null, args);
 
 		Div outterDiv = new Div();
 		this.appendChild(outterDiv);

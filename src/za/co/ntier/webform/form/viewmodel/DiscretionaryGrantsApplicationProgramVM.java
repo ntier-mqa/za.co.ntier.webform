@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
@@ -453,7 +452,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    				notEmpty(organisationInfo.getPostAddressInfo().getProvinceSelected().getName())
 	    				));
 	    // orgContact required (only if contact section is shown)
-	    boolean orgContactOk = !organisationInfo.getOrgContact().showContact()
+	    boolean orgContactOk = organisationInfo.getOrgContact() == null 
+	    		|| !organisationInfo.getOrgContact().showContact()
 	        || (notEmpty(organisationInfo.getOrgContact().getNameSiteRepresentative())
 	            && notEmpty(organisationInfo.getOrgContact().getRepresentativeDesignation())
 	            && notEmpty(organisationInfo.getOrgContact().getMobileNumber())
@@ -461,7 +461,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	            && notEmpty(organisationInfo.getOrgContact().getEmail()));
 
 	    // alternateOrgContact required (only if shown)
-	    boolean altContactOk = !organisationInfo.getAlternateOrgContact().showContact()
+	    boolean altContactOk = organisationInfo.getAlternateOrgContact() == null
+	    		|| !organisationInfo.getAlternateOrgContact().showContact()
 	        || (notEmpty(organisationInfo.getAlternateOrgContact().getNameSiteRepresentative())
 	            && notEmpty(organisationInfo.getAlternateOrgContact().getRepresentativeDesignation())
 	            && notEmpty(organisationInfo.getAlternateOrgContact().getMobileNumber())
@@ -1075,14 +1076,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			// used in ZUL files can be found.
 			Map<String, Object> args = new HashMap<>();
 			args.put(ComponentVMWrapper.ComponentKey, dialog);
-			
-			Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
-			try {
-				String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");				
-				Executions.createComponents(zulPathRelative, null, args);
-			} finally {
-				Thread.currentThread().setContextClassLoader(cl);
-			}
+			String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");				
+			Executions.createComponents(zulPathRelative, null, args);
 		}
 		public void submitApplication() throws IOException {
 			saveAppForm(false, "Successfully submitted the application form",
