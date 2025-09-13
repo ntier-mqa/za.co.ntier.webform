@@ -28,7 +28,6 @@ public class WebForm extends ADForm {
 	public static final String programTypeMenuContextKey = "+programType";
 
 	private static final long serialVersionUID = -5402852171052424756L;
-	private static final CLogger log = CLogger.getCLogger(WebForm.class);
 	
 	public static final String zulPathRool = "/za/co/ntier/webform/zul/";
 	public static String getBundleResourcePath(String zulPath) {

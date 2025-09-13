@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -19,7 +18,6 @@ import org.compiere.util.Env;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.I_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
@@ -162,6 +160,7 @@ public class ProgramInput extends AnnexureInfo {
 		return programInput;
 	}
 
+	
 	public static void saveFormDisciplines(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput disciplines, String disciplineType)  {
 		
 		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, disciplines);
@@ -177,6 +176,7 @@ public class ProgramInput extends AnnexureInfo {
 		int totalLearners = 0;
 		
 		for (Map<ColumnInfo<?>, Object> rowObj : disciplines.getRows()) {
+			@SuppressWarnings("unchecked")
 			AnnexureRow<X_ZZ_FormDiscipline> row = (AnnexureRow<X_ZZ_FormDiscipline>)rowObj;
 			
 			IntData nunLearners = null;

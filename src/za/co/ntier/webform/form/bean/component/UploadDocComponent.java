@@ -79,6 +79,7 @@ public class UploadDocComponent implements ISaveForm {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
+			@SuppressWarnings("unchecked")
 			AnnexureRow<X_ZZDocumentUploadFile> row = (AnnexureRow<X_ZZDocumentUploadFile>)uploadRow;
 			
 			

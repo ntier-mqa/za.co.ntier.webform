@@ -59,25 +59,6 @@ public class AnnexureInfo implements ISaveForm{
 		return annexureInfo;
 	}
 	
-	public static <T extends AnnexureInfo> T getAnnexureInfoOneLine(Class<T> clazz, String sectionHeader,
-			List<ColumnInfo<?>> columnInfos, String rowTitle, boolean isShowTotal, List<String> twoTitleValue){
-		T annexureInfo = AnnexureInfo.getAnnexureInfo(clazz, columnInfos, isShowTotal);
-
-		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
-		for (ColumnInfo<?> colInfo : columnInfos) {
-			if (colInfo.getDataType() == DataType.Label && rowTitle != null) {
-				LabelData labelData = (LabelData)rowDataInits.get(colInfo);
-				labelData.setValue(rowTitle);
-			} else if (colInfo.getDataType() == DataType.TwoTitles && twoTitleValue != null) {
-				rowDataInits.put(colInfo, twoTitleValue);
-			}
-		}
-
-		annexureInfo.createDetailRow(columnInfos, rowDataInits);
-		annexureInfo.setSectionHeader(sectionHeader);
-		return annexureInfo;
-	}
-
 	public static Integer getIntegerValue(AnnexureInfo cetTvetOneLineInput, ColumnInfo<?> col) {
 		return AnnexureInfo.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
 	}
@@ -145,7 +126,7 @@ public class AnnexureInfo implements ISaveForm{
 	private Map<ColumnInfo<?>, Object> totalRow;
 
 	public void addRow() {
-		Map<ColumnInfo<?>, Object> row = createDetailRow(getColumnInfos());
+		createDetailRow(getColumnInfos());
 		BindUtils.postNotifyChange(this, "rows");
 	}
 

@@ -1,6 +1,5 @@
 package za.co.ntier.webform.form.viewmodel.component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -13,7 +12,6 @@ import org.zkoss.bind.annotation.Init;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.model.I_ZZ_Program_Gen_Rules;
-import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.model.X_ZZ_Program_Gen_Rules;
 
 public class GeneralAppRuleVMWrapper {

@@ -3,7 +3,6 @@ package za.co.ntier.webform.form.viewmodel.component;
 import java.io.IOException;
 import java.util.Map;
 
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;

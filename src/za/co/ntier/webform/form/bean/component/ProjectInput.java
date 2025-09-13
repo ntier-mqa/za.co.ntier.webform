@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -12,7 +11,6 @@ import java.util.function.Supplier;
 import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
-import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 
@@ -22,7 +20,6 @@ import za.co.ntier.webform.model.I_ZZLearnersApplied;
 import za.co.ntier.webform.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZLearnersApplied;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class ProjectInput extends AnnexureInfo {
 	public static final String colNameProgrammeLabel = "Name of Programme";

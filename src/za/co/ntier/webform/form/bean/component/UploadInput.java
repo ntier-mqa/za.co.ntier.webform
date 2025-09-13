@@ -1,7 +1,6 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -9,9 +8,7 @@ import java.util.function.Supplier;
 import org.compiere.model.MTable;
 import org.compiere.util.Env;
 
-import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.I_ZZDocumentUpload;
-import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZDocumentUpload;
 import za.co.ntier.webform.model.X_ZZDocumentUploadFile;
 

@@ -1070,10 +1070,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 		
 		protected void showDialog(Dialog dialog) {
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			// Set the context class loader to this bundle's class loader to ensure that
-			// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
-			// used in ZUL files can be found.
 			Map<String, Object> args = new HashMap<>();
 			args.put(ComponentVMWrapper.ComponentKey, dialog);
 			String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");				
