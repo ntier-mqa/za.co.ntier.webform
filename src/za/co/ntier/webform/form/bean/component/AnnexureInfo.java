@@ -66,7 +66,8 @@ public class AnnexureInfo implements ISaveForm{
 		Map<ColumnInfo<?>, Object> rowDataInits = new HashMap<>();
 		for (ColumnInfo<?> colInfo : columnInfos) {
 			if (colInfo.getDataType() == DataType.Label && rowTitle != null) {
-				rowDataInits.put(colInfo, rowTitle);
+				LabelData labelData = (LabelData)rowDataInits.get(colInfo);
+				labelData.setValue(rowTitle);
 			} else if (colInfo.getDataType() == DataType.TwoTitles && twoTitleValue != null) {
 				rowDataInits.put(colInfo, twoTitleValue);
 			}
@@ -189,6 +190,8 @@ public class AnnexureInfo implements ISaveForm{
 					cellData = textData;
 				}else if (columnInfo.getDataType() == DataType.PositiveNumber) {
 					cellData = new IntData(this, rowDataInits, null);
+				}else if (columnInfo.getDataType() == DataType.Label) {
+					cellData = new LabelData();
 				}
 
 			}

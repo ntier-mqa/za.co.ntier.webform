@@ -234,6 +234,7 @@ public class OrganisationInfo implements ISaveForm {
 			setOrgTaxNumber(applicationForm.getZZ_VAT());
 			setOrgName(applicationForm.getOrgName());
 			setbPartnerId(applicationForm.getC_BPartner_ID());
+			orgRegistrationNumber = applicationForm.getReferenceNo();
 			
 			if(menuContextInfo.getProgramType().isCetTvet() && applicationForm.getC_BPartner_ID() > 0) {
 				for (X_C_BPartner partner : cetTvetColleges) {
@@ -277,6 +278,7 @@ public class OrganisationInfo implements ISaveForm {
 		applicationForm.setZZ_VAT(getOrgTaxNumber());
 		applicationForm.setOrgName(getOrgName());
 		applicationForm.setC_BPartner_ID(getbPartnerId());
+		applicationForm.setReferenceNo(orgRegistrationNumber);
 		
 		if(menuContextInfo.getProgramType().isCetTvet()) {
 			if (cetTvetCollegeSelected == null) {

@@ -25,6 +25,7 @@ import za.co.ntier.webform.form.bean.component.CetTvetMultiLineInput;
 import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
+import za.co.ntier.webform.form.bean.component.LabelData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.model.I_ZZAnnexure;
 import za.co.ntier.webform.model.I_ZZSubAnnex;
@@ -282,7 +283,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		AnnexureRow<X_ZZAnnexure> newRow = (AnnexureRow<X_ZZAnnexure>)annexure.createDetailRow(cols);
 		
 		if (title != null && cols.get(0).getDataType() == DataType.Label) {
-			newRow.put(cols.get(0), rowTitle);
+			((LabelData)newRow.get(cols.get(0))).setValue(rowTitle);
 		}
 		
 		ColumnInfo<?> colTwoValue = AnnexureInfo.lookupColByDataType(DataType.TwoTitles, cols);

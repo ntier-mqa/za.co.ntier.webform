@@ -76,6 +76,7 @@ public class WebForm extends ADForm {
 			Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
 			String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
 			inc = Executions.createComponents(zulPathRelative, null, args);
+			int i =2;
 		} finally {
 			Thread.currentThread().setContextClassLoader(cl);
 		}

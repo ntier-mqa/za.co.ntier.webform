@@ -41,7 +41,7 @@
 
             <!-- Label -->
             <nodom if="${detailCol.dataType == DataType.Label}">
-              <label value="@init(row[detailCol])" />
+              <label value="@init(row[detailCol].value)" />
             </nodom>
 
             <!-- Text (save while typing + notify) -->

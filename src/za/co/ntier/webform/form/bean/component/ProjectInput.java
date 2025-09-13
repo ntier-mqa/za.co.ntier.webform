@@ -87,7 +87,7 @@ public class ProjectInput extends AnnexureInfo {
 		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ProgramInput.colWPALabel, projectInput);
 		
 		if (columnInfos.get(0).getDataType() == DataType.Label && rowTitle != null) {
-			row.put(columnInfos.get(0), rowTitle);
+			((LabelData)row.get(columnInfos.get(0))).setValue(rowTitle);
 		}
 
 		if (colNameProgramme != null && learnersApplied != null && StringUtils.isNoneBlank(learnersApplied.getName())) {

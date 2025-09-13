@@ -18,13 +18,12 @@
 	    <tabpanels children="@load(vmCetTvet.program.annexureInfos)">
 	    		<template name="children" var="annexure">
 		            <tabpanel>
-		                <include annexureInfo="@load(annexure)" 
+		                    <include  annexureInfo="@load(annexure)" 
 							src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 		            </tabpanel>
 		        </template>
 	        
 	    </tabpanels>
 	</tabbox>
-
 	
 </nodom>
