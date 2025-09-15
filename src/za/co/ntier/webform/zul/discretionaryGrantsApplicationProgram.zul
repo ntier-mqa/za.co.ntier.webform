@@ -68,7 +68,7 @@
 			</tabpanel>
 
 			<tabpanel style="color:#CC0033;overflow: scroll;">
-				<div if="${formTab.selectedIndex == 2}" sclass="tabContainer">
+				<div sclass="tabContainer">
 					<div sclass="formContainer">
 						<!-- DGA_Form_Cluster 2 for 2025-2026 FY.pdf -->
 						<include
