@@ -12,10 +12,10 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class NonArtisanDevRPLProgram implements ISaveForm, IProgram {
 	private ProjectInput totalNumApplied;
 
-	public NonArtisanDevRPLProgram(MenuContextInfo menuContextInfo)  {
+	public NonArtisanDevRPLProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm)  {
 
 		setTotalNumApplied(ProjectInput
-				.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel))));
+				.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)), applicationForm));
 
 	}
 

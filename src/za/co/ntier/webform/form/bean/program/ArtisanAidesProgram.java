@@ -15,17 +15,22 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	private ProjectInput qualification;
 	private ProjectInput skill;
 
-	public ArtisanAidesProgram() {
+	public ArtisanAidesProgram(X_ZZ_Application_Form applicationForm) {
+		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel);
+		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel);
+		ColumnInfo<?> colTotal = ColumnInfo.getColTotal(ProjectInput.colTotalLearnersLabel, List.of(colNoEmployed, colNoUnEmployed));
+		
 		qualification = ProjectInput.getProject(null,
-				List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel),
-						ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel),
-						ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)));
+				
+				List.of(colNoEmployed,
+						colNoUnEmployed,
+						colTotal), applicationForm);
 		qualification.setSubSectionHeader("QUALIFICATION");
 		
 		skill = ProjectInput.getProject(null,
-				List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel),
-						ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel),
-						ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)));
+				List.of(colNoEmployed,
+						colNoUnEmployed,
+						colTotal), applicationForm);
 		skill.setSubSectionHeader("SKILLS PROGRAMME");
 	}
 

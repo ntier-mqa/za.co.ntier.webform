@@ -3,7 +3,6 @@ package za.co.ntier.webform.form.viewmodel.component;
 import java.io.IOException;
 import java.util.Map;
 
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -80,9 +79,9 @@ public class AnnexureTableVMWrapper {
 	public void numChange(@BindingParam("annexure") AnnexureInfo annexure,
 			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
 			@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
-		if (annexure.isShowTotal()) {
-			annexure.numChange(row, col, event);
-		}
+		
+		annexure.numChange(row, col, event);
+		
 		notifyProgramComplete();
 
 	}

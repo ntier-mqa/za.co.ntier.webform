@@ -234,6 +234,7 @@ public class OrganisationInfo implements ISaveForm {
 			setOrgTaxNumber(applicationForm.getZZ_VAT());
 			setOrgName(applicationForm.getOrgName());
 			setbPartnerId(applicationForm.getC_BPartner_ID());
+			orgRegistrationNumber = applicationForm.getReferenceNo();
 			
 			if(menuContextInfo.getProgramType().isCetTvet() && applicationForm.getC_BPartner_ID() > 0) {
 				for (X_C_BPartner partner : cetTvetColleges) {
@@ -277,6 +278,7 @@ public class OrganisationInfo implements ISaveForm {
 		applicationForm.setZZ_VAT(getOrgTaxNumber());
 		applicationForm.setOrgName(getOrgName());
 		applicationForm.setC_BPartner_ID(getbPartnerId());
+		applicationForm.setReferenceNo(orgRegistrationNumber);
 		
 		if(menuContextInfo.getProgramType().isCetTvet()) {
 			if (cetTvetCollegeSelected == null) {
@@ -315,10 +317,6 @@ public class OrganisationInfo implements ISaveForm {
 	public void sdlNumberChange() {
 		X_C_BPartner bPartner = null;
 		if (StringUtils.isNoneBlank(sdlNumber)) {
-			if(discretionaryGrantsApplicationProgramVM.checkExistAppForm(sdlNumber)) {
-				return;
-			}
-			
 			bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
 					String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null).setParameters(sdlNumber).first();
 		}
@@ -343,6 +341,10 @@ public class OrganisationInfo implements ISaveForm {
 
 
 			bPartnerId = bPartner.getC_BPartner_ID();
+			
+			if(discretionaryGrantsApplicationProgramVM.checkExistAppForm(bPartner)) {
+				return;
+			}
 		} else {
 			bPartnerId = 0;
 		}
@@ -422,6 +424,9 @@ public class OrganisationInfo implements ISaveForm {
 	 */
 	public void setOrgRegistrationNumber(String orgRegistrationNumber) {
 		this.orgRegistrationNumber = orgRegistrationNumber;
+		if (!menuContextInfo.getProgramType().isCetTvet() && StringUtils.isNoneBlank(orgRegistrationNumber)) {
+			discretionaryGrantsApplicationProgramVM.checkExistAppForm(orgRegistrationNumber);
+		}
 	}
 
 	/**

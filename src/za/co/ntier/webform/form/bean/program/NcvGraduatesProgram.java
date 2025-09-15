@@ -13,19 +13,19 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class NcvGraduatesProgram implements ISaveForm, IProgram {
 	private ProjectInput unemployed;
 
-	public NcvGraduatesProgram(MenuContextInfo menuContextInfo) {
+	public NcvGraduatesProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		if (menuContextInfo.getIsUploadWPAForNVC()) {
 			setUnemployed(ProjectInput.getProject(
 					List.of(
 							ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel),
 							ColumnInfo.getColFileUpload(ProgramInput.colWPALabel, ProgramInput.btWPAText)
-							)));
+							), applicationForm));
 			
 		}else {
 			setUnemployed(ProjectInput.getProject(
 					List.of(
 							ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel)
-							)));
+							), applicationForm));
 		}
 		
 

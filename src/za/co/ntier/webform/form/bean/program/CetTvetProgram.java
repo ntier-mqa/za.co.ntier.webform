@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
@@ -25,6 +25,7 @@ import za.co.ntier.webform.form.bean.component.CetTvetMultiLineInput;
 import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
+import za.co.ntier.webform.form.bean.component.LabelData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.model.I_ZZAnnexure;
 import za.co.ntier.webform.model.I_ZZSubAnnex;
@@ -52,8 +53,8 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		AnnexureInfo annexure = null;
 		AnnexureInfo subAnnexure = null;
 		List<ColumnInfo<?>> cols = null;
-		Supplier<Map<ColumnInfo<?>, Object>> supplierRowSubAnnex = () -> new AnnexureRow<X_ZZSubAnnex>();
-		Supplier<Map<ColumnInfo<?>, Object>> supplierRowAnnexure = () -> new AnnexureRow<X_ZZAnnexure>();
+		Function<AnnexureInfo, AnnexureRow<?>> supplierRowSubAnnex = (parent) -> new AnnexureRow<X_ZZSubAnnex>(parent);
+		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAnnexure = (parent) -> new AnnexureRow<X_ZZAnnexure>(parent);
 		String title = null;
 		String rowTitle = null;
 		X_ZZAnnexure annexureDap = null;
@@ -61,7 +62,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		if (menuContextInfo.getProgramType() == ProgramType.CET) {
 			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
-			title = "ANNEXURE A (Applicable to CET Colleges)";
+			title = "ANNEXURE A";
 			rowTitle = "CET learners funded to access AET Programmes";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
 					title, cols, supplierRowAnnexure);
@@ -72,7 +73,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle),
 					ColumnInfo.getColText(CetTvetOneLineInput.colDisciplineTitle));
-			title = "ANNEXURE B (Applicable to CET Colleges)";
+			title = "ANNEXURE B";
 			rowTitle = "Number of TVET Colleges and HEI graduates that entered CET Internships";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
 					title, cols, supplierRowAnnexure);
@@ -82,7 +83,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
-			title = "ANNEXURE C (Applicable to CET Colleges)";
+			title = "ANNEXURE C";
 			rowTitle = "CET Managers receiving training on curriculum related studies";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
 					title, cols, supplierRowAnnexure);
@@ -102,7 +103,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 			cols = List.of(ColumnInfo.getColLabel("Name of the Intervention"),
 					ColumnInfo.getColPositiveNumber(CetTvetOneLineInput.colNoBeneficiariesTitle));
-			title = "ANNEXURE D (Applicable to CET Colleges)";
+			title = "ANNEXURE D";
 			rowTitle = "Number of CET Colleges lecturers awarded skills development programmes";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(
 					title, cols, supplierRowAnnexure);
@@ -279,10 +280,10 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		}
 		
 		@SuppressWarnings("unchecked")
-		AnnexureRow<X_ZZAnnexure> newRow = (AnnexureRow<X_ZZAnnexure>)annexure.createDetailRow(cols);
+		AnnexureRow<X_ZZAnnexure> newRow = (AnnexureRow<X_ZZAnnexure>)annexure.createDetailRow();
 		
 		if (title != null && cols.get(0).getDataType() == DataType.Label) {
-			newRow.put(cols.get(0), rowTitle);
+			((LabelData)newRow.get(cols.get(0))).setValue(rowTitle);
 		}
 		
 		ColumnInfo<?> colTwoValue = AnnexureInfo.lookupColByDataType(DataType.TwoTitles, cols);
@@ -322,7 +323,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 	public void loadInitRowSubAnnex(List<X_ZZSubAnnex> subAnnexs, AnnexureInfo subAnnexure, List<ColumnInfo<?>> cols) {
 		if (subAnnexs == null || subAnnexs.size() == 0) {
-			subAnnexure.createDetailRow(cols);
+			subAnnexure.createDetailRow();
 			return;
 		}
 
@@ -337,7 +338,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		
 		for (X_ZZSubAnnex subAnnex : subAnnexs) {
 			@SuppressWarnings("unchecked")
-			AnnexureRow<X_ZZSubAnnex> newRow = (AnnexureRow<X_ZZSubAnnex>)subAnnexure.createDetailRow(cols);
+			AnnexureRow<X_ZZSubAnnex> newRow = (AnnexureRow<X_ZZSubAnnex>)subAnnexure.createDetailRow();
 			newRow.setData(subAnnex);
 			if(colTrade != null) {
 				if(subAnnex.getZZ_Trade_ID() != 0) {

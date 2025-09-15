@@ -11,11 +11,13 @@ public class NonArtisanDevProgram implements ISaveForm, IProgram {
 	private ProgramInput firLearnership;
 	private ProgramInput generalLearnership;
 
-	public NonArtisanDevProgram(MenuContextInfo menuContextInfo){
+	public NonArtisanDevProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
 		setGeneralLearnership(ProgramInput.getLearnership(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership,
+				applicationForm,
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()));
 
 		setFirLearnership(ProgramInput.getLearnership(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership,
+				applicationForm,
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()));
 
 	}

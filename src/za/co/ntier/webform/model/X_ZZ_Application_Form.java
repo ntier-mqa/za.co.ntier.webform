@@ -32,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250908L;
+	private static final long serialVersionUID = 20250912L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -247,6 +247,22 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public String getOrgName()
 	{
 		return (String)get_Value(COLUMNNAME_OrgName);
+	}
+
+	/** Set Reference No.
+		@param ReferenceNo Your customer or vendor number at the Business Partner&#039;s site
+	*/
+	public void setReferenceNo (String ReferenceNo)
+	{
+		set_ValueNoCheck (COLUMNNAME_ReferenceNo, ReferenceNo);
+	}
+
+	/** Get Reference No.
+		@return Your customer or vendor number at the Business Partner&#039;s site
+	  */
+	public String getReferenceNo()
+	{
+		return (String)get_Value(COLUMNNAME_ReferenceNo);
 	}
 
 	/** Set User Name.

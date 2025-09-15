@@ -1,30 +1,16 @@
 package za.co.ntier.webform.form.bean;
 
 public enum ProgramType {
-	AET("AET"),
-	ARTISAN_AIDES("ARTISAN AIDES"),
-	ARTISAN_DEV("ARTISAN DEVELOPMENT"),
-	ARTISAN_RPL("ARTISAN RPL"),
-	CANDIDACY("CANDIDACY"),
-	CENTRE_SPECIALISATION("CENTRE OF SPECIALISATION"),
-	CET("CET"),
-	DEV_PROGRAM("DEVELOPMENT PROGRAMM"),
-	EXPERIENCE("EXPERIENCE"),
-	INHOUSE_TRAINING("IN-HOUSE TRAINING"),
-	INTERNSHIP("INTERNSHIP"),
-	NCV_GRADUATES("NCV LEVEL 4 GRADUATES"),
-	NON_ARTISAN_DEV("NON-ARTISAN DEVELOPMENT"),
-	NON_ARTISAN_DEV_RPL("NON-ARTISAN DEVELOPMENT RPL"),
-	OHASSP("OCCUPATIONAL HEALTH AND SAFETY SKILLS PROGRAMMES"),
-	TVET("TVET"),
-	TVET_BURSARS("TVET_BURSARS"),
-	UNKNOWN("UNNOWN PROGRAM TYPE");
+	AET, ARTISAN_AIDES, ARTISAN_DEV, ARTISAN_RPL,
+	CANDIDACY, CENTRE_SPECIALISATION,
+	CET, DEV_PROGRAM,
+	EXPERIENCE, INHOUSE_TRAINING,
+	INTERNSHIP, NCV_GRADUATES, NON_ARTISAN_DEV,
+	NON_ARTISAN_DEV_RPL, OHASSP, TVET, TVET_BURSARS,
+	WORKPLACE_COACHES,
 
-	private String programType;
+	UNKNOWN;
 
-	ProgramType(String programType) {
-		this.programType = programType;
-	}
 
 	public String getZulPath() {
 		switch (this) {
@@ -56,6 +42,8 @@ public enum ProgramType {
 				return "program/ohassp.zul";
 			case INHOUSE_TRAINING:
 				return "program/inhouseTraining.zul";
+			case WORKPLACE_COACHES:
+				return "program/workplaceCoaches.zul";
 			case CET:
 			case TVET:
 			case TVET_BURSARS:
@@ -86,18 +74,14 @@ public enum ProgramType {
 		return this == CANDIDACY || this == INTERNSHIP || this == EXPERIENCE || this == DEV_PROGRAM
 				|| this == ARTISAN_AIDES || this == ARTISAN_DEV || this == CENTRE_SPECIALISATION || this == ARTISAN_RPL
 				|| this == NON_ARTISAN_DEV || this == NON_ARTISAN_DEV_RPL || this == NCV_GRADUATES || this == AET
-				|| this == OHASSP || this == INHOUSE_TRAINING || this == TVET || this == CET || this == TVET_BURSARS;
+				|| this == OHASSP || this == INHOUSE_TRAINING || this == TVET || this == CET || this == TVET_BURSARS || this == WORKPLACE_COACHES;
 	}
 
 	public boolean isShowMainAddressAlter() {
 		return isShowMainAddress() && this != ARTISAN_AIDES && this != ARTISAN_DEV && this != CENTRE_SPECIALISATION
 				&& this != ARTISAN_RPL && this != NON_ARTISAN_DEV && this != NON_ARTISAN_DEV_RPL
 				&& this != NCV_GRADUATES && this != AET && this != OHASSP && this != INHOUSE_TRAINING && this != TVET
-				&& this != CET && this != TVET_BURSARS;
+				&& this != CET && this != TVET_BURSARS || this == WORKPLACE_COACHES;
 	}
-	
-	@Override
-	public String toString() {
-		return programType;
-	}
+
 }

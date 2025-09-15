@@ -10,9 +10,12 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 public class AetProgram implements ISaveForm, IProgram {
 	private ProgramInput aetLearnership;
 
-	public AetProgram(MenuContextInfo menuContextInfo) {
-		setAetLearnership(ProgramInput.getLearnership(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership,
-				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()));
+	public AetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		aetLearnership = ProgramInput.getLearnership(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership,
+				applicationForm,
+				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()
+				);
+		
 	}
 
 	/**

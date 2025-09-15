@@ -14,10 +14,10 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class ArtisanRPLProgram implements ISaveForm, IProgram {
 	private ProjectInput allLearners;
 
-	public ArtisanRPLProgram() {
+	public ArtisanRPLProgram(X_ZZ_Application_Form applicationForm) {
 		allLearners = ProjectInput.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel),
 				ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel),
-				ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)));
+				ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)), applicationForm);
 	}
 
 	/**

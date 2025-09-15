@@ -5,24 +5,25 @@
 <?import za.co.ntier.webform.form.bean.DataType?>
 
 
-
 <nodom
 	viewModel="@id('vmCetTvet') @init('za.co.ntier.webform.form.viewmodel.program.CetTvetVMWrapper')">
 
-	<div
-		children="@load(vmCetTvet.program.annexureInfos)">
-
-		<!-- for each annexure -->
-		<template name="children" var="annexure">
-			<include annexureInfo="@load(annexure)"
-			applicationProgramVM="@init(vmCetTvet.applicationProgramVM)" 
-				src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
-
-
-
-		</template>
-
-
-
-	</div>
+	
+	<tabbox width="100%">
+		<tabs children="@load(vmCetTvet.program.annexureInfos)">
+	        <template name="children" var="annexure">
+	            <tab label="@load(annexure.sectionHeader)" />
+	        </template>
+	    </tabs>
+	    <tabpanels children="@load(vmCetTvet.program.annexureInfos)">
+	    		<template name="children" var="annexure">
+		            <tabpanel>
+		                    <include  annexureInfo="@load(annexure)" 
+							src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+		            </tabpanel>
+		        </template>
+	        
+	    </tabpanels>
+	</tabbox>
+	
 </nodom>

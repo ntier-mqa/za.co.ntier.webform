@@ -2,8 +2,9 @@ package za.co.ntier.webform.form.viewmodel.program;
 
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
+
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 /** Use super's @Init and also capture args used by the ZUL includes */
 

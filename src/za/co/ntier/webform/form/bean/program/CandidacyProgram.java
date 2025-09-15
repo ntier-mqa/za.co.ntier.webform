@@ -10,10 +10,11 @@ import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 public class CandidacyProgram implements ISaveForm, IProgram{
 	private ProgramInput disciplines;
 
-	public CandidacyProgram(MenuContextInfo menuContextInfo) {
+	public CandidacyProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 
 		this.setDisciplines(ProgramInput.getDisciplines(
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
+				applicationForm,
 
 				"""
 										List of disciplines supported for Internships which the number of learners applying should

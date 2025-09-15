@@ -24,7 +24,7 @@
 
     <template name="children" var="row">
       <!-- header -->
-      <nodom if="${rowStatus.first}">
+      <nodom if="${rowStatus.first and vmAnnexure.annexureInfo.showColumnHeader}">
         <nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
           <template name="children" var="titleCol">
             <div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-header':'grid-cell grid-header-cell'))">
@@ -41,7 +41,7 @@
 
             <!-- Label -->
             <nodom if="${detailCol.dataType == DataType.Label}">
-              <label value="@init(row[detailCol])" />
+              <label value="@load(row[detailCol].value)" />
             </nodom>
 
             <!-- Text (save while typing + notify) -->

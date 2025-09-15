@@ -56,6 +56,7 @@ import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
+import za.co.ntier.webform.form.bean.program.WorkplaceCoachesProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -283,33 +284,35 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (programType.isCetTvet()) {
 			setProgram(new CetTvetProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.INTERNSHIP == programType) {
-			setProgram(new InternshipProgram(menuContextInfo));
+			setProgram(new InternshipProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.CANDIDACY == programType) {
-			setProgram(new CandidacyProgram(menuContextInfo));
+			setProgram(new CandidacyProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.EXPERIENCE == programType) {
-			setProgram(new WorkExperienceProgram(menuContextInfo));
+			setProgram(new WorkExperienceProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.DEV_PROGRAM == programType) {
 			setProgram(new MedpProgram());
 		} else if (ProgramType.ARTISAN_AIDES == programType) {
-			setProgram(new ArtisanAidesProgram());
+			setProgram(new ArtisanAidesProgram(applicationForm));
 		} else if (ProgramType.ARTISAN_DEV == programType) {
-			setProgram(new ArtisanDevProgram(menuContextInfo));
+			setProgram(new ArtisanDevProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.CENTRE_SPECIALISATION == programType) {
-			setProgram(new CentreOfSpecialisationProgram(menuContextInfo));
+			setProgram(new CentreOfSpecialisationProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.ARTISAN_RPL == programType) {
-			setProgram(new ArtisanRPLProgram());
+			setProgram(new ArtisanRPLProgram(applicationForm));
 		} else if (ProgramType.NON_ARTISAN_DEV == programType) {
-			setProgram(new NonArtisanDevProgram(menuContextInfo));
+			setProgram(new NonArtisanDevProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.NON_ARTISAN_DEV_RPL == programType) {
-			setProgram(new NonArtisanDevRPLProgram(menuContextInfo));
+			setProgram(new NonArtisanDevRPLProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.NCV_GRADUATES == programType) {
-			setProgram(new NcvGraduatesProgram(menuContextInfo));
+			setProgram(new NcvGraduatesProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.AET == programType) {
-			setProgram(new AetProgram(menuContextInfo));
+			setProgram(new AetProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.OHASSP == programType) {
-			setProgram(new OhasspProgram());
+			setProgram(new OhasspProgram(applicationForm));
 		} else if (ProgramType.INHOUSE_TRAINING == programType) {
-			setProgram(new InhouseTrainingProgram());
+			setProgram(new InhouseTrainingProgram(applicationForm));
+		} else if (ProgramType.WORKPLACE_COACHES == programType) {
+			setProgram(new WorkplaceCoachesProgram(applicationForm));
 		}
 
 		
@@ -516,13 +519,17 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		tab.setSelectedIndex(currentIndex - 1);
 	}
 	
-	public boolean checkExistAppForm(String sdnNo){
-		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Program_Master_Data_ID, I_ZZ_Application_Form.COLUMNNAME_ZZ_SDL_No);
+	public boolean checkExistAppForm(String registrationNumber){
+		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, I_ZZ_Application_Form.COLUMNNAME_ZZ_Org_Reg_No);
 		Query existAppFormQuery = MTable.get(I_ZZ_Application_Form.Table_ID).createQuery(existAppFormWhere, null);
-		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), sdnNo).list();
+		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true)
+				.setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), registrationNumber)
+				.list();
 		if (exitsAppForms.size() > 0) {
 			showDialog("Exist Application Form", 
-					String.format("An application for %s already exists. It was created by User: %s", sdnNo, exitsAppForms.get(0).getUserName()));
+					String.format("An application for %s already exists. It was created by User: %s at %s", registrationNumber, 
+					exitsAppForms.get(0).getUserName(), 
+					exitsAppForms.get(0).getCreated().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS).format(dtf)));
 			return true;
 		}
 		return false;
@@ -534,7 +541,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), bparter.getC_BPartner_ID()).list();
 		if (exitsAppForms.size() > 0) {
 			showDialog("Exist Application Form", 
-					String.format("An application for %s already exists. It was created by User: %s", bparter.getName(), exitsAppForms.get(0).getUserName()));
+					String.format("An application for %s already exists. It was created by User: %s at %s", 
+							bparter.getName(), 
+							exitsAppForms.get(0).getUserName(),
+							exitsAppForms.get(0).getCreated().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS).format(dtf)));
 			return true;
 		}
 		return false;
@@ -740,21 +750,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 		
 		protected void showDialog(Dialog dialog) {
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			// Set the context class loader to this bundle's class loader to ensure that
-			// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
-			// used in ZUL files can be found.
-			String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");
 			Map<String, Object> args = new HashMap<>();
 			args.put(ComponentVMWrapper.ComponentKey, dialog);
-			
-			Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
-			try {
-				
-				Executions.createComponents(zulPathRelative, null, args);
-			} finally {
-				Thread.currentThread().setContextClassLoader(cl);
-			}
+			String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");				
+			Executions.createComponents(zulPathRelative, null, args);
 		}
 		public void submitApplication() throws IOException {
 			saveAppForm(false, "Successfully submitted the application form",

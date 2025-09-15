@@ -11,12 +11,12 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class InhouseTrainingProgram implements ISaveForm, IProgram{
 	private ProjectInput inhouse;
 
-	public InhouseTrainingProgram() {
+	public InhouseTrainingProgram(X_ZZ_Application_Form applicationForm) {
 		this.setInhouse(ProjectInput.getProject(
 				List.of(ColumnInfo.getColLabel(ProjectInput.colNameProgrammeLabel),
 						ColumnInfo.getColPositiveNumber(ProjectInput.colNoLearnersLable)
 						),
-				"Inhouse /Industry/Company based short courses"));
+				"Inhouse /Industry/Company based short courses", applicationForm));
 
 	}
 

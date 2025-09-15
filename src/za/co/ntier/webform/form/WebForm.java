@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,13 +27,15 @@ public class WebForm extends ADForm {
 	public static final String programTypeMenuContextKey = "+programType";
 
 	private static final long serialVersionUID = -5402852171052424756L;
-
+	
 	public static final String zulPathRool = "/za/co/ntier/webform/zul/";
 	public static String getBundleResourcePath(String zulPath) {
 		if (!zulPath.startsWith("/")) {// relative path
 			zulPath = zulPathRool + zulPath;
 		}
-		return WebForm.class.getResource(zulPath).toString();
+		
+		URL url = WebForm.class.getResource(zulPath);
+		return url.toString();
 	}
 	MenuContextInfo menuContextInfo;
 	@Override
@@ -45,20 +48,9 @@ public class WebForm extends ADForm {
 	protected void initForm() {
 		Map<String, Object> args = new HashMap<>();
 		args.put(menuContextInfoKey, menuContextInfo);
-
+			
 		String zulPathRelative = WebForm.class.getResource(menuContextInfo.getZulPath()).toString();
-
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		// Set the context class loader to this bundle's class loader to ensure that
-		// classes provided by the bundle (e.g., za.co.ntier.webform.form.viewmodel.*)
-		// used in ZUL files can be found.
-		Thread.currentThread().setContextClassLoader(WebForm.class.getClassLoader());
-		Component inc = null;
-		try {
-			inc = Executions.createComponents(zulPathRelative, null, args);
-		} finally {
-			Thread.currentThread().setContextClassLoader(cl);
-		}
+		Component inc = Executions.createComponents(zulPathRelative, null, args);
 
 		Div outterDiv = new Div();
 		this.appendChild(outterDiv);

@@ -186,6 +186,21 @@ public interface I_ZZ_Application_Form
 	  */
 	public String getOrgName();
 
+    /** Column name ReferenceNo */
+    public static final String COLUMNNAME_ReferenceNo = "ReferenceNo";
+
+	/** Set Reference No.
+	  * Your customer or vendor number at the Business Partner&#039;
+s site
+	  */
+	public void setReferenceNo (String ReferenceNo);
+
+	/** Get Reference No.
+	  * Your customer or vendor number at the Business Partner&#039;
+s site
+	  */
+	public String getReferenceNo();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
