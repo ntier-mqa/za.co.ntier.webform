@@ -38,4 +38,10 @@ public class OhasspProgram implements ISaveForm, IProgram {
 		this.healthSafetySkills = healthSafetySkills;
 	}
 
+	@Override
+	public boolean isProgramValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

@@ -54,4 +54,10 @@ public class NonArtisanDevProgram implements ISaveForm, IProgram {
 		this.generalLearnership = generalLearnership;
 	}
 
+	@Override
+	public boolean isProgramValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

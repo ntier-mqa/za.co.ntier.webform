@@ -39,4 +39,10 @@ public class NonArtisanDevRPLProgram implements ISaveForm, IProgram {
 		this.totalNumApplied = totalNumApplied;
 	}
 
+	@Override
+	public boolean isProgramValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

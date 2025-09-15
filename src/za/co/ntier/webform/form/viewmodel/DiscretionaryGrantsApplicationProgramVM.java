@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
@@ -37,8 +36,6 @@ import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
-import za.co.ntier.webform.form.bean.component.AnnexureInfo;
-import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.Dialog;
 import za.co.ntier.webform.form.bean.component.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.component.FormInfo;
@@ -155,17 +152,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 	}
 
-	private ColumnInfo<?> findCol(AnnexureInfo a, String... aliases) {
-	    for (ColumnInfo<?> c : a.getColumnInfos()) {
-	        String t = (c.getTitle() != null ? c.getTitle() : "").trim().toLowerCase();
-	        for (String alias : aliases) {
-	            if (t.equals(alias.toLowerCase())) return c;
-	        }
-	    }
-	    return null;
-	}
-
-	/**
+		/**
 	 * @return the alternateProgramContact
 	 */
 	public AddressInfo getAlternateProgramContact() {
@@ -375,21 +362,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	private boolean isEmail(String s)     { return s != null && s.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$"); }
 
-	private boolean isFieldOfStudyBlank(DataType dt, Object cell) {
-	    if (cell == null) return true;
-	    switch (dt) {
-	        case Text:
-	            return ((String)cell).trim().isEmpty();
-	        case List:
-	            // selection required; any non-null item counts as filled
-	            return false;
-	        case Label:
-	        default:
-	            // treat other types defensively
-	            return (cell.toString().trim().isEmpty());
-	    }
-	}
-
+	
 	@DependsOn({
 		  "programType",
 		  "organisationInfo.physicalAddressInfo.areaSelected",
@@ -430,14 +403,15 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    	 orgOk = notEmpty(organisationInfo.getOrgName())  
 	    			 && notEmpty(organisationInfo.getOrgTaxNumber())
 	    			 && notEmpty(organisationInfo.getOrgRegistrationNumber());
+	    	 Integer n = organisationInfo.getOrgSizeInfo() != null
+	 	            ? organisationInfo.getOrgSizeInfo().getNumOfEmployer()
+	 	            : null;
+	 	     orgOk = orgOk && n != null && n > 0;
 	    }
 	    orgOk = orgOk
 	        && notEmpty(organisationInfo.getSdlNumber())
 	        && notEmpty(organisationInfo.getSiteSDLNumber());	    
-	    Integer n = organisationInfo.getOrgSizeInfo() != null
-	            ? organisationInfo.getOrgSizeInfo().getNumOfEmployer()
-	            : null;
-	    orgOk = orgOk && n != null && n > 0;
+	    
 	    boolean addrOk = (!organisationInfo.getPhysicalAddressInfo().showLineAddress()
 	                      || notEmpty(organisationInfo.getPhysicalAddressInfo().getAddressLine()))
 	        && (!organisationInfo.getPhysicalAddressInfo().showGeographicAddress()
@@ -453,7 +427,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    				notEmpty(organisationInfo.getPostAddressInfo().getProvinceSelected().getName())
 	    				));
 	    // orgContact required (only if contact section is shown)
-	    boolean orgContactOk = !organisationInfo.getOrgContact().showContact()
+	    boolean orgContactOk = organisationInfo.getOrgContact() == null
+	    		|| (!organisationInfo.getOrgContact().showContact())
 	        || (notEmpty(organisationInfo.getOrgContact().getNameSiteRepresentative())
 	            && notEmpty(organisationInfo.getOrgContact().getRepresentativeDesignation())
 	            && notEmpty(organisationInfo.getOrgContact().getMobileNumber())
@@ -461,7 +436,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	            && notEmpty(organisationInfo.getOrgContact().getEmail()));
 
 	    // alternateOrgContact required (only if shown)
-	    boolean altContactOk = !organisationInfo.getAlternateOrgContact().showContact()
+	    boolean altContactOk = organisationInfo.getAlternateOrgContact() == null
+	    	||	!organisationInfo.getAlternateOrgContact().showContact()
 	        || (notEmpty(organisationInfo.getAlternateOrgContact().getNameSiteRepresentative())
 	            && notEmpty(organisationInfo.getAlternateOrgContact().getRepresentativeDesignation())
 	            && notEmpty(organisationInfo.getAlternateOrgContact().getMobileNumber())
@@ -472,24 +448,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	            && orgContactOk && altContactOk;
 	}
 
+	
 	@DependsOn("program") // re-evaluate when program/annexure rows change (notified from table VM)
 	public boolean isProgramComplete() {
-	    if (programType == ProgramType.TVET_BURSARS) {
-	        return isTvetBursarsRowsValid();
-	    }
-	    // keep your existing rules for other program types
-	    if (programType.isDev_Program()) {
-	        Integer n = ((MedpProgram) program).getNoOfLearners();
-	        return n != null && n > 0;
-	    }
-	    if (programType == ProgramType.ARTISAN_AIDES) {
-	        return isArtisanAidesValid();   
-	    }
-	    if (programType == ProgramType.ARTISAN_DEV) {
-	        return isArtisanDevValid();       // <-- add this
-	    }
-	    return true;
+		return program.isProgramValid();
 	}
+	
+	
 	
 	@DependsOn({
 		  "programType",
@@ -538,293 +503,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 	
 	private boolean isTenDigits(String s) { return s != null && s.matches("^\\d{10}$"); }
-
-	private boolean isTvetBursarsRowsValid() {
-	    if (!(program instanceof CetTvetProgram)) return false;
-	    CetTvetProgram p = (CetTvetProgram) program;
-
-	    // try every annexure until we find the one that carries these two columns
-	    for (AnnexureInfo a : p.getAnnexureInfos()) {
-	        ColumnInfo<?> fosCol = findCol(a, "Field of Study", "Programme", "Program", "Qualification", "Course");
-	        ColumnInfo<?> nolCol = findCol(a, "No of Learners", "No. of Learners", "Number of Learners", "Learners");
-	        if (fosCol == null || nolCol == null) continue;
-
-	        int okRows = 0;
-	        for (var row : a.getRows()) {
-	            Object fosCell = row.get(fosCol);
-	            Object nolCell = row.get(nolCol);
-
-	            boolean fosBlank = isFieldOfStudyBlank(fosCol.getDataType(), fosCell);
-	            Integer learners = getLearners(nolCol.getDataType(), nolCell);
-
-	            boolean learnersBlank = (learners == null);
-	            boolean bothBlank = fosBlank && learnersBlank;
-
-	            if (bothBlank) {
-	                // ignore the row
-	                continue;
-	            }
-	            // partial or invalid count → fail
-	            if (fosBlank || learners == null || learners <= 0) {
-	                return false;
-	            }
-	            // both present and learners > 0
-	            okRows++;
-	        }
-	        // must have at least one complete row
-	        return okRows >= 1;
-	    }
-	    // didn't find matching annexure/columns
-	    return false;
-	}
-	
-	private boolean isArtisanAidesValid() {
-	    if (!(program instanceof ArtisanAidesProgram)) return false;
-	    ArtisanAidesProgram p = (ArtisanAidesProgram) program;
-
-	    AnnexureInfo qual  = p.getQualification();
-	    AnnexureInfo skill = p.getSkill();
-
-	    boolean qualOk  = qual  == null ? true : validateArtisanAnnexure_NoProgramme(qual);
-	    boolean skillOk = skill == null ? true : validateArtisanAnnexure_NoProgramme(skill);
-
-	    // At least one annexure must have a valid row
-	    return (qualOk && skillOk) && (hasValidRow_NoProgramme(qual) || hasValidRow_NoProgramme(skill));
-	}
-
-	
-	private boolean validateArtisanAnnexure_NoProgramme(AnnexureInfo a) {
-	    if (a == null) return true;
-
-	    ColumnInfo<?> employedCol   = findCol(a, "No. of Employed Learners", "Employed", "No Employed", "Employed Learners");
-	    ColumnInfo<?> unemployedCol = findCol(a, "No. of Unemployed Learners", "Unemployed", "No Unemployed", "Unemployed Learners");
-	    ColumnInfo<?> totalCol      = findCol(a, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
-	    ColumnInfo<?> postalCol     = findCol(a, "Site Postal Code", "Postal Code", "Site Postal");
-	    ColumnInfo<?> areaCol       = findCol(a, "Area");
-
-	    // Must at least have the three counts; location is also required by your UI
-	    if (employedCol == null || unemployedCol == null || totalCol == null || postalCol == null || areaCol == null) {
-	        return false;
-	    }
-
-	    int validRows = 0;
-	    for (var row : a.getRows()) {
-	        Integer employed   = getLearners(employedCol.getDataType(),   row.get(employedCol));
-	        Integer unemployed = getLearners(unemployedCol.getDataType(), row.get(unemployedCol));
-	        Integer total      = getLearners(totalCol.getDataType(),      row.get(totalCol));
-
-	        // postal stored as PostalData; area stored as AreaData (from your AnnexureInfo)
-	        String postal = null;
-	        Object postalCell = row.get(postalCol);
-	        if (postalCell != null) {
-	            try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
-	        }
-
-	        Object areaCell = row.get(areaCol);
-	        Object areaSelected = null;
-	        if (areaCell != null) {
-	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
-	        }
-
-	        boolean allBlank = (employed == null && unemployed == null && total == null && postal == null && areaSelected == null);
-	        if (allBlank) {
-	            // Ignore empty line
-	            continue;
-	        }
-
-	        // Mandatory rules:
-	        //  - counts present and consistent
-	        //  - at least one count > 0
-	        //  - location filled (postal + area)
-	        boolean countsPresent = employed != null && unemployed != null && total != null;
-	        boolean countsPositive = (employed != null && unemployed != null && total != null) &&
-	                                 (employed > 0 || unemployed > 0); // (or require both > 0 if needed)
-	        boolean countsConsistent = (employed != null && unemployed != null && total != null) &&
-	                                   (employed + unemployed == total);
-
-	        boolean locationOk = (postal != null && !postal.trim().isEmpty() && areaSelected != null);
-
-	        boolean rowValid = countsPresent && countsPositive && countsConsistent && locationOk;
-	        if (!rowValid) return false;  // any partially filled/invalid row fails
-	        validRows++;
-	    }
-
-	    // Need at least one valid row in this annexure (qualification or skills)
-	    return validRows >= 1;
-	}
-
-	private boolean hasValidRow_NoProgramme(AnnexureInfo a) {
-	    if (a == null) return false;
-
-	    ColumnInfo<?> employedCol   = findCol(a, "No. of Employed Learners", "Employed", "No Employed", "Employed Learners");
-	    ColumnInfo<?> unemployedCol = findCol(a, "No. of Unemployed Learners", "Unemployed", "No Unemployed", "Unemployed Learners");
-	    ColumnInfo<?> totalCol      = findCol(a, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
-	    ColumnInfo<?> postalCol     = findCol(a, "Site Postal Code", "Postal Code", "Site Postal");
-	    ColumnInfo<?> areaCol       = findCol(a, "Area");
-	    if (employedCol == null || unemployedCol == null || totalCol == null || postalCol == null || areaCol == null) return false;
-
-	    for (var row : a.getRows()) {
-	        Integer employed   = getLearners(employedCol.getDataType(),   row.get(employedCol));
-	        Integer unemployed = getLearners(unemployedCol.getDataType(), row.get(unemployedCol));
-	        Integer total      = getLearners(totalCol.getDataType(),      row.get(totalCol));
-
-	        String postal = null;
-	        Object postalCell = row.get(postalCol);
-	        if (postalCell != null) {
-	            try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
-	        }
-
-	        Object areaCell = row.get(areaCol);
-	        Object areaSelected = null;
-	        if (areaCell != null) {
-	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
-	        }
-
-	        if (employed != null && unemployed != null && total != null &&
-	            (employed > 0 || unemployed > 0) &&
-	            employed + unemployed == total &&
-	            postal != null && !postal.trim().isEmpty() &&
-	            areaSelected != null) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-	
-	private boolean isArtisanDevValid() {
-	    if (!(program instanceof ArtisanDevProgram)) return false;
-	    ArtisanDevProgram p = (ArtisanDevProgram) program;
-
-	    // main “trade” grid
-	    AnnexureInfo trade = p.getTrade();
-	    // the “Total No. of Learners Applied For” one-liner at the bottom
-	    AnnexureInfo total = p.getTotalNumApplied();
-
-	    boolean tradeOk = trade == null ? true : validateArtisanDevTrade(trade);
-	    boolean totalOk = total == null ? true : validateArtisanDevTotal(total, trade);
-
-	    // require at least one valid trade row and the total row coherent (if present)
-	    return tradeOk && totalOk && hasValidArtisanDevRow(trade);
-	}
-
-	private boolean validateArtisanDevTrade(AnnexureInfo a) {
-	    if (a == null) return true;
-
-	    ColumnInfo<?> tradeCol   = findCol(a, "Trade"); // label column (not mandatory itself)
-	    ColumnInfo<?> learnersCol= findCol(a, "No. of Learners", "No of Learners", "Learners");
-	    ColumnInfo<?> postalCol  = findCol(a, "Site Postal Code", "Postal Code");
-	    ColumnInfo<?> areaCol    = findCol(a, "Area");
-
-	    // these three are required for a filled row
-	    if (learnersCol == null || postalCol == null || areaCol == null) return false;
-
-	    for (var row : a.getRows()) {
-	        Integer learners = getLearners(learnersCol.getDataType(), row.get(learnersCol));
-
-	        String postal = null;
-	        Object postalCell = row.get(postalCol);
-	        if (postalCell != null) {
-	            try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
-	        }
-
-	        Object areaCell = row.get(areaCol);
-	        Object areaSelected = null;
-	        if (areaCell != null) {
-	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
-	        }
-
-	        boolean emptyLine = (learners == null && (postal == null || postal.isBlank()) && areaSelected == null);
-	        if (emptyLine) continue; // ignore blanks
-
-	        // row is considered filled → must be valid
-	        if (learners == null || learners <= 0) return false;
-	        if (postal == null || postal.isBlank()) return false;
-	        if (areaSelected == null) return false;
-	    }
-	    return true;
-	}
-
-	private boolean hasValidArtisanDevRow(AnnexureInfo a) {
-	    if (a == null) return false;
-	    ColumnInfo<?> learnersCol= findCol(a, "No. of Learners", "No of Learners", "Learners");
-	    ColumnInfo<?> postalCol  = findCol(a, "Site Postal Code", "Postal Code");
-	    ColumnInfo<?> areaCol    = findCol(a, "Area");
-	    if (learnersCol == null || postalCol == null || areaCol == null) return false;
-
-	    for (var row : a.getRows()) {
-	        Integer learners = getLearners(learnersCol.getDataType(), row.get(learnersCol));
-	        String postal = null;
-	        Object postalCell = row.get(postalCol);
-	        if (postalCell != null) {
-	            try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
-	        }
-	        Object areaCell = row.get(areaCol);
-	        Object areaSelected = null;
-	        if (areaCell != null) {
-	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
-	        }
-
-	        if (learners != null && learners > 0
-	                && postal != null && !postal.isBlank()
-	                && areaSelected != null) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-
-	private boolean validateArtisanDevTotal(AnnexureInfo total, AnnexureInfo trade) {
-	    if (total == null) return true;
-
-	    // total grid looks like: [Total No. of Learners Applied For | Site Postal Code | Area]
-	    ColumnInfo<?> totalCol  = findCol(total, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
-	    ColumnInfo<?> postalCol = findCol(total, "Site Postal Code", "Postal Code");
-	    ColumnInfo<?> areaCol   = findCol(total, "Area");
-	    if (totalCol == null || postalCol == null || areaCol == null) return false;
-
-	    if (total.getRows().isEmpty()) return false;
-	    var row = total.getRows().get(0);
-
-	    Integer totalLearners = getLearners(totalCol.getDataType(), row.get(totalCol));
-
-	    String postal = null;
-	    Object postalCell = row.get(postalCol);
-	    if (postalCell != null) {
-	        try { postal = (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); } catch (Exception ignore) {}
-	    }
-	    Object areaCell = row.get(areaCol);
-	    Object areaSelected = null;
-	    if (areaCell != null) {
-	        try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
-	    }
-
-	    // if the line is entirely blank, allow it (some programs don’t require the bottom summary)
-	    boolean blank = (totalLearners == null && (postal == null || postal.isBlank()) && areaSelected == null);
-	    if (blank) return true;
-
-	    // otherwise, it must be valid and (optionally) coherent with the sum of trade rows
-	    if (totalLearners == null || totalLearners <= 0) return false;
-	    if (postal == null || postal.isBlank()) return false;
-	    if (areaSelected == null) return false;
-
-	    // Optional coherence check: sum of trade learners equals total
-	    if (trade != null) {
-	        ColumnInfo<?> learnersCol = findCol(trade, "No. of Learners", "No of Learners", "Learners");
-	        if (learnersCol != null) {
-	            int sum = 0;
-	            for (var r : trade.getRows()) {
-	                Integer n = getLearners(learnersCol.getDataType(), r.get(learnersCol));
-	                if (n != null) sum += n;
-	            }
-	            if (sum > 0 && totalLearners != sum) {
-	                return false; // enforce consistency; drop this if not required
-	            }
-	        }
-	    }
-	    return true;
-	}
-
-
 	
 	public void nextTab(Tabbox tab) {
 		int currentIndex = tab.getSelectedIndex();

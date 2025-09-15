@@ -26,4 +26,10 @@ public class MedpProgram implements ISaveForm, IProgram {
 	public void setNoOfLearners(int noOfLearners) {
 		this.noOfLearners = noOfLearners;
 	}
+
+	@Override
+	public boolean isProgramValid() {
+		Integer n = ((MedpProgram) this).getNoOfLearners();
+        return n != null && n > 0;
+	}
 }

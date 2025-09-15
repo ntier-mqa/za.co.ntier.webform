@@ -50,4 +50,10 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 	public void setUnemployed(ProjectInput unemployed) {
 		this.unemployed = unemployed;
 	}
+
+	@Override
+	public boolean isProgramValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

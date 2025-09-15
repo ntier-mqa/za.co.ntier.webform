@@ -35,4 +35,10 @@ public class AetProgram implements ISaveForm, IProgram {
 		this.aetLearnership = aetLearnership;
 	}
 
+	@Override
+	public boolean isProgramValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

@@ -41,4 +41,10 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 	public void setDisciplines(ProgramInput disciplines) {
 		this.disciplines = disciplines;
 	}
+
+	@Override
+	public boolean isProgramValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

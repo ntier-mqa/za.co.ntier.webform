@@ -97,4 +97,10 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		this.vacationContact = vacationContact;
 	}
 
+	@Override
+	public boolean isProgramValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

@@ -39,4 +39,10 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 	public void setInhouse(ProjectInput inhouse) {
 		this.inhouse = inhouse;
 	}
+
+	@Override
+	public boolean isProgramValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

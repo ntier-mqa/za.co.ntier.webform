@@ -45,15 +45,17 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
         "component.applicationProgramVM.programContactComplete"
     })
     public boolean isNextDisabled() {
+    	int tabIndex = getComponent().getTab().getSelectedIndex();
         DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
         switch (continueGate) {
-            case "DECLARATION": return !vm.isDeclarationComplete();
-            case "ORG":         return !vm.isOrganisationComplete();
-            case "PROGRAM":     return !vm.isProgramComplete();
-            case "PROGRAMCONTACT": return !vm.isProgramContactComplete();
+            case "DECLARATION": return (tabIndex == 0) ? !vm.isDeclarationComplete() : true;
+            case "ORG":         return (tabIndex >= 1) ? !vm.isOrganisationComplete() : true;
+            case "PROGRAM":     return (tabIndex >= 2) ? !vm.isProgramComplete() : true;
+            case "PROGRAMCONTACT": return (tabIndex >= 3) ? !vm.isProgramContactComplete() : true;
             default:            return false;
         }
     }
+    
 	
 	@DependsOn({
         "component.applicationProgramVM.programContactComplete"

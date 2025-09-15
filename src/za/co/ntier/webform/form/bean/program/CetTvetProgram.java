@@ -589,6 +589,92 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		return new AbstractMap.SimpleEntry<>(annexure, total);
 	}
 	
+
+	@Override
+	public boolean isProgramValid() {
+		if (!(this instanceof CetTvetProgram)) return false;
+		CetTvetProgram p = (CetTvetProgram) this;
+
+	    // try every annexure until we find the one that carries these two columns
+	    for (AnnexureInfo a : p.getAnnexureInfos()) {
+	        ColumnInfo<?> fosCol = findCol(a, "Field of Study", "Programme", "Program", "Qualification", "Course");
+	        ColumnInfo<?> nolCol = findCol(a, "No of Learners", "No. of Learners", "Number of Learners", "Learners");
+	        if (fosCol == null || nolCol == null) continue;
+
+	        int okRows = 0;
+	        for (var row : a.getRows()) {
+	            Object fosCell = row.get(fosCol);
+	            Object nolCell = row.get(nolCol);
+
+	            boolean fosBlank = isFieldOfStudyBlank(fosCol.getDataType(), fosCell);
+	            Integer learners = getLearners(nolCol.getDataType(), nolCell);
+
+	            boolean learnersBlank = (learners == null);
+	            boolean bothBlank = fosBlank && learnersBlank;
+
+	            if (bothBlank) {
+	                continue;
+	            }
+	            // partial or invalid count → fail
+	            if (fosBlank || learners == null || learners <= 0) {
+	                return false;
+	            }
+	            // both present and learners > 0
+	            okRows++;
+	        }
+	        // must have at least one complete row
+	        return okRows >= 1;
+	    }
+	    // didn't find matching annexure/columns
+	    return false;
+	}
+	
+	private ColumnInfo<?> findCol(AnnexureInfo a, String... aliases) {
+	    for (ColumnInfo<?> c : a.getColumnInfos()) {
+	        String t = (c.getTitle() != null ? c.getTitle() : "").trim().toLowerCase();
+	        for (String alias : aliases) {
+	            if (t.equals(alias.toLowerCase())) return c;
+	        }
+	    }
+	    return null;
+	}
+	
+	private boolean isFieldOfStudyBlank(DataType dt, Object cell) {
+	    if (cell == null) return true;
+	    switch (dt) {
+	        case Text:
+	            return ((String)cell).trim().isEmpty();
+	        case List:
+	            // selection required; any non-null item counts as filled
+	            return false;
+	        case Label:
+	        default:
+	            // treat other types defensively
+	            return (cell.toString().trim().isEmpty());
+	    }
+	}
+	
+	private Integer getLearners(DataType dt, Object cell) {
+	    if (cell == null) return null;
+	    switch (dt) {
+	        case PositiveNumber:
+	            // your ZUL uses row[col].value for numbers
+	            try {
+	                Object v = cell.getClass().getMethod("getValue").invoke(cell);
+	                if (v instanceof Number) return ((Number)v).intValue();
+	            } catch (Exception ignore) {}
+	            return null;
+	        case Text:
+	            try {
+	                String s = ((String)cell).trim();
+	                if (s.isEmpty()) return null;
+	                return Integer.parseInt(s);
+	            } catch (Exception e) { return null; }
+	        default:
+	            return null;
+	    }
+	}
+	
 	public void setAddressInfo(AddressInfo addressInfo) {
 		this.addressInfo = addressInfo;
 	}

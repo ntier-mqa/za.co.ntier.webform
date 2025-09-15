@@ -13,6 +13,8 @@
 	</div>
 
 	<include annexureInfo="@load(vmArtisanRPL.program.allLearners)"
+	    applicationProgramVM="@init(vmArtisanRPL.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 </nodom>
