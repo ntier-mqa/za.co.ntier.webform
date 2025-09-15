@@ -84,7 +84,7 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 	@Override
 	public boolean isProgramValid() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }
