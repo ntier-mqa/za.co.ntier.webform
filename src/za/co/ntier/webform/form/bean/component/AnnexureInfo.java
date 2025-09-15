@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -73,14 +73,18 @@ public class AnnexureInfo implements ISaveForm{
 		return null;
 	}
 
-	protected static ColumnInfo<?> lookupCol(DataType dataType, String colName, AnnexureInfo annexure){
+	public static ColumnInfo<?> lookupCol(DataType dataType, String colName, AnnexureInfo annexure){
 		return lookupCol(dataType, colName, annexure.getColumnInfos());
 	}
 	
-	protected static ColumnInfo<?> lookupCol(DataType dataType, String colName, List<ColumnInfo<?>> cols){
+	public static ColumnInfo<?> lookupCol(DataType dataType, String colName, List<ColumnInfo<?>> cols){
 		ColumnInfo<?> foundCol = null;
 		
 		for (ColumnInfo<?> col : cols) {
+			if (dataType != null  && colName != null && dataType.equals(col.getDataType()) && colName.equals(col.getTitle())) {
+				return col;
+			}
+			
 			if (dataType != null && dataType.equals(col.getDataType())){
 				return  col;
 			}
@@ -109,13 +113,15 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 	private List<ColumnInfo<?>> columnInfos;
-	private Supplier<Map<ColumnInfo<?>, Object>> rowInitSupplier;
+	private Function<AnnexureInfo, AnnexureRow<?>> rowInitSupplier;
 	private List<Map<ColumnInfo<?>, Object>> rows;
 	private String sectionHeader;
 
 	private boolean showAddButton = false;
 
 	private boolean showTotal = false;
+	
+	private boolean showColumnHeader = true;
 
 	private AnnexureInfo subAnnexure;
 
@@ -126,7 +132,7 @@ public class AnnexureInfo implements ISaveForm{
 	private Map<ColumnInfo<?>, Object> totalRow;
 
 	public void addRow() {
-		createDetailRow(getColumnInfos());
+		createDetailRow();
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
@@ -135,16 +141,11 @@ public class AnnexureInfo implements ISaveForm{
 			SelectEvent<?, ?> event){
 		
 	}
-	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos) {
-		return createDetailRow(columnInfos, null);
-	}
 
 	@SuppressWarnings("unchecked")
-	public Map<ColumnInfo<?>, Object> createDetailRow(List<ColumnInfo<?>> columnInfos,
-			Map<ColumnInfo<?>, Object> rowDataInits) {
-		if(rowDataInits == null) {
-			rowDataInits = createEmptyRow();
-		}
+	public AnnexureRow<?> createDetailRow() {
+		
+		AnnexureRow<?> rowDataInits = rowInitSupplier.apply(this);
 
 		for (ColumnInfo<?> columnInfo : columnInfos) {
 			Object cellData = null;
@@ -205,11 +206,6 @@ public class AnnexureInfo implements ISaveForm{
 		}
 		
 	}
-	
-	protected Map<ColumnInfo<?>, Object> createEmptyRow(){
-		return rowInitSupplier != null?rowInitSupplier.get():new HashMap<>();
-		
-	}
 
 	/**
 	 * @return the columnInfos
@@ -246,7 +242,7 @@ public class AnnexureInfo implements ISaveForm{
 		return subSectionHeader;
 	}
 
-	public Supplier<Map<ColumnInfo<?>, Object>> getSupplier() {
+	public Function<AnnexureInfo, AnnexureRow<?>> getSupplier() {
 		return rowInitSupplier;
 	}
 
@@ -279,7 +275,7 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 	public void numChange(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, InputEvent event) {
-		if (col.getDataType() == DataType.PositiveNumber) {
+		if (col.getDataType() == DataType.PositiveNumber && showTotal) {
 			Integer total = 0;
 			for (Map<ColumnInfo<?>, Object> r : getRows()) {
 				IntData intData = (IntData)r.get(col);
@@ -291,6 +287,28 @@ public class AnnexureInfo implements ISaveForm{
 			IntData totalValue = (IntData)totalRow.get(col);
 			totalValue.setValue(total);
 			BindUtils.postNotifyChange(totalValue, "value");
+		}
+		
+		if (col.getDataType() == DataType.PositiveNumber) {
+			for (ColumnInfo<?> colTotal : getColumnInfos()) {
+				if (colTotal.getColValues() != null && colTotal.getColValues().contains(col)) {
+					int total = 0;
+					for (ColumnInfo<?> colCal : colTotal.getColValues()) {
+						IntData value = (IntData)row.get(colCal);
+						if (value.getValue() != null)
+							total += value.getValue();
+					}
+					
+					LabelData totalLable = (LabelData)row.get(colTotal);
+					if (total == 0) {
+						totalLable.setValue(null);
+					}else {
+						totalLable.setValue(String.valueOf(total));
+					}
+					
+					BindUtils.postNotifyChange(totalLable, "value");
+				}
+			}
 		}
 
 	}
@@ -356,7 +374,7 @@ public class AnnexureInfo implements ISaveForm{
 		this.subSectionHeader = subSectionHeader;
 	}
 
-	public void setSupplier(Supplier<Map<ColumnInfo<?>, Object>> supplier) {
+	public void setSupplier(Function<AnnexureInfo, AnnexureRow<?>> supplier) {
 		this.rowInitSupplier = supplier;
 	}
 
@@ -386,5 +404,19 @@ public class AnnexureInfo implements ISaveForm{
 		}
 
 		BindUtils.postNotifyChange(row.get(col), "fileName");
+	}
+
+	/**
+	 * @return the showColumnHeader
+	 */
+	public boolean isShowColumnHeader() {
+		return showColumnHeader;
+	}
+
+	/**
+	 * @param showColumnHeader the showColumnHeader to set
+	 */
+	public void setShowColumnHeader(boolean showColumnHeader) {
+		this.showColumnHeader = showColumnHeader;
 	}
 }

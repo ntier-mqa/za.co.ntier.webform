@@ -5,8 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
@@ -56,13 +55,13 @@ public class ProjectInput extends AnnexureInfo {
 		
 		
 		ProjectInput projectInput = AnnexureInfo.getAnnexureInfo(ProjectInput.class, columnInfos, false);
-		Supplier<Map<ColumnInfo<?>, Object>> supplierRowAppForm = () -> new AnnexureRow<X_ZZLearnersApplied>();
+		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAppForm = (parent) -> new AnnexureRow<X_ZZLearnersApplied>(parent);
 		projectInput.setSupplier(supplierRowAppForm);
 		
 		projectInput.setSectionHeader(secctionTitle);
 		
 		@SuppressWarnings("unchecked")
-		AnnexureRow<X_ZZLearnersApplied> row = (AnnexureRow<X_ZZLearnersApplied>)projectInput.createDetailRow(columnInfos);
+		AnnexureRow<X_ZZLearnersApplied> row = (AnnexureRow<X_ZZLearnersApplied>)projectInput.createDetailRow();
 		
 		X_ZZLearnersApplied learnersApplied = null;
 		if (applicationForm != null) {
@@ -77,7 +76,9 @@ public class ProjectInput extends AnnexureInfo {
 		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoEmployedLabel, projectInput);
 		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoUnEmployedLabel, projectInput);
 		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(ProjectInput.colNoLearnersLable, projectInput);
-		ColumnInfo<?> colTotalLearners = AnnexureInfo.lookupColByTitle(ProjectInput.colTotalLearnersLabel, projectInput);
+		
+		ColumnInfo<?> colTotalLearnersInput = AnnexureInfo.lookupCol(DataType.PositiveNumber, ProjectInput.colTotalLearnersLabel, projectInput);
+		ColumnInfo<?> colTotalLearnersLabel = AnnexureInfo.lookupCol(DataType.Label, ProjectInput.colTotalLearnersLabel, projectInput);
 		
 		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, projectInput);
 		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, projectInput);
@@ -103,11 +104,10 @@ public class ProjectInput extends AnnexureInfo {
 			((IntData)row.get(colNoLearners)).setValue(learnersApplied.getZZNoLearners());
 		}
 		
-		if (colTotalLearners != null && learnersApplied != null && learnersApplied.getZZNoTotalLearners() > 0) {
-			((IntData)row.get(colTotalLearners)).setValue(learnersApplied.getZZNoTotalLearners());
+		if (colTotalLearnersInput != null && learnersApplied != null && learnersApplied.getZZNoTotalLearners() > 0) {
+			((IntData)row.get(colTotalLearnersInput)).setValue(learnersApplied.getZZNoTotalLearners());
 		}
 	
-		
 		if(postalColl != null && learnersApplied != null && StringUtils.isNoneBlank(learnersApplied.getPostal())) {
 			PostalData postal = (PostalData)row.get(postalColl);
 			postal.setPostalInternal(learnersApplied.getPostal());
@@ -122,6 +122,8 @@ public class ProjectInput extends AnnexureInfo {
 			}
 		}
 		
+		row.initTotalCol();
+		
 		return projectInput;		
 
 	}
@@ -132,7 +134,8 @@ public class ProjectInput extends AnnexureInfo {
 		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoEmployedLabel, projectInput);
 		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoUnEmployedLabel, projectInput);
 		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(ProjectInput.colNoLearnersLable, projectInput);
-		ColumnInfo<?> colTotalLearners = AnnexureInfo.lookupColByTitle(ProjectInput.colTotalLearnersLabel, projectInput);
+		
+		ColumnInfo<?> colTotalLearnersInput = AnnexureInfo.lookupCol(DataType.PositiveNumber, ProjectInput.colTotalLearnersLabel, projectInput);
 		
 		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, projectInput);
 		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, projectInput);
@@ -167,7 +170,7 @@ public class ProjectInput extends AnnexureInfo {
 			total += cellData;
 		}
 		
-		cellData = AnnexureInfo.getIntegerValue(row, colTotalLearners);
+		cellData = AnnexureInfo.getIntegerValue(row, colTotalLearnersInput);
 		if (cellData != null && cellData != 0) {
 			learnersApplied.setZZNoTotalLearners(cellData);
 			hasData = true;

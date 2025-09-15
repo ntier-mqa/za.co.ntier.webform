@@ -1,8 +1,7 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import za.co.ntier.webform.form.bean.DataType;
 
@@ -19,7 +18,7 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 	 * @param columnInfos
 	 * @return
 	 */
-	public static <T> CetTvetMultiLineInput getCetTvetMultiLineInput(String sectionHeader, List<ColumnInfo<?>> columnInfos, Supplier<Map<ColumnInfo<?>, Object>> emptyRowSupplier) {
+	public static <T> CetTvetMultiLineInput getCetTvetMultiLineInput(String sectionHeader, List<ColumnInfo<?>> columnInfos, Function<AnnexureInfo, AnnexureRow<?>> emptyRowSupplier) {
 		
 		boolean isShowTotalLine = false;
 		for (ColumnInfo<?> col : columnInfos) {

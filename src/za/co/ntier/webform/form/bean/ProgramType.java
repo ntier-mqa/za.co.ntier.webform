@@ -74,14 +74,14 @@ public enum ProgramType {
 		return this == CANDIDACY || this == INTERNSHIP || this == EXPERIENCE || this == DEV_PROGRAM
 				|| this == ARTISAN_AIDES || this == ARTISAN_DEV || this == CENTRE_SPECIALISATION || this == ARTISAN_RPL
 				|| this == NON_ARTISAN_DEV || this == NON_ARTISAN_DEV_RPL || this == NCV_GRADUATES || this == AET
-				|| this == OHASSP || this == INHOUSE_TRAINING || this == TVET || this == CET || this == TVET_BURSARS;
+				|| this == OHASSP || this == INHOUSE_TRAINING || this == TVET || this == CET || this == TVET_BURSARS || this == WORKPLACE_COACHES;
 	}
 
 	public boolean isShowMainAddressAlter() {
 		return isShowMainAddress() && this != ARTISAN_AIDES && this != ARTISAN_DEV && this != CENTRE_SPECIALISATION
 				&& this != ARTISAN_RPL && this != NON_ARTISAN_DEV && this != NON_ARTISAN_DEV_RPL
 				&& this != NCV_GRADUATES && this != AET && this != OHASSP && this != INHOUSE_TRAINING && this != TVET
-				&& this != CET && this != TVET_BURSARS;
+				&& this != CET && this != TVET_BURSARS || this == WORKPLACE_COACHES;
 	}
 
 }

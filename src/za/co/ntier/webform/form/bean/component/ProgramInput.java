@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
@@ -94,7 +94,7 @@ public class ProgramInput extends AnnexureInfo {
 		 
 		
 		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
-		Supplier<Map<ColumnInfo<?>, Object>> supplierRowFormDiscipline = () -> new AnnexureRow<X_ZZ_FormDiscipline>();
+		Function<AnnexureInfo, AnnexureRow<?>> supplierRowFormDiscipline = (parent) -> new AnnexureRow<X_ZZ_FormDiscipline>(parent);
 		programInput.setSupplier(supplierRowFormDiscipline);
 		programInput.setTableTitle(tableTitle);
 
@@ -108,7 +108,7 @@ public class ProgramInput extends AnnexureInfo {
 		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(colNoUnEmployedLabel, programInput);
 		
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
-			AnnexureRow<X_ZZ_FormDiscipline> row = (AnnexureRow<X_ZZ_FormDiscipline>)programInput.createDetailRow(columns);
+			AnnexureRow<X_ZZ_FormDiscipline> row = (AnnexureRow<X_ZZ_FormDiscipline>)programInput.createDetailRow();
 			
 			if (formDisciplines != null) {
 				for(X_ZZ_FormDiscipline formDiscipline : formDisciplines) {

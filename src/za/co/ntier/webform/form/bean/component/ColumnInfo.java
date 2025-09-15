@@ -55,6 +55,12 @@ public class ColumnInfo<T> {
 		return new ColumnInfo<T>(title, DataType.Text);
 	}
 	
+	public static <T> ColumnInfo<T> getColTotal(String title, List<ColumnInfo<?>> colValues) {
+		ColumnInfo<T> colTotal = new ColumnInfo<T>(title, DataType.Label);
+		colTotal.setColValues(colValues);
+		return colTotal;
+	}
+	
 	public static ColumnInfo<Entry<String, String>> getColTwoTitle(String title) {
 		return new ColumnInfo<Entry<String, String>>(title, DataType.TwoTitles);
 
@@ -65,6 +71,8 @@ public class ColumnInfo<T> {
 
 	}
 
+	private List<ColumnInfo<?>> colValues;
+	
 	private String btText;
 
 	private List<T> dataProvider;
@@ -132,5 +140,17 @@ public class ColumnInfo<T> {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	/**
+	 * @return the colValues
+	 */
+	public List<ColumnInfo<?>> getColValues() {
+		return colValues;
+	}
+	/**
+	 * @param colValues the colValues to set
+	 */
+	public void setColValues(List<ColumnInfo<?>> colValues) {
+		this.colValues = colValues;
 	}
 }

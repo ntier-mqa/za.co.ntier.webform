@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.adempiere.webui.panel.ADForm;
-import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;

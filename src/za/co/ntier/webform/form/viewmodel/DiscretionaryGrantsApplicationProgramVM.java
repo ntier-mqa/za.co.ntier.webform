@@ -58,6 +58,7 @@ import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
+import za.co.ntier.webform.form.bean.program.WorkplaceCoachesProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -322,6 +323,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			setProgram(new OhasspProgram(applicationForm));
 		} else if (ProgramType.INHOUSE_TRAINING == programType) {
 			setProgram(new InhouseTrainingProgram(applicationForm));
+		} else if (ProgramType.WORKPLACE_COACHES == programType) {
+			setProgram(new WorkplaceCoachesProgram(applicationForm));
 		}
 
 		

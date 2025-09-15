@@ -21,6 +21,13 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 			, "The MQA will fund the training of coaches to develop their coaching skill"
 			, "The MQA will appoint the service provider who will provide training for the coaches"
 			);
+	
+	private Integer artisanDev;
+	private Integer trained;
+	
+	public WorkplaceCoachesProgram(X_ZZ_Application_Form applicationForm) {
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		// TODO Auto-generated method stub
@@ -49,6 +56,30 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 	 */
 	public void setTrainingtWorkplaces(List<String> trainingtWorkplaces) {
 		this.trainingtWorkplaces = trainingtWorkplaces;
+	}
+	/**
+	 * @return the artisanDev
+	 */
+	public Integer getArtisanDev() {
+		return artisanDev;
+	}
+	/**
+	 * @param artisanDev the artisanDev to set
+	 */
+	public void setArtisanDev(Integer artisanDev) {
+		this.artisanDev = artisanDev;
+	}
+	/**
+	 * @return the trained
+	 */
+	public Integer getTrained() {
+		return trained;
+	}
+	/**
+	 * @param trained the trained to set
+	 */
+	public void setTrained(Integer trained) {
+		this.trained = trained;
 	}
 
 }

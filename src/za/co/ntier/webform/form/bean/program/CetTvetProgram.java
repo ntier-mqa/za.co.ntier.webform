@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
@@ -53,8 +53,8 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		AnnexureInfo annexure = null;
 		AnnexureInfo subAnnexure = null;
 		List<ColumnInfo<?>> cols = null;
-		Supplier<Map<ColumnInfo<?>, Object>> supplierRowSubAnnex = () -> new AnnexureRow<X_ZZSubAnnex>();
-		Supplier<Map<ColumnInfo<?>, Object>> supplierRowAnnexure = () -> new AnnexureRow<X_ZZAnnexure>();
+		Function<AnnexureInfo, AnnexureRow<?>> supplierRowSubAnnex = (parent) -> new AnnexureRow<X_ZZSubAnnex>(parent);
+		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAnnexure = (parent) -> new AnnexureRow<X_ZZAnnexure>(parent);
 		String title = null;
 		String rowTitle = null;
 		X_ZZAnnexure annexureDap = null;
@@ -280,7 +280,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		}
 		
 		@SuppressWarnings("unchecked")
-		AnnexureRow<X_ZZAnnexure> newRow = (AnnexureRow<X_ZZAnnexure>)annexure.createDetailRow(cols);
+		AnnexureRow<X_ZZAnnexure> newRow = (AnnexureRow<X_ZZAnnexure>)annexure.createDetailRow();
 		
 		if (title != null && cols.get(0).getDataType() == DataType.Label) {
 			((LabelData)newRow.get(cols.get(0))).setValue(rowTitle);
@@ -323,7 +323,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 	public void loadInitRowSubAnnex(List<X_ZZSubAnnex> subAnnexs, AnnexureInfo subAnnexure, List<ColumnInfo<?>> cols) {
 		if (subAnnexs == null || subAnnexs.size() == 0) {
-			subAnnexure.createDetailRow(cols);
+			subAnnexure.createDetailRow();
 			return;
 		}
 
@@ -338,7 +338,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		
 		for (X_ZZSubAnnex subAnnex : subAnnexs) {
 			@SuppressWarnings("unchecked")
-			AnnexureRow<X_ZZSubAnnex> newRow = (AnnexureRow<X_ZZSubAnnex>)subAnnexure.createDetailRow(cols);
+			AnnexureRow<X_ZZSubAnnex> newRow = (AnnexureRow<X_ZZSubAnnex>)subAnnexure.createDetailRow();
 			newRow.setData(subAnnex);
 			if(colTrade != null) {
 				if(subAnnex.getZZ_Trade_ID() != 0) {
