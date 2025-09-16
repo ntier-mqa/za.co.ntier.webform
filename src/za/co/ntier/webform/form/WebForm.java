@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.adempiere.webui.panel.ADForm;
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -67,6 +68,9 @@ public class WebForm extends ADForm {
 
 	private MenuContextInfo parseMenuContectInfo() {
 		String zulPath = Env.getContext(Env.getCtx(), m_WindowNo, "+zulPath");
+		if (StringUtils.isBlank(zulPath)) {
+			zulPath = "/za/co/ntier/webform/zul/discretionaryGrantsApplicationProgram.zul";
+		}
 
 		String programMasterDataUUValue = Env.getContext(Env.getCtx(), m_WindowNo, programMasterDataUUMenuContextKey);
 
@@ -79,8 +83,8 @@ public class WebForm extends ADForm {
 
 		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataUUValue,
 				null);
-
-		String formTitle = Env.getContext(Env.getCtx(), m_WindowNo, "+formTitle");
+		
+		String formTitle = masterData.getTitle();
 
 		String applicationFormUU = Env.getContext(Env.getCtx(), m_WindowNo, applicationFormUUKey);
 		

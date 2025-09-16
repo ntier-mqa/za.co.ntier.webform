@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmWit') @init('za.co.ntier.webform.form.viewmodel.program.WorkerInitiatedTrainingVMWrapper')">
+
+</nodom>

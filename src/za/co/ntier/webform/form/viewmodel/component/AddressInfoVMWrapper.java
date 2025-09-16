@@ -8,11 +8,8 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.bean.component.AddressInfo;
-import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 @Init(superclass = true)
 public class AddressInfoVMWrapper extends ComponentVMWrapper<AddressInfo>{
-	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
-    private String notifyTarget;
 	
 	// set text fields while typing ("" -> null)
     @Command
@@ -29,24 +26,24 @@ public class AddressInfoVMWrapper extends ComponentVMWrapper<AddressInfo>{
             case "landlineNumber":             component.setLandlineNumber(v); break;
             case "email":                      component.setEmail(v); break;
         }
-        BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
+        BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
     }
     
     @Command
     public void areaSelected(@BindingParam("item") MCity item) {
     	component.setAreaSelected(item); // matches setter signature
-        BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
+        BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
     }
 
     @Command
     public void provinceSelected(@BindingParam("item") MRegion item) {
     	component.setProvinceSelected(item); // matches setter signature
-        BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
+        BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
     }
 	@Command
     public void notifyParentCompleteness() {
-        if (applicationProgramVM != null && notifyTarget != null) {
-            org.zkoss.bind.BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
+        if (getApplicationProgramVM() != null && getNotifyTarget() != null) {
+            org.zkoss.bind.BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
         }
     }
 	

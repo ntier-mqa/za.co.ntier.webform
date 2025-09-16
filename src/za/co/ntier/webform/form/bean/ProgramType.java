@@ -10,10 +10,15 @@ public enum ProgramType {
 	WORKPLACE_COACHES,
 	MINING_COMMUNITY,
 	UNEMPLOYED_YOUTH,
-
+	SMALL_BUSINESS,
+	WORKER_INITIATED_TRAINING,
+	LEARNING_MATERIALS_DEVELOPMENT,
+	MULTIYEAR_PARTNERSHIP_INTERNSHIP,
+	MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE,
+	STANDARD_SETTING,
 	UNKNOWN;
-
-
+	
+	
 	public String getZulPath() {
 		switch (this) {
 			case CANDIDACY:
@@ -50,6 +55,18 @@ public enum ProgramType {
 				return "program/miningCommunityUnemployedYouth.zul";
 			case UNEMPLOYED_YOUTH:
 				return "program/miningCommunityUnemployedYouth.zul";
+			case SMALL_BUSINESS:
+				return "program/smallBusiness.zul";
+			case WORKER_INITIATED_TRAINING:
+				return "program/workerInitiatedTraining.zul";
+			case LEARNING_MATERIALS_DEVELOPMENT:
+				return "program/learningMaterialsDevelopment.zul";
+			case MULTIYEAR_PARTNERSHIP_INTERNSHIP:
+				return "program/multiyearPartnershipInternship.zul";
+			case MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE:
+				return "program/multiyearPartnershipWorkExperience.zul";
+			case STANDARD_SETTING:
+				return "program/standardSetting.zul";
 			case CET:
 			case TVET:
 			case TVET_BURSARS:

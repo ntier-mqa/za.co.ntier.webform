@@ -16,12 +16,8 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
-import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
-	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
-	private String notifyTarget;
-
 	private boolean isSubAnnexure = false;
 
 	@Command
@@ -57,8 +53,8 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 	/** Notify parent VM that program completeness may have changed */
 	@Command
 	public void notifyProgramComplete() { 
-		if (applicationProgramVM != null && notifyTarget != null) {
-			org.zkoss.bind.BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
+		if (getApplicationProgramVM() != null && getNotifyTarget() != null) {
+			org.zkoss.bind.BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
 		}
 	}
 

@@ -3,7 +3,6 @@ package za.co.ntier.webform.form.viewmodel.program;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.bean.program.CetTvetProgram;
-import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 /**
  * If super has an init method but its ChildViewModel doesn't, you can
@@ -11,13 +10,5 @@ import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramV
  */
 @Init(superclass = true)
 public class CetTvetVMWrapper extends ProgramVMWrapper<CetTvetProgram>{
-	
-
-    private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
-    private CetTvetProgram program;
-
-    public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM() { return applicationProgramVM; }
-
-    public CetTvetProgram getProgram() { return program; }
-   
+	   
 }

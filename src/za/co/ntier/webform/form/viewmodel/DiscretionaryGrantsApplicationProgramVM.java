@@ -458,7 +458,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	
 	@DependsOn("program") // re-evaluate when program/annexure rows change (notified from table VM)
 	public boolean isProgramComplete() {
-		return program.isProgramValid();
+		if (program != null) {
+			return program.isProgramValid();
+		}
+		return true;//app list
 	}
 	
 	

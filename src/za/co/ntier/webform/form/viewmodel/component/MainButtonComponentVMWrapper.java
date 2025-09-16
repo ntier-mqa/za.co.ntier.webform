@@ -24,15 +24,14 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 	}
 	
 	
-	@Init(superclass = false)
+	@Init(superclass = true)
 	public void init(
-		    @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM applicationProgramVM,
 		    @ExecutionArgParam("tabType") TabType tabType,
 		    @ExecutionArgParam("tab") Tabbox tab,
 		    @ExecutionArgParam("continueGate") String continueGate,   // <-- add
 		    @ExecutionArgParam("submitGate")   String submitGate      // <-- add
 			) {
-		setComponent(new MainButtonComponent(applicationProgramVM, tabType, tab));
+		setComponent(new MainButtonComponent(getApplicationProgramVM(), tabType, tab));
 		this.continueGate = (continueGate != null) ? continueGate : "NONE"; // <-- set
 		this.submitGate   = (submitGate   != null) ? submitGate   : "NONE"; // <-- set
 	}
