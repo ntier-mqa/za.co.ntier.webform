@@ -25,14 +25,15 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 		
 		return converted;
 	}
-	private Boolean isCollegeRecognised= Boolean.FALSE;
+	private Boolean isCollegeRecognised= null;
 	
-	private Boolean isCollegeRegistered = Boolean.TRUE;
+	private Boolean isCollegeRegistered = null;
 	
 	private Boolean isCollegeSla = null;
 
 	public CentreOfSpecialisationProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm)  {
 		super(menuContextInfo, applicationForm);
+		initComponent(applicationForm);
 	}
 
 	/**
@@ -64,6 +65,13 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 		applicationForm.saveEx(trxName);
 	}
 
+	public void initComponent(X_ZZ_Application_Form applicationForm) {
+		if (applicationForm != null) {
+			isCollegeRecognised = convert(applicationForm.getZZCollegeRecognised());
+			isCollegeRegistered = convert(applicationForm.getZZCollegeRegistered());
+			isCollegeSla = convert(applicationForm.getZZCollegeSla());
+		}
+	}
 	/**
 	 * @param isCollegeRecognised the isCollegeRecognised to set
 	 */

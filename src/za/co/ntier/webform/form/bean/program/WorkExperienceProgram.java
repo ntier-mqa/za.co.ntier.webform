@@ -27,6 +27,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 										List of disciplines supported for practical training which the number of learners applying
 						should be based on
 										"""));
+		initComponent(applicationForm);
 	}
 
 	/**
@@ -57,6 +58,10 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		this.setApplicationForm(applicationForm);
 		if (vacationContact != null) {
 			vacationContact.initComponent(applicationForm);
+		}
+		
+		if (applicationForm != null && applicationForm.getZZTotalNumberApplied() > 0) {
+			noOfLearners = applicationForm.getZZTotalNumberApplied();
 		}
 	}
 	
