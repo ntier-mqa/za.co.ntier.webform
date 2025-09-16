@@ -73,4 +73,8 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 	public void setCollegeSla(String isCollegeSla) {
 		this.isCollegeSla = Util.convert(isCollegeSla);
 	}
+	@Override
+	public boolean isProgramValid() {
+		return true;
+	}
 }
