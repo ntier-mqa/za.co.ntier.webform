@@ -10,11 +10,17 @@
 	</hlayout>
 	
 	<include  annexureInfo="@load(vmMcuy.program.learnerApplys)" 
+	    applicationProgramVM="@init(vmMcuy.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 		
 	<include  annexureInfo="@load(vmMcuy.program.budgetOverview)" 
+		applicationProgramVM="@init(vmMcuy.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 		
 	<include  annexureInfo="@load(vmMcuy.program.strategy)" 
+		applicationProgramVM="@init(vmMcuy.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>
