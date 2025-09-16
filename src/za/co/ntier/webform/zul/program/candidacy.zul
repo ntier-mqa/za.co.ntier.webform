@@ -8,6 +8,8 @@
 	</hlayout>
 
 	<include annexureInfo="@load(vmCandidacy.program.disciplines)"
+	    applicationProgramVM="@init(vmCandidacy.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 </nodom>
