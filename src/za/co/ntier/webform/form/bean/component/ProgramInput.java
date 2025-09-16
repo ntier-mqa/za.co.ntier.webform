@@ -16,6 +16,7 @@ import org.compiere.model.Query;
 import org.compiere.util.Env;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.I_ZZ_FormDiscipline;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -125,16 +126,16 @@ public class ProgramInput extends AnnexureInfo {
 			
 			row.put(disciplineColl, learnerInputInfo);
 			
-			if(nunLearnersColl != null && formDisciplineSaved != null && formDisciplineSaved.getZZNoLearners() > 0) {
-				((IntData)row.get(nunLearnersColl)).setValue(formDisciplineSaved.getZZNoLearners());
+			if(nunLearnersColl != null && formDisciplineSaved != null) {
+				((IntData)row.get(nunLearnersColl)).setValue(Util.convert(formDisciplineSaved.getZZNoLearners()));
 			}
 			
-			if(numEmployedColl != null && formDisciplineSaved != null && formDisciplineSaved.getZZNoEmployedLearners() > 0) {
-				((IntData)row.get(numEmployedColl)).setValue(formDisciplineSaved.getZZNoEmployedLearners());
+			if(numEmployedColl != null && formDisciplineSaved != null) {
+				((IntData)row.get(numEmployedColl)).setValue(Util.convert(formDisciplineSaved.getZZNoEmployedLearners()));
 			}
 			
-			if(numUnEmployedColl != null && formDisciplineSaved != null && formDisciplineSaved.getZZNoUnEmployedLearners() > 0) {
-				((IntData)row.get(numUnEmployedColl)).setValue(formDisciplineSaved.getZZNoUnEmployedLearners());
+			if(numUnEmployedColl != null && formDisciplineSaved != null) {
+				((IntData)row.get(numUnEmployedColl)).setValue(Util.convert(formDisciplineSaved.getZZNoUnEmployedLearners()));
 			}
 			
 			if(areaColl != null && formDisciplineSaved != null && formDisciplineSaved.getC_City_ID() > 0) {

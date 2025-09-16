@@ -290,7 +290,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		} else if (ProgramType.EXPERIENCE == programType) {
 			setProgram(new WorkExperienceProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.DEV_PROGRAM == programType) {
-			setProgram(new MedpProgram());
+			setProgram(new MedpProgram(applicationForm));
 		} else if (ProgramType.ARTISAN_AIDES == programType) {
 			setProgram(new ArtisanAidesProgram(applicationForm));
 		} else if (ProgramType.ARTISAN_DEV == programType) {

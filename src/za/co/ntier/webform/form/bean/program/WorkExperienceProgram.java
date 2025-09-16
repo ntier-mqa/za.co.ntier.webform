@@ -3,6 +3,7 @@ package za.co.ntier.webform.form.bean.program;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
@@ -27,6 +28,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 										List of disciplines supported for practical training which the number of learners applying
 						should be based on
 										"""));
+		initComponent(applicationForm);
 	}
 
 	/**
@@ -58,6 +60,10 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		if (vacationContact != null) {
 			vacationContact.initComponent(applicationForm);
 		}
+		
+		if (applicationForm != null) {
+			noOfLearners = Util.convert(applicationForm.getZZTotalNumberApplied());
+		}
 	}
 	
 	@Override
@@ -65,10 +71,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		this.setApplicationForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
 		ProgramInput.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
-		if (noOfLearners == null)
-			applicationForm.set_ValueOfColumn(I_ZZ_Application_Form.COLUMNNAME_ZZTotalNumberApplied, null);
-		else
-			applicationForm.setZZTotalNumberApplied(noOfLearners);
+		applicationForm.setZZTotalNumberApplied(Util.convert(noOfLearners));
 		applicationForm.saveEx(trxName);
 	}
 
