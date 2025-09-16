@@ -307,6 +307,10 @@
     text-align: center;
 }
 
+.mqaWebForm .grid-cell:has(button.addrow) {
+    justify-content: space-between;
+}
+
 .mqaWebForm .grid-cell input[type=text],
 .mqaWebForm .grid-cell select
 {

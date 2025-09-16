@@ -393,13 +393,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	}
 
 	public void loadInitRowSubAnnex(X_ZZ_Application_Form parent, AnnexureInfo subAnnex, List<ColumnInfo<?>> cols) {
-		List<X_ZZSubAnnex> subAnnexs = null;
-		if (parent != null) {
-			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID), null);
-			directSubAnnexQuery.setParameters(applicationForm.getZZ_Application_Form_ID());
-			subAnnexs = directSubAnnexQuery.list();
-		}
-		
+		List<X_ZZSubAnnex> subAnnexs = MasterUtil.loadSubAnnex(parent);
 		loadInitRowSubAnnex(subAnnexs, subAnnex, cols);
 	}
 	

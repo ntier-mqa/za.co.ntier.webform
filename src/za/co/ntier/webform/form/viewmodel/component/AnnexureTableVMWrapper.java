@@ -14,6 +14,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
@@ -77,7 +78,7 @@ public class AnnexureTableVMWrapper {
 
 	@Command
 	public void numChange(@BindingParam("annexure") AnnexureInfo annexure,
-			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
+			@BindingParam("row") AnnexureRow<?> row, @BindingParam("col") ColumnInfo<?> col,
 			@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
 		
 		annexure.numChange(row, col, event);

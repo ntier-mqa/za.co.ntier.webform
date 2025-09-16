@@ -20,6 +20,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
+import za.co.ntier.webform.model.X_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class AnnexureInfo implements ISaveForm{
@@ -274,7 +275,8 @@ public class AnnexureInfo implements ISaveForm{
 		return showTotal;
 	}
 
-	public void numChange(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, InputEvent event) {
+	public void numChange(AnnexureRow<?> row, ColumnInfo<?> col, InputEvent event) {
+		// update total row
 		if (col.getDataType() == DataType.PositiveNumber && showTotal) {
 			Integer total = 0;
 			for (Map<ColumnInfo<?>, Object> r : getRows()) {
@@ -289,6 +291,7 @@ public class AnnexureInfo implements ISaveForm{
 			BindUtils.postNotifyChange(totalValue, "value");
 		}
 		
+		// update total column
 		if (col.getDataType() == DataType.PositiveNumber) {
 			for (ColumnInfo<?> colTotal : getColumnInfos()) {
 				if (colTotal.getColValues() != null && colTotal.getColValues().contains(col)) {
@@ -310,7 +313,22 @@ public class AnnexureInfo implements ISaveForm{
 				}
 			}
 		}
-
+		
+		// update expression column
+		if (col.getDataType() == DataType.PositiveNumber) {
+			for (ColumnInfo<?> colTotal : getColumnInfos()) {
+				if (colTotal.getExpression() != null) {
+					Integer value = colTotal.getExpression().apply(row);
+					LabelData expressionLable = (LabelData) row.get(colTotal);
+					if (value == null) {
+						expressionLable.setValue(null);
+					}else {
+						expressionLable.setValue(String.valueOf(value));
+					}
+					BindUtils.postNotifyChange(expressionLable, "value");
+				}
+			}
+		}
 	}
 
 	public void postalChange (Map<ColumnInfo<?>, Object> row, 
@@ -419,4 +437,6 @@ public class AnnexureInfo implements ISaveForm{
 	public void setShowColumnHeader(boolean showColumnHeader) {
 		this.showColumnHeader = showColumnHeader;
 	}
+	
+	
 }

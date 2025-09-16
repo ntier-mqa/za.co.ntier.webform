@@ -141,7 +141,7 @@
             </nodom>
 
             <!-- Add Row button -->
-            <button sclass="btn-circle"
+            <button sclass="btn-circle addrow"
                     if="${ rowStatus.last and detailColStatus.last and vmAnnexure.annexureInfo.showAddButton}"
                     iconSclass="z-icon-plus" label=""
                     onClick="@command('addDetailLine', annexure=vmAnnexure.annexureInfo)" />

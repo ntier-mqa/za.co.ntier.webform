@@ -17,6 +17,7 @@ import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MCity;
 import org.compiere.model.MCountry;
 import org.compiere.model.MRegion;
+import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CCache;
@@ -27,6 +28,9 @@ import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
+import za.co.ntier.webform.model.I_ZZSubAnnex;
+import za.co.ntier.webform.model.X_ZZSubAnnex;
+import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_Disciplines;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 import za.co.ntier.webform.model.X_ZZ_Learnerships;
@@ -287,5 +291,16 @@ public class MasterUtil {
 		}
 
 		return savedFile.getAbsolutePath();
+	}
+	
+	public static List<X_ZZSubAnnex> loadSubAnnex(X_ZZ_Application_Form parent) {
+		List<X_ZZSubAnnex> subAnnexs = null;
+		if (parent != null) {
+			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID), null);
+			directSubAnnexQuery.setParameters(parent.getZZ_Application_Form_ID());
+			subAnnexs = directSubAnnexQuery.list();
+		}
+		
+		return subAnnexs;
 	}
 }

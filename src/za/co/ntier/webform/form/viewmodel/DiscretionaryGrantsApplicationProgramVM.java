@@ -51,6 +51,7 @@ import za.co.ntier.webform.form.bean.program.CetTvetProgram;
 import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
 import za.co.ntier.webform.form.bean.program.MedpProgram;
+import za.co.ntier.webform.form.bean.program.MiningCommunityUnemployedYouthProgram;
 import za.co.ntier.webform.form.bean.program.NcvGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
@@ -313,6 +314,9 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			setProgram(new InhouseTrainingProgram(applicationForm));
 		} else if (ProgramType.WORKPLACE_COACHES == programType) {
 			setProgram(new WorkplaceCoachesProgram(applicationForm));
+		}else if (ProgramType.MINING_COMMUNITY == programType
+				|| ProgramType.UNEMPLOYED_YOUTH == programType) {
+			program = new MiningCommunityUnemployedYouthProgram(menuContextInfo, applicationForm);
 		}
 
 		

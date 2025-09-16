@@ -8,6 +8,8 @@ public enum ProgramType {
 	INTERNSHIP, NCV_GRADUATES, NON_ARTISAN_DEV,
 	NON_ARTISAN_DEV_RPL, OHASSP, TVET, TVET_BURSARS,
 	WORKPLACE_COACHES,
+	MINING_COMMUNITY,
+	UNEMPLOYED_YOUTH,
 
 	UNKNOWN;
 
@@ -44,6 +46,10 @@ public enum ProgramType {
 				return "program/inhouseTraining.zul";
 			case WORKPLACE_COACHES:
 				return "program/workplaceCoaches.zul";
+			case MINING_COMMUNITY:
+				return "program/miningCommunityUnemployedYouth.zul";
+			case UNEMPLOYED_YOUTH:
+				return "program/miningCommunityUnemployedYouth.zul";
 			case CET:
 			case TVET:
 			case TVET_BURSARS:

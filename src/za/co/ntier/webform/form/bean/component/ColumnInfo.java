@@ -2,9 +2,11 @@ package za.co.ntier.webform.form.bean.component;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.X_ZZDocumentUpload;
+import za.co.ntier.webform.model.X_ZZSubAnnex;
 
 public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {
@@ -58,6 +60,14 @@ public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColTotal(String title, List<ColumnInfo<?>> colValues) {
 		ColumnInfo<T> colTotal = new ColumnInfo<T>(title, DataType.Label);
 		colTotal.setColValues(colValues);
+		return colTotal;
+	}
+	
+	private Function<AnnexureRow<?>, Integer> expression;
+	
+	public static <T> ColumnInfo<T> getColExpression(String title, Function<AnnexureRow<?>, Integer> expression) {
+		ColumnInfo<T> colTotal = new ColumnInfo<T>(title, DataType.Label);
+		colTotal.setExpression(expression);
 		return colTotal;
 	}
 	
@@ -152,5 +162,17 @@ public class ColumnInfo<T> {
 	 */
 	public void setColValues(List<ColumnInfo<?>> colValues) {
 		this.colValues = colValues;
+	}
+	/**
+	 * @return the expression
+	 */
+	public Function<AnnexureRow<?>, Integer> getExpression() {
+		return expression;
+	}
+	/**
+	 * @param expression the expression to set
+	 */
+	public void setExpression(Function<AnnexureRow<?>, Integer> expression) {
+		this.expression = expression;
 	}
 }

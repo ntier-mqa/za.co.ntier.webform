@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmMcuy') @init('za.co.ntier.webform.form.viewmodel.program.MiningCommunityUnemployedYouthVMWrapper')">
+	
+	<hlayout sclass="subSectionHeader">
+		<label sclass="subSectionHeaderTitle"
+			value="@init(vmMcuy.program.programTitle)" />
+	</hlayout>
+	
+	<include  annexureInfo="@load(vmMcuy.program.learnerApplys)" 
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+		
+	<include  annexureInfo="@load(vmMcuy.program.budgetOverview)" 
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+		
+	<include  annexureInfo="@load(vmMcuy.program.strategy)" 
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+</nodom>
