@@ -22,15 +22,29 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 			, "The MQA will appoint the service provider who will provide training for the coaches"
 			);
 	
-	private Integer artisanDev;
-	private Integer trained;
+	private Integer placementWorkplaceCoaches;
+	public Integer getPlacementWorkplaceCoaches() {
+		return placementWorkplaceCoaches;
+	}
+	public void setPlacementWorkplaceCoaches(Integer placementWorkplaceCoaches) {
+		this.placementWorkplaceCoaches = placementWorkplaceCoaches;
+	}
+	public Integer getTrainingWorkplaceCoaches() {
+		return trainingWorkplaceCoaches;
+	}
+	public void setTrainingWorkplaceCoaches(Integer trainingWorkplaceCoaches) {
+		this.trainingWorkplaceCoaches = trainingWorkplaceCoaches;
+	}
+
+	private Integer trainingWorkplaceCoaches;
 	
 	public WorkplaceCoachesProgram(X_ZZ_Application_Form applicationForm) {
 		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
+		applicationForm.setZZPlacementWorkplaceCoaches(placementWorkplaceCoaches);
+		applicationForm.setZZTrainingWorkplaceCoaches(trainingWorkplaceCoaches);
 		
 	}
 	/**
@@ -57,30 +71,7 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 	public void setTrainingtWorkplaces(List<String> trainingtWorkplaces) {
 		this.trainingtWorkplaces = trainingtWorkplaces;
 	}
-	/**
-	 * @return the artisanDev
-	 */
-	public Integer getArtisanDev() {
-		return artisanDev;
-	}
-	/**
-	 * @param artisanDev the artisanDev to set
-	 */
-	public void setArtisanDev(Integer artisanDev) {
-		this.artisanDev = artisanDev;
-	}
-	/**
-	 * @return the trained
-	 */
-	public Integer getTrained() {
-		return trained;
-	}
-	/**
-	 * @param trained the trained to set
-	 */
-	public void setTrained(Integer trained) {
-		this.trained = trained;
-	}
+	
 	@Override
 	public boolean isProgramValid() {
 		// TODO Auto-generated method stub

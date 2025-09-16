@@ -28,7 +28,7 @@
 						<label value="Number of placements of workplace coaches coaching learners on Artisan Development Programmes applying for?" />
 					</div>
 					<div sclass="grid-cell">
-						<intbox value="@bind(vmWorkplaceCoaches.program.artisanDev)" />
+						<intbox value="@bind(vmWorkplaceCoaches.program.placementWorkplaceCoaches)" />
 					</div>
 				</div>
             </tabpanel>
@@ -53,7 +53,7 @@
 						<label value="Number of workplace coaches to be trained applying for?" />
 					</div>
 					<div sclass="grid-cell">
-						<intbox value="@bind(vmWorkplaceCoaches.program.trained)" />
+						<intbox value="@bind(vmWorkplaceCoaches.program.trainingWorkplaceCoaches)" />
 					</div>
 					
 				</div>

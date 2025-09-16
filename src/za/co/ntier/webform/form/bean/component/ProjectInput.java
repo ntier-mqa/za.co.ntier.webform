@@ -14,6 +14,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.Query;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.I_ZZLearnersApplied;
 import za.co.ntier.webform.model.I_ZZ_Application_Form;
@@ -92,20 +93,20 @@ public class ProjectInput extends AnnexureInfo {
 			row.put(colNameProgramme, learnersApplied.getName());
 		}
 		
-		if (colNoEmployed != null && learnersApplied != null && learnersApplied.getZZNoEmployedLearners() > 0) {
-			((IntData)row.get(colNoEmployed)).setValue(learnersApplied.getZZNoEmployedLearners());
+		if (colNoEmployed != null && learnersApplied != null) {
+			((IntData)row.get(colNoEmployed)).setValue(Util.convert(learnersApplied.getZZNoEmployedLearners()));
 		}
 		
-		if (colNoUnEmployed != null && learnersApplied != null && learnersApplied.getZZNoUnEmployedLearners() > 0) {
-			((IntData)row.get(colNoUnEmployed)).setValue(learnersApplied.getZZNoUnEmployedLearners());
+		if (colNoUnEmployed != null && learnersApplied != null) {
+			((IntData)row.get(colNoUnEmployed)).setValue(Util.convert(learnersApplied.getZZNoUnEmployedLearners()));
 		}
 		
-		if (colNoLearners != null && learnersApplied != null && learnersApplied.getZZNoLearners() > 0) {
-			((IntData)row.get(colNoLearners)).setValue(learnersApplied.getZZNoLearners());
+		if (colNoLearners != null && learnersApplied != null) {
+			((IntData)row.get(colNoLearners)).setValue(Util.convert(learnersApplied.getZZNoLearners()));
 		}
 		
-		if (colTotalLearnersInput != null && learnersApplied != null && learnersApplied.getZZNoTotalLearners() > 0) {
-			((IntData)row.get(colTotalLearnersInput)).setValue(learnersApplied.getZZNoTotalLearners());
+		if (colTotalLearnersInput != null && learnersApplied != null) {
+			((IntData)row.get(colTotalLearnersInput)).setValue(Util.convert(learnersApplied.getZZNoTotalLearners()));
 		}
 	
 		if(postalColl != null && learnersApplied != null && StringUtils.isNoneBlank(learnersApplied.getPostal())) {

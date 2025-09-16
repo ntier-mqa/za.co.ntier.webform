@@ -289,6 +289,32 @@ s site
 	  */
 	public String getZZCollegeSla();
 
+    /** Column name ZZNoLearners */
+    public static final String COLUMNNAME_ZZNoLearners = "ZZNoLearners";
+
+	/** Set No Learners.
+	  * Number of learners applying should be based on
+	  */
+	public void setZZNoLearners (int ZZNoLearners);
+
+	/** Get No Learners.
+	  * Number of learners applying should be based on
+	  */
+	public int getZZNoLearners();
+
+    /** Column name ZZPlacementWorkplaceCoaches */
+    public static final String COLUMNNAME_ZZPlacementWorkplaceCoaches = "ZZPlacementWorkplaceCoaches";
+
+	/** Set Placement Workplace Coaches.
+	  * Placement of workplace coaches coaching learners on artisan development programmes
+	  */
+	public void setZZPlacementWorkplaceCoaches (int ZZPlacementWorkplaceCoaches);
+
+	/** Get Placement Workplace Coaches.
+	  * Placement of workplace coaches coaching learners on artisan development programmes
+	  */
+	public int getZZPlacementWorkplaceCoaches();
+
     /** Column name ZZProgramType */
     public static final String COLUMNNAME_ZZProgramType = "ZZProgramType";
 
@@ -306,6 +332,19 @@ s site
 
 	/** Get Total Number Applied For	  */
 	public int getZZTotalNumberApplied();
+
+    /** Column name ZZTrainingWorkplaceCoaches */
+    public static final String COLUMNNAME_ZZTrainingWorkplaceCoaches = "ZZTrainingWorkplaceCoaches";
+
+	/** Set Training Workplace Coaches.
+	  * Training of workplace coaches by the mqa appointed service provider
+	  */
+	public void setZZTrainingWorkplaceCoaches (int ZZTrainingWorkplaceCoaches);
+
+	/** Get Training Workplace Coaches.
+	  * Training of workplace coaches by the mqa appointed service provider
+	  */
+	public int getZZTrainingWorkplaceCoaches();
 
     /** Column name ZZ_Application_Form_ID */
     public static final String COLUMNNAME_ZZ_Application_Form_ID = "ZZ_Application_Form_ID";

@@ -32,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250912L;
+	private static final long serialVersionUID = 20250916L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -392,6 +392,44 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 		return (String)get_Value(COLUMNNAME_ZZCollegeSla);
 	}
 
+	/** Set No Learners.
+		@param ZZNoLearners Number of learners applying should be based on
+	*/
+	public void setZZNoLearners (int ZZNoLearners)
+	{
+		set_Value (COLUMNNAME_ZZNoLearners, Integer.valueOf(ZZNoLearners));
+	}
+
+	/** Get No Learners.
+		@return Number of learners applying should be based on
+	  */
+	public int getZZNoLearners()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLearners);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Placement Workplace Coaches.
+		@param ZZPlacementWorkplaceCoaches Placement of workplace coaches coaching learners on artisan development programmes
+	*/
+	public void setZZPlacementWorkplaceCoaches (int ZZPlacementWorkplaceCoaches)
+	{
+		set_Value (COLUMNNAME_ZZPlacementWorkplaceCoaches, Integer.valueOf(ZZPlacementWorkplaceCoaches));
+	}
+
+	/** Get Placement Workplace Coaches.
+		@return Placement of workplace coaches coaching learners on artisan development programmes
+	  */
+	public int getZZPlacementWorkplaceCoaches()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZPlacementWorkplaceCoaches);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** AET = AET */
 	public static final String ZZPROGRAMTYPE_AET = "AET";
 	/** ARTISAN_AIDES = ARTISAN_AIDES */
@@ -455,6 +493,25 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public int getZZTotalNumberApplied()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ZZTotalNumberApplied);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Training Workplace Coaches.
+		@param ZZTrainingWorkplaceCoaches Training of workplace coaches by the mqa appointed service provider
+	*/
+	public void setZZTrainingWorkplaceCoaches (int ZZTrainingWorkplaceCoaches)
+	{
+		set_Value (COLUMNNAME_ZZTrainingWorkplaceCoaches, Integer.valueOf(ZZTrainingWorkplaceCoaches));
+	}
+
+	/** Get Training Workplace Coaches.
+		@return Training of workplace coaches by the mqa appointed service provider
+	  */
+	public int getZZTrainingWorkplaceCoaches()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZTrainingWorkplaceCoaches);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
