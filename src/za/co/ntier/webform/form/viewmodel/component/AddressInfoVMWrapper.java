@@ -5,32 +5,14 @@ import org.compiere.model.MRegion;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.bean.component.AddressInfo;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
-
-public class AddressInfoVMWrapper {
-	private AddressInfo addressInfo;
+@Init(superclass = true)
+public class AddressInfoVMWrapper extends ComponentVMWrapper<AddressInfo>{
 	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
     private String notifyTarget;
-
-	/**
-	 * @return the addressInfo
-	 */
-	public AddressInfo getAddressInfo() {
-		return addressInfo;
-	}
-
-	@Init
-	public void init(@ExecutionArgParam("addressInfo") AddressInfo addressInfo, // you already have this
-	        @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM,
-	        @ExecutionArgParam("notifyTarget") String notifyTarget) {
-		this.applicationProgramVM = appVM;
-	    this.notifyTarget = notifyTarget;
-		this.addressInfo = addressInfo;
-	}
 	
 	// set text fields while typing ("" -> null)
     @Command
@@ -38,27 +20,27 @@ public class AddressInfoVMWrapper {
                               @BindingParam("val") String val) {
         String v = (val == null || val.trim().isEmpty()) ? null : val.trim();
         switch (field) {
-            case "siteName":                   addressInfo.setSiteName(v); break;
-            case "addressLine":                addressInfo.setAddressLine(v); break;
-            case "postalCode":                 addressInfo.setPostalCode(v); break;
-            case "nameSiteRepresentative":     addressInfo.setNameSiteRepresentative(v); break;
-            case "representativeDesignation":  addressInfo.setRepresentativeDesignation(v); break;
-            case "mobileNumber":               addressInfo.setMobileNumber(v); break;
-            case "landlineNumber":             addressInfo.setLandlineNumber(v); break;
-            case "email":                      addressInfo.setEmail(v); break;
+            case "siteName":                   component.setSiteName(v); break;
+            case "addressLine":                component.setAddressLine(v); break;
+            case "postalCode":                 component.setPostalCode(v); break;
+            case "nameSiteRepresentative":     component.setNameSiteRepresentative(v); break;
+            case "representativeDesignation":  component.setRepresentativeDesignation(v); break;
+            case "mobileNumber":               component.setMobileNumber(v); break;
+            case "landlineNumber":             component.setLandlineNumber(v); break;
+            case "email":                      component.setEmail(v); break;
         }
         BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
     }
     
     @Command
     public void areaSelected(@BindingParam("item") MCity item) {
-        addressInfo.setAreaSelected(item); // matches setter signature
+    	component.setAreaSelected(item); // matches setter signature
         BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
     }
 
     @Command
     public void provinceSelected(@BindingParam("item") MRegion item) {
-        addressInfo.setProvinceSelected(item); // matches setter signature
+    	component.setProvinceSelected(item); // matches setter signature
         BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
     }
 	@Command
@@ -67,10 +49,5 @@ public class AddressInfoVMWrapper {
             org.zkoss.bind.BindUtils.postNotifyChange(null, null, applicationProgramVM, notifyTarget);
         }
     }
-	/**
-	 * @param addressInfo the addressInfo to set
-	 */
-	public void setAddressInfo(AddressInfo addressInfo) {
-		this.addressInfo = addressInfo;
-	}
+	
 }

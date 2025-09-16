@@ -14,19 +14,19 @@
 		<div sclass="form-field" style="justify-content:space-between">
 			<label sclass="label" value="Name and Surname" />
 			<label style="flex-grow:1;padding-top:10px;padding-left:10px"
-				value="@init(vmEmployerDeclaration.employerDeclarationInfo.userName)"/>
+				value="@init(vmEmployerDeclaration.component.userName)"/>
 		</div>
 		<div sclass="form-field">
 			<label sclass="label" value="Date" />
 			<datebox format="short+short"
-				valueInLocalDateTime="@bind(vmEmployerDeclaration.employerDeclarationInfo.localDate)" 
+				valueInLocalDateTime="@bind(vmEmployerDeclaration.component.localDate)" 
 	 		/>
 		</div>
 		<div sclass="form-field"
 			style="padding-left: 0px;padding-right: 0px">
 			<checkbox sclass="icon-on-right"
         	 label="Click here to acknowledge commitment"
-        	 checked="@bind(vmEmployerDeclaration.employerDeclarationInfo.acknowledged)" />
+        	 checked="@bind(vmEmployerDeclaration.component.acknowledged)" />
 
 
 				

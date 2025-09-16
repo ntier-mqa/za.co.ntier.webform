@@ -14,21 +14,21 @@
 
 
 		<div sclass="grid-cell">
-			<label value="@init(vmOrgSize.orgSizeInfo.numOfEmployerTitle)" />
+			<label value="@init(vmOrgSize.component.numOfEmployerTitle)" />
 		</div>
 		<div sclass="grid-cell">			
 		<textbox
-				  value="@load(vmOrgSize.orgSizeInfo.numOfEmployer)"
+				  value="@load(vmOrgSize.component.numOfEmployer)"
 				  onChanging="@command('numEmployerChanging', val=event.value)"
 				  constraint="/^\s*$|^\s*[1-9]\d*\s*$/: Please enter a positive number"/>
 		</div>
 
 
 		<div sclass="grid-cell">
-			<label value="@init(vmOrgSize.orgSizeInfo.submittedWSPTitle)" />
+			<label value="@init(vmOrgSize.component.submittedWSPTitle)" />
 		</div>
 		<div sclass="grid-cell">
-			<label value="@load(vmOrgSize.orgSizeInfo.submittedWSPText)" />
+			<label value="@load(vmOrgSize.component.submittedWSPText)" />
 		</div>
 
 

@@ -6,26 +6,26 @@
 
 <nodom viewModel="@id('vmAnnexure') @init(vmAnnexureTableVMWrapper)">
 
-  <hlayout if="${vmAnnexure.annexureInfo.sectionHeader ne null}" sclass="sectionHeader">
-    <label sclass="sectionHeaderTitle" value="@init(vmAnnexure.annexureInfo.sectionHeader)" />
+  <hlayout if="${vmAnnexure.component.sectionHeader ne null}" sclass="sectionHeader">
+    <label sclass="sectionHeaderTitle" value="@init(vmAnnexure.component.sectionHeader)" />
   </hlayout>
 
-  <div if="${vmAnnexure.annexureInfo.subSectionHeader ne null}" sclass="subSectionHeader">
-    <label sclass="subSectionHeaderTitle" value="@init(vmAnnexure.annexureInfo.subSectionHeader)" />
+  <div if="${vmAnnexure.component.subSectionHeader ne null}" sclass="subSectionHeader">
+    <label sclass="subSectionHeaderTitle" value="@init(vmAnnexure.component.subSectionHeader)" />
   </div>
 
-  <hlayout if="${vmAnnexure.annexureInfo.tableTitle ne null}">
-    <label value="@init(vmAnnexure.annexureInfo.tableTitle)" />
+  <hlayout if="${vmAnnexure.component.tableTitle ne null}">
+    <label value="@init(vmAnnexure.component.tableTitle)" />
   </hlayout>
 
   <div
-    sclass="@init(('grid-table grid-table-' += vmAnnexure.annexureInfo.columnInfos.size() ))"
-    children="@bind(vmAnnexure.annexureInfo.rows)">
+    sclass="@init(('grid-table grid-table-' += vmAnnexure.component.columnInfos.size() ))"
+    children="@bind(vmAnnexure.component.rows)">
 
     <template name="children" var="row">
       <!-- header -->
-      <nodom if="${rowStatus.first and vmAnnexure.annexureInfo.showColumnHeader}">
-        <nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
+      <nodom if="${rowStatus.first and vmAnnexure.component.showColumnHeader}">
+        <nodom children="@bind(vmAnnexure.component.columnInfos)">
           <template name="children" var="titleCol">
             <div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-header':'grid-cell grid-header-cell'))">
               <label value="@init(titleCol.title)" />
@@ -35,9 +35,9 @@
       </nodom>
 
       <!-- detail -->
-      <nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)">
+      <nodom children="@bind(vmAnnexure.component.columnInfos)">
         <template name="children" var="detailCol">
-          <div sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.annexureInfo.columnInfos.size() ))">
+          <div sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.component.columnInfos.size() ))">
 
             <!-- Label -->
             <nodom if="${detailCol.dataType == DataType.Label}">
@@ -56,7 +56,7 @@
               <intbox
                 value="@bind(row[detailCol].value, save-on='onChange')"
                 constraint="no negative"
-                onChange="@command('numChange', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol )" />
+                onChange="@command('numChange', annexure = vmAnnexure.component, row = row, col = detailCol )" />
             </nodom>
 
             <!-- Postal -->
@@ -129,7 +129,7 @@
                 <fileupload sclass="text-wrap w-100"
                             iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
                             label="@load(detailCol.btText)"
-                            onUpload="@command('uploadFile', annexure = vmAnnexure.annexureInfo, row = row, col = detailCol)"
+                            onUpload="@command('uploadFile', annexure = vmAnnexure.component, row = row, col = detailCol)"
                             upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
                 <label value="@load(row[detailCol].fileName)" />
               </div>
@@ -142,24 +142,24 @@
 
             <!-- Add Row button -->
             <button sclass="btn-circle addrow"
-                    if="${ rowStatus.last and detailColStatus.last and vmAnnexure.annexureInfo.showAddButton}"
+                    if="${ rowStatus.last and detailColStatus.last and vmAnnexure.component.showAddButton}"
                     iconSclass="z-icon-plus" label=""
-                    onClick="@command('addDetailLine', annexure=vmAnnexure.annexureInfo)" />
+                    onClick="@command('addDetailLine', annexure=vmAnnexure.component)" />
           </div>
         </template>
       </nodom>
 
       <!-- totals -->
-      <nodom children="@bind(vmAnnexure.annexureInfo.columnInfos)"
-             if="${vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last}">
+      <nodom children="@bind(vmAnnexure.component.columnInfos)"
+             if="${vmAnnexure.component.isShowTotal() and rowStatus.last}">
         <template name="children" var="totalCol">
           <div sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-footer':'grid-cell grid-footer-cell'))"
-               visible="@load((vmAnnexure.annexureInfo.isShowTotal() and rowStatus.last))">
+               visible="@load((vmAnnexure.component.isShowTotal() and rowStatus.last))">
             <nodom if="${totalCol.dataType eq DataType.PositiveNumber}">
-              <label value="@load(vmAnnexure.annexureInfo.totalRow[totalCol].value)" />
+              <label value="@load(vmAnnexure.component.totalRow[totalCol].value)" />
             </nodom>
             <nodom if="${totalCol.dataType ne DataType.PositiveNumber}">
-              <label value="@load(vmAnnexure.annexureInfo.totalRow[totalCol])" />
+              <label value="@load(vmAnnexure.component.totalRow[totalCol])" />
             </nodom>
           </div>
         </template>
@@ -169,9 +169,9 @@
   </div>
 
   <!-- sub annexure (leave as-is unless you also need mandatory rules there) -->
-  <nodom if="${vmAnnexure.annexureInfo.subAnnexure ne null}">
+  <nodom if="${vmAnnexure.component.subAnnexure ne null}">
     <include
-      annexureInfo="@load(vmAnnexure.annexureInfo.subAnnexure)"
+      component="@load(vmAnnexure.component.subAnnexure)"
       isSubAnnexure="@init('true')"
       src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
   </nodom>

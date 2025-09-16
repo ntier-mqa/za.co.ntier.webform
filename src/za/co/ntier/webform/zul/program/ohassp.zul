@@ -20,6 +20,6 @@ grants." />
 	</div>
 
 	<include
-		annexureInfo="@load(vmOhassp.program.healthSafetySkills)"
+		component="@load(vmOhassp.program.healthSafetySkills)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

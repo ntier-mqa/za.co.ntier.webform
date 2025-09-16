@@ -1,6 +1,5 @@
 package za.co.ntier.webform.form.viewmodel.program;
 
-import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.bean.program.CetTvetProgram;
@@ -10,7 +9,7 @@ import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramV
  * If super has an init method but its ChildViewModel doesn't, you can
  * add @Init(superclass=true) on the ChildViewModel to use super's init.
  */
-
+@Init(superclass = true)
 public class CetTvetVMWrapper extends ProgramVMWrapper<CetTvetProgram>{
 	
 
@@ -20,12 +19,5 @@ public class CetTvetVMWrapper extends ProgramVMWrapper<CetTvetProgram>{
     public DiscretionaryGrantsApplicationProgramVM getApplicationProgramVM() { return applicationProgramVM; }
 
     public CetTvetProgram getProgram() { return program; }
-    @Init
-    public void init(
-        @ExecutionArgParam("program") CetTvetProgram program,
-        @ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM
-    ){
-        this.program = program;
-        this.applicationProgramVM = appVM;
-    }
+   
 }

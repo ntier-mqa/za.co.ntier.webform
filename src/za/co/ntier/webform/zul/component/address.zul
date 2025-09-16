@@ -6,63 +6,63 @@
 
 	<hlayout sclass="subSectionHeader">
 		<label sclass="subSectionHeaderTitle"
-			value="@init(vmAddress.addressInfo.addressTitle)" />
+			value="@init(vmAddress.component.addressTitle)" />
 	</hlayout>
 
 	<div sclass="grid-container">
-		<div if="${vmAddress.addressInfo.showSiteName()}"
+		<div if="${vmAddress.component.showSiteName()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.siteNameTitle)" />
+				value="@init(vmAddress.component.siteNameTitle)" />
 			
 			<textbox
-			  value="@load(vmAddress.addressInfo.siteName)"
+			  value="@load(vmAddress.component.siteName)"
 			  onChanging="@command('fieldChanging', field='siteName', val=event.value)"
 			  constraint="no empty: Please enter the site name"/>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showLineAddress()}"
+		<div if="${vmAddress.component.showLineAddress()}"
 			sclass="form-field">
 			<label sclass="label"
-			  value="@init(vmAddress.addressInfo.addressLineTitle)" />
+			  value="@init(vmAddress.component.addressLineTitle)" />
 			
 			<textbox
-			  value="@load(vmAddress.addressInfo.addressLine)"
+			  value="@load(vmAddress.component.addressLine)"
 			  onChanging="@command('fieldChanging', field='addressLine', val=event.value)"
 			  constraint="no empty: Please enter the street address"/>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showPostalAddress()}"
+		<div if="${vmAddress.component.showPostalAddress()}"
 			sclass="form-field">
 			<label sclass="label"
-			  value="@init(vmAddress.addressInfo.postAddressTitle)" />
+			  value="@init(vmAddress.component.postAddressTitle)" />
 			<textbox
-			  value="@load(vmAddress.addressInfo.addressLine)"
+			  value="@load(vmAddress.component.addressLine)"
 			  onChanging="@command('fieldChanging', field='addressLine', val=event.value)"
 			  constraint="no empty: Please enter the street address"/>
 			
 
 		</div>
 
-		<div if="${vmAddress.addressInfo.showGeographicAddress()}"
+		<div if="${vmAddress.component.showGeographicAddress()}"
 			sclass="form-field">
 			<label sclass="label"
-			  value="@init(vmAddress.addressInfo.postalCodeTitle)" />
+			  value="@init(vmAddress.component.postalCodeTitle)" />
 			
 			<textbox
-			  value="@bind(vmAddress.addressInfo.postalCode)
-              @save(vmAddress.addressInfo.postalCode, before='onChanging')"
+			  value="@bind(vmAddress.component.postalCode)
+              @save(vmAddress.component.postalCode, before='onChanging')"
   			  onChanging="@command('notifyParentCompleteness')"
 			  constraint="/^[0-9]{4,6}$/: Enter a valid postal code"/>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showGeographicAddress()}"
+		<div if="${vmAddress.component.showGeographicAddress()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.areaTitle)" />
+				value="@init(vmAddress.component.areaTitle)" />
 			<listbox mold="select"
-			  model="@load(vmAddress.addressInfo.areas)"
-			  selectedItem="@bind(vmAddress.addressInfo.areaSelected, save-on='onSelect')"
+			  model="@load(vmAddress.component.areas)"
+			  selectedItem="@bind(vmAddress.component.areaSelected, save-on='onSelect')"
   			  onSelect="@command('notifyParentCompleteness')">
 			  <template name="model" var="item">
 			    <!-- pass the actual MCity object -->
@@ -71,14 +71,14 @@
 			</listbox>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showGeographicAddress()}"
+		<div if="${vmAddress.component.showGeographicAddress()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.provinceTitle)" />
+				value="@init(vmAddress.component.provinceTitle)" />
 
 			<listbox mold="select"
-			  model="@load(vmAddress.addressInfo.provinces)"
-			  selectedItem="@bind(vmAddress.addressInfo.provinceSelected, save-on='onSelect')"
+			  model="@load(vmAddress.component.provinces)"
+			  selectedItem="@bind(vmAddress.component.provinceSelected, save-on='onSelect')"
   			  onSelect="@command('notifyParentCompleteness')">
 			  <template name="model" var="item">
 			    <!-- pass the actual MRegion object -->
@@ -87,59 +87,59 @@
 			</listbox>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showContact()}"
+		<div if="${vmAddress.component.showContact()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.nameSiteRepresentativeTitle)" />
+				value="@init(vmAddress.component.nameSiteRepresentativeTitle)" />
 
 			<textbox
-			  value="@load(vmAddress.addressInfo.nameSiteRepresentative)"
+			  value="@load(vmAddress.component.nameSiteRepresentative)"
 			  onChanging="@command('fieldChanging', field='nameSiteRepresentative', val=event.value)"
 			  constraint="no empty: Please enter a name"/>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showContact()}"
+		<div if="${vmAddress.component.showContact()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.representativeDesignationTitle)" />
+				value="@init(vmAddress.component.representativeDesignationTitle)" />
 			
 			<textbox
-			  value="@load(vmAddress.addressInfo.representativeDesignation)"
+			  value="@load(vmAddress.component.representativeDesignation)"
 			  onChanging="@command('fieldChanging', field='representativeDesignation', val=event.value)"
 			  constraint="no empty: Please enter a designation"/>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showContact()}"
+		<div if="${vmAddress.component.showContact()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.mobileNumberTitle)" />
+				value="@init(vmAddress.component.mobileNumberTitle)" />
 		
 			<textbox
-			  value="@load(vmAddress.addressInfo.mobileNumber)"
+			  value="@load(vmAddress.component.mobileNumber)"
 			  onChanging="@command('fieldChanging', field='mobileNumber', val=event.value)"
 			  type="tel"
 			  constraint="/^\s*\d{10}\s*$/: Please enter a 10 digit phone"/>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showContact()}"
+		<div if="${vmAddress.component.showContact()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.landlineNumberTitle)" />
+				value="@init(vmAddress.component.landlineNumberTitle)" />
 
 			
 			<textbox
-			  value="@load(vmAddress.addressInfo.landlineNumber)"
+			  value="@load(vmAddress.component.landlineNumber)"
 			  onChanging="@command('fieldChanging', field='landlineNumber', val=event.value)"
 			  type="tel"
 			  constraint="/^\s*\d{10}\s*$/: Please enter a 10 digit phone"/>
 		</div>
 
-		<div if="${vmAddress.addressInfo.showContact()}"
+		<div if="${vmAddress.component.showContact()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmAddress.addressInfo.emailTitle)" />
+				value="@init(vmAddress.component.emailTitle)" />
 			<textbox
-			  value="@load(vmAddress.addressInfo.email)"
+			  value="@load(vmAddress.component.email)"
 			  onChanging="@command('fieldChanging', field='email', val=event.value)"
 			  type="email"
 			  constraint="/^\s*[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\s*$/: Please enter an e-mail address"/>

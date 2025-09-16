@@ -35,7 +35,7 @@
 							src="@load((WebForm.getBundleResourcePath('component/generalAppRule.zul')))" />
 
 						<include
-							employerDeclarationInfo="@load(vm.employerDeclarationInfo)"
+							component="@load(vm.employerDeclarationInfo)"
 							src="@load((WebForm.getBundleResourcePath('component/employerDeclaration.zul')))" />
 					</div>
 
@@ -52,7 +52,7 @@
 			<tabpanel style="color:#663366;">
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
-						<include organisationInfo="@load(vm.organisationInfo)"
+						<include component="@load(vm.organisationInfo)"
 							applicationProgramVM="@init(vm)"
 							src="@load((WebForm.getBundleResourcePath('component/organisationInfo.zul')))" />
 					</div>
@@ -93,13 +93,13 @@
 					
 							
 						<include if="${vm.programType.isShowMainAddress()}"
-							  addressInfo="@load(vm.programContact)"
+							  component="@load(vm.programContact)"
 							  applicationProgramVM="@init(vm)"                 
 							  notifyTarget="@init('programContactComplete')"   
 							  src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 							
 							<include if="${vm.programType.isShowMainAddressAlter()}"
-							  addressInfo="@load(vm.alternateProgramContact)"
+							  component="@load(vm.alternateProgramContact)"
 							  applicationProgramVM="@init(vm)"
 							  notifyTarget="@init('programContactComplete')"
 							  src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />

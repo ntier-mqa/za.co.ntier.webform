@@ -19,7 +19,7 @@ stated in the MQA funding policy." />
 			value="Workplace approval is a requirement to implement learnerships." />
 	</div>
 	<include
-		annexureInfo="@load(vmNonArtisanDev.program.generalLearnership)"
+		component="@load(vmNonArtisanDev.program.generalLearnership)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 
@@ -29,7 +29,7 @@ stated in the MQA funding policy." />
 	</div>
 
 	<include
-		annexureInfo="@load(vmNonArtisanDev.program.firLearnership)"
+		component="@load(vmNonArtisanDev.program.firLearnership)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 </nodom>

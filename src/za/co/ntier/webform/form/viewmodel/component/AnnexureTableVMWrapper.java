@@ -18,9 +18,7 @@ import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
-public class AnnexureTableVMWrapper {
-	private AnnexureInfo annexureInfo;
-
+public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
 	private String notifyTarget;
 
@@ -40,26 +38,14 @@ public class AnnexureTableVMWrapper {
 		notifyProgramComplete(); 
 	}
 
-	/**
-	 * @return the annexureInfo
-	 */
-	public AnnexureInfo getAnnexureInfo() {
-		return annexureInfo;
-	}
-
-	@Init
-	public void init(@ExecutionArgParam("annexureInfo") AnnexureInfo annexureInfo,
-			@ExecutionArgParam("isSubAnnexure") Boolean isSubAnnexure,
-			@ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM appVM,
-			@ExecutionArgParam("notifyTarget") String notifyTarget
+	@Init(superclass = true)
+	public void init(
+			@ExecutionArgParam("isSubAnnexure") Boolean isSubAnnexure
 			) {
-		this.setAnnexureInfo(annexureInfo);
 		if (isSubAnnexure == null)
 			this.isSubAnnexure = false;
 		else
 			this.isSubAnnexure = isSubAnnexure;
-		this.applicationProgramVM = appVM;
-		this.notifyTarget = notifyTarget;
 	}
 
 	/**
@@ -93,13 +79,6 @@ public class AnnexureTableVMWrapper {
 			@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
 		annexure.postalChange(row, col, event);
 		notifyProgramComplete(); 
-	}
-
-	/**
-	 * @param annexureInfo the annexureInfo to set
-	 */
-	public void setAnnexureInfo(AnnexureInfo annexureInfo) {
-		this.annexureInfo = annexureInfo;
 	}
 
 	/**

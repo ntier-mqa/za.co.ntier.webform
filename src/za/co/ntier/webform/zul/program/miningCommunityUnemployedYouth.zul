@@ -9,17 +9,17 @@
 			value="@init(vmMcuy.program.programTitle)" />
 	</hlayout>
 	
-	<include  annexureInfo="@load(vmMcuy.program.learnerApplys)" 
+	<include  component="@load(vmMcuy.program.learnerApplys)" 
 	    applicationProgramVM="@init(vmMcuy.applicationProgramVM)"
         notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 		
-	<include  annexureInfo="@load(vmMcuy.program.budgetOverview)" 
+	<include  component="@load(vmMcuy.program.budgetOverview)" 
 		applicationProgramVM="@init(vmMcuy.applicationProgramVM)"
         notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 		
-	<include  annexureInfo="@load(vmMcuy.program.strategy)" 
+	<include  component="@load(vmMcuy.program.strategy)" 
 		applicationProgramVM="@init(vmMcuy.applicationProgramVM)"
         notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />

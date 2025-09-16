@@ -20,11 +20,11 @@
 	</div>
 
 	<include
-		addressInfo="@load(vmWorkExperience.program.vacationContact)"
+		component="@load(vmWorkExperience.program.vacationContact)"
 		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 	<label value="• WORK EXPERIENCE (PRACTICAL TRAINING)" />
 	<include
-		annexureInfo="@load(vmWorkExperience.program.disciplines)"
+		component="@load(vmWorkExperience.program.disciplines)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

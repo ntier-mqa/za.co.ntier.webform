@@ -3,7 +3,7 @@
 <nodom xmlns:n="native"
 	viewModel="@id('vmUploadDoc') @init('za.co.ntier.webform.form.viewmodel.component.UploadDocVMWrapper')">
 
-	<include annexureInfo="@load(vmUploadDoc.component.uploadDoc)"
+	<include component="@load(vmUploadDoc.component.uploadDoc)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>
 	

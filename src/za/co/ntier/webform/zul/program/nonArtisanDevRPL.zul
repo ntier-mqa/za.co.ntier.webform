@@ -21,6 +21,6 @@ grants." />
 	</div>
 
 	<include
-		annexureInfo="@load(vmNonArtisanDevRPL.program.totalNumApplied)"
+		component="@load(vmNonArtisanDevRPL.program.totalNumApplied)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

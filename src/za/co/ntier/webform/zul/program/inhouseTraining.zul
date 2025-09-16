@@ -21,6 +21,6 @@ grants" />
 	</div>
 
 	<include
-		annexureInfo="@load(vmInhouseTraining.program.inhouse)"
+		component="@load(vmInhouseTraining.program.inhouse)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

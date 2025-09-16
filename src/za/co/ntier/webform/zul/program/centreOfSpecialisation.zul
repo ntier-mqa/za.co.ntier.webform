@@ -60,10 +60,10 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
 	</div>
 
 	<include
-		annexureInfo="@load(vmCentreOfSpecialisation.program.trade)"
+		component="@load(vmCentreOfSpecialisation.program.trade)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 	<include
-		annexureInfo="@load(vmCentreOfSpecialisation.program.totalNumApplied)"
+		component="@load(vmCentreOfSpecialisation.program.totalNumApplied)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

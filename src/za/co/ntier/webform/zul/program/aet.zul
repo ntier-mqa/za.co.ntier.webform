@@ -11,6 +11,6 @@
 			value="AET is paid upon completion and no workplace approval is required" />
 	</div>
 
-	<include annexureInfo="@load(vmAet.program.aetLearnership)"
+	<include component="@load(vmAet.program.aetLearnership)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

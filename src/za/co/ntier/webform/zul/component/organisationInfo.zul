@@ -12,8 +12,8 @@
 
 	<div sclass="grid-container">
 		<div sclass="form-field">
-		<label sclass="label" value="@init(vmOrgInfo.organisationInfo.sdlNumberTitle)" /> 
-		<textbox value="@bind(vmOrgInfo.organisationInfo.sdlNumber)" 
+		<label sclass="label" value="@init(vmOrgInfo.component.sdlNumberTitle)" /> 
+		<textbox value="@bind(vmOrgInfo.component.sdlNumber)" 
 		onChange="@command('sdlNumberChange')" 
 		placeholder="0000000000000" />
 				
@@ -21,24 +21,24 @@
 		</div>
 
 		<div
-			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmOrgInfo.organisationInfo.orgNameTitle)" />
+				value="@init(vmOrgInfo.component.orgNameTitle)" />
 			<textbox
-			  value="@bind(vmOrgInfo.organisationInfo.orgName) @save(vmOrgInfo.organisationInfo.orgName, after='onChanging')"
+			  value="@bind(vmOrgInfo.component.orgName) @save(vmOrgInfo.component.orgName, after='onChanging')"
 			  constraint="no empty: Please enter the organisation name" />
 
 		</div>
 
 		<div
-			if="${vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			if="${vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmOrgInfo.organisationInfo.cetTvetNameTitle)" />
+				value="@init(vmOrgInfo.component.cetTvetNameTitle)" />
 			<listbox mold="select" sclass=""
-				model="@load(vmOrgInfo.organisationInfo.cetTvetColleges)"
-				selectedItem="@bind(vmOrgInfo.organisationInfo.cetTvetCollegeSelected)">
+				model="@load(vmOrgInfo.component.cetTvetColleges)"
+				selectedItem="@bind(vmOrgInfo.component.cetTvetCollegeSelected)">
 				<template name="model" var="item">
 					<listitem label="@load(item.name)" />
 				</template>
@@ -47,44 +47,44 @@
 
 		<div sclass="form-field">
 			<label sclass="label"
-				value="@init(vmOrgInfo.organisationInfo.siteSDLNumberTitle)" />
+				value="@init(vmOrgInfo.component.siteSDLNumberTitle)" />
 			<textbox
-				value="@bind(vmOrgInfo.organisationInfo.siteSDLNumber)
-				@save(vmOrgInfo.organisationInfo.siteSDLNumber, after='onChanging')" />
+				value="@bind(vmOrgInfo.component.siteSDLNumber)
+				@save(vmOrgInfo.component.siteSDLNumber, after='onChanging')" />
 		</div>
 
 		<div
-			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmOrgInfo.organisationInfo.orgRegistrationNumberTitle)" />
+				value="@init(vmOrgInfo.component.orgRegistrationNumberTitle)" />
 			
 			<textbox
-				  value="@bind(vmOrgInfo.organisationInfo.orgRegistrationNumber)
-				         @save(vmOrgInfo.organisationInfo.orgRegistrationNumber, after='onChanging')"
+				  value="@bind(vmOrgInfo.component.orgRegistrationNumber)
+				         @save(vmOrgInfo.component.orgRegistrationNumber, after='onChanging')"
 				  constraint="no empty: Please enter the registration number"
 				   />
 		</div>
 
 		<div
-			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@init(vmOrgInfo.organisationInfo.orgTaxNumberTitle)" />
+				value="@init(vmOrgInfo.component.orgTaxNumberTitle)" />
 
 			<textbox sclass="form-control"
-				value="@bind(vmOrgInfo.organisationInfo.orgTaxNumber)
-				       @save(vmOrgInfo.organisationInfo.orgTaxNumber, after='onChanging')"
+				value="@bind(vmOrgInfo.component.orgTaxNumber)
+				       @save(vmOrgInfo.component.orgTaxNumber, after='onChanging')"
 				  constraint="no empty: Please enter the tax ID"
 				
 				/>
 		</div>
 
 		<div
-			if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
+			if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
 			sclass="form-field">
 			<label sclass="label"
-				value="@load(vmOrgInfo.organisationInfo.fileNameVATCer)" />
+				value="@load(vmOrgInfo.component.fileNameVATCer)" />
 
 			<fileupload sclass="text-wrap w-100"
 				iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
@@ -98,37 +98,37 @@
 
 		
 	<include
-		addressInfo="@load(vmOrgInfo.organisationInfo.physicalAddressInfo)"
+		component="@load(vmOrgInfo.component.physicalAddressInfo)"
 		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"  
 		notifyTarget="@init('organisationComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 		
 	<include
-	    addressInfo="@load(vmOrgInfo.organisationInfo.postAddressInfo)"
+	    component="@load(vmOrgInfo.component.postAddressInfo)"
 	    applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
 	    notifyTarget="@init('organisationComplete')"
 	    src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 	<include
-		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
-		orgSizeInfo="@load(vmOrgInfo.organisationInfo.orgSizeInfo)"
+		if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
+		component="@load(vmOrgInfo.component.orgSizeInfo)"
 		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"     
   		notifyTarget="@init('organisationComplete')"   
 		src="@load((WebForm.getBundleResourcePath('component/organisationSize.zul')))" />
 
 		
 	<include
-		if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
-		addressInfo="@load(vmOrgInfo.organisationInfo.orgContact)"
+		if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
+		component="@load(vmOrgInfo.component.orgContact)"
 		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
 		notifyTarget="@init('organisationComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 		
 	<include
-	    if="${!vmOrgInfo.organisationInfo.menuContextInfo.programType.isCetTvet()}"
-	    addressInfo="@load(vmOrgInfo.organisationInfo.alternateOrgContact)"
+	    if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
+	    component="@load(vmOrgInfo.component.alternateOrgContact)"
 	    applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
 	    notifyTarget="@init('organisationComplete')"
 	    src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />

@@ -6,7 +6,6 @@ import java.util.function.Function;
 
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.X_ZZDocumentUpload;
-import za.co.ntier.webform.model.X_ZZSubAnnex;
 
 public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {

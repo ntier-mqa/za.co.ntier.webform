@@ -18,6 +18,6 @@
 			value="Preference will be given to employers within the Mining and Mineral Sector." />
 	</div>
 	<include
-		annexureInfo="@load(vmNcvGraduates.program.unemployed)"
+		component="@load(vmNcvGraduates.program.unemployed)"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>
