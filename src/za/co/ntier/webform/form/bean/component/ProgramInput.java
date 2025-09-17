@@ -23,19 +23,6 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class ProgramInput extends AnnexureInfo {
-	public static final String btAccredText = "Accred./SLA";
-	public static final String btWPAText = "WPA";
-	public static final String colAccredLabel = "Accreditation";
-	public static final String colAreaLabel = "Area";
-	public static final String colDisciplineLabel = "Discipline";
-	public static final String colLearnershipLabel = "Learnership Type";
-	public static final String colNoEmployedLabel = "No. of Employed Learners";
-	public static final String colNoLearnersLabel = "No. of Learners";
-	public static final String colNoUnEmployedLabel = "No. of Unemployed Learners";
-	public static final String colPostalCodeLabel = "Site Postal Code";
-	public static final String colTradeLabel = "Trade";
-	public static final String colWPALabel = "WPA";
-	
 	public static ProgramInput getDisciplines(int programMasterDataID, X_ZZ_Application_Form applicationForm, String tableTitle){
 		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, programMasterDataID, applicationForm, tableTitle);
 	}
@@ -60,29 +47,29 @@ public class ProgramInput extends AnnexureInfo {
 		if ((X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership.equals(disciplineType) ||
 				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership.equals(disciplineType) ||
 				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership.equals(disciplineType))) {
-			columns.add(ColumnInfo.getColLearnerInfo(colLearnershipLabel));
-			columns.add(ColumnInfo.getColPositiveNumber(colNoEmployedLabel));
-			columns.add(ColumnInfo.getColPositiveNumber(colNoUnEmployedLabel));
+			columns.add(ColumnInfo.getColLearnerInfo(ColumnInfo.colLearnershipLabel));
+			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel));
+			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel));
 		}else {
 			if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade.equals(disciplineType)) {
-				columns.add(ColumnInfo.getColLearnerInfo(colTradeLabel));
+				columns.add(ColumnInfo.getColLearnerInfo(ColumnInfo.colTradeLabel));
 			}else {
-				columns.add(ColumnInfo.getColLearnerInfo(colDisciplineLabel));
+				columns.add(ColumnInfo.getColLearnerInfo(ColumnInfo.colDisciplineLabel));
 			}
 			
-			columns.add(ColumnInfo.getColPositiveNumber(colNoLearnersLabel));
+			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLabel));
 		}
 		
-		columns.add(ColumnInfo.getColPostal(colPostalCodeLabel));
+		columns.add(ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel));
 		columns.add(
-				ColumnInfo.getColArea(colAreaLabel, MasterUtil.getInitCities()));
+				ColumnInfo.getColArea(ColumnInfo.colAreaLabel, MasterUtil.getInitCities()));
 
 		if (hasWPAReq) {
-			columns.add(ColumnInfo.getColFileUpload(colWPALabel, btWPAText));
+			columns.add(ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel, ColumnInfo.btWPAText));
 		}
 
 		if (hasAccred) {
-			columns.add(ColumnInfo.getColFileUpload(colAccredLabel, btAccredText));
+			columns.add(ColumnInfo.getColFileUpload(ColumnInfo.colAccredLabel, ColumnInfo.btAccredText));
 		}
 
 		List<X_ZZ_FormDiscipline> formDisciplines = null;
@@ -100,13 +87,13 @@ public class ProgramInput extends AnnexureInfo {
 		programInput.setTableTitle(tableTitle);
 
 		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, programInput);
-		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(colNoLearnersLabel, programInput);
+		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLabel, programInput);
 		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, programInput);
 		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, programInput);
-		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(colWPALabel, programInput);
-		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(colAccredLabel, programInput);
-		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(colNoEmployedLabel, programInput);
-		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(colNoUnEmployedLabel, programInput);
+		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, programInput);
+		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colAccredLabel, programInput);
+		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel, programInput);
+		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, programInput);
 		
 		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
 			AnnexureRow<X_ZZ_FormDiscipline> row = (AnnexureRow<X_ZZ_FormDiscipline>)programInput.createDetailRow();
@@ -165,15 +152,15 @@ public class ProgramInput extends AnnexureInfo {
 	public static void saveFormDisciplines(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput disciplines, String disciplineType)  {
 		
 		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, disciplines);
-		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(colNoLearnersLabel, disciplines);
+		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLabel, disciplines);
 		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, disciplines);
 		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, disciplines);
-		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(colWPALabel, disciplines);
-		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(colAccredLabel, disciplines);
+		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, disciplines);
+		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colAccredLabel, disciplines);
 		
 		
-		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(colNoEmployedLabel, disciplines);
-		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(colNoUnEmployedLabel, disciplines);
+		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel, disciplines);
+		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, disciplines);
 		int totalLearners = 0;
 		
 		for (Map<ColumnInfo<?>, Object> rowObj : disciplines.getRows()) {

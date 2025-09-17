@@ -15,7 +15,7 @@ public class NonArtisanDevRPLProgram implements ISaveForm, IProgram {
 	public NonArtisanDevRPLProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm)  {
 
 		setTotalNumApplied(ProjectInput
-				.getProject(List.of(ColumnInfo.getColPositiveNumber(ProjectInput.colTotalLearnersLabel)), applicationForm));
+				.getProject(List.of(ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalLearnersLabel)), applicationForm));
 
 	}
 

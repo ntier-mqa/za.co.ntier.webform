@@ -22,12 +22,6 @@ import za.co.ntier.webform.model.X_ZZLearnersApplied;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class ProjectInput extends AnnexureInfo {
-	public static final String colNameProgrammeLabel = "Name of Programme";
-	public static final String colNoEmployedLabel = "No. of Employed Learners";
-	public static final String colNoLearnersLable = "No of Learners applied for";
-	public static final String colNoUnEmployedLabel =  "No. of Unemployed Learners";
-	public static final String colTotalLearnersLabel = "Total No. of Learners Applied For";
-	
 	
 	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, X_ZZ_Application_Form applicationForm) {
 		return ProjectInput.getProject(initColumnInfos, applicationForm, null, null);
@@ -50,9 +44,9 @@ public class ProjectInput extends AnnexureInfo {
 	 */
 	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, X_ZZ_Application_Form applicationForm, String secctionTitle, String rowTitle){
 		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
-		columnInfos.add(ColumnInfo.getColPostal(ProgramInput.colPostalCodeLabel));
+		columnInfos.add(ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel));
 		columnInfos.add(
-				ColumnInfo.getColArea(ProgramInput.colAreaLabel, MasterUtil.getInitCities()));
+				ColumnInfo.getColArea(ColumnInfo.colAreaLabel, MasterUtil.getInitCities()));
 		
 		
 		ProjectInput projectInput = AnnexureInfo.getAnnexureInfo(ProjectInput.class, columnInfos, false);
@@ -73,17 +67,17 @@ public class ProjectInput extends AnnexureInfo {
 		
 		row.setData(learnersApplied);
 		
-		ColumnInfo<?> colNameProgramme = AnnexureInfo.lookupColByTitle(ProjectInput.colNameProgrammeLabel, projectInput);
-		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoEmployedLabel, projectInput);
-		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoUnEmployedLabel, projectInput);
-		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(ProjectInput.colNoLearnersLable, projectInput);
+		ColumnInfo<?> colNameProgramme = AnnexureInfo.lookupColByTitle(ColumnInfo.colNameProgrammeLabel, projectInput);
+		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel, projectInput);
+		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, projectInput);
+		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLable, projectInput);
 		
-		ColumnInfo<?> colTotalLearnersInput = AnnexureInfo.lookupCol(DataType.PositiveNumber, ProjectInput.colTotalLearnersLabel, projectInput);
-		ColumnInfo<?> colTotalLearnersLabel = AnnexureInfo.lookupCol(DataType.Label, ProjectInput.colTotalLearnersLabel, projectInput);
+		ColumnInfo<?> colTotalLearnersInput = AnnexureInfo.lookupCol(DataType.PositiveNumber, ColumnInfo.colTotalLearnersLabel, projectInput);
+		ColumnInfo<?> colTotalLearnersLabel = AnnexureInfo.lookupCol(DataType.Label, ColumnInfo.colTotalLearnersLabel, projectInput);
 		
 		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, projectInput);
 		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, projectInput);
-		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ProgramInput.colWPALabel, projectInput);
+		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, projectInput);
 		
 		if (columnInfos.get(0).getDataType() == DataType.Label && rowTitle != null) {
 			((LabelData)row.get(columnInfos.get(0))).setValue(rowTitle);
@@ -123,7 +117,7 @@ public class ProjectInput extends AnnexureInfo {
 			}
 		}
 		
-		row.initTotalCol();
+		projectInput.updateExpressionCol();
 		
 		return projectInput;		
 
@@ -131,16 +125,16 @@ public class ProjectInput extends AnnexureInfo {
 	
 	@SuppressWarnings("unchecked")
 	public static void saveProjectInput(String trxName, X_ZZ_Application_Form applicationForm, ProjectInput projectInput) {
-		ColumnInfo<?> colNameProgramme = AnnexureInfo.lookupColByTitle(ProjectInput.colNameProgrammeLabel, projectInput);
-		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoEmployedLabel, projectInput);
-		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ProjectInput.colNoUnEmployedLabel, projectInput);
-		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(ProjectInput.colNoLearnersLable, projectInput);
+		ColumnInfo<?> colNameProgramme = AnnexureInfo.lookupColByTitle(ColumnInfo.colNameProgrammeLabel, projectInput);
+		ColumnInfo<?> colNoEmployed = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel, projectInput);
+		ColumnInfo<?> colNoUnEmployed = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, projectInput);
+		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLable, projectInput);
 		
-		ColumnInfo<?> colTotalLearnersInput = AnnexureInfo.lookupCol(DataType.PositiveNumber, ProjectInput.colTotalLearnersLabel, projectInput);
+		ColumnInfo<?> colTotalLearnersInput = AnnexureInfo.lookupCol(DataType.PositiveNumber, ColumnInfo.colTotalLearnersLabel, projectInput);
 		
 		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, projectInput);
 		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, projectInput);
-		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ProgramInput.colWPALabel, projectInput);
+		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, projectInput);
 		
 		AnnexureRow<X_ZZLearnersApplied> row = (AnnexureRow<X_ZZLearnersApplied>)projectInput.getRows().get(0);
 		X_ZZLearnersApplied learnersApplied = row.getData();

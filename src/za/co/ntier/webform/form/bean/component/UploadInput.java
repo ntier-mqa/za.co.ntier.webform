@@ -13,7 +13,6 @@ import za.co.ntier.webform.model.X_ZZDocumentUpload;
 import za.co.ntier.webform.model.X_ZZDocumentUploadFile;
 
 public class UploadInput extends AnnexureInfo {
-	public static final String DocUploadTitle = "Document Name";
 	public static UploadInput getUploadInput(int programMasterDataID){
 		// query upload info
 		List<X_ZZDocumentUpload> docUploads = MTable.get(Env.getCtx(), I_ZZDocumentUpload.Table_ID)
@@ -21,7 +20,7 @@ public class UploadInput extends AnnexureInfo {
 				.setParameters(programMasterDataID).list();
 
 		List<ColumnInfo<?>> columns = new ArrayList<>();
-		columns.add(ColumnInfo.getColDocUpload(DocUploadTitle));
+		columns.add(ColumnInfo.getColDocUpload(ColumnInfo.DocUploadTitle));
 		columns.add(ColumnInfo.getColFileUpload("", "doc"));
 		
 		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAnnexure = (parent) -> new AnnexureRow<X_ZZDocumentUploadFile>(parent);

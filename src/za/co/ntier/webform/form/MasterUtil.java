@@ -28,7 +28,9 @@ import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
+import za.co.ntier.webform.model.I_ZZAnnexure;
 import za.co.ntier.webform.model.I_ZZSubAnnex;
+import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_Disciplines;
@@ -303,4 +305,16 @@ public class MasterUtil {
 		
 		return subAnnexs;
 	}
+	
+	public static List<X_ZZAnnexure> loadAnnexure (X_ZZ_Application_Form applicationForm, String annexureType) {
+		if(applicationForm == null)
+			return null;
+		
+		Query annexureQuery = MTable.get(X_ZZAnnexure.Table_ID).createQuery(String.format("%s = ? AND %s = ?", 
+				I_ZZAnnexure.COLUMNNAME_ZZ_Application_Form_ID, I_ZZAnnexure.COLUMNNAME_DataType), null);
+		annexureQuery.setParameters(applicationForm.getZZ_Application_Form_ID(), annexureType);
+		annexureQuery.setOrderBy(X_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);
+		return annexureQuery.list();
+	}
+	
 }

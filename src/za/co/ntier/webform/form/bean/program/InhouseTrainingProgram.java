@@ -13,8 +13,8 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 
 	public InhouseTrainingProgram(X_ZZ_Application_Form applicationForm) {
 		this.setInhouse(ProjectInput.getProject(
-				List.of(ColumnInfo.getColLabel(ProjectInput.colNameProgrammeLabel),
-						ColumnInfo.getColPositiveNumber(ProjectInput.colNoLearnersLable)
+				List.of(ColumnInfo.getColLabel(ColumnInfo.colNameProgrammeLabel),
+						ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLable)
 						),
 				"Inhouse /Industry/Company based short courses", applicationForm));
 

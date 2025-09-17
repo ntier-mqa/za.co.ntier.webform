@@ -4,6 +4,7 @@ import java.util.List;
 
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
@@ -15,9 +16,14 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	private ProjectInput skill;
 
 	public ArtisanAidesProgram(X_ZZ_Application_Form applicationForm) {
-		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel);
-		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel);
-		ColumnInfo<?> colTotal = ColumnInfo.getColTotal(ProjectInput.colTotalLearnersLabel, List.of(colNoEmployed, colNoUnEmployed));
+		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel);
+		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel);
+		ColumnInfo<?> colTotal = ColumnInfo.getColExpression(ColumnInfo.colTotalLearnersLabel, row -> {
+			return Util.sumCol(row, List.of(colNoEmployed, colNoUnEmployed));
+		});
+		
+		
+		
 		
 		qualification = ProjectInput.getProject(null,
 				

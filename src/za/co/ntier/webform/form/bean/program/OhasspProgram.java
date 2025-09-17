@@ -13,8 +13,8 @@ public class OhasspProgram implements ISaveForm, IProgram {
 
 	public OhasspProgram(X_ZZ_Application_Form applicationForm)  {
 		setHealthSafetySkills(ProjectInput.getProject(
-				List.of(ColumnInfo.getColLabel(ProjectInput.colNameProgrammeLabel),
-						ColumnInfo.getColPositiveNumber(ProjectInput.colNoEmployedLabel)),
+				List.of(ColumnInfo.getColLabel(ColumnInfo.colNameProgrammeLabel),
+						ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel)),
 				"Occupational Health and Safety Skills Programmes", applicationForm));
 	}
 

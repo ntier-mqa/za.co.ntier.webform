@@ -6,7 +6,6 @@ import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
-import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
@@ -17,14 +16,14 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 		if (menuContextInfo.getIsUploadWPAForNVC()) {
 			setUnemployed(ProjectInput.getProject(
 					List.of(
-							ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel),
-							ColumnInfo.getColFileUpload(ProgramInput.colWPALabel, ProgramInput.btWPAText)
+							ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel),
+							ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel, ColumnInfo.btWPAText)
 							), applicationForm));
 			
 		}else {
 			setUnemployed(ProjectInput.getProject(
 					List.of(
-							ColumnInfo.getColPositiveNumber(ProjectInput.colNoUnEmployedLabel)
+							ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel)
 							), applicationForm));
 		}
 		

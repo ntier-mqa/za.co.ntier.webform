@@ -56,12 +56,6 @@ public class ColumnInfo<T> {
 		return new ColumnInfo<T>(title, DataType.Text);
 	}
 	
-	public static <T> ColumnInfo<T> getColTotal(String title, List<ColumnInfo<?>> colValues) {
-		ColumnInfo<T> colTotal = new ColumnInfo<T>(title, DataType.Label);
-		colTotal.setColValues(colValues);
-		return colTotal;
-	}
-	
 	private Function<AnnexureRow<?>, Integer> expression;
 	
 	public static <T> ColumnInfo<T> getColExpression(String title, Function<AnnexureRow<?>, Integer> expression) {
@@ -79,8 +73,6 @@ public class ColumnInfo<T> {
 		return new ColumnInfo<Entry<Integer, Integer>>(title, DataType.TwoValues);
 
 	}
-
-	private List<ColumnInfo<?>> colValues;
 	
 	private String btText;
 
@@ -89,6 +81,54 @@ public class ColumnInfo<T> {
 	private DataType dataType;
 
 	private String title;
+
+	public static final String DocUploadTitle = "Document Name";
+
+	public static final String colTotalNoBeneficiariesTitle = "Total Number of beneficiaries applying for";
+
+	public static final String colProgrammeApplyTitle = "Programme Applying For";
+
+	public static final String colNoBeneficiariesTitle = "Number Of Beneficiaries Applying For";
+
+	public static final String colDisciplineTitle = "Discipline Applying For";
+
+	public static final String colRequestedProgrammeTitle = "Requested Programme";
+
+	public static final String colNoManagersTitle = "Number of managers";
+
+	public static final String colNoLearners = "Number of learners";
+
+	public static final String colFieldStudyTitle = "Field of Study";
+
+	public static final String colTotalLearnersLabel = "Total No. of Learners Applied For";
+
+	public static final String colNoLearnersLable = "No of Learners applied for";
+
+	public static final String colNameProgrammeLabel = "Name of Programme";
+
+	public static final String colWPALabel = "WPA";
+
+	public static final String colTradeLabel = "Trade";
+
+	public static final String colPostalCodeLabel = "Site Postal Code";
+
+	public static final String colNoUnEmployedLabel = "No. of Unemployed Learners";
+
+	public static final String colNoLearnersLabel = "No. of Learners";
+
+	public static final String colNoEmployedLabel = "No. of Employed Learners";
+
+	public static final String colLearnershipLabel = "Learnership Type";
+
+	public static final String colDisciplineLabel = "Discipline";
+
+	public static final String colAreaLabel = "Area";
+
+	public static final String colAccredLabel = "Accreditation";
+
+	public static final String btWPAText = "WPA";
+
+	public static final String btAccredText = "Accred./SLA";
 
 	public ColumnInfo(String colTitle, DataType dataType) {
 		this.title = colTitle;
@@ -150,18 +190,7 @@ public class ColumnInfo<T> {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	/**
-	 * @return the colValues
-	 */
-	public List<ColumnInfo<?>> getColValues() {
-		return colValues;
-	}
-	/**
-	 * @param colValues the colValues to set
-	 */
-	public void setColValues(List<ColumnInfo<?>> colValues) {
-		this.colValues = colValues;
-	}
+	
 	/**
 	 * @return the expression
 	 */

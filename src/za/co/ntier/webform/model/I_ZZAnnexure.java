@@ -18,8 +18,7 @@ package za.co.ntier.webform.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import org.compiere.model.MTable;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ZZAnnexure
@@ -33,7 +32,7 @@ public interface I_ZZAnnexure
     /** TableName=ZZAnnexure */
     public static final String Table_Name = "ZZAnnexure";
 
-    /** AD_Table_ID=1000059 */
+    /** AD_Table_ID=1000057 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -81,6 +80,19 @@ public interface I_ZZAnnexure
 	  */
 	public int getCreatedBy();
 
+    /** Column name DataType */
+    public static final String COLUMNNAME_DataType = "DataType";
+
+	/** Set Data Type.
+	  * Type of data
+	  */
+	public void setDataType (String DataType);
+
+	/** Get Data Type.
+	  * Type of data
+	  */
+	public String getDataType();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -106,6 +118,28 @@ public interface I_ZZAnnexure
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name NoMonths */
+    public static final String COLUMNNAME_NoMonths = "NoMonths";
+
+	/** Set Number of Months	  */
+	public void setNoMonths (int NoMonths);
+
+	/** Get Number of Months	  */
+	public int getNoMonths();
+
+    /** Column name Postal */
+    public static final String COLUMNNAME_Postal = "Postal";
+
+	/** Set ZIP.
+	  * Postal code
+	  */
+	public void setPostal (String Postal);
+
+	/** Get ZIP.
+	  * Postal code
+	  */
+	public String getPostal();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -166,6 +200,19 @@ public interface I_ZZAnnexure
 	  * Discipline Applying For
 	  */
 	public String getZZDiscipline();
+
+    /** Column name ZZNoLearners */
+    public static final String COLUMNNAME_ZZNoLearners = "ZZNoLearners";
+
+	/** Set No Learners.
+	  * Number of learners applying should be based on
+	  */
+	public void setZZNoLearners (int ZZNoLearners);
+
+	/** Get No Learners.
+	  * Number of learners applying should be based on
+	  */
+	public int getZZNoLearners();
 
     /** Column name ZZProgramme */
     public static final String COLUMNNAME_ZZProgramme = "ZZProgramme";

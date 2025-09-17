@@ -23,6 +23,10 @@ import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class AnnexureInfo implements ISaveForm{
+	public final static String AnnexureTypeExitStrategy = "EXIT STRATEGY";
+	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
+	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
+	
 	public static <T extends AnnexureInfo> T getAnnexureInfo(Class<T> clazz, List<ColumnInfo<?>> columnInfos,
 			boolean isShowTotal){
 
@@ -37,7 +41,7 @@ public class AnnexureInfo implements ISaveForm{
 		annexureInfo.setShowTotal(isShowTotal);
 		annexureInfo.setColumnInfos(columnInfos);
 
-		List<Map<ColumnInfo<?>, Object>> rows = new ArrayList<>();
+		List<AnnexureRow<?>> rows = new ArrayList<>();
 		annexureInfo.setRows(rows);
 
 		if (isShowTotal) {
@@ -114,7 +118,7 @@ public class AnnexureInfo implements ISaveForm{
 
 	private List<ColumnInfo<?>> columnInfos;
 	private Function<AnnexureInfo, AnnexureRow<?>> rowInitSupplier;
-	private List<Map<ColumnInfo<?>, Object>> rows;
+	private List<AnnexureRow<?>> rows;
 	private String sectionHeader;
 
 	private boolean showAddButton = false;
@@ -185,26 +189,40 @@ public class AnnexureInfo implements ISaveForm{
 		return rowDataInits;
 	}
 	
-	public void updateTotal() {
+	/**
+	 * update all cell on total row, use on init data
+	 */
+	public void updateTotalRow() {
 		if (!showTotal)
 			return;
 		
 		for (ColumnInfo<?> col:getColumnInfos()) {
 			if (col.getDataType() == DataType.PositiveNumber) {
-				Integer total = 0;
-				for (Map<ColumnInfo<?>, Object> r : getRows()) {
-					IntData intData = (IntData)r.get(col);
-					if (intData.getValue() != null) {
-						total += intData.getValue();
-					}
-				}
-				
-				IntData totalValue = (IntData)totalRow.get(col);
-				totalValue.setValue(total);
-				//BindUtils.postNotifyChange(totalValue, "value");
+				updateTotalRow(col, false);
+			}
+		}
+	}
+	
+	/**
+	 * update total cell of column has data change
+	 * @param col
+	 * @param needNotify
+	 */
+	public void updateTotalRow(ColumnInfo<?> col, boolean needNotify) {
+		Integer total = 0;
+		for (Map<ColumnInfo<?>, Object> r : getRows()) {
+			IntData intData = (IntData)r.get(col);
+			if (intData.getValue() != null) {
+				total += intData.getValue();
 			}
 		}
 		
+		IntData totalValue = (IntData)totalRow.get(col);
+		totalValue.setValue(total);
+		
+		if(needNotify) {
+			BindUtils.postNotifyChange(totalValue, "value");
+		}
 	}
 
 	/**
@@ -217,7 +235,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @return the rows
 	 */
-	public List<Map<ColumnInfo<?>, Object>> getRows() {
+	public List<AnnexureRow<?>> getRows() {
 		return rows;
 	}
 
@@ -277,59 +295,52 @@ public class AnnexureInfo implements ISaveForm{
 	public void numChange(AnnexureRow<?> row, ColumnInfo<?> col, InputEvent event) {
 		// update total row
 		if (col.getDataType() == DataType.PositiveNumber && showTotal) {
-			Integer total = 0;
-			for (Map<ColumnInfo<?>, Object> r : getRows()) {
-				IntData intData = (IntData)r.get(col);
-				if (intData.getValue() != null) {
-					total += intData.getValue();
-				}
-			}
+			updateTotalRow(col, true);
+		}
+		
+		if (col.getDataType() == DataType.PositiveNumber) {
+			updateExpressionCol (row, true);
+		}
 			
-			IntData totalValue = (IntData)totalRow.get(col);
-			totalValue.setValue(total);
-			BindUtils.postNotifyChange(totalValue, "value");
-		}
-		
-		// update total column
-		if (col.getDataType() == DataType.PositiveNumber) {
-			for (ColumnInfo<?> colTotal : getColumnInfos()) {
-				if (colTotal.getColValues() != null && colTotal.getColValues().contains(col)) {
-					int total = 0;
-					for (ColumnInfo<?> colCal : colTotal.getColValues()) {
-						IntData value = (IntData)row.get(colCal);
-						if (value.getValue() != null)
-							total += value.getValue();
-					}
-					
-					LabelData totalLable = (LabelData)row.get(colTotal);
-					if (total == 0) {
-						totalLable.setValue(null);
-					}else {
-						totalLable.setValue(String.valueOf(total));
-					}
-					
-					BindUtils.postNotifyChange(totalLable, "value");
-				}
+	}
+
+	public void updateExpressionCol () {
+		boolean hasExpressionCol = false;
+		for (ColumnInfo<?> colTotal : getColumnInfos()) {
+			if (colTotal.getExpression() != null) {
+				hasExpressionCol = true;
 			}
 		}
 		
-		// update expression column
-		if (col.getDataType() == DataType.PositiveNumber) {
-			for (ColumnInfo<?> colTotal : getColumnInfos()) {
-				if (colTotal.getExpression() != null) {
-					Integer value = colTotal.getExpression().apply(row);
-					LabelData expressionLable = (LabelData) row.get(colTotal);
-					if (value == null) {
-						expressionLable.setValue(null);
-					}else {
-						expressionLable.setValue(String.valueOf(value));
-					}
-					BindUtils.postNotifyChange(expressionLable, "value");
-				}
+		if(hasExpressionCol) {
+			for(AnnexureRow<?> row:getRows()) {
+				updateExpressionCol(row, false);
 			}
 		}
 	}
-
+	/**
+	 * update cell all Expression Col on current row
+	 * @param row
+	 */
+	public void updateExpressionCol (AnnexureRow<?> row, boolean needNotify) {
+		// update expression column
+		for (ColumnInfo<?> colTotal : getColumnInfos()) {
+			if (colTotal.getExpression() != null) {
+				Integer value = colTotal.getExpression().apply(row);
+				LabelData expressionLable = (LabelData) row.get(colTotal);
+				if (value == null) {
+					expressionLable.setValue(null);
+				}else {
+					expressionLable.setValue(String.valueOf(value));
+				}
+				if(needNotify) {
+					BindUtils.postNotifyChange(expressionLable, "value");
+				}
+				
+			}
+		}
+	}
+	
 	public void postalChange (Map<ColumnInfo<?>, Object> row, 
 			ColumnInfo<?> col,
 			InputEvent event){
@@ -352,7 +363,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @param rows the rows to set
 	 */
-	public void setRows(List<Map<ColumnInfo<?>, Object>> rows) {
+	public void setRows(List<AnnexureRow<?>> rows) {
 		this.rows = rows;
 	}
 

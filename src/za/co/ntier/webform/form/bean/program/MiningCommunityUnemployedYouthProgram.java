@@ -1,19 +1,27 @@
 package za.co.ntier.webform.form.bean.program;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import org.compiere.util.Env;
 
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LabelData;
-import za.co.ntier.webform.model.X_ZZSubAnnex;
+import za.co.ntier.webform.form.bean.component.PostalData;
+import za.co.ntier.webform.form.bean.component.TextData;
+import za.co.ntier.webform.form.viewmodel.component.AnnexureTableVMWrapper;
+import za.co.ntier.webform.model.X_ZZAnnexure;
+import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgram{
@@ -25,7 +33,15 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 	private MenuContextInfo menuContextInfo;
 	
 	private String programTitle;
-
+	
+	private BiConsumer<AnnexureRow<?>, X_ZZAnnexure> learnerSaveFunc;
+	private BiConsumer<AnnexureRow<?>, X_ZZAnnexure> strategySaveFunc;
+	private BiConsumer<AnnexureRow<?>, X_ZZAnnexure> budgetSaveFunc;
+		
+	private ColumnInfo<?> budgetColDuration = ColumnInfo.getColPositiveNumber("Duration of program (Months)");
+	private ColumnInfo<?> budgetColLearners = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLabel);
+	private ColumnInfo<?> budgetColNameProgram = ColumnInfo.getColText(ColumnInfo.colNameProgrammeLabel);
+	private ColumnInfo<?> budgetColPostalCode = ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel);
 	public MiningCommunityUnemployedYouthProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
 		this.menuContextInfo = menuContextInfo;
@@ -34,15 +50,16 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 				"MINE COMMUNITY DEVELOPMENT GRANT":"UNEMPLOYED YOUTH DEVELOPMENT PROGRAMMES GRANT");
 		
 		// learnerApplys
-		ColumnInfo<?> valueCol = ColumnInfo.getColPositiveNumber("No.");
-		ColumnInfo<?> titleCol = ColumnInfo.getColLabel("Target Group (Tick)");
+		ColumnInfo<?> valueColLearnerApplys = ColumnInfo.getColPositiveNumber("No.");
+		ColumnInfo<?> titleColLearnerApplys = ColumnInfo.getColLabel("Target Group (Tick)");
+		
 		List<ColumnInfo<?>> learnerApplyCols = List.of(
-				valueCol,
-				titleCol
+				valueColLearnerApplys,
+				titleColLearnerApplys
 				);
 				
 		
-		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAnnexure = (parent) -> new AnnexureRow<X_ZZSubAnnex>(parent);
+		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAnnexure = (parent) -> new AnnexureRow<X_ZZAnnexure>(parent);
 		
 		learnerApplys = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, 
 				learnerApplyCols, false);
@@ -54,16 +71,22 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 				"People living in rural areas",
 				"People living in urban areas");
 		
-		List<X_ZZSubAnnex> subAnnexs = MasterUtil.loadSubAnnex(applicationForm);
-		initTable(learnerApplys, rowTitles, subAnnexs, titleCol, valueCol);
+		List<X_ZZAnnexure> subAnnexs = MasterUtil.loadAnnexure(applicationForm, AnnexureInfo.AnnexureTypeTargetGroup);
+		initTable(learnerApplys, rowTitles, subAnnexs, titleColLearnerApplys, valueColLearnerApplys);
+		
+		learnerSaveFunc = (row, dao) -> {
+			LabelData labelData = (LabelData)row.get(titleColLearnerApplys);
+			dao.setName(labelData.getValue());
+			
+			IntData valueData = ((IntData)row.get(valueColLearnerApplys));
+			dao.setZZNoLearners(Util.convert(valueData.getValue()));
+		};
 		
 		// budgetOverview
-		ColumnInfo<?> colDuration = ColumnInfo.getColPositiveNumber("Duration of program (Months)");
-		ColumnInfo<?> colLearners = ColumnInfo.getColPositiveNumber("No. of learners");
 		
 		Function<AnnexureRow<?>, Integer> stipendExpression = (row) -> {
-			Integer duration = ((IntData)row.get(colDuration)).getValue();
-			Integer learners = ((IntData)row.get(colLearners)).getValue();
+			Integer duration = ((IntData)row.get(budgetColDuration)).getValue();
+			Integer learners = ((IntData)row.get(budgetColLearners)).getValue();
 			if (duration != null && learners != null) {
 				return 1700 * duration * learners;
 			}else {
@@ -73,8 +96,8 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		};
 		
 		Function<AnnexureRow<?>, Integer> trainingFeeExpression = (row) -> {
-			Integer duration = ((IntData)row.get(colDuration)).getValue();
-			Integer learners = ((IntData)row.get(colLearners)).getValue();
+			Integer duration = ((IntData)row.get(budgetColDuration)).getValue();
+			Integer learners = ((IntData)row.get(budgetColLearners)).getValue();
 			if (duration != null && learners != null) {
 				return (15000 - (duration * 1700)) * learners;
 			}else {
@@ -83,12 +106,24 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 			
 		};
 		
-		
+		budgetSaveFunc = (row, dao) -> {
+			String textData = (String)row.get(budgetColNameProgram);
+			dao.setName(textData);
+			
+			PostalData postalData = (PostalData)row.get(budgetColPostalCode);
+			dao.setPostal(Util.convertStr(postalData.getPostal()));
+			
+			IntData intData = ((IntData)row.get(budgetColLearners));
+			dao.setZZNoLearners(Util.convert(intData.getValue()));
+			
+			intData = ((IntData)row.get(budgetColDuration));
+			dao.setNoMonths(Util.convert(intData.getValue()));
+		};
 		
 		List<ColumnInfo<?>> budgetOverviewCols = List.of(
-				ColumnInfo.getColText("Name of program"),
-				ColumnInfo.getColPostal("Postal Code"),
-				colDuration, colLearners,
+				budgetColNameProgram,
+				budgetColPostalCode,
+				budgetColDuration, budgetColLearners,
 				ColumnInfo.getColExpression("Total stipend", stipendExpression),
 				ColumnInfo.getColExpression("Training Fee", trainingFeeExpression)
 				);
@@ -97,14 +132,17 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		budgetOverview.setSupplier(supplierRowAnnexure);
 		budgetOverview.setShowAddButton(true);
 		budgetOverview.setSubSectionHeader("BUDGET OVERVIEW");
-		budgetOverview.createDetailRow();
+		
+		subAnnexs = MasterUtil.loadAnnexure(applicationForm, AnnexureInfo.AnnexureTypeBudgetOverview);
+		initBudgetTable(budgetOverview, subAnnexs);
 		
 		//strategy
-		titleCol = ColumnInfo.getColLabel("");
-		valueCol = ColumnInfo.getColPositiveNumber("");
+		ColumnInfo<?> titleColExitStrategy = ColumnInfo.getColLabel("");
+		ColumnInfo<?> valueColExitStrategy = ColumnInfo.getColPositiveNumber("");
+		
 		List<ColumnInfo<?>> strategyCols = List.of(
-				titleCol,
-				valueCol
+				titleColExitStrategy,
+				valueColExitStrategy
 				);
 		strategy = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, 
 				strategyCols, false);
@@ -117,18 +155,49 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 				"Seta accredited with",
 				"Provide a description of what post training opportunity/ies exist/s for the learners after completing programme (Exit strategy)");
 		
-		subAnnexs = MasterUtil.loadSubAnnex(applicationForm);
-		initTable(strategy, rowTitles, subAnnexs, titleCol, valueCol);
+		subAnnexs = MasterUtil.loadAnnexure(applicationForm, AnnexureInfo.AnnexureTypeExitStrategy);
+		
+		strategySaveFunc = (row, dao) -> {
+			LabelData labelData = (LabelData)row.get(titleColExitStrategy);
+			dao.setName(labelData.getValue());
+			
+			IntData valueData = ((IntData)row.get(valueColExitStrategy));
+			dao.setZZNoLearners(Util.convert(valueData.getValue()));
+		};
+		
+		initTable(strategy, rowTitles, subAnnexs, titleColExitStrategy, valueColExitStrategy);
 	}
 	
-	public void initTable(AnnexureInfo annexure, List<String> rowTitles, List<X_ZZSubAnnex> subAnnexs, ColumnInfo<?> colTitle, ColumnInfo<?> colValue) {
+	public void initBudgetTable(AnnexureInfo annexure, List<X_ZZAnnexure> subAnnexs) {
+		if (subAnnexs != null && subAnnexs.size() > 0) {
+			for (X_ZZAnnexure dao : subAnnexs) {
+				@SuppressWarnings("unchecked")
+				AnnexureRow<X_ZZAnnexure> row = (AnnexureRow<X_ZZAnnexure>)annexure.createDetailRow();
+				row.setData(dao);
+				
+				((IntData)row.get(budgetColDuration)).setValue(Util.convert(dao.getNoMonths()));
+				((IntData)row.get(budgetColLearners)).setValue(Util.convert(dao.getZZNoLearners()));
+				((PostalData)row.get(budgetColPostalCode)).setPostal(Util.convertStr(dao.getPostal()));
+				row.put(budgetColNameProgram, Util.convertStr(dao.getName()));
+				
+			}
+		}else {
+			annexure.createDetailRow();
+		}
+		
+		annexure.updateExpressionCol();
+	}
+	
+	public void initTable(AnnexureInfo annexure, List<String> rowTitles, List<X_ZZAnnexure> subAnnexs, ColumnInfo<?> colTitle, ColumnInfo<?> colValue) {
 		for (String rowTitle : rowTitles) {
-			AnnexureRow<?> row = annexure.createDetailRow();
+			@SuppressWarnings("unchecked")
+			AnnexureRow<X_ZZAnnexure> row = (AnnexureRow<X_ZZAnnexure>)annexure.createDetailRow();
 			Integer value = null;
 			if (subAnnexs != null) {
-				for (X_ZZSubAnnex subAnnex : subAnnexs) {
-					if (rowTitle.equals(subAnnex.getZZRequestedProgramme())) {
-						value = subAnnex.getZZLearners();
+				for (X_ZZAnnexure subAnnex : subAnnexs) {
+					if (rowTitle.equals(subAnnex.getName())) {
+						value = Util.convert(subAnnex.getZZNoLearners());
+						row.setData(subAnnex);
 						break;
 					}
 				}
@@ -142,6 +211,22 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		
 	}
 
+	public void saveTable(AnnexureInfo annexure, String annexureType, String trxName, BiConsumer<AnnexureRow<?>, X_ZZAnnexure> setter) {
+		for (AnnexureRow<?> row : annexure.getRows()) {
+			X_ZZAnnexure annexureDao = (X_ZZAnnexure)row.getData();
+			if (annexureDao == null) {
+				annexureDao = new X_ZZAnnexure(Env.getCtx(), 0, null);
+				annexureDao.setDataType(annexureType);
+				annexureDao.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+			}
+			
+			setter.accept(row, annexureDao);
+
+			annexureDao.saveEx(trxName);
+		}
+		
+	}
+	
 	/**
 	 * @return the applicationForm
 	 */
@@ -177,7 +262,13 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
+		this.applicationForm = applicationForm;
+		
+		saveTable(learnerApplys, AnnexureInfo.AnnexureTypeTargetGroup, trxName, learnerSaveFunc);
+		
+		saveTable(strategy, AnnexureInfo.AnnexureTypeExitStrategy, trxName, strategySaveFunc);
+		
+		saveTable(budgetOverview, AnnexureInfo.AnnexureTypeBudgetOverview, trxName, budgetSaveFunc);
 		
 	}
 

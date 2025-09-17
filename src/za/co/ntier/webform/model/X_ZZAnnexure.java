@@ -19,11 +19,7 @@ package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZAnnexure
  *  @author iDempiere (generated)
@@ -35,7 +31,7 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250905L;
+	private static final long serialVersionUID = 20250917L;
 
     /** Standard Constructor */
     public X_ZZAnnexure (Properties ctx, int ZZAnnexure_ID, String trxName)
@@ -109,6 +105,22 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
       return sb.toString();
     }
 
+	/** Set Data Type.
+		@param DataType Type of data
+	*/
+	public void setDataType (String DataType)
+	{
+		set_Value (COLUMNNAME_DataType, DataType);
+	}
+
+	/** Get Data Type.
+		@return Type of data
+	  */
+	public String getDataType()
+	{
+		return (String)get_Value(COLUMNNAME_DataType);
+	}
+
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/
@@ -123,6 +135,40 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Number of Months.
+		@param NoMonths Number of Months
+	*/
+	public void setNoMonths (int NoMonths)
+	{
+		set_Value (COLUMNNAME_NoMonths, Integer.valueOf(NoMonths));
+	}
+
+	/** Get Number of Months.
+		@return Number of Months	  */
+	public int getNoMonths()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_NoMonths);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set ZIP.
+		@param Postal Postal code
+	*/
+	public void setPostal (String Postal)
+	{
+		set_Value (COLUMNNAME_Postal, Postal);
+	}
+
+	/** Get ZIP.
+		@return Postal code
+	  */
+	public String getPostal()
+	{
+		return (String)get_Value(COLUMNNAME_Postal);
 	}
 
 	/** Set Annexure Definition.
@@ -194,6 +240,25 @@ public class X_ZZAnnexure extends PO implements I_ZZAnnexure, I_Persistent
 	public String getZZDiscipline()
 	{
 		return (String)get_Value(COLUMNNAME_ZZDiscipline);
+	}
+
+	/** Set No Learners.
+		@param ZZNoLearners Number of learners applying should be based on
+	*/
+	public void setZZNoLearners (int ZZNoLearners)
+	{
+		set_Value (COLUMNNAME_ZZNoLearners, Integer.valueOf(ZZNoLearners));
+	}
+
+	/** Get No Learners.
+		@return Number of learners applying should be based on
+	  */
+	public int getZZNoLearners()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLearners);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Programme Applying.
