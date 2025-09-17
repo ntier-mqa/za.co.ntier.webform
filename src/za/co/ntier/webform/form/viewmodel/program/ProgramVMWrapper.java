@@ -31,6 +31,7 @@ public class ProgramVMWrapper<T> {
 		this.applicationProgramVM = applicationProgramVM;
 		this.setNotifyTarget(notifyTarget);
 		this.setMenuContextInfo(menuContextInfo);
+		BindUtils.postNotifyChange(null, null, this.applicationProgramVM, "programComplete"); // if editing check if values are there
 	}
 
 	/**
