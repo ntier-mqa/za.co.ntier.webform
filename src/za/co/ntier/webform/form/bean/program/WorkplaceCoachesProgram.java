@@ -74,8 +74,11 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 	
 	@Override
 	public boolean isProgramValid() {
-		// TODO Auto-generated method stub
-		return true;
+		Integer d1 = placementWorkplaceCoaches;
+	    Integer d2 = trainingWorkplaceCoaches;
+	    // example rule: both required and > 0
+	    return d1 != null && d1 > 0 && d2 != null && d2 > 0;
+	    // or: at least one > 0 -> return (nvl(d1,0) + nvl(d2,0)) > 0;
 	}
 
 }

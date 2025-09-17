@@ -28,7 +28,10 @@
 						<label value="Number of placements of workplace coaches coaching learners on Artisan Development Programmes applying for?" />
 					</div>
 					<div sclass="grid-cell">
-						<intbox value="@bind(vmWorkplaceCoaches.program.placementWorkplaceCoaches)" />
+					    <intbox
+						  value="@bind(vmWorkplaceCoaches.program.placementWorkplaceCoaches, save-on='onChange')"
+						  onChange="@command('notifyProgramComplete')"
+						  constraint="no negative, no zero: Must be > 0" />
 					</div>
 				</div>
             </tabpanel>
@@ -53,7 +56,10 @@
 						<label value="Number of workplace coaches to be trained applying for?" />
 					</div>
 					<div sclass="grid-cell">
-						<intbox value="@bind(vmWorkplaceCoaches.program.trainingWorkplaceCoaches)" />
+						 <intbox
+							value="@bind(vmWorkplaceCoaches.program.trainingWorkplaceCoaches, save-on='onChange')"
+							onChange="@command('notifyProgramComplete')"
+							constraint="no empty: Please enter a number, no negative, no zero" />
 					</div>
 					
 				</div>

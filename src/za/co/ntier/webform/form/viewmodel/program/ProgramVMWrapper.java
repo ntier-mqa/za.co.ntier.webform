@@ -1,5 +1,7 @@
 package za.co.ntier.webform.form.viewmodel.program;
 
+import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -79,5 +81,12 @@ public class ProgramVMWrapper<T> {
 	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
 	}
+	
+	@Command("notifyProgramComplete")
+    public void notifyProgramComplete() {
+        // Tell the top-level VM to re-evaluate isProgramComplete()
+        BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), "programComplete");
+    }
+	
 
 }
