@@ -31,7 +31,7 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250906L;
+	private static final long serialVersionUID = 20250917L;
 
     /** Standard Constructor */
     public X_ZZLearnersApplied (Properties ctx, int ZZLearnersApplied_ID, String trxName)
@@ -131,6 +131,22 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Data Type.
+		@param DataType Type of data
+	*/
+	public void setDataType (String DataType)
+	{
+		set_Value (COLUMNNAME_DataType, DataType);
+	}
+
+	/** Get Data Type.
+		@return Type of data
+	  */
+	public String getDataType()
+	{
+		return (String)get_Value(COLUMNNAME_DataType);
 	}
 
 	/** Set Name.

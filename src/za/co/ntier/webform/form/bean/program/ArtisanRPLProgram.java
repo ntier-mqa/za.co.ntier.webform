@@ -15,9 +15,11 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 	private ProjectInput allLearners;
 
 	public ArtisanRPLProgram(X_ZZ_Application_Form applicationForm) {
-		allLearners = ProjectInput.getProject(List.of(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel),
-				ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel),
-				ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalLearnersLabel)), applicationForm);
+		allLearners = ProjectInput.getProject(
+				List.of(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel),
+						ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel),
+						ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalLearnersLabel)));
+		ProjectInput.initProject(allLearners, applicationForm);
 	}
 
 	/**

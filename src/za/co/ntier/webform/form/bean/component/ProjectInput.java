@@ -23,18 +23,10 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class ProjectInput extends AnnexureInfo {
 	
-	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, X_ZZ_Application_Form applicationForm) {
-		return ProjectInput.getProject(initColumnInfos, applicationForm, null, null);
-	}
-
-	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String rowTitle, X_ZZ_Application_Form applicationForm) {
-		return getProject(initColumnInfos, applicationForm, null, rowTitle);
+	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos) {
+		return ProjectInput.getProject(initColumnInfos, null);
 	}
 	
-	
-	public static ProjectInput getProject(String secctionTitle, List<ColumnInfo<?>> initColumnInfos, X_ZZ_Application_Form applicationForm) {
-		return getProject(initColumnInfos, applicationForm, secctionTitle, null);
-	}
 	/**
 	 * no row title, no total, has section title
 	 * 
@@ -42,7 +34,7 @@ public class ProjectInput extends AnnexureInfo {
 	 * @param initColumnInfos
 	 * @return
 	 */
-	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, X_ZZ_Application_Form applicationForm, String secctionTitle, String rowTitle){
+	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String secctionTitle){
 		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
 		columnInfos.add(ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel));
 		columnInfos.add(
@@ -55,14 +47,38 @@ public class ProjectInput extends AnnexureInfo {
 		
 		projectInput.setSectionHeader(secctionTitle);
 		
+		return projectInput;		
+
+	}
+	
+	public static void initProject(ProjectInput projectInput, X_ZZ_Application_Form applicationForm) {
+		initProject(projectInput, applicationForm, null);
+	}
+	
+	public static void initProject(ProjectInput projectInput, X_ZZ_Application_Form applicationForm, String rowTitle) {
 		@SuppressWarnings("unchecked")
 		AnnexureRow<X_ZZLearnersApplied> row = (AnnexureRow<X_ZZLearnersApplied>)projectInput.createDetailRow();
+		List<ColumnInfo<?>> columnInfos = projectInput.getColumnInfos();
 		
 		X_ZZLearnersApplied learnersApplied = null;
 		if (applicationForm != null) {
-			String whereLearnersApplied = String.format("%s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID);
+			String whereLearnersApplied = null;
+			if(projectInput.getDataType() == null) {
+				whereLearnersApplied = String.format("%s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID);
+			}else {
+				whereLearnersApplied = String.format("%s = ? AND %s = ?", 
+						I_ZZLearnersApplied.COLUMNNAME_ZZ_Application_Form_ID,
+						I_ZZLearnersApplied.COLUMNNAME_DataType);
+			}
+
 			Query queryLearnersApplied = MTable.get(I_ZZLearnersApplied.Table_ID).createQuery(whereLearnersApplied, null);
-			learnersApplied = queryLearnersApplied.setParameters(applicationForm.getZZ_Application_Form_ID()).first();
+			if(projectInput.getDataType() == null) {
+				queryLearnersApplied.setParameters(applicationForm.getZZ_Application_Form_ID());
+			}else {
+				queryLearnersApplied.setParameters(applicationForm.getZZ_Application_Form_ID(), projectInput.getDataType());
+			}
+			
+			learnersApplied = queryLearnersApplied.firstOnly();
 		}
 		
 		row.setData(learnersApplied);
@@ -118,9 +134,6 @@ public class ProjectInput extends AnnexureInfo {
 		}
 		
 		projectInput.updateExpressionCol();
-		
-		return projectInput;		
-
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -140,6 +153,7 @@ public class ProjectInput extends AnnexureInfo {
 		X_ZZLearnersApplied learnersApplied = row.getData();
 		if (learnersApplied == null) {
 			learnersApplied = new X_ZZLearnersApplied(null, 0, trxName);
+			learnersApplied.setDataType(projectInput.getDataType());
 		}
 		
 		boolean hasData = false;

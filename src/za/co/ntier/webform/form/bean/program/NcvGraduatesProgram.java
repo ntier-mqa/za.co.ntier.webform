@@ -14,20 +14,21 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 
 	public NcvGraduatesProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		if (menuContextInfo.getIsUploadWPAForNVC()) {
-			setUnemployed(ProjectInput.getProject(
+			unemployed = ProjectInput.getProject(
 					List.of(
 							ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel),
 							ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel, ColumnInfo.btWPAText)
-							), applicationForm));
+							));
 			
 		}else {
-			setUnemployed(ProjectInput.getProject(
+			unemployed = ProjectInput.getProject(
 					List.of(
 							ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel)
-							), applicationForm));
+							));
 		}
 		
-
+		ProjectInput.initProject(unemployed, applicationForm);
+		
 	}
 
 	/**

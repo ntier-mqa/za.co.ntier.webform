@@ -23,20 +23,21 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 		});
 		
 		
-		
-		
-		qualification = ProjectInput.getProject(null,
-				
+		qualification = ProjectInput.getProject(
 				List.of(colNoEmployed,
 						colNoUnEmployed,
-						colTotal), applicationForm);
+						colTotal));
 		qualification.setSubSectionHeader("QUALIFICATION");
+		qualification.setDataType("QUALIFICATION");
+		ProjectInput.initProject(qualification, applicationForm);
 		
-		skill = ProjectInput.getProject(null,
+		skill = ProjectInput.getProject(
 				List.of(colNoEmployed,
 						colNoUnEmployed,
-						colTotal), applicationForm);
+						colTotal));
 		skill.setSubSectionHeader("SKILLS PROGRAMME");
+		skill.setDataType("SKILLS PROGRAMME");
+		ProjectInput.initProject(skill, applicationForm);
 	}
 
 	/**

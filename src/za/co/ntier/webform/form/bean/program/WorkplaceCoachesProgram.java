@@ -4,6 +4,7 @@ import java.util.List;
 
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
@@ -39,7 +40,10 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 	private Integer trainingWorkplaceCoaches;
 	
 	public WorkplaceCoachesProgram(X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated constructor stub
+		if (applicationForm != null) {
+			placementWorkplaceCoaches = Util.convert(applicationForm.getZZPlacementWorkplaceCoaches());
+			trainingWorkplaceCoaches = Util.convert(applicationForm.getZZTrainingWorkplaceCoaches());
+		}
 	}
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {

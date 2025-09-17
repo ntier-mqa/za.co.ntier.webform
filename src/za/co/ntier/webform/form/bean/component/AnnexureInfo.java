@@ -27,6 +27,8 @@ public class AnnexureInfo implements ISaveForm{
 	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
 	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
 	
+	private String dataType;
+	
 	public static <T extends AnnexureInfo> T getAnnexureInfo(Class<T> clazz, List<ColumnInfo<?>> columnInfos,
 			boolean isShowTotal){
 
@@ -446,6 +448,20 @@ public class AnnexureInfo implements ISaveForm{
 	 */
 	public void setShowColumnHeader(boolean showColumnHeader) {
 		this.showColumnHeader = showColumnHeader;
+	}
+
+	/**
+	 * @return the dataType
+	 */
+	public String getDataType() {
+		return dataType;
+	}
+
+	/**
+	 * @param dataType the dataType to set
+	 */
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
 	}
 	
 	
