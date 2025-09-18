@@ -12,6 +12,7 @@ import java.util.function.Function;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
 import org.compiere.model.MCity;
+import org.compiere.util.CLogger;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
@@ -23,6 +24,7 @@ import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class AnnexureInfo implements ISaveForm{
+	protected static final CLogger log = CLogger.getCLogger(ProjectInput.class);
 	public final static String AnnexureTypeExitStrategy = "EXIT STRATEGY";
 	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
 	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
