@@ -15,7 +15,9 @@
 		<label sclass="label" value="@init(vmOrgInfo.component.sdlNumberTitle)" /> 
 		<textbox value="@bind(vmOrgInfo.component.sdlNumber)" 
 		onChange="@command('sdlNumberChange')" 
-		placeholder="0000000000000" />
+		placeholder="0000000000000" 
+		constraint="no empty: Please enter the SDL number,
+				/^\d{13}$/: SDL number must be 13 digits"/>
 				
 				
 		</div>
@@ -50,7 +52,8 @@
 				value="@init(vmOrgInfo.component.siteSDLNumberTitle)" />
 			<textbox
 				value="@bind(vmOrgInfo.component.siteSDLNumber)
-				@save(vmOrgInfo.component.siteSDLNumber, after='onChanging')" />
+				@save(vmOrgInfo.component.siteSDLNumber, after='onChanging')" 
+				constraint="no empty: Please enter the Site SDL number"/>
 		</div>
 
 		<div

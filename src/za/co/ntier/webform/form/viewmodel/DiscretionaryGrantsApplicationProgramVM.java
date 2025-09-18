@@ -23,9 +23,12 @@ import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Tabbox;
@@ -136,6 +139,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private int tableId;
 
 	private UploadDocComponent uploadDoc;
+	
+	private int selectedTabIndex; // defaults to 0
 
 	public void deleteApp() {
 		if (applicationForm != null) {
@@ -657,6 +662,12 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		
 
 	}
+	
+	public int getSelectedTabIndex() { return selectedTabIndex; }
+	public void setSelectedTabIndex(int selectedTabIndex) {
+	    this.selectedTabIndex = selectedTabIndex;
+	    org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "selectedTabIndex");
+	}
 
 	/**
 	 * @param alternateProgramContact the alternateProgramContact to set
@@ -766,6 +777,17 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			saveAppForm(false, "Successfully submitted the application form",
 					"The application form has been submitted.");
 
+		}
+		
+		
+		
+		@Command("tabChanged")
+		public void tabChanged() {
+		    // make sure the parent VM’s property is dirty so any bindings depending on it can re-evaluate
+		    BindUtils.postNotifyChange(null, null, this, "selectedTabIndex");
+
+		    // now *broadcast* to all binders, including the ones created in <include> (your mainButton VMs)
+		    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 		}
 
 

@@ -12,5 +12,7 @@
 	</div>
 
 	<include component="@load(vmAet.program.aetLearnership)"
+	    applicationProgramVM="@init(vmAet.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

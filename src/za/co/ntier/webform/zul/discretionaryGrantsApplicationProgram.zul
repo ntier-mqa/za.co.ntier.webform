@@ -18,7 +18,9 @@
 	</div>
 	
 	
-	<tabbox width="100%" vflex="1" id="formTab">
+	<tabbox width="100%" vflex="1" id="formTab"
+        selectedIndex="@bind(vm.selectedTabIndex) @save(vm.selectedTabIndex, after='onSelect')"
+        onSelect="@command('tabChanged')" >
 		<tabs>
 			<tab label="Declaration" />
 			<tab label="Organisation Information" />
@@ -60,7 +62,7 @@
 					<include
 							tabType="@init(TabType.MidTab)"
 							tab="@init(formTab)"
-							applicationProgramVM="@init(vm)"
+							applicationProgramVM="@load(vm)"
   							continueGate="@init('ORG')" 
   							submitGate="@init('NONE')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />

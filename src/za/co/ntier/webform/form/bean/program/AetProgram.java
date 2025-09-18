@@ -40,7 +40,6 @@ public class AetProgram implements ISaveForm, IProgram {
 
 	@Override
 	public boolean isProgramValid() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
