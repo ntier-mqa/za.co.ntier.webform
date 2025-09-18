@@ -83,8 +83,10 @@ public class WebForm extends ADForm {
 
 		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataUUValue,
 				null);
-		
-		String formTitle = masterData.getTitle();
+		String formTitle = Env.getContext(Env.getCtx(), m_WindowNo, "+formTitle");  // My Applications does not have program master data
+		if (formTitle == null || formTitle.equals("")) {
+			formTitle = masterData.getTitle();
+		}
 
 		String applicationFormUU = Env.getContext(Env.getCtx(), m_WindowNo, applicationFormUUKey);
 		
