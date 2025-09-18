@@ -35,7 +35,6 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 		setComponent(new MainButtonComponent(getApplicationProgramVM(), tabType, tab));
 		this.continueGate = (continueGate != null) ? continueGate : "NONE"; // <-- set
 		this.submitGate   = (submitGate   != null) ? submitGate   : "NONE"; // <-- set
-		System.out.println("MainButton VM init");
 	}
 
 	// === Reactive disabled flags ===

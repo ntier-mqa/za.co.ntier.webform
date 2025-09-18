@@ -87,7 +87,7 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	    boolean skillOk = skill == null ? true : validateArtisanAnnexure_NoProgramme(skill);
 
 	    // At least one annexure must have a valid row
-	    return (qualOk && skillOk) && (hasValidRow_NoProgramme(qual) || hasValidRow_NoProgramme(skill));
+	    return (qualOk && skillOk) && (hasValidRow_NoProgramme(qual) && hasValidRow_NoProgramme(skill));
 	}
 	
 	private boolean validateArtisanAnnexure_NoProgramme(AnnexureInfo a) {
@@ -95,12 +95,14 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 
 	    ColumnInfo<?> employedCol   = findCol(a, "No. of Employed Learners", "Employed", "No Employed", "Employed Learners");
 	    ColumnInfo<?> unemployedCol = findCol(a, "No. of Unemployed Learners", "Unemployed", "No Unemployed", "Unemployed Learners");
-	    ColumnInfo<?> totalCol      = findCol(a, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
+	  //  ColumnInfo<?> totalCol      = findCol(a, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
 	    ColumnInfo<?> postalCol     = findCol(a, "Site Postal Code", "Postal Code", "Site Postal");
 	    ColumnInfo<?> areaCol       = findCol(a, "Area");
 
 	    // Must at least have the three counts; location is also required by your UI
-	    if (employedCol == null || unemployedCol == null || totalCol == null || postalCol == null || areaCol == null) {
+	    if (employedCol == null || unemployedCol == null 
+	    	//	|| totalCol == null 
+	    		|| postalCol == null || areaCol == null) {
 	        return false;
 	    }
 
@@ -108,7 +110,7 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	    for (var row : a.getRows()) {
 	        Integer employed   = getLearners(employedCol.getDataType(),   row.get(employedCol));
 	        Integer unemployed = getLearners(unemployedCol.getDataType(), row.get(unemployedCol));
-	        Integer total      = getLearners(totalCol.getDataType(),      row.get(totalCol));
+	      //  Integer total      = getLearners(totalCol.getDataType(),      row.get(totalCol));
 
 	        // postal stored as PostalData; area stored as AreaData (from your AnnexureInfo)
 	        String postal = null;
@@ -123,7 +125,9 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
 	        }
 
-	        boolean allBlank = (employed == null && unemployed == null && total == null && postal == null && areaSelected == null);
+	        boolean allBlank = (employed == null && unemployed == null 
+	        //		&& total == null 
+	        		&& postal == null && areaSelected == null);
 	        if (allBlank) {
 	            // Ignore empty line
 	            continue;
@@ -133,11 +137,12 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	        //  - counts present and consistent
 	        //  - at least one count > 0
 	        //  - location filled (postal + area)
-	        boolean countsPresent = employed != null && unemployed != null && total != null;
-	        boolean countsPositive = (employed != null && unemployed != null && total != null) &&
+	        boolean countsPresent = employed != null && unemployed != null; // && total != null;
+	        boolean countsPositive = (employed != null && unemployed != null // && total != null
+	        		                       ) &&
 	                                 (employed > 0 || unemployed > 0); // (or require both > 0 if needed)
-	        boolean countsConsistent = (employed != null && unemployed != null && total != null) &&
-	                                   (employed + unemployed == total);
+	        boolean countsConsistent = (employed != null && unemployed != null // && total != null
+	        		                       ); // &&	                                   (employed + unemployed == total);
 
 	        boolean locationOk = (postal != null && !postal.trim().isEmpty() && areaSelected != null);
 
@@ -156,15 +161,13 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 
 	    ColumnInfo<?> employedCol   = findCol(a, "No. of Employed Learners", "Employed", "No Employed", "Employed Learners");
 	    ColumnInfo<?> unemployedCol = findCol(a, "No. of Unemployed Learners", "Unemployed", "No Unemployed", "Unemployed Learners");
-	    ColumnInfo<?> totalCol      = findCol(a, "Total No. of Learners Applied For", "Total No. of Learners", "Total Learners");
 	    ColumnInfo<?> postalCol     = findCol(a, "Site Postal Code", "Postal Code", "Site Postal");
 	    ColumnInfo<?> areaCol       = findCol(a, "Area");
-	    if (employedCol == null || unemployedCol == null || totalCol == null || postalCol == null || areaCol == null) return false;
+	    if (employedCol == null || unemployedCol == null ||  postalCol == null || areaCol == null) return false;
 
 	    for (var row : a.getRows()) {
 	        Integer employed   = getLearners(employedCol.getDataType(),   row.get(employedCol));
 	        Integer unemployed = getLearners(unemployedCol.getDataType(), row.get(unemployedCol));
-	        Integer total      = getLearners(totalCol.getDataType(),      row.get(totalCol));
 
 	        String postal = null;
 	        Object postalCell = row.get(postalCol);
@@ -178,9 +181,8 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	            try { areaSelected = areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell); } catch (Exception ignore) {}
 	        }
 
-	        if (employed != null && unemployed != null && total != null &&
+	        if (employed != null && unemployed != null && 
 	            (employed > 0 || unemployed > 0) &&
-	            employed + unemployed == total &&
 	            postal != null && !postal.trim().isEmpty() &&
 	            areaSelected != null) {
 	            return true;
