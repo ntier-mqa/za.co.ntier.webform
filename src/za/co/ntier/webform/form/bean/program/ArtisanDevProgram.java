@@ -144,8 +144,8 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 	    }
 
 	    // if the line is entirely blank, allow it (some programs don’t require the bottom summary)
-	    boolean blank = (totalLearners == null && (postal == null || postal.isBlank()) && areaSelected == null);
-	    if (blank) return true;
+	   // boolean blank = (totalLearners == null && (postal == null || postal.isBlank()) && areaSelected == null);
+	    //if (blank) return true;
 
 	    // otherwise, it must be valid and (optionally) coherent with the sum of trade rows
 	    if (totalLearners == null || totalLearners <= 0) return false;
