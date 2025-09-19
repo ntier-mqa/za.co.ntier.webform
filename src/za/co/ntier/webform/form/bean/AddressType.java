@@ -66,8 +66,33 @@ public enum AddressType {
 		else if (programType == ProgramType.TVET || programType == ProgramType.CET
 				|| programType == ProgramType.TVET_BURSARS)
 			return "Contact details of the responsible person:";
+		else if (programType == ProgramType.WORKPLACE_COACHES && isAlternate)
+			return "Contact details of person responsible for Workplace Coache:";
+		else if (programType == ProgramType.WORKPLACE_COACHES && !isAlternate)
+			return "Alternative contact details of person responsible for Workplace Coaches:";
+		else if (programType == ProgramType.MINING_COMMUNITY)
+			return "Contact details of person responsible for Mine Community Development:";
+		else if (programType == ProgramType.UNEMPLOYED_YOUTH)
+			return "Contact details of person responsible for Unemployed Youth Development Programmes:";
+		else if (programType == ProgramType.SMALL_BUSINESS)
+			return "Contact details of person responsible for Small Business/Cooperative/NPO/NGO/CBO Support:";
+		else if (programType == ProgramType.WORKER_INITIATED_TRAINING)
+			return "Contact details of person responsible for Worker Initiated Training:";
+		else if (programType == ProgramType.LEARNING_MATERIALS_DEVELOPMENT)
+			return "Contact details of person responsible for Learning Materials Development:";
+		else if (programType == ProgramType.MULTIYEAR_PARTNERSHIP_INTERNSHIP && isAlternate)
+			return "Contact details of person responsible for Internship Programm:";
+		else if (programType == ProgramType.MULTIYEAR_PARTNERSHIP_INTERNSHIP && !isAlternate)
+			return "Alternative contact details of person responsible for Internship Programm:";
+		else if (programType == ProgramType.MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE && isAlternate)
+			return "Contact details of person responsible for Work Experience:";
+		else if (programType == ProgramType.MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE && !isAlternate)
+			return "Alternative contact details of person responsible for Work Experience:";
+		else if (programType == ProgramType.STANDARD_SETTING)
+			return "Contact details of Applicant/Company:";
 		else
 			return UNKNOWN.toString();
+		
 	}
 
 	@Override

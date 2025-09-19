@@ -9,6 +9,7 @@ import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
+import za.co.ntier.webform.model.I_ZZLearnersApplied;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class ArtisanAidesProgram implements ISaveForm, IProgram {
@@ -16,8 +17,8 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	private ProjectInput skill;
 
 	public ArtisanAidesProgram(X_ZZ_Application_Form applicationForm) {
-		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel);
-		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel);
+		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoEmployedLearners);
+		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoUnEmployedLearners);
 		ColumnInfo<?> colTotal = ColumnInfo.getColExpression(ColumnInfo.colTotalLearnersLabel, row -> {
 			return Util.sumCol(row, List.of(colNoEmployed, colNoUnEmployed));
 		});
@@ -58,6 +59,9 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		ProjectInput.saveProjectInput(trxName, applicationForm, qualification);
 		ProjectInput.saveProjectInput(trxName, applicationForm, skill);
+		
+		// for update total
+		applicationForm.saveEx(trxName);
 		
 	}
 

@@ -39,6 +39,10 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 	private ColumnInfo<?> budgetColLearners = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLabel);
 	private ColumnInfo<?> budgetColNameProgram = ColumnInfo.getColText(ColumnInfo.colNameProgrammeLabel);
 	private ColumnInfo<?> budgetColPostalCode = ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel);
+	
+	private Integer monthlyStipend = 1700;
+	private Integer maxMonthlyAllocation = 15000;
+	
 	public MiningCommunityUnemployedYouthProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
 		this.menuContextInfo = menuContextInfo;
@@ -47,8 +51,8 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 				"MINE COMMUNITY DEVELOPMENT GRANT":"UNEMPLOYED YOUTH DEVELOPMENT PROGRAMMES GRANT");
 		
 		// learnerApplys
-		ColumnInfo<?> valueColLearnerApplys = ColumnInfo.getColPositiveNumber("No.");
-		ColumnInfo<?> titleColLearnerApplys = ColumnInfo.getColLabel("Target Group (Tick)");
+		ColumnInfo<?> valueColLearnerApplys = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearners);
+		ColumnInfo<?> titleColLearnerApplys = ColumnInfo.getColLabel("Target Group");
 		
 		List<ColumnInfo<?>> learnerApplyCols = List.of(
 				valueColLearnerApplys,
@@ -85,7 +89,8 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 			Integer duration = ((IntData)row.get(budgetColDuration)).getValue();
 			Integer learners = ((IntData)row.get(budgetColLearners)).getValue();
 			if (duration != null && learners != null) {
-				return 1700 * duration * learners;
+				int totalMonthlyStipend = monthlyStipend * duration;
+				return (totalMonthlyStipend > maxMonthlyAllocation ? maxMonthlyAllocation : totalMonthlyStipend) * learners;
 			}else {
 				return null;
 			}
@@ -96,7 +101,8 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 			Integer duration = ((IntData)row.get(budgetColDuration)).getValue();
 			Integer learners = ((IntData)row.get(budgetColLearners)).getValue();
 			if (duration != null && learners != null) {
-				return (15000 - (duration * 1700)) * learners;
+				int totalAllocation = (maxMonthlyAllocation - (monthlyStipend * duration)) * learners;
+				return (totalAllocation < 0 ? 0 : totalAllocation) * learners;
 			}else {
 				return null;
 			}

@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.bean.component;
 
+import java.beans.Introspector;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -14,9 +15,14 @@ public class ColumnInfo<T> {
 		return colInfo;
 
 	}
-	public static <T> ColumnInfo<T> getColDate(String title) {
-		return new ColumnInfo<T>(title, DataType.Date);
+	
+	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider, String daoPropertyName) {
+		ColumnInfo<T> col = getColArea(title, dataProvider);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
 	}
+	
+	
 	public static ColumnInfo<X_ZZDocumentUpload> getColDocUpload(String title) {
 		return new ColumnInfo<X_ZZDocumentUpload>(title, DataType.DocUploadDef);
 
@@ -27,11 +33,27 @@ public class ColumnInfo<T> {
 		return colInfo;
 
 	}
+	
+	public static <T> ColumnInfo<T> getColFileUpload(String title, String btText, String daoPropertyName) {
+		ColumnInfo<T> col = getColFileUpload(title, btText);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
 
 	public static <T> ColumnInfo<T> getColLabel(String title) {
 		return new ColumnInfo<T>(title, DataType.Label);
 	}
+	
+	public static <T> ColumnInfo<T> getColLabel(String title, String daoPropertyName) {
+		ColumnInfo<T> col = ColumnInfo.getColLabel(title);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
 
+	private static String correctDaoPropertyName(String daoPropertyName) {
+		return Introspector.decapitalize(daoPropertyName);
+	}
+	
 	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title) {
 		return new ColumnInfo<LearnerInputInfo>(title, DataType.LearnerInfo);
 
@@ -46,11 +68,24 @@ public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColPositiveNumber(String title) {
 		return new ColumnInfo<T>(title, DataType.PositiveNumber);
 	}
+	
+	public static <T> ColumnInfo<T> getColPositiveNumber(String title, String daoPropertyName) {
+		ColumnInfo<T> col = ColumnInfo.getColPositiveNumber(title);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
 
 	public static <T> ColumnInfo<T> getColPostal(String title) {
 		return new ColumnInfo<T>(title, DataType.Postal);
 
 	}
+	
+	public static <T> ColumnInfo<T> getColPostal(String title, String daoPropertyName) {
+		ColumnInfo<T> col = getColPostal(title);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
+	
 	
 	public static <T> ColumnInfo<T> getColText(String title) {
 		return new ColumnInfo<T>(title, DataType.Text);
@@ -81,6 +116,8 @@ public class ColumnInfo<T> {
 	private DataType dataType;
 
 	private String title;
+	
+	private String daoPropertyName;
 
 	public static final String DocUploadTitle = "Document Name";
 
@@ -202,5 +239,17 @@ public class ColumnInfo<T> {
 	 */
 	public void setExpression(Function<AnnexureRow<?>, Integer> expression) {
 		this.expression = expression;
+	}
+	/**
+	 * @return the daoPropertyName
+	 */
+	public String getDaoPropertyName() {
+		return daoPropertyName;
+	}
+	/**
+	 * @param daoPropertyName the daoPropertyName to set
+	 */
+	public void setDaoPropertyName(String daoPropertyName) {
+		this.daoPropertyName = daoPropertyName;
 	}
 }
