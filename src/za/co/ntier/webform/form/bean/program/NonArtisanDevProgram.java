@@ -1,9 +1,17 @@
 package za.co.ntier.webform.form.bean.program;
 
+import java.util.Map;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.AreaData;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.IntData;
+import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
+import za.co.ntier.webform.form.bean.component.UploadData;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
@@ -58,8 +66,58 @@ public class NonArtisanDevProgram implements ISaveForm, IProgram {
 
 	@Override
 	public boolean isProgramValid() {
-		// TODO Auto-generated method stub
-		return true;
+	    return hasAtLeastOneValidRow(generalLearnership) || hasAtLeastOneValidRow(firLearnership);
 	}
+
+	@SuppressWarnings("unchecked")
+	private boolean hasAtLeastOneValidRow(ProgramInput tbl) {
+	    if (tbl == null || tbl.getRows() == null) return false;
+
+	    // Column lookups
+	    ColumnInfo<?> colEmp   = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel, tbl);
+	    ColumnInfo<?> colUnemp = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, tbl);
+	    ColumnInfo<?> colPostal= AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel, tbl);
+	    ColumnInfo<?> colArea  = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel, tbl);
+	    ColumnInfo<?> colWpa   = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, tbl);       // may be null
+	    ColumnInfo<?> colAcc   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAccredLabel, tbl);    // may be null
+
+	    for (Map<ColumnInfo<?>, Object> row : tbl.getRows()) {
+	        IntData employed   = (colEmp   != null) ? (IntData) row.get(colEmp)   : null;
+	        IntData unemployed = (colUnemp != null) ? (IntData) row.get(colUnemp) : null;
+
+	        int empVal   = (employed   != null && employed.getValue()   != null) ? employed.getValue()   : 0;
+	        int unempVal = (unemployed != null && unemployed.getValue() != null) ? unemployed.getValue() : 0;
+
+	        boolean anyCount = (empVal + unempVal) > 0;
+
+	        PostalData postal = (colPostal != null) ? (PostalData) row.get(colPostal) : null;
+	        boolean hasPostal = postal != null && postal.getPostal() != null && !postal.getPostal().trim().isEmpty();
+
+	        AreaData area = (colArea != null) ? (AreaData) row.get(colArea) : null;
+	        boolean hasArea = area != null && area.getSelectedArea() != null;
+
+	        boolean wpaOk = true;
+	        /*
+	        if (colWpa != null && anyCount) {
+	            UploadData up = (UploadData) row.get(colWpa);
+	            wpaOk = (up != null && up.getFullPath() != null && !up.getFullPath().isEmpty());
+	        }
+	        */
+
+	        boolean accredOk = true;
+	        /*
+	        if (colAcc != null && anyCount) {
+	            UploadData up = (UploadData) row.get(colAcc);
+	            accredOk = (up != null && up.getFullPath() != null && !up.getFullPath().isEmpty());
+	        }
+	        */
+
+	        if (anyCount && hasPostal && hasArea && wpaOk && accredOk) {
+	            return true; // at least one valid line
+	        }
+	    }
+	    return false;
+	}
+
 
 }
