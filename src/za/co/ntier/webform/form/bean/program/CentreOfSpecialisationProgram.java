@@ -7,9 +7,9 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements ISaveForm, IProgram{
 	private Boolean isCollegeRecognised= null;
-	
+
 	private Boolean isCollegeRegistered = null;
-	
+
 	private Boolean isCollegeSla = null;
 
 	public CentreOfSpecialisationProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm)  {
@@ -66,15 +66,20 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 	public void setCollegeRegistered(String isCollegeRegistered) {
 		this.isCollegeRegistered = Util.convert(isCollegeRegistered);
 	}
-	
+
 	/**
 	 * @param isCollegeSla the isCollegeSla to set
 	 */
 	public void setCollegeSla(String isCollegeSla) {
 		this.isCollegeSla = Util.convert(isCollegeSla);
 	}
+
 	@Override
 	public boolean isProgramValid() {
-		return true;
+		boolean radiosDone = isCollegeRegistered != null
+				&& isCollegeRecognised != null
+				&& isCollegeSla != null;
+		return radiosDone;
 	}
+
 }

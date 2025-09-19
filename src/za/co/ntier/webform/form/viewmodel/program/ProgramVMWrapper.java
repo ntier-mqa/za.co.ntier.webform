@@ -1,9 +1,12 @@
 package za.co.ntier.webform.form.viewmodel.program;
 
 import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.ValidationContext;
+import org.zkoss.bind.Validator;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.validator.AbstractValidator;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -88,6 +91,17 @@ public class ProgramVMWrapper<T> {
         // Tell the top-level VM to re-evaluate isProgramComplete()
         BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), "programComplete");
     }
+	
+	public Validator getRequiredYesNo() {
+	    return new AbstractValidator() {
+	        @Override public void validate(ValidationContext ctx) {
+	            Object v = ctx.getProperty().getValue();
+	            if (v == null) {
+	                addInvalidMessage(ctx, "Please select Yes or No");
+	            }
+	        }
+	    };
+	}
 	
 
 }

@@ -38,16 +38,13 @@ GUIDELINES" />
 				value="Number of learners applying for Management and
 	Executive Development Programme (MEDP)" />
 		</div>
-		<div sclass="grid-cell">
-			
+		<div sclass="grid-cell">	
 				
-			
-         
-         <intbox
-			  value="@bind(vmMedp.program.noOfLearners)
-			         @save(vmMedp.program.noOfLearners, after='onChanging')"
-			    constraint="/^[1-9]\d*$/: Please enter a valid number (≥1)" />
-         
+		
+	    <intbox
+		    value="@bind(vmMedp.program.noOfLearners)"
+		    constraint="no empty: This field is required, min 1: Must be at least 1"
+		    onChange="@command('notifyProgramComplete')" />
 		</div>
 
 
