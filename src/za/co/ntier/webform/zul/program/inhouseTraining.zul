@@ -22,5 +22,7 @@ grants" />
 
 	<include
 		component="@load(vmInhouseTraining.program.inhouse)"
+		applicationProgramVM="@init(vmInhouseTraining.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

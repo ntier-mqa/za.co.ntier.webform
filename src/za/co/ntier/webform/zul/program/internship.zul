@@ -8,9 +8,13 @@
 	</hlayout>
 
 	<include component="@load(vmInternship.program.disciplines)"
+		applicationProgramVM="@init(vmInternship.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 	<include component="@load(vmInternship.program.trade)"
+		applicationProgramVM="@init(vmInternship.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 </nodom>

@@ -61,9 +61,13 @@ to MQA SPOI list, (Diesel Mechanic and Millwright)" />
 
 	<include
 		component="@load(vmCentreOfSpecialisation.program.trade)"
+		applicationProgramVM="@init(vmCentreOfSpecialisation.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 	<include
 		component="@load(vmCentreOfSpecialisation.program.totalNumApplied)"
+		applicationProgramVM="@init(vmCentreOfSpecialisation.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

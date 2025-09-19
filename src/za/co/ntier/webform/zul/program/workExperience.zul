@@ -15,16 +15,21 @@
 			<label value="Number of learners applying for Vacation Work?" />
 		</div>
 		<div sclass="grid-cell">
-			<textbox value="@bind(vmWorkExperience.program.noOfLearners)" />
+			<textbox value="@bind(vmWorkExperience.program.noOfLearners)"
+			onChange="@command('notifyProgramComplete')" />
 		</div>
 	</div>
 
 	<include
 		component="@load(vmWorkExperience.program.vacationContact)"
+		applicationProgramVM="@init(vmWorkExperience.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 	<label value="• WORK EXPERIENCE (PRACTICAL TRAINING)" />
 	<include
 		component="@load(vmWorkExperience.program.disciplines)"
+		applicationProgramVM="@init(vmWorkExperience.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

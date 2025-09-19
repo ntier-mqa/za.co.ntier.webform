@@ -20,6 +20,8 @@ stated in the MQA funding policy." />
 	</div>
 	<include
 		component="@load(vmNonArtisanDev.program.generalLearnership)"
+		applicationProgramVM="@init(vmNonArtisanDev.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 
@@ -30,6 +32,8 @@ stated in the MQA funding policy." />
 
 	<include
 		component="@load(vmNonArtisanDev.program.firLearnership)"
+		applicationProgramVM="@init(vmNonArtisanDev.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
 </nodom>

@@ -19,5 +19,7 @@
 	</div>
 	<include
 		component="@load(vmNcvGraduates.program.unemployed)"
+		applicationProgramVM="@init(vmNcvGraduates.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

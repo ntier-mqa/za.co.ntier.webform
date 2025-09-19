@@ -21,5 +21,7 @@ grants." />
 
 	<include
 		component="@load(vmOhassp.program.healthSafetySkills)"
+		applicationProgramVM="@init(vmOhassp.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

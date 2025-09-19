@@ -22,5 +22,7 @@ grants." />
 
 	<include
 		component="@load(vmNonArtisanDevRPL.program.totalNumApplied)"
+		applicationProgramVM="@init(vmNonArtisanDevRPL.applicationProgramVM)"
+	    notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>
