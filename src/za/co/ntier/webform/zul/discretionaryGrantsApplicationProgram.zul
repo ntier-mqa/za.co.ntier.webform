@@ -7,7 +7,7 @@
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
-<div style="height:100%" xmlns:n="native"
+<idspace style="height:100%" xmlns:n="native"
 	viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM')">
 
 	<div style="display:flex; padding:5px 0 40px 0; flex-direction: column;  align-items: center;">
@@ -140,4 +140,4 @@
 
 		</tabpanels>
 	</tabbox>
-</div>
+</idspace>
