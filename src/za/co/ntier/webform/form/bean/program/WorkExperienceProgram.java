@@ -108,9 +108,9 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 
 	@Override
 	public boolean isProgramValid() {
-	    return isVacationContactComplete(vacationContact)
-	        && noOfLearners != null && noOfLearners > 0
-	        && hasAtLeastOneValidDisciplineLine(disciplines);
+	    return (isVacationContactComplete(vacationContact)
+	        && noOfLearners != null && noOfLearners > 0)
+	        || hasAtLeastOneValidDisciplineLine(disciplines);
 	}
 
 	private boolean isVacationContactComplete(AddressInfo a) {
