@@ -15,9 +15,7 @@
 		<label sclass="label" value="@init(vmOrgInfo.component.sdlNumberTitle)" /> 
 		<textbox value="@bind(vmOrgInfo.component.sdlNumber)" 
 		onChange="@command('sdlNumberChange')" 
-		placeholder="0000000000000" 
-		constraint="no empty: Please enter the SDL number,
-				/^\d{13}$/: SDL number must be 13 digits"/>
+		constraint="no empty: Please enter the SDL number"/>
 				
 				
 		</div>

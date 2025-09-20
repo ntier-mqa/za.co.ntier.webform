@@ -54,7 +54,7 @@ public class InternshipProgram extends CandidacyProgram implements ISaveForm, IP
 	@Override
 	public boolean isProgramValid() {
 	    // both tables must have at least one fully-complete row
-	    return hasValidRow(getDisciplines()) && hasValidRow(trade);
+	    return hasValidRow(getDisciplines()) || hasValidRow(trade);
 	}
 
 	private boolean hasValidRow(ProgramInput table) {
