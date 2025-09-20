@@ -26,7 +26,7 @@ public class UploadInput extends AnnexureInfo {
 		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAnnexure = (parent) -> new AnnexureRow<X_ZZDocumentUploadFile>(parent);
 		
 		UploadInput uploadInput = AnnexureInfo.getAnnexureInfo(UploadInput.class, columns, false);
-		uploadInput.setSupplier(supplierRowAnnexure);
+		uploadInput.setNewRowSupplier(supplierRowAnnexure);
 
 		for (X_ZZDocumentUpload docUpload : docUploads) {
 			Map<ColumnInfo<?>, Object> row = uploadInput.createDetailRow();

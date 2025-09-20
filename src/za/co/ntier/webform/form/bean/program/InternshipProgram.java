@@ -14,7 +14,6 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class InternshipProgram extends CandidacyProgram implements ISaveForm, IProgram {
 	private ProgramInput trade;
@@ -41,7 +40,7 @@ public class InternshipProgram extends CandidacyProgram implements ISaveForm, IP
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		super.saveForm(trxName, applicationForm);
-		ProgramInput.saveFormDisciplines(trxName, applicationForm, trade, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
+		trade.save(trxName, applicationForm);
 	}
 	
 	/**

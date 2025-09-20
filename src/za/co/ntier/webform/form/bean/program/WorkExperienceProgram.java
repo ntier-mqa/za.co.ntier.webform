@@ -15,7 +15,6 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class WorkExperienceProgram implements ISaveForm, IProgram {
 
@@ -76,7 +75,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		this.setApplicationForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
-		ProgramInput.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
+		disciplines.save(trxName, applicationForm);
 		applicationForm.setZZTotalNumberApplied(Util.convert(noOfLearners));
 		applicationForm.saveEx(trxName);
 	}

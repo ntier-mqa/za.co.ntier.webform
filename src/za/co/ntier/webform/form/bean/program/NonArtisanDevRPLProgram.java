@@ -22,7 +22,7 @@ public class NonArtisanDevRPLProgram implements ISaveForm, IProgram {
 
 		totalNumApplied = ProjectInput.getProject(
 					List.of(ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalLearnersLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoTotalLearners)));
-		ProjectInput.initProject(totalNumApplied, applicationForm);
+		totalNumApplied.initProject(applicationForm);
 
 	}
 
@@ -35,7 +35,7 @@ public class NonArtisanDevRPLProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
-		ProjectInput.saveProjectInput(trxName, applicationForm, totalNumApplied);
+		totalNumApplied.save(trxName, applicationForm);
 		// update total
 		applicationForm.saveEx(trxName);
 	}

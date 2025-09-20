@@ -5,6 +5,7 @@ import java.util.Map;
 
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AreaData;
@@ -24,8 +25,13 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 			unemployed = ProjectInput.getProject(
 					List.of(
 							ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoUnEmployedLearners),
-							ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel, ColumnInfo.btWPAText, I_ZZLearnersApplied.COLUMNNAME_ZZ_WPAFile)
-							));
+							ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel, I_ZZLearnersApplied.COLUMNNAME_Postal),
+							ColumnInfo.getColArea(ColumnInfo.colAreaLabel, MasterUtil.getInitCities(), I_ZZLearnersApplied.COLUMNNAME_C_City_ID),
+							ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel, ColumnInfo.btWPAText, 
+									I_ZZLearnersApplied.COLUMNNAME_ZZ_WPAFile, I_ZZLearnersApplied.COLUMNNAME_ZZWPAFileName)
+							)
+					, null
+					, false);
 			
 		}else {
 			unemployed = ProjectInput.getProject(
@@ -34,7 +40,7 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 							));
 		}
 		
-		ProjectInput.initProject(unemployed, applicationForm);
+		unemployed.initProject(applicationForm);
 		
 	}
 
@@ -47,7 +53,7 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
-		ProjectInput.saveProjectInput(trxName, applicationForm, unemployed);
+		unemployed.save(trxName, applicationForm);
 		// update total
 		applicationForm.saveEx(trxName);
 	}

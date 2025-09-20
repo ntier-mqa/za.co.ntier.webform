@@ -34,9 +34,11 @@ public class ColumnInfo<T> {
 
 	}
 	
-	public static <T> ColumnInfo<T> getColFileUpload(String title, String btText, String daoPropertyName) {
+	public static <T> ColumnInfo<T> getColFileUpload(String title, String btText, String daoPropertyName, String daoPropertyFileName) {
 		ColumnInfo<T> col = getColFileUpload(title, btText);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		col.setDaoPropertyFileName(correctDaoPropertyName(daoPropertyFileName));
+		
 		return col;
 	}
 
@@ -59,6 +61,13 @@ public class ColumnInfo<T> {
 
 	}
 
+	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title, String daoPropertyName) {
+		ColumnInfo<LearnerInputInfo> col = ColumnInfo.getColLearnerInfo(title);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+
+	}
+	
 	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider) {
 		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.List);
 		col.setDataProvider(dataProvider);
@@ -91,6 +100,13 @@ public class ColumnInfo<T> {
 		return new ColumnInfo<T>(title, DataType.Text);
 	}
 	
+	public static <T> ColumnInfo<T> getColText(String title, String daoPropertyName) {
+		ColumnInfo<T> col = getColText(title);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
+	
+	
 	private Function<AnnexureRow<?>, Integer> expression;
 	
 	public static <T> ColumnInfo<T> getColExpression(String title, Function<AnnexureRow<?>, Integer> expression) {
@@ -118,6 +134,8 @@ public class ColumnInfo<T> {
 	private String title;
 	
 	private String daoPropertyName;
+	
+	private String daoPropertyFileName;
 
 	public static final String DocUploadTitle = "Document Name";
 
@@ -251,5 +269,19 @@ public class ColumnInfo<T> {
 	 */
 	public void setDaoPropertyName(String daoPropertyName) {
 		this.daoPropertyName = daoPropertyName;
+	}
+
+	/**
+	 * @return the daoPropertyFileName
+	 */
+	public String getDaoPropertyFileName() {
+		return daoPropertyFileName;
+	}
+
+	/**
+	 * @param daoPropertyFileName the daoPropertyFileName to set
+	 */
+	public void setDaoPropertyFileName(String daoPropertyFileName) {
+		this.daoPropertyFileName = daoPropertyFileName;
 	}
 }

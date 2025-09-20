@@ -18,8 +18,7 @@ package za.co.ntier.webform.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import org.compiere.model.MTable;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for ZZ_FormDiscipline
@@ -153,6 +152,15 @@ public interface I_ZZ_FormDiscipline
 	  */
 	public int getUpdatedBy();
 
+    /** Column name ZZAccredFileName */
+    public static final String COLUMNNAME_ZZAccredFileName = "ZZAccredFileName";
+
+	/** Set Accred File Name	  */
+	public void setZZAccredFileName (String ZZAccredFileName);
+
+	/** Get Accred File Name	  */
+	public String getZZAccredFileName();
+
     /** Column name ZZNoEmployedLearners */
     public static final String COLUMNNAME_ZZNoEmployedLearners = "ZZNoEmployedLearners";
 
@@ -183,6 +191,15 @@ public interface I_ZZ_FormDiscipline
 
 	/** Get No UnEmployed Learners	  */
 	public int getZZNoUnEmployedLearners();
+
+    /** Column name ZZWPAFileName */
+    public static final String COLUMNNAME_ZZWPAFileName = "ZZWPAFileName";
+
+	/** Set WPA File Name	  */
+	public void setZZWPAFileName (String ZZWPAFileName);
+
+	/** Get WPA File Name	  */
+	public String getZZWPAFileName();
 
     /** Column name ZZ_AccredFile */
     public static final String COLUMNNAME_ZZ_AccredFile = "ZZ_AccredFile";

@@ -22,7 +22,7 @@ public class OhasspProgram implements ISaveForm, IProgram {
 		healthSafetySkills = ProjectInput.getProject(
 				List.of(colNameProgram,
 						ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoEmployedLearners)));
-		ProjectInput.initProject(healthSafetySkills, applicationForm, 
+		healthSafetySkills.initProject(applicationForm, 
 				List.of(Map.of(colNameProgram, "Occupational Health and Safety Skills Programmes")));
 	}
 
@@ -35,7 +35,7 @@ public class OhasspProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
-		ProjectInput.saveProjectInput(trxName, applicationForm, healthSafetySkills);
+		healthSafetySkills.save(trxName, applicationForm);
 		// update total
 		applicationForm.saveEx(trxName);
 		

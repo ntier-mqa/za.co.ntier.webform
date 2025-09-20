@@ -19,11 +19,7 @@ package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZ_FormDiscipline
  *  @author iDempiere (generated)
@@ -35,7 +31,7 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250905L;
+	private static final long serialVersionUID = 20250920L;
 
     /** Standard Constructor */
     public X_ZZ_FormDiscipline (Properties ctx, int ZZ_FormDiscipline_ID, String trxName)
@@ -177,6 +173,21 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		return (String)get_Value(COLUMNNAME_Postal);
 	}
 
+	/** Set Accred File Name.
+		@param ZZAccredFileName Accred File Name
+	*/
+	public void setZZAccredFileName (String ZZAccredFileName)
+	{
+		set_Value (COLUMNNAME_ZZAccredFileName, ZZAccredFileName);
+	}
+
+	/** Get Accred File Name.
+		@return Accred File Name	  */
+	public String getZZAccredFileName()
+	{
+		return (String)get_Value(COLUMNNAME_ZZAccredFileName);
+	}
+
 	/** Set No Employed Learners.
 		@param ZZNoEmployedLearners No Employed Learners
 	*/
@@ -230,6 +241,21 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set WPA File Name.
+		@param ZZWPAFileName WPA File Name
+	*/
+	public void setZZWPAFileName (String ZZWPAFileName)
+	{
+		set_Value (COLUMNNAME_ZZWPAFileName, ZZWPAFileName);
+	}
+
+	/** Get WPA File Name.
+		@return WPA File Name	  */
+	public String getZZWPAFileName()
+	{
+		return (String)get_Value(COLUMNNAME_ZZWPAFileName);
 	}
 
 	/** Set Accred File.

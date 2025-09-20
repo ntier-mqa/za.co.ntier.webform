@@ -25,7 +25,7 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 						ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLable, I_ZZLearnersApplied.COLUMNNAME_ZZNoLearners)
 						)
 				);
-		ProjectInput.initProject(inhouse, applicationForm, 
+		inhouse.initProject(applicationForm, 
 				List.of(Map.of(colNameProgram, "Inhouse /Industry/Company based short courses"))
 				);
 		
@@ -40,7 +40,7 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
-		ProjectInput.saveProjectInput(trxName, applicationForm, inhouse);
+		inhouse.save(trxName, applicationForm);
 		// update total
 		applicationForm.saveEx(trxName);
 	}

@@ -33,7 +33,7 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 						colTotal));
 		qualification.setSubSectionHeader("QUALIFICATION");
 		qualification.setDataType("QUALIFICATION");
-		ProjectInput.initProject(qualification, applicationForm);
+		qualification.initProject(applicationForm);
 		
 		skill = ProjectInput.getProject(
 				List.of(colNoEmployed,
@@ -41,7 +41,7 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 						colTotal));
 		skill.setSubSectionHeader("SKILLS PROGRAMME");
 		skill.setDataType("SKILLS PROGRAMME");
-		ProjectInput.initProject(skill, applicationForm);
+		skill.initProject(applicationForm);
 	}
 
 	/**
@@ -60,8 +60,8 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
-		ProjectInput.saveProjectInput(trxName, applicationForm, qualification);
-		ProjectInput.saveProjectInput(trxName, applicationForm, skill);
+		qualification.save(trxName, applicationForm);
+		skill.save(trxName, applicationForm);
 		
 		// for update total
 		applicationForm.saveEx(trxName);

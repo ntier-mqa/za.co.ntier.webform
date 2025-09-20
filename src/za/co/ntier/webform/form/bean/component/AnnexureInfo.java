@@ -2,16 +2,26 @@ package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -20,11 +30,12 @@ import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class AnnexureInfo implements ISaveForm{
-	protected static final CLogger log = CLogger.getCLogger(ProjectInput.class);
+	protected static final CLogger log = CLogger.getCLogger(AnnexureInfo.class);
 	public final static String AnnexureTypeExitStrategy = "EXIT STRATEGY";
 	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
 	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
@@ -85,7 +96,7 @@ public class AnnexureInfo implements ISaveForm{
 		return lookupCol(dataType, colName, annexure.getColumnInfos());
 	}
 	
-	public static ColumnInfo<?> lookupCol(DataType dataType, String colName, List<ColumnInfo<?>> cols){
+	public static ColumnInfo<?> lookupCol(DataType dataType, String colName, Collection<ColumnInfo<?>> cols){
 		ColumnInfo<?> foundCol = null;
 		
 		for (ColumnInfo<?> col : cols) {
@@ -109,19 +120,20 @@ public class AnnexureInfo implements ISaveForm{
 		return lookupCol(dataType, null, annexure);
 	}
 
-	public static ColumnInfo<?> lookupColByDataType(DataType dataType, List<ColumnInfo<?>> cols){
+	public static ColumnInfo<?> lookupColByDataType(DataType dataType, Collection<ColumnInfo<?>> cols){
 		return lookupCol(dataType, null, cols);
 	}
 
 	public static ColumnInfo<?> lookupColByTitle(String colName, AnnexureInfo annexure){
 		return lookupCol(null, colName, annexure);
 	}
-	public static ColumnInfo<?> lookupColByTitle(String colName, List<ColumnInfo<?>> cols){
+	public static ColumnInfo<?> lookupColByTitle(String colName, Collection<ColumnInfo<?>> cols){
 		return lookupCol(null, colName, cols);
 	}
 
 	private List<ColumnInfo<?>> columnInfos;
-	private Function<AnnexureInfo, AnnexureRow<?>> rowInitSupplier;
+	private Function<AnnexureInfo, AnnexureRow<?>> newRowSupplier;
+	private BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier;
 	private List<AnnexureRow<?>> rows;
 	private String sectionHeader;
 
@@ -153,12 +165,12 @@ public class AnnexureInfo implements ISaveForm{
 	@SuppressWarnings("unchecked")
 	public AnnexureRow<?> createDetailRow() {
 		
-		AnnexureRow<?> rowDataInits = rowInitSupplier.apply(this);
+		AnnexureRow<?> row = newRowSupplier.apply(this);
 
 		for (ColumnInfo<?> columnInfo : columnInfos) {
 			Object cellData = null;
 			
-			cellData = rowDataInits.get(columnInfo);
+			cellData = row.get(columnInfo);
 			
 			if (cellData == null) {
 
@@ -172,25 +184,25 @@ public class AnnexureInfo implements ISaveForm{
 					cellData = new UploadData();
 
 				} else if (columnInfo.getDataType() == DataType.Area) {
-					AreaData areaData = new AreaData(this, rowDataInits);
+					AreaData areaData = new AreaData(this, row);
 					areaData.setDataProvider((List<MCity>)columnInfo.getDataProvider());
 					cellData = areaData;
 				} else if (columnInfo.getDataType() == DataType.Postal) {
-					PostalData textData = new PostalData(this, rowDataInits, null);
+					PostalData textData = new PostalData(this, row, null);
 					cellData = textData;
 				}else if (columnInfo.getDataType() == DataType.PositiveNumber) {
-					cellData = new IntData(this, rowDataInits, null);
+					cellData = new IntData(this, row, null);
 				}else if (columnInfo.getDataType() == DataType.Label) {
 					cellData = new LabelData();
 				}
 
 			}
-			rowDataInits.put(columnInfo, cellData);
+			row.put(columnInfo, cellData);
 
 		}
 
-		getRows().add(rowDataInits);
-		return rowDataInits;
+		getRows().add(row);
+		return row;
 	}
 	
 	/**
@@ -264,8 +276,8 @@ public class AnnexureInfo implements ISaveForm{
 		return subSectionHeader;
 	}
 
-	public Function<AnnexureInfo, AnnexureRow<?>> getSupplier() {
-		return rowInitSupplier;
+	public Function<AnnexureInfo, AnnexureRow<?>> getNewRowSupplier() {
+		return newRowSupplier;
 	}
 
 	/**
@@ -406,8 +418,8 @@ public class AnnexureInfo implements ISaveForm{
 		this.subSectionHeader = subSectionHeader;
 	}
 
-	public void setSupplier(Function<AnnexureInfo, AnnexureRow<?>> supplier) {
-		this.rowInitSupplier = supplier;
+	public void setNewRowSupplier(Function<AnnexureInfo, AnnexureRow<?>> newRowSupplier) {
+		this.newRowSupplier = newRowSupplier;
 	}
 
 
@@ -464,6 +476,305 @@ public class AnnexureInfo implements ISaveForm{
 	 */
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+
+	public Entry<Integer, Boolean> fillDaoData (Collection<ColumnInfo<?>> cols, AnnexureRow<?> row, Object dao){
+		Integer total = Integer.valueOf(0);
+		Boolean hasRowData = Boolean.FALSE;
+		for (ColumnInfo<?> col:cols) {
+			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
+			
+				Boolean hasCellData = Boolean.FALSE;
+				Object cellValueObj = null;
+				if (col.getDataType() == DataType.PositiveNumber) {
+					Entry<Integer, Boolean>  entryIntObj = getCellValue(row, col);
+					total += entryIntObj.getKey();
+					cellValueObj = entryIntObj.getKey();
+					hasCellData = entryIntObj.getValue();
+				}else if (col.getDataType() == DataType.LearnerInfo) {
+					LearnerInputInfo learnerInfo = (LearnerInputInfo)row.get(col);
+					int learnerInputID = 0;// int of PO don't accept null
+					if (learnerInfo != null) {
+						learnerInputID = learnerInfo.getLearnerInputID();
+						hasCellData = Boolean.TRUE;
+					}
+					cellValueObj = learnerInputID;
+				}else if (col.getDataType() == DataType.FileUpload) {
+					UploadData uploadData = (UploadData)row.get(col);
+							
+					if (uploadData != null && StringUtils.isNoneEmpty(uploadData.getFullPath())) {
+						try {
+							cellValueObj = Files.readAllBytes(Paths.get(uploadData.getFullPath()));
+							setDaoValue(dao, col.getDaoPropertyFileName(), uploadData.getFileName());
+							hasCellData = Boolean.TRUE;
+						} catch (IOException e) {
+							e.printStackTrace();
+							throw new ApplicationException(e.getMessage(), e);
+						}
+					}
+				}else {
+					Entry<Object, Boolean> celDataEntryObj = getCellValue(row, col);
+					cellValueObj = celDataEntryObj.getKey();
+					hasCellData = celDataEntryObj.getValue();
+				}
+				if (hasCellData)
+					hasRowData = Boolean.TRUE;
+				
+				setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
+			}
+		}
+		
+		return new AbstractMap.SimpleEntry<>(total, hasRowData);
+	}
+
+	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
+	
+		int total = 0;
+		for (AnnexureRow<?> row : getRows()) {
+			PO learnersApplied = (PO)row.getData();
+			if (learnersApplied == null) {
+				applicationForm.set_TrxName(trxName);//importance
+				learnersApplied = poSupplier.apply(this, applicationForm);
+			}
+			
+			Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, learnersApplied);
+			if (result.getValue()){
+				learnersApplied.saveEx(trxName);
+			}else {
+				learnersApplied.delete(true);// delete if no input or data is cleared
+			}
+			total += result.getKey();
+		}
+		applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
+		
+	}
+
+	static void setCellValue(AnnexureRow<?> row, ColumnInfo<?> col, Object value) {
+		log.info(String.format("Set cell value: row=%s, col=%s, col datatype=%s, value=%s", row, col.getTitle(), col.getDataType(), value));
+		Object valueObj = row.get(col);
+		if (col.getDataType() == DataType.Area) {
+			AreaData areaData = (AreaData)valueObj;
+			if (value == null || (int)value == 0) {
+				areaData.setSelectedAreaInternal(null);
+			}else {
+				for(MCity area : areaData.getDataProvider()) {
+					if (area.getC_City_ID() == (int)value) {
+						areaData.setSelectedAreaInternal(area);
+					}
+				}
+			}
+		}else if (col.getDataType() == DataType.PositiveNumber) {
+			IntData intData = (IntData)valueObj;
+			intData.setValue(Util.convert((int)value));
+		}else if (col.getDataType() == DataType.Postal) {
+			PostalData postalData = (PostalData)valueObj;
+			postalData.setPostalInternal(Util.convertStr((String)value));
+		}else if (col.getDataType() == DataType.Label) {
+			LabelData valueData = (LabelData)valueObj;
+			valueData.setValue(Util.convertStr((String)value));
+		}else if (col.getDataType() == DataType.FileUpload) {
+			UploadData valueData = (UploadData)valueObj;
+			valueData.setFileName(Util.convertStr((String)value));
+		}else if (col.getDataType() == DataType.LearnerInfo && valueObj != null && !(value instanceof LearnerInputInfo)) {
+			// don't need, already set when init row tile
+		}else {
+			row.put(col, value);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	/**
+	* return entry with value already convert (example 0 for non input int), value is true in case input non-null
+	*/
+	public <T> Entry<T, Boolean> getCellValue(AnnexureRow<?> row, ColumnInfo<?> col) {
+		Object valueObj = row.get(col);
+		
+		if (col.getDataType() == DataType.Area) {
+			AreaData areaData = (AreaData)valueObj;
+			MCity area = areaData.getSelectedArea();
+			if (area == null)
+				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(0), Boolean.FALSE);
+			else
+				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(area.getC_City_ID()), Boolean.TRUE);
+				
+		}else if (col.getDataType() == DataType.PositiveNumber) {
+			IntData intData = (IntData)valueObj;
+			if (intData.getValue() == null) {
+				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(0), Boolean.FALSE);
+			}else {
+				return new AbstractMap.SimpleEntry<>((T)intData.getValue(), Boolean.TRUE);
+			}
+			
+		}else if (col.getDataType() == DataType.Postal) {
+			PostalData postalData = (PostalData)valueObj;
+			T value = (T)postalData.getPostal();
+			return new AbstractMap.SimpleEntry<>(value, value == null?Boolean.FALSE:Boolean.TRUE);
+		}else if (col.getDataType() == DataType.Label) {
+			LabelData valueData = (LabelData)valueObj;
+			T value = (T)valueData.getValue();
+			return new AbstractMap.SimpleEntry<>(value, value == null?Boolean.FALSE:Boolean.TRUE);
+		}else if (col.getDataType() == DataType.FileUpload) {
+			UploadData valueData = (UploadData)valueObj;
+			T value = (T)valueData.getFileName();
+			return new AbstractMap.SimpleEntry<>(value, value == null?Boolean.FALSE:Boolean.TRUE);
+		}else if (col.getDataType() == DataType.LearnerInfo) {
+			LearnerInputInfo valueData = (LearnerInputInfo)valueObj;
+			Integer value = Integer.valueOf(0);
+			if(valueData != null) {
+				value = Integer.valueOf(valueData.getLearnerInputID());
+			}
+			return new AbstractMap.SimpleEntry<>((T)value, value.equals(0) ? Boolean.FALSE:Boolean.TRUE);
+		}	
+		return new AbstractMap.SimpleEntry<>((T)valueObj, valueObj == null?Boolean.FALSE:Boolean.TRUE);
+	}
+
+	public void setDaoValue(Object dao, String propertyName, Object value) {
+		try {
+			PropertyUtils.setSimpleProperty(dao, propertyName, value);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AdempiereException(e.getMessage(), e);
+		}
+	}
+
+	public Object getDaoValue(Object dao, String propertyName) {
+		try {
+			return PropertyUtils.getSimpleProperty(dao, propertyName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AdempiereException(e.getMessage(), e);
+		}
+		
+	}
+
+	/**
+	 * 
+	 * @param row
+	 * @param dao
+	 * @param keyColumns
+	 * @return
+	 */
+	public boolean isMatchingRow(AnnexureRow<?> row, Object dao, Collection<ColumnInfo<?>> keyColumns) {
+		boolean isMatching = true;
+		for (ColumnInfo<?> keyColumn : keyColumns) {
+			if (StringUtils.isNotBlank(keyColumn.getDaoPropertyName())) {
+				Entry<Object, Boolean> result = getCellValue(row, keyColumn);
+				Object daoValue = getDaoValue(dao, keyColumn.getDaoPropertyName());
+				isMatching = Objects.equals(result.getKey(), daoValue);
+				if (!isMatching)
+					break;
+			}else {
+				log.warning(String.format("DaoPropertyName of Key column is blank: %s", keyColumn.getTitle()));
+			}
+		}
+		return isMatching;
+	}
+
+	/**
+	 * check each column to get matching property of bean, query data of bean and set to row 
+	 * @param cols
+	 * @param row
+	 * @param dao
+	 */
+	public void fillRowDataFromDao(List<ColumnInfo<?>> cols, AnnexureRow<?> row, Object dao) {
+		for (ColumnInfo<?> col : cols) {
+			Object daoValue = null;
+			if (col.getDataType() == DataType.FileUpload && StringUtils.isNotBlank(col.getDaoPropertyFileName())) {
+				daoValue = getDaoValue(dao, col.getDaoPropertyFileName());
+			}else if (col.getDataType() != DataType.FileUpload  && StringUtils.isNotBlank(col.getDaoPropertyName())) {
+				daoValue = getDaoValue(dao, col.getDaoPropertyName());
+			}
+			
+			AnnexureInfo.setCellValue(row, col, daoValue);
+		}
+	}
+	
+	public void init(X_ZZ_Application_Form applicationForm) {
+		init(applicationForm, null);
+	}
+	
+	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas) {
+		init(applicationForm, savedDatas, null);
+	}
+	
+	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<ColumnInfo<?>, Object>> rowTitles) {
+		if(rowTitles == null || rowTitles.size() == 0)
+			init(applicationForm, savedDatas, null, null);
+		else
+			init(applicationForm, savedDatas, rowTitles, rowTitles.get(0).keySet());
+	}
+	
+	public void init(X_ZZ_Application_Form applicationForm, 
+			List<PO> savedDatas, List<Map<ColumnInfo<?>, Object>> rowTitles, Collection<ColumnInfo<?>> keyColumns) {
+		// init rows with rowTitles
+		if (rowTitles != null)
+			for (Map<ColumnInfo<?>, Object> rowTitle : rowTitles) {
+				AnnexureRow<?> row = (AnnexureRow<?>)createDetailRow();
+				
+				for (Entry<ColumnInfo<?>, Object> colTile : rowTitle.entrySet()) {
+					AnnexureInfo.setCellValue(row, colTile.getKey(), colTile.getValue());
+				}
+			}
+		
+		// init rows with saved data
+		if (savedDatas != null && savedDatas.size() > 0) {
+			List<AnnexureRow<?>> matchedRows = new ArrayList<>();
+			
+			boolean learnerInfoKey = false;
+			if (keyColumns != null && keyColumns.size() > 0) {
+				if (lookupColByDataType(DataType.LearnerInfo, keyColumns) != null) {
+					learnerInfoKey = true;
+				}
+			}
+			
+			for (PO dao : savedDatas) {
+				boolean isMatching = false;
+				if (keyColumns != null && keyColumns.size() > 0) {
+					for (AnnexureRow<?> row : getRows()) {
+						if (matchedRows.contains(row))
+							continue;
+						
+						isMatching = isMatchingRow(row, dao, keyColumns);
+						
+						if (isMatching) {
+							matchedRows.add(row);
+							//row.setData(dao);
+							fillRowDataFromDao(getColumnInfos(), row, dao);
+							break;
+						}
+					}
+				}
+				
+				if (!isMatching && learnerInfoKey) {
+					// moment don't handle this case, in case what to handle it need to change createDetailRow to create LearnerInputInfo for LearnerInfo column
+				}else if(!isMatching) {
+					AnnexureRow<?> row = createDetailRow();
+					fillRowDataFromDao(getColumnInfos(), row, dao);
+				}
+			}
+			
+		}
+		
+		if (getRows().size() == 0) {
+			createDetailRow();
+		}
+		
+		updateExpressionCol();
+		updateTotalRow();
+	}
+
+	/**
+	 * @return the poSupplier
+	 */
+	public BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> getPoSupplier() {
+		return poSupplier;
+	}
+
+	/**
+	 * @param poSupplier the poSupplier to set
+	 */
+	public void setPoSupplier(BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier) {
+		this.poSupplier = poSupplier;
 	}
 	
 	

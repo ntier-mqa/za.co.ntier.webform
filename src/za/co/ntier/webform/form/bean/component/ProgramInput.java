@@ -1,279 +1,301 @@
 package za.co.ntier.webform.form.bean.component;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.adempiere.webui.exception.ApplicationException;
-import org.apache.commons.lang3.StringUtils;
-import org.compiere.model.MCity;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 import za.co.ntier.webform.form.MasterUtil;
-import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.model.I_ZZ_FormDiscipline;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.model.X_ZZ_Disciplines;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
+import za.co.ntier.webform.model.X_ZZ_Learnerships;
+import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
+import za.co.ntier.webform.model.X_ZZ_Program_Learnerships;
+import za.co.ntier.webform.model.X_ZZ_Program_Trade;
+import za.co.ntier.webform.model.X_ZZ_Trade;
 
 public class ProgramInput extends AnnexureInfo {
+	public static Entry<Boolean, Boolean> queryUploadColumnForTrade(int programMasterDataID, boolean isTrade) {
+		String learnerInputID;
+		String learnerInputProgramTable;
+		String learnerInputTable;
+		
+		if(isTrade) {
+			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
+			learnerInputProgramTable = X_ZZ_Program_Trade.Table_Name;
+			learnerInputTable = X_ZZ_Trade.Table_Name;
+		}else {
+			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
+			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
+			learnerInputTable = X_ZZ_Disciplines.Table_Name;
+		}
+		
+		String uploadColumnSql = String.format("""
+				SELECT MAX(%s), MAX(%s) 
+				FROM %s INNER JOIN %s 
+					ON (%s.%s = %s.%s) 
+				WHERE %s = ?
+				"""
+				, X_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req, X_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req 
+				, learnerInputProgramTable, learnerInputTable
+				, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID
+				, X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID
+				);
+		
+		List<Object> uploadConditions = DB.getSQLValueObjectsEx(null, uploadColumnSql, programMasterDataID);
+		return convertUploadCondition(uploadConditions);
+	}
+	
+	public static Entry<Boolean, Boolean> convertUploadCondition(List<Object> uploadConditions) {
+		boolean hasWPAReq = Boolean.FALSE;
+		if(uploadConditions != null && uploadConditions.get(0) != null || "Y".equalsIgnoreCase((String)uploadConditions.get(0))) {
+			hasWPAReq = Boolean.TRUE;
+		}
+		
+		Boolean hasAccred = Boolean.FALSE;
+		if(uploadConditions != null && uploadConditions.get(1) != null || "Y".equalsIgnoreCase((String)uploadConditions.get(1))) {
+			hasAccred = Boolean.TRUE;
+		}
+		
+		return new AbstractMap.SimpleEntry<>(hasWPAReq, hasAccred);
+	}
+	
+	public static Entry<Boolean, Boolean> queryUploadColumnForLearnership(int programMasterDataID, String learnerships) {
+		String learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
+		String learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
+		String learnerInputTable = X_ZZ_Learnerships.Table_Name;
+
+		String learnershipType = null;
+		if (learnerships == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership) {
+			learnershipType = X_ZZ_Program_Learnerships.ZZ_LEARNERSHIPS_TYPE_4IR;
+		} else if (learnerships == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership) {
+			learnershipType = X_ZZ_Program_Learnerships.ZZ_LEARNERSHIPS_TYPE_General;
+		} else if (learnerships == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership) {
+			learnershipType = X_ZZ_Program_Learnerships.ZZ_LEARNERSHIPS_TYPE_AET;
+		}
+
+		String uploadColumnSql = String.format("""
+				SELECT MAX(%s), MAX(%s) 
+				FROM %s INNER JOIN %s 
+					ON (%s.%s = %s.%s) 
+				WHERE %s = ? AND %s.%s = ?
+				"""
+				, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_WPA_Req, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Is_Accred_SLA_Req 
+				, learnerInputProgramTable, learnerInputTable
+				, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID
+				, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Master_Data_ID, learnerInputProgramTable, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_Type
+				);
+		List<Object> uploadConditions = DB.getSQLValueObjectsEx(null, uploadColumnSql, programMasterDataID, learnershipType);
+		return convertUploadCondition(uploadConditions);
+	}
+	
+	public static List<LearnerInputInfo> queryLearnerInputInfos(int programMasterDataID, boolean isTrade) {
+		String learnerInputProgramID;
+		String learnerInputID;
+		String learnerInputText = X_ZZ_Trade.COLUMNNAME_Name;
+		String learnerInputProgramTable;
+		String learnerInputTable;
+		
+		if (isTrade) {
+			learnerInputProgramID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Trade_ID;
+			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
+			learnerInputProgramTable = X_ZZ_Program_Trade.Table_Name;
+			learnerInputTable = X_ZZ_Trade.Table_Name;
+		} else {
+			learnerInputProgramID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Program_Disciplines_ID;
+			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
+			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
+			learnerInputTable = X_ZZ_Disciplines.Table_Name;
+		}
+		
+		String sql = String.format("""
+				SELECT %s, %s.%s, %s, %s, %s
+				FROM %s INNER JOIN %s 
+					ON (%s.%s = %s.%s) 
+				WHERE %s = ?
+				ORDER BY %s
+				"""
+				, learnerInputProgramID, learnerInputTable, learnerInputID, X_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req, X_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req, learnerInputText
+				, learnerInputProgramTable, learnerInputTable
+				, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID
+				, X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID
+				, X_ZZ_Program_Trade.COLUMNNAME_Line);
+		
+		return convertLearnerInputInfo(DB.getSQLArrayObjectsEx(null, sql, programMasterDataID));
+	}
+	
+	public static List<LearnerInputInfo> convertLearnerInputInfo (List<List<Object>> learnerInputInfoObjs) {
+		List<LearnerInputInfo> learnerInputInfos = new ArrayList<>();
+		
+		for (List<Object> learnerInputInfoObj : learnerInputInfoObjs) {
+			LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
+			learnerInputInfos.add(learnerInputInfo);
+		}
+		
+		return learnerInputInfos;
+	}
+	
+	public static List<LearnerInputInfo> queryLearnerInputInfos(int programMasterDataID, String learnerships) {
+		
+		String learnerInputProgramID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
+		String learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
+		String learnerInputText = X_ZZ_Learnerships.COLUMNNAME_Name;
+		String learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
+		String learnerInputTable = X_ZZ_Learnerships.Table_Name;
+
+		String learnershipType = null;
+		if (learnerships == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership) {
+			learnershipType = X_ZZ_Program_Learnerships.ZZ_LEARNERSHIPS_TYPE_4IR;
+		} else if (learnerships == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership) {
+			learnershipType = X_ZZ_Program_Learnerships.ZZ_LEARNERSHIPS_TYPE_General;
+		} else if (learnerships == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership) {
+			learnershipType = X_ZZ_Program_Learnerships.ZZ_LEARNERSHIPS_TYPE_AET;
+		}
+
+		String sql = String.format("""
+				SELECT %s, %s.%s, %s, %s, %s 
+				FROM %s INNER JOIN %s 
+					ON (%s.%s = %s.%s) 
+				WHERE %s = ? AND %s.%s = ?
+				ORDER BY %s
+				"""
+				, learnerInputProgramID, learnerInputTable, learnerInputID, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_WPA_Req, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Is_Accred_SLA_Req, learnerInputText
+				, learnerInputProgramTable, learnerInputTable
+				, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID
+				, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Master_Data_ID, learnerInputProgramTable, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_Type
+				, X_ZZ_Program_Learnerships.COLUMNNAME_Line);
+		
+		return convertLearnerInputInfo(DB.getSQLArrayObjectsEx(null, sql, programMasterDataID, learnershipType));
+	}
+	
 	public static ProgramInput getDisciplines(int programMasterDataID, X_ZZ_Application_Form applicationForm, String tableTitle){
-		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, programMasterDataID, applicationForm, tableTitle);
+		Entry<Boolean, Boolean> uploadColCondition = ProgramInput.queryUploadColumnForTrade(programMasterDataID, false);
+		
+		ProgramInput programInput = ProgramInput.getProgramInput(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, applicationForm, tableTitle, uploadColCondition.getKey(), uploadColCondition.getValue());
+		programInput.iniProgram(applicationForm, programMasterDataID, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
+		return programInput;
 	}
 
 	public static ProgramInput getTrade(int programMasterDataID, X_ZZ_Application_Form applicationForm, String tableTitle){
-		return ProgramInput.getTradeDiscipline(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade, programMasterDataID, applicationForm, tableTitle);
+		Entry<Boolean, Boolean> uploadColCondition = ProgramInput.queryUploadColumnForTrade(programMasterDataID, true);
+		ProgramInput programInput = ProgramInput.getProgramInput(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade, applicationForm, tableTitle, uploadColCondition.getKey(), uploadColCondition.getValue());
+		programInput.iniProgram(applicationForm, programMasterDataID, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
+		return programInput;
 	}
 
 	public static ProgramInput getLearnership(String learnershipType, X_ZZ_Application_Form applicationForm, int programMasterDataID){
-		return ProgramInput.getTradeDiscipline(learnershipType, programMasterDataID, applicationForm, null);
+		Entry<Boolean, Boolean> uploadColCondition = ProgramInput.queryUploadColumnForLearnership(programMasterDataID, learnershipType);
+		ProgramInput programInput = ProgramInput.getProgramInput(learnershipType, applicationForm, null, uploadColCondition.getKey(), uploadColCondition.getValue());
+		programInput.iniProgram(applicationForm, programMasterDataID, learnershipType);
+		return programInput;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private static ProgramInput getTradeDiscipline(String disciplineType, int programMasterDataID, X_ZZ_Application_Form applicationForm, String tableTitle){
-		List<Object> rObjs = MasterUtil.queryLearnerInputInfos(programMasterDataID, disciplineType);
-		List<LearnerInputInfo> learnerInputInfos = (List<LearnerInputInfo>) rObjs.get(0);
-		boolean hasWPAReq = (boolean) rObjs.get(1);
-		boolean hasAccred = (boolean) rObjs.get(2);
-
-		List<ColumnInfo<?>> columns = new ArrayList<>();
+	
+	private static ProgramInput getProgramInput(String disciplineType, 
+			X_ZZ_Application_Form applicationForm, 
+			String tableTitle, boolean hasWPAReq, boolean hasAccred) {
 		
+		List<ColumnInfo<?>> columns = new ArrayList<>();
+		ColumnInfo<?> titleCol = null;
 		if ((X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership.equals(disciplineType) ||
 				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership.equals(disciplineType) ||
 				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership.equals(disciplineType))) {
-			columns.add(ColumnInfo.getColLearnerInfo(ColumnInfo.colLearnershipLabel));
-			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel));
-			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel));
+			titleCol = ColumnInfo.getColLearnerInfo(ColumnInfo.colLearnershipLabel
+					, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Learnerships_ID);
+			columns.add(titleCol);
+			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoEmployedLearners));
+			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoUnEmployedLearners));
 		}else {
 			if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade.equals(disciplineType)) {
-				columns.add(ColumnInfo.getColLearnerInfo(ColumnInfo.colTradeLabel));
+				titleCol = ColumnInfo.getColLearnerInfo(ColumnInfo.colTradeLabel
+						, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Trade_ID);
+				columns.add(titleCol);
 			}else {
-				columns.add(ColumnInfo.getColLearnerInfo(ColumnInfo.colDisciplineLabel));
+				titleCol = ColumnInfo.getColLearnerInfo(ColumnInfo.colDisciplineLabel
+						, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Disciplines_ID);
+				columns.add(titleCol);
 			}
 			
-			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLabel));
+			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLabel
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoLearners));
 		}
 		
-		columns.add(ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel));
+		columns.add(ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel
+				, I_ZZ_FormDiscipline.COLUMNNAME_Postal));
 		columns.add(
-				ColumnInfo.getColArea(ColumnInfo.colAreaLabel, MasterUtil.getInitCities()));
-
+				ColumnInfo.getColArea(ColumnInfo.colAreaLabel 
+						, MasterUtil.getInitCities()
+						, I_ZZ_FormDiscipline.COLUMNNAME_C_City_ID));
+		
 		if (hasWPAReq) {
-			columns.add(ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel, ColumnInfo.btWPAText));
+			columns.add(ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel
+					, ColumnInfo.btWPAText
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_WPAFile
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZWPAFileName));
 		}
 
 		if (hasAccred) {
-			columns.add(ColumnInfo.getColFileUpload(ColumnInfo.colAccredLabel, ColumnInfo.btAccredText));
+			columns.add(ColumnInfo.getColFileUpload(ColumnInfo.colAccredLabel
+					, ColumnInfo.btAccredText
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_AccredFile
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZAccredFileName));
 		}
-
-		List<X_ZZ_FormDiscipline> formDisciplines = null;
+		ProgramInput projectInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
+		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAppForm = (parent) -> new AnnexureRow<X_ZZ_FormDiscipline>(parent);
+		projectInput.setNewRowSupplier(supplierRowAppForm);
+		
+		BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier = (annexure, appForm) -> {
+			X_ZZ_FormDiscipline po = new X_ZZ_FormDiscipline(Env.getCtx(), 0, appForm.get_TrxName());
+			po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
+			return po;
+		};
+		projectInput.setPoSupplier(poSupplier);
+		projectInput.setTableTitle(tableTitle);
+		
+		return projectInput;	
+	}
+	
+	public void iniProgram(X_ZZ_Application_Form applicationForm, int programMasterDataID, String disciplineType) {
+		List<LearnerInputInfo> learnerInputInfos = null;
+		if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline.equalsIgnoreCase(disciplineType))
+			learnerInputInfos = ProgramInput.queryLearnerInputInfos(programMasterDataID, false);
+		else if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade.equalsIgnoreCase(disciplineType))
+			learnerInputInfos = ProgramInput.queryLearnerInputInfos(programMasterDataID, true);
+		else
+			learnerInputInfos = ProgramInput.queryLearnerInputInfos(programMasterDataID, disciplineType);
+		
+		ColumnInfo<?> titleCol = lookupColByDataType(DataType.LearnerInfo, this);
+		
+		List<Map<ColumnInfo<?>, Object>> titleRows = new ArrayList<>();
+		for (LearnerInputInfo learnerInputInfo:learnerInputInfos) {
+			Map<ColumnInfo<?>, Object> titleRow = new HashMap<>();
+			titleRow.put(titleCol, learnerInputInfo);
+			titleRows.add(titleRow);
+		}
+		
+		List<PO> formDisciplines = null;
 		if(applicationForm != null) {
 			String whereFormDiscipline = String.format("%s = ?", 
 					I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Application_Form_ID);
 			Query queryFormDiscipline = MTable.get(X_ZZ_FormDiscipline.Table_ID).createQuery(whereFormDiscipline, null);
 			formDisciplines = queryFormDiscipline.setParameters(applicationForm.getZZ_Application_Form_ID()).list();
 		}
-		 
 		
-		ProgramInput programInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
-		Function<AnnexureInfo, AnnexureRow<?>> supplierRowFormDiscipline = (parent) -> new AnnexureRow<X_ZZ_FormDiscipline>(parent);
-		programInput.setSupplier(supplierRowFormDiscipline);
-		programInput.setTableTitle(tableTitle);
-
-		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, programInput);
-		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLabel, programInput);
-		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, programInput);
-		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, programInput);
-		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, programInput);
-		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colAccredLabel, programInput);
-		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel, programInput);
-		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, programInput);
-		
-		for (LearnerInputInfo learnerInputInfo : learnerInputInfos) {
-			AnnexureRow<X_ZZ_FormDiscipline> row = (AnnexureRow<X_ZZ_FormDiscipline>)programInput.createDetailRow();
-			
-			if (formDisciplines != null) {
-				for(X_ZZ_FormDiscipline formDiscipline : formDisciplines) {
-					if (formDiscipline.getZZ_Trade_ID() == learnerInputInfo.getLearnerInputID()
-							|| formDiscipline.getZZ_Disciplines_ID() == learnerInputInfo.getLearnerInputID()
-							|| formDiscipline.getZZ_Learnerships_ID() == learnerInputInfo.getLearnerInputID()) {
-						row.setData(formDiscipline);
-						break;
-					}
-				}
-			}
-			
-			X_ZZ_FormDiscipline formDisciplineSaved = row.getData();
-			
-			row.put(disciplineColl, learnerInputInfo);
-			
-			if(nunLearnersColl != null && formDisciplineSaved != null) {
-				((IntData)row.get(nunLearnersColl)).setValue(Util.convert(formDisciplineSaved.getZZNoLearners()));
-			}
-			
-			if(numEmployedColl != null && formDisciplineSaved != null) {
-				((IntData)row.get(numEmployedColl)).setValue(Util.convert(formDisciplineSaved.getZZNoEmployedLearners()));
-			}
-			
-			if(numUnEmployedColl != null && formDisciplineSaved != null) {
-				((IntData)row.get(numUnEmployedColl)).setValue(Util.convert(formDisciplineSaved.getZZNoUnEmployedLearners()));
-			}
-			
-			if(areaColl != null && formDisciplineSaved != null && formDisciplineSaved.getC_City_ID() > 0) {
-				AreaData areaData = (AreaData)row.get(areaColl);
-				for(MCity area : areaData.getDataProvider()) {
-					if (area.getC_City_ID() == formDisciplineSaved.getC_City_ID()) {
-						areaData.setSelectedAreaInternal(area);
-					}
-				}
-			}
-			
-			
-			if(postalColl != null && formDisciplineSaved != null && StringUtils.isNoneBlank(formDisciplineSaved.getPostal())) {
-				PostalData postal = (PostalData)row.get(postalColl);
-				postal.setPostalInternal(formDisciplineSaved.getPostal());
-			}
-		/*
-			if(wpaColl != null && formDisciplineSaved != null && formDisciplineSaved.getname > 0) {
-				((IntData)row.get(numUnEmployedColl)).setValue(formDisciplineSaved.getZZNoUnEmployedLearners());
-			}
-			*/
-		}
-		return programInput;
-	}
-
-	
-	public static void saveFormDisciplines(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput disciplines, String disciplineType)  {
-		
-		ColumnInfo<?> disciplineColl = AnnexureInfo.lookupColByDataType(DataType.LearnerInfo, disciplines);
-		ColumnInfo<?> nunLearnersColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLabel, disciplines);
-		ColumnInfo<?> areaColl = AnnexureInfo.lookupColByDataType(DataType.Area, disciplines);
-		ColumnInfo<?> postalColl = AnnexureInfo.lookupColByDataType(DataType.Postal, disciplines);
-		ColumnInfo<?> wpaColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, disciplines);
-		ColumnInfo<?> accredColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colAccredLabel, disciplines);
-		
-		
-		ColumnInfo<?> numEmployedColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel, disciplines);
-		ColumnInfo<?> numUnEmployedColl = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, disciplines);
-		int totalLearners = 0;
-		
-		for (Map<ColumnInfo<?>, Object> rowObj : disciplines.getRows()) {
-			@SuppressWarnings("unchecked")
-			AnnexureRow<X_ZZ_FormDiscipline> row = (AnnexureRow<X_ZZ_FormDiscipline>)rowObj;
-			
-			IntData nunLearners = null;
-			if (nunLearnersColl != null) {
-				nunLearners = (IntData)row.get(nunLearnersColl);
-			}
-			
-			IntData nunEmployer = null;
-			if (numEmployedColl != null) {
-				nunEmployer = (IntData)row.get(numEmployedColl);
-			}
-			
-			IntData nunUnEmployer = null;
-			if (numUnEmployedColl != null) {
-				nunUnEmployer = (IntData)row.get(numUnEmployedColl);
-			}
-			
-			
-			if ((X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade.equals(disciplineType) ||
-					X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline.equals(disciplineType))
-					&& (nunLearners.getValue() == null || nunLearners.getValue().intValue() == 0)){
-				continue;
-			}
-				
-			
-			if ((X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership.equals(disciplineType) ||
-					X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership.equals(disciplineType) ||
-					X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership.equals(disciplineType)) &&
-					(nunEmployer.getValue() == null || nunEmployer.getValue() == 0) && 
-					(nunUnEmployer.getValue() == null || nunUnEmployer.getValue() == 0))
-				continue;
-			
-			
-			X_ZZ_FormDiscipline formDisciplines = row.getData();
-			if (formDisciplines == null) {
-				formDisciplines = new X_ZZ_FormDiscipline(Env.getCtx(), 0, null);
-			}
-			
-			
-			formDisciplines.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
-			
-			if (nunLearners != null && nunLearners.getValue() != null && nunLearners.getValue() != 0) {
-				formDisciplines.setZZNoLearners(nunLearners.getValue());
-				totalLearners += nunLearners.getValue();
-			}
-			
-			if (nunEmployer != null && nunEmployer.getValue() != null && nunEmployer.getValue() != 0) {
-				formDisciplines.setZZNoEmployedLearners(nunEmployer.getValue());
-				totalLearners += nunEmployer.getValue();
-			}
-			
-			if (nunUnEmployer != null && nunUnEmployer.getValue() != null && nunUnEmployer.getValue() != 0) {
-				formDisciplines.setZZNoUnEmployedLearners(nunUnEmployer.getValue());
-				totalLearners += nunUnEmployer.getValue();
-			}
-				
-			
-			MCity area = ((AreaData)row.get(areaColl)).getSelectedArea();
-			if (area != null)
-				formDisciplines.setC_City_ID(area.getC_City_ID());
-			
-			PostalData postalCode = (PostalData)row.get(postalColl);
-			if (postalCode.getPostal() != null)
-				formDisciplines.setPostal(postalCode.getPostal());
-			
-			formDisciplines.setZZ_DisciplineType(disciplineType);
-			
-			LearnerInputInfo learnerInfo = (LearnerInputInfo)row.get(disciplineColl);
-			
-			if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade.equals(disciplineType)) {
-				 formDisciplines.setZZ_Trade_ID(learnerInfo.getLearnerInputID()); 
-			}else if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline.equals(disciplineType)) {
-				 formDisciplines.setZZ_Disciplines_ID(learnerInfo.getLearnerInputID()); 
-			}else {
-				 formDisciplines.setZZ_Learnerships_ID(learnerInfo.getLearnerInputID()); 
-			}
-			
-			UploadData wpaUploadInfo = (UploadData)row.get(wpaColl);
-			
-			if (wpaUploadInfo != null && StringUtils.isNoneEmpty(wpaUploadInfo.getFullPath())) {
-				try {
-					formDisciplines.setZZ_WPAFile(Files.readAllBytes(Paths.get(wpaUploadInfo.getFullPath())));
-				} catch (IOException e) {
-					e.printStackTrace();
-					throw new ApplicationException(e.getMessage(), e);
-				} 
-			}
-			
-			UploadData accredUploadInfo = (UploadData)row.get(accredColl);
-			
-			if (accredUploadInfo != null && StringUtils.isNoneEmpty(accredUploadInfo.getFullPath())) {
-				try {
-					formDisciplines.setZZ_AccredFile(Files.readAllBytes(Paths.get(accredUploadInfo.getFullPath())));
-				} catch (IOException e) {
-					e.printStackTrace();
-					throw new ApplicationException(e.getMessage(), e);
-				} 
-			}
-			
-			formDisciplines.saveEx(trxName);
-		}
-		
-		
-		totalLearners += applicationForm.getZZTotalNumberApplied();
-		applicationForm.setZZTotalNumberApplied(totalLearners);
-		applicationForm.saveEx(trxName);
-	}
-
-	public static void saveFormLearnership(String trxName, X_ZZ_Application_Form applicationForm, ProgramInput learnership, String learnershipType) {
-		saveFormDisciplines(trxName, applicationForm, learnership, learnershipType);
+		init(applicationForm, formDisciplines, titleRows);
 	}
 }

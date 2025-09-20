@@ -25,7 +25,7 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 		
 		CetTvetMultiLineInput annexureInfo = AnnexureInfo.getAnnexureInfo(CetTvetMultiLineInput.class, columnInfos, isShowTotalLine);
 		
-		annexureInfo.setSupplier(emptyRowSupplier);
+		annexureInfo.setNewRowSupplier(emptyRowSupplier);
 				
 		annexureInfo.setSectionHeader(sectionHeader);
 		

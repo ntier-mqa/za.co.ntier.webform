@@ -11,7 +11,6 @@ import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class CandidacyProgram implements ISaveForm, IProgram{
 	private ProgramInput disciplines;
@@ -38,7 +37,7 @@ public class CandidacyProgram implements ISaveForm, IProgram{
 	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
-		ProgramInput.saveFormDisciplines(trxName, applicationForm, disciplines, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
+		disciplines.save(trxName, applicationForm);
 		
 	}
 	

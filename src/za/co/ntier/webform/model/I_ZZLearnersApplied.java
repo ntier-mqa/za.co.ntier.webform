@@ -134,6 +134,28 @@ public interface I_ZZLearnersApplied
 	  */
 	public String getName();
 
+    /** Column name Name2 */
+    public static final String COLUMNNAME_Name2 = "Name2";
+
+	/** Set Name 2.
+	  * Additional Name
+	  */
+	public void setName2 (String Name2);
+
+	/** Get Name 2.
+	  * Additional Name
+	  */
+	public String getName2();
+
+    /** Column name NoMonths */
+    public static final String COLUMNNAME_NoMonths = "NoMonths";
+
+	/** Set Number of Months	  */
+	public void setNoMonths (int NoMonths);
+
+	/** Get Number of Months	  */
+	public int getNoMonths();
+
     /** Column name Postal */
     public static final String COLUMNNAME_Postal = "Postal";
 
@@ -240,6 +262,15 @@ No. of employed Learners&quot;
 
 	/** Get No UnEmployed Learners	  */
 	public int getZZNoUnEmployedLearners();
+
+    /** Column name ZZWPAFileName */
+    public static final String COLUMNNAME_ZZWPAFileName = "ZZWPAFileName";
+
+	/** Set WPA File Name	  */
+	public void setZZWPAFileName (String ZZWPAFileName);
+
+	/** Get WPA File Name	  */
+	public String getZZWPAFileName();
 
     /** Column name ZZ_Application_Form_ID */
     public static final String COLUMNNAME_ZZ_Application_Form_ID = "ZZ_Application_Form_ID";

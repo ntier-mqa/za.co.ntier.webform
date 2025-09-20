@@ -10,7 +10,7 @@ public class CetTvetOneLineInput extends AnnexureInfo{
 		CetTvetOneLineInput annexureInfo = AnnexureInfo.getAnnexureInfo(CetTvetOneLineInput.class, columnInfos, false);
 		annexureInfo.setSectionHeader(sectionHeader);
 		
-		annexureInfo.setSupplier(emptyRowSupplier);
+		annexureInfo.setNewRowSupplier(emptyRowSupplier);
 		
 		return annexureInfo;
 	}

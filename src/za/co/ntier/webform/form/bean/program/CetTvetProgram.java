@@ -27,12 +27,12 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LabelData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
+import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.I_ZZAnnexure;
 import za.co.ntier.webform.model.I_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZAnnexure;
 import za.co.ntier.webform.model.X_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
 
 public class CetTvetProgram implements ISaveForm, IProgram {
 	private AddressInfo addressInfo;
@@ -205,13 +205,8 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexureDap = loadInitRowAnnexure(annexure, cols, title, rowTitle, twoTitleFirstRow);
 			annexureInfos.add(annexure);
 
-		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS) {
-			List<Object> rObjs = MasterUtil.queryLearnerInputInfos(
-					menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
-					X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade);
-			
-			@SuppressWarnings("unchecked")
-			List<LearnerInputInfo> tradeObj = (List<LearnerInputInfo>) rObjs.get(0);
+		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS) {			
+			List<LearnerInputInfo> tradeObj = ProgramInput.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), true);
 			tradeInfo = tradeObj;
 			if (tradeInfo != null) {
 

@@ -31,7 +31,7 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250917L;
+	private static final long serialVersionUID = 20250920L;
 
     /** Standard Constructor */
     public X_ZZLearnersApplied (Properties ctx, int ZZLearnersApplied_ID, String trxName)
@@ -39,7 +39,6 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
       super (ctx, ZZLearnersApplied_ID, trxName);
       /** if (ZZLearnersApplied_ID == 0)
         {
-			setName (null);
 			setZZLearnersApplied_ID (0);
         } */
     }
@@ -50,7 +49,6 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
       super (ctx, ZZLearnersApplied_ID, trxName, virtualColumns);
       /** if (ZZLearnersApplied_ID == 0)
         {
-			setName (null);
 			setZZLearnersApplied_ID (0);
         } */
     }
@@ -61,7 +59,6 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
       super (ctx, ZZLearnersApplied_UU, trxName);
       /** if (ZZLearnersApplied_UU == null)
         {
-			setName (null);
 			setZZLearnersApplied_ID (0);
         } */
     }
@@ -72,7 +69,6 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
       super (ctx, ZZLearnersApplied_UU, trxName, virtualColumns);
       /** if (ZZLearnersApplied_UU == null)
         {
-			setName (null);
 			setZZLearnersApplied_ID (0);
         } */
     }
@@ -163,6 +159,40 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Name 2.
+		@param Name2 Additional Name
+	*/
+	public void setName2 (String Name2)
+	{
+		set_ValueNoCheck (COLUMNNAME_Name2, Name2);
+	}
+
+	/** Get Name 2.
+		@return Additional Name
+	  */
+	public String getName2()
+	{
+		return (String)get_Value(COLUMNNAME_Name2);
+	}
+
+	/** Set Number of Months.
+		@param NoMonths Number of Months
+	*/
+	public void setNoMonths (int NoMonths)
+	{
+		set_Value (COLUMNNAME_NoMonths, Integer.valueOf(NoMonths));
+	}
+
+	/** Get Number of Months.
+		@return Number of Months	  */
+	public int getNoMonths()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_NoMonths);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set ZIP.
@@ -289,6 +319,21 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set WPA File Name.
+		@param ZZWPAFileName WPA File Name
+	*/
+	public void setZZWPAFileName (String ZZWPAFileName)
+	{
+		set_Value (COLUMNNAME_ZZWPAFileName, ZZWPAFileName);
+	}
+
+	/** Get WPA File Name.
+		@return WPA File Name	  */
+	public String getZZWPAFileName()
+	{
+		return (String)get_Value(COLUMNNAME_ZZWPAFileName);
 	}
 
 	public I_ZZ_Application_Form getZZ_Application_Form() throws RuntimeException

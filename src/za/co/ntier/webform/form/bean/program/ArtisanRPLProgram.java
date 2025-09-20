@@ -22,7 +22,7 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 				List.of(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoEmployedLearners),
 						ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoUnEmployedLearners),
 						ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalLearnersLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoTotalLearners)));
-		ProjectInput.initProject(allLearners, applicationForm);
+		allLearners.initProject(applicationForm);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
-		ProjectInput.saveProjectInput(trxName, applicationForm, allLearners);
+		allLearners.save(trxName, applicationForm);
 		// update total
 		applicationForm.saveEx(trxName);
 		
