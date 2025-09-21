@@ -57,7 +57,8 @@ public class ProjectInput extends AnnexureInfo {
 	}
 	
 	public void initProject(X_ZZ_Application_Form applicationForm) {
-		init(applicationForm);
+		List<PO> learnersApplieds = queryLearnersApplied(applicationForm);
+		init(applicationForm, learnersApplieds, null);
 	}
 	
 	public void initProject(X_ZZ_Application_Form applicationForm, List<Map<ColumnInfo<?>, Object>> rowTitles) {
