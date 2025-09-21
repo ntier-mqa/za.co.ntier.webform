@@ -1,8 +1,16 @@
 package za.co.ntier.webform.form.bean.program;
+import java.util.Map;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.AreaData;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.IntData;
+import za.co.ntier.webform.form.bean.component.PostalData;
+import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements ISaveForm, IProgram{
@@ -75,11 +83,63 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 	}
 
 	@Override
-	public boolean isProgramValid() {
-		boolean radiosDone = isCollegeRegistered != null
-				&& isCollegeRecognised != null
-				&& isCollegeSla != null;
-		return radiosDone;
-	}
+    public boolean isProgramValid() {
+        // 1) all 3 YES/NO questions must be answered
+        boolean radiosOk = isCollegeRecognised != null
+                        && isCollegeRegistered != null
+                        && isCollegeSla != null;
+
+        // 2) at least one valid line in either trade or total table
+        boolean tablesOk = hasAtLeastOneValidProgramRow(getTrade())
+                        || isProjectTableValid(getTotalNumApplied());
+
+        return radiosOk && tablesOk;
+    }
+
+    // ---- helpers (same pattern used in your other programs) ----
+    private static boolean hasAtLeastOneValidProgramRow(AnnexureInfo table) {
+        if (table == null || table.getRows() == null) return false;
+
+        ColumnInfo<?> cNoLearners   = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLabel,   table);
+        ColumnInfo<?> cNoEmployed   = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel,   table);
+        ColumnInfo<?> cNoUnemployed = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, table);
+        ColumnInfo<?> cPostal       = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel,   table);
+        ColumnInfo<?> cArea         = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel,         table);
+
+        for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
+            int n = 0;
+            if (cNoLearners   != null && row.get(cNoLearners)   instanceof IntData) n += val((IntData) row.get(cNoLearners));
+            if (cNoEmployed   != null && row.get(cNoEmployed)   instanceof IntData) n += val((IntData) row.get(cNoEmployed));
+            if (cNoUnemployed != null && row.get(cNoUnemployed) instanceof IntData) n += val((IntData) row.get(cNoUnemployed));
+
+            boolean postalOk = (cPostal != null && row.get(cPostal) instanceof PostalData)
+                    && notEmpty(((PostalData) row.get(cPostal)).getPostal());
+            boolean areaOk   = (cArea   != null && row.get(cArea)   instanceof AreaData)
+                    && ((AreaData) row.get(cArea)).getSelectedArea() != null;
+
+            if (n > 0 && postalOk && areaOk) return true;
+        }
+        return false;
+    }
+
+    private static boolean isProjectTableValid(ProjectInput table) {
+        if (table == null || table.getRows() == null || table.getRows().isEmpty()) return false;
+
+        Map<ColumnInfo<?>, Object> row = table.getRows().get(0);
+        ColumnInfo<?> cTotal  = AnnexureInfo.lookupColByTitle(ColumnInfo.colTotalLearnersLabel, table);
+        ColumnInfo<?> cPostal = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel,    table);
+        ColumnInfo<?> cArea   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel,          table);
+
+        int n = (cTotal != null && row.get(cTotal) instanceof IntData) ? val((IntData) row.get(cTotal)) : 0;
+        boolean postalOk = (cPostal != null && row.get(cPostal) instanceof PostalData)
+                && notEmpty(((PostalData) row.get(cPostal)).getPostal());
+        boolean areaOk   = (cArea   != null && row.get(cArea)   instanceof AreaData)
+                && ((AreaData) row.get(cArea)).getSelectedArea() != null;
+
+        return n > 0 && postalOk && areaOk;
+    }
+
+    private static int  val(IntData d){ return d.getValue()==null ? 0 : d.getValue(); }
+    private static boolean notEmpty(String s){ return s!=null && !s.trim().isEmpty(); }
 
 }
