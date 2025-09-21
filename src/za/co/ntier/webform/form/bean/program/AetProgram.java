@@ -1,8 +1,15 @@
 package za.co.ntier.webform.form.bean.program;
 
+import java.util.Map;
+
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.AreaData;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.IntData;
+import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
@@ -39,8 +46,37 @@ public class AetProgram implements ISaveForm, IProgram {
 	}
 
 	@Override
-	public boolean isProgramValid() {
-		return true;
-	}
+    public boolean isProgramValid() {
+        return hasAtLeastOneValidAetRow(aetLearnership);
+    }
+
+    private static boolean hasAtLeastOneValidAetRow(ProgramInput table) {
+        if (table == null || table.getRows() == null) return false;
+
+        ColumnInfo<?> cEmp    = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel,    table);
+        ColumnInfo<?> cUnemp  = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel,  table);
+        ColumnInfo<?> cPostal = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel,    table);
+        ColumnInfo<?> cArea   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel,          table);
+
+        for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
+            int emp   = (cEmp   != null && row.get(cEmp)   instanceof IntData)
+                        ? intVal((IntData) row.get(cEmp))   : 0;
+            int unemp = (cUnemp != null && row.get(cUnemp) instanceof IntData)
+                        ? intVal((IntData) row.get(cUnemp)) : 0;
+
+            boolean postalOk = (cPostal != null && row.get(cPostal) instanceof PostalData)
+                    && notEmpty(((PostalData) row.get(cPostal)).getPostal());
+            boolean areaOk   = (cArea   != null && row.get(cArea)   instanceof AreaData)
+                    && ((AreaData) row.get(cArea)).getSelectedArea() != null;
+
+            if ((emp + unemp) > 0 && postalOk && areaOk) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static int  intVal(IntData d){ return d.getValue()==null ? 0 : d.getValue(); }
+    private static boolean notEmpty(String s){ return s!=null && !s.trim().isEmpty(); }
 
 }
