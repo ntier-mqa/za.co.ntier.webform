@@ -1,11 +1,8 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.util.List;
-import java.util.function.Function;
 
 import za.co.ntier.webform.form.bean.DataType;
-import za.co.ntier.webform.model.X_ZZAnnexure;
-import za.co.ntier.webform.model.X_ZZSubAnnex;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class CetTvetMultiLineInput extends AnnexureInfo{
@@ -17,7 +14,6 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 	 * @return
 	 */
 	public static <T> CetTvetMultiLineInput getCetTvetMultiLineInput(String sectionHeader, List<ColumnInfo<?>> columnInfos) {
-		Function<AnnexureInfo, AnnexureRow<?>> emptyRowSupplier = (parent) -> new AnnexureRow<X_ZZSubAnnex>(parent);
 		boolean isShowTotalLine = false;
 		for (ColumnInfo<?> col : columnInfos) {
 			if (col.getDataType() == DataType.PositiveNumber) {
@@ -27,8 +23,6 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 		}
 		
 		CetTvetMultiLineInput annexureInfo = AnnexureInfo.getAnnexureInfo(CetTvetMultiLineInput.class, columnInfos, isShowTotalLine);
-		
-		annexureInfo.setNewRowSupplier(emptyRowSupplier);
 				
 		annexureInfo.setSectionHeader(sectionHeader);
 		

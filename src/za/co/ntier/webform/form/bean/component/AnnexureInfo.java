@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -56,7 +55,7 @@ public class AnnexureInfo implements ISaveForm{
 		annexureInfo.setShowTotal(isShowTotal);
 		annexureInfo.setColumnInfos(columnInfos);
 
-		List<AnnexureRow<?>> rows = new ArrayList<>();
+		List<AnnexureRow> rows = new ArrayList<>();
 		annexureInfo.setRows(rows);
 
 		if (isShowTotal) {
@@ -132,9 +131,8 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 	private List<ColumnInfo<?>> columnInfos;
-	private Function<AnnexureInfo, AnnexureRow<?>> newRowSupplier;
 	private BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier;
-	private List<AnnexureRow<?>> rows;
+	private List<AnnexureRow> rows;
 	private String sectionHeader;
 
 	private boolean showAddButton = false;
@@ -163,9 +161,9 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 	@SuppressWarnings("unchecked")
-	public AnnexureRow<?> createDetailRow() {
+	public AnnexureRow createDetailRow() {
 		
-		AnnexureRow<?> row = newRowSupplier.apply(this);
+		AnnexureRow row = new AnnexureRow(this);
 
 		for (ColumnInfo<?> columnInfo : columnInfos) {
 			Object cellData = null;
@@ -251,7 +249,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @return the rows
 	 */
-	public List<AnnexureRow<?>> getRows() {
+	public List<AnnexureRow> getRows() {
 		return rows;
 	}
 
@@ -274,10 +272,6 @@ public class AnnexureInfo implements ISaveForm{
 	 */
 	public String getSubSectionHeader() {
 		return subSectionHeader;
-	}
-
-	public Function<AnnexureInfo, AnnexureRow<?>> getNewRowSupplier() {
-		return newRowSupplier;
 	}
 
 	/**
@@ -308,7 +302,7 @@ public class AnnexureInfo implements ISaveForm{
 		return showTotal;
 	}
 
-	public void numChange(AnnexureRow<?> row, ColumnInfo<?> col, InputEvent event) {
+	public void numChange(AnnexureRow row, ColumnInfo<?> col, InputEvent event) {
 		// update total row
 		if (col.getDataType() == DataType.PositiveNumber && showTotal) {
 			updateTotalRow(col, true);
@@ -329,7 +323,7 @@ public class AnnexureInfo implements ISaveForm{
 		}
 		
 		if(hasExpressionCol) {
-			for(AnnexureRow<?> row:getRows()) {
+			for(AnnexureRow row:getRows()) {
 				updateExpressionCol(row, false);
 			}
 		}
@@ -338,7 +332,7 @@ public class AnnexureInfo implements ISaveForm{
 	 * update cell all Expression Col on current row
 	 * @param row
 	 */
-	public void updateExpressionCol (AnnexureRow<?> row, boolean needNotify) {
+	public void updateExpressionCol (AnnexureRow row, boolean needNotify) {
 		// update expression column
 		for (ColumnInfo<?> colTotal : getColumnInfos()) {
 			if (colTotal.getExpression() != null) {
@@ -379,7 +373,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @param rows the rows to set
 	 */
-	public void setRows(List<AnnexureRow<?>> rows) {
+	public void setRows(List<AnnexureRow> rows) {
 		this.rows = rows;
 	}
 
@@ -417,11 +411,6 @@ public class AnnexureInfo implements ISaveForm{
 	public void setSubSectionHeader(String subSectionHeader) {
 		this.subSectionHeader = subSectionHeader;
 	}
-
-	public void setNewRowSupplier(Function<AnnexureInfo, AnnexureRow<?>> newRowSupplier) {
-		this.newRowSupplier = newRowSupplier;
-	}
-
 
 	/**
 	 * @param tableTitle the tableTitle to set
@@ -478,7 +467,7 @@ public class AnnexureInfo implements ISaveForm{
 		this.dataType = dataType;
 	}
 
-	public Entry<Integer, Boolean> fillDaoData (Collection<ColumnInfo<?>> cols, AnnexureRow<?> row, Object dao){
+	public Entry<Integer, Boolean> fillDaoData (Collection<ColumnInfo<?>> cols, AnnexureRow row, Object dao){
 		Integer total = Integer.valueOf(0);
 		Boolean hasRowData = Boolean.FALSE;
 		for (ColumnInfo<?> col:cols) {
@@ -530,7 +519,7 @@ public class AnnexureInfo implements ISaveForm{
 	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
 	
 		int total = 0;
-		for (AnnexureRow<?> row : getRows()) {
+		for (AnnexureRow row : getRows()) {
 			PO learnersApplied = (PO)row.getData();
 			if (learnersApplied == null) {
 				applicationForm.set_TrxName(trxName);//importance
@@ -549,7 +538,7 @@ public class AnnexureInfo implements ISaveForm{
 		
 	}
 
-	static void setCellValue(AnnexureRow<?> row, ColumnInfo<?> col, Object value) {
+	static void setCellValue(AnnexureRow row, ColumnInfo<?> col, Object value) {
 		log.info(String.format("Set cell value: row=%s, col=%s, col datatype=%s, value=%s", row, col.getTitle(), col.getDataType(), value));
 		Object valueObj = row.get(col);
 		if (col.getDataType() == DataType.Area) {
@@ -586,7 +575,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	* return entry with value already convert (example 0 for non input int), value is true in case input non-null
 	*/
-	public <T> Entry<T, Boolean> getCellValue(AnnexureRow<?> row, ColumnInfo<?> col) {
+	public <T> Entry<T, Boolean> getCellValue(AnnexureRow row, ColumnInfo<?> col) {
 		Object valueObj = row.get(col);
 		
 		if (col.getDataType() == DataType.Area) {
@@ -654,7 +643,7 @@ public class AnnexureInfo implements ISaveForm{
 	 * @param keyColumns
 	 * @return
 	 */
-	public boolean isMatchingRow(AnnexureRow<?> row, Object dao, Collection<ColumnInfo<?>> keyColumns) {
+	public boolean isMatchingRow(AnnexureRow row, Object dao, Collection<ColumnInfo<?>> keyColumns) {
 		boolean isMatching = true;
 		for (ColumnInfo<?> keyColumn : keyColumns) {
 			if (StringUtils.isNotBlank(keyColumn.getDaoPropertyName())) {
@@ -676,7 +665,7 @@ public class AnnexureInfo implements ISaveForm{
 	 * @param row
 	 * @param dao
 	 */
-	public void fillRowDataFromDao(List<ColumnInfo<?>> cols, AnnexureRow<?> row, Object dao) {
+	public void fillRowDataFromDao(List<ColumnInfo<?>> cols, AnnexureRow row, Object dao) {
 		for (ColumnInfo<?> col : cols) {
 			Object daoValue = null;
 			if (col.getDataType() == DataType.FileUpload && StringUtils.isNotBlank(col.getDaoPropertyFileName())) {
@@ -709,7 +698,7 @@ public class AnnexureInfo implements ISaveForm{
 		// init rows with rowTitles
 		if (rowTitles != null)
 			for (Map<ColumnInfo<?>, Object> rowTitle : rowTitles) {
-				AnnexureRow<?> row = (AnnexureRow<?>)createDetailRow();
+				AnnexureRow row = (AnnexureRow)createDetailRow();
 				
 				for (Entry<ColumnInfo<?>, Object> colTile : rowTitle.entrySet()) {
 					AnnexureInfo.setCellValue(row, colTile.getKey(), colTile.getValue());
@@ -718,7 +707,7 @@ public class AnnexureInfo implements ISaveForm{
 		
 		// init rows with saved data
 		if (savedDatas != null && savedDatas.size() > 0) {
-			List<AnnexureRow<?>> matchedRows = new ArrayList<>();
+			List<AnnexureRow> matchedRows = new ArrayList<>();
 			
 			boolean learnerInfoKey = false;
 			if (keyColumns != null && keyColumns.size() > 0) {
@@ -730,7 +719,7 @@ public class AnnexureInfo implements ISaveForm{
 			for (PO dao : savedDatas) {
 				boolean isMatching = false;
 				if (keyColumns != null && keyColumns.size() > 0) {
-					for (AnnexureRow<?> row : getRows()) {
+					for (AnnexureRow row : getRows()) {
 						if (matchedRows.contains(row))
 							continue;
 						
@@ -738,7 +727,7 @@ public class AnnexureInfo implements ISaveForm{
 						
 						if (isMatching) {
 							matchedRows.add(row);
-							//row.setData(dao);
+							row.setData(dao);
 							fillRowDataFromDao(getColumnInfos(), row, dao);
 							break;
 						}
@@ -748,7 +737,7 @@ public class AnnexureInfo implements ISaveForm{
 				if (!isMatching && learnerInfoKey) {
 					// moment don't handle this case, in case what to handle it need to change createDetailRow to create LearnerInputInfo for LearnerInfo column
 				}else if(!isMatching) {
-					AnnexureRow<?> row = createDetailRow();
+					AnnexureRow row = createDetailRow();
 					fillRowDataFromDao(getColumnInfos(), row, dao);
 				}
 			}

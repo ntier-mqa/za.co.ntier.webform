@@ -3,14 +3,12 @@ package za.co.ntier.webform.form.bean.component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.compiere.model.MTable;
 import org.compiere.util.Env;
 
 import za.co.ntier.webform.model.I_ZZDocumentUpload;
 import za.co.ntier.webform.model.X_ZZDocumentUpload;
-import za.co.ntier.webform.model.X_ZZDocumentUploadFile;
 
 public class UploadInput extends AnnexureInfo {
 	public static UploadInput getUploadInput(int programMasterDataID){
@@ -23,10 +21,7 @@ public class UploadInput extends AnnexureInfo {
 		columns.add(ColumnInfo.getColDocUpload(ColumnInfo.DocUploadTitle));
 		columns.add(ColumnInfo.getColFileUpload("", "doc"));
 		
-		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAnnexure = (parent) -> new AnnexureRow<X_ZZDocumentUploadFile>(parent);
-		
 		UploadInput uploadInput = AnnexureInfo.getAnnexureInfo(UploadInput.class, columns, false);
-		uploadInput.setNewRowSupplier(supplierRowAnnexure);
 
 		for (X_ZZDocumentUpload docUpload : docUploads) {
 			Map<ColumnInfo<?>, Object> row = uploadInput.createDetailRow();

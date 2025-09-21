@@ -60,7 +60,7 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 
 	@Command
 	public void numChange(@BindingParam("annexure") AnnexureInfo annexure,
-			@BindingParam("row") AnnexureRow<?> row, @BindingParam("col") ColumnInfo<?> col,
+			@BindingParam("row") AnnexureRow row, @BindingParam("col") ColumnInfo<?> col,
 			@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
 		
 		annexure.numChange(row, col, event);

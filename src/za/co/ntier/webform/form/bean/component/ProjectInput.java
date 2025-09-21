@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -42,9 +41,6 @@ public class ProjectInput extends AnnexureInfo {
 		}
 				
 		ProjectInput projectInput = AnnexureInfo.getAnnexureInfo(ProjectInput.class, columnInfos, false);
-		
-		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAppForm = (parent) -> new AnnexureRow<X_ZZLearnersApplied>(parent);
-		projectInput.setNewRowSupplier(supplierRowAppForm);
 		
 		BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier = (annexure, appForm) -> {
 			X_ZZLearnersApplied po = new X_ZZLearnersApplied(Env.getCtx(), 0, appForm.get_TrxName());

@@ -10,7 +10,7 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 
 public class Util {
-	public static Integer sumCol(AnnexureRow<?> row, List<ColumnInfo<?>> calCols) {
+	public static Integer sumCol(AnnexureRow row, List<ColumnInfo<?>> calCols) {
 		Integer total = Integer.valueOf(0);
 		for(ColumnInfo<?> calCol : calCols) {
 			total += Util.convert(((IntData)row.get(calCol)).getValue());

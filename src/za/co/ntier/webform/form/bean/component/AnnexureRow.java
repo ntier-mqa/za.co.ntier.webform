@@ -2,26 +2,28 @@ package za.co.ntier.webform.form.bean.component;
 
 import java.util.HashMap;
 
-public class AnnexureRow<T> extends HashMap<ColumnInfo<?>, Object>{
+import org.compiere.model.PO;
+
+public class AnnexureRow extends HashMap<ColumnInfo<?>, Object>{
 	
 	private AnnexureInfo annexure;
 	public AnnexureRow(AnnexureInfo annexure) {
 		this.setAnnexure(annexure);
 	}
 	private static final long serialVersionUID = 3444756682531476154L;
-	private T data;
+	private PO data;
 
 	/**
 	 * @return the data
 	 */
-	public T getData() {
+	public PO getData() {
 		return data;
 	}
 
 	/**
 	 * @param data the data to set
 	 */
-	public void setData(T data) {
+	public void setData(PO data) {
 		this.data = data;
 	}
 

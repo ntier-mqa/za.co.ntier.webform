@@ -107,9 +107,9 @@ public class ColumnInfo<T> {
 	}
 	
 	
-	private Function<AnnexureRow<?>, Integer> expression;
+	private Function<AnnexureRow, Integer> expression;
 	
-	public static <T> ColumnInfo<T> getColExpression(String title, Function<AnnexureRow<?>, Integer> expression) {
+	public static <T> ColumnInfo<T> getColExpression(String title, Function<AnnexureRow, Integer> expression) {
 		ColumnInfo<T> colTotal = new ColumnInfo<T>(title, DataType.Label);
 		colTotal.setExpression(expression);
 		return colTotal;
@@ -249,13 +249,13 @@ public class ColumnInfo<T> {
 	/**
 	 * @return the expression
 	 */
-	public Function<AnnexureRow<?>, Integer> getExpression() {
+	public Function<AnnexureRow, Integer> getExpression() {
 		return expression;
 	}
 	/**
 	 * @param expression the expression to set
 	 */
-	public void setExpression(Function<AnnexureRow<?>, Integer> expression) {
+	public void setExpression(Function<AnnexureRow, Integer> expression) {
 		this.expression = expression;
 	}
 	/**

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -256,8 +255,6 @@ public class ProgramInput extends AnnexureInfo {
 					, I_ZZ_FormDiscipline.COLUMNNAME_ZZAccredFileName));
 		}
 		ProgramInput projectInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
-		Function<AnnexureInfo, AnnexureRow<?>> supplierRowAppForm = (parent) -> new AnnexureRow<X_ZZ_FormDiscipline>(parent);
-		projectInput.setNewRowSupplier(supplierRowAppForm);
 		
 		BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier = (annexure, appForm) -> {
 			X_ZZ_FormDiscipline po = new X_ZZ_FormDiscipline(Env.getCtx(), 0, appForm.get_TrxName());

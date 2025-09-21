@@ -59,8 +59,7 @@ public class UploadDocComponent implements ISaveForm {
 					setParameters(applicationForm.getZZ_Application_Form_ID()).list();
 			
 			for(Map<ColumnInfo<?>, Object> rowObj : uploadDoc.getRows()) {
-				@SuppressWarnings("unchecked")
-				AnnexureRow<X_ZZDocumentUploadFile> row = (AnnexureRow<X_ZZDocumentUploadFile>)rowObj;
+				AnnexureRow row = (AnnexureRow)rowObj;
 				
 				X_ZZDocumentUpload docDef = (X_ZZDocumentUpload)row.get(uploadDefCol);
 				
@@ -79,14 +78,13 @@ public class UploadDocComponent implements ISaveForm {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
-			@SuppressWarnings("unchecked")
-			AnnexureRow<X_ZZDocumentUploadFile> row = (AnnexureRow<X_ZZDocumentUploadFile>)uploadRow;
+			AnnexureRow row = (AnnexureRow)uploadRow;
 			
 			
 			ColumnInfo<?> uploadDefCol = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
 			ColumnInfo<?> uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload, uploadDoc);
 			
-			X_ZZDocumentUploadFile docUploadedFile = row.getData();
+			X_ZZDocumentUploadFile docUploadedFile = (X_ZZDocumentUploadFile)row.getData();
 			if (docUploadedFile == null) {
 				docUploadedFile = new X_ZZDocumentUploadFile(Env.getCtx(), 0, trxName);
 				row.setData(docUploadedFile);

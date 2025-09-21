@@ -45,7 +45,7 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 	private ColumnInfo<?> valueColExitStrategy = ColumnInfo.getColText(""
 			, I_ZZLearnersApplied.COLUMNNAME_Name2);
 	
-	Function<AnnexureRow<?>, Integer> stipendExpression = (row) -> {
+	Function<AnnexureRow, Integer> stipendExpression = (row) -> {
 		Integer duration = ((IntData)row.get(budgetColDuration)).getValue();
 		Integer learners = ((IntData)row.get(budgetColLearners)).getValue();
 		if (duration != null && learners != null) {
@@ -57,7 +57,7 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		
 	};
 	
-	Function<AnnexureRow<?>, Integer> trainingFeeExpression = (row) -> {
+	Function<AnnexureRow, Integer> trainingFeeExpression = (row) -> {
 		Integer duration = ((IntData)row.get(budgetColDuration)).getValue();
 		Integer learners = ((IntData)row.get(budgetColLearners)).getValue();
 		if (duration != null && learners != null) {
