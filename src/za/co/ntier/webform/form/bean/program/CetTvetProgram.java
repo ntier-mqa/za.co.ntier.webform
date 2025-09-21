@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 
@@ -207,178 +208,22 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
-		int total = 0;
 		for (AnnexureInfo annexure : annexureInfos) {
-			int areaTotal = 0;
 			if (annexure instanceof CetTvetOneLineInput) {
-				Entry<X_ZZAnnexure, Integer> result = saveOnelineInput(trxName, applicationForm, (CetTvetOneLineInput)annexure);
-				areaTotal = result.getValue();
+				annexure.save(trxName, applicationForm);
+				
 				if (annexure.getSubAnnexure() != null) {
-					saveMultilineInput(trxName, applicationForm, result.getKey(), (CetTvetMultiLineInput)annexure.getSubAnnexure());
+					annexure.save(trxName, applicationForm);
 				}
 			}else if (annexure instanceof CetTvetMultiLineInput) {
-				areaTotal = saveMultilineInput(trxName, applicationForm, null, (CetTvetMultiLineInput)annexure);
+				annexure.save(trxName, applicationForm);
 			}
-			
-			total += areaTotal;
 		}
-		applicationForm.setZZTotalNumberApplied(total);
+		//applicationForm.setZZTotalNumberApplied(total);
 		if (addressInfo != null)
 			addressInfo.saveForm(trxName, applicationForm);
 	}
 	
-	
-	
-	public int saveMultilineInput(String trxName, X_ZZ_Application_Form applicationForm, X_ZZAnnexure zzAnnexure, CetTvetMultiLineInput cetTvetOneLineInput) {
-		ColumnInfo<?> colTrade = AnnexureInfo.lookupColByDataType(DataType.List, cetTvetOneLineInput);
-		ColumnInfo<?> colRequestedProgramme = AnnexureInfo.lookupColByTitle(ColumnInfo.colRequestedProgrammeTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colFieldStudy = AnnexureInfo.lookupColByTitle(ColumnInfo.colFieldStudyTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colNoLearners = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearners, cetTvetOneLineInput);
-		ColumnInfo<?> colNoManager = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoManagersTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colNoBeneficiaries = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoBeneficiariesTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colProgrammeApply = AnnexureInfo.lookupColByTitle(ColumnInfo.colProgrammeApplyTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colTotalNoBeneficiaries = AnnexureInfo.lookupColByTitle(ColumnInfo.colTotalNoBeneficiariesTitle, cetTvetOneLineInput);
-		
-		int total = 0;
-		Integer cellData = null;
-		
-		
-		for (Map<ColumnInfo<?>, Object> rowObj : cetTvetOneLineInput.getRows()) {
-			@SuppressWarnings("unchecked")
-			AnnexureRow<X_ZZSubAnnex> row = (AnnexureRow<X_ZZSubAnnex>)rowObj;
-			
-			X_ZZSubAnnex subAnnex = null;
-			if (row.getData() == null) {
-				subAnnex = new X_ZZSubAnnex(Env.getCtx(), 0, trxName);
-			}else
-				subAnnex = row.getData();
-			
-			boolean hasData = false;
-			
-			String cellDataStr = (String)row.get(colRequestedProgramme);
-			if (cellDataStr != null) {
-				subAnnex.setZZRequestedProgramme(cellDataStr);
-				hasData = true;
-			}
-			
-			cellData = AnnexureInfo.getIntegerValue(row, colProgrammeApply);
-			if (cellData != null && cellData != 0) {
-				subAnnex.setZZProgramme(cellData);
-				total += cellData;
-				hasData = true;
-			}
-			
-			cellData = AnnexureInfo.getIntegerValue(row, colNoManager);
-			if (cellData != null && cellData != 0) {
-				subAnnex.setZZManagers(cellData);
-				total += cellData;
-				hasData = true;
-			}
-			
-			cellData = AnnexureInfo.getIntegerValue(row, colNoBeneficiaries);
-			if (cellData != null && cellData != 0) {
-				subAnnex.setZZBeneficiaries(cellData);
-				total += cellData;
-				hasData = true;
-			}
-			
-			cellData = AnnexureInfo.getIntegerValue(row, colTotalNoBeneficiaries);
-			if (cellData != null && cellData != 0) {
-				subAnnex.setZZTotalBeneficiaries(cellData);
-				total += cellData;
-				hasData = true;
-			}
-			
-			if (colFieldStudy != null && colFieldStudy.getDataType() != DataType.List) {
-				cellDataStr = (String)row.get(colFieldStudy);
-				if (cellDataStr != null) {
-					subAnnex.setZZFieldStudy(cellDataStr);
-					hasData = true;
-				}
-			}
-			
-			cellData = AnnexureInfo.getIntegerValue(row, colNoLearners);
-			if (cellData != null && cellData != 0) {
-				subAnnex.setZZLearners(cellData);
-				total += cellData;
-				hasData = true;
-			}
-			
-			Object cellTrade = row.get(colTrade);
-			if (cellData != null && cellTrade instanceof LearnerInputInfo) {
-				LearnerInputInfo trade = (LearnerInputInfo)cellTrade;
-				subAnnex.setZZ_Trade_ID(trade.getLearnerInputID());
-				hasData = true;
-			}
-			
-			if (hasData) {
-				if(zzAnnexure != null)
-					subAnnex.setZZAnnexure_ID(zzAnnexure.getZZAnnexure_ID());
-				else if (applicationForm != null)
-					subAnnex.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
-				
-				subAnnex.saveEx(trxName);
-				
-				if (row.getData() == null)
-					row.setData(subAnnex);
-			}
-		}
-		
-		return total;
-	}
-	
-	public Entry<X_ZZAnnexure, Integer> saveOnelineInput(String trxName, X_ZZ_Application_Form applicationForm, CetTvetOneLineInput cetTvetOneLineInput) {
-		ColumnInfo<?> colBeneficiaries = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoBeneficiariesTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colTotalBeneficiaries = AnnexureInfo.lookupColByTitle(ColumnInfo.colTotalNoBeneficiariesTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colDiscipline = AnnexureInfo.lookupColByTitle(ColumnInfo.colDisciplineTitle, cetTvetOneLineInput);
-		ColumnInfo<?> colProgramme = AnnexureInfo.lookupColByTitle(ColumnInfo.colProgrammeApplyTitle, cetTvetOneLineInput);
-		
-		@SuppressWarnings("unchecked")	
-		AnnexureRow<X_ZZAnnexure> row = (AnnexureRow<X_ZZAnnexure>)cetTvetOneLineInput.getRows().get(0);
-		
-		X_ZZAnnexure annexure = row.getData();
-		if (annexure == null)
-			annexure= new X_ZZAnnexure(Env.getCtx(), 0, trxName);
-		
-		int total = 0;
-		boolean hasData = false;
-		
-		Integer cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colBeneficiaries);
-		if (cellData != null && cellData != 0) {
-			annexure.setZZBeneficiaries(cellData);
-			total += cellData;
-			hasData = true;
-		}
-		
-		cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colTotalBeneficiaries);
-		if (cellData != null && cellData != 0) {
-			annexure.setZZTotalBeneficiaries(cellData);
-			total += cellData;
-			hasData = true;
-		}
-		
-		String cellDataStr = (String)cetTvetOneLineInput.getRows().get(0).get(colDiscipline);
-		if (StringUtils.isNoneBlank(cellDataStr)) {
-			annexure.setZZDiscipline(cellDataStr);
-			hasData = true;
-		}
-		
-		cellData = AnnexureInfo.getIntegerValue(cetTvetOneLineInput, colProgramme);
-		if (cellData != null && cellData != 0) {
-			annexure.setZZProgramme(cellData);
-			total += cellData;
-			hasData = true;
-		}
-		
-		if (hasData) {
-			annexure.setName(cetTvetOneLineInput.getSectionHeader());
-			annexure.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
-			annexure.saveEx(trxName);
-			row.setData(annexure);
-		}
-		
-		return new AbstractMap.SimpleEntry<>(annexure, total);
-	}
 	
 
 
