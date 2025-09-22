@@ -474,6 +474,7 @@ public class AnnexureInfo implements ISaveForm{
 		Integer total = Integer.valueOf(0);
 		Boolean hasRowData = Boolean.FALSE;
 		for (ColumnInfo<?> col:cols) {
+			boolean ignoreSetDao = false;
 			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
 			
 				Boolean hasCellData = Boolean.FALSE;
@@ -494,7 +495,7 @@ public class AnnexureInfo implements ISaveForm{
 					cellValueObj = learnerInputID;
 				}else if (col.getDataType() == DataType.FileUpload) {
 					UploadData uploadData = (UploadData)row.get(col);
-							
+						
 					if (uploadData != null && StringUtils.isNoneEmpty(uploadData.getFullPath())) {
 						try {
 							cellValueObj = Files.readAllBytes(Paths.get(uploadData.getFullPath()));
@@ -504,6 +505,11 @@ public class AnnexureInfo implements ISaveForm{
 							e.printStackTrace();
 							throw new ApplicationException(e.getMessage(), e);
 						}
+					}
+					
+					// don't overrider binary by null for case reload data but not yet upload new file
+					if (uploadData != null && StringUtils.isNotBlank(uploadData.getFileName()) && StringUtils.isBlank(uploadData.getFullPath())) {
+						ignoreSetDao = true;
 					}
 				}else if (col.getDataType() == DataType.List) {
 					Object selectedObj = row.get(col);
@@ -527,21 +533,22 @@ public class AnnexureInfo implements ISaveForm{
 					hasRowData = Boolean.TRUE;
 				
 				
-				
-			    if (cellValueObj == null) {
-					try {
-						PropertyDescriptor pd = new PropertyDescriptor(col.getDaoPropertyName(), dao.getClass());
-						Class<?> propertyType = pd.getPropertyType();
-						if(propertyType.getTypeName().equals("int")) {
-							cellValueObj = 0;
+				if (!ignoreSetDao) {
+					if (cellValueObj == null) {
+						try {
+							PropertyDescriptor pd = new PropertyDescriptor(col.getDaoPropertyName(), dao.getClass());
+							Class<?> propertyType = pd.getPropertyType();
+							if(propertyType.getTypeName().equals("int")) {
+								cellValueObj = 0;
+							}
+						} catch (IntrospectionException e) {
+							e.printStackTrace();
+							throw new AdempiereException(e.getMessage(), e);
 						}
-					} catch (IntrospectionException e) {
-						e.printStackTrace();
-						throw new AdempiereException(e.getMessage(), e);
-					}
-			    }
-			    
-				setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
+				    }
+				    
+					setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
+				}
 			}
 		}
 		
@@ -581,6 +588,9 @@ public class AnnexureInfo implements ISaveForm{
 				//for(MCity area : areaData.getDataProvider()) {
 				for(MCity area : MasterUtil.getCities()) {// search on all cities, not only in data provider
 					if (area.getC_City_ID() == (int)value) {
+						@SuppressWarnings("unchecked")
+						List<MCity> dataProvider = (List<MCity>)col.getDataProvider();
+						dataProvider.add(area);
 						areaData.setSelectedAreaInternal(area);
 					}
 				}

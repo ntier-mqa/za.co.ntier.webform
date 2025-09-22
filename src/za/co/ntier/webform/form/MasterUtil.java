@@ -116,7 +116,7 @@ public class MasterUtil {
 					MCountry.Table_Name, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID, MRegion.Table_Name,
 					MRegion.COLUMNNAME_C_Country_ID, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID));
 			citisQuery.setParameters(305);// South Africa
-			citisQuery.setRecordstoSkip(20);
+			//citisQuery.setRecordstoSkip(20);
 
 			List<MCity> cityInfos = citisQuery.list();
 			s_Cities.put(Integer.MIN_VALUE, cityInfos);

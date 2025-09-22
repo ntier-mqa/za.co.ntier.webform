@@ -67,7 +67,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		}
 		
 		if (applicationForm != null) {
-			noOfLearners = Util.convert(applicationForm.getZZTotalNumberApplied());
+			noOfLearners = Util.convert(applicationForm.getZZNoLearners());
 		}
 	}
 	
@@ -76,6 +76,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		this.setApplicationForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
 		disciplines.save(trxName, applicationForm);
+		applicationForm.setZZNoLearners(noOfLearners);
 		applicationForm.setZZTotalNumberApplied(applicationForm.getZZTotalNumberApplied() + Util.convert(noOfLearners));
 		
 	}

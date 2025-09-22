@@ -1,8 +1,11 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MBPartner;
@@ -279,6 +282,14 @@ public class OrganisationInfo implements ISaveForm {
 		applicationForm.setOrgName(getOrgName());
 		applicationForm.setC_BPartner_ID(getbPartnerId());
 		applicationForm.setReferenceNo(orgRegistrationNumber);
+		if (StringUtils.isNotBlank(getFullPathVATCer()))
+			try {
+				applicationForm.setZZ_VAT_Exemption(
+						Files.readAllBytes(Paths.get(getFullPathVATCer())));
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new AdempiereException(e.getMessage(), e);
+			}
 		
 		if(menuContextInfo.getProgramType().isCetTvet()) {
 			if (cetTvetCollegeSelected == null) {
