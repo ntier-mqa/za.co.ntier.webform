@@ -210,22 +210,22 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 	
 	@Override
 	public boolean isProgramValid() {
-	    // --- Target Group: need at least one row with a positive number ---
+	    // --- 1) Target Group: need at least one positive number ---
 	    boolean hasTargetRow = false;
 	    if (learnerApplys != null && learnerApplys.getRows() != null) {
 	        for (Map<ColumnInfo<?>, Object> row : learnerApplys.getRows()) {
 	            Integer n = AnnexureInfo.getIntegerValue(row, valueColLearnerApplys);
-	            if (n != null && n > 0) {
-	                hasTargetRow = true;
-	                break;
-	            }
+	            if (n != null && n > 0) { hasTargetRow = true; break; }
 	        }
 	    }
 
-	    // --- Budget Overview: need at least one row with any meaningful data ---
-	    boolean hasBudgetRow = false;
+	    // --- 2) Budget Overview: at least one COMPLETE row if it’s been touched ---
+	    boolean hasCompleteBudgetRow = false;
+	    boolean hasTouchedBudgetRow  = false;
+
 	    if (budgetOverview != null && budgetOverview.getRows() != null) {
 	        for (Map<ColumnInfo<?>, Object> row : budgetOverview.getRows()) {
+
 	            Integer dur      = AnnexureInfo.getIntegerValue(row, budgetColDuration);
 	            Integer learners = AnnexureInfo.getIntegerValue(row, budgetColLearners);
 	            String  name     = (String) row.get(budgetColNameProgram);
@@ -236,21 +236,37 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 	                postal = ((za.co.ntier.webform.form.bean.component.PostalData) pObj).getPostal();
 	            }
 
-	            boolean any =
-	                (dur != null && dur > 0) ||
-	                (learners != null && learners > 0) ||
+	            boolean touched =
+	                (dur != null) ||
+	                (learners != null) ||
 	                (name != null && !name.trim().isEmpty()) ||
 	                (postal != null && !postal.trim().isEmpty());
 
-	            if (any) {
-	                hasBudgetRow = true;
-	                break;
+	            if (touched) {
+	                hasTouchedBudgetRow = true;
+	                boolean complete =
+	                    (dur != null && dur > 0) &&
+	                    (learners != null && learners > 0) &&
+	                    (name != null && !name.trim().isEmpty()) &&
+	                    (postal != null && !postal.trim().isEmpty());
+
+	                if (complete) {
+	                    hasCompleteBudgetRow = true;
+	                } else {
+	                    // a touched but incomplete row makes the section invalid
+	                    return false;
+	                }
 	            }
 	        }
 	    }
 
-	    return hasTargetRow && hasBudgetRow;
+	    // If nothing is entered at all in Budget Overview, it's invalid (must have >=1 row)
+	    // Otherwise require at least one complete row.
+	    boolean budgetOk = hasTouchedBudgetRow && hasCompleteBudgetRow;
+
+	    return hasTargetRow && budgetOk;
 	}
+
 
 
 }

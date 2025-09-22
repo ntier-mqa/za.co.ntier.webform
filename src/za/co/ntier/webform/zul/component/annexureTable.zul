@@ -44,12 +44,12 @@
               <label value="@load(row[detailCol].value)" />
             </nodom>
 
-            <!-- Text (save while typing + notify) -->
-            <nodom if="${detailCol.dataType == DataType.Text}">
-              <textbox
-                value="@bind(row[detailCol], save-on='onChanging')"
-                onChanging="@command('notifyProgramComplete')" />
-            </nodom>          
+            <!-- Text (save on blur/Enter + notify once) -->
+			<nodom if="${detailCol.dataType == DataType.Text}">
+			  <textbox
+			    value="@bind(row[detailCol], save-on='onChange')"
+			    onChange="@command('notifyProgramComplete')" />
+			</nodom>         
             
             <!-- PositiveNumber (notify while typing + keep totals update onChange) -->
 			<nodom if="${detailCol.dataType == DataType.PositiveNumber}">
@@ -119,9 +119,9 @@
                        model="@load(row[detailCol].dataProvider)"
                        selectedItem="@bind(row[detailCol].selectedArea, save-on='onSelect')"
   					   onSelect="@command('notifyProgramComplete')">
-                <template name="model" var="item">
-                  <listitem label="@load(item.name)" />
-                </template>
+                    <template name="model" var="item">
+                        <listitem label="@load(item.name)" />
+                    </template>
               </listbox>
             </nodom>
 
