@@ -31,7 +31,7 @@ public class X_ZZSubAnnex extends PO implements I_ZZSubAnnex, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250909L;
+	private static final long serialVersionUID = 20250921L;
 
     /** Standard Constructor */
     public X_ZZSubAnnex (Properties ctx, int ZZSubAnnex_ID, String trxName)
@@ -100,6 +100,22 @@ public class X_ZZSubAnnex extends PO implements I_ZZSubAnnex, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Data Type.
+		@param DataType Type of data
+	*/
+	public void setDataType (String DataType)
+	{
+		set_Value (COLUMNNAME_DataType, DataType);
+	}
+
+	/** Get Data Type.
+		@return Type of data
+	  */
+	public String getDataType()
+	{
+		return (String)get_Value(COLUMNNAME_DataType);
+	}
 
 	public I_ZZAnnexure getZZAnnexure() throws RuntimeException
 	{

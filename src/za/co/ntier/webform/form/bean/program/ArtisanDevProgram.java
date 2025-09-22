@@ -1,6 +1,5 @@
 package za.co.ntier.webform.form.bean.program;
 
-import java.util.List;
 import java.util.Map;
 
 import za.co.ntier.webform.form.IProgram;
@@ -12,31 +11,16 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
-import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.webform.model.I_ZZLearnersApplied;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class ArtisanDevProgram implements ISaveForm, IProgram {
-	private ProjectInput totalNumApplied;
-
 	private ProgramInput trade;
 
 	public ArtisanDevProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
 		setTrade(ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), applicationForm, null));
-
-		totalNumApplied = ProjectInput.getProject(
-				List.of(ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalLearnersLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoTotalLearners)));
-		totalNumApplied.initProject(applicationForm);
-
 	}
 
-	/**
-	 * @return the totalNumApplied
-	 */
-	public ProjectInput getTotalNumApplied() {
-		return totalNumApplied;
-	}
-
+	
 	/**
 	 * @return the trade
 	 */
@@ -46,17 +30,7 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
-		totalNumApplied.save(trxName, applicationForm);
 		trade.save(trxName, applicationForm);
-		// update total
-		applicationForm.saveEx(trxName);
-	}
-
-	/**
-	 * @param totalNumApplied the totalNumApplied to set
-	 */
-	public void setTotalNumApplied(ProjectInput totalNumApplied) {
-		this.totalNumApplied = totalNumApplied;
 	}
 
 	/**
@@ -101,6 +75,4 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 
 	private static int safeInt(IntData d) { return d.getValue() == null ? 0 : d.getValue(); }
 	private static boolean notEmpty(String s) { return s != null && !s.trim().isEmpty(); }
-
-
 }

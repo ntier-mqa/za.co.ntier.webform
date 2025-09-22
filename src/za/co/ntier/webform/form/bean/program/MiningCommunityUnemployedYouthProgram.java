@@ -74,6 +74,8 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		this.applicationForm = applicationForm;
 		this.menuContextInfo = menuContextInfo;
 		
+		budgetColLearners.setCalTotal(true);
+		
 		setProgramTitle(menuContextInfo.getProgramType() == ProgramType.MINING_COMMUNITY?
 				"MINE COMMUNITY DEVELOPMENT GRANT":"UNEMPLOYED YOUTH DEVELOPMENT PROGRAMMES GRANT");
 		
@@ -165,8 +167,6 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		learnerApplys.save(trxName, applicationForm);
 		strategy.save(trxName, applicationForm);
 		budgetOverview.save(trxName, applicationForm);
-		// update total
-		applicationForm.saveEx(trxName);
 	}
 
 	/**

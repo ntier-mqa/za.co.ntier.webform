@@ -12,7 +12,7 @@
 	<tabbox width="100%">
 		<tabs children="@load(vmCetTvet.program.annexureInfos)">
 	        <template name="children" var="annexure">
-	            <tab label="@load(annexure.sectionHeader)" />
+	            <tab label="@load(annexure.tabTitle)" />
 	        </template>
 	    </tabs>
 	    <tabpanels children="@load(vmCetTvet.program.annexureInfos)">

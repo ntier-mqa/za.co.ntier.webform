@@ -73,7 +73,21 @@ public class ColumnInfo<T> {
 		col.setDataProvider(dataProvider);
 		return col;
 	}
-
+	
+	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider, String daoPropertyName) {
+		ColumnInfo<T> col = getColList(title, dataProvider);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
+	
+	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider, String daoPropertyName, String beanPropertyName) {
+		ColumnInfo<T> col = getColList(title, dataProvider);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		col.setBeanPropertyName(correctDaoPropertyName(beanPropertyName));
+		
+		return col;
+	}
+	
 	public static <T> ColumnInfo<T> getColPositiveNumber(String title) {
 		return new ColumnInfo<T>(title, DataType.PositiveNumber);
 	}
@@ -125,6 +139,8 @@ public class ColumnInfo<T> {
 
 	}
 	
+	private boolean isCalTotal = false;
+	
 	private String btText;
 
 	private List<T> dataProvider;
@@ -134,6 +150,8 @@ public class ColumnInfo<T> {
 	private String title;
 	
 	private String daoPropertyName;
+	
+	private String beanPropertyName;
 	
 	private String daoPropertyFileName;
 
@@ -258,6 +276,7 @@ public class ColumnInfo<T> {
 	public void setExpression(Function<AnnexureRow, Integer> expression) {
 		this.expression = expression;
 	}
+	
 	/**
 	 * @return the daoPropertyName
 	 */
@@ -283,5 +302,33 @@ public class ColumnInfo<T> {
 	 */
 	public void setDaoPropertyFileName(String daoPropertyFileName) {
 		this.daoPropertyFileName = daoPropertyFileName;
+	}
+
+	/**
+	 * @return the beanPropertyName
+	 */
+	public String getBeanPropertyName() {
+		return beanPropertyName;
+	}
+
+	/**
+	 * @param beanPropertyName the beanPropertyName to set
+	 */
+	public void setBeanPropertyName(String beanPropertyName) {
+		this.beanPropertyName = beanPropertyName;
+	}
+
+	/**
+	 * @return the isCalTotal
+	 */
+	public boolean isCalTotal() {
+		return isCalTotal;
+	}
+
+	/**
+	 * @param isCalTotal the isCalTotal to set
+	 */
+	public void setCalTotal(boolean isCalTotal) {
+		this.isCalTotal = isCalTotal;
 	}
 }

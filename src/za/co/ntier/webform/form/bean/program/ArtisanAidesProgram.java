@@ -21,7 +21,9 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 
 	public ArtisanAidesProgram(X_ZZ_Application_Form applicationForm) {
 		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoEmployedLearners);
+		colNoEmployed.setCalTotal(true);
 		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoUnEmployedLearners);
+		colNoUnEmployed.setCalTotal(true);
 		ColumnInfo<?> colTotal = ColumnInfo.getColExpression(ColumnInfo.colTotalLearnersLabel, row -> {
 			return Util.sumCol(row, List.of(colNoEmployed, colNoUnEmployed));
 		});
@@ -62,10 +64,6 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		qualification.save(trxName, applicationForm);
 		skill.save(trxName, applicationForm);
-		
-		// for update total
-		applicationForm.saveEx(trxName);
-		
 	}
 
 	/**
@@ -122,6 +120,5 @@ public class ArtisanAidesProgram implements ISaveForm, IProgram {
 	private static boolean notEmpty(String s) {
 	    return s != null && !s.trim().isEmpty();
 	}
-
 
 }

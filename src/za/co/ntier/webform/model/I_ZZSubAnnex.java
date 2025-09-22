@@ -32,7 +32,7 @@ public interface I_ZZSubAnnex
     /** TableName=ZZSubAnnex */
     public static final String Table_Name = "ZZSubAnnex";
 
-    /** AD_Table_ID=1000060 */
+    /** AD_Table_ID=1000058 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -79,6 +79,19 @@ public interface I_ZZSubAnnex
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DataType */
+    public static final String COLUMNNAME_DataType = "DataType";
+
+	/** Set Data Type.
+	  * Type of data
+	  */
+	public void setDataType (String DataType);
+
+	/** Get Data Type.
+	  * Type of data
+	  */
+	public String getDataType();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

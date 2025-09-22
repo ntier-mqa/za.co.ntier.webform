@@ -22,7 +22,6 @@ public class MedpProgram implements ISaveForm, IProgram {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		applicationForm.setZZTotalNumberApplied(noOfLearners);
 		applicationForm.setZZNoLearners(noOfLearners);
-		applicationForm.saveEx(trxName);
 		
 	}
 	

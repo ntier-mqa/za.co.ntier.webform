@@ -1,5 +1,7 @@
 package za.co.ntier.webform.form.bean.component;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -40,6 +42,7 @@ public class AnnexureInfo implements ISaveForm{
 	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
 	
 	private String dataType;
+	private boolean createNewRowWhenEmpty = true;
 	
 	public static <T extends AnnexureInfo> T getAnnexureInfo(Class<T> clazz, List<ColumnInfo<?>> columnInfos,
 			boolean isShowTotal){
@@ -477,7 +480,8 @@ public class AnnexureInfo implements ISaveForm{
 				Object cellValueObj = null;
 				if (col.getDataType() == DataType.PositiveNumber) {
 					Entry<Integer, Boolean>  entryIntObj = getCellValue(row, col);
-					total += entryIntObj.getKey();
+					if (col.isCalTotal())
+						total += entryIntObj.getKey();
 					cellValueObj = entryIntObj.getKey();
 					hasCellData = entryIntObj.getValue();
 				}else if (col.getDataType() == DataType.LearnerInfo) {
@@ -501,14 +505,42 @@ public class AnnexureInfo implements ISaveForm{
 							throw new ApplicationException(e.getMessage(), e);
 						}
 					}
+				}else if (col.getDataType() == DataType.List) {
+					Object selectedObj = row.get(col);
+					if (StringUtils.isNotBlank(col.getBeanPropertyName())) {
+						if (selectedObj != null) {
+							cellValueObj = AnnexureInfo.getDaoValue(selectedObj, col.getBeanPropertyName());
+							hasCellData = Boolean.TRUE;
+						}else {
+							cellValueObj = null;
+						}
+					}else {
+						cellValueObj = selectedObj;
+					}
 				}else {
 					Entry<Object, Boolean> celDataEntryObj = getCellValue(row, col);
 					cellValueObj = celDataEntryObj.getKey();
 					hasCellData = celDataEntryObj.getValue();
 				}
+				
 				if (hasCellData)
 					hasRowData = Boolean.TRUE;
 				
+				
+				
+			    if (cellValueObj == null) {
+					try {
+						PropertyDescriptor pd = new PropertyDescriptor(col.getDaoPropertyName(), dao.getClass());
+						Class<?> propertyType = pd.getPropertyType();
+						if(propertyType.getTypeName().equals("int")) {
+							cellValueObj = 0;
+						}
+					} catch (IntrospectionException e) {
+						e.printStackTrace();
+						throw new AdempiereException(e.getMessage(), e);
+					}
+			    }
+			    
 				setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
 			}
 		}
@@ -546,7 +578,8 @@ public class AnnexureInfo implements ISaveForm{
 			if (value == null || (int)value == 0) {
 				areaData.setSelectedAreaInternal(null);
 			}else {
-				for(MCity area : areaData.getDataProvider()) {
+				//for(MCity area : areaData.getDataProvider()) {
+				for(MCity area : MasterUtil.getCities()) {// search on all cities, not only in data provider
 					if (area.getC_City_ID() == (int)value) {
 						areaData.setSelectedAreaInternal(area);
 					}
@@ -566,6 +599,18 @@ public class AnnexureInfo implements ISaveForm{
 			valueData.setFileName(Util.convertStr((String)value));
 		}else if (col.getDataType() == DataType.LearnerInfo && valueObj != null && !(value instanceof LearnerInputInfo)) {
 			// don't need, already set when init row tile
+		}else if (col.getDataType() == DataType.List && StringUtils.isNotBlank(col.getBeanPropertyName())) {
+			if (value == null || (int)value == 0) {
+				row.put(col, null);
+			}else {
+				for(Object selectedObj : col.getDataProvider()) {
+					Object obj = AnnexureInfo.getDaoValue(selectedObj, col.getBeanPropertyName());
+					if (com.google.common.base.Objects.equal(value, obj)) {
+						row.put(col, selectedObj);
+						break;
+					}
+				}
+			}
 		}else {
 			row.put(col, value);
 		}
@@ -626,7 +671,7 @@ public class AnnexureInfo implements ISaveForm{
 		}
 	}
 
-	public Object getDaoValue(Object dao, String propertyName) {
+	public static Object getDaoValue(Object dao, String propertyName) {
 		try {
 			return PropertyUtils.getSimpleProperty(dao, propertyName);
 		} catch (Exception e) {
@@ -667,14 +712,16 @@ public class AnnexureInfo implements ISaveForm{
 	 */
 	public void fillRowDataFromDao(List<ColumnInfo<?>> cols, AnnexureRow row, Object dao) {
 		for (ColumnInfo<?> col : cols) {
-			Object daoValue = null;
-			if (col.getDataType() == DataType.FileUpload && StringUtils.isNotBlank(col.getDaoPropertyFileName())) {
-				daoValue = getDaoValue(dao, col.getDaoPropertyFileName());
-			}else if (col.getDataType() != DataType.FileUpload  && StringUtils.isNotBlank(col.getDaoPropertyName())) {
-				daoValue = getDaoValue(dao, col.getDaoPropertyName());
+			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
+				Object daoValue = null;
+				if (col.getDataType() == DataType.FileUpload && StringUtils.isNotBlank(col.getDaoPropertyFileName())) {
+					daoValue = getDaoValue(dao, col.getDaoPropertyFileName());
+				}else if (col.getDataType() != DataType.FileUpload  && StringUtils.isNotBlank(col.getDaoPropertyName())) {
+					daoValue = getDaoValue(dao, col.getDaoPropertyName());
+				}
+				
+				AnnexureInfo.setCellValue(row, col, daoValue);
 			}
-			
-			AnnexureInfo.setCellValue(row, col, daoValue);
 		}
 	}
 	
@@ -738,13 +785,14 @@ public class AnnexureInfo implements ISaveForm{
 					// moment don't handle this case, in case what to handle it need to change createDetailRow to create LearnerInputInfo for LearnerInfo column
 				}else if(!isMatching) {
 					AnnexureRow row = createDetailRow();
+					row.setData(dao);
 					fillRowDataFromDao(getColumnInfos(), row, dao);
 				}
 			}
 			
 		}
 		
-		if (getRows().size() == 0) {
+		if (getRows().size() == 0 && createNewRowWhenEmpty) {
 			createDetailRow();
 		}
 		
@@ -764,6 +812,20 @@ public class AnnexureInfo implements ISaveForm{
 	 */
 	public void setPoSupplier(BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier) {
 		this.poSupplier = poSupplier;
+	}
+
+	/**
+	 * @return the createNewRowWhenEmpty
+	 */
+	public boolean isCreateNewRowWhenEmpty() {
+		return createNewRowWhenEmpty;
+	}
+
+	/**
+	 * @param createNewRowWhenEmpty the createNewRowWhenEmpty to set
+	 */
+	public void setCreateNewRowWhenEmpty(boolean createNewRowWhenEmpty) {
+		this.createNewRowWhenEmpty = createNewRowWhenEmpty;
 	}
 	
 	

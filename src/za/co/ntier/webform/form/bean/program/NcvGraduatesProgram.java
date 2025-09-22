@@ -21,10 +21,13 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 	private ProjectInput unemployed;
 
 	public NcvGraduatesProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoUnEmployedLearners);
+		colNoUnEmployed.setCalTotal(true);
+		
 		if (menuContextInfo.getIsUploadWPAForNVC()) {
 			unemployed = ProjectInput.getProject(
 					List.of(
-							ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoUnEmployedLearners),
+							colNoUnEmployed,
 							ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel, I_ZZLearnersApplied.COLUMNNAME_Postal),
 							ColumnInfo.getColArea(ColumnInfo.colAreaLabel, MasterUtil.getInitCities(), I_ZZLearnersApplied.COLUMNNAME_C_City_ID),
 							ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel, ColumnInfo.btWPAText, 
@@ -35,9 +38,7 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 			
 		}else {
 			unemployed = ProjectInput.getProject(
-					List.of(
-							ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel)
-							));
+					List.of(colNoUnEmployed));
 		}
 		
 		unemployed.initProject(applicationForm);
@@ -54,8 +55,6 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		unemployed.save(trxName, applicationForm);
-		// update total
-		applicationForm.saveEx(trxName);
 	}
 
 	/**

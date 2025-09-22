@@ -21,11 +21,4 @@ MQA SPOI list, (Diesel Mechanic and Millwright)" />
         notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 
-	<include
-		component="@load(vmArtisanDev.program.totalNumApplied)"
-		applicationProgramVM="@init(vmArtisanDev.applicationProgramVM)"
-  		notifyTarget="@init('programComplete')"
-		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
-
-
 </nodom>

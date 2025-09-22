@@ -20,15 +20,12 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 	public InhouseTrainingProgram(X_ZZ_Application_Form applicationForm) {
 		
 		ColumnInfo<?> colNameProgram = ColumnInfo.getColLabel(ColumnInfo.colNameProgrammeLabel, I_ZZLearnersApplied.COLUMNNAME_Name);
-		this.inhouse = ProjectInput.getProject(
-				List.of(colNameProgram,
-						ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLable, I_ZZLearnersApplied.COLUMNNAME_ZZNoLearners)
-						)
-				);
+		ColumnInfo<?> colNoLearners = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLable, I_ZZLearnersApplied.COLUMNNAME_ZZNoLearners);
+		colNoLearners.setCalTotal(true);
+		this.inhouse = ProjectInput.getProject(List.of(colNameProgram,colNoLearners));
 		inhouse.initProject(applicationForm, 
 				List.of(Map.of(colNameProgram, "Inhouse /Industry/Company based short courses"))
 				);
-		
 	}
 
 	/**
@@ -41,8 +38,6 @@ public class InhouseTrainingProgram implements ISaveForm, IProgram{
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		inhouse.save(trxName, applicationForm);
-		// update total
-		applicationForm.saveEx(trxName);
 	}
 
 	/**

@@ -46,12 +46,12 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 		return Util.convert(isCollegeSla);
 	}
 
+	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		super.saveForm(trxName, applicationForm);
 		applicationForm.setZZCollegeRecognised(Util.convert(isCollegeRecognised));
 		applicationForm.setZZCollegeRegistered(Util.convert(isCollegeRegistered));
 		applicationForm.setZZCollegeSla(Util.convert(isCollegeSla));
-		applicationForm.saveEx(trxName);
 	}
 
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
@@ -84,16 +84,15 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram implements 
 
 	@Override
     public boolean isProgramValid() {
-        // 1) all 3 YES/NO questions must be answered
-        boolean radiosOk = isCollegeRecognised != null
-                        && isCollegeRegistered != null
-                        && isCollegeSla != null;
-
-        // 2) at least one valid line in either trade or total table
-        boolean tablesOk = hasAtLeastOneValidProgramRow(getTrade())
-                        || isProjectTableValid(getTotalNumApplied());
-
-        return radiosOk && tablesOk;
+		 // 1) all 3 YES/NO questions must be answered
+		boolean radiosOk = isCollegeRecognised != null
+		                        && isCollegeRegistered != null
+		                        && isCollegeSla != null;
+		
+		        // 2) at least one valid line in either trade or total table
+		        boolean tablesOk = hasAtLeastOneValidProgramRow(getTrade());
+		
+		        return radiosOk && tablesOk;
     }
 
     // ---- helpers (same pattern used in your other programs) ----

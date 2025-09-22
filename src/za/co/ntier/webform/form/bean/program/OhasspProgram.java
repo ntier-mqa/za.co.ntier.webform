@@ -19,9 +19,10 @@ public class OhasspProgram implements ISaveForm, IProgram {
 
 	public OhasspProgram(X_ZZ_Application_Form applicationForm)  {
 		ColumnInfo<?> colNameProgram = ColumnInfo.getColLabel(ColumnInfo.colNameProgrammeLabel, I_ZZLearnersApplied.COLUMNNAME_Name);
+		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoEmployedLearners);
+		colNoEmployed.setCalTotal(true);
 		healthSafetySkills = ProjectInput.getProject(
-				List.of(colNameProgram,
-						ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoEmployedLearners)));
+				List.of(colNameProgram, colNoEmployed));
 		healthSafetySkills.initProject(applicationForm, 
 				List.of(Map.of(colNameProgram, "Occupational Health and Safety Skills Programmes")));
 	}
@@ -36,8 +37,6 @@ public class OhasspProgram implements ISaveForm, IProgram {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		healthSafetySkills.save(trxName, applicationForm);
-		// update total
-		applicationForm.saveEx(trxName);
 		
 	}
 

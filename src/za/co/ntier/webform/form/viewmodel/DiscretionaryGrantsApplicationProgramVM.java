@@ -604,7 +604,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			uploadDoc.saveForm(trxName, applicationForm);
 		}
 
-		program.saveForm(trxName, applicationForm);
+		program.doSaveForm(trxName, applicationForm);
 		
 		if(!isSave) {
 			applicationForm.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));

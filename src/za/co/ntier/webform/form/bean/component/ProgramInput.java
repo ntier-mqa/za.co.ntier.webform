@@ -139,9 +139,11 @@ public class ProgramInput extends AnnexureInfo {
 	public static List<LearnerInputInfo> convertLearnerInputInfo (List<List<Object>> learnerInputInfoObjs) {
 		List<LearnerInputInfo> learnerInputInfos = new ArrayList<>();
 		
-		for (List<Object> learnerInputInfoObj : learnerInputInfoObjs) {
-			LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
-			learnerInputInfos.add(learnerInputInfo);
+		if (learnerInputInfoObjs != null) {
+			for (List<Object> learnerInputInfoObj : learnerInputInfoObjs) {
+				LearnerInputInfo learnerInputInfo = new LearnerInputInfo(learnerInputInfoObj);
+				learnerInputInfos.add(learnerInputInfo);
+			}
 		}
 		
 		return learnerInputInfos;
@@ -203,6 +205,25 @@ public class ProgramInput extends AnnexureInfo {
 	}
 	
 	
+	static ColumnInfo<?> colNoEmployed;
+	static ColumnInfo<?> colNoUnEmployed;
+	static ColumnInfo<?> colNoLearners;
+	static {
+		colNoEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel
+				, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoEmployedLearners);
+		colNoEmployed.setCalTotal(true);
+		
+		colNoUnEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel
+				, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoUnEmployedLearners);
+		colNoUnEmployed.setCalTotal(true);
+		
+		colNoLearners = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLabel
+				, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoLearners);
+		colNoLearners.setCalTotal(true);
+	}
+	
+	
+	
 	private static ProgramInput getProgramInput(String disciplineType, 
 			X_ZZ_Application_Form applicationForm, 
 			String tableTitle, boolean hasWPAReq, boolean hasAccred) {
@@ -212,13 +233,14 @@ public class ProgramInput extends AnnexureInfo {
 		if ((X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership.equals(disciplineType) ||
 				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership.equals(disciplineType) ||
 				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership.equals(disciplineType))) {
+			
 			titleCol = ColumnInfo.getColLearnerInfo(ColumnInfo.colLearnershipLabel
 					, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Learnerships_ID);
 			columns.add(titleCol);
-			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel
-					, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoEmployedLearners));
-			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel
-					, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoUnEmployedLearners));
+			
+			columns.add(colNoEmployed);
+			
+			columns.add(colNoUnEmployed);
 		}else {
 			if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade.equals(disciplineType)) {
 				titleCol = ColumnInfo.getColLearnerInfo(ColumnInfo.colTradeLabel
@@ -230,8 +252,7 @@ public class ProgramInput extends AnnexureInfo {
 				columns.add(titleCol);
 			}
 			
-			columns.add(ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearnersLabel
-					, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoLearners));
+			columns.add(colNoLearners);
 		}
 		
 		columns.add(ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel
@@ -255,6 +276,7 @@ public class ProgramInput extends AnnexureInfo {
 					, I_ZZ_FormDiscipline.COLUMNNAME_ZZAccredFileName));
 		}
 		ProgramInput projectInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
+		projectInput.setCreateNewRowWhenEmpty(false);
 		
 		BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier = (annexure, appForm) -> {
 			X_ZZ_FormDiscipline po = new X_ZZ_FormDiscipline(Env.getCtx(), 0, appForm.get_TrxName());
