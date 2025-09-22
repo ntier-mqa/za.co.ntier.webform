@@ -8,7 +8,9 @@ import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.AreaData;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.I_ZZLearnersApplied;
 import za.co.ntier.webform.model.X_ZZ_Application_Form;
@@ -24,10 +26,10 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 		ColumnInfo<?> colTotal = ColumnInfo.getColExpression(ColumnInfo.colTotalLearnersLabel, row -> {
 			return Util.sumCol(row, List.of(colNoEmployed, colNoUnEmployed));
 		});
-		
+
 		allLearners = ProjectInput.getProject(
 				List.of(colNoEmployed, colNoUnEmployed, colTotal));
-						
+
 		allLearners.initProject(applicationForm);
 	}
 
@@ -41,7 +43,7 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
 		allLearners.save(trxName, applicationForm);
-		
+
 	}
 
 	/**
@@ -53,76 +55,43 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 
 	@Override
 	public boolean isProgramValid() {
-		if (!(this instanceof ArtisanRPLProgram)) return false;
-	    ArtisanRPLProgram p = (ArtisanRPLProgram) this;
-	    AnnexureInfo allLearners = p.getAllLearners(); // or getAnnexureInfos().get(0)
+		if (allLearners == null || allLearners.getRows() == null) return false;
 
-	    if (allLearners == null) return true;
+		// columns we need
+		ColumnInfo<?> empCol    = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel,    allLearners);
+		ColumnInfo<?> unempCol  = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, allLearners);
+		ColumnInfo<?> postalCol = AnnexureInfo.lookupColByDataType(DataType.Postal, allLearners);
+		ColumnInfo<?> areaCol   = AnnexureInfo.lookupColByDataType(DataType.Area,   allLearners);
 
-	    ColumnInfo<?> learnersCol = findCol(allLearners, "No. of Learners", "Learners", "No Learners");
-	    ColumnInfo<?> postalCol   = findCol(allLearners, "Site Postal Code", "Postal Code");
-	    ColumnInfo<?> areaCol     = findCol(allLearners, "Area");
+		boolean hasAtLeastOneRow = false;
 
-	    if (learnersCol == null || postalCol == null || areaCol == null) return false;
+		for (Map<ColumnInfo<?>, Object> row : allLearners.getRows()) {
+			Integer emp   = AnnexureInfo.getIntegerValue(row, empCol);
+			Integer unemp = AnnexureInfo.getIntegerValue(row, unempCol);
 
-	    int validRows = 0;
-	    for (Map<ColumnInfo<?>, Object> row : allLearners.getRows()) {
-	        Integer learners = getLearners(learnersCol.getDataType(), row.get(learnersCol));
-	        String  postal   = extractPostal(row.get(postalCol));  // like in your dev solution
-	        boolean areaSel  = extractAreaSelected(row.get(areaCol));
+			// A row is "filled" if the user entered any positive learner count
+			boolean started = (emp != null && emp > 0) || (unemp != null && unemp > 0);
+			if (!started) continue;
 
-	        boolean blank = (learners == null && (postal == null || postal.isEmpty()) && !areaSel);
-	        if (blank) continue;
+			hasAtLeastOneRow = true;
 
-	        if (learners == null || learners <= 0) return false;
-	        if (postal == null || postal.isBlank()) return false;
-	        if (!areaSel) return false;
+			// Require BOTH postal and area for any started row
+			String postal = null;
+			Object pObj = row.get(postalCol);
+			if (pObj instanceof PostalData) {
+				postal = ((PostalData) pObj).getPostal();
+			}
+			Object aObj = row.get(areaCol);
+			boolean areaOk = (aObj instanceof AreaData) && ((AreaData) aObj).getSelectedArea() != null;
+			boolean postalOk = postal != null && !postal.trim().isEmpty();
 
-	        validRows++;
-	    }
-	    return validRows >= 1;
-	}
-	
-	private ColumnInfo<?> findCol(AnnexureInfo a, String... aliases) {
-	    for (ColumnInfo<?> c : a.getColumnInfos()) {
-	        String t = (c.getTitle() != null ? c.getTitle() : "").trim().toLowerCase();
-	        for (String alias : aliases) {
-	            if (t.equals(alias.toLowerCase())) return c;
-	        }
-	    }
-	    return null;
-	}
-	
-	private Integer getLearners(DataType dt, Object cell) {
-	    if (cell == null) return null;
-	    switch (dt) {
-	        case PositiveNumber:
-	            // your ZUL uses row[col].value for numbers
-	            try {
-	                Object v = cell.getClass().getMethod("getValue").invoke(cell);
-	                if (v instanceof Number) return ((Number)v).intValue();
-	            } catch (Exception ignore) {}
-	            return null;
-	        case Text:
-	            try {
-	                String s = ((String)cell).trim();
-	                if (s.isEmpty()) return null;
-	                return Integer.parseInt(s);
-	            } catch (Exception e) { return null; }
-	        default:
-	            return null;
-	    }
-	}
-	
-	private String extractPostal(Object postalCell) {
-	    if (postalCell == null) return null;
-	    try { return (String) postalCell.getClass().getMethod("getPostal").invoke(postalCell); }
-	    catch (Exception e) { return postalCell.toString().trim(); }
-	}
-	private boolean extractAreaSelected(Object areaCell) {
-	    if (areaCell == null) return false;
-	    try { return areaCell.getClass().getMethod("getSelectedArea").invoke(areaCell) != null; }
-	    catch (Exception e) { return false; }
+			if (!postalOk || !areaOk) {
+				return false; // missing postal or area ⇒ invalid
+			}
+		}
+
+		// At least one valid row must exist
+		return hasAtLeastOneRow;
 	}
 
 }
