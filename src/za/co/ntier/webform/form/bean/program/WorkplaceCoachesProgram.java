@@ -50,6 +50,8 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 		applicationForm.setZZPlacementWorkplaceCoaches(placementWorkplaceCoaches);
 		applicationForm.setZZTrainingWorkplaceCoaches(trainingWorkplaceCoaches);
 		
+		applicationForm.setZZTotalNumberApplied(trainingWorkplaceCoaches + placementWorkplaceCoaches);
+		
 	}
 	/**
 	 * @return the placementWorkplaces

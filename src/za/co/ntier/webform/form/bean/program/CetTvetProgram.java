@@ -48,7 +48,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		colNoBeneficiaries.setCalTotal(true);
 		ColumnInfo<?> colDiscipline = ColumnInfo.getColText(ColumnInfo.colDisciplineTitle, X_ZZAnnexure.COLUMNNAME_ZZDiscipline);
 		ColumnInfo<?> colTotalNoBeneficiaries = ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalNoBeneficiariesTitle, X_ZZAnnexure.COLUMNNAME_ZZTotalBeneficiaries);
-		colNoBeneficiaries.setCalTotal(true);
+		colTotalNoBeneficiaries.setCalTotal(true);
 		// move from int to free text but data base not yet change because this column is not used anymore
 		//ColumnInfo<?> colProgrammeApply = ColumnInfo.getColText(ColumnInfo.colProgrammeApplyTitle, X_ZZAnnexure.COLUMNNAME_ZZProgramme);
 		ColumnInfo<?> colRequestedProgramme = ColumnInfo.getColText(ColumnInfo.colRequestedProgrammeTitle, X_ZZSubAnnex.COLUMNNAME_ZZRequestedProgramme);

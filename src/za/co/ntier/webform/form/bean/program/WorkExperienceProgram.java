@@ -76,7 +76,7 @@ public class WorkExperienceProgram implements ISaveForm, IProgram {
 		this.setApplicationForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
 		disciplines.save(trxName, applicationForm);
-		applicationForm.setZZTotalNumberApplied(Util.convert(noOfLearners));
+		applicationForm.setZZTotalNumberApplied(applicationForm.getZZTotalNumberApplied() + Util.convert(noOfLearners));
 		
 	}
 
