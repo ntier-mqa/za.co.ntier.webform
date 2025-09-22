@@ -154,11 +154,7 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		return programTitle;
 	}
 
-	@Override
-	public boolean isProgramValid() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+	
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
@@ -211,5 +207,50 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 	public void setStrategy(ProjectInput strategy) {
 		this.strategy = strategy;
 	}
+	
+	@Override
+	public boolean isProgramValid() {
+	    // --- Target Group: need at least one row with a positive number ---
+	    boolean hasTargetRow = false;
+	    if (learnerApplys != null && learnerApplys.getRows() != null) {
+	        for (Map<ColumnInfo<?>, Object> row : learnerApplys.getRows()) {
+	            Integer n = AnnexureInfo.getIntegerValue(row, valueColLearnerApplys);
+	            if (n != null && n > 0) {
+	                hasTargetRow = true;
+	                break;
+	            }
+	        }
+	    }
+
+	    // --- Budget Overview: need at least one row with any meaningful data ---
+	    boolean hasBudgetRow = false;
+	    if (budgetOverview != null && budgetOverview.getRows() != null) {
+	        for (Map<ColumnInfo<?>, Object> row : budgetOverview.getRows()) {
+	            Integer dur      = AnnexureInfo.getIntegerValue(row, budgetColDuration);
+	            Integer learners = AnnexureInfo.getIntegerValue(row, budgetColLearners);
+	            String  name     = (String) row.get(budgetColNameProgram);
+
+	            String postal = null;
+	            Object pObj = row.get(budgetColPostalCode);
+	            if (pObj instanceof za.co.ntier.webform.form.bean.component.PostalData) {
+	                postal = ((za.co.ntier.webform.form.bean.component.PostalData) pObj).getPostal();
+	            }
+
+	            boolean any =
+	                (dur != null && dur > 0) ||
+	                (learners != null && learners > 0) ||
+	                (name != null && !name.trim().isEmpty()) ||
+	                (postal != null && !postal.trim().isEmpty());
+
+	            if (any) {
+	                hasBudgetRow = true;
+	                break;
+	            }
+	        }
+	    }
+
+	    return hasTargetRow && hasBudgetRow;
+	}
+
 
 }
