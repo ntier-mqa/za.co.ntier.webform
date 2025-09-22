@@ -226,19 +226,6 @@ s site
 	/** Get User Name	  */
 	public String getUserName();
 
-    /** Column name Value */
-    public static final String COLUMNNAME_Value = "Value";
-
-	/** Set Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public void setValue (String Value);
-
-	/** Get Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
-	public String getValue();
-
     /** Column name ZZCetTvetCollege_ID */
     public static final String COLUMNNAME_ZZCetTvetCollege_ID = "ZZCetTvetCollege_ID";
 

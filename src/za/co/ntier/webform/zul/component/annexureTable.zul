@@ -49,15 +49,17 @@
               <textbox
                 value="@bind(row[detailCol], save-on='onChanging')"
                 onChanging="@command('notifyProgramComplete')" />
-            </nodom>
-
-            <!-- PositiveNumber (save on change; VM's numChange will notify) -->
-            <nodom if="${detailCol.dataType == DataType.PositiveNumber}">
-              <intbox
-                value="@bind(row[detailCol].value, save-on='onChange')"
-                constraint="no negative"
-                onChange="@command('numChange', annexure = vmAnnexure.component, row = row, col = detailCol )" />
-            </nodom>
+            </nodom>          
+            
+            <!-- PositiveNumber (notify while typing + keep totals update onChange) -->
+			<nodom if="${detailCol.dataType == DataType.PositiveNumber}">
+			  <intbox
+			    value="@bind(row[detailCol].value, save-on='onChanging')"
+			    constraint="no negative"
+			    onChanging="@command('notifyProgramComplete')"
+			    onChange="@command('numChange', annexure = vmAnnexure.component, row = row, col = detailCol )" />
+			</nodom>
+            
 
             <!-- Postal -->
             <nodom if="${detailCol.dataType == DataType.Postal}">

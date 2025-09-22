@@ -32,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250916L;
+	private static final long serialVersionUID = 20250921L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -280,22 +280,6 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 		return (String)get_Value(COLUMNNAME_UserName);
 	}
 
-	/** Set Search Key.
-		@param Value Search key for the record in the format required - must be unique
-	*/
-	public void setValue (String Value)
-	{
-		set_Value (COLUMNNAME_Value, Value);
-	}
-
-	/** Get Search Key.
-		@return Search key for the record in the format required - must be unique
-	  */
-	public String getValue()
-	{
-		return (String)get_Value(COLUMNNAME_Value);
-	}
-
 	public org.compiere.model.I_C_BPartner getZZCetTvetCollege() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
@@ -452,6 +436,14 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public static final String ZZPROGRAMTYPE_INHOUSE_TRAINING = "INHOUSE_TRAINING";
 	/** INTERNSHIP = INTERNSHIP */
 	public static final String ZZPROGRAMTYPE_INTERNSHIP = "INTERNSHIP";
+	/** LEARNING_MATERIALS_DEVELOPMENT = LEARNING_MATERIALS_DEVELOPMENT */
+	public static final String ZZPROGRAMTYPE_LEARNING_MATERIALS_DEVELOPMENT = "LEARNING_MATERIALS_DEVELOPMENT";
+	/** MINING_COMMUNITY = MINING_COMMUNITY */
+	public static final String ZZPROGRAMTYPE_MINING_COMMUNITY = "MINING_COMMUNITY";
+	/** MULTIYEAR_PARTNERSHIP_INTERNSHIP = MULTIYEAR_PARTNERSHIP_INTERNSHIP */
+	public static final String ZZPROGRAMTYPE_MULTIYEAR_PARTNERSHIP_INTERNSHIP = "MULTIYEAR_PARTNERSHIP_INTERNSHIP";
+	/** MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE = MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE */
+	public static final String ZZPROGRAMTYPE_MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE = "MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE";
 	/** NCV_GRADUATES = NCV_GRADUATES */
 	public static final String ZZPROGRAMTYPE_NCV_GRADUATES = "NCV_GRADUATES";
 	/** NON_ARTISAN_DEV = NON_ARTISAN_DEV */
@@ -460,10 +452,20 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public static final String ZZPROGRAMTYPE_NON_ARTISAN_DEV_RPL = "NON_ARTISAN_DEV_RPL";
 	/** OHASSP = OHASSP */
 	public static final String ZZPROGRAMTYPE_OHASSP = "OHASSP";
+	/** SMALL_BUSINESS = SMALL_BUSINESS */
+	public static final String ZZPROGRAMTYPE_SMALL_BUSINESS = "SMALL_BUSINESS";
+	/** STANDARD_SETTING = STANDARD_SETTING */
+	public static final String ZZPROGRAMTYPE_STANDARD_SETTING = "STANDARD_SETTING";
 	/** TVET = TVET */
 	public static final String ZZPROGRAMTYPE_TVET = "TVET";
 	/** TVET_BURSARS = TVET_BURSARS */
 	public static final String ZZPROGRAMTYPE_TVET_BURSARS = "TVET_BURSARS";
+	/** UNEMPLOYED_YOUTH = UNEMPLOYED_YOUTH */
+	public static final String ZZPROGRAMTYPE_UNEMPLOYED_YOUTH = "UNEMPLOYED_YOUTH";
+	/** WORKER_INITIATED_TRAINING = WORKER_INITIATED_TRAINING */
+	public static final String ZZPROGRAMTYPE_WORKER_INITIATED_TRAINING = "WORKER_INITIATED_TRAINING";
+	/** WORKPLACE_COACHES = WORKPLACE_COACHES */
+	public static final String ZZPROGRAMTYPE_WORKPLACE_COACHES = "WORKPLACE_COACHES";
 	/** Set Program Type.
 		@param ZZProgramType Program Type
 	*/
