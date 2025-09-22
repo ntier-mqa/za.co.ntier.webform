@@ -40,11 +40,18 @@ public class AddressInfoVMWrapper extends ComponentVMWrapper<AddressInfo>{
     	component.setProvinceSelected(item); // matches setter signature
         BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
     }
+
+	
 	@Command
-    public void notifyParentCompleteness() {
-        if (getApplicationProgramVM() != null && getNotifyTarget() != null) {
-            org.zkoss.bind.BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
-        }
-    }
+	public void notifyParentCompleteness() {
+	    if (getApplicationProgramVM() != null && getNotifyTarget() != null) {
+	        BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
+	    }
+	    // make the MainButtonComponentVMWrapper re-evaluate next/submit
+	    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
+	}
+	
+
+
 	
 }

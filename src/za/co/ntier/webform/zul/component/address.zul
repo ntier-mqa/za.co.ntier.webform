@@ -49,11 +49,13 @@
 			<label sclass="label"
 			  value="@init(vmAddress.component.postalCodeTitle)" />
 			
+			<!-- Postal code -->
 			<textbox
-			  value="@bind(vmAddress.component.postalCode)
-              @save(vmAddress.component.postalCode, before='onChanging')"
-  			  onChanging="@command('notifyParentCompleteness')"
-			  constraint="/^[0-9]{4,6}$/: Enter a valid postal code"/>
+			  value="@load(vmAddress.component.postalCode)"          
+			  onChanging="@command('fieldChanging', field='postalCode', val=event.value)"
+			  onChange="@command('notifyParentCompleteness')"        
+			  constraint="/^$|^\d{4,6}$/: Enter a valid postal code (4–6 digits)"
+			  maxlength="6"/>
 		</div>
 
 		<div if="${vmAddress.component.showGeographicAddress()}"
