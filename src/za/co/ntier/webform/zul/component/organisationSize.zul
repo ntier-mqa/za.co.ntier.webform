@@ -17,10 +17,12 @@
 			<label value="@init(vmOrgSize.component.numOfEmployerTitle)" />
 		</div>
 		<div sclass="grid-cell">			
+				  
 		<textbox
-				  value="@load(vmOrgSize.component.numOfEmployer)"
-				  onChanging="@command('numEmployerChanging', val=event.value)"
-				  constraint="/^\s*$|^\s*[1-9]\d*\s*$/: Please enter a positive number"/>
+			  value="@bind(vmOrgSize.component.numOfEmployer)
+			         @save(vmOrgSize.component.numOfEmployer, after='onChange')"
+			  onChanging="@command('numEmployerChanging', val=event.value)"
+			  constraint="/^\s*$|^\s*[1-9]\d*\s*$/: Please enter a positive number"/>
 		</div>
 
 
