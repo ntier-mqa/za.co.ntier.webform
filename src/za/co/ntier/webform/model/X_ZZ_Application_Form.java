@@ -32,7 +32,7 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250921L;
+	private static final long serialVersionUID = 20250923L;
 
     /** Standard Constructor */
     public X_ZZ_Application_Form (Properties ctx, int ZZ_Application_Form_ID, String trxName)
@@ -376,6 +376,29 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 		return (String)get_Value(COLUMNNAME_ZZCollegeSla);
 	}
 
+	/** ZZHasPastParticipatedLecturer AD_Reference_ID=319 */
+	public static final int ZZHASPASTPARTICIPATEDLECTURER_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ZZHASPASTPARTICIPATEDLECTURER_No = "N";
+	/** Yes = Y */
+	public static final String ZZHASPASTPARTICIPATEDLECTURER_Yes = "Y";
+	/** Set Has Past Participated Lecturer.
+		@param ZZHasPastParticipatedLecturer Has the institution participated in MQA Lecturer Development Programme in the past years?
+	*/
+	public void setZZHasPastParticipatedLecturer (String ZZHasPastParticipatedLecturer)
+	{
+
+		set_Value (COLUMNNAME_ZZHasPastParticipatedLecturer, ZZHasPastParticipatedLecturer);
+	}
+
+	/** Get Has Past Participated Lecturer.
+		@return Has the institution participated in MQA Lecturer Development Programme in the past years?
+	  */
+	public String getZZHasPastParticipatedLecturer()
+	{
+		return (String)get_Value(COLUMNNAME_ZZHasPastParticipatedLecturer);
+	}
+
 	/** Set No Learners.
 		@param ZZNoLearners Number of learners applying should be based on
 	*/
@@ -432,6 +455,8 @@ public class X_ZZ_Application_Form extends PO implements I_ZZ_Application_Form, 
 	public static final String ZZPROGRAMTYPE_DEV_PROGRAM = "DEV_PROGRAM";
 	/** EXPERIENCE = EXPERIENCE */
 	public static final String ZZPROGRAMTYPE_EXPERIENCE = "EXPERIENCE";
+	/** HET_LECTURE_SUPPORT = HET_LECTURE_SUPPORT */
+	public static final String ZZPROGRAMTYPE_HET_LECTURE_SUPPORT = "HET_LECTURE_SUPPORT";
 	/** INHOUSE_TRAINING = INHOUSE_TRAINING */
 	public static final String ZZPROGRAMTYPE_INHOUSE_TRAINING = "INHOUSE_TRAINING";
 	/** INTERNSHIP = INTERNSHIP */

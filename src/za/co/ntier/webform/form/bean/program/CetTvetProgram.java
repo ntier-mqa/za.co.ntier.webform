@@ -97,6 +97,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET) {
 			
 			identify = "ANNEXURE E";
+			String tabTile = "ANNEXURE A";
 			//cols = List.of(colNoBeneficiaries, colDiscipline);
 			tableTitle = "Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)";
 			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify);
@@ -104,9 +105,11 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			
 			cols = List.of(colFieldStudy, colNoLearners);
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
+			subAnnexure.setTabTitle(tabTile);
 			annexureInfos.add(subAnnexure);
 			
 			identify = "ANNEXURE F";
+			tabTile = "ANNEXURE B";
 			//cols = List.of(colNoBeneficiaries, colProgrammeApply);
 			tableTitle = "TVET Managers receiving training on curriculum related studies";
 			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify);
@@ -114,12 +117,15 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			
 			cols = List.of(colRequestedProgramme, colNoManagers);
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
+			subAnnexure.setTabTitle(tabTile);
 			annexureInfos.add(subAnnexure);
 			
 			identify = "ANNEXURE G";
+			tabTile = "ANNEXURE C";
 			cols = List.of(colTotalNoBeneficiaries);
 			tableTitle = "Number of TVET students requiring Work Integrated Learning to complete their work integrated learning placements (WIL)";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false);
+			subAnnexure.setTabTitle(tabTile);
 			annexureInfos.add(annexure);
 			
 			cols = List.of(colFieldStudy, colNoLearners);
@@ -127,12 +133,15 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			annexure.setSubAnnexure(subAnnexure);
 			
 			identify = "ANNEXURE H";
+			tabTile = "ANNEXURE D";
 			cols = List.of(colTotalNoBeneficiaries);
 			tableTitle = "TVET Lecturers to be awarded bursaries to further their studies";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false);
+			annexure.setTabTitle(tabTile);
 			annexureInfos.add(annexure);
 
 			identify =  "ANNEXURE I";
+			tabTile = "ANNEXURE E";
 			tableTitle = "Lecturers exposed to industry through skills programmes";
 			ColumnInfo<?> colProgrammeApply = ColumnInfo.getColLabel(ColumnInfo.colProgrammeApplyTitle);
 			cols = List.of(colTotalNoBeneficiaries, colProgrammeApply);
@@ -140,7 +149,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 			List<Map<ColumnInfo<?>, Object>> rowTitles = List.of(Map.of(colProgrammeApply, "Occupational Health and Safety"),
 					Map.of(colProgrammeApply, "Other, specify"));
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false, rowTitles, true);
-
+			annexure.setTabTitle(tabTile);
 			annexureInfos.add(annexure);
 
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS) {			

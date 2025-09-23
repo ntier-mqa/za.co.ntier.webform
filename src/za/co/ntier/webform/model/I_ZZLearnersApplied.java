@@ -245,6 +245,59 @@ No. of employed Learners&quot;
 	  */
 	public int getZZNoLearners();
 
+    /** Column name ZZNoLecturesAbsorbed */
+    public static final String COLUMNNAME_ZZNoLecturesAbsorbed = "ZZNoLecturesAbsorbed";
+
+	/** Set No Of Lectures Absorbed	  */
+	public void setZZNoLecturesAbsorbed (int ZZNoLecturesAbsorbed);
+
+	/** Get No Of Lectures Absorbed	  */
+	public int getZZNoLecturesAbsorbed();
+
+    /** Column name ZZNoLecturesAllocated */
+    public static final String COLUMNNAME_ZZNoLecturesAllocated = "ZZNoLecturesAllocated";
+
+	/** Set No Of Lectures Allocated	  */
+	public void setZZNoLecturesAllocated (int ZZNoLecturesAllocated);
+
+	/** Get No Of Lectures Allocated	  */
+	public int getZZNoLecturesAllocated();
+
+    /** Column name ZZNoLecturesCompleted */
+    public static final String COLUMNNAME_ZZNoLecturesCompleted = "ZZNoLecturesCompleted";
+
+	/** Set No Of Lectures Completed.
+	  * Number Of Lectures Completed The Programme
+	  */
+	public void setZZNoLecturesCompleted (int ZZNoLecturesCompleted);
+
+	/** Get No Of Lectures Completed.
+	  * Number Of Lectures Completed The Programme
+	  */
+	public int getZZNoLecturesCompleted();
+
+    /** Column name ZZNoLecturesContinuing */
+    public static final String COLUMNNAME_ZZNoLecturesContinuing = "ZZNoLecturesContinuing";
+
+	/** Set No Of Lectures Continuing.
+	  * Number Of Lectures Continuing The Programme
+	  */
+	public void setZZNoLecturesContinuing (int ZZNoLecturesContinuing);
+
+	/** Get No Of Lectures Continuing.
+	  * Number Of Lectures Continuing The Programme
+	  */
+	public int getZZNoLecturesContinuing();
+
+    /** Column name ZZNoLecturesResigned */
+    public static final String COLUMNNAME_ZZNoLecturesResigned = "ZZNoLecturesResigned";
+
+	/** Set No Of Lectures Resigned	  */
+	public void setZZNoLecturesResigned (int ZZNoLecturesResigned);
+
+	/** Get No Of Lectures Resigned	  */
+	public int getZZNoLecturesResigned();
+
     /** Column name ZZNoTotalLearners */
     public static final String COLUMNNAME_ZZNoTotalLearners = "ZZNoTotalLearners";
 

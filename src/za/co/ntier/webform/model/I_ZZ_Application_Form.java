@@ -276,6 +276,19 @@ s site
 	  */
 	public String getZZCollegeSla();
 
+    /** Column name ZZHasPastParticipatedLecturer */
+    public static final String COLUMNNAME_ZZHasPastParticipatedLecturer = "ZZHasPastParticipatedLecturer";
+
+	/** Set Has Past Participated Lecturer.
+	  * Has the institution participated in MQA Lecturer Development Programme in the past years?
+	  */
+	public void setZZHasPastParticipatedLecturer (String ZZHasPastParticipatedLecturer);
+
+	/** Get Has Past Participated Lecturer.
+	  * Has the institution participated in MQA Lecturer Development Programme in the past years?
+	  */
+	public String getZZHasPastParticipatedLecturer();
+
     /** Column name ZZNoLearners */
     public static final String COLUMNNAME_ZZNoLearners = "ZZNoLearners";
 

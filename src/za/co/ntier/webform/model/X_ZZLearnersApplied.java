@@ -285,6 +285,98 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 		return ii.intValue();
 	}
 
+	/** Set No Of Lectures Absorbed.
+		@param ZZNoLecturesAbsorbed No Of Lectures Absorbed
+	*/
+	public void setZZNoLecturesAbsorbed (int ZZNoLecturesAbsorbed)
+	{
+		set_Value (COLUMNNAME_ZZNoLecturesAbsorbed, Integer.valueOf(ZZNoLecturesAbsorbed));
+	}
+
+	/** Get No Of Lectures Absorbed.
+		@return No Of Lectures Absorbed	  */
+	public int getZZNoLecturesAbsorbed()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLecturesAbsorbed);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set No Of Lectures Allocated.
+		@param ZZNoLecturesAllocated No Of Lectures Allocated
+	*/
+	public void setZZNoLecturesAllocated (int ZZNoLecturesAllocated)
+	{
+		set_Value (COLUMNNAME_ZZNoLecturesAllocated, Integer.valueOf(ZZNoLecturesAllocated));
+	}
+
+	/** Get No Of Lectures Allocated.
+		@return No Of Lectures Allocated	  */
+	public int getZZNoLecturesAllocated()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLecturesAllocated);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set No Of Lectures Completed.
+		@param ZZNoLecturesCompleted Number Of Lectures Completed The Programme
+	*/
+	public void setZZNoLecturesCompleted (int ZZNoLecturesCompleted)
+	{
+		set_Value (COLUMNNAME_ZZNoLecturesCompleted, Integer.valueOf(ZZNoLecturesCompleted));
+	}
+
+	/** Get No Of Lectures Completed.
+		@return Number Of Lectures Completed The Programme
+	  */
+	public int getZZNoLecturesCompleted()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLecturesCompleted);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set No Of Lectures Continuing.
+		@param ZZNoLecturesContinuing Number Of Lectures Continuing The Programme
+	*/
+	public void setZZNoLecturesContinuing (int ZZNoLecturesContinuing)
+	{
+		set_Value (COLUMNNAME_ZZNoLecturesContinuing, Integer.valueOf(ZZNoLecturesContinuing));
+	}
+
+	/** Get No Of Lectures Continuing.
+		@return Number Of Lectures Continuing The Programme
+	  */
+	public int getZZNoLecturesContinuing()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLecturesContinuing);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set No Of Lectures Resigned.
+		@param ZZNoLecturesResigned No Of Lectures Resigned
+	*/
+	public void setZZNoLecturesResigned (int ZZNoLecturesResigned)
+	{
+		set_Value (COLUMNNAME_ZZNoLecturesResigned, Integer.valueOf(ZZNoLecturesResigned));
+	}
+
+	/** Get No Of Lectures Resigned.
+		@return No Of Lectures Resigned	  */
+	public int getZZNoLecturesResigned()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLecturesResigned);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Total No Learners Applied For.
 		@param ZZNoTotalLearners Total No Learners Applied For
 	*/

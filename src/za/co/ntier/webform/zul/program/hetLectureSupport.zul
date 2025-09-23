@@ -4,6 +4,26 @@
 <nodom xmlns:n="native"
 	viewModel="@id('vmHet') @init('za.co.ntier.webform.form.viewmodel.program.HetLectureSupportVMWrapper')">
 	
+	<div sclass="grid-table grid-table-auto-2">
+		<div sclass="grid-cell">
+			<label value="Has the institution participated in MQA Lecturer Development Programme in the past years?" />
+		</div>
+		<div sclass="grid-cell">
+			<radiogroup id="institutionParticipated"
+			    selectedItem="@bind(vmHet.program.institutionParticipatedStr)"
+			    	onCheck="@command('checkInstitutionParticipated')">
+			    <radio label="YES" radiogroup="institutionParticipated" value="Y"/>
+			    <radio label="NO"  radiogroup="institutionParticipated" value="N"/>
+			</radiogroup>
+		</div>
+	</div>
+	
+	<div visible="@load(vmHet.program.showInstitutionParticipated)">
+		<include component="@load(vmHet.program.institutionParticipated)"
+		    applicationProgramVM="@init(vmHet.applicationProgramVM)"
+	        notifyTarget="@init('programComplete')"
+			src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+	</div>
 	<include component="@load(vmHet.program.disciplines)"
 	    applicationProgramVM="@init(vmHet.applicationProgramVM)"
         notifyTarget="@init('programComplete')"
