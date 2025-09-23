@@ -74,6 +74,8 @@ public enum AddressType {
 			return "Contact details of person responsible for Mine Community Development:";
 		else if (programType == ProgramType.UNEMPLOYED_YOUTH)
 			return "Contact details of person responsible for Unemployed Youth Development Programmes:";
+		else if (programType == ProgramType.HET_LECTURE_SUPPORT)
+			return "Contact details of person responsible for HET:";
 		else if (programType == ProgramType.SMALL_BUSINESS)
 			return "Contact details of person responsible for Small Business/Cooperative/NPO/NGO/CBO Support:";
 		else if (programType == ProgramType.WORKER_INITIATED_TRAINING)

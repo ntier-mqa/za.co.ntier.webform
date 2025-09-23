@@ -142,6 +142,13 @@
               <label value="@init(row[detailCol].name)" />
             </nodom>
 
+	        <!-- Date -->	
+			<nodom if="${detailCol.dataType == DataType.Date}">
+              <datebox format="short"
+						valueInLocalDate="@bind(row[detailCol].localDate)" 
+              			/>
+            </nodom>
+            
             <!-- Add Row button -->
             <button sclass="btn-circle addrow"
                     if="${ rowStatus.last and detailColStatus.last and vmAnnexure.component.showAddButton}"

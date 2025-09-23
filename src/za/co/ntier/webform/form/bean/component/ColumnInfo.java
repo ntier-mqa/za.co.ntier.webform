@@ -98,6 +98,12 @@ public class ColumnInfo<T> {
 		return col;
 	}
 
+	public static <T> ColumnInfo<T> getColDate(String title, String daoPropertyName) {
+		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.Date);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
+	
 	public static <T> ColumnInfo<T> getColPostal(String title) {
 		return new ColumnInfo<T>(title, DataType.Postal);
 

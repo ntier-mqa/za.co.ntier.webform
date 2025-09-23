@@ -18,6 +18,7 @@
 package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.model.*;
 
@@ -31,7 +32,7 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250920L;
+	private static final long serialVersionUID = 20250923L;
 
     /** Standard Constructor */
     public X_ZZ_FormDiscipline (Properties ctx, int ZZ_FormDiscipline_ID, String trxName)
@@ -173,6 +174,22 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 		return (String)get_Value(COLUMNNAME_Postal);
 	}
 
+	/** Set Start Date.
+		@param StartDate First effective day (inclusive)
+	*/
+	public void setStartDate (Timestamp StartDate)
+	{
+		set_Value (COLUMNNAME_StartDate, StartDate);
+	}
+
+	/** Get Start Date.
+		@return First effective day (inclusive)
+	  */
+	public Timestamp getStartDate()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_StartDate);
+	}
+
 	/** Set Accred File Name.
 		@param ZZAccredFileName Accred File Name
 	*/
@@ -220,6 +237,25 @@ public class X_ZZ_FormDiscipline extends PO implements I_ZZ_FormDiscipline, I_Pe
 	public int getZZNoLearners()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLearners);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set No Lecture.
+		@param ZZNoLecture Number Of Lecture
+	*/
+	public void setZZNoLecture (int ZZNoLecture)
+	{
+		set_Value (COLUMNNAME_ZZNoLecture, Integer.valueOf(ZZNoLecture));
+	}
+
+	/** Get No Lecture.
+		@return Number Of Lecture
+	  */
+	public int getZZNoLecture()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZNoLecture);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

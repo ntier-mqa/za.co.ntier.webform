@@ -19,11 +19,7 @@ package za.co.ntier.webform.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for ZZ_Program_Disciplines
  *  @author iDempiere (generated)
@@ -35,7 +31,7 @@ public class X_ZZ_Program_Disciplines extends PO implements I_ZZ_Program_Discipl
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250903L;
+	private static final long serialVersionUID = 20250916L;
 
     /** Standard Constructor */
     public X_ZZ_Program_Disciplines (Properties ctx, int ZZ_Program_Disciplines_ID, String trxName)

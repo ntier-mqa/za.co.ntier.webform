@@ -31,7 +31,7 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250920L;
+	private static final long serialVersionUID = 20250923L;
 
     /** Standard Constructor */
     public X_ZZLearnersApplied (Properties ctx, int ZZLearnersApplied_ID, String trxName)

@@ -136,6 +136,19 @@ public interface I_ZZ_FormDiscipline
 	  */
 	public String getPostal();
 
+    /** Column name StartDate */
+    public static final String COLUMNNAME_StartDate = "StartDate";
+
+	/** Set Start Date.
+	  * First effective day (inclusive)
+	  */
+	public void setStartDate (Timestamp StartDate);
+
+	/** Get Start Date.
+	  * First effective day (inclusive)
+	  */
+	public Timestamp getStartDate();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -182,6 +195,19 @@ public interface I_ZZ_FormDiscipline
 	  * Number of learners applying should be based on
 	  */
 	public int getZZNoLearners();
+
+    /** Column name ZZNoLecture */
+    public static final String COLUMNNAME_ZZNoLecture = "ZZNoLecture";
+
+	/** Set No Lecture.
+	  * Number Of Lecture
+	  */
+	public void setZZNoLecture (int ZZNoLecture);
+
+	/** Get No Lecture.
+	  * Number Of Lecture
+	  */
+	public int getZZNoLecture();
 
     /** Column name ZZNoUnEmployedLearners */
     public static final String COLUMNNAME_ZZNoUnEmployedLearners = "ZZNoUnEmployedLearners";

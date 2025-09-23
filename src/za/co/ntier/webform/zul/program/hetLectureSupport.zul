@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmHet') @init('za.co.ntier.webform.form.viewmodel.program.HetLectureSupportVMWrapper')">
+	
+	<include component="@load(vmHet.program.disciplines)"
+	    applicationProgramVM="@init(vmHet.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+</nodom>

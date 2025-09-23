@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -195,6 +196,8 @@ public class AnnexureInfo implements ISaveForm{
 					cellData = new IntData(this, row, null);
 				}else if (columnInfo.getDataType() == DataType.Label) {
 					cellData = new LabelData();
+				}else if (columnInfo.getDataType() == DataType.Date) {
+					cellData = new DateData();
 				}
 
 			}
@@ -493,6 +496,9 @@ public class AnnexureInfo implements ISaveForm{
 						hasCellData = Boolean.TRUE;
 					}
 					cellValueObj = learnerInputID;
+				}else if (col.getDataType() == DataType.Date) {
+					DateData dateData = (DateData)row.get(col);
+					cellValueObj = dateData.getTimestamp();
 				}else if (col.getDataType() == DataType.FileUpload) {
 					UploadData uploadData = (UploadData)row.get(col);
 						
@@ -621,6 +627,9 @@ public class AnnexureInfo implements ISaveForm{
 					}
 				}
 			}
+		}else if (col.getDataType() == DataType.Date) {
+			DateData valueData = (DateData)valueObj;
+			valueData.setLocalDate((Timestamp)value);
 		}else {
 			row.put(col, value);
 		}

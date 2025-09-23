@@ -182,10 +182,21 @@ public class ProgramInput extends AnnexureInfo {
 		return convertLearnerInputInfo(DB.getSQLArrayObjectsEx(null, sql, programMasterDataID, learnershipType));
 	}
 	
+	public static ProgramInput getDisciplines(int programMasterDataID, X_ZZ_Application_Form applicationForm, List<ColumnInfo<?>> cols){
+		Entry<Boolean, Boolean> uploadColCondition = ProgramInput.queryUploadColumnForTrade(programMasterDataID, true);
+		
+		ProgramInput programInput = ProgramInput.getProgramInput(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, 
+				applicationForm, null, uploadColCondition.getKey(), uploadColCondition.getValue(), cols);
+		
+		programInput.iniProgram(applicationForm, programMasterDataID, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
+		return programInput;	
+	}
+	
 	public static ProgramInput getDisciplines(int programMasterDataID, X_ZZ_Application_Form applicationForm, String tableTitle){
 		Entry<Boolean, Boolean> uploadColCondition = ProgramInput.queryUploadColumnForTrade(programMasterDataID, false);
 		
-		ProgramInput programInput = ProgramInput.getProgramInput(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, applicationForm, tableTitle, uploadColCondition.getKey(), uploadColCondition.getValue());
+		ProgramInput programInput = ProgramInput.getProgramInput(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline, applicationForm, 
+				tableTitle, uploadColCondition.getKey(), uploadColCondition.getValue());
 		programInput.iniProgram(applicationForm, programMasterDataID, X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Discipline);
 		return programInput;
 	}
@@ -222,12 +233,13 @@ public class ProgramInput extends AnnexureInfo {
 		colNoLearners.setCalTotal(true);
 	}
 	
-	
-	
 	private static ProgramInput getProgramInput(String disciplineType, 
 			X_ZZ_Application_Form applicationForm, 
 			String tableTitle, boolean hasWPAReq, boolean hasAccred) {
-		
+		return getProgramInput(disciplineType, applicationForm, tableTitle, hasWPAReq, hasAccred, getStandardColumns(disciplineType));
+	}
+	
+	private static List<ColumnInfo<?>> getStandardColumns(String disciplineType) {
 		List<ColumnInfo<?>> columns = new ArrayList<>();
 		ColumnInfo<?> titleCol = null;
 		if ((X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership.equals(disciplineType) ||
@@ -262,6 +274,14 @@ public class ProgramInput extends AnnexureInfo {
 						, MasterUtil.getInitCities()
 						, I_ZZ_FormDiscipline.COLUMNNAME_C_City_ID));
 		
+		return columns;
+	}
+	
+	private static ProgramInput getProgramInput(String disciplineType, 
+			X_ZZ_Application_Form applicationForm, 
+			String tableTitle, boolean hasWPAReq, boolean hasAccred, List<ColumnInfo<?>> columns) {
+		
+		
 		if (hasWPAReq) {
 			columns.add(ColumnInfo.getColFileUpload(ColumnInfo.colWPALabel
 					, ColumnInfo.btWPAText
@@ -275,6 +295,7 @@ public class ProgramInput extends AnnexureInfo {
 					, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_AccredFile
 					, I_ZZ_FormDiscipline.COLUMNNAME_ZZAccredFileName));
 		}
+		
 		ProgramInput projectInput = AnnexureInfo.getAnnexureInfo(ProgramInput.class, columns, true);
 		projectInput.setCreateNewRowWhenEmpty(false);
 		
