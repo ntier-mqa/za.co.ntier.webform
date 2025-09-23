@@ -62,7 +62,7 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		Integer learners = ((IntData)row.get(budgetColLearners)).getValue();
 		if (duration != null && learners != null) {
 			int totalAllocation = (maxMonthlyAllocation - (monthlyStipend * duration)) * learners;
-			return (totalAllocation < 0 ? 0 : totalAllocation) * learners;
+			return totalAllocation < 0 ? 0 : totalAllocation;
 		}else {
 			return null;
 		}

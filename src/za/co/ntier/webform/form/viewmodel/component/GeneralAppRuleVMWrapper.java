@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Init;
@@ -38,15 +39,18 @@ public class GeneralAppRuleVMWrapper extends ComponentVMWrapper<Object>{
 			  			setClient_ID().first();
 	 
 	
-		String despcription = programGenRule.getName();
-		
-		if (despcription != null) {
-			despcription = RegExUtils.removeFirst(despcription, regIndex);
+		if (programGenRule != null) {
+			String despcription = programGenRule.getName();
 			
-			List<String> generalAppRules = List.of(regSplit.split(despcription));
-			
-			setGeneralAppRules(generalAppRules);
+			if (StringUtils.isNotBlank(despcription)) {
+				despcription = RegExUtils.removeFirst(despcription, regIndex);
+				
+				List<String> generalAppRules = List.of(regSplit.split(despcription));
+				
+				setGeneralAppRules(generalAppRules);
+			}
 		}
+		
 	}
 	/**
 	 * @param generalAppRules the generalAppRules to set
