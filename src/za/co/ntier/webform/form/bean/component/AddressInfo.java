@@ -11,6 +11,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.NotifyChange;
 
 import za.co.ntier.webform.form.ISaveForm;
@@ -546,7 +547,6 @@ public class AddressInfo implements ISaveForm {
 	/**
 	 * @param postalCode the postalCode to set
 	 */
-	@NotifyChange({ "areaSelected", "provinceSelected", "areas", "provinces" })
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 
@@ -582,6 +582,8 @@ public class AddressInfo implements ISaveForm {
 
 			provinces = MasterUtil.getRegions();
 		}
+		
+		BindUtils.postNotifyChange(this, "areaSelected", "provinceSelected", "areas", "provinces");
 	}
 
 	/**
