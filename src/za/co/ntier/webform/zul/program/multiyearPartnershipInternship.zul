@@ -3,5 +3,9 @@
 
 <nodom xmlns:n="native"
 	viewModel="@id('vmMpi') @init('za.co.ntier.webform.form.viewmodel.program.MultiyearPartnershipInternshipVMWrapper')">
-
+	
+	<include component="@load(vmMpi.program.learnersApplied)"
+	    applicationProgramVM="@init(vmHet.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
+		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
 </nodom>

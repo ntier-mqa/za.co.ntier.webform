@@ -185,6 +185,19 @@ public interface I_ZZLearnersApplied
 	  */
 	public int getUpdatedBy();
 
+    /** Column name ZZBeneficiaries */
+    public static final String COLUMNNAME_ZZBeneficiaries = "ZZBeneficiaries";
+
+	/** Set Number Of Beneficiaries Applying.
+	  * Number Of Beneficiaries Applying For
+	  */
+	public void setZZBeneficiaries (int ZZBeneficiaries);
+
+	/** Get Number Of Beneficiaries Applying.
+	  * Number Of Beneficiaries Applying For
+	  */
+	public int getZZBeneficiaries();
+
     /** Column name ZZLearnersApplied_ID */
     public static final String COLUMNNAME_ZZLearnersApplied_ID = "ZZLearnersApplied_ID";
 

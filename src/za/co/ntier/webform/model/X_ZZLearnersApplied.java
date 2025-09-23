@@ -211,6 +211,25 @@ public class X_ZZLearnersApplied extends PO implements I_ZZLearnersApplied, I_Pe
 		return (String)get_Value(COLUMNNAME_Postal);
 	}
 
+	/** Set Number Of Beneficiaries Applying.
+		@param ZZBeneficiaries Number Of Beneficiaries Applying For
+	*/
+	public void setZZBeneficiaries (int ZZBeneficiaries)
+	{
+		set_Value (COLUMNNAME_ZZBeneficiaries, Integer.valueOf(ZZBeneficiaries));
+	}
+
+	/** Get Number Of Beneficiaries Applying.
+		@return Number Of Beneficiaries Applying For
+	  */
+	public int getZZBeneficiaries()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ZZBeneficiaries);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Learners Applied.
 		@param ZZLearnersApplied_ID For input &quot;No of Learners applied for&quot;, &quot;No. of Unemployed Learners&quot;,  &quot;Total Number of Learners Applied For&quot;, &quot;No. of employed Learners&quot;
 	*/

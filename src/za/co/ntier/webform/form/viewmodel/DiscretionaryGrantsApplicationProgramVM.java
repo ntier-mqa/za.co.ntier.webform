@@ -55,11 +55,14 @@ import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
 import za.co.ntier.webform.form.bean.program.MedpProgram;
 import za.co.ntier.webform.form.bean.program.MiningCommunityUnemployedYouthProgram;
+import za.co.ntier.webform.form.bean.program.MultiyearPartnershipInternship;
+import za.co.ntier.webform.form.bean.program.MultiyearPartnershipWorkExperience;
 import za.co.ntier.webform.form.bean.program.NcvGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
+import za.co.ntier.webform.form.bean.program.WorkerInitiatedTraining;
 import za.co.ntier.webform.form.bean.program.WorkplaceCoachesProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.model.I_ZZ_Application_Form;
@@ -322,8 +325,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}else if (ProgramType.MINING_COMMUNITY == programType
 				|| ProgramType.UNEMPLOYED_YOUTH == programType) {
 			program = new MiningCommunityUnemployedYouthProgram(menuContextInfo, applicationForm);
-		} else if (ProgramType.HET_LECTURE_SUPPORT == programType) {
+		}else if (ProgramType.HET_LECTURE_SUPPORT == programType) {
 			program = new HetLectureSupport(menuContextInfo, applicationForm);
+		}else if (ProgramType.WORKER_INITIATED_TRAINING == programType) {
+			program = new WorkerInitiatedTraining(menuContextInfo, applicationForm);
+		}else if (ProgramType.MULTIYEAR_PARTNERSHIP_INTERNSHIP == programType) {
+			program = new MultiyearPartnershipInternship(menuContextInfo, applicationForm);
+		}else if (ProgramType.MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE == programType) {
+			program = new MultiyearPartnershipWorkExperience(menuContextInfo, applicationForm);
 		}
 
 		
