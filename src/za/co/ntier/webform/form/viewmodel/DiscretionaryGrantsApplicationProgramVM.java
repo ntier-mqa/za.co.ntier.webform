@@ -389,75 +389,79 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		  "organisationInfo.sdlNumber",
 		  "organisationInfo.siteSDLNumber",
 		  "organisationInfo.postAddressInfo.postalCode",
-		  "organisationInfo.orgSizeInfo.numOfEmployer", 
-		  // orgContact (all required)
+		  "organisationInfo.orgSizeInfo.numOfEmployer",
 		  "organisationInfo.orgContact.nameSiteRepresentative",
 		  "organisationInfo.orgContact.representativeDesignation",
 		  "organisationInfo.orgContact.mobileNumber",
 		  "organisationInfo.orgContact.landlineNumber",
 		  "organisationInfo.orgContact.email",
-
-		  // alternateOrgContact (all required)
 		  "organisationInfo.alternateOrgContact.nameSiteRepresentative",
 		  "organisationInfo.alternateOrgContact.representativeDesignation",
 		  "organisationInfo.alternateOrgContact.mobileNumber",
 		  "organisationInfo.alternateOrgContact.landlineNumber",
 		  "organisationInfo.alternateOrgContact.email"
 		})
-	
-	public boolean isOrganisationComplete() {
-		boolean colOk = true;
-		boolean orgOk = true;
-	    if (programType.isCetTvet()) {
-	    	colOk = organisationInfo.getCetTvetCollegeSelected() != null;
-	    } else {
-	    	 orgOk = notEmpty(organisationInfo.getOrgName())  
-	    			 && notEmpty(organisationInfo.getOrgTaxNumber())
-	    			 && notEmpty(organisationInfo.getOrgRegistrationNumber());
-	    	 Integer n = organisationInfo.getOrgSizeInfo() != null
-	 	            ? organisationInfo.getOrgSizeInfo().getNumOfEmployer()
-	 	            : null;
-	 	     orgOk = orgOk && n != null && n > 0;
-	    }
-	    orgOk = orgOk
-	        && notEmpty(organisationInfo.getSdlNumber())
-	        && notEmpty(organisationInfo.getSiteSDLNumber());	    
-	    
-	    boolean addrOk = (!organisationInfo.getPhysicalAddressInfo().showLineAddress()
-	                      || notEmpty(organisationInfo.getPhysicalAddressInfo().getAddressLine()))
-	        && (!organisationInfo.getPhysicalAddressInfo().showGeographicAddress()
-	                      || notEmpty(organisationInfo.getPhysicalAddressInfo().getPostalCode()));
-	    boolean postalOk = (!organisationInfo.getPostAddressInfo().showPostalAddress()
-                || notEmpty(organisationInfo.getPostAddressInfo().getAddressLine()))
-	    		&& (!organisationInfo.getPostAddressInfo().showGeographicAddress()
-                || notEmpty(organisationInfo.getPostAddressInfo().getPostalCode()));
-	    boolean provincesPhysicalOk = organisationInfo.getPhysicalAddressInfo().getProvinceSelected() != null  &&
-	    		notEmpty(organisationInfo.getPhysicalAddressInfo().getProvinceSelected().getName());
-	    boolean provincesPostalOk = (!organisationInfo.getPostAddressInfo().showPostalAddress()
-	    		|| (organisationInfo.getPostAddressInfo().getProvinceSelected() != null &&
-	    				notEmpty(organisationInfo.getPostAddressInfo().getProvinceSelected().getName())
-	    				));
-	    // orgContact required (only if contact section is shown)
-	    boolean orgContactOk = organisationInfo.getOrgContact() == null
-	    		|| (!organisationInfo.getOrgContact().showContact())
-	        || (notEmpty(organisationInfo.getOrgContact().getNameSiteRepresentative())
-	            && notEmpty(organisationInfo.getOrgContact().getRepresentativeDesignation())
-	            && notEmpty(organisationInfo.getOrgContact().getMobileNumber())
-	            && notEmpty(organisationInfo.getOrgContact().getLandlineNumber())
-	            && notEmpty(organisationInfo.getOrgContact().getEmail()));
+		public boolean isOrganisationComplete() {
+			boolean colOk = true;
+			boolean orgOk = true;
 
-	    // alternateOrgContact required (only if shown)
-	    boolean altContactOk = organisationInfo.getAlternateOrgContact() == null
-	    	||	!organisationInfo.getAlternateOrgContact().showContact()
-	        || (notEmpty(organisationInfo.getAlternateOrgContact().getNameSiteRepresentative())
-	            && notEmpty(organisationInfo.getAlternateOrgContact().getRepresentativeDesignation())
-	            && notEmpty(organisationInfo.getAlternateOrgContact().getMobileNumber())
-	            && notEmpty(organisationInfo.getAlternateOrgContact().getLandlineNumber())
-	            && notEmpty(organisationInfo.getAlternateOrgContact().getEmail()));
-	    return orgOk && addrOk && colOk && postalOk
-	            && provincesPhysicalOk && provincesPostalOk
-	            && orgContactOk && altContactOk;
-	}
+		    if (programType.isCetTvet()) {
+		        colOk = organisationInfo.getCetTvetCollegeSelected() != null;
+		        orgOk = true;
+		    } else {
+		        Integer n = organisationInfo.getOrgSizeInfo() != null
+		                ? organisationInfo.getOrgSizeInfo().getNumOfEmployer()
+		                : null;
+		        orgOk = notEmpty(organisationInfo.getOrgName())
+		             && notEmpty(organisationInfo.getOrgTaxNumber())
+		             && notEmpty(organisationInfo.getOrgRegistrationNumber())
+		             && n != null && n > 0;
+		    }
+
+		    orgOk = orgOk
+		        && notEmpty(organisationInfo.getSdlNumber())
+		        && notEmpty(organisationInfo.getSiteSDLNumber());
+
+		    // Require postalCode + area + province when geographic address is shown
+		    var phys = organisationInfo.getPhysicalAddressInfo();
+		    var post = organisationInfo.getPostAddressInfo();
+
+		    boolean physicalLineOk = !phys.showLineAddress() || notEmpty(phys.getAddressLine());
+		    boolean physicalGeoOk  = !phys.showGeographicAddress()
+		        || (notEmpty(phys.getPostalCode())
+		            && phys.getAreaSelected() != null
+		            && phys.getProvinceSelected() != null);
+
+		    boolean postLineOk = !post.showPostalAddress() || notEmpty(post.getAddressLine());
+		    boolean postGeoOk  = !post.showGeographicAddress()
+		        || (notEmpty(post.getPostalCode())
+		            && post.getAreaSelected() != null
+		            && post.getProvinceSelected() != null);
+
+		    // orgContact required only if shown
+		    boolean orgContactOk = organisationInfo.getOrgContact() == null
+		        || !organisationInfo.getOrgContact().showContact()
+		        || (notEmpty(organisationInfo.getOrgContact().getNameSiteRepresentative())
+		            && notEmpty(organisationInfo.getOrgContact().getRepresentativeDesignation())
+		            && notEmpty(organisationInfo.getOrgContact().getMobileNumber())
+		            && notEmpty(organisationInfo.getOrgContact().getLandlineNumber())
+		            && notEmpty(organisationInfo.getOrgContact().getEmail()));
+
+		    // alternateOrgContact required only if shown
+		    boolean altContactOk = organisationInfo.getAlternateOrgContact() == null
+		        || !organisationInfo.getAlternateOrgContact().showContact()
+		        || (notEmpty(organisationInfo.getAlternateOrgContact().getNameSiteRepresentative())
+		            && notEmpty(organisationInfo.getAlternateOrgContact().getRepresentativeDesignation())
+		            && notEmpty(organisationInfo.getAlternateOrgContact().getMobileNumber())
+		            && notEmpty(organisationInfo.getAlternateOrgContact().getLandlineNumber())
+		            && notEmpty(organisationInfo.getAlternateOrgContact().getEmail()));
+
+		    return colOk && orgOk
+		        && physicalLineOk && physicalGeoOk
+		        && postLineOk     && postGeoOk
+		        && orgContactOk && altContactOk;
+		}
+
 
 	
 	@DependsOn("program") // re-evaluate when program/annexure rows change (notified from table VM)
