@@ -14,11 +14,13 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 public class MultiyearPartnershipWorkExperience implements ISaveForm, IProgram{
 	
 	private ProjectInput learnersApplied;
+	  // keep a field reference to the numeric column so we can read values later
+    private ColumnInfo<?> colLearnersApplied;
 	
 	public MultiyearPartnershipWorkExperience(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		ColumnInfo<?> colLearnersAppliedTitle = ColumnInfo.getColLabel("PROGRAMME"
 				, I_ZZLearnersApplied.COLUMNNAME_Name);
-		ColumnInfo<?> colLearnersApplied = ColumnInfo.getColPositiveNumber("NUMBER OF LEARNERS APPLYING FOR*"
+		colLearnersApplied = ColumnInfo.getColPositiveNumber("NUMBER OF LEARNERS APPLYING FOR*"
 						, I_ZZLearnersApplied.COLUMNNAME_ZZNoLearners);
 		colLearnersApplied.setCalTotal(true);
 		List<ColumnInfo<?>> colLearnersAppliedCols = List.of(colLearnersAppliedTitle, colLearnersApplied);
@@ -49,5 +51,28 @@ public class MultiyearPartnershipWorkExperience implements ISaveForm, IProgram{
 	public void setLearnersApplied(ProjectInput learnersApplied) {
 		this.learnersApplied = learnersApplied;
 	}
+	
+	
+    @Override
+    public boolean isProgramValid() {
+        if (learnersApplied == null || learnersApplied.getRows() == null || colLearnersApplied == null) return false;
+
+        // return true if any row has a number > 0
+        for (Map<ColumnInfo<?>, Object> row : learnersApplied.getRows()) {
+            Integer v = getInt(row.get(colLearnersApplied));
+            if (v != null && v > 0) return true;
+        }
+        return false;
+    }
+
+    // Null-safe extractor for your IntData cell objects
+    private static Integer getInt(Object cell) {
+        if (cell == null) return null;
+        try {
+            Object v = cell.getClass().getMethod("getValue").invoke(cell);
+            if (v instanceof Number) return ((Number) v).intValue();
+        } catch (Exception ignore) {}
+        return null;
+    }
 
 }
