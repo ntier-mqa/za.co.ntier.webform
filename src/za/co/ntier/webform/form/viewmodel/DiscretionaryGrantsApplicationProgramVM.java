@@ -457,7 +457,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		            && notEmpty(organisationInfo.getOrgContact().getRepresentativeDesignation())
 		            && notEmpty(organisationInfo.getOrgContact().getMobileNumber())
 		            && notEmpty(organisationInfo.getOrgContact().getLandlineNumber())
-		            && notEmpty(organisationInfo.getOrgContact().getEmail()));
+		            && isEmail(organisationInfo.getOrgContact().getEmail())); 
 
 		    // alternateOrgContact required only if shown
 		    boolean altContactOk = organisationInfo.getAlternateOrgContact() == null
@@ -466,7 +466,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		            && notEmpty(organisationInfo.getAlternateOrgContact().getRepresentativeDesignation())
 		            && notEmpty(organisationInfo.getAlternateOrgContact().getMobileNumber())
 		            && notEmpty(organisationInfo.getAlternateOrgContact().getLandlineNumber())
-		            && notEmpty(organisationInfo.getAlternateOrgContact().getEmail()));
+		            && isEmail(organisationInfo.getAlternateOrgContact().getEmail()));
 
 		    return colOk && orgOk
 		        && physicalLineOk && physicalGeoOk
