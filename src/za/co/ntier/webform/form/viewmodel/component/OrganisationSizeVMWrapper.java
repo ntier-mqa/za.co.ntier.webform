@@ -21,15 +21,11 @@ public class OrganisationSizeVMWrapper extends ComponentVMWrapper<OrganisationSi
 	// OrganisationSizeVMWrapper.java
 	@Command
 	public void numEmployerChanging(@BindingParam("val") String val) {
-	    Integer n = null;
-	    try {
-	        String s = (val == null ? "" : val.trim());
-	        n = s.isEmpty() ? null : Integer.valueOf(s);
-	    } catch (NumberFormatException ignore) {
-	        n = null; // invalid while typing => treat as null
-	    }
+		
+		Integer v = (val == null || val.trim().isEmpty()) ? null : Integer.valueOf(val.trim());
+	   
+	    component.setNumOfEmployer(v);  // v can be 0
 
-	    component.setNumOfEmployer(n);
 
 	    // 1) Re-evaluate the Organisation tab completeness (Next button state)
 	    BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), "organisationComplete");
@@ -37,5 +33,9 @@ public class OrganisationSizeVMWrapper extends ComponentVMWrapper<OrganisationSi
 	    // 2) Also broadcast so any toolbar / main buttons re-check immediately
 	    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 	}
+	
+	
 
+	
+	
 }

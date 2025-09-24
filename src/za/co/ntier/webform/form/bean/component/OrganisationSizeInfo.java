@@ -29,11 +29,13 @@ public class OrganisationSizeInfo implements ISaveForm {
 	/**
 	 * @return the numOfEmployer
 	 */
+	/*
 	public Integer getNumOfEmployer() {
 		if (numOfEmployer == null || numOfEmployer == 0)
 			return null;
 		return numOfEmployer;
 	}
+	*/
 
 	/**
 	 * @return the numOfEmployerTitle
@@ -91,12 +93,21 @@ public class OrganisationSizeInfo implements ISaveForm {
 	/**
 	 * @param numOfEmployer the numOfEmployer to set
 	 */
+	/*
 	public void setNumOfEmployer(Integer numOfEmployer) {
 		if (numOfEmployer == null ||numOfEmployer == 0)
 			this.numOfEmployer = null;
 		else
 			this.numOfEmployer = numOfEmployer;
 	}
+	*/
+	
+	public void setNumOfEmployer(Integer v) {
+	    // ❌ don't do: if (v == null || v <= 0) this.numOfEmployer = null;
+	    this.numOfEmployer = v;      // keep 0 as 0
+	}
+	public Integer getNumOfEmployer() { return numOfEmployer; }
+
 
 	/**
 	 * @param numOfEmployerTitle the numOfEmployerTitle to set

@@ -427,7 +427,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		        orgOk = notEmpty(organisationInfo.getOrgName())
 		             && notEmpty(organisationInfo.getOrgTaxNumber())
 		             && notEmpty(organisationInfo.getOrgRegistrationNumber())
-		             && n != null && n > 0;
+		             && n != null; // 0 is allowed
 		    }
 
 		    orgOk = orgOk
