@@ -13,6 +13,8 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class MultiyearPartnershipInternship implements ISaveForm, IProgram{
 	private ProjectInput learnersApplied;
+	// keep a handle to the numeric column so we can read its total
+    private ColumnInfo<?> colLearnersApplied;
 	
 	public ProjectInput getLearnersApplied() {
 		return learnersApplied;
@@ -25,7 +27,7 @@ public class MultiyearPartnershipInternship implements ISaveForm, IProgram{
 	public MultiyearPartnershipInternship(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		ColumnInfo<?> colLearnersAppliedTitle = ColumnInfo.getColLabel("PROGRAMME"
 				, I_ZZLearnersApplied.COLUMNNAME_Name);
-		ColumnInfo<?> colLearnersApplied = ColumnInfo.getColPositiveNumber("NUMBER OF LEARNERS APPLYING FOR*"
+		colLearnersApplied = ColumnInfo.getColPositiveNumber("NUMBER OF LEARNERS APPLYING FOR*"
 						, I_ZZLearnersApplied.COLUMNNAME_ZZNoLearners);
 		colLearnersApplied.setCalTotal(true);
 		List<ColumnInfo<?>> colLearnersAppliedCols = List.of(colLearnersAppliedTitle, colLearnersApplied);
@@ -43,5 +45,22 @@ public class MultiyearPartnershipInternship implements ISaveForm, IProgram{
 		
 	}
 	
+    @Override
+    public boolean isProgramValid() {
+        if (learnersApplied == null || colLearnersApplied == null) return false;
+        Object totalCell = learnersApplied.getTotalRow().get(colLearnersApplied);
+        Integer total = getIntValue(totalCell);        // read IntData.value safely
+        return total != null && total > 0;             // NEXT only when > 0
+    }
+
+    // Helper: works with IntData-style cells (has getValue()), and null-safe.
+    private static Integer getIntValue(Object cell) {
+        if (cell == null) return null;
+        try {
+            Object v = cell.getClass().getMethod("getValue").invoke(cell);
+            if (v instanceof Number) return ((Number) v).intValue();
+        } catch (Exception ignore) {}
+        return null;
+    }
 	
 }
