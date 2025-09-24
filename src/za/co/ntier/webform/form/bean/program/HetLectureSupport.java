@@ -50,7 +50,7 @@ public class HetLectureSupport  implements ISaveForm, IProgram {
 		institutionParticipated.initProject(applicationForm);
 
 		titleCol = ColumnInfo.getColLearnerInfo("MINING DISCIPLINES"
-				, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Learnerships_ID);
+				, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Disciplines_ID);
 
 		colNoLecture = ColumnInfo.getColPositiveNumber("NUMBER OF LECTURERS"
 				, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoLecture);
