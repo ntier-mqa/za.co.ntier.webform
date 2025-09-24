@@ -45,22 +45,31 @@ public class MultiyearPartnershipInternship implements ISaveForm, IProgram{
 		
 	}
 	
-    @Override
-    public boolean isProgramValid() {
-        if (learnersApplied == null || colLearnersApplied == null) return false;
-        Object totalCell = learnersApplied.getTotalRow().get(colLearnersApplied);
-        Integer total = getIntValue(totalCell);        // read IntData.value safely
-        return total != null && total > 0;             // NEXT only when > 0
-    }
+	@Override
+	public boolean isProgramValid() {
+	    if (learnersApplied == null || colLearnersApplied == null) return false;
+	    int total = sumCol(learnersApplied, colLearnersApplied);
+	    return total > 0; // enable Next only when > 0
+	}
 
-    // Helper: works with IntData-style cells (has getValue()), and null-safe.
-    private static Integer getIntValue(Object cell) {
-        if (cell == null) return null;
-        try {
-            Object v = cell.getClass().getMethod("getValue").invoke(cell);
-            if (v instanceof Number) return ((Number) v).intValue();
-        } catch (Exception ignore) {}
-        return null;
-    }
+	private static int sumCol(ProjectInput table, ColumnInfo<?> col) {
+	    if (table == null) return 0;
+	    int total = 0;
+	    for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
+	        Integer v = getIntValue(row.get(col));
+	        if (v != null) total += v;
+	    }
+	    return total;
+	}
+
+	private static Integer getIntValue(Object cell) {
+	    if (cell == null) return null;
+	    try {
+	        Object v = cell.getClass().getMethod("getValue").invoke(cell); // works for IntData
+	        if (v instanceof Number) return ((Number) v).intValue();
+	    } catch (Exception ignore) {}
+	    return null;
+	}
+
 	
 }
