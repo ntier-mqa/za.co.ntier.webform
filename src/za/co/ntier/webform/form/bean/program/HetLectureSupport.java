@@ -2,7 +2,6 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -10,6 +9,7 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
@@ -151,7 +151,7 @@ public class HetLectureSupport  implements ISaveForm, IProgram {
 	private boolean isDisciplineRowComplete(java.util.Map<ColumnInfo<?>, Object> row) {
 	    boolean hasDiscipline = row.get(titleCol) != null;
 
-	    Integer nLect = getInt(row.get(colNoLecture));
+	    Integer nLect = Util.getInt(row.get(colNoLecture));
 	    boolean hasLecturers = nLect != null && nLect > 0;
 
 	    boolean hasDate = hasDateValue(row.get(colStartDate));
@@ -159,28 +159,6 @@ public class HetLectureSupport  implements ISaveForm, IProgram {
 	    return hasDiscipline && hasLecturers && hasDate;
 	}
 
-	// Extract Integer from whatever the table stores (IntData/Number/String/etc.)
-	private Integer getInt(Object cell) {
-		if (cell == null) return null;
-		try {
-			// IntData style: has getValue()
-			var m = cell.getClass().getMethod("getValue");
-			Object v = m.invoke(cell);
-			if (v instanceof Number) return ((Number) v).intValue();
-			if (v instanceof String) {
-				String s = ((String) v).trim();
-				return s.isEmpty() ? null : Integer.valueOf(s);
-			}
-		} catch (NoSuchMethodException ignore) {
-			// fall through and try common shapes
-			if (cell instanceof Number) return ((Number) cell).intValue();
-			if (cell instanceof String) {
-				String s = ((String) cell).trim();
-				return s.isEmpty() ? null : Integer.valueOf(s);
-			}
-		} catch (Exception ignore) { /* swallow and return null */ }
-		return null;
-	}
 
 	/** True iff every column in cols has a non-null integer in the FIRST row of the ProjectInput */
 	private boolean allNumbersPresent(ProjectInput pi, java.util.List<ColumnInfo<?>> cols) {
@@ -188,7 +166,7 @@ public class HetLectureSupport  implements ISaveForm, IProgram {
 		@SuppressWarnings("unchecked")
 		java.util.Map<ColumnInfo<?>, Object> row = (java.util.Map<ColumnInfo<?>, Object>) pi.getRows().get(0);
 		for (ColumnInfo<?> c : cols) {
-			Integer v = getInt(row.get(c));
+			Integer v = Util.getInt(row.get(c));
 			if (v == null) return false;   // (if you require >0, use: if (v==null || v<=0) return false;)
 		}
 		return true;

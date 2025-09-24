@@ -6,6 +6,7 @@ import java.util.Map;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.I_ZZLearnersApplied;
@@ -56,19 +57,10 @@ public class MultiyearPartnershipInternship implements ISaveForm, IProgram{
 	    if (table == null) return 0;
 	    int total = 0;
 	    for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
-	        Integer v = getIntValue(row.get(col));
+	        Integer v = Util.getInt(row.get(col));
 	        if (v != null) total += v;
 	    }
 	    return total;
-	}
-
-	private static Integer getIntValue(Object cell) {
-	    if (cell == null) return null;
-	    try {
-	        Object v = cell.getClass().getMethod("getValue").invoke(cell); // works for IntData
-	        if (v instanceof Number) return ((Number) v).intValue();
-	    } catch (Exception ignore) {}
-	    return null;
 	}
 
 	

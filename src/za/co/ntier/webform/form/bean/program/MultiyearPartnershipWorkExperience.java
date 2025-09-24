@@ -6,6 +6,7 @@ import java.util.Map;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.I_ZZLearnersApplied;
@@ -59,20 +60,12 @@ public class MultiyearPartnershipWorkExperience implements ISaveForm, IProgram{
 
         // return true if any row has a number > 0
         for (Map<ColumnInfo<?>, Object> row : learnersApplied.getRows()) {
-            Integer v = getInt(row.get(colLearnersApplied));
+            Integer v = Util.getInt(row.get(colLearnersApplied));
             if (v != null && v > 0) return true;
         }
         return false;
     }
 
-    // Null-safe extractor for your IntData cell objects
-    private static Integer getInt(Object cell) {
-        if (cell == null) return null;
-        try {
-            Object v = cell.getClass().getMethod("getValue").invoke(cell);
-            if (v instanceof Number) return ((Number) v).intValue();
-        } catch (Exception ignore) {}
-        return null;
-    }
+   
 
 }

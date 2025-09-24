@@ -6,8 +6,7 @@ import java.util.Map;
 import za.co.ntier.webform.form.IProgram;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.form.bean.component.AnnexureInfo;
-import za.co.ntier.webform.form.bean.component.CetTvetMultiLineInput;
+import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.model.I_ZZLearnersApplied;
@@ -15,11 +14,12 @@ import za.co.ntier.webform.model.X_ZZ_Application_Form;
 
 public class WorkerInitiatedTraining implements ISaveForm, IProgram{
 	private ProjectInput beneficiarie;
+	private ColumnInfo<?> colBeneficiarie; // keep reference
 	
 	public WorkerInitiatedTraining(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		ColumnInfo<?> colBeneficiarieTitle = ColumnInfo.getColLabel("Types of Training intervention(s) identified by the union as relevant and required programmes identified in the training gap analysis"
 							, I_ZZLearnersApplied.COLUMNNAME_Name);
-		ColumnInfo<?> colBeneficiarie = ColumnInfo.getColPositiveNumber("Number of people applying for per intervention* (Insert the number of beneficiaries applying for per training intervention)"
+		colBeneficiarie = ColumnInfo.getColPositiveNumber("Number of people applying for per intervention* (Insert the number of beneficiaries applying for per training intervention)"
 							, I_ZZLearnersApplied.COLUMNNAME_ZZBeneficiaries);
 		colBeneficiarie.setCalTotal(true);
 		List<ColumnInfo<?>> beneficiarieCols = List.of(colBeneficiarieTitle, colBeneficiarie);
@@ -52,5 +52,20 @@ public class WorkerInitiatedTraining implements ISaveForm, IProgram{
 	public void setBeneficiarie(ProjectInput beneficiarie) {
 		this.beneficiarie = beneficiarie;
 	}
+	
+	  // ===== Mandatory rule =====
+    @Override
+    public boolean isProgramValid() {
+        if (beneficiarie == null || beneficiarie.getRows() == null || colBeneficiarie == null) return false;
+
+        // TRUE if any row has beneficiaries > 0
+        for (Map<ColumnInfo<?>, Object> row : beneficiarie.getRows()) {
+            Integer v = Util.getInt(row.get(colBeneficiarie));
+            if (v != null && v > 0) return true;
+        }
+        return false;
+    }
+
+    
 
 }

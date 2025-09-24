@@ -67,4 +67,28 @@ public class Util {
 		
 		return converted;
 	}
+	
+	public static Integer getInt(Object cell) {
+	    if (cell == null) return null;
+	    try {
+	        Object v = cell.getClass().getMethod("getValue").invoke(cell);
+	        if (v instanceof Number) return ((Number) v).intValue();
+	        if (v instanceof String) {
+	            String s = ((String) v).trim();
+	            if (s.isEmpty()) return null;
+	            try { return Integer.valueOf(s); } catch (NumberFormatException ignore) { return null; }
+	        }
+	    } catch (NoSuchMethodException e) {
+	        if (cell instanceof Number) return ((Number) cell).intValue();
+	        if (cell instanceof String) {
+	            String s = ((String) cell).trim();
+	            if (s.isEmpty()) return null;
+	            try { return Integer.valueOf(s); } catch (NumberFormatException ignore) { return null; }
+	        }
+	    } catch (Exception ignore) {
+	        // reflection failures etc.
+	    }
+	    return null;
+	}
+
 }
