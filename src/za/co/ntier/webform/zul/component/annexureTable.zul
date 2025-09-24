@@ -142,12 +142,13 @@
               <label value="@init(row[detailCol].name)" />
             </nodom>
 
-	        <!-- Date -->	
+            <!-- Date -->
 			<nodom if="${detailCol.dataType == DataType.Date}">
-              <datebox format="short"
-						valueInLocalDate="@bind(row[detailCol].localDate)" 
-              			/>
-            </nodom>
+			  <datebox format="short"
+			           valueInLocalDate="@bind(row[detailCol].localDate)"
+			           onChange="@command('notifyProgramComplete')" />
+			</nodom>
+            
             
             <!-- Add Row button -->
             <button sclass="btn-circle addrow"

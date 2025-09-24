@@ -10,8 +10,11 @@ import za.co.ntier.webform.form.bean.program.HetLectureSupport;
 
 @Init(superclass = true)
 public class HetLectureSupportVMWrapper extends ProgramVMWrapper<HetLectureSupport> {
-	@Command
-	public void checkInstitutionParticipated(@ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) {
-		getProgram().checkInstitutionParticipated(event);
-	}
+    @Command
+    public void checkInstitutionParticipated(@ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) {
+        getProgram().checkInstitutionParticipated(event);
+        // re-check the Program gate immediately (enables/disables Program Next)
+        org.zkoss.bind.BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), "programComplete");
+    }
 }
+

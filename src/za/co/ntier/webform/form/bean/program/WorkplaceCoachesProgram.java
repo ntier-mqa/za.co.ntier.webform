@@ -78,13 +78,14 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 		this.trainingtWorkplaces = trainingtWorkplaces;
 	}
 	
-	@Override
 	public boolean isProgramValid() {
-		Integer d1 = placementWorkplaceCoaches;
+	    Integer d1 = placementWorkplaceCoaches;
 	    Integer d2 = trainingWorkplaceCoaches;
-	    // example rule: both required and > 0
-	    return d1 != null && d1 > 0 && d2 != null && d2 > 0;
-	    // or: at least one > 0 -> return (nvl(d1,0) + nvl(d2,0)) > 0;
+	    return (v(d1) + v(d2)) > 0; // at least one > 0
+	    // If BOTH must be > 0 instead, use:
+	    // return v(d1) > 0 && v(d2) > 0;
 	}
+
+	private static int v(Integer x) { return x == null ? 0 : x; }
 
 }
