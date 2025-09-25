@@ -43,6 +43,14 @@
             <nodom if="${detailCol.dataType == DataType.Label}">
               <label value="@load(row[detailCol].value)" />
             </nodom>
+            
+            <nodom if="${detailCol.dataType == DataType.Radio}">
+              	<radiogroup
+			    		selectedItem="@bind(row[detailCol])">
+			    	<radio label="YES" value="Y"/>
+			    	<radio label="NO"  value="N"/>
+				</radiogroup>
+            </nodom>
 
             <!-- Text (save on blur/Enter + notify once) -->
 			<nodom if="${detailCol.dataType == DataType.Text}">

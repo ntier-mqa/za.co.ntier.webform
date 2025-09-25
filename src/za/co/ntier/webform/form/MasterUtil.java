@@ -26,11 +26,11 @@ import org.compiere.util.KeyNamePair;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.model.I_ZZAnnexure;
-import za.co.ntier.webform.model.I_ZZSubAnnex;
-import za.co.ntier.webform.model.X_ZZAnnexure;
-import za.co.ntier.webform.model.X_ZZSubAnnex;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZAnnexure;
+import za.co.ntier.api.model.I_ZZSubAnnex;
+import za.co.ntier.api.model.X_ZZAnnexure;
+import za.co.ntier.api.model.X_ZZSubAnnex;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class MasterUtil {
 	public static final List<KeyNamePair> districtMunicipalities;

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
@@ -15,25 +14,20 @@ import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
-import za.co.ntier.webform.model.X_ZZAnnexure;
-import za.co.ntier.webform.model.X_ZZSubAnnex;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZAnnexure;
+import za.co.ntier.api.model.X_ZZSubAnnex;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class CetTvetProgram implements ISaveForm, IProgram {
+public class CetTvetProgram extends AbstractProgram {
 	private AddressInfo addressInfo;
 
 	private List<AnnexureInfo> annexureInfos;
-	private X_ZZ_Application_Form applicationForm;
-
-	private MenuContextInfo menuContextInfo;
-
-	
 	
 	private List<LearnerInputInfo> tradeInfo;
 	
 	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
-		this.setMenuContextInfo(menuContextInfo);
-		this.applicationForm = applicationForm;
+		super(menuContextInfo, applicationForm);
+		
 		
 		annexureInfos = new ArrayList<>();
 		CetTvetOneLineInput annexure = null;
@@ -180,23 +174,13 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		return annexureInfos;
 	}
 	
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
 	
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
-
 	public List<LearnerInputInfo> getTradeInfo() {
 		return tradeInfo;
 	}
 
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
+		setApplicationForm(applicationForm);
 		if (addressInfo != null) {
 			addressInfo.initComponent(applicationForm);
 		}
@@ -204,7 +188,7 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
+		super.saveForm(applicationForm);
 		for (AnnexureInfo annexure : annexureInfos) {
 			annexure.save(trxName, applicationForm);
 			
@@ -232,16 +216,6 @@ public class CetTvetProgram implements ISaveForm, IProgram {
 		this.annexureInfos = annexureInfos;
 	}
 	
-	/**
-	 * @param applicationForm the applicationForm to set
-	 */
-	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
-	}
-
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
 
 	public void setTradeInfo(List<LearnerInputInfo> tradeInfo) {
 		this.tradeInfo = tradeInfo;

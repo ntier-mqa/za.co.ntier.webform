@@ -6,19 +6,18 @@ import java.util.List;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.CheckEvent;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.webform.model.I_ZZLearnersApplied;
-import za.co.ntier.webform.model.I_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.I_ZZ_FormDiscipline;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_FormDiscipline;
 
-public class HetLectureSupport  implements ISaveForm, IProgram {
+public class HetLectureSupport  extends AbstractProgram {
 	private ProgramInput disciplines;
 	private String institutionParticipatedStr = null;
 	private ProjectInput institutionParticipated;
@@ -31,6 +30,7 @@ public class HetLectureSupport  implements ISaveForm, IProgram {
 	}
 
 	public HetLectureSupport(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		super(menuContextInfo, applicationForm);
 		List<ColumnInfo<?>> cols = new ArrayList<>();
 
 		noLectureAllocated = ColumnInfo.getColPositiveNumber("No. of Lectures Allocated", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesAllocated);
@@ -91,6 +91,7 @@ public class HetLectureSupport  implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		super.saveForm(applicationForm);
 		applicationForm.setZZHasPastParticipatedLecturer(institutionParticipatedStr);
 		institutionParticipated.save(trxName, applicationForm);
 		disciplines.save(trxName, applicationForm);

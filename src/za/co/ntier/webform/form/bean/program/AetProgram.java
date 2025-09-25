@@ -2,8 +2,7 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.util.Map;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AreaData;
@@ -11,13 +10,14 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_FormDiscipline;
 
-public class AetProgram implements ISaveForm, IProgram {
+public class AetProgram extends AbstractProgram {
 	private ProgramInput aetLearnership;
 
 	public AetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		super(menuContextInfo, applicationForm);
 		aetLearnership = ProgramInput.getLearnership(X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_AETLearnership,
 				applicationForm,
 				menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()
@@ -34,6 +34,7 @@ public class AetProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
+		super.saveForm(applicationForm);
 		aetLearnership.save(trxName, applicationForm);
 		
 	}

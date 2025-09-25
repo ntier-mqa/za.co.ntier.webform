@@ -7,8 +7,8 @@ import java.util.Map;
 import org.compiere.model.MTable;
 import org.compiere.util.Env;
 
-import za.co.ntier.webform.model.I_ZZDocumentUpload;
-import za.co.ntier.webform.model.X_ZZDocumentUpload;
+import za.co.ntier.api.model.I_ZZDocumentUpload;
+import za.co.ntier.api.model.X_ZZDocumentUpload;
 
 public class UploadInput extends AnnexureInfo {
 	public static UploadInput getUploadInput(int programMasterDataID){

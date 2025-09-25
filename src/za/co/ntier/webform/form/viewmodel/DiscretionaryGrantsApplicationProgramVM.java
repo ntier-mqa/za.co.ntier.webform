@@ -32,7 +32,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Tabbox;
 
-import za.co.ntier.webform.form.IProgram;
+import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.DataType;
@@ -53,6 +53,7 @@ import za.co.ntier.webform.form.bean.program.CetTvetProgram;
 import za.co.ntier.webform.form.bean.program.HetLectureSupport;
 import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
+import za.co.ntier.webform.form.bean.program.LearningMaterialsDevelopment;
 import za.co.ntier.webform.form.bean.program.MedpProgram;
 import za.co.ntier.webform.form.bean.program.MiningCommunityUnemployedYouthProgram;
 import za.co.ntier.webform.form.bean.program.MultiyearPartnershipInternship;
@@ -61,12 +62,14 @@ import za.co.ntier.webform.form.bean.program.NcvGraduatesProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevProgram;
 import za.co.ntier.webform.form.bean.program.NonArtisanDevRPLProgram;
 import za.co.ntier.webform.form.bean.program.OhasspProgram;
+import za.co.ntier.webform.form.bean.program.SmallBusiness;
+import za.co.ntier.webform.form.bean.program.StandardSetting;
 import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.bean.program.WorkerInitiatedTraining;
 import za.co.ntier.webform.form.bean.program.WorkplaceCoachesProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
-import za.co.ntier.webform.model.I_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class DiscretionaryGrantsApplicationProgramVM {
 	public class EmailPoInfo extends GenericPO {
@@ -131,7 +134,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	private OrganisationInfo organisationInfo;
 
-	private IProgram program;
+	private AbstractProgram program;
 
 	private AddressInfo programContact;
 
@@ -233,7 +236,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	/**
 	 * @return the program
 	 */
-	public IProgram getProgram() {
+	public AbstractProgram getProgram() {
 		return program;
 	}
 
@@ -299,15 +302,15 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		} else if (ProgramType.EXPERIENCE == programType) {
 			setProgram(new WorkExperienceProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.DEV_PROGRAM == programType) {
-			setProgram(new MedpProgram(applicationForm));
+			setProgram(new MedpProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.ARTISAN_AIDES == programType) {
-			setProgram(new ArtisanAidesProgram(applicationForm));
+			setProgram(new ArtisanAidesProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.ARTISAN_DEV == programType) {
 			setProgram(new ArtisanDevProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.CENTRE_SPECIALISATION == programType) {
 			setProgram(new CentreOfSpecialisationProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.ARTISAN_RPL == programType) {
-			setProgram(new ArtisanRPLProgram(applicationForm));
+			setProgram(new ArtisanRPLProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.NON_ARTISAN_DEV == programType) {
 			setProgram(new NonArtisanDevProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.NON_ARTISAN_DEV_RPL == programType) {
@@ -317,11 +320,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		} else if (ProgramType.AET == programType) {
 			setProgram(new AetProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.OHASSP == programType) {
-			setProgram(new OhasspProgram(applicationForm));
+			setProgram(new OhasspProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.INHOUSE_TRAINING == programType) {
-			setProgram(new InhouseTrainingProgram(applicationForm));
+			setProgram(new InhouseTrainingProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.WORKPLACE_COACHES == programType) {
-			setProgram(new WorkplaceCoachesProgram(applicationForm));
+			setProgram(new WorkplaceCoachesProgram(menuContextInfo, applicationForm));
 		}else if (ProgramType.MINING_COMMUNITY == programType
 				|| ProgramType.UNEMPLOYED_YOUTH == programType) {
 			program = new MiningCommunityUnemployedYouthProgram(menuContextInfo, applicationForm);
@@ -333,6 +336,12 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			program = new MultiyearPartnershipInternship(menuContextInfo, applicationForm);
 		}else if (ProgramType.MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE == programType) {
 			program = new MultiyearPartnershipWorkExperience(menuContextInfo, applicationForm);
+		}else if (ProgramType.STANDARD_SETTING == programType) {
+			program = new StandardSetting(menuContextInfo, applicationForm);
+		}else if (ProgramType.SMALL_BUSINESS == programType) {
+			program = new SmallBusiness(menuContextInfo, applicationForm);
+		}else if (ProgramType.LEARNING_MATERIALS_DEVELOPMENT == programType) {
+			program = new LearningMaterialsDevelopment(menuContextInfo, applicationForm);
 		}
 
 		
@@ -736,7 +745,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	/**
 	 * @param program the program to set
 	 */
-	public void setProgram(IProgram program) {
+	public void setProgram(AbstractProgram program) {
 		this.program = program;
 		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "programComplete");
 	}

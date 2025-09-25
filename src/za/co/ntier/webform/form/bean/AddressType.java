@@ -1,6 +1,6 @@
 package za.co.ntier.webform.form.bean;
 
-import za.co.ntier.webform.model.X_ZZ_FormContact;
+import za.co.ntier.api.model.X_ZZ_FormContact;
 
 public enum AddressType {
 	MAIN(X_ZZ_FormContact.ZZ_CONTACTTYPE_Main), MAIN_ALTER(X_ZZ_FormContact.ZZ_CONTACTTYPE_MainAlter),

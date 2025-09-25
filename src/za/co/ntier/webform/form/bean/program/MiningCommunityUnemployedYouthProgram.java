@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
@@ -13,16 +12,15 @@ import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.webform.model.I_ZZLearnersApplied;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgram{
-	private X_ZZ_Application_Form applicationForm;
+public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
+
 	private ProjectInput budgetOverview;
 	
 	private ProjectInput learnerApplys;
 	private ProjectInput strategy;
-	private MenuContextInfo menuContextInfo;
 	
 	private String programTitle;
 	private Integer monthlyStipend = 1700;
@@ -71,8 +69,7 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 	
 	
 	public MiningCommunityUnemployedYouthProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
-		this.menuContextInfo = menuContextInfo;
+		super(menuContextInfo, applicationForm);
 		
 		budgetColLearners.setCalTotal(true);
 		
@@ -127,12 +124,7 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		strategy.initProject(applicationForm, titleRows);				
 	}
 	
-	/**
-	 * @return the applicationForm
-	 */
-	public X_ZZ_Application_Form getApplicationForm() {
-		return applicationForm;
-	}
+	
 	public ProjectInput getBudgetOverview() {
 		return budgetOverview;
 	}
@@ -140,12 +132,6 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		return learnerApplys;
 	}
 	
-	/**
-	 * @return the menuContextInfo
-	 */
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
 
 	/**
 	 * @return the programTitle
@@ -158,18 +144,11 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
+		super.saveForm(applicationForm);
 		
 		learnerApplys.save(trxName, applicationForm);
 		strategy.save(trxName, applicationForm);
 		budgetOverview.save(trxName, applicationForm);
-	}
-
-	/**
-	 * @param applicationForm the applicationForm to set
-	 */
-	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
-		this.applicationForm = applicationForm;
 	}
 
 	public void setBudgetOverview(ProjectInput budgetOverview) {
@@ -180,12 +159,6 @@ public class MiningCommunityUnemployedYouthProgram implements ISaveForm, IProgra
 		this.learnerApplys = learnerApplys;
 	}
 
-	/**
-	 * @param menuContextInfo the menuContextInfo to set
-	 */
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
 
 	/**
 	 * @param programTitle the programTitle to set

@@ -15,9 +15,9 @@ import org.compiere.util.Env;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.DataType;
-import za.co.ntier.webform.model.X_ZZDocumentUpload;
-import za.co.ntier.webform.model.X_ZZDocumentUploadFile;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZDocumentUpload;
+import za.co.ntier.api.model.X_ZZDocumentUploadFile;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class UploadDocComponent implements ISaveForm {
 	private X_ZZ_Application_Form applicationForm;

@@ -34,7 +34,7 @@ import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class AnnexureInfo implements ISaveForm{
 	protected static final CLogger log = CLogger.getCLogger(AnnexureInfo.class);

@@ -18,8 +18,8 @@ import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_FormContact;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_FormContact;
 
 public class AddressInfo implements ISaveForm {
 	private AddressType addressCategory;

@@ -3,20 +3,21 @@ package za.co.ntier.webform.form.bean.program;
 import java.util.List;
 import java.util.Map;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.webform.model.I_ZZLearnersApplied;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class WorkerInitiatedTraining implements ISaveForm, IProgram{
+public class WorkerInitiatedTraining extends AbstractProgram{
 	private ProjectInput beneficiarie;
 	private ColumnInfo<?> colBeneficiarie; // keep reference
 	
 	public WorkerInitiatedTraining(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		super(menuContextInfo, applicationForm);
+		
 		ColumnInfo<?> colBeneficiarieTitle = ColumnInfo.getColLabel("Types of Training intervention(s) identified by the union as relevant and required programmes identified in the training gap analysis"
 							, I_ZZLearnersApplied.COLUMNNAME_Name);
 		colBeneficiarie = ColumnInfo.getColPositiveNumber("Number of people applying for per intervention* (Insert the number of beneficiaries applying for per training intervention)"
@@ -35,6 +36,7 @@ public class WorkerInitiatedTraining implements ISaveForm, IProgram{
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		super.saveForm(applicationForm);
 		beneficiarie.save(trxName, applicationForm);
 		
 	}

@@ -21,7 +21,8 @@ Import-Package: org.adempiere.base,
  org.zkoss.bind.annotation;version="[10.0.0,11.0.0)",
  org.zkoss.zk.ui;version="[10.0.0,11.0.0)",
  org.zkoss.zk.ui.metainfo;version="[10.0.0,11.0.0)",
- org.zkoss.zul;version="[10.0.0,11.0.0)"
+ org.zkoss.zul;version="[10.0.0,11.0.0)",
+ za.co.ntier.api.model
 Require-Bundle: org.idempiere.zk.extra;bundle-version="12.0.0",
  zkbind;bundle-version="10.0.1",
  zcommon;bundle-version="10.0.1",

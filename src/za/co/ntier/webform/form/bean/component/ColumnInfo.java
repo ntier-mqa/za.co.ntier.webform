@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 
 import za.co.ntier.webform.form.bean.DataType;
-import za.co.ntier.webform.model.X_ZZDocumentUpload;
+import za.co.ntier.api.model.X_ZZDocumentUpload;
 
 public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {
@@ -44,6 +44,12 @@ public class ColumnInfo<T> {
 
 	public static <T> ColumnInfo<T> getColLabel(String title) {
 		return new ColumnInfo<T>(title, DataType.Label);
+	}
+	
+	public static <T> ColumnInfo<T> getColRadio(String title, String daoPropertyName) {
+		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.Radio);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
 	}
 	
 	public static <T> ColumnInfo<T> getColLabel(String title, String daoPropertyName) {

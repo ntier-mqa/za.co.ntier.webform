@@ -3,8 +3,7 @@ package za.co.ntier.webform.form.bean.program;
 import java.util.List;
 import java.util.Map;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
@@ -14,13 +13,14 @@ import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.form.bean.component.UploadData;
-import za.co.ntier.webform.model.I_ZZLearnersApplied;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class NcvGraduatesProgram implements ISaveForm, IProgram {
+public class NcvGraduatesProgram extends AbstractProgram {
 	private ProjectInput unemployed;
 
 	public NcvGraduatesProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		super(menuContextInfo, applicationForm);
 		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoUnEmployedLearners);
 		colNoUnEmployed.setCalTotal(true);
 		
@@ -54,6 +54,7 @@ public class NcvGraduatesProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
+		super.saveForm(applicationForm);
 		unemployed.save(trxName, applicationForm);
 	}
 

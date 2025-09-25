@@ -3,8 +3,8 @@ package za.co.ntier.webform.form.bean.program;
 import java.util.List;
 import java.util.Map;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
@@ -12,13 +12,15 @@ import za.co.ntier.webform.form.bean.component.AreaData;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.webform.model.I_ZZLearnersApplied;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class ArtisanRPLProgram implements ISaveForm, IProgram {
+public class ArtisanRPLProgram extends AbstractProgram {
 	private ProjectInput allLearners;
 
-	public ArtisanRPLProgram(X_ZZ_Application_Form applicationForm) {
+	public ArtisanRPLProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		super(menuContextInfo, applicationForm);
+		
 		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoEmployedLearners);
 		colNoEmployed.setCalTotal(true);
 		ColumnInfo<?> colNoUnEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoUnEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoUnEmployedLearners);
@@ -42,6 +44,7 @@ public class ArtisanRPLProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
+		super.saveForm(applicationForm);
 		allLearners.save(trxName, applicationForm);
 
 	}

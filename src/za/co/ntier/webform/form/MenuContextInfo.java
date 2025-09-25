@@ -1,7 +1,7 @@
 package za.co.ntier.webform.form;
 
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 
 public class MenuContextInfo {
 	private String applicationFormUU;

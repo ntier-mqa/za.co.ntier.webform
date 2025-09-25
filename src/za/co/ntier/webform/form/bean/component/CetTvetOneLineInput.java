@@ -7,9 +7,9 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 
-import za.co.ntier.webform.model.I_ZZAnnexure;
-import za.co.ntier.webform.model.X_ZZAnnexure;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZAnnexure;
+import za.co.ntier.api.model.X_ZZAnnexure;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class CetTvetOneLineInput extends AnnexureInfo{
 	private String tabTitle;

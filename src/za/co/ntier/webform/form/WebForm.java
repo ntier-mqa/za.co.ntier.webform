@@ -4,17 +4,19 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.panel.ADForm;
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MTable;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Div;
 
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.model.I_ZZ_Application_Form;
-import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
-import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.I_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 
 @org.idempiere.ui.zk.annotation.Form(name = "za.co.ntier.webform.form.EmployerApplicationForm")
 public class WebForm extends ADForm {
@@ -81,8 +83,12 @@ public class WebForm extends ADForm {
 		boolean isUploadWPAForNVC = uploadWPAForNVCValue != null && ("Y".equalsIgnoreCase(uploadWPAForNVCValue) ||
 				"true".equalsIgnoreCase(uploadWPAForNVCValue));
 
-		I_ZZ_Program_Master_Data masterData = new X_ZZ_Program_Master_Data(Env.getCtx(), programMasterDataUUValue,
-				null);
+		I_ZZ_Program_Master_Data masterData = MTable.get(I_ZZ_Program_Master_Data.Table_ID)
+					.createQuery(String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU), null)
+					.setParameters(programMasterDataUUValue).firstOnly();
+		if (masterData == null) {
+			throw new AdempiereException("Menu use a Wrong program defination");
+		}
 		String formTitle = Env.getContext(Env.getCtx(), m_WindowNo, "+formTitle");  // My Applications does not have program master data
 		if (formTitle == null || formTitle.equals("")) {
 			formTitle = masterData.getTitle();

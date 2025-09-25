@@ -9,8 +9,8 @@ import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Init;
 
-import za.co.ntier.webform.model.I_ZZ_Program_Gen_Rules;
-import za.co.ntier.webform.model.X_ZZ_Program_Gen_Rules;
+import za.co.ntier.api.model.I_ZZ_Program_Gen_Rules;
+import za.co.ntier.api.model.X_ZZ_Program_Gen_Rules;
 
 @Init(superclass = true)
 public class GeneralAppRuleVMWrapper extends ComponentVMWrapper<Object>{

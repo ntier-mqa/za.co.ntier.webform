@@ -1,13 +1,14 @@
 package za.co.ntier.webform.form.bean.program;
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class MedpProgram implements ISaveForm, IProgram {
+public class MedpProgram extends AbstractProgram {
 	private int noOfLearners;
 
-	public MedpProgram(X_ZZ_Application_Form applicationForm) {
+	public MedpProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		super(menuContextInfo, applicationForm);
 		initComponent(applicationForm);
 	}
 
@@ -20,6 +21,7 @@ public class MedpProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		super.saveForm(applicationForm);
 		applicationForm.setZZTotalNumberApplied(noOfLearners);
 		applicationForm.setZZNoLearners(noOfLearners);
 		

@@ -3,21 +3,22 @@ package za.co.ntier.webform.form.bean.program;
 import java.util.List;
 import java.util.Map;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AreaData;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.webform.model.I_ZZLearnersApplied;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class OhasspProgram implements ISaveForm, IProgram {
+public class OhasspProgram extends AbstractProgram {
 	private ProjectInput healthSafetySkills;
 
-	public OhasspProgram(X_ZZ_Application_Form applicationForm)  {
+	public OhasspProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm)  {
+		super(menuContextInfo, applicationForm);	
 		ColumnInfo<?> colNameProgram = ColumnInfo.getColLabel(ColumnInfo.colNameProgrammeLabel, I_ZZLearnersApplied.COLUMNNAME_Name);
 		ColumnInfo<?> colNoEmployed = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoEmployedLabel, I_ZZLearnersApplied.COLUMNNAME_ZZNoEmployedLearners);
 		colNoEmployed.setCalTotal(true);
@@ -36,6 +37,7 @@ public class OhasspProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
+		super.saveForm(applicationForm);
 		healthSafetySkills.save(trxName, applicationForm);
 		
 	}

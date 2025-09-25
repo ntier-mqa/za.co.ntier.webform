@@ -2,12 +2,12 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.util.List;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
+public class WorkplaceCoachesProgram extends AbstractProgram {
 	private List<String> placementWorkplaces = List.of("This programme is for coaches who are appointed by the company to coach MQA Artisan Development Programme Learners"
 			, "The placement of coaches is for a coach that will be placed at workplaces to coach the leaners through their structured workplace based learning"
 			, "The duration of this programme is 12 months"
@@ -39,7 +39,8 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 
 	private Integer trainingWorkplaceCoaches;
 	
-	public WorkplaceCoachesProgram(X_ZZ_Application_Form applicationForm) {
+	public WorkplaceCoachesProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
+		super(menuContextInfo, applicationForm);
 		if (applicationForm != null) {
 			placementWorkplaceCoaches = Util.convert(applicationForm.getZZPlacementWorkplaceCoaches());
 			trainingWorkplaceCoaches = Util.convert(applicationForm.getZZTrainingWorkplaceCoaches());
@@ -47,6 +48,7 @@ public class WorkplaceCoachesProgram implements ISaveForm, IProgram {
 	}
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		super.saveForm(applicationForm);
 		applicationForm.setZZPlacementWorkplaceCoaches(placementWorkplaceCoaches);
 		applicationForm.setZZTrainingWorkplaceCoaches(trainingWorkplaceCoaches);
 		

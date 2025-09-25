@@ -2,8 +2,7 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.util.Map;
 
-import za.co.ntier.webform.form.IProgram;
-import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AreaData;
@@ -11,12 +10,13 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 
-public class ArtisanDevProgram implements ISaveForm, IProgram {
+public class ArtisanDevProgram extends AbstractProgram {
 	private ProgramInput trade;
 
 	public ArtisanDevProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
+		super(menuContextInfo, applicationForm);
 		setTrade(ProgramInput.getTrade(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), applicationForm, null));
 	}
 
@@ -30,6 +30,7 @@ public class ArtisanDevProgram implements ISaveForm, IProgram {
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm)  {
+		super.saveForm(applicationForm);
 		trade.save(trxName, applicationForm);
 	}
 

@@ -16,15 +16,15 @@ import org.compiere.util.Env;
 
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
-import za.co.ntier.webform.model.I_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_Disciplines;
-import za.co.ntier.webform.model.X_ZZ_FormDiscipline;
-import za.co.ntier.webform.model.X_ZZ_Learnerships;
-import za.co.ntier.webform.model.X_ZZ_Program_Disciplines;
-import za.co.ntier.webform.model.X_ZZ_Program_Learnerships;
-import za.co.ntier.webform.model.X_ZZ_Program_Trade;
-import za.co.ntier.webform.model.X_ZZ_Trade;
+import za.co.ntier.api.model.I_ZZ_FormDiscipline;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Disciplines;
+import za.co.ntier.api.model.X_ZZ_FormDiscipline;
+import za.co.ntier.api.model.X_ZZ_Learnerships;
+import za.co.ntier.api.model.X_ZZ_Program_Disciplines;
+import za.co.ntier.api.model.X_ZZ_Program_Learnerships;
+import za.co.ntier.api.model.X_ZZ_Program_Trade;
+import za.co.ntier.api.model.X_ZZ_Trade;
 
 public class ProgramInput extends AnnexureInfo {
 	public static Entry<Boolean, Boolean> queryUploadColumnForTrade(int programMasterDataID, boolean isTrade) {

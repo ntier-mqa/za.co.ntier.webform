@@ -4,4 +4,23 @@
 <nodom xmlns:n="native"
 	viewModel="@id('vmSs') @init('za.co.ntier.webform.form.viewmodel.program.StandardSettingVMWrapper')">
 
+
+	<tabbox width="100%">
+		<tabs children="@load(vmSs.program.standardSettings)">
+	        <template name="children" var="annexure">
+	            <tab label="@load(annexure.tabTitle)" />
+	        </template>
+	    </tabs>
+	    <tabpanels children="@load(vmSs.program.standardSettings)">
+	    		<template name="children" var="annexure">
+		            <tabpanel>
+		                    <include component="@load(annexure)" 
+		                    applicationProgramVM="@init(vmSs.applicationProgramVM)"
+	    					notifyTarget="@init('programComplete')"
+							src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+		            </tabpanel>
+		        </template>
+	        
+	    </tabpanels>
+	</tabbox>
 </nodom>

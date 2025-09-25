@@ -22,10 +22,10 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.form.MenuContextInfo;
-import za.co.ntier.webform.model.I_ZZ_Application_Form;
-import za.co.ntier.webform.model.I_ZZ_Program_Master_Data;
-import za.co.ntier.webform.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.model.X_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.I_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 
 public class ApplicationsListVM {
 
