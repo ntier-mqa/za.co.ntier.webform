@@ -26,7 +26,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 				, ColumnInfo.getColText("CELL NUMBER OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZCellNoWriter)
 				, ColumnInfo.getColText("EMAIL ADDRESS OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZEmailWriter)
 				, ColumnInfo.getColText("ACCREDITED TRAINING PROVIDER", I_ZZLearningMaterial.COLUMNNAME_ZZAccreditedTrainingProvider)
-				, ColumnInfo.getColFileUpload("Unabridged CV", "Unabridged CV", I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFile, I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFileName)
+				, ColumnInfo.getColFileUpload("Unabridged CV", "CV", I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFile, I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFileName)
 				);
 		
 		learningMaterials = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, cols, false);
@@ -54,6 +54,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		super.saveForm(applicationForm);
 		learningMaterials.save(trxName, applicationForm);
+		applicationForm.setZZTotalNumberApplied(learningMaterials.getRows().size());
 	}
 
 	/**
