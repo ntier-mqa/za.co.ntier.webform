@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
@@ -12,8 +14,6 @@ import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.api.model.I_ZZLearnersApplied;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 

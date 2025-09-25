@@ -13,10 +13,9 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Div;
 
-import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
-import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
+import za.co.ntier.webform.form.bean.ProgramType;
 
 @org.idempiere.ui.zk.annotation.Form(name = "za.co.ntier.webform.form.EmployerApplicationForm")
 public class WebForm extends ADForm {

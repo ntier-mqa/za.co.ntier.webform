@@ -6,10 +6,10 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 
-import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.api.model.I_ZZSubAnnex;
 import za.co.ntier.api.model.X_ZZSubAnnex;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.form.bean.DataType;
 
 public class CetTvetMultiLineInput extends AnnexureInfo{
 	private String tabTitle;

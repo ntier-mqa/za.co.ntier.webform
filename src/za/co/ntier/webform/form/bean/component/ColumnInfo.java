@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
+import za.co.ntier.webform.form.bean.DataType;
 
 public class ColumnInfo<T> {
 	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {

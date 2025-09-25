@@ -6,16 +6,16 @@ import java.util.List;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.CheckEvent;
 
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.I_ZZ_FormDiscipline;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_FormDiscipline;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.api.model.I_ZZLearnersApplied;
-import za.co.ntier.api.model.I_ZZ_FormDiscipline;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.api.model.X_ZZ_FormDiscipline;
 
 public class HetLectureSupport  extends AbstractProgram {
 	private ProgramInput disciplines;
