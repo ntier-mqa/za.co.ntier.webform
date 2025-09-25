@@ -26,7 +26,9 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 				, ColumnInfo.getColText("NAME OF WRITER (ABRIDGED CV OF WRITER MUST BE ATTACHED)", I_ZZLearningMaterial.COLUMNNAME_ZZNameWriter)
 				, ColumnInfo.getColText("CELL NUMBER OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZCellNoWriter)
 				, ColumnInfo.getColText("EMAIL ADDRESS OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZEmailWriter)
-				, ColumnInfo.getColText("ACCREDITED TRAINING PROVIDER", I_ZZLearningMaterial.COLUMNNAME_ZZAccreditedTrainingProvider));
+				, ColumnInfo.getColText("ACCREDITED TRAINING PROVIDER", I_ZZLearningMaterial.COLUMNNAME_ZZAccreditedTrainingProvider)
+				, ColumnInfo.getColFileUpload("Unabridged CV", "Unabridged CV", I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFile, I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFileName)
+				);
 		
 		learningMaterials = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, cols, false);
 		learningMaterials.setSubSectionHeader("Learning Material Development");

@@ -12,7 +12,12 @@
 		<n:ol sclass="generalAppRules">
 
 			<n:li forEach="${vmGeneralAppRule.generalAppRules}">
-				<label value="${each}" />
+				<label value="${each.key}" />
+				<n:ul>
+					<n:li forEach="${each.value}">
+						<label value="${each}" />
+					</n:li>
+				</n:ul>
 			</n:li>
 
 		</n:ol>
