@@ -7,7 +7,6 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 
 import za.co.ntier.api.model.I_ZZDetailSmallBusinesse;
-import za.co.ntier.api.model.I_ZZLearningMaterial;
 import za.co.ntier.api.model.X_ZZDetailSmallBusinesse;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
