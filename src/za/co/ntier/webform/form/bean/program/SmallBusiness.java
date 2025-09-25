@@ -50,5 +50,36 @@ public class SmallBusiness extends AbstractProgram{
 	public void setDetailSmallBusiness(AnnexureInfo detailSmallBusiness) {
 		this.detailSmallBusiness = detailSmallBusiness;
 	}
+	
+	@Override
+	public boolean isProgramValid() {
+	    // Columns in a row that must all be filled
+	    List<ColumnInfo<?>> cols = detailSmallBusiness.getColumnInfos();
+
+	    boolean hasCompleteRow = false;
+
+	    for (var row : detailSmallBusiness.getRows()) {
+	        int filled = 0;
+	        for (var c : cols) {
+	            Object v = row.get(c);
+	            if (!isBlank(v)) filled++;
+	        }
+	        if (filled > 0 && filled < cols.size()) {
+	            // Partial row: something typed but not all fields completed
+	            return false;
+	        }
+	        if (filled == cols.size()) {
+	            hasCompleteRow = true;
+	        }
+	    }
+	    return hasCompleteRow;
+	}
+
+	private static boolean isBlank(Object v) {
+	    if (v == null) return true;
+	    String s = v.toString().trim();
+	    return s.isEmpty();
+	}
+
 
 }
