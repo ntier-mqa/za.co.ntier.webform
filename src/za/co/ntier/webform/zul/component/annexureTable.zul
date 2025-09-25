@@ -55,7 +55,7 @@
             <!-- Text (save on blur/Enter + notify once) -->
 			<nodom if="${detailCol.dataType == DataType.Text}">
 			  <textbox
-			    value="@bind(row[detailCol], save-on='onChange')"
+			    value="@bind(row[detailCol], save-on='onChanging')"
 			    onChange="@command('notifyProgramComplete')" />
 			</nodom>         
             
