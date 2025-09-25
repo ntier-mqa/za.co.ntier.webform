@@ -9,15 +9,13 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 
+import za.co.ntier.api.model.I_ZZStandardSetting;
+import za.co.ntier.api.model.X_ZZStandardSetting;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
-import za.co.ntier.api.model.I_ZZStandardSetting;
-import za.co.ntier.api.model.I_ZZ_FormDiscipline;
-import za.co.ntier.api.model.X_ZZStandardSetting;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.api.model.X_ZZ_FormDiscipline;
 
 public class StandardSetting extends AbstractProgram {
 

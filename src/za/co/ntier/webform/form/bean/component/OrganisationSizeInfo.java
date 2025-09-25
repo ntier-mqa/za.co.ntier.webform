@@ -1,7 +1,7 @@
 package za.co.ntier.webform.form.bean.component;
 
-import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.form.ISaveForm;
 
 public class OrganisationSizeInfo implements ISaveForm {
 	private X_ZZ_Application_Form applicationForm;

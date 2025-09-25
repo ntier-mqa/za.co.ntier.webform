@@ -32,6 +32,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Tabbox;
 
+import za.co.ntier.api.model.I_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -68,8 +70,6 @@ import za.co.ntier.webform.form.bean.program.WorkExperienceProgram;
 import za.co.ntier.webform.form.bean.program.WorkerInitiatedTraining;
 import za.co.ntier.webform.form.bean.program.WorkplaceCoachesProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
-import za.co.ntier.api.model.I_ZZ_Application_Form;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class DiscretionaryGrantsApplicationProgramVM {
 	public class EmailPoInfo extends GenericPO {

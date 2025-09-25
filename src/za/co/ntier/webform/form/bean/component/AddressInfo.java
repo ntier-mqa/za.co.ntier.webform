@@ -14,12 +14,12 @@ import org.compiere.util.KeyNamePair;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_FormContact;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.api.model.X_ZZ_FormContact;
 
 public class AddressInfo implements ISaveForm {
 	private AddressType addressCategory;

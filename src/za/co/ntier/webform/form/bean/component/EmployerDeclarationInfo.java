@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 
-import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.form.ISaveForm;
 
 public class EmployerDeclarationInfo implements ISaveForm {
 	private Boolean acknowledged;  // use Boolean, not boolean, so null is handled

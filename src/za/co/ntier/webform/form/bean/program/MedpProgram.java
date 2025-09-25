@@ -1,8 +1,8 @@
 package za.co.ntier.webform.form.bean.program;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class MedpProgram extends AbstractProgram {
 	private int noOfLearners;

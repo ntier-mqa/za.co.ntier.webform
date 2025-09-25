@@ -3,6 +3,8 @@ package za.co.ntier.webform.form.bean.program;
 import java.util.List;
 import java.util.Map;
 
+import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
@@ -12,8 +14,6 @@ import za.co.ntier.webform.form.bean.component.AreaData;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.PostalData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
-import za.co.ntier.api.model.I_ZZLearnersApplied;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class ArtisanRPLProgram extends AbstractProgram {
 	private ProjectInput allLearners;

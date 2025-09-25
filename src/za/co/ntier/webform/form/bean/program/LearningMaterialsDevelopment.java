@@ -2,9 +2,12 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.util.List;
 
-import za.co.ntier.api.model.I_ZZDetailSmallBusinesse;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.Query;
+
 import za.co.ntier.api.model.I_ZZLearningMaterial;
-import za.co.ntier.api.model.X_ZZDetailSmallBusinesse;
+import za.co.ntier.api.model.I_ZZStandardSetting;
 import za.co.ntier.api.model.X_ZZLearningMaterial;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
@@ -34,13 +37,22 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 						return po;
 					});
 		
-		learningMaterials.init(applicationForm);
+		List<PO> savedDaos = null;
+		if(getApplicationForm() != null) {
+			String where = String.format("%s = ?", 
+					I_ZZLearningMaterial.COLUMNNAME_ZZ_Application_Form_ID);
+			
+			Query querySavedDaos = MTable.get(I_ZZLearningMaterial.Table_ID).createQuery(where, null);
+			savedDaos = querySavedDaos.setParameters(getApplicationForm().getZZ_Application_Form_ID()).list();
+		}
+		
+		learningMaterials.init(applicationForm, savedDaos);
 	}
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-		
+		super.saveForm(applicationForm);
+		learningMaterials.save(trxName, applicationForm);
 	}
 
 	/**

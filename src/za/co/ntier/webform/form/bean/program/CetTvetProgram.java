@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import za.co.ntier.api.model.X_ZZAnnexure;
+import za.co.ntier.api.model.X_ZZSubAnnex;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
@@ -14,9 +17,6 @@ import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
-import za.co.ntier.api.model.X_ZZAnnexure;
-import za.co.ntier.api.model.X_ZZSubAnnex;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class CetTvetProgram extends AbstractProgram {
 	private AddressInfo addressInfo;

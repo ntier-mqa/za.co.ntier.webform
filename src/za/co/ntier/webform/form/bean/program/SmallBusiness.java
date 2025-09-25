@@ -2,13 +2,18 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.util.List;
 
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.Query;
+
+import za.co.ntier.api.model.I_ZZDetailSmallBusinesse;
+import za.co.ntier.api.model.I_ZZLearningMaterial;
+import za.co.ntier.api.model.X_ZZDetailSmallBusinesse;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
-import za.co.ntier.api.model.I_ZZDetailSmallBusinesse;
-import za.co.ntier.api.model.X_ZZDetailSmallBusinesse;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public class SmallBusiness extends AbstractProgram{
 	private AnnexureInfo detailSmallBusiness;
@@ -33,7 +38,15 @@ public class SmallBusiness extends AbstractProgram{
 						return po;
 					});
 		
-		detailSmallBusiness.init(applicationForm);
+		List<PO> savedDaos = null;
+		if(getApplicationForm() != null) {
+			String where = String.format("%s = ?", 
+					I_ZZDetailSmallBusinesse.COLUMNNAME_ZZ_Application_Form_ID);
+			
+			Query querySavedDaos = MTable.get(I_ZZDetailSmallBusinesse.Table_ID).createQuery(where, null);
+			savedDaos = querySavedDaos.setParameters(getApplicationForm().getZZ_Application_Form_ID()).list();
+		}
+		detailSmallBusiness.init(applicationForm, savedDaos);
 	}
 
 	@Override

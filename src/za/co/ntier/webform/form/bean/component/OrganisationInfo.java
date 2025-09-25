@@ -16,13 +16,13 @@ import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 /**
  * base on bpartner, a Organisation is a bpartner
