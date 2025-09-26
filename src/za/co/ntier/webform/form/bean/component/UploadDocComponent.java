@@ -77,42 +77,54 @@ public class UploadDocComponent implements ISaveForm {
 	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
-			AnnexureRow row = (AnnexureRow)uploadRow;
-			
-			
-			ColumnInfo<?> uploadDefCol = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
-			ColumnInfo<?> uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload, uploadDoc);
-			
-			X_ZZDocumentUploadFile docUploadedFile = (X_ZZDocumentUploadFile)row.getData();
-			if (docUploadedFile == null) {
-				docUploadedFile = new X_ZZDocumentUploadFile(Env.getCtx(), 0, trxName);
-				row.setData(docUploadedFile);
-			}
-			
-			docUploadedFile.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
-			
-			if (uploadDefCol != null) {
-				X_ZZDocumentUpload docDef = (X_ZZDocumentUpload) uploadRow.get(uploadDefCol);
-				docUploadedFile.setZZDocumentUpload_ID(docDef.getZZDocumentUpload_ID());
-			}
-			
-			UploadData uploadData = (UploadData) uploadRow.get(uploadFileCol);
-			
-			if (uploadData != null && StringUtils.isNoneEmpty(uploadData.getFullPath())) {
-				try {
-					docUploadedFile.setZZDocumentUploaded(Files.readAllBytes(Paths.get(uploadData.getFullPath())));
-				} catch (IOException e) {
-					e.printStackTrace();
-					throw new ApplicationException(e.getMessage(), e);
-				}
-				docUploadedFile.setName(uploadData.getFileName());
-				docUploadedFile.saveEx(trxName);
-			}
-			
-		}
-		
+	    for (Map<ColumnInfo<?>, Object> uploadRow : uploadDoc.getRows()) {
+	        AnnexureRow row = (AnnexureRow) uploadRow;
+
+	        ColumnInfo<?> uploadDefCol  = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
+	        ColumnInfo<?> uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload,  uploadDoc);
+
+	        X_ZZDocumentUploadFile docUploadedFile = (X_ZZDocumentUploadFile) row.getData();
+	        UploadData uploadData = (UploadData) uploadRow.get(uploadFileCol);
+
+	        // Pull in-memory payload
+	        byte[] bytes = (uploadData != null) ? uploadData.getBytes() : null;
+	        String name  = (uploadData != null) ? uploadData.getFileName() : null;
+
+	        // Only act when there is a new upload this round
+	        if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(name)) {
+
+	            // Create the row if needed
+	            if (docUploadedFile == null) {
+	                docUploadedFile = new X_ZZDocumentUploadFile(Env.getCtx(), 0, trxName);
+	                row.setData(docUploadedFile);
+	            }
+
+	            // Set FK fields
+	            docUploadedFile.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
+	            if (uploadDefCol != null) {
+	                X_ZZDocumentUpload docDef = (X_ZZDocumentUpload) uploadRow.get(uploadDefCol);
+	                docUploadedFile.setZZDocumentUpload_ID(docDef.getZZDocumentUpload_ID());
+	            }
+
+	            // Set display name (kept for the list/grid)
+	            docUploadedFile.setName(name);
+
+	            // Persist the record so it has an ID for AD_Attachment link
+	            docUploadedFile.saveEx(trxName);
+
+	            // === Attach the file (exactly one entry per record) ===
+	            // Uses your helper that deletes any existing attachment and creates a fresh one.
+	            za.co.ntier.webform.form.AttachmentUtil.addOrReplaceAttachmentEntry(docUploadedFile, name, bytes, trxName);
+
+	            // Free memory after persisting
+	            uploadData.setBytes(null);
+	        }
+
+	        // If no new bytes: leave existing rows/attachments untouched.
+	        // (If you want "clear file" to delete attachment, add a branch here to delete MAttachment.)
+	    }
 	}
+
 
 	/**
 	 * @param applicationForm the applicationForm to set

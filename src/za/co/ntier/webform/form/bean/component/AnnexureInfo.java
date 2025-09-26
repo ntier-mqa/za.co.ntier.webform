@@ -2,8 +2,10 @@ package za.co.ntier.webform.form.bean.component;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import org.compiere.model.MCity;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -429,19 +432,39 @@ public class AnnexureInfo implements ISaveForm{
 	 */
 	public void setTotalRow(Map<ColumnInfo<?>, Object> totalRow) {
 		this.totalRow = totalRow;
-	}
-
+	}	
+	
+	
 	public void uploadFile(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, UploadEvent event) {
-		UploadData uploadInfoObj = (UploadData) row.get(col);
-		uploadInfoObj.setFileName(event.getMedia().getName());
-		try {
-			uploadInfoObj.setFullPath(MasterUtil.saveUploadFile(event.getMedia()));
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new AdempiereException(e.getMessage(), e);
-		}
+	    UploadData ud = (UploadData) row.get(col);
+	    Media m = event.getMedia();
 
-		BindUtils.postNotifyChange(row.get(col), "fileName");
+	    ud.setFileName(m.getName());
+
+	    try {
+	        byte[] data;
+	        if (m.isBinary() && m.getByteData() != null) {
+	            data = m.getByteData();  // fast path
+	        } else {
+	            // robust stream fallback (also works for large uploads)
+	            try (InputStream in = m.getStreamData();
+	                 ByteArrayOutputStream out = new ByteArrayOutputStream(32 * 1024)) {
+	                byte[] buf = new byte[32 * 1024];
+	                int n;
+	                while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+	                data = out.toByteArray();
+	            }
+	            if (data == null && !m.isBinary() && m.getStringData() != null) {
+	                data = m.getStringData().getBytes(StandardCharsets.UTF_8);
+	            }
+	        }
+	        ud.setBytes(data);
+	    } catch (Exception e) {
+	        throw new AdempiereException("Unable to read uploaded file", e);
+	    }
+
+	    // refresh the filename label
+	    BindUtils.postNotifyChange(ud, "fileName");
 	}
 
 	/**
@@ -499,11 +522,10 @@ public class AnnexureInfo implements ISaveForm{
 					DateData dateData = (DateData)row.get(col);
 					cellValueObj = dateData.getTimestamp();
 				}else if (col.getDataType() == DataType.FileUpload) {
-				}else if (col.getDataType() == DataType.FileUpload) {
 					// Martin changed to save to attachments instead to a binary file
 				    UploadData uploadData = (UploadData) row.get(col);
-				    if (uploadData != null && org.apache.commons.lang3.StringUtils.isNotBlank(uploadData.getFullPath())) {
-				        hasCellData = Boolean.TRUE; // mark that the row has data so it will be saved
+				    if (uploadData != null && uploadData.getBytes() != null && uploadData.getBytes().length > 0) {
+				        hasCellData = Boolean.TRUE;
 				    }
 				    ignoreSetDao = true; // never set DAO properties for files anymore
 								
@@ -571,54 +593,58 @@ public class AnnexureInfo implements ISaveForm{
 		return new AbstractMap.SimpleEntry<>(total, hasRowData);
 	}
 
-	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
 	
-		int total = 0;
-		for (AnnexureRow row : getRows()) {
-			PO learnersApplied = (PO)row.getData();
-			if (learnersApplied == null) {
-				applicationForm.set_TrxName(trxName);//importance
-				learnersApplied = poSupplier.apply(this, applicationForm);
-			}
-			
-			Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, learnersApplied);
-			if (result.getValue()){
-				learnersApplied.saveEx(trxName);
-				// Martin added to save to attachments
-				for (ColumnInfo<?> col : getColumnInfos()) {
-				    if (col.getDataType() == DataType.FileUpload) {
-				        UploadData upload = (UploadData) row.get(col);
-				        if (upload != null) {
-				            byte[] bytes = null;
+	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
 
-				            // Prefer in-memory bytes if you added them to UploadData; else read from temp path
-				            // bytes = upload.getBytes();
-				            if (bytes == null && org.apache.commons.lang3.StringUtils.isNotBlank(upload.getFullPath())) {
-				                try {
-									bytes = java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(upload.getFullPath()));
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-				            }
+	    int total = 0;
 
-				            if (bytes != null && bytes.length > 0 &&
-				                org.apache.commons.lang3.StringUtils.isNotBlank(upload.getFileName())) {
-				            		AttachmentUtil.addOrReplaceAttachmentEntry(learnersApplied, upload.getFileName(), bytes, trxName
-				                );
-				            }
-				        }
-				    }
-				}
+	    for (AnnexureRow row : getRows()) {
+	        PO po = (PO) row.getData();
+	        if (po == null) {
+	            applicationForm.set_TrxName(trxName); // important
+	            po = poSupplier.apply(this, applicationForm);
+	        }
 
-			}else {
-				learnersApplied.delete(true);// delete if no input or data is cleared
-			}
-			total += result.getKey();
-		}
-		applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
-		
+	        Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, po);
+
+	        if (result.getValue()) {
+	            po.saveEx(trxName);
+
+	            // --- Save FileUpload columns as ATTACHMENTS (memory only) ---
+	            for (ColumnInfo<?> col : getColumnInfos()) {
+	                if (col.getDataType() != DataType.FileUpload) continue;
+
+	                UploadData upload = (UploadData) row.get(col);
+	                if (upload == null) continue;
+
+	                byte[] bytes = upload.getBytes(); // <-- in-memory only
+	                String fileName = upload.getFileName();
+
+	                if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
+	                    // one-entry semantics: delete-and-recreate
+	                    AttachmentUtil.addOrReplaceAttachmentEntry(po, fileName, bytes, trxName);
+
+	                    // free memory for this row after persisting
+	                    upload.setBytes(null);
+	                }
+
+	                // If you want to support "delete attachment when user clears the file":
+	                // else if ((bytes == null || bytes.length == 0)) {
+	                //     MAttachment att = MAttachment.get(Env.getCtx(), po.get_Table_ID(), po.get_ID(), trxName);
+	                //     if (att != null) att.delete(true);
+	                // }
+	            }
+	        } else {
+	            // delete row record if user cleared all input for this row
+	            po.delete(true);
+	        }
+
+	        total += result.getKey();
+	    }
+
+	    applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
 	}
+
 
 	public static void setCellValue(AnnexureRow row, ColumnInfo<?> col, Object value) {
 		log.info(String.format("Set cell value: row=%s, col=%s, col datatype=%s, value=%s", row, col.getTitle(), col.getDataType(), value));

@@ -115,8 +115,11 @@ public class NcvGraduatesProgram extends AbstractProgram {
     }
 
     private static boolean hasFile(UploadData up) {
-        // accept either a saved full path or at least a chosen file name
-        return (up.getFullPath() != null && !up.getFullPath().isBlank())
-            || (up.getFileName() != null && !up.getFileName().isBlank());
+        if (up == null) return false;
+        // New upload in this session
+        if (up.getBytes() != null && up.getBytes().length > 0) return true;
+        // Or an already-saved file (filename populated on init)
+        return up.getFileName() != null && !up.getFileName().isBlank();
     }
+
 }

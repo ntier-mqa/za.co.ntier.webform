@@ -1,34 +1,17 @@
 package za.co.ntier.webform.form.bean.component;
 
+
+
 public class UploadData {
-	private String fileName;
-	private String fullPath;
+    private String fileName;
+    private byte[] bytes;     // <- in-memory payload (no disk)
 
-	/**
-	 * @return the fileName
-	 */
-	public String getFileName() {
-		return fileName;
-	}
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
 
-	/**
-	 * @return the fullPath
-	 */
-	public String getFullPath() {
-		return fullPath;
-	}
+    public byte[] getBytes() { return bytes; }
+    public void setBytes(byte[] bytes) { this.bytes = bytes; }
 
-	/**
-	 * @param fileName the fileName to set
-	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	/**
-	 * @param fullPath the fullPath to set
-	 */
-	public void setFullPath(String fullPath) {
-		this.fullPath = fullPath;
-	}
+    // (optional) convenience
+    public boolean hasBytes() { return bytes != null && bytes.length > 0; }
 }
