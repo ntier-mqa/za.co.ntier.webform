@@ -54,10 +54,11 @@
 
          <!-- Text -->
 			<nodom if="${detailCol.dataType == DataType.Text}">
-			  <textbox
-			    value="@bind(row[detailCol], save-on='onChanging')"
-			    onChanging="@command('notifyProgramComplete')"
-			    onChange="@command('notifyProgramComplete')" />
+			                    
+	         <textbox
+			    instant="true"
+			    value="@bind(row[detailCol])"
+			    onChange="@command('instantEdit', row=row, col=detailCol, ref=self, newVal=event.value)"/>
 			</nodom>
    
 			   

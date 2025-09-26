@@ -4,8 +4,6 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -31,6 +29,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.Util;
@@ -500,6 +499,16 @@ public class AnnexureInfo implements ISaveForm{
 					DateData dateData = (DateData)row.get(col);
 					cellValueObj = dateData.getTimestamp();
 				}else if (col.getDataType() == DataType.FileUpload) {
+				}else if (col.getDataType() == DataType.FileUpload) {
+					// Martin changed to save to attachments instead to a binary file
+				    UploadData uploadData = (UploadData) row.get(col);
+				    if (uploadData != null && org.apache.commons.lang3.StringUtils.isNotBlank(uploadData.getFullPath())) {
+				        hasCellData = Boolean.TRUE; // mark that the row has data so it will be saved
+				    }
+				    ignoreSetDao = true; // never set DAO properties for files anymore
+								
+					
+				/*	
 					UploadData uploadData = (UploadData)row.get(col);
 						
 					if (uploadData != null && StringUtils.isNoneEmpty(uploadData.getFullPath())) {
@@ -517,6 +526,7 @@ public class AnnexureInfo implements ISaveForm{
 					if (uploadData != null && StringUtils.isNotBlank(uploadData.getFileName()) && StringUtils.isBlank(uploadData.getFullPath())) {
 						ignoreSetDao = true;
 					}
+					*/
 				}else if (col.getDataType() == DataType.List) {
 					Object selectedObj = row.get(col);
 					if (StringUtils.isNotBlank(col.getBeanPropertyName())) {
@@ -574,6 +584,33 @@ public class AnnexureInfo implements ISaveForm{
 			Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, learnersApplied);
 			if (result.getValue()){
 				learnersApplied.saveEx(trxName);
+				// Martin added to save to attachments
+				for (ColumnInfo<?> col : getColumnInfos()) {
+				    if (col.getDataType() == DataType.FileUpload) {
+				        UploadData upload = (UploadData) row.get(col);
+				        if (upload != null) {
+				            byte[] bytes = null;
+
+				            // Prefer in-memory bytes if you added them to UploadData; else read from temp path
+				            // bytes = upload.getBytes();
+				            if (bytes == null && org.apache.commons.lang3.StringUtils.isNotBlank(upload.getFullPath())) {
+				                try {
+									bytes = java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(upload.getFullPath()));
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+				            }
+
+				            if (bytes != null && bytes.length > 0 &&
+				                org.apache.commons.lang3.StringUtils.isNotBlank(upload.getFileName())) {
+				            		AttachmentUtil.addOrReplaceAttachmentEntry(learnersApplied, upload.getFileName(), bytes, trxName
+				                );
+				            }
+				        }
+				    }
+				}
+
 			}else {
 				learnersApplied.delete(true);// delete if no input or data is cleared
 			}
@@ -583,7 +620,7 @@ public class AnnexureInfo implements ISaveForm{
 		
 	}
 
-	static void setCellValue(AnnexureRow row, ColumnInfo<?> col, Object value) {
+	public static void setCellValue(AnnexureRow row, ColumnInfo<?> col, Object value) {
 		log.info(String.format("Set cell value: row=%s, col=%s, col datatype=%s, value=%s", row, col.getTitle(), col.getDataType(), value));
 		Object valueObj = row.get(col);
 		if (col.getDataType() == DataType.Area) {

@@ -32,7 +32,9 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
         colWriterCell   = ColumnInfo.getColText("CELL NUMBER OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZCellNoWriter);
         colWriterEmail  = ColumnInfo.getColText("EMAIL ADDRESS OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZEmailWriter);
         colProvider     = ColumnInfo.getColText("ACCREDITED TRAINING PROVIDER", I_ZZLearningMaterial.COLUMNNAME_ZZAccreditedTrainingProvider);
-        colCV           = ColumnInfo.getColFileUpload("Unabridged CV", "CV", I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFile, I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFileName);
+        //colCV           = ColumnInfo.getColFileUpload("Unabridged CV", "CV", I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFile, I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFileName);
+        colCV = ColumnInfo.getColFileUpload("Unabridged CV", "CV");  // To load to attachments instead
+
 		
         List<ColumnInfo<?>> cols = List.of(
                 colQualification, colWriterName, colWriterCell, colWriterEmail, colProvider,colCV
@@ -58,6 +60,22 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 		}
 		
 		learningMaterials.init(applicationForm, savedDaos);
+		
+		// Show fileNames in the grid when editing apps
+		if (savedDaos != null) {
+		    for (int i = 0; i < savedDaos.size() && i < learningMaterials.getRows().size(); i++) {
+		        PO dao = savedDaos.get(i); // X_ZZLearningMaterial
+		        org.compiere.model.MAttachment att =
+		            org.compiere.model.MAttachment.get(applicationForm.getCtx(), dao.get_Table_ID(), dao.get_ID());
+		        if (att != null && att.getEntries() != null && att.getEntries().length > 0) {
+		            String name = att.getEntries()[0].getName();
+		            za.co.ntier.webform.form.bean.component.UploadData u =
+		                (za.co.ntier.webform.form.bean.component.UploadData) learningMaterials.getRows().get(i).get(colCV);
+		            if (u != null) u.setFileName(name);
+		        }
+		    }
+		}
+
 	}
 
 	@Override
@@ -98,10 +116,11 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 	                        && isEmail(mail)
 	                        && notEmpty(prov);
 
-	        if (complete) return true;       // 1 complete row unlocks Next
+	        if (complete) return true; // 1 complete row unlocks Next
 	    }
 	    return false;
 	}
+
 
 	private static String s(Object o){
 	    if (o == null) return null;

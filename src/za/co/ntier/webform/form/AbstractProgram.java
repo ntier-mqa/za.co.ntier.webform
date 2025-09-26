@@ -5,16 +5,16 @@ import za.co.ntier.api.model.X_ZZ_Application_Form;
 public abstract class AbstractProgram implements ISaveForm {
 	private MenuContextInfo menuContextInfo;
 	private X_ZZ_Application_Form applicationForm;
-	
+
 	public AbstractProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		this.menuContextInfo = menuContextInfo;
 		this.applicationForm = applicationForm;
 	}
-	
+
 	public void saveForm(X_ZZ_Application_Form applicationForm)  {
 		this.applicationForm = applicationForm;
 	}
-	
+
 	public MenuContextInfo getMenuContextInfo() {
 		return menuContextInfo;
 	}
@@ -30,9 +30,12 @@ public abstract class AbstractProgram implements ISaveForm {
 	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
 	}
-	
+
 	public boolean isProgramValid() {
 		return true;
 	}
+
+
+
 
 }
