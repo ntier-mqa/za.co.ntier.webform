@@ -7,7 +7,6 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 
 import za.co.ntier.api.model.I_ZZDetailSmallBusinesse;
-import za.co.ntier.api.model.I_ZZLearningMaterial;
 import za.co.ntier.api.model.X_ZZDetailSmallBusinesse;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
@@ -21,16 +20,19 @@ public class SmallBusiness extends AbstractProgram{
 
 	public SmallBusiness(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
+		ColumnInfo<?> numOfTrainees = ColumnInfo.getColPositiveNumber("Number of trainees", I_ZZDetailSmallBusinesse.COLUMNNAME_ZZNoTrainees);
+		numOfTrainees.setCalTotal(true);
 		List<ColumnInfo<?>> cols = List.of(
 				ColumnInfo.getColText("Name of business/cooperative/NPO/NGO/CBO to be supported", I_ZZDetailSmallBusinesse.COLUMNNAME_ZZBusinessesName)
 				, ColumnInfo.getColText("Name of programme and level", I_ZZDetailSmallBusinesse.COLUMNNAME_ZZProgrammeName)
-				, ColumnInfo.getColText("Number of credits offered", I_ZZDetailSmallBusinesse.COLUMNNAME_ZZNoCreditOffered)
-				, ColumnInfo.getColText("Duration of training in day", I_ZZDetailSmallBusinesse.COLUMNNAME_ZZNoTrainingDay)
-				, ColumnInfo.getColText("Number of trainees", I_ZZDetailSmallBusinesse.COLUMNNAME_ZZNoTrainees));
+				, ColumnInfo.getColPositiveNumber("Number of credits offered", I_ZZDetailSmallBusinesse.COLUMNNAME_ZZNoCreditOffered)
+				, ColumnInfo.getColPositiveNumber("Duration of training (Days)", I_ZZDetailSmallBusinesse.COLUMNNAME_ZZNoTrainingDay)
+				, numOfTrainees);
 		
-		detailSmallBusiness = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, cols, false);
+		
+		detailSmallBusiness = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, cols, true);
 		detailSmallBusiness.setSubSectionHeader("LIST OF BUSINESSES/COOPERATIVES/NPO/NGO/CBO TO BE SUPPORTED AND TRAINING PROGRAMMES");
-		detailSmallBusiness.setTableTitle("All the below fields are compulsory. Please provide details of small businesses and or cooperatives to be trained. A maximum amount of R20 000 is payable per entity for training support. Further details of the approach and rationale for training must be submitted in a separate proposal submitted with this form. (The list of businesses/cooperatives to be trained can also be submitted together with the proposal in the event the provided space is insufficient.)");
+		detailSmallBusiness.setTableTitle("All the below fields are compulsory. Please provide details of small businesses and or cooperatives to be trained. A maximum amount of R20 000 is payable per entity for training support. Further details of the approach and rationale for training must be submitted in a separate proposal submitted with this form");
 		detailSmallBusiness.setShowAddButton(true);
 		detailSmallBusiness.setPoSupplier((annexure, appForm) -> {
 						X_ZZDetailSmallBusinesse po= new X_ZZDetailSmallBusinesse(appForm.getCtx(), 0, appForm.get_TrxName());

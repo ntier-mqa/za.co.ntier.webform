@@ -262,6 +262,11 @@
     grid-template-columns: 230px 110px 110px 1fr 1fr 1fr;
 }
 
+.mqaWebForm .learningMaterial .grid-table-6{
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+
+}
+
 .mqaWebForm .grid-table-5{
 	/* Define 3 columns with relative widths */
     grid-template-columns: 240px 130px 130px 1fr 1fr;

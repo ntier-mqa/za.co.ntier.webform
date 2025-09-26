@@ -7,7 +7,6 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 
 import za.co.ntier.api.model.I_ZZLearningMaterial;
-import za.co.ntier.api.model.I_ZZStandardSetting;
 import za.co.ntier.api.model.X_ZZLearningMaterial;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
@@ -24,18 +23,19 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
     private ColumnInfo<?> colWriterCell;
     private ColumnInfo<?> colWriterEmail;
     private ColumnInfo<?> colProvider;
+    private ColumnInfo<?> colCV;
 	
 	public LearningMaterialsDevelopment(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
-		
 		colQualification = ColumnInfo.getColText("QUALIFICATION/SKILLS PROGRAMME APPLIED FOR", I_ZZLearningMaterial.COLUMNNAME_ZZQualificationProgramme);
         colWriterName   = ColumnInfo.getColText("NAME OF WRITER (ABRIDGED CV OF WRITER MUST BE ATTACHED)", I_ZZLearningMaterial.COLUMNNAME_ZZNameWriter);
         colWriterCell   = ColumnInfo.getColText("CELL NUMBER OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZCellNoWriter);
         colWriterEmail  = ColumnInfo.getColText("EMAIL ADDRESS OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZEmailWriter);
         colProvider     = ColumnInfo.getColText("ACCREDITED TRAINING PROVIDER", I_ZZLearningMaterial.COLUMNNAME_ZZAccreditedTrainingProvider);
+        colCV           = ColumnInfo.getColFileUpload("Unabridged CV", "CV", I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFile, I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFileName);
 		
         List<ColumnInfo<?>> cols = List.of(
-                colQualification, colWriterName, colWriterCell, colWriterEmail, colProvider
+                colQualification, colWriterName, colWriterCell, colWriterEmail, colProvider,colCV
             );
 
 		
@@ -64,6 +64,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		super.saveForm(applicationForm);
 		learningMaterials.save(trxName, applicationForm);
+		applicationForm.setZZTotalNumberApplied(learningMaterials.getRows().size());
 	}
 
 	/**
