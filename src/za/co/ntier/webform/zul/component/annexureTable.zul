@@ -52,12 +52,15 @@
 				</radiogroup>
             </nodom>
 
-            <!-- Text (save on blur/Enter + notify once) -->
+         <!-- Text -->
 			<nodom if="${detailCol.dataType == DataType.Text}">
 			  <textbox
 			    value="@bind(row[detailCol], save-on='onChanging')"
+			    onChanging="@command('notifyProgramComplete')"
 			    onChange="@command('notifyProgramComplete')" />
-			</nodom>         
+			</nodom>
+   
+			   
             
             <!-- PositiveNumber (notify while typing + keep totals update onChange) -->
 			<nodom if="${detailCol.dataType == DataType.PositiveNumber}">

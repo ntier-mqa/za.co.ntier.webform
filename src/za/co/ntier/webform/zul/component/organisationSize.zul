@@ -21,7 +21,7 @@
 		<intbox
 			value="@bind(vmOrgSize.component.numOfEmployer, save-on='onChange')"
 			onChanging="@command('numEmployerChanging', val=event.value)"
-			constraint="no negative" />
+			constraint="no empty: Please enter 0 or a positive number, no negative"/>
 		</div>
 
 
