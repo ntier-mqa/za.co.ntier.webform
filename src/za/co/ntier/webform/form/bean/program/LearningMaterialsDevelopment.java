@@ -16,6 +16,7 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 
 public class LearningMaterialsDevelopment extends AbstractProgram{
 	private AnnexureInfo learningMaterials;
+	private AnnexureInfo bankInfo;
 	
 	 // Keep column refs so we can read row values reliably
     private ColumnInfo<?> colQualification;
@@ -24,7 +25,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
     private ColumnInfo<?> colWriterEmail;
     private ColumnInfo<?> colProvider;
     private ColumnInfo<?> colCV;
-	
+    
 	public LearningMaterialsDevelopment(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
 		colQualification = ColumnInfo.getColText("QUALIFICATION/SKILLS PROGRAMME APPLIED FOR", I_ZZLearningMaterial.COLUMNNAME_ZZQualificationProgramme);
@@ -75,6 +76,8 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 		        }
 		    }
 		}
+		
+		bankInfo = AnnexureInfo.getBankInfo(applicationForm);
 
 	}
 
@@ -83,6 +86,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 		super.saveForm(applicationForm);
 		learningMaterials.save(trxName, applicationForm);
 		applicationForm.setZZTotalNumberApplied(learningMaterials.getRows().size());
+		bankInfo.save(trxName, applicationForm);
 	}
 
 	/**
@@ -130,6 +134,20 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 	private static boolean notEmpty(String v){ return v != null && !v.isBlank(); }
 	private static boolean isTenDigits(String s){ return s != null && s.matches("^\\s*\\d{10}\\s*$"); }
 	private static boolean isEmail(String s){ return s != null && s.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$"); }
+
+	/**
+	 * @return the bankInfo
+	 */
+	public AnnexureInfo getBankInfo() {
+		return bankInfo;
+	}
+
+	/**
+	 * @param bankInfo the bankInfo to set
+	 */
+	public void setBankInfo(AnnexureInfo bankInfo) {
+		this.bankInfo = bankInfo;
+	}
 
 
 }

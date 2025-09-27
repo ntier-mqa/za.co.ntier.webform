@@ -34,4 +34,9 @@
 	        
 	    </tabpanels>
 	</tabbox>
+	
+	<include component="@load(vmSs.program.bankInfo)"
+	    applicationProgramVM="@init(vmSs.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
+		src="@load((WebForm.getBundleResourcePath('component/gridForm.zul')))" />
 </nodom>

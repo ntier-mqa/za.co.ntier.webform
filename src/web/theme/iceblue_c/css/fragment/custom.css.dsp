@@ -240,8 +240,8 @@
     font-weight:700;
   }
 
-
-.mqaWebForm .grid-table {
+.mqaWebForm .grid-table,
+.mqaWebForm .grid-form {
     display: grid;
     /* Let rows be automatically created with a minimum height */
     grid-auto-rows: minmax(40px, auto);
@@ -250,6 +250,10 @@
     border-radius: 8px;
     overflow: hidden; /* Ensures rounded corners are respected */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mqaWebForm .grid-form {
+	grid-template-columns: 1fr 1fr;
 }
 
 .mqaWebForm .grid-table-7{
@@ -304,7 +308,8 @@
 }
 
 /* --- Style for all grid items (cells) --- */
-.mqaWebForm .grid-cell {
+.mqaWebForm .grid-cell,
+.mqaWebForm .grid-form-cell {
     padding: 5px;
     display: flex;
     align-items: center;
@@ -312,10 +317,16 @@
     text-align: center;
 }
 
+.mqaWebForm .grid-form-cell{
+
+}
+
 .mqaWebForm .grid-cell input[type=text],
 .mqaWebForm .grid-cell select,
-.mqaWebForm .grid-cell span
-
+.mqaWebForm .grid-cell span,
+.mqaWebForm .grid-form-cell input[type=text],
+.mqaWebForm .grid-form-cell select,
+.mqaWebForm .grid-form-cell span  
 {
 	width:100%;
 }

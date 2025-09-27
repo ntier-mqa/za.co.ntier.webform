@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><?import org.compiere.util.KeyNamePair?>
+
+<nodom
+	viewModel="@id('vmBankDetail') @init('za.co.ntier.webform.form.viewmodel.component.GridFormVMWRapper')">
+
+	<div if="${vmBankDetail.component.subSectionHeader ne null}" sclass="subSectionHeader">
+    	<label sclass="subSectionHeaderTitle" style="width:100%" value="@init(vmBankDetail.component.subSectionHeader)" />
+  	</div>
+	<div
+    	sclass="grid-form"
+    	children="@bind(vmBankDetail.component.rows)">
+
+	    <template name="children" var="row">
+	        <nodom children="@bind(vmBankDetail.component.columnInfos)">
+	          	<template name="children" var="col">
+	            	<div sclass="grid-form-cell grid-form-cell-header">
+		              	<label value="@init(col.title)" />
+		            </div>
+		            
+		            <div sclass="grid-form-cell grid-form-cell-value">
+		              	<textbox
+						    value="@bind(row[col], save-on='onChanging')"/>
+	           		</div>
+	          	</template>
+	        </nodom>
+		</template>
+	</div>
+</nodom>

@@ -23,7 +23,9 @@ import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
@@ -31,6 +33,8 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
+import za.co.ntier.api.model.I_ZZBankingDetails;
+import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.ISaveForm;
@@ -910,5 +914,35 @@ public class AnnexureInfo implements ISaveForm{
 		this.createNewRowWhenEmpty = createNewRowWhenEmpty;
 	}
 	
+	
+	public static AnnexureInfo getBankInfo(X_ZZ_Application_Form applicationForm) {
+		List<ColumnInfo<?>> cols = new ArrayList<ColumnInfo<?>>();
+		cols.add(ColumnInfo.getColText("Name of Bank", I_ZZBankingDetails.COLUMNNAME_BankName));
+		cols.add(ColumnInfo.getColText("Branch Name", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name));
+		cols.add(ColumnInfo.getColText("Branch Codes", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number));
+		cols.add(ColumnInfo.getColText("Account Number", I_ZZBankingDetails.COLUMNNAME_AccountNo));
+		
+		AnnexureInfo bankInfo = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, cols, false);
+		bankInfo.setSubSectionHeader("TRAINING PROVIDER BANKING DETAILS");
+		bankInfo.setPoSupplier((ann, appForm) -> {
+			X_ZZBankingDetails po = new X_ZZBankingDetails(appForm.getCtx(), 0, null);
+			po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
+			return po;
+		});
+		
+
+		List<PO> savedDaos = null;
+		if(applicationForm != null) {
+			String where = String.format("%s = ?", 
+					I_ZZBankingDetails.COLUMNNAME_ZZ_Application_Form_ID);
+			
+			Query querySavedDaos = MTable.get(I_ZZBankingDetails.Table_ID).createQuery(where, null);
+			savedDaos = querySavedDaos.setParameters(applicationForm.getZZ_Application_Form_ID()).list();
+		}
+		
+		bankInfo.init(applicationForm, savedDaos);
+		
+		return bankInfo;
+	}
 	
 }
