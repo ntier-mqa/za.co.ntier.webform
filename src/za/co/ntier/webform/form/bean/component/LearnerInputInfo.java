@@ -324,6 +324,7 @@ public class LearnerInputInfo {
 		this.isUploadWPA = isUploadWPA;
 	}
 
+	/*
 	public void uploadFile(Media media, boolean isDSA) throws IOException {
 		if (media != null && isDSA) {
 			setFileNameWPA(media.getName());
@@ -334,4 +335,5 @@ public class LearnerInputInfo {
 		}
 
 	}
+	*/
 }

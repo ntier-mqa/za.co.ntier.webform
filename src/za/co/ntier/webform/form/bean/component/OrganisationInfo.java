@@ -35,7 +35,7 @@ public class OrganisationInfo implements ISaveForm {
 	private X_C_BPartner cetTvetCollegeSelected;
 
 	private String fileNameVATCer;
-	private String fullPathVATCer;
+//	private String fullPathVATCer;
 	private MenuContextInfo menuContextInfo;
 	private AddressInfo orgContact;
 	private String orgName;
@@ -56,6 +56,10 @@ public class OrganisationInfo implements ISaveForm {
 	private String siteSDLNumberTitle = "Site SDL Number (if applicable)";
 	
 	private DiscretionaryGrantsApplicationProgramVM discretionaryGrantsApplicationProgramVM;
+	
+	
+	private byte[] vatCertBytes;   // in-memory payload
+
 	
 	public OrganisationInfo(MenuContextInfo menuContextInfo, DiscretionaryGrantsApplicationProgramVM discretionaryGrantsApplicationProgramVM) {
 		this.menuContextInfo = menuContextInfo;
@@ -122,9 +126,11 @@ public class OrganisationInfo implements ISaveForm {
 		return fileNameVATCer;
 	}
 
+	/*
 	public String getFullPathVATCer() {
 		return fullPathVATCer;
 	}
+	*/
 
 	public MenuContextInfo getMenuContextInfo() {
 		return menuContextInfo;
@@ -228,6 +234,14 @@ public class OrganisationInfo implements ISaveForm {
 		return siteSDLNumberTitle;
 	}
 
+	public byte[] getVatCertBytes() {
+		return vatCertBytes;
+	}
+
+	public void setVatCertBytes(byte[] vatCertBytes) {
+		this.vatCertBytes = vatCertBytes;
+	}
+
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
 
@@ -282,6 +296,7 @@ public class OrganisationInfo implements ISaveForm {
 		applicationForm.setOrgName(getOrgName());
 		applicationForm.setC_BPartner_ID(getbPartnerId());
 		applicationForm.setReferenceNo(orgRegistrationNumber);
+		/* Martin removed
 		if (StringUtils.isNotBlank(getFullPathVATCer()))
 			try {
 				applicationForm.setZZ_VAT_Exemption(
@@ -290,6 +305,7 @@ public class OrganisationInfo implements ISaveForm {
 				e.printStackTrace();
 				throw new AdempiereException(e.getMessage(), e);
 			}
+			*/
 		
 		if(menuContextInfo.getProgramType().isCetTvet()) {
 			if (cetTvetCollegeSelected == null) {
@@ -401,9 +417,11 @@ public class OrganisationInfo implements ISaveForm {
 		BindUtils.postNotifyChange(this, "fileNameVATCer");
 	}
 
+	/*
 	public void setFullPathVATCer(String fullPathVATCer) {
 		this.fullPathVATCer = fullPathVATCer;
 	}
+	*/
 
 	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
@@ -510,9 +528,36 @@ public class OrganisationInfo implements ISaveForm {
 		this.siteSDLNumberTitle = siteSDLNumberTitle;
 	}
 
+	/*
 	public void uploadFile(Media media) throws IOException {
 		setFileNameVATCer(media.getName());
 		fullPathVATCer = MasterUtil.saveUploadFile(media);
 
 	}
+	*/
+	
+	public void uploadFile(Media media) throws IOException {
+	    setFileNameVATCer(media.getName());   // keeps the UI label updated
+
+	    // Capture bytes in memory
+	    byte[] bytes = null;
+	    if (media != null) {
+	        if (media.isBinary()) {
+	            bytes = media.getByteData();
+	            if (bytes == null) { // some providers stream
+	                try (var in = media.getStreamData(); var out = new java.io.ByteArrayOutputStream()) {
+	                    byte[] buf = new byte[8192];
+	                    int n;
+	                    while ((n = in.read(buf)) != -1) out.write(buf, 0, n);
+	                    bytes = out.toByteArray();
+	                }
+	            }
+	        } else {
+	            String s = media.getStringData();
+	            bytes = (s != null) ? s.getBytes(java.nio.charset.StandardCharsets.UTF_8) : null;
+	        }
+	    }
+	    this.vatCertBytes = bytes;
+	}
+
 }

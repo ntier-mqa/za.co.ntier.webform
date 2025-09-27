@@ -636,6 +636,22 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 		
 		applicationForm.saveEx();
+		// Attach VAT certificate to ZZ_Application_Form (one entry per record)
+		if (organisationInfo.getVatCertBytes() != null && organisationInfo.getVatCertBytes().length > 0
+		        && org.apache.commons.lang3.StringUtils.isNotBlank(organisationInfo.getFileNameVATCer())) {
+
+		    // This helper deletes any existing attachment for this record and creates a new one with a single entry.
+		    // That enforces "only one attachment for this record" as requested.
+		    za.co.ntier.webform.form.AttachmentUtil.addOrReplaceAttachmentEntry(
+		            applicationForm,
+		            organisationInfo.getFileNameVATCer(),
+		            organisationInfo.getVatCertBytes(),
+		            trxName
+		    );
+
+		    // free memory after persisting
+		    organisationInfo.setFileNameVATCer(null);
+		}
 		
 		recordId = applicationForm.getZZ_Application_Form_ID();
 		tableId = applicationForm.get_Table_ID();
