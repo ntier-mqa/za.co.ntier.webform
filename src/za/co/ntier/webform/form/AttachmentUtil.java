@@ -1,6 +1,7 @@
 package za.co.ntier.webform.form;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MAttachment;
 import org.compiere.model.PO;
 import org.compiere.util.Env;
@@ -75,4 +76,28 @@ public final class AttachmentUtil {
     private static String safeName(String s) {
         return s == null ? "" : s;
     }
+    
+    public static String getFileNameFromAttachmentEntries(PO po, String btText, String trxName) {
+        if (po == null || po.get_ID() <= 0) return null;
+
+        MAttachment att = MAttachment.get(Env.getCtx(), po.get_Table_ID(), po.get_ID(), trxName);
+        if (att == null || att.getEntryCount() == 0) return null;
+
+        // sanitize btText: trim and remove all '/'
+        final String rawPrefix = btText == null ? "" : btText.trim().replace("/", "");
+        final String want = rawPrefix.isEmpty() ? "" : (rawPrefix + ":");
+
+        int idx = findEntryIndexByPrefix(att, want);
+        if (idx < 0) idx = 0; // fallback to first entry
+
+        String entryName = safe(att.getEntryName(idx));
+        // strip "<btText>:" (with optional space) to return the pure file name
+        String base = entryName.replaceFirst("^([^:]+):\\s*", "");
+        return StringUtils.defaultIfBlank(base, entryName);
+    }
+
+   
+
+    private static String safe(String s) { return s == null ? "" : s; }
+
 }

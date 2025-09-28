@@ -47,10 +47,10 @@ public class AnnexureInfo implements ISaveForm{
 	public final static String AnnexureTypeExitStrategy = "EXIT STRATEGY";
 	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
 	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
-	
+
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
-	
+
 	public static <T extends AnnexureInfo> T getAnnexureInfo(Class<T> clazz, List<ColumnInfo<?>> columnInfos,
 			boolean isShowTotal){
 
@@ -77,7 +77,7 @@ public class AnnexureInfo implements ISaveForm{
 					totalRow.put(columnInfo, null);
 				}
 			}
-			
+
 			if (totalRow.get(columnInfos.get(0)) == null) {
 				totalRow.put(columnInfos.get(0), "Total");
 			}
@@ -86,45 +86,45 @@ public class AnnexureInfo implements ISaveForm{
 		}
 		return annexureInfo;
 	}
-	
+
 	public static Integer getIntegerValue(AnnexureInfo cetTvetOneLineInput, ColumnInfo<?> col) {
 		return AnnexureInfo.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
 	}
-	
+
 	public static Integer getIntegerValue(Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, ColumnInfo<?> colInfo) {
-		
+
 		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
 			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
 			return cellData.getValue();
 		}
-		
+
 		return null;
 	}
 
 	public static ColumnInfo<?> lookupCol(DataType dataType, String colName, AnnexureInfo annexure){
 		return lookupCol(dataType, colName, annexure.getColumnInfos());
 	}
-	
+
 	public static ColumnInfo<?> lookupCol(DataType dataType, String colName, Collection<ColumnInfo<?>> cols){
 		ColumnInfo<?> foundCol = null;
-		
+
 		for (ColumnInfo<?> col : cols) {
 			if (dataType != null  && colName != null && dataType.equals(col.getDataType()) && colName.equals(col.getTitle())) {
 				return col;
 			}
-			
+
 			if (dataType != null && dataType.equals(col.getDataType())){
 				return  col;
 			}
-			
+
 			if (colName != null && colName.equals(col.getTitle())){
 				return  col;
 			}
 		}
-		
+
 		return foundCol;
 	}
-	
+
 	public static ColumnInfo<?> lookupColByDataType(DataType dataType, AnnexureInfo annexure){
 		return lookupCol(dataType, null, annexure);
 	}
@@ -148,13 +148,13 @@ public class AnnexureInfo implements ISaveForm{
 	private boolean showAddButton = false;
 
 	private boolean showTotal = false;
-	
+
 	private boolean showColumnHeader = true;
 
 	private AnnexureInfo subAnnexure;
 
 	private String subSectionHeader;
-	
+
 	private String tableTitle;
 
 	private Map<ColumnInfo<?>, Object> totalRow;
@@ -167,19 +167,19 @@ public class AnnexureInfo implements ISaveForm{
 	public void areaSelect (Map<ColumnInfo<?>, Object> row, 
 			ColumnInfo<?> col,
 			SelectEvent<?, ?> event){
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
 	public AnnexureRow createDetailRow() {
-		
+
 		AnnexureRow row = new AnnexureRow(this);
 
 		for (ColumnInfo<?> columnInfo : columnInfos) {
 			Object cellData = null;
-			
+
 			cellData = row.get(columnInfo);
-			
+
 			if (cellData == null) {
 
 				if (columnInfo.getDataType() == DataType.TwoTitles) {
@@ -214,21 +214,21 @@ public class AnnexureInfo implements ISaveForm{
 		getRows().add(row);
 		return row;
 	}
-	
+
 	/**
 	 * update all cell on total row, use on init data
 	 */
 	public void updateTotalRow() {
 		if (!showTotal)
 			return;
-		
+
 		for (ColumnInfo<?> col:getColumnInfos()) {
 			if (col.getDataType() == DataType.PositiveNumber) {
 				updateTotalRow(col, false);
 			}
 		}
 	}
-	
+
 	/**
 	 * update total cell of column has data change
 	 * @param col
@@ -242,10 +242,10 @@ public class AnnexureInfo implements ISaveForm{
 				total += intData.getValue();
 			}
 		}
-		
+
 		IntData totalValue = (IntData)totalRow.get(col);
 		totalValue.setValue(total);
-		
+
 		if(needNotify) {
 			BindUtils.postNotifyChange(totalValue, "value");
 		}
@@ -319,11 +319,11 @@ public class AnnexureInfo implements ISaveForm{
 		if (col.getDataType() == DataType.PositiveNumber && showTotal) {
 			updateTotalRow(col, true);
 		}
-		
+
 		if (col.getDataType() == DataType.PositiveNumber) {
 			updateExpressionCol (row, true);
 		}
-			
+
 	}
 
 	public void updateExpressionCol () {
@@ -333,7 +333,7 @@ public class AnnexureInfo implements ISaveForm{
 				hasExpressionCol = true;
 			}
 		}
-		
+
 		if(hasExpressionCol) {
 			for(AnnexureRow row:getRows()) {
 				updateExpressionCol(row, false);
@@ -358,30 +358,30 @@ public class AnnexureInfo implements ISaveForm{
 				if(needNotify) {
 					BindUtils.postNotifyChange(expressionLable, "value");
 				}
-				
+
 			}
 		}
 	}
-	
+
 	public void postalChange (Map<ColumnInfo<?>, Object> row, 
 			ColumnInfo<?> col,
 			InputEvent event){
-		
+
 	}
 
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	/**
 	 * @param columnInfos the columnInfos to set
 	 */
 	public void setColumnInfos(List<ColumnInfo<?>> columnInfos) {
 		this.columnInfos = columnInfos;
 	}
-	
+
 	/**
 	 * @param rows the rows to set
 	 */
@@ -409,14 +409,14 @@ public class AnnexureInfo implements ISaveForm{
 	public void setShowTotal(boolean showTotal) {
 		this.showTotal = showTotal;
 	}
-	
+
 	/**
 	 * @param subAnnexure the subAnnexure to set
 	 */
 	public void setSubAnnexure(AnnexureInfo subAnnexure) {
 		this.subAnnexure = subAnnexure;
 	}
-	
+
 	/**
 	 * @param subSectionHeader the subSectionHeader to set
 	 */
@@ -437,38 +437,38 @@ public class AnnexureInfo implements ISaveForm{
 	public void setTotalRow(Map<ColumnInfo<?>, Object> totalRow) {
 		this.totalRow = totalRow;
 	}	
-	
-	
+
+
 	public void uploadFile(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, UploadEvent event) {
-	    UploadData ud = (UploadData) row.get(col);
-	    Media m = event.getMedia();
+		UploadData ud = (UploadData) row.get(col);
+		Media m = event.getMedia();
 
-	    ud.setFileName(m.getName());
+		ud.setFileName(m.getName());
 
-	    try {
-	        byte[] data;
-	        if (m.isBinary() && m.getByteData() != null) {
-	            data = m.getByteData();  // fast path
-	        } else {
-	            // robust stream fallback (also works for large uploads)
-	            try (InputStream in = m.getStreamData();
-	                 ByteArrayOutputStream out = new ByteArrayOutputStream(32 * 1024)) {
-	                byte[] buf = new byte[32 * 1024];
-	                int n;
-	                while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
-	                data = out.toByteArray();
-	            }
-	            if (data == null && !m.isBinary() && m.getStringData() != null) {
-	                data = m.getStringData().getBytes(StandardCharsets.UTF_8);
-	            }
-	        }
-	        ud.setBytes(data);
-	    } catch (Exception e) {
-	        throw new AdempiereException("Unable to read uploaded file", e);
-	    }
+		try {
+			byte[] data;
+			if (m.isBinary() && m.getByteData() != null) {
+				data = m.getByteData();  // fast path
+			} else {
+				// robust stream fallback (also works for large uploads)
+				try (InputStream in = m.getStreamData();
+						ByteArrayOutputStream out = new ByteArrayOutputStream(32 * 1024)) {
+					byte[] buf = new byte[32 * 1024];
+					int n;
+					while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+					data = out.toByteArray();
+				}
+				if (data == null && !m.isBinary() && m.getStringData() != null) {
+					data = m.getStringData().getBytes(StandardCharsets.UTF_8);
+				}
+			}
+			ud.setBytes(data);
+		} catch (Exception e) {
+			throw new AdempiereException("Unable to read uploaded file", e);
+		}
 
-	    // refresh the filename label
-	    BindUtils.postNotifyChange(ud, "fileName");
+		// refresh the filename label
+		BindUtils.postNotifyChange(ud, "fileName");
 	}
 
 	/**
@@ -505,7 +505,7 @@ public class AnnexureInfo implements ISaveForm{
 		for (ColumnInfo<?> col:cols) {
 			boolean ignoreSetDao = false;
 			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
-			
+
 				Boolean hasCellData = Boolean.FALSE;
 				Object cellValueObj = null;
 				if (col.getDataType() == DataType.PositiveNumber) {
@@ -527,16 +527,17 @@ public class AnnexureInfo implements ISaveForm{
 					cellValueObj = dateData.getTimestamp();
 				}else if (col.getDataType() == DataType.FileUpload) {
 					// Martin changed to save to attachments instead to a binary file
-				    UploadData uploadData = (UploadData) row.get(col);
-				    if (uploadData != null && uploadData.getBytes() != null && uploadData.getBytes().length > 0) {
-				        hasCellData = Boolean.TRUE;
-				    }
-				    ignoreSetDao = true; // never set DAO properties for files anymore
-								
-					
-				/*	
+					UploadData uploadData = (UploadData) row.get(col);
+					if (uploadData != null && uploadData.getBytes() != null && uploadData.getBytes().length > 0) {
+						hasCellData = Boolean.TRUE;
+					}
+					ignoreSetDao = true; // never set DAO properties for files anymore
+
+
+
+					/*	
 					UploadData uploadData = (UploadData)row.get(col);
-						
+
 					if (uploadData != null && StringUtils.isNoneEmpty(uploadData.getFullPath())) {
 						try {
 							cellValueObj = Files.readAllBytes(Paths.get(uploadData.getFullPath()));
@@ -547,12 +548,12 @@ public class AnnexureInfo implements ISaveForm{
 							throw new ApplicationException(e.getMessage(), e);
 						}
 					}
-					
+
 					// don't overrider binary by null for case reload data but not yet upload new file
 					if (uploadData != null && StringUtils.isNotBlank(uploadData.getFileName()) && StringUtils.isBlank(uploadData.getFullPath())) {
 						ignoreSetDao = true;
 					}
-					*/
+					 */
 				}else if (col.getDataType() == DataType.List) {
 					Object selectedObj = row.get(col);
 					if (StringUtils.isNotBlank(col.getBeanPropertyName())) {
@@ -570,11 +571,11 @@ public class AnnexureInfo implements ISaveForm{
 					cellValueObj = celDataEntryObj.getKey();
 					hasCellData = celDataEntryObj.getValue();
 				}
-				
+
 				if (hasCellData)
 					hasRowData = Boolean.TRUE;
-				
-				
+
+
 				if (!ignoreSetDao) {
 					if (cellValueObj == null) {
 						try {
@@ -587,66 +588,66 @@ public class AnnexureInfo implements ISaveForm{
 							e.printStackTrace();
 							throw new AdempiereException(e.getMessage(), e);
 						}
-				    }
-				    
+					}
+
 					setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
 				}
 			}
 		}
-		
+
 		return new AbstractMap.SimpleEntry<>(total, hasRowData);
 	}
 
-	
+
 	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
 
-	    int total = 0;
+		int total = 0;
 
-	    for (AnnexureRow row : getRows()) {
-	        PO po = (PO) row.getData();
-	        if (po == null) {
-	            applicationForm.set_TrxName(trxName); // important
-	            po = poSupplier.apply(this, applicationForm);
-	        }
+		for (AnnexureRow row : getRows()) {
+			PO po = (PO) row.getData();
+			if (po == null) {
+				applicationForm.set_TrxName(trxName); // important
+				po = poSupplier.apply(this, applicationForm);
+			}
 
-	        Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, po);
+			Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, po);
 
-	        if (result.getValue()) {
-	            po.saveEx(trxName);
+			if (result.getValue()) {
+				po.saveEx(trxName);
 
-	            // --- Save FileUpload columns as ATTACHMENTS (memory only) ---
-	            for (ColumnInfo<?> col : getColumnInfos()) {
-	                if (col.getDataType() != DataType.FileUpload) continue;
+				// --- Save FileUpload columns as ATTACHMENTS (memory only) ---
+				for (ColumnInfo<?> col : getColumnInfos()) {
+					if (col.getDataType() != DataType.FileUpload) continue;
 
-	                UploadData upload = (UploadData) row.get(col);
-	                if (upload == null) continue;
+					UploadData upload = (UploadData) row.get(col);
+					if (upload == null) continue;
 
-	                byte[] bytes = upload.getBytes(); // <-- in-memory only
-	                String fileName = upload.getFileName();
+					byte[] bytes = upload.getBytes(); // <-- in-memory only
+					String fileName = upload.getFileName();
 
-	                if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
-	                    // one-entry semantics: delete-and-recreate
-	                    AttachmentUtil.addOrReplaceAttachmentEntry(po, fileName, bytes, col.getBtText() ,trxName);
+					if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
+						// one-entry semantics: delete-and-recreate
+						AttachmentUtil.addOrReplaceAttachmentEntry(po, fileName, bytes, col.getBtText() ,trxName);
 
-	                    // free memory for this row after persisting
-	                    upload.setBytes(null);
-	                }
+						// free memory for this row after persisting
+						upload.setBytes(null);
+					}
 
-	                // If you want to support "delete attachment when user clears the file":
-	                // else if ((bytes == null || bytes.length == 0)) {
-	                //     MAttachment att = MAttachment.get(Env.getCtx(), po.get_Table_ID(), po.get_ID(), trxName);
-	                //     if (att != null) att.delete(true);
-	                // }
-	            }
-	        } else {
-	            // delete row record if user cleared all input for this row
-	            po.delete(true);
-	        }
+					// If you want to support "delete attachment when user clears the file":
+					// else if ((bytes == null || bytes.length == 0)) {
+					//     MAttachment att = MAttachment.get(Env.getCtx(), po.get_Table_ID(), po.get_ID(), trxName);
+					//     if (att != null) att.delete(true);
+					// }
+				}
+			} else {
+				// delete row record if user cleared all input for this row
+				po.delete(true);
+			}
 
-	        total += result.getKey();
-	    }
+			total += result.getKey();
+		}
 
-	    applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
+		applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
 	}
 
 
@@ -704,11 +705,11 @@ public class AnnexureInfo implements ISaveForm{
 
 	@SuppressWarnings("unchecked")
 	/**
-	* return entry with value already convert (example 0 for non input int), value is true in case input non-null
-	*/
+	 * return entry with value already convert (example 0 for non input int), value is true in case input non-null
+	 */
 	public static <T> Entry<T, Boolean> getCellValue(AnnexureRow row, ColumnInfo<?> col) {
 		Object valueObj = row.get(col);
-		
+
 		if (col.getDataType() == DataType.Area) {
 			AreaData areaData = (AreaData)valueObj;
 			MCity area = areaData.getSelectedArea();
@@ -716,7 +717,7 @@ public class AnnexureInfo implements ISaveForm{
 				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(0), Boolean.FALSE);
 			else
 				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(area.getC_City_ID()), Boolean.TRUE);
-				
+
 		}else if (col.getDataType() == DataType.PositiveNumber) {
 			IntData intData = (IntData)valueObj;
 			if (intData.getValue() == null) {
@@ -724,7 +725,7 @@ public class AnnexureInfo implements ISaveForm{
 			}else {
 				return new AbstractMap.SimpleEntry<>((T)intData.getValue(), Boolean.TRUE);
 			}
-			
+
 		}else if (col.getDataType() == DataType.Postal) {
 			PostalData postalData = (PostalData)valueObj;
 			T value = (T)postalData.getPostal();
@@ -764,7 +765,7 @@ public class AnnexureInfo implements ISaveForm{
 			e.printStackTrace();
 			throw new AdempiereException(e.getMessage(), e);
 		}
-		
+
 	}
 
 	/**
@@ -801,63 +802,71 @@ public class AnnexureInfo implements ISaveForm{
 			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
 				Object daoValue = null;
 				if (col.getDataType() == DataType.FileUpload && StringUtils.isNotBlank(col.getDaoPropertyFileName())) {
-					daoValue = getDaoValue(dao, col.getDaoPropertyFileName());
+					String attFileName = null;
+					if (dao instanceof PO) {
+						daoValue = AttachmentUtil.getFileNameFromAttachmentEntries(
+								(PO) dao,
+								col.getBtText(),
+								((PO) dao).get_TrxName()
+								);
+					}
+					//daoValue = getDaoValue(dao, col.getDaoPropertyFileName());
 				}else if (col.getDataType() != DataType.FileUpload  && StringUtils.isNotBlank(col.getDaoPropertyName())) {
 					daoValue = getDaoValue(dao, col.getDaoPropertyName());
 				}
-				
+
 				AnnexureInfo.setCellValue(row, col, daoValue);
 			}
 		}
 	}
-	
+
 	public void init(X_ZZ_Application_Form applicationForm) {
 		init(applicationForm, null);
 	}
-	
+
 	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas) {
 		init(applicationForm, savedDatas, null);
 	}
-	
+
 	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<ColumnInfo<?>, Object>> rowTitles) {
 		if(rowTitles == null || rowTitles.size() == 0)
 			init(applicationForm, savedDatas, null, null);
 		else
 			init(applicationForm, savedDatas, rowTitles, rowTitles.get(0).keySet());
 	}
-	
+
 	public void init(X_ZZ_Application_Form applicationForm, 
 			List<PO> savedDatas, List<Map<ColumnInfo<?>, Object>> rowTitles, Collection<ColumnInfo<?>> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)
 			for (Map<ColumnInfo<?>, Object> rowTitle : rowTitles) {
 				AnnexureRow row = (AnnexureRow)createDetailRow();
-				
+
 				for (Entry<ColumnInfo<?>, Object> colTile : rowTitle.entrySet()) {
 					AnnexureInfo.setCellValue(row, colTile.getKey(), colTile.getValue());
 				}
 			}
-		
+
 		// init rows with saved data
 		if (savedDatas != null && savedDatas.size() > 0) {
 			List<AnnexureRow> matchedRows = new ArrayList<>();
-			
+
 			boolean learnerInfoKey = false;
 			if (keyColumns != null && keyColumns.size() > 0) {
 				if (lookupColByDataType(DataType.LearnerInfo, keyColumns) != null) {
 					learnerInfoKey = true;
 				}
 			}
-			
+
 			for (PO dao : savedDatas) {
 				boolean isMatching = false;
 				if (keyColumns != null && keyColumns.size() > 0) {
 					for (AnnexureRow row : getRows()) {
 						if (matchedRows.contains(row))
 							continue;
-						
+
 						isMatching = isMatchingRow(row, dao, keyColumns);
-						
+
 						if (isMatching) {
 							matchedRows.add(row);
 							row.setData(dao);
@@ -866,7 +875,7 @@ public class AnnexureInfo implements ISaveForm{
 						}
 					}
 				}
-				
+
 				if (!isMatching && learnerInfoKey) {
 					// moment don't handle this case, in case what to handle it need to change createDetailRow to create LearnerInputInfo for LearnerInfo column
 				}else if(!isMatching) {
@@ -875,13 +884,13 @@ public class AnnexureInfo implements ISaveForm{
 					fillRowDataFromDao(getColumnInfos(), row, dao);
 				}
 			}
-			
+
 		}
-		
+
 		if (getRows().size() == 0 && createNewRowWhenEmpty) {
 			createDetailRow();
 		}
-		
+
 		updateExpressionCol();
 		updateTotalRow();
 	}
@@ -913,15 +922,15 @@ public class AnnexureInfo implements ISaveForm{
 	public void setCreateNewRowWhenEmpty(boolean createNewRowWhenEmpty) {
 		this.createNewRowWhenEmpty = createNewRowWhenEmpty;
 	}
-	
-	
+
+
 	public static AnnexureInfo getBankInfo(X_ZZ_Application_Form applicationForm) {
 		List<ColumnInfo<?>> cols = new ArrayList<ColumnInfo<?>>();
 		cols.add(ColumnInfo.getColText("Name of Bank", I_ZZBankingDetails.COLUMNNAME_BankName));
 		cols.add(ColumnInfo.getColText("Branch Name", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name));
 		cols.add(ColumnInfo.getColText("Branch Codes", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number));
 		cols.add(ColumnInfo.getColText("Account Number", I_ZZBankingDetails.COLUMNNAME_AccountNo));
-		
+
 		AnnexureInfo bankInfo = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, cols, false);
 		bankInfo.setSubSectionHeader("TRAINING PROVIDER BANKING DETAILS");
 		bankInfo.setPoSupplier((ann, appForm) -> {
@@ -929,20 +938,20 @@ public class AnnexureInfo implements ISaveForm{
 			po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
 			return po;
 		});
-		
+
 
 		List<PO> savedDaos = null;
 		if(applicationForm != null) {
 			String where = String.format("%s = ?", 
 					I_ZZBankingDetails.COLUMNNAME_ZZ_Application_Form_ID);
-			
+
 			Query querySavedDaos = MTable.get(I_ZZBankingDetails.Table_ID).createQuery(where, null);
 			savedDaos = querySavedDaos.setParameters(applicationForm.getZZ_Application_Form_ID()).list();
 		}
-		
+
 		bankInfo.init(applicationForm, savedDaos);
-		
+
 		return bankInfo;
 	}
-	
+
 }

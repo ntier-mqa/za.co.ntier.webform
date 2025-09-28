@@ -1,11 +1,8 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MBPartner;
@@ -17,6 +14,7 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -262,6 +260,8 @@ public class OrganisationInfo implements ISaveForm {
 				}
 				
 			}
+			String vatFile = AttachmentUtil.getFileNameFromAttachmentEntries(applicationForm,"VAT Exempt Cert",applicationForm.get_TrxName());
+			setFileNameVATCer(StringUtils.isNotBlank(vatFile) ? vatFile : null);
 		}
 
 		
