@@ -20,6 +20,7 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 public class StandardSetting extends AbstractProgram {
 
 	private List<StandardSettingInput> standardSettings;
+	private AnnexureInfo bankInfo;
 	
 	public StandardSetting(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
@@ -153,6 +154,7 @@ public class StandardSetting extends AbstractProgram {
 		
 		standardSettings.add(standardSettingInput);
 		
+		bankInfo = AnnexureInfo.getBankInfo(applicationForm);
 		
 	}
 
@@ -234,6 +236,7 @@ public class StandardSetting extends AbstractProgram {
 		
 		standardSettings.forEach(standardSetting -> standardSetting.save(trxName, applicationForm));
 
+		bankInfo.save(trxName, applicationForm);
 	}
 
 	/**
@@ -248,6 +251,14 @@ public class StandardSetting extends AbstractProgram {
 	 */
 	public void setStandardSettings(List<StandardSettingInput> standardSettings) {
 		this.standardSettings = standardSettings;
+	}
+	
+	public AnnexureInfo getBankInfo() {
+		return bankInfo;
+	}
+
+	public void setBankInfo(AnnexureInfo bankInfo) {
+		this.bankInfo = bankInfo;
 	}
 
 }

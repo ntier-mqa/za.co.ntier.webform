@@ -8,4 +8,11 @@
 	    applicationProgramVM="@init(vmLmd.applicationProgramVM)"
         notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+		
+	<include component="@load(vmLmd.program.bankInfo)"
+	    applicationProgramVM="@init(vmLmd.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
+		src="@load((WebForm.getBundleResourcePath('component/gridForm.zul')))" />
+		
+		
 </nodom>
