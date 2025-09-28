@@ -626,7 +626,7 @@ public class AnnexureInfo implements ISaveForm{
 
 	                if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
 	                    // one-entry semantics: delete-and-recreate
-	                    AttachmentUtil.addOrReplaceAttachmentEntry(po, fileName, bytes, trxName);
+	                    AttachmentUtil.addOrReplaceAttachmentEntry(po, fileName, bytes, col.getBtText() ,trxName);
 
 	                    // free memory for this row after persisting
 	                    upload.setBytes(null);

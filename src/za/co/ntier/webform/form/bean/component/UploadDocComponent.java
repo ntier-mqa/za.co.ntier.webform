@@ -114,7 +114,7 @@ public class UploadDocComponent implements ISaveForm {
 
 	            // === Attach the file (exactly one entry per record) ===
 	            // Uses your helper that deletes any existing attachment and creates a fresh one.
-	            za.co.ntier.webform.form.AttachmentUtil.addOrReplaceAttachmentEntry(docUploadedFile, name, bytes, trxName);
+	            za.co.ntier.webform.form.AttachmentUtil.addOrReplaceAttachmentEntry(docUploadedFile, name, bytes, uploadFileCol.getBtText(), trxName);
 
 	            // Free memory after persisting
 	            uploadData.setBytes(null);

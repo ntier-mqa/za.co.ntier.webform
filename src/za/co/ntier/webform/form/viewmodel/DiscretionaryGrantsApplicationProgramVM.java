@@ -646,6 +646,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		            applicationForm,
 		            organisationInfo.getFileNameVATCer(),
 		            organisationInfo.getVatCertBytes(),
+		            "VAT Exempt Cert",
 		            trxName
 		    );
 
