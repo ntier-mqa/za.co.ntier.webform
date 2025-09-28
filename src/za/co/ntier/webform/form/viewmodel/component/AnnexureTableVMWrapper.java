@@ -104,45 +104,46 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 		InlineValidators.validateContactField(ref, row, col);
 	}
 	
+		
 	@Command
 	public void instantEdit(@BindingParam("row") AnnexureRow row,
 	                        @BindingParam("col") ColumnInfo<?> col,
 	                        @BindingParam("ref") Component ref,
 	                        @BindingParam("newVal") String newVal) {
-
-	    // 1) Commit latest keystroke so completeness check sees up-to-date value
+	    // Commit value to the backing cell so completeness logic sees it
 	    if (col.getDataType() == DataType.Text) {
 	        AnnexureInfo.setCellValue(row, col, newVal);
 	    }
-
-	    // 2) Clear any previous inline error on the field
+	    // Clear any previous error while typing
 	    Clients.clearWrongValue(ref);
 	    if (ref instanceof InputElement ie) ie.setErrorMessage(null);
 
-	    // 3) Validate email/phone; ALWAYS notify completeness, even if invalid
-	    String dao = col.getDaoPropertyName();
-	    String v = newVal == null ? null : newVal.trim();
-	    boolean invalid = false;
-	    String err = null;
-
-	    if (dao != null) {
-	        String key = dao.toLowerCase();
-	        if (key.endsWith("emailwriter")) {
-	            invalid = (v == null || !v.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$"));
-	            if (invalid) err = "Please enter a valid email address";
-	        } else if (key.endsWith("cellnowriter")) {
-	            invalid = (v == null || !v.matches("^\\s*\\d{10}\\s*$"));
-	            if (invalid) err = "Cell number must be exactly 10 digits";
-	        }
-	    }
-
-	    // 4) Tell the application VM to re-evaluate program completeness
-	    //    (this is your existing hook that triggers isProgramComplete()/isNextDisabled())
+	    // Re-evaluate Next/Submit buttons
 	    notifyProgramComplete();
 
-	    // 5) If invalid, now throw to paint the field red and block commit
-	    if (invalid) {
-	        throw new WrongValueException(ref, err);
+	    // IMPORTANT: do NOT throw here — we only validate on blur
+	}
+
+	@Command
+	public void blurValidate(@BindingParam("row") AnnexureRow row,
+	                         @BindingParam("col") ColumnInfo<?> col,
+	                         @BindingParam("ref") Component ref,
+	                         @BindingParam("newVal") String newVal) {
+	    String v = newVal == null ? null : newVal.trim();
+
+	    // identify columns by DAO property name
+	    String dao = col.getDaoPropertyName();
+	    String key = dao == null ? "" : dao.toLowerCase();
+
+	    if (key.endsWith("emailwriter")) {
+	        if (v == null || !v.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$")) {
+	            throw new WrongValueException(ref, "Please enter a valid email address");
+	        }
+	    } else if (key.endsWith("cellnowriter")) {
+	        if (v == null || !v.matches("^\\d{10}$")) {
+	            throw new WrongValueException(ref, "Cell number must be exactly 10 digits");
+	        }
 	    }
 	}
+
 }

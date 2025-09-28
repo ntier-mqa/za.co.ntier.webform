@@ -702,7 +702,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	* return entry with value already convert (example 0 for non input int), value is true in case input non-null
 	*/
-	public <T> Entry<T, Boolean> getCellValue(AnnexureRow row, ColumnInfo<?> col) {
+	public static <T> Entry<T, Boolean> getCellValue(AnnexureRow row, ColumnInfo<?> col) {
 		Object valueObj = row.get(col);
 		
 		if (col.getDataType() == DataType.Area) {
