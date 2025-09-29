@@ -10,6 +10,7 @@ import za.co.ntier.api.model.I_ZZLearningMaterial;
 import za.co.ntier.api.model.X_ZZLearningMaterial;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
+import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
@@ -66,6 +67,13 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 		if (savedDaos != null) {
 		    for (int i = 0; i < savedDaos.size() && i < learningMaterials.getRows().size(); i++) {
 		        PO dao = savedDaos.get(i); // X_ZZLearningMaterial
+		        String name = AttachmentUtil.getFileNameFromAttachmentEntries(dao, colCV.getBtText(), dao.get_TrxName());
+		        var u = (za.co.ntier.webform.form.bean.component.UploadData)
+		                learningMaterials.getRows().get(i).get(colCV);
+		        if (u != null && org.apache.commons.lang3.StringUtils.isNotBlank(name)) {
+		            u.setFileName(name);
+		        }
+		        /*
 		        org.compiere.model.MAttachment att =
 		            org.compiere.model.MAttachment.get(applicationForm.getCtx(), dao.get_Table_ID(), dao.get_ID());
 		        if (att != null && att.getEntries() != null && att.getEntries().length > 0) {
@@ -74,6 +82,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 		                (za.co.ntier.webform.form.bean.component.UploadData) learningMaterials.getRows().get(i).get(colCV);
 		            if (u != null) u.setFileName(name);
 		        }
+		        */
 		    }
 		}
 		
@@ -105,25 +114,32 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 	
 	@Override
 	public boolean isProgramValid() {
-	    if (learningMaterials == null || learningMaterials.getRows() == null) return false;
+	    // existing learning-materials check
+	    boolean lmOk = false;
+	    if (learningMaterials != null && learningMaterials.getRows() != null) {
+	        for (var row : learningMaterials.getRows()) {
+	            String q    = s(row.get(colQualification));
+	            String name = s(row.get(colWriterName));
+	            String cell = s(row.get(colWriterCell));
+	            String mail = s(row.get(colWriterEmail));
+	            String prov = s(row.get(colProvider));
 
-	    for (var row : learningMaterials.getRows()) {
-	        String q    = s(row.get(colQualification));
-	        String name = s(row.get(colWriterName));
-	        String cell = s(row.get(colWriterCell));
-	        String mail = s(row.get(colWriterEmail));
-	        String prov = s(row.get(colProvider));
+	            boolean complete = notEmpty(q)
+	                            && notEmpty(name)
+	                            && isTenDigits(cell)
+	                            && isEmail(mail)
+	                            && notEmpty(prov);
 
-	        boolean complete = notEmpty(q)
-	                        && notEmpty(name)
-	                        && isTenDigits(cell)
-	                        && isEmail(mail)
-	                        && notEmpty(prov);
-
-	        if (complete) return true; // 1 complete row unlocks Next
+	            if (complete) { lmOk = true; break; }
+	        }
 	    }
-	    return false;
+
+	    // new bank-details check
+	    boolean bankOk = bankInfo != null && bankInfo.areMandatoryFieldsFilled();
+
+	    return lmOk && bankOk;
 	}
+
 
 
 	private static String s(Object o){

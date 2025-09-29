@@ -925,11 +925,21 @@ public class AnnexureInfo implements ISaveForm{
 
 
 	public static AnnexureInfo getBankInfo(X_ZZ_Application_Form applicationForm) {
-		List<ColumnInfo<?>> cols = new ArrayList<ColumnInfo<?>>();
+		/* List<ColumnInfo<?>> cols = new ArrayList<ColumnInfo<?>>();
 		cols.add(ColumnInfo.getColText("Name of Bank", I_ZZBankingDetails.COLUMNNAME_BankName));
 		cols.add(ColumnInfo.getColText("Branch Name", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name));
 		cols.add(ColumnInfo.getColText("Branch Codes", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number));
 		cols.add(ColumnInfo.getColText("Account Number", I_ZZBankingDetails.COLUMNNAME_AccountNo));
+		*/
+		
+		
+	    List<ColumnInfo<?>> cols = new ArrayList<>();
+	    ColumnInfo<?> cBank   = ColumnInfo.getColText("Name of Bank",  I_ZZBankingDetails.COLUMNNAME_BankName).required();
+	    ColumnInfo<?> cBranch = ColumnInfo.getColText("Branch Name",   I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name).required();
+	    ColumnInfo<?> cCode   = ColumnInfo.getColText("Branch Codes",  I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number).required();
+	    ColumnInfo<?> cAcct   = ColumnInfo.getColText("Account Number",I_ZZBankingDetails.COLUMNNAME_AccountNo).required();
+
+	    cols.add(cBank); cols.add(cBranch); cols.add(cCode); cols.add(cAcct);
 
 		AnnexureInfo bankInfo = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, cols, false);
 		bankInfo.setSubSectionHeader("TRAINING PROVIDER BANKING DETAILS");
@@ -953,5 +963,19 @@ public class AnnexureInfo implements ISaveForm{
 
 		return bankInfo;
 	}
+	
+	public boolean areMandatoryFieldsFilled() {
+	    if (rows == null || rows.isEmpty()) return false; // bank form needs one row
+	    for (AnnexureRow r : rows) {
+	        for (ColumnInfo<?> col : columnInfos) {
+	            if (!col.isMandatory()) continue;
+	            Object v = r.get(col);
+	            if (v == null) return false;
+	            if (v instanceof CharSequence && ((CharSequence) v).toString().trim().isEmpty()) return false;
+	        }
+	    }
+	    return true;
+	}
+
 
 }
