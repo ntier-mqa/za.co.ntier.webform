@@ -22,8 +22,8 @@ public class MedpProgram extends AbstractProgram {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		super.saveForm(applicationForm);
-		applicationForm.setZZTotalNumberApplied(noOfLearners);
-		applicationForm.setZZNoLearners(noOfLearners);
+		applicationForm.setZZTotalNumberApplied(Util.convert(noOfLearners));
+		applicationForm.setZZNoLearners(Util.convert(noOfLearners));
 		
 	}
 	
