@@ -1,8 +1,6 @@
 package za.co.ntier.webform.form;
 
 import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.form.bean.component.AnnexureRow;
-import za.co.ntier.webform.form.bean.component.ColumnInfo;
 
 public interface ISaveForm {
 	default public void beforeSaveForm(String trxName, X_ZZ_Application_Form applicationForm) {

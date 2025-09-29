@@ -9,7 +9,6 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import za.co.ntier.api.model.I_ZZLearnersApplied;
 import za.co.ntier.api.model.I_ZZ_FormDiscipline;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.api.model.X_ZZ_FormDiscipline;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
@@ -50,7 +49,7 @@ public class HetLectureSupport  extends AbstractProgram {
 		institutionParticipated.initProject(applicationForm);
 
 		titleCol = ColumnInfo.getColLearnerInfo("MINING DISCIPLINES"
-				, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Disciplines_ID);
+				, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Disciplines_ID);
 
 		colNoLecture = ColumnInfo.getColPositiveNumber("NUMBER OF LECTURERS"
 				, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoLecture);
@@ -164,7 +163,7 @@ public class HetLectureSupport  extends AbstractProgram {
 	/** True iff every column in cols has a non-null integer in the FIRST row of the ProjectInput */
 	private boolean allNumbersPresent(ProjectInput pi, java.util.List<ColumnInfo<?>> cols) {
 		if (pi == null || pi.getRows() == null || pi.getRows().isEmpty()) return false;
-		@SuppressWarnings("unchecked")
+		
 		java.util.Map<ColumnInfo<?>, Object> row = (java.util.Map<ColumnInfo<?>, Object>) pi.getRows().get(0);
 		for (ColumnInfo<?> c : cols) {
 			Integer v = Util.getInt(row.get(c));

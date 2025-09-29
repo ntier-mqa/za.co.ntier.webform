@@ -14,15 +14,16 @@ import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
+import za.co.ntier.api.model.I_ZZ_Disciplines;
 import za.co.ntier.api.model.I_ZZ_FormDiscipline;
+import za.co.ntier.api.model.I_ZZ_Learnerships;
+import za.co.ntier.api.model.I_ZZ_Program_Disciplines;
+import za.co.ntier.api.model.I_ZZ_Program_Learnerships;
+import za.co.ntier.api.model.I_ZZ_Program_Trade;
+import za.co.ntier.api.model.I_ZZ_Trade;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.api.model.X_ZZ_Disciplines;
 import za.co.ntier.api.model.X_ZZ_FormDiscipline;
-import za.co.ntier.api.model.X_ZZ_Learnerships;
-import za.co.ntier.api.model.X_ZZ_Program_Disciplines;
 import za.co.ntier.api.model.X_ZZ_Program_Learnerships;
-import za.co.ntier.api.model.X_ZZ_Program_Trade;
-import za.co.ntier.api.model.X_ZZ_Trade;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
 
@@ -33,13 +34,13 @@ public class ProgramInput extends AnnexureInfo {
 		String learnerInputTable;
 		
 		if(isTrade) {
-			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
-			learnerInputProgramTable = X_ZZ_Program_Trade.Table_Name;
-			learnerInputTable = X_ZZ_Trade.Table_Name;
+			learnerInputID = I_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
+			learnerInputProgramTable = I_ZZ_Program_Trade.Table_Name;
+			learnerInputTable = I_ZZ_Trade.Table_Name;
 		}else {
-			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
-			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
-			learnerInputTable = X_ZZ_Disciplines.Table_Name;
+			learnerInputID = I_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
+			learnerInputProgramTable = I_ZZ_Program_Disciplines.Table_Name;
+			learnerInputTable = I_ZZ_Disciplines.Table_Name;
 		}
 		
 		String uploadColumnSql = String.format("""
@@ -48,10 +49,10 @@ public class ProgramInput extends AnnexureInfo {
 					ON (%s.%s = %s.%s) 
 				WHERE %s = ?
 				"""
-				, X_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req, X_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req 
+				, I_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req, I_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req 
 				, learnerInputProgramTable, learnerInputTable
 				, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID
-				, X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID
+				, I_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID
 				);
 		
 		List<Object> uploadConditions = DB.getSQLValueObjectsEx(null, uploadColumnSql, programMasterDataID);
@@ -73,9 +74,9 @@ public class ProgramInput extends AnnexureInfo {
 	}
 	
 	public static Entry<Boolean, Boolean> queryUploadColumnForLearnership(int programMasterDataID, String learnerships) {
-		String learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
-		String learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
-		String learnerInputTable = X_ZZ_Learnerships.Table_Name;
+		String learnerInputID = I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
+		String learnerInputProgramTable = I_ZZ_Program_Learnerships.Table_Name;
+		String learnerInputTable = I_ZZ_Learnerships.Table_Name;
 
 		String learnershipType = null;
 		if (learnerships == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership) {
@@ -92,10 +93,10 @@ public class ProgramInput extends AnnexureInfo {
 					ON (%s.%s = %s.%s) 
 				WHERE %s = ? AND %s.%s = ?
 				"""
-				, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_WPA_Req, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Is_Accred_SLA_Req 
+				, I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_WPA_Req, I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Is_Accred_SLA_Req 
 				, learnerInputProgramTable, learnerInputTable
 				, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID
-				, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Master_Data_ID, learnerInputProgramTable, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_Type
+				, I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Master_Data_ID, learnerInputProgramTable, I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_Type
 				);
 		List<Object> uploadConditions = DB.getSQLValueObjectsEx(null, uploadColumnSql, programMasterDataID, learnershipType);
 		return convertUploadCondition(uploadConditions);
@@ -104,20 +105,20 @@ public class ProgramInput extends AnnexureInfo {
 	public static List<LearnerInputInfo> queryLearnerInputInfos(int programMasterDataID, boolean isTrade) {
 		String learnerInputProgramID;
 		String learnerInputID;
-		String learnerInputText = X_ZZ_Trade.COLUMNNAME_Name;
+		String learnerInputText = I_ZZ_Trade.COLUMNNAME_Name;
 		String learnerInputProgramTable;
 		String learnerInputTable;
 		
 		if (isTrade) {
-			learnerInputProgramID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Trade_ID;
-			learnerInputID = X_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
-			learnerInputProgramTable = X_ZZ_Program_Trade.Table_Name;
-			learnerInputTable = X_ZZ_Trade.Table_Name;
+			learnerInputProgramID = I_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Trade_ID;
+			learnerInputID = I_ZZ_Program_Trade.COLUMNNAME_ZZ_Trade_ID;
+			learnerInputProgramTable = I_ZZ_Program_Trade.Table_Name;
+			learnerInputTable = I_ZZ_Trade.Table_Name;
 		} else {
-			learnerInputProgramID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Program_Disciplines_ID;
-			learnerInputID = X_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
-			learnerInputProgramTable = X_ZZ_Program_Disciplines.Table_Name;
-			learnerInputTable = X_ZZ_Disciplines.Table_Name;
+			learnerInputProgramID = I_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Program_Disciplines_ID;
+			learnerInputID = I_ZZ_Program_Disciplines.COLUMNNAME_ZZ_Disciplines_ID;
+			learnerInputProgramTable = I_ZZ_Program_Disciplines.Table_Name;
+			learnerInputTable = I_ZZ_Disciplines.Table_Name;
 		}
 		
 		String sql = String.format("""
@@ -127,11 +128,11 @@ public class ProgramInput extends AnnexureInfo {
 				WHERE %s = ?
 				ORDER BY %s
 				"""
-				, learnerInputProgramID, learnerInputTable, learnerInputID, X_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req, X_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req, learnerInputText
+				, learnerInputProgramID, learnerInputTable, learnerInputID, I_ZZ_Program_Trade.COLUMNNAME_ZZ_WPA_Req, I_ZZ_Program_Trade.COLUMNNAME_ZZ_Is_Accred_SLA_Req, learnerInputText
 				, learnerInputProgramTable, learnerInputTable
 				, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID
-				, X_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID
-				, X_ZZ_Program_Trade.COLUMNNAME_Line);
+				, I_ZZ_Program_Trade.COLUMNNAME_ZZ_Program_Master_Data_ID
+				, I_ZZ_Program_Trade.COLUMNNAME_Line);
 		
 		return convertLearnerInputInfo(DB.getSQLArrayObjectsEx(null, sql, programMasterDataID));
 	}
@@ -151,11 +152,11 @@ public class ProgramInput extends AnnexureInfo {
 	
 	public static List<LearnerInputInfo> queryLearnerInputInfos(int programMasterDataID, String learnerships) {
 		
-		String learnerInputProgramID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
-		String learnerInputID = X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
-		String learnerInputText = X_ZZ_Learnerships.COLUMNNAME_Name;
-		String learnerInputProgramTable = X_ZZ_Program_Learnerships.Table_Name;
-		String learnerInputTable = X_ZZ_Learnerships.Table_Name;
+		String learnerInputProgramID = I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Learnerships_ID;
+		String learnerInputID = I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_ID;
+		String learnerInputText = I_ZZ_Learnerships.COLUMNNAME_Name;
+		String learnerInputProgramTable = I_ZZ_Program_Learnerships.Table_Name;
+		String learnerInputTable = I_ZZ_Learnerships.Table_Name;
 
 		String learnershipType = null;
 		if (learnerships == X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_4IRLearnership) {
@@ -173,11 +174,11 @@ public class ProgramInput extends AnnexureInfo {
 				WHERE %s = ? AND %s.%s = ?
 				ORDER BY %s
 				"""
-				, learnerInputProgramID, learnerInputTable, learnerInputID, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_WPA_Req, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Is_Accred_SLA_Req, learnerInputText
+				, learnerInputProgramID, learnerInputTable, learnerInputID, I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_WPA_Req, I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Is_Accred_SLA_Req, learnerInputText
 				, learnerInputProgramTable, learnerInputTable
 				, learnerInputProgramTable, learnerInputID, learnerInputTable, learnerInputID
-				, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Master_Data_ID, learnerInputProgramTable, X_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_Type
-				, X_ZZ_Program_Learnerships.COLUMNNAME_Line);
+				, I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Program_Master_Data_ID, learnerInputProgramTable, I_ZZ_Program_Learnerships.COLUMNNAME_ZZ_Learnerships_Type
+				, I_ZZ_Program_Learnerships.COLUMNNAME_Line);
 		
 		return convertLearnerInputInfo(DB.getSQLArrayObjectsEx(null, sql, programMasterDataID, learnershipType));
 	}
@@ -247,7 +248,7 @@ public class ProgramInput extends AnnexureInfo {
 				X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_GeneralLearnership.equals(disciplineType))) {
 			
 			titleCol = ColumnInfo.getColLearnerInfo(ColumnInfo.colLearnershipLabel
-					, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Learnerships_ID);
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Learnerships_ID);
 			columns.add(titleCol);
 			
 			columns.add(colNoEmployed);
@@ -256,11 +257,11 @@ public class ProgramInput extends AnnexureInfo {
 		}else {
 			if (X_ZZ_FormDiscipline.ZZ_DISCIPLINETYPE_Trade.equals(disciplineType)) {
 				titleCol = ColumnInfo.getColLearnerInfo(ColumnInfo.colTradeLabel
-						, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Trade_ID);
+						, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Trade_ID);
 				columns.add(titleCol);
 			}else {
 				titleCol = ColumnInfo.getColLearnerInfo(ColumnInfo.colDisciplineLabel
-						, X_ZZ_FormDiscipline.COLUMNNAME_ZZ_Disciplines_ID);
+						, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Disciplines_ID);
 				columns.add(titleCol);
 			}
 			

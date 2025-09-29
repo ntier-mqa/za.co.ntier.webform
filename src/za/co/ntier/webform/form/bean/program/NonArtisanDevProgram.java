@@ -69,7 +69,6 @@ public class NonArtisanDevProgram extends AbstractProgram {
 	    return hasAtLeastOneValidRow(generalLearnership) || hasAtLeastOneValidRow(firLearnership);
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean hasAtLeastOneValidRow(ProgramInput tbl) {
 	    if (tbl == null || tbl.getRows() == null) return false;
 

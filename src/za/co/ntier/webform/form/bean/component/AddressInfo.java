@@ -14,6 +14,8 @@ import org.compiere.util.KeyNamePair;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import za.co.ntier.api.model.I_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZ_FormContact;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_FormContact;
 import za.co.ntier.webform.form.ISaveForm;
@@ -318,10 +320,10 @@ public class AddressInfo implements ISaveForm {
 		this.applicationForm = applicationForm;
 		if (applicationForm != null) {
 			Query formContactQuery = MTable.get(X_ZZ_FormContact.Table_ID).createQuery(
-					String.format("%s = ? AND %s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, X_ZZ_FormContact.COLUMNNAME_ZZ_ContactType)
+					String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, I_ZZ_FormContact.COLUMNNAME_ZZ_ContactType)
 					, null);
 			
-			formContact = formContactQuery.setOrderBy(X_ZZ_FormContact.COLUMNNAME_ZZ_FormContact_ID).setParameters(applicationForm.getZZ_Application_Form_ID(), getAddressCategory().toString()).first();
+			formContact = formContactQuery.setOrderBy(I_ZZ_FormContact.COLUMNNAME_ZZ_FormContact_ID).setParameters(applicationForm.getZZ_Application_Form_ID(), getAddressCategory().toString()).first();
 		}
 		
 		if (formContact != null) {

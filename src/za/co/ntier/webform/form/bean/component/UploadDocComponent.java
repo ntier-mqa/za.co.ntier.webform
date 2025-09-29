@@ -7,6 +7,8 @@ import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 
+import za.co.ntier.api.model.I_ZZDocumentUploadFile;
+import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
 import za.co.ntier.api.model.X_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
@@ -48,11 +50,11 @@ public class UploadDocComponent implements ISaveForm {
 		this.applicationForm = applicationForm;
 		if(applicationForm != null) {
 			Query uploadDocQuery = MTable.get(X_ZZDocumentUploadFile.Table_ID).createQuery(
-					String.format("%s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID)
+					String.format("%s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID)
 					, null);
 			
 			List<X_ZZDocumentUploadFile> documentUploadFiles = uploadDocQuery.
-					setOrderBy(X_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID).
+					setOrderBy(I_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID).
 					setParameters(applicationForm.getZZ_Application_Form_ID()).list();
 			
 			for(Map<ColumnInfo<?>, Object> rowObj : uploadDoc.getRows()) {

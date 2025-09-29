@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import za.co.ntier.api.model.X_ZZAnnexure;
-import za.co.ntier.api.model.X_ZZSubAnnex;
+import za.co.ntier.api.model.I_ZZAnnexure;
+import za.co.ntier.api.model.I_ZZSubAnnex;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -38,18 +38,18 @@ public class CetTvetProgram extends AbstractProgram {
 		String sectionHeader = "Intervention";
 		String tableTitle = null;
 
-		ColumnInfo<?> colNoBeneficiaries = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoBeneficiariesTitle, X_ZZAnnexure.COLUMNNAME_ZZBeneficiaries);
+		ColumnInfo<?> colNoBeneficiaries = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoBeneficiariesTitle, I_ZZAnnexure.COLUMNNAME_ZZBeneficiaries);
 		colNoBeneficiaries.setCalTotal(true);
-		ColumnInfo<?> colDiscipline = ColumnInfo.getColText(ColumnInfo.colDisciplineTitle, X_ZZAnnexure.COLUMNNAME_ZZDiscipline);
-		ColumnInfo<?> colTotalNoBeneficiaries = ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalNoBeneficiariesTitle, X_ZZAnnexure.COLUMNNAME_ZZTotalBeneficiaries);
+		ColumnInfo<?> colDiscipline = ColumnInfo.getColText(ColumnInfo.colDisciplineTitle, I_ZZAnnexure.COLUMNNAME_ZZDiscipline);
+		ColumnInfo<?> colTotalNoBeneficiaries = ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalNoBeneficiariesTitle, I_ZZAnnexure.COLUMNNAME_ZZTotalBeneficiaries);
 		colTotalNoBeneficiaries.setCalTotal(true);
 		// move from int to free text but data base not yet change because this column is not used anymore
 		//ColumnInfo<?> colProgrammeApply = ColumnInfo.getColText(ColumnInfo.colProgrammeApplyTitle, X_ZZAnnexure.COLUMNNAME_ZZProgramme);
-		ColumnInfo<?> colRequestedProgramme = ColumnInfo.getColText(ColumnInfo.colRequestedProgrammeTitle, X_ZZSubAnnex.COLUMNNAME_ZZRequestedProgramme);
-		ColumnInfo<?> colNoManagers = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoManagersTitle, X_ZZSubAnnex.COLUMNNAME_ZZManagers);
+		ColumnInfo<?> colRequestedProgramme = ColumnInfo.getColText(ColumnInfo.colRequestedProgrammeTitle, I_ZZSubAnnex.COLUMNNAME_ZZRequestedProgramme);
+		ColumnInfo<?> colNoManagers = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoManagersTitle, I_ZZSubAnnex.COLUMNNAME_ZZManagers);
 		colNoManagers.setCalTotal(true);
-		ColumnInfo<?> colFieldStudy = ColumnInfo.getColText(ColumnInfo.colFieldStudyTitle, X_ZZSubAnnex.COLUMNNAME_ZZFieldStudy);
-		ColumnInfo<?> colNoLearners = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearners, X_ZZSubAnnex.COLUMNNAME_ZZLearners);
+		ColumnInfo<?> colFieldStudy = ColumnInfo.getColText(ColumnInfo.colFieldStudyTitle, I_ZZSubAnnex.COLUMNNAME_ZZFieldStudy);
+		ColumnInfo<?> colNoLearners = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearners, I_ZZSubAnnex.COLUMNNAME_ZZLearners);
 		colNoLearners.setCalTotal(true);
 		
 		
@@ -151,7 +151,7 @@ public class CetTvetProgram extends AbstractProgram {
 			tradeInfo = tradeObj;
 			if (tradeInfo != null) {
 
-				ColumnInfo<?> colRowTitle = ColumnInfo.getColList("Field of Study", tradeInfo, X_ZZSubAnnex.COLUMNNAME_ZZ_Trade_ID, "learnerInputID");
+				ColumnInfo<?> colRowTitle = ColumnInfo.getColList("Field of Study", tradeInfo, I_ZZSubAnnex.COLUMNNAME_ZZ_Trade_ID, "learnerInputID");
 				cols = List.of(colRowTitle, colNoLearners);
 				identify = "TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION";
 				subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, null, identify);
