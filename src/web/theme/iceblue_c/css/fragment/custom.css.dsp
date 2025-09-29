@@ -404,7 +404,7 @@
 }
 
 
-.mqaWebFormRelate.modal-dialog{
+.mqaWebFormRelate{
 	display: flex;
 	flex-direction: column;
 	height: auto;
@@ -412,12 +412,20 @@
 	
 }
 
-.mqaWebFormRelate.modal-dialog .z-window-header{
+.mqaWebFormRelate .z-window-header{
 	flex: 0 0 auto;
 }
 
-.mqaWebFormRelate.modal-dialog .z-window-content{
+.mqaWebFormRelate .z-window-content{
 	flex: 1 1 auto;
 	overflow-y: auto;
 }
 
+.mqaWebFormRelate .msgs{
+	display: flex;
+	flex-direction: column;
+}
+
+.mqaWebFormRelate .msgLine{
+
+}

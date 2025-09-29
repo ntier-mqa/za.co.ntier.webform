@@ -638,10 +638,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		program.doSaveForm(trxName, applicationForm);
 		
-		if(!isSave) {
-			applicationForm.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));
-		}
-		
 		applicationForm.saveEx();
 		// Attach VAT certificate to ZZ_Application_Form (one entry per record)
 		if (organisationInfo.getVatCertBytes() != null && organisationInfo.getVatCertBytes().length > 0
@@ -848,30 +844,41 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			
 			I_C_BPartner zzBPartner = POWrapper.create(bPartner, I_C_BPartner.class);
 			
+			StringBuilder errBuild = new StringBuilder("Your company has not met the required criteria");
+			errBuild.append("\n");
+			boolean hasError = false;
 			for(String criteriaValue : criteriaValues) {
 				if (X_ZZ_Program_Master_Data.ZZ_CRITERIA_OrganizationInMQASector.equals(criteriaValue) && checkOrganizationInMQASector(zzBPartner)) {
-					return true;
+					errBuild.append("Organisation in MQA Sector");
+					errBuild.append("\n");
+					hasError = true;
 				}
 				
 				if (X_ZZ_Program_Master_Data.ZZ_CRITERIA_LevyPaying.equals(criteriaValue) && checkLevyPaying(zzBPartner)) {
-					return true;
+					errBuild.append("Levy Paying");
+					errBuild.append("\n");
+					hasError = true;
 				}
 				
 				if (X_ZZ_Program_Master_Data.ZZ_CRITERIA_WSP_ATRSubmitted.equals(criteriaValue) && checkATRSubmitted(zzBPartner)) {
-					return true;
+					errBuild.append("WSP ATR Approvals");
+					errBuild.append("\n");
+					hasError = true;
 				}
 			}
 			
-			return false;
+			errBuild.append("You can not continue with this application");
+			
+			if (hasError) {
+				showDialog("Required criteria", errBuild.toString());
+				return true;
+			}else {
+				return false;	
+			}
 		}
 		
 		protected boolean checkOrganizationInMQASector(I_C_BPartner bPartner) {
-			if (!bPartner.isZZ_Is_MQA_Sector()) {
-				showDialog("Organisation in MQA Sector"
-						, String.format("Your company has not met the required criteria: Organisation in MQA Sector. You can not continue with this application"));
-				return true;
-			}
-			return false;
+			return !bPartner.isZZ_Is_MQA_Sector();
 		}
 		protected boolean checkLevyPaying(I_C_BPartner bPartner) {
 			MYear currentFinYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
@@ -883,24 +890,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			queryLevyPaying.addTableDirectJoin(I_C_Year.Table_Name);
 			queryLevyPaying.setParameters(bPartner.getC_BPartner_ID(), prevFiscalYearStr);
 			
-			if (queryLevyPaying.list().size() == 0) {
-				showDialog("Levy Paying"
-						, String.format("Your company has not met the required criteria: Levy Paying. You can not continue with this application"));
-				return true;
-			}
-			return false;
+			return queryLevyPaying.list().size() == 0;
 		}
 		protected boolean checkATRSubmitted(I_C_BPartner bPartner) {
 			MYear currentFinYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
 			Query queryLevyPaying = MTable.get(I_ZZ_WSP_ATR_Approvals.Table_ID).createQuery(
 					String.format("%s = ? AND %s = ?", I_ZZ_WSP_ATR_Approvals.COLUMNNAME_C_BPartner_ID, I_ZZ_WSP_ATR_Approvals.COLUMNNAME_ZZ_Financial_Year), null);
 			queryLevyPaying.setParameters(bPartner.getC_BPartner_ID(), currentFinYear.getFiscalYear());
-			if (queryLevyPaying.list().size() == 0) {
-				showDialog("WSP ATR Approvals"
-						, String.format("Your company has not met the required criteria: WSP ATR Approvals. You can not continue with this application"));
-				return true;
-			}
-			return false;
+			return queryLevyPaying.list().size() == 0;
 		}
 
 

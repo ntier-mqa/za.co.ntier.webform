@@ -1,8 +1,10 @@
 package za.co.ntier.webform.form.bean.component;
 
+import java.util.List;
+
 public class Dialog {
 	private String documentNo;
-	private String msg;
+	private List<String> msgs;
 	private Integer recordId;
 	private Integer tableId;
 	private String title;
@@ -20,7 +22,9 @@ public class Dialog {
 		this.setRecordId(recordId);
 		this.visible = visible;
 		this.title = title;
-		this.setMsg(msg);
+		if (msg != null) {
+			msgs = List.of(msg.split("\n"));
+		}
 		this.setDocumentNo(documentNo);
 	}
 	/**
@@ -29,12 +33,7 @@ public class Dialog {
 	public String getDocumentNo() {
 		return documentNo;
 	}
-	/**
-	 * @return the msg
-	 */
-	public String getMsg() {
-		return msg;
-	}
+	
 	
 	/**
 	 * @return the title
@@ -54,12 +53,7 @@ public class Dialog {
 	public void setDocumentNo(String documentNo) {
 		this.documentNo = documentNo;
 	}
-	/**
-	 * @param msg the msg to set
-	 */
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
+	
 	/**
 	 * @param title the title to set
 	 */
@@ -95,5 +89,19 @@ public class Dialog {
 	 */
 	public void setTableId(Integer tableId) {
 		this.tableId = tableId;
+	}
+
+	/**
+	 * @return the msgs
+	 */
+	public List<String> getMsgs() {
+		return msgs;
+	}
+
+	/**
+	 * @param msgs the msgs to set
+	 */
+	public void setMsgs(List<String> msgs) {
+		this.msgs = msgs;
 	}
 }
