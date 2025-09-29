@@ -369,6 +369,10 @@ public class OrganisationInfo implements ISaveForm {
 
 			bPartnerId = bPartner.getC_BPartner_ID();
 			
+			if(discretionaryGrantsApplicationProgramVM.checkCriteria(bPartner)) {
+				return;
+			}
+			
 			if(discretionaryGrantsApplicationProgramVM.checkExistAppForm(bPartner)) {
 				return;
 			}
