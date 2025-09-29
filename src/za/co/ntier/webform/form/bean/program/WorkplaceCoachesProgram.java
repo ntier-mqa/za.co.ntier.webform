@@ -52,7 +52,7 @@ public class WorkplaceCoachesProgram extends AbstractProgram {
 		applicationForm.setZZPlacementWorkplaceCoaches(placementWorkplaceCoaches);
 		applicationForm.setZZTrainingWorkplaceCoaches(trainingWorkplaceCoaches);
 		
-		applicationForm.setZZTotalNumberApplied(trainingWorkplaceCoaches + placementWorkplaceCoaches);
+		applicationForm.setZZTotalNumberApplied(Util.convert(trainingWorkplaceCoaches) + Util.convert(placementWorkplaceCoaches));
 		
 	}
 	/**
