@@ -702,6 +702,9 @@ public class AnnexureInfo implements ISaveForm{
 		}else if (col.getDataType() == DataType.PositiveNumber) {
 			IntData intData = (IntData)valueObj;
 			intData.setValue(Util.convert((int)value));
+		}else if (col.getDataType() == DataType.Text) {
+			TextData textData = (TextData)valueObj;
+			textData.setValue(Util.convertStr((String)value));
 		}else if (col.getDataType() == DataType.Postal) {
 			PostalData postalData = (PostalData)valueObj;
 			postalData.setPostalInternal(Util.convertStr((String)value));
