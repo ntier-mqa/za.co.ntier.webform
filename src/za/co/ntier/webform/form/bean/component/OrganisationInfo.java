@@ -378,6 +378,9 @@ public class OrganisationInfo implements ISaveForm {
 			}
 		} else {
 			bPartnerId = 0;
+			if(discretionaryGrantsApplicationProgramVM.checkCriteria(null)) {
+				return;
+			}
 		}
 	}
 

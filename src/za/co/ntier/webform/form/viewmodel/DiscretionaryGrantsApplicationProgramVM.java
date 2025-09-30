@@ -829,6 +829,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			String criteriaValueAll = getMenuContextInfo().getProgramMasterData().getZZ_Criteria();
 			if (StringUtils.isBlank(criteriaValueAll)){
 				return false;
+			}else {
+				if (bPartner == null) {
+					StringBuilder errBuild = new StringBuilder("Your company has not met the required criteria");
+					errBuild.append("\nThe Skills Development Levy (SDL) Number does not exist\nYou can not continue with this application");
+					showDialog("Required criteria", errBuild.toString());
+					return true;
+				}
 			}
 			
 			String[] criteriaValues = criteriaValueAll.split(",");

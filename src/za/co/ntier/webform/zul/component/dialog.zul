@@ -5,7 +5,7 @@
 
 
 <nodom viewModel="@id('vmDialog') @init('za.co.ntier.webform.form.viewmodel.component.DialogVMWrapper')">
-  <window width="50%" mode="modal"
+  <window mode="modal"
           sclass="mqaWebFormRelate"   
           title="@init(vmDialog.component.title)"
           position="center,center"

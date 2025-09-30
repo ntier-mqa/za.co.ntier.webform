@@ -411,7 +411,7 @@
 	flex-direction: column;
 	height: auto;
 	max-height: 70%;
-	
+	max-width: 50%;
 }
 
 .mqaWebFormRelate .z-window-header{
