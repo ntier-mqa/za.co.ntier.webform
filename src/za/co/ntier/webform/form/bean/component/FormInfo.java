@@ -18,13 +18,13 @@ public class FormInfo {
 
 	public FormInfo(MenuContextInfo menuContextInfo) {
 		String formName = menuContextInfo.getProgramMasterData().getTitle();
-		int year = 0;
+
 		if (menuContextInfo.getProgramMasterData().getC_Year_ID() != 0) {
 			MYear fiscalYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
-			year = fiscalYear.getYearAsInt();
+			this.formHeader = String.format("%s - %s", formName, fiscalYear.getDescription());
+		}else {
+			this.formHeader = String.format("%s", formName);
 		}
-
-		this.formHeader = String.format("%s - %d/%d", formName, year, year + 1);
 		this.orgName = "COO";
 		this.revision = "02";
 		this.approved = "ACOO";
