@@ -12,19 +12,18 @@
       <nodom children="@bind(vmBankDetail.component.columnInfos)">
         <template name="children" var="col">
           <div sclass="grid-form-cell grid-form-cell-header">
-            <!-- Use String.concat instead of '+' -->
-            <label
-              value="@init( col.mandatory
-                              ? (col.title != null ? col.title.concat(' *') : ' *')
-                              : col.title )"/>
-          </div>
+			  <hlayout spacing="4px">
+			    <label value="@init(col.title)"/>
+			    <label sclass="required-star" value="*" visible="@init(col.mandatory)"/>
+			  </hlayout>
+		  </div>
 
           <div sclass="grid-form-cell grid-form-cell-value">
             
 	        <textbox
               value="@bind(row[col], save-on='onChanging')"
-              onChanging="@command('instantEdit', row=row, col=col, ref=self, newVal=event.value)"
-              onChange="@command('blurValidate', row=row, col=col, ref=self, newVal=event.value)"
+              onChanging="@command('instantEditCell', row=row, col=col, ref=self, newVal=event.value)"
+              onChange="@command('blurValidateCell', row=row, col=col, ref=self, newVal=event.value)"
               instant="true">
               <custom-attributes label="@load(col.title)" required="@load(col.mandatory)"/>
             </textbox>

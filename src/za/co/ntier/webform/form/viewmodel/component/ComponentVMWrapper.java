@@ -57,7 +57,7 @@ public class ComponentVMWrapper<T> {
 
     /** Commit value while typing so completeness logic sees it */
     @Command
-    public void instantEdit(@BindingParam("row") Map<ColumnInfo<?>, Object> row,
+    public void instantEditCell(@BindingParam("row") Map<ColumnInfo<?>, Object> row,
                             @BindingParam("col") ColumnInfo<?> col,
                             @BindingParam("ref") Component ref,
                             @BindingParam("newVal") String newVal) {
@@ -75,11 +75,11 @@ public class ComponentVMWrapper<T> {
 
         // Re-evaluate buttons
         notifyProgramComplete();
-    }
+    }    
 
     /** Show the red error bubble when leaving the field */
     @Command
-    public void blurValidate(@BindingParam("row") Map<ColumnInfo<?>, Object> row,
+    public void blurValidateCell(@BindingParam("row") Map<ColumnInfo<?>, Object> row,
                              @BindingParam("col") ColumnInfo<?> col,
                              @BindingParam("ref") Component ref,
                              @BindingParam("newVal") String newVal) {

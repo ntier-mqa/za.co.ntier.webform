@@ -421,3 +421,8 @@
 	overflow-y: auto;
 }
 
+/* only the star is red; everything else stays as before */
+.mqaWebForm .grid-form-cell-header .required-star {
+  color: #d0021b;   /* red */
+  font-weight: 700; /* optional */
+}
