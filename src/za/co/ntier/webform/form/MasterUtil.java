@@ -41,7 +41,7 @@ public class MasterUtil {
 	public static final List<KeyNamePair> municipalityTypes;
 
 	private static CCache<ProgramType, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
-			I_C_BPartner.Table_Name + "_CetTvetCollege", 2);
+			I_C_BPartner.Table_Name + "_CetTvetCollege", 3);
 
 	private static CCache<Integer, List<MCity>> s_Cities = new CCache<>(MCity.Table_Name + "_DisciplineHDSA", 1);
 	private static CCache<Integer, List<MRegion>> s_Regions = new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
@@ -98,15 +98,27 @@ public class MasterUtil {
 	public static List<X_C_BPartner> getCetColleges() {
 		List<X_C_BPartner> cetColleges = s_CetTvetCollege.get(ProgramType.CET);
 		if (cetColleges == null) {
-			Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
-					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), null);
-			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
-			queryCetColleges.setParameters("Z-CET");
-			cetColleges = queryCetColleges.list();
-
+			cetColleges = getBpartnerByGroup("Z-CET");
 			s_CetTvetCollege.put(ProgramType.CET, cetColleges);
 		}
 		return cetColleges;
+	}
+
+	public static List<X_C_BPartner> getBpartnerByGroup(String groupValue) {
+		Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
+				String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), null);
+		queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
+		queryCetColleges.setParameters(groupValue);//"Z-CET"
+		return queryCetColleges.list();
+	}
+	
+	public static List<X_C_BPartner> getUniversity() {
+		List<X_C_BPartner> universitys = s_CetTvetCollege.get(ProgramType.HET_LECTURE_SUPPORT);
+		if (universitys == null) {
+			universitys = getBpartnerByGroup("Z-UNIVERSITY");
+			s_CetTvetCollege.put(ProgramType.HET_LECTURE_SUPPORT, universitys);
+		}
+		return universitys;
 	}
 	
 	public static List<MCity> getCities() {

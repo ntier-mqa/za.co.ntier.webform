@@ -31,7 +31,6 @@ public class OrganisationInfo implements ISaveForm {
 	private int bPartnerId;
 	private List<X_C_BPartner> cetTvetColleges;
 	private X_C_BPartner cetTvetCollegeSelected;
-
 	private String fileNameVATCer;
 //	private String fullPathVATCer;
 	private MenuContextInfo menuContextInfo;
@@ -78,6 +77,8 @@ public class OrganisationInfo implements ISaveForm {
 		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())
 				|| ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType())) {
 			cetTvetColleges = MasterUtil.getTvetColleges();
+		} else if (ProgramType.HET_LECTURE_SUPPORT.equals(menuContextInfo.getProgramType())){
+			cetTvetColleges = MasterUtil.getUniversity();
 		}
 	}
 
@@ -106,14 +107,16 @@ public class OrganisationInfo implements ISaveForm {
 	public X_C_BPartner getCetTvetCollegeSelected() {
 		return cetTvetCollegeSelected;
 	}
-
+	
 	public String getCetTvetNameTitle() {
 		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
 			return "Name of CET College";
 		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())
 				|| ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType()))
 			return "Name of TVET College";
-		else
+		else if (ProgramType.HET_LECTURE_SUPPORT.equals(menuContextInfo.getProgramType())){
+			return "Name of University";
+		}else
 			return "unknownCetNameTitle";
 	}
 
@@ -251,7 +254,7 @@ public class OrganisationInfo implements ISaveForm {
 			setbPartnerId(applicationForm.getC_BPartner_ID());
 			orgRegistrationNumber = applicationForm.getReferenceNo();
 			
-			if(menuContextInfo.getProgramType().isCetTvet() && applicationForm.getC_BPartner_ID() > 0) {
+			if(isUseBpartner() && applicationForm.getC_BPartner_ID() > 0) {
 				for (X_C_BPartner partner : cetTvetColleges) {
 					if (partner.getC_BPartner_ID() == applicationForm.getC_BPartner_ID()) {
 						cetTvetCollegeSelected = partner;
@@ -307,7 +310,7 @@ public class OrganisationInfo implements ISaveForm {
 			}
 			*/
 		
-		if(menuContextInfo.getProgramType().isCetTvet()) {
+		if(isUseBpartner()) {
 			if (cetTvetCollegeSelected == null) {
 				applicationForm.setC_BPartner_ID(0);
 				applicationForm.setOrgName(null);
@@ -411,7 +414,7 @@ public class OrganisationInfo implements ISaveForm {
 
 	public void setCetTvetCollegeSelected(X_C_BPartner cetTvetCollegeSelected) {
 		this.cetTvetCollegeSelected = cetTvetCollegeSelected;
-		if (cetTvetCollegeSelected != null) {
+		if (cetTvetCollegeSelected != null) {//TODO: want to check for het also?
 			discretionaryGrantsApplicationProgramVM.checkExistAppForm(cetTvetCollegeSelected);
 		}
 	}
@@ -565,6 +568,13 @@ public class OrganisationInfo implements ISaveForm {
 	        }
 	    }
 	    this.vatCertBytes = bytes;
+	}
+
+	/**
+	 * @return the isUseBpartner
+	 */
+	public boolean isUseBpartner() {
+		return getMenuContextInfo().getProgramType().isCetTvet() || getMenuContextInfo().getProgramType() == ProgramType.HET_LECTURE_SUPPORT;
 	}
 
 }

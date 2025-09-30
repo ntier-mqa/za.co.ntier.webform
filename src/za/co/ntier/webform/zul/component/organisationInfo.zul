@@ -21,7 +21,7 @@
 		</div>
 
 		<div
-			if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
+			if="${!vmOrgInfo.component.useBpartner}"
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmOrgInfo.component.orgNameTitle)" />
@@ -32,7 +32,7 @@
 		</div>
 
 		<div
-			if="${vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
+			if="${vmOrgInfo.component.useBpartner}"
 			sclass="form-field">
 			<label sclass="label"
 				value="@init(vmOrgInfo.component.cetTvetNameTitle)" />

@@ -544,6 +544,10 @@ public class AnnexureInfo implements ISaveForm{
 						total += entryIntObj.getKey();
 					cellValueObj = entryIntObj.getKey();
 					hasCellData = entryIntObj.getValue();
+				}else if (col.getDataType() == DataType.Text) {
+					Entry<Integer, Boolean>  entryTextObj = getCellValue(row, col);
+					cellValueObj = entryTextObj.getKey();
+					hasCellData = entryTextObj.getValue();
 				}else if (col.getDataType() == DataType.LearnerInfo) {
 					LearnerInputInfo learnerInfo = (LearnerInputInfo)row.get(col);
 					int learnerInputID = 0;// int of PO don't accept null
@@ -757,6 +761,14 @@ public class AnnexureInfo implements ISaveForm{
 				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(0), Boolean.FALSE);
 			}else {
 				return new AbstractMap.SimpleEntry<>((T)intData.getValue(), Boolean.TRUE);
+			}
+
+		}else if (col.getDataType() == DataType.Text) {
+			TextData textData = (TextData)valueObj;
+			if (StringUtils.isBlank(textData.getValue())) {
+				return new AbstractMap.SimpleEntry<>(null, Boolean.FALSE);
+			}else {
+				return new AbstractMap.SimpleEntry<>((T)Util.convertStr(textData.getValue()), Boolean.TRUE);
 			}
 
 		}else if (col.getDataType() == DataType.Postal) {
