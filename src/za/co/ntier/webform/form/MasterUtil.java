@@ -14,6 +14,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BP_Group;
 import org.compiere.model.I_C_BPartner;
+import org.compiere.model.I_C_Country;
+import org.compiere.model.I_C_Region;
 import org.compiere.model.MCity;
 import org.compiere.model.MCountry;
 import org.compiere.model.MRegion;
@@ -113,8 +115,8 @@ public class MasterUtil {
 			Query citisQuery = new Query(Env.getCtx(), MCity.Table_Name, null, null);
 			citisQuery.addTableDirectJoin(MRegion.Table_Name);
 			citisQuery.addJoinClause(String.format("INNER JOIN %s ON (%s.%s = %s.%s AND %s.%s = ?)",
-					MCountry.Table_Name, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID, MRegion.Table_Name,
-					MRegion.COLUMNNAME_C_Country_ID, MCountry.Table_Name, MCountry.COLUMNNAME_C_Country_ID));
+					I_C_Country.Table_Name, MCountry.Table_Name, I_C_Country.COLUMNNAME_C_Country_ID, MRegion.Table_Name,
+					I_C_Region.COLUMNNAME_C_Country_ID, I_C_Country.Table_Name, I_C_Country.COLUMNNAME_C_Country_ID));
 			citisQuery.setParameters(305);// South Africa
 			//citisQuery.setRecordstoSkip(20);
 
@@ -165,9 +167,9 @@ public class MasterUtil {
 
 	public static List<MRegion> getRegions() {
 		if (s_Regions.isEmpty()) {
-			Query regionsQuery = new Query(Env.getCtx(), MRegion.Table_Name,
-					MRegion.Table_Name + "." + MCountry.COLUMNNAME_C_Country_ID + " = ?", null);
-			regionsQuery.addTableDirectJoin(MCountry.Table_Name);
+			Query regionsQuery = new Query(Env.getCtx(), I_C_Region.Table_Name,
+					I_C_Region.Table_Name + "." + I_C_Country.COLUMNNAME_C_Country_ID + " = ?", null);
+			regionsQuery.addTableDirectJoin(I_C_Country.Table_Name);
 			regionsQuery.setParameters(305);// South Africa
 
 			List<MRegion> regionInfos = regionsQuery.list();
@@ -232,7 +234,7 @@ public class MasterUtil {
 		Query annexureQuery = MTable.get(X_ZZAnnexure.Table_ID).createQuery(String.format("%s = ? AND %s = ?", 
 				I_ZZAnnexure.COLUMNNAME_ZZ_Application_Form_ID, I_ZZAnnexure.COLUMNNAME_DataType), null);
 		annexureQuery.setParameters(applicationForm.getZZ_Application_Form_ID(), annexureType);
-		annexureQuery.setOrderBy(X_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);
+		annexureQuery.setOrderBy(I_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);
 		return annexureQuery.list();
 	}
 	

@@ -68,7 +68,7 @@ public class WorkExperienceProgram extends AbstractProgram {
 		super.saveForm(applicationForm);
 		vacationContact.saveForm(trxName, applicationForm);
 		disciplines.save(trxName, applicationForm);
-		applicationForm.setZZNoLearners(noOfLearners);
+		applicationForm.setZZNoLearners(Util.convert(noOfLearners));
 		applicationForm.setZZTotalNumberApplied(applicationForm.getZZTotalNumberApplied() + Util.convert(noOfLearners));
 		
 	}

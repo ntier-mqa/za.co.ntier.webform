@@ -16,7 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -207,6 +210,10 @@ public class AnnexureInfo implements ISaveForm{
 				}
 
 			}
+			
+			if (decoratorCell != null) {
+				decoratorCell.accept(row, cellData);
+			}
 			row.put(columnInfo, cellData);
 
 		}
@@ -215,6 +222,8 @@ public class AnnexureInfo implements ISaveForm{
 		return row;
 	}
 
+	private BiConsumer<AnnexureRow, Object> decoratorCell;
+	
 	/**
 	 * update all cell on total row, use on init data
 	 */
@@ -501,11 +510,13 @@ public class AnnexureInfo implements ISaveForm{
 
 	public Entry<Integer, Boolean> fillDaoData (Collection<ColumnInfo<?>> cols, AnnexureRow row, Object dao){
 		Integer total = Integer.valueOf(0);
-		Boolean hasRowData = Boolean.FALSE;
+		boolean isEmptyData = true;
+		boolean isFullData = true;
+		boolean hasDaoPropertyName = false;
 		for (ColumnInfo<?> col:cols) {
 			boolean ignoreSetDao = false;
 			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
-
+				hasDaoPropertyName = true;
 				Boolean hasCellData = Boolean.FALSE;
 				Object cellValueObj = null;
 				if (col.getDataType() == DataType.PositiveNumber) {
@@ -525,6 +536,9 @@ public class AnnexureInfo implements ISaveForm{
 				}else if (col.getDataType() == DataType.Date) {
 					DateData dateData = (DateData)row.get(col);
 					cellValueObj = dateData.getTimestamp();
+					if (cellValueObj != null) {
+						hasCellData = true;
+					}
 				}else if (col.getDataType() == DataType.FileUpload) {
 					// Martin changed to save to attachments instead to a binary file
 					UploadData uploadData = (UploadData) row.get(col);
@@ -532,28 +546,6 @@ public class AnnexureInfo implements ISaveForm{
 						hasCellData = Boolean.TRUE;
 					}
 					ignoreSetDao = true; // never set DAO properties for files anymore
-
-
-
-					/*	
-					UploadData uploadData = (UploadData)row.get(col);
-
-					if (uploadData != null && StringUtils.isNoneEmpty(uploadData.getFullPath())) {
-						try {
-							cellValueObj = Files.readAllBytes(Paths.get(uploadData.getFullPath()));
-							setDaoValue(dao, col.getDaoPropertyFileName(), uploadData.getFileName());
-							hasCellData = Boolean.TRUE;
-						} catch (IOException e) {
-							e.printStackTrace();
-							throw new ApplicationException(e.getMessage(), e);
-						}
-					}
-
-					// don't overrider binary by null for case reload data but not yet upload new file
-					if (uploadData != null && StringUtils.isNotBlank(uploadData.getFileName()) && StringUtils.isBlank(uploadData.getFullPath())) {
-						ignoreSetDao = true;
-					}
-					 */
 				}else if (col.getDataType() == DataType.List) {
 					Object selectedObj = row.get(col);
 					if (StringUtils.isNotBlank(col.getBeanPropertyName())) {
@@ -565,6 +557,8 @@ public class AnnexureInfo implements ISaveForm{
 						}
 					}else {
 						cellValueObj = selectedObj;
+						if (cellValueObj != null)
+							hasCellData = Boolean.TRUE;
 					}
 				}else {
 					Entry<Object, Boolean> celDataEntryObj = getCellValue(row, col);
@@ -572,9 +566,11 @@ public class AnnexureInfo implements ISaveForm{
 					hasCellData = celDataEntryObj.getValue();
 				}
 
-				if (hasCellData)
-					hasRowData = Boolean.TRUE;
-
+				if (hasCellData) {
+					isEmptyData = false;
+				}else {
+					isFullData = false;
+				}
 
 				if (!ignoreSetDao) {
 					if (cellValueObj == null) {
@@ -594,8 +590,21 @@ public class AnnexureInfo implements ISaveForm{
 				}
 			}
 		}
-
-		return new AbstractMap.SimpleEntry<>(total, hasRowData);
+		
+		// null mean don't need to save po (no properties for save or empty input data)
+		// false mean input some item
+		// true mean input full
+		Boolean rowStatus = null;
+		if (!hasDaoPropertyName) {
+			rowStatus = null;
+		}else if (isEmptyData) {
+			rowStatus = null;
+		}else if (!isFullData) {
+			rowStatus = false;
+		}else {
+			rowStatus = true;
+		}
+		return new AbstractMap.SimpleEntry<>(total, rowStatus);
 	}
 
 
@@ -612,8 +621,12 @@ public class AnnexureInfo implements ISaveForm{
 
 			Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, po);
 
-			if (result.getValue()) {
+			if (result.getValue() == null) {
+				// delete row record if user cleared all input for this row
+				po.delete(true);
+			}else if (result.getValue()) {
 				po.saveEx(trxName);
+				total += result.getKey();
 
 				// --- Save FileUpload columns as ATTACHMENTS (memory only) ---
 				for (ColumnInfo<?> col : getColumnInfos()) {
@@ -640,11 +653,9 @@ public class AnnexureInfo implements ISaveForm{
 					// }
 				}
 			} else {
-				// delete row record if user cleared all input for this row
+				log.warning("row isn't input full data so don't save to dao also delete dao saved");
 				po.delete(true);
 			}
-
-			total += result.getKey();
 		}
 
 		applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());

@@ -1,5 +1,6 @@
 package za.co.ntier.webform.form.bean.component;
 
+import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.ISaveForm;
 
@@ -76,7 +77,7 @@ public class OrganisationSizeInfo implements ISaveForm {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		if(getNumOfEmployer() == null) {
-			applicationForm.set_ValueOfColumn(X_ZZ_Application_Form.COLUMNNAME_NumberEmployees, null);
+			applicationForm.set_ValueOfColumn(I_ZZ_Application_Form.COLUMNNAME_NumberEmployees, null);
 		}else
 			applicationForm.setNumberEmployees(getNumOfEmployer());
 		applicationForm.setZZ_HasWSPSubmited(isSubmittedWSP());

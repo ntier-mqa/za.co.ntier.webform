@@ -1,8 +1,9 @@
 package za.co.ntier.webform.form;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.form.bean.component.AnnexureRow;
-import za.co.ntier.webform.form.bean.component.ColumnInfo;
 
 public interface ISaveForm {
 	default public void beforeSaveForm(String trxName, X_ZZ_Application_Form applicationForm) {
@@ -12,6 +13,7 @@ public interface ISaveForm {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) ;
 	
 	default void afterSaveForm(String trxName, X_ZZ_Application_Form applicationForm) {
+		applicationForm.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));
 		applicationForm.saveEx(trxName);
 	}
 	

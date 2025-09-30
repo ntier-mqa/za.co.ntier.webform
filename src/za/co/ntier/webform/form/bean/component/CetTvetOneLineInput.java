@@ -43,7 +43,7 @@ public class CetTvetOneLineInput extends AnnexureInfo{
 			Query annexureQuery = MTable.get(X_ZZAnnexure.Table_ID).createQuery(String.format("%s = ? AND %s = ?", 
 			I_ZZAnnexure.COLUMNNAME_ZZ_Application_Form_ID, I_ZZAnnexure.COLUMNNAME_DataType), null);
 			annexureQuery.setParameters(applicationForm.getZZ_Application_Form_ID(), annexureInfo.getDataType());
-			annexureQuery.setOrderBy(X_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);
+			annexureQuery.setOrderBy(I_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);
 			daos = annexureQuery.list();
 		}
 		

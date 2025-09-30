@@ -1,6 +1,5 @@
 package za.co.ntier.webform.form.bean.component;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +10,6 @@ import org.compiere.model.MCity;
 import org.compiere.model.MRegion;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.util.media.Media;
 
 import za.co.ntier.webform.form.MasterUtil;
 

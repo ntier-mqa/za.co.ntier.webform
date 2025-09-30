@@ -10,15 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.model.GenericPO;
+import org.adempiere.model.POWrapper;
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.I_C_Year;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.MYear;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CLogger;
@@ -32,8 +35,12 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Tabbox;
 
+import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZ_Levy_Paying;
+import za.co.ntier.api.model.I_ZZ_WSP_ATR_Approvals;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -631,10 +638,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		program.doSaveForm(trxName, applicationForm);
 		
-		if(!isSave) {
-			applicationForm.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));
-		}
-		
 		applicationForm.saveEx();
 		// Attach VAT certificate to ZZ_Application_Form (one entry per record)
 		if (organisationInfo.getVatCertBytes() != null && organisationInfo.getVatCertBytes().length > 0
@@ -829,6 +832,72 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		    // now *broadcast* to all binders, including the ones created in <include> (your mainButton VMs)
 		    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
+		}
+
+		public boolean checkCriteria(X_C_BPartner bPartner) {
+			String criteriaValueAll = getMenuContextInfo().getProgramMasterData().getZZ_Criteria();
+			if (StringUtils.isBlank(criteriaValueAll)){
+				return false;
+			}
+			
+			String[] criteriaValues = criteriaValueAll.split(",");
+			
+			I_C_BPartner zzBPartner = POWrapper.create(bPartner, I_C_BPartner.class);
+			
+			StringBuilder errBuild = new StringBuilder("Your company has not met the required criteria");
+			errBuild.append("\n");
+			boolean hasError = false;
+			for(String criteriaValue : criteriaValues) {
+				if (X_ZZ_Program_Master_Data.ZZ_CRITERIA_OrganizationInMQASector.equals(criteriaValue) && checkOrganizationInMQASector(zzBPartner)) {
+					errBuild.append("Organisation in MQA Sector");
+					errBuild.append("\n");
+					hasError = true;
+				}
+				
+				if (X_ZZ_Program_Master_Data.ZZ_CRITERIA_LevyPaying.equals(criteriaValue) && checkLevyPaying(zzBPartner)) {
+					errBuild.append("Levy Paying");
+					errBuild.append("\n");
+					hasError = true;
+				}
+				
+				if (X_ZZ_Program_Master_Data.ZZ_CRITERIA_WSP_ATRSubmitted.equals(criteriaValue) && checkATRSubmitted(zzBPartner)) {
+					errBuild.append("WSP ATR Approvals");
+					errBuild.append("\n");
+					hasError = true;
+				}
+			}
+			
+			errBuild.append("You can not continue with this application");
+			
+			if (hasError) {
+				showDialog("Required criteria", errBuild.toString());
+				return true;
+			}else {
+				return false;	
+			}
+		}
+		
+		protected boolean checkOrganizationInMQASector(I_C_BPartner bPartner) {
+			return !bPartner.isZZ_Is_MQA_Sector();
+		}
+		protected boolean checkLevyPaying(I_C_BPartner bPartner) {
+			MYear currentFinYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
+			String fiscalYearStr = currentFinYear.getFiscalYear();
+			String prevFiscalYearStr = String.valueOf(Integer.valueOf(fiscalYearStr) - 1);
+			
+			Query queryLevyPaying = MTable.get(I_ZZ_Levy_Paying.Table_ID).createQuery(
+					String.format("%s = ? AND %s = ?", I_ZZ_Levy_Paying.COLUMNNAME_C_BPartner_ID, I_C_Year.COLUMNNAME_FiscalYear), null);
+			queryLevyPaying.addTableDirectJoin(I_C_Year.Table_Name);
+			queryLevyPaying.setParameters(bPartner.getC_BPartner_ID(), prevFiscalYearStr);
+			
+			return queryLevyPaying.list().size() == 0;
+		}
+		protected boolean checkATRSubmitted(I_C_BPartner bPartner) {
+			MYear currentFinYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
+			Query queryLevyPaying = MTable.get(I_ZZ_WSP_ATR_Approvals.Table_ID).createQuery(
+					String.format("%s = ? AND %s = ?", I_ZZ_WSP_ATR_Approvals.COLUMNNAME_C_BPartner_ID, I_ZZ_WSP_ATR_Approvals.COLUMNNAME_ZZ_Financial_Year), null);
+			queryLevyPaying.setParameters(bPartner.getC_BPartner_ID(), currentFinYear.getFiscalYear());
+			return queryLevyPaying.list().size() == 0;
 		}
 
 

@@ -49,10 +49,10 @@ public class WorkplaceCoachesProgram extends AbstractProgram {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		super.saveForm(applicationForm);
-		applicationForm.setZZPlacementWorkplaceCoaches(placementWorkplaceCoaches);
-		applicationForm.setZZTrainingWorkplaceCoaches(trainingWorkplaceCoaches);
+		applicationForm.setZZPlacementWorkplaceCoaches(Util.convert(placementWorkplaceCoaches));
+		applicationForm.setZZTrainingWorkplaceCoaches(Util.convert(trainingWorkplaceCoaches));
 		
-		applicationForm.setZZTotalNumberApplied(trainingWorkplaceCoaches + placementWorkplaceCoaches);
+		applicationForm.setZZTotalNumberApplied(Util.convert(trainingWorkplaceCoaches) + Util.convert(placementWorkplaceCoaches));
 		
 	}
 	/**

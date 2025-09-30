@@ -72,7 +72,6 @@ public class EmployerDeclarationInfo implements ISaveForm {
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		applicationForm.setUserName(getUserName());
-		applicationForm.setDateDoc(getDate());
 	}
 
 	/**
