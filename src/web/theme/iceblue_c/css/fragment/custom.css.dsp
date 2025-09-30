@@ -324,9 +324,11 @@
 .mqaWebForm .grid-cell input[type=text],
 .mqaWebForm .grid-cell select,
 .mqaWebForm .grid-cell span,
+.mqaWebForm .grid-cell textarea, 
 .mqaWebForm .grid-form-cell input[type=text],
 .mqaWebForm .grid-form-cell select,
-.mqaWebForm .grid-form-cell span  
+.mqaWebForm .grid-form-cell span,
+.mqaWebForm .grid-form-cell textarea
 {
 	width:100%;
 }
@@ -404,7 +406,7 @@
 }
 
 
-.mqaWebFormRelate.modal-dialog{
+.mqaWebFormRelate{
 	display: flex;
 	flex-direction: column;
 	height: auto;
@@ -412,13 +414,22 @@
 	
 }
 
-.mqaWebFormRelate.modal-dialog .z-window-header{
+.mqaWebFormRelate .z-window-header{
 	flex: 0 0 auto;
 }
 
-.mqaWebFormRelate.modal-dialog .z-window-content{
+.mqaWebFormRelate .z-window-content{
 	flex: 1 1 auto;
 	overflow-y: auto;
+}
+
+.mqaWebFormRelate .msgs{
+	display: flex;
+	flex-direction: column;
+}
+
+.mqaWebFormRelate .msg{
+	
 }
 
 /* only the star is red; everything else stays as before */

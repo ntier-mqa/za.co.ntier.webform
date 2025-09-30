@@ -2,6 +2,7 @@ package za.co.ntier.webform.form.bean.program;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
 import za.co.ntier.api.model.I_ZZLearnersApplied;
@@ -13,7 +14,9 @@ import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
+import za.co.ntier.webform.form.bean.component.LabelData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
+import za.co.ntier.webform.form.bean.component.TextData;
 
 public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 
@@ -112,7 +115,15 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 				titleColExitStrategy,
 				valueColExitStrategy
 				);
+		String specialRowTitle = "Provide a description of what post training opportunity/ies exist/s for the learners after completing programme (Exit strategy)";
 		strategy = ProjectInput.getProject(strategyCols, null, false);
+		strategy.setDecoratorCell((row) -> {
+			LabelData titleData = (LabelData)row.get(titleColExitStrategy);
+			if (specialRowTitle.equals(titleData.getValue())) {
+				TextData textData = (TextData)row.get(valueColExitStrategy);
+				textData.setLines(3);
+			}
+		});
 		strategy.setSubSectionHeader("EXIT STRATEGY");
 		strategy.setShowColumnHeader(false);
 		strategy.setDataType(AnnexureInfo.AnnexureTypeExitStrategy);
@@ -120,7 +131,7 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 		titleRows = List.of(Map.of(titleColExitStrategy, "Name of Training Intervention")
 						, Map.of(titleColExitStrategy, "NQF Level and Credits")
 						, Map.of(titleColExitStrategy, "Seta accredited with")
-						, Map.of(titleColExitStrategy, "Provide a description of what post training opportunity/ies exist/s for the learners after completing programme (Exit strategy)"));
+						, Map.of(titleColExitStrategy, specialRowTitle));
 		strategy.initProject(applicationForm, titleRows);				
 	}
 	
@@ -201,7 +212,7 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 
 	            Integer dur      = AnnexureInfo.getIntegerValue(row, budgetColDuration);
 	            Integer learners = AnnexureInfo.getIntegerValue(row, budgetColLearners);
-	            String  name     = (String) row.get(budgetColNameProgram);
+	            String  name     = ((TextData) row.get(budgetColNameProgram)).getValue();
 
 	            String postal = null;
 	            Object pObj = row.get(budgetColPostalCode);

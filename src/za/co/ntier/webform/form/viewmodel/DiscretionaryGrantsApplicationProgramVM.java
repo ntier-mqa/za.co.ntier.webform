@@ -50,6 +50,7 @@ import za.co.ntier.webform.form.bean.component.AddressInfo;
 import za.co.ntier.webform.form.bean.component.Dialog;
 import za.co.ntier.webform.form.bean.component.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.component.FormInfo;
+import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.OrganisationInfo;
 import za.co.ntier.webform.form.bean.component.UploadDocComponent;
 import za.co.ntier.webform.form.bean.program.AetProgram;
@@ -210,17 +211,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	    switch (dt) {
 	        case PositiveNumber:
 	            // your ZUL uses row[col].value for numbers
-	            try {
-	                Object v = cell.getClass().getMethod("getValue").invoke(cell);
-	                if (v instanceof Number) return ((Number)v).intValue();
-	            } catch (Exception ignore) {}
-	            return null;
-	        case Text:
-	            try {
-	                String s = ((String)cell).trim();
-	                if (s.isEmpty()) return null;
-	                return Integer.parseInt(s);
-	            } catch (Exception e) { return null; }
+	        	return ((IntData)cell).getValue();
 	        default:
 	            return null;
 	    }

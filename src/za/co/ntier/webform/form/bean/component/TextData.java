@@ -6,12 +6,17 @@ import java.util.Map;
 public class TextData {
 	private AnnexureInfo annexure;
 	private Map<ColumnInfo<?>, Object> row;
-	private String text;
-
-	public TextData(AnnexureInfo annexure, Map<ColumnInfo<?>, Object> row, String text) {
-		this.text = text;
+	private String value;
+	private int lines = 1;
+	
+	public TextData(AnnexureInfo annexure, Map<ColumnInfo<?>, Object> row, String value) {
+		this.value = value;
 		this.annexure = annexure;
 		this.setRow(row);
+	}
+	
+	public TextData() {
+		
 	}
 	
 	/**
@@ -31,10 +36,10 @@ public class TextData {
 	
 
 	/**
-	 * @return the text
+	 * @return the value
 	 */
-	public String getText() {
-		return text;
+	public String getValue() {
+		return value;
 	}
 
 	/**
@@ -52,10 +57,24 @@ public class TextData {
 	}
 
 	/**
-	 * @param text the text to set
+	 * @param value the value to set
 	 */
-	public void setText(String text) {
-		this.text = text;
+	public void setValue(String value) {
+		this.value = value;
 		
+	}
+
+	/**
+	 * @return the lines
+	 */
+	public int getLines() {
+		return lines;
+	}
+
+	/**
+	 * @param lines the lines to set
+	 */
+	public void setLines(int lines) {
+		this.lines = lines;
 	}
 }

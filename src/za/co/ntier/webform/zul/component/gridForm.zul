@@ -21,7 +21,8 @@
           <div sclass="grid-form-cell grid-form-cell-value">
             
 	        <textbox
-              value="@bind(row[col], save-on='onChanging')"
+	        	rows="@load(row[detailCol].lines)"
+              value="@bind(row[col].value, save-on='onChanging')"
               onChanging="@command('instantEditCell', row=row, col=col, ref=self, newVal=event.value)"
               onChange="@command('blurValidateCell', row=row, col=col, ref=self, newVal=event.value)"
               instant="true">

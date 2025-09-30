@@ -55,8 +55,9 @@
          <!-- Text -->
 			<nodom if="${detailCol.dataType == DataType.Text}">
 			                    
-	         <textbox
-			   value="@bind(row[detailCol], save-on='onChanging')"
+	         <textbox 
+	         	rows="@load(row[detailCol].lines)"
+			   value="@bind(row[detailCol].value, save-on='onChanging')"
 			   onChanging="@command('instantEdit', row=row, col=detailCol, ref=self, newVal=event.value)"
 			   onChange="@command('blurValidate', row=row, col=detailCol, ref=self, newVal=event.value)" />
 			</nodom>

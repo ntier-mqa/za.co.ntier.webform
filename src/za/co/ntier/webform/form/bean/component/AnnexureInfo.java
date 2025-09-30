@@ -173,8 +173,11 @@ public class AnnexureInfo implements ISaveForm{
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public AnnexureRow createDetailRow() {
+		return createDetailRow(null);
+	}
+	@SuppressWarnings("unchecked")
+	public AnnexureRow createDetailRow(Map<ColumnInfo<?>, Object> rowTitle) {
 
 		AnnexureRow row = new AnnexureRow(this);
 
@@ -207,23 +210,39 @@ public class AnnexureInfo implements ISaveForm{
 					cellData = new LabelData();
 				}else if (columnInfo.getDataType() == DataType.Date) {
 					cellData = new DateData();
+				}else if (columnInfo.getDataType() == DataType.Text) {
+					cellData = new TextData();
 				}
 
 			}
 			
-			if (decoratorCell != null) {
-				decoratorCell.accept(row, cellData);
-			}
 			row.put(columnInfo, cellData);
-
+		}
+		
+		if (rowTitle != null) {
+			for (Entry<ColumnInfo<?>, Object> colTile : rowTitle.entrySet()) {
+				AnnexureInfo.setCellValue(row, colTile.getKey(), colTile.getValue());
+			}
+		}
+		
+		if (decoratorCell != null) {
+			decoratorCell.accept(row);
 		}
 
 		getRows().add(row);
 		return row;
 	}
 
-	private BiConsumer<AnnexureRow, Object> decoratorCell;
+	private Consumer<AnnexureRow> decoratorCell;
 	
+	public Consumer<AnnexureRow> getDecoratorCell() {
+		return decoratorCell;
+	}
+
+	public void setDecoratorCell(Consumer<AnnexureRow> decoratorCell) {
+		this.decoratorCell = decoratorCell;
+	}
+
 	/**
 	 * update all cell on total row, use on init data
 	 */
@@ -851,11 +870,7 @@ public class AnnexureInfo implements ISaveForm{
 		// init rows with rowTitles
 		if (rowTitles != null)
 			for (Map<ColumnInfo<?>, Object> rowTitle : rowTitles) {
-				AnnexureRow row = (AnnexureRow)createDetailRow();
-
-				for (Entry<ColumnInfo<?>, Object> colTile : rowTitle.entrySet()) {
-					AnnexureInfo.setCellValue(row, colTile.getKey(), colTile.getValue());
-				}
+				AnnexureRow row = (AnnexureRow)createDetailRow(rowTitle);
 			}
 
 		// init rows with saved data

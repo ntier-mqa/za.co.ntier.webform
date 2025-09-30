@@ -9,6 +9,7 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 
 public class CandidacyProgram extends AbstractProgram{
@@ -98,18 +99,8 @@ public class CandidacyProgram extends AbstractProgram{
 	    if (cell == null) return null;
 	    switch (dt) {
 	        case PositiveNumber:
-	            // your ZUL uses row[col].value for numbers
-	            try {
-	                Object v = cell.getClass().getMethod("getValue").invoke(cell);
-	                if (v instanceof Number) return ((Number)v).intValue();
-	            } catch (Exception ignore) {}
-	            return null;
-	        case Text:
-	            try {
-	                String s = ((String)cell).trim();
-	                if (s.isEmpty()) return null;
-	                return Integer.parseInt(s);
-	            } catch (Exception e) { return null; }
+                Integer v = ((IntData)cell).getValue();
+                return v;
 	        default:
 	            return null;
 	    }
