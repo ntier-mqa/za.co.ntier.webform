@@ -109,6 +109,7 @@ public class MasterUtil {
 				String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), null);
 		queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
 		queryCetColleges.setParameters(groupValue);//"Z-CET"
+		queryCetColleges.setOrderBy(I_C_BPartner.COLUMNNAME_Name + " ASC");
 		return queryCetColleges.list();
 	}
 	
@@ -194,12 +195,7 @@ public class MasterUtil {
 	public static List<X_C_BPartner> getTvetColleges() {
 		List<X_C_BPartner> tvetColleges = s_CetTvetCollege.get(ProgramType.TVET);
 		if (tvetColleges == null) {
-			Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
-					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), null);
-			queryCetColleges.setParameters("Z-TVET");
-			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
-			tvetColleges = queryCetColleges.list();
-
+			tvetColleges = getBpartnerByGroup("Z-TVET");
 			s_CetTvetCollege.put(ProgramType.TVET, tvetColleges);
 		}
 		return tvetColleges;
