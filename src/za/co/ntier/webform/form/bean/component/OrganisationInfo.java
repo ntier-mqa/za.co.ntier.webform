@@ -61,8 +61,9 @@ public class OrganisationInfo implements ISaveForm {
 	public OrganisationInfo(MenuContextInfo menuContextInfo, DiscretionaryGrantsApplicationProgramVM discretionaryGrantsApplicationProgramVM) {
 		this.menuContextInfo = menuContextInfo;
 		this.discretionaryGrantsApplicationProgramVM = discretionaryGrantsApplicationProgramVM;
-		postAddressInfo = new AddressInfo(AddressType.POSTAL);
 		physicalAddressInfo = new AddressInfo(AddressType.PHYSICAL);
+		postAddressInfo = new AddressInfo(AddressType.POSTAL);
+		postAddressInfo.setAddressSource(physicalAddressInfo);
 		//orgSizeInfo = new OrganisationSizeInfo();
 		if (!menuContextInfo.getProgramType().isCetTvet()) {
 			orgSizeInfo = new OrganisationSizeInfo();  

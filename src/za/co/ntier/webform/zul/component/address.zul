@@ -4,9 +4,14 @@
 <nodom
 	viewModel="@id('vmAddress') @init('za.co.ntier.webform.form.viewmodel.component.AddressInfoVMWrapper')">
 
-	<hlayout sclass="subSectionHeader">
+	<hlayout sclass="subSectionHeader address">
 		<label sclass="subSectionHeaderTitle"
 			value="@init(vmAddress.component.addressTitle)" />
+		
+		<button visible="@load(( vmAddress.component.addressSource ne null ))" 
+			iconSclass="z-icon-fw z-icon-clone z-icon-solid" 
+			onClick="@command('copyAddress')"
+			label="Copy Address"/>
 	</hlayout>
 
 	<div sclass="grid-container">

@@ -51,7 +51,9 @@ public class AddressInfoVMWrapper extends ComponentVMWrapper<AddressInfo>{
 	    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 	}
 	
-
-
+	@Command
+	public void copyAddress() {
+		component.copyAddress();
+	}
 	
 }

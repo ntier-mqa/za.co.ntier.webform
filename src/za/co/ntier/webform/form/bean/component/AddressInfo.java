@@ -24,6 +24,8 @@ import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
 
 public class AddressInfo implements ISaveForm {
+	private AddressInfo addressSource;
+	
 	private AddressType addressCategory;
 
 	// Street name and number
@@ -62,8 +64,6 @@ public class AddressInfo implements ISaveForm {
 	private String orgName;
 
 	private String orgNameTitle = "Organisation Name";
-	
-	private String postAddress;
 
 	private String postAddressTitle = "Post Address";
 
@@ -224,13 +224,6 @@ public class AddressInfo implements ISaveForm {
 	 */
 	public String getOrgNameTitle() {
 		return orgNameTitle;
-	}
-
-	/**
-	 * @return the postAddress
-	 */
-	public String getPostAddress() {
-		return postAddress;
 	}
 
 	/**
@@ -533,13 +526,6 @@ public class AddressInfo implements ISaveForm {
 	}
 
 	/**
-	 * @param postAddress the postAddress to set
-	 */
-	public void setPostAddress(String postAddress) {
-		this.postAddress = postAddress;
-	}
-
-	/**
 	 * @param postAddressTitle the postAddressTitle to set
 	 */
 	public void setPostAddressTitle(String postAddressTitle) {
@@ -709,5 +695,40 @@ public class AddressInfo implements ISaveForm {
 
 	public boolean showSiteName() {
 		return (programType != null && programType.isShowAddressSiteField()) || addressCategory == AddressType.VACATION;
+	}
+
+	/**
+	 * @return the addressSource
+	 */
+	public AddressInfo getAddressSource() {
+		return addressSource;
+	}
+
+	/**
+	 * @param addressSource the addressSource to set
+	 */
+	public void setAddressSource(AddressInfo addressSource) {
+		this.addressSource = addressSource;
+	}
+	
+	public void copyAddress() {
+		if (addressSource != null && addressCategory == AddressType.POSTAL) {
+			this.addressLine = addressSource.addressLine;
+			
+			if(addressSource.areaSelected != null && !this.areas.contains(addressSource.areaSelected)) {
+				this.areas.add(addressSource.areaSelected);
+			}
+			
+			this.areaSelected = addressSource.areaSelected;
+			
+			this.postalCode = addressSource.postalCode;
+			
+			if(addressSource.provinceSelected != null && !this.provinces.contains(addressSource.provinceSelected)) {
+				this.provinces.add(addressSource.provinceSelected);
+			}
+			this.provinceSelected = addressSource.provinceSelected;
+			
+			BindUtils.postNotifyChange(this, "addressLine", "areaSelected", "postalCode", "provinceSelected");
+		}
 	}
 }

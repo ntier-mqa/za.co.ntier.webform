@@ -60,11 +60,21 @@
     font-size: larger;
 }
 
-.mqaWebForm .container .subSectionHeader {
+.mqaWebForm .container .subSectionHeader,
+.mqaWebForm .container .subSectionHeader.address {
     text-align: left;
     width: 100%;
     display: block;
-    padding: 5px 0 5px 0;
+    padding: 5px 20px 5px 0px;
+}
+
+.mqaWebForm .container .subSectionHeader.address {
+	display:flex;
+	justify-content: space-between;
+}
+
+.mqaWebForm .container .subSectionHeader.address button {
+	
 }
 
 .mqaWebForm .container .subSectionHeaderTitle{
@@ -149,6 +159,8 @@
 .mqaWebForm .container .tabContainer .formBottomPanelFirst,
 .mqaWebForm .container .tabContainer .formBottomPanel{
 	padding: 10px;
+	padding-right: 20px;
+	padding-left: 0px;
 	display: flex;
 	justify-content: right;
 }
