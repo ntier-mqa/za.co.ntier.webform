@@ -716,6 +716,7 @@ public class AddressInfo implements ISaveForm {
 			this.addressLine = addressSource.addressLine;
 			
 			if(addressSource.areaSelected != null && !this.areas.contains(addressSource.areaSelected)) {
+				
 				this.areas.add(addressSource.areaSelected);
 			}
 			
@@ -728,7 +729,7 @@ public class AddressInfo implements ISaveForm {
 			}
 			this.provinceSelected = addressSource.provinceSelected;
 			
-			BindUtils.postNotifyChange(this, "addressLine", "areaSelected", "postalCode", "provinceSelected");
+			BindUtils.postNotifyChange(this, "addressLine", "postalCode", "provinceSelected", "areas");
 		}
 	}
 }
