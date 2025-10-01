@@ -424,10 +424,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			boolean colOk = true;
 			boolean orgOk = true;
 
-		    if (programType.isCetTvet()) {
-		        colOk = organisationInfo.getCetTvetCollegeSelected() != null;
-		        orgOk = true;
-		    } else {
+		    if (!programType.isCetTvet()) {
 		        Integer n = organisationInfo.getOrgSizeInfo() != null
 		                ? organisationInfo.getOrgSizeInfo().getNumOfEmployer()
 		                : null;
