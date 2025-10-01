@@ -155,9 +155,10 @@
 
             <!-- Date -->
 			<nodom if="${detailCol.dataType == DataType.Date}">
-			  <datebox format="short"
-			           valueInLocalDate="@bind(row[detailCol].localDate)"
-			           onChange="@command('notifyProgramComplete')" />
+			    <datebox format="yyyy/MM/dd"
+				         placeholder="yyyy/MM/dd"
+				         valueInLocalDate="@bind(row[detailCol].localDate)"
+				         onChange="@command('notifyProgramComplete')"/>
 			</nodom>
             
             
