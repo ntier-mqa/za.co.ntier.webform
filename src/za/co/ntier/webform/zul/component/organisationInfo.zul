@@ -12,6 +12,9 @@
 
 	<div sclass="grid-container">
 		<div sclass="form-field">
+		<label value="@load(empty vmOrgInfo.component ? 'COMPONENT = NULL' : 'COMPONENT = OK')"/>
+
+		
 		<label sclass="label" value="@init(vmOrgInfo.component.sdlNumberTitle)" /> 
 		<textbox value="@bind(vmOrgInfo.component.sdlNumber)" 
 		onChange="@command('sdlNumberChange')" 
@@ -31,19 +34,26 @@
 
 		</div>
 
-		<div
-			if="${vmOrgInfo.component.useBpartner}"
-			sclass="form-field">
-			<label sclass="label"
-				value="@init(vmOrgInfo.component.cetTvetNameTitle)" />
-			<listbox mold="select" sclass=""
-				model="@load(vmOrgInfo.component.cetTvetColleges)"
-				selectedItem="@bind(vmOrgInfo.component.cetTvetCollegeSelected)">
-				<template name="model" var="item">
-					<listitem label="@load(item.name)" />
-				</template>
+		
+		<div if="${vmOrgInfo.component.useBpartner}" sclass="form-field">
+		  <label sclass="label" value="@init(vmOrgInfo.component.cetTvetNameTitle)" />
+		  <listbox id="collegeLb"
+	         mold="select"
+	         model="@load(vmOrgInfo.component.cetTvetColleges)"
+	         selectedItem="@bind(vmOrgInfo.component.cetTvetCollegeSelected)
+	                       @validator(vmOrgInfo.collegeRequiredValidator)">
+			  <template name="model" var="item">
+			    <listitem label="@load(item.name)"/>
+			  </template>
 			</listbox>
+			
+			<label sclass="help-error"
+			       value="Please select a college"
+			       visible="@load(vmOrgInfo.collegeTouched and empty vmOrgInfo.component.cetTvetCollegeSelected)"/>
+
 		</div>
+
+		
 
 		<div sclass="form-field">
 			<label sclass="label"
@@ -51,7 +61,8 @@
 			<textbox
 				value="@bind(vmOrgInfo.component.siteSDLNumber)
 				@save(vmOrgInfo.component.siteSDLNumber, after='onChanging')" 
-				constraint="no empty: Please enter the Site SDL number"/>
+				constraint="no empty: Please enter the Site SDL number"
+				onFocus='@command("ensureCollegeSelected")'/>
 		</div>
 
 		<div

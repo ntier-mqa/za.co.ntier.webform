@@ -449,3 +449,31 @@
   color: #d0021b;   /* red */
   font-weight: 700; /* optional */
 }
+
+
+/* inline field error message */
+.mqaWebForm .help-error {
+  color: #d32f2f;      /* red */
+  font-size: 12px;
+  line-height: 1.2;
+  margin-top: 4px;
+  display: block;
+}
+
+
+/* highlight the native select wrapper when invalid */
+.mqaWebForm .listbox-invalid .z-select {
+  border-color: #d32f2f !important;
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.15) inset;
+}
+
+/* ZK notification: error variant */
+.z-notification-error {
+  background: #d32f2f !important;
+  border-color: #d32f2f !important;
+  color: #fff !important;
+}
+.z-notification-error .z-notification-content,
+.z-notification-error .z-notification-message {
+  color: #fff !important;
+}
