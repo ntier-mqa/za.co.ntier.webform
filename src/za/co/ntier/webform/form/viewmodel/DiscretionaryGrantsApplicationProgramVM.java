@@ -431,15 +431,16 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		        Integer n = organisationInfo.getOrgSizeInfo() != null
 		                ? organisationInfo.getOrgSizeInfo().getNumOfEmployer()
 		                : null;
-		        if (!organisationInfo.isUseBpartner()) {
-		        	orgOk = notEmpty(organisationInfo.getOrgName());
-		        } else {
-		        	orgOk = organisationInfo.getCetTvetCollegeSelected() != null;
-		        }
+		       
 		        orgOk =  orgOk && notEmpty(organisationInfo.getOrgTaxNumber())
 		             && notEmpty(organisationInfo.getOrgRegistrationNumber())
 		             && n != null; // 0 is allowed
 		    } 
+		    if (!organisationInfo.isUseBpartner()) {
+	        	orgOk = orgOk && notEmpty(organisationInfo.getOrgName());
+	        } else {
+	        	orgOk = orgOk && organisationInfo.getCetTvetCollegeSelected() != null;
+	        }
 
 		    orgOk = orgOk
 		        && notEmpty(organisationInfo.getSdlNumber())
