@@ -36,7 +36,7 @@ import za.co.ntier.webform.form.bean.ProgramType;
 
 public class MasterUtil {
 	public static final List<KeyNamePair> districtMunicipalities;
-	public static final int limitItem = 100;
+	public static final int limitItem = 600;
 	public static final List<KeyNamePair> localMunicipalities;
 	public static final List<KeyNamePair> municipalityTypes;
 

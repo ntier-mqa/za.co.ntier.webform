@@ -812,7 +812,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 		public void submitApplication() throws IOException {
 			saveAppForm(false, "Successfully submitted the application form",
-					"The application form has been submitted.");
+					"The application form has been submitted");
 
 		}
 		

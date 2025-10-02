@@ -165,7 +165,7 @@
             <!-- Add Row button -->
             <button sclass="btn-circle addrow"
                     if="${ rowStatus.last and detailColStatus.last and vmAnnexure.component.showAddButton}"
-                    iconSclass="z-icon-plus" label=""
+                    iconSclass="z-icon-plus" label="" tooltiptext="New Line"
                     onClick="@command('addDetailLine', annexure=vmAnnexure.component)" />
           </div>
         </template>
