@@ -12,8 +12,6 @@
 
 	<div sclass="grid-container">
 		<div sclass="form-field">
-		<label value="@load(empty vmOrgInfo.component ? 'COMPONENT = NULL' : 'COMPONENT = OK')"/>
-
 		
 		<label sclass="label" value="@init(vmOrgInfo.component.sdlNumberTitle)" /> 
 		<textbox value="@bind(vmOrgInfo.component.sdlNumber)" 
