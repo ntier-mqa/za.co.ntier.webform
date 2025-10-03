@@ -20,12 +20,7 @@
         	</template>
         </div>
         
-        
-        <nodom if = "${vmDialog.component.recordId ne null}">
-        <label value="@load(('Your Application Reference No is:' += vmDialog.component.documentNo))"/>
-        <label value="This has been sent as an email to you for future reference"/>
         <label value="@load(vmDialog.moreInfo)"/>
-        </nodom>
       </div>
 
       <div sclass="modal-footer" style="flex-grow:0">  

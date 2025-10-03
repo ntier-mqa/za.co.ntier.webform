@@ -1,11 +1,8 @@
 package za.co.ntier.webform.form.viewmodel.component;
 
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.exception.ApplicationException;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 
 import za.co.ntier.webform.form.bean.component.Dialog;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
@@ -43,19 +40,6 @@ public class DialogVMWrapper extends ComponentVMWrapper<Dialog> {
 	public String getMoreInfo() {
 		return moreInfo;
 	}
-
-	@Command
-	@NotifyChange("visible")
-	public void openAppForm() {
-		try {
-			AEnv.zoom(getComponent().getTableId(), getComponent().getRecordId());
-			closeDialog();
-		}catch (ApplicationException e) {
-			moreInfo = e.getMessage();
-			BindUtils.postNotifyChange(this, "moreInfo");
-		}	
-	}
-	
 	 
 
 	/**

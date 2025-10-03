@@ -587,7 +587,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 	
 	
-	public void saveAppForm(boolean isSave, String title, String msg) throws IOException {
+	public void saveAppForm(boolean isSave) throws IOException {
 		String trxName = null;
 		
 		if (applicationForm == null) {
@@ -655,7 +655,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		setDocumentNo(applicationForm.getDocumentNo());
 		
 		// sent email
-		showSubmitedDialog(title, msg);
+		showSubmitedDialog(isSave);
 		if (!isSave)
 			sentEmail();
 	}
@@ -665,8 +665,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		applicationForm.setName(loginUser.getName() + " - " + LocalDateTime.now().format(dtf));
  	}
 	public void saveClose() throws IOException {
-		saveAppForm(true, "Successfully save the application form",
-				"The application form has been saved.");
+		saveAppForm(true);
 	}
 
 	public void sentEmail() {
@@ -799,8 +798,27 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			showDialog(dialog);
 		}
 		
-		protected void showSubmitedDialog(String title, String msg) {
-			Dialog dialog = new Dialog(title, msg, tableId, recordId, applicationForm.getDocumentNo());
+		protected void showSubmitedDialog(boolean isSave) {
+			String title = isSave?"Successfully save the application form":"Successfully submitted the application form";
+			
+			
+			StringBuilder msgs = new StringBuilder("");
+			if (isSave)
+				msgs.append("The application form has been saved");
+			else
+				msgs.append("The application form has been submitted");
+			
+			msgs.append("Your Application Reference No is:");
+			msgs.append(applicationForm.getDocumentNo());
+			msgs.append("\n");
+			
+			if (isSave) {
+				msgs.append("Please note this for future queries");
+			}else {
+				msgs.append("This has been sent as an email to you for future reference");
+			}
+			
+			Dialog dialog = new Dialog(title, msgs.toString());
 			showDialog(dialog);
 		}
 		
@@ -811,8 +829,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			Executions.createComponents(zulPathRelative, null, args);
 		}
 		public void submitApplication() throws IOException {
-			saveAppForm(false, "Successfully submitted the application form",
-					"The application form has been submitted");
+			saveAppForm(false);
 
 		}
 		
