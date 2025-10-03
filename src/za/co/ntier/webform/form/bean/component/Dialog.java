@@ -5,21 +5,14 @@ import java.util.List;
 public class Dialog {
 	private String documentNo;
 	private List<String> msgs;
-	private Integer recordId;
-	private Integer tableId;
 	private String title;
 	private boolean visible = false;
+	
 	public Dialog(String title, String msg) {
-		this(title, msg, null, null, null, true);
+		this(title, msg, true);
 	}
 	
-	public Dialog(String title, String msg, Integer tableId, Integer recordId, String documentNo) {
-		this(title, msg, tableId, recordId, documentNo, true);
-	}
-	
-	private Dialog(String title, String msg, Integer tableId, Integer recordId, String documentNo, boolean visible) {
-		this.setTableId(tableId);
-		this.setRecordId(recordId);
+	private Dialog(String title, String msg, boolean visible) {
 		this.visible = visible;
 		this.title = title;
 		if (msg != null) {
@@ -66,31 +59,7 @@ public class Dialog {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
-	/**
-	 * @return the recordId
-	 */
-	public Integer getRecordId() {
-		return recordId;
-	}
-	/**
-	 * @param recordId the recordId to set
-	 */
-	public void setRecordId(Integer recordId) {
-		this.recordId = recordId;
-	}
-	/**
-	 * @return the tableId
-	 */
-	public Integer getTableId() {
-		return tableId;
-	}
-	/**
-	 * @param tableId the tableId to set
-	 */
-	public void setTableId(Integer tableId) {
-		this.tableId = tableId;
-	}
-
+	
 	/**
 	 * @return the msgs
 	 */
