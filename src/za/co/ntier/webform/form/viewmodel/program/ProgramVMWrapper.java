@@ -7,6 +7,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.validator.AbstractValidator;
+import org.zkoss.zul.Tabbox;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -15,6 +16,7 @@ import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramV
 public class ProgramVMWrapper<T> {
 	public static final String ProgramKey = "program";
 	private T program;
+	private Tabbox tab;
 	private DiscretionaryGrantsApplicationProgramVM applicationProgramVM;
 	private String notifyTarget;
 	private MenuContextInfo menuContextInfo;
@@ -24,13 +26,15 @@ public class ProgramVMWrapper<T> {
 	public T getProgram() {
 		return program;
 	}
-
+	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo,
 			@ExecutionArgParam(ProgramKey) T program,
+			@ExecutionArgParam("tab") Tabbox tab,
 			@ExecutionArgParam("applicationProgramVM") DiscretionaryGrantsApplicationProgramVM applicationProgramVM,
 			@ExecutionArgParam("notifyTarget") String notifyTarget) throws Exception {
 		this.program = program;
+		this.tab = tab;
 		this.applicationProgramVM = applicationProgramVM;
 		this.setNotifyTarget(notifyTarget);
 		this.setMenuContextInfo(menuContextInfo);
@@ -101,6 +105,20 @@ public class ProgramVMWrapper<T> {
 	            }
 	        }
 	    };
+	}
+
+	/**
+	 * @return the tab
+	 */
+	public Tabbox getTab() {
+		return tab;
+	}
+
+	/**
+	 * @param tab the tab to set
+	 */
+	public void setTab(Tabbox tab) {
+		this.tab = tab;
 	}
 	
 

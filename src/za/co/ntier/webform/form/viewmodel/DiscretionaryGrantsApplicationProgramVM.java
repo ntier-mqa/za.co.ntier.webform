@@ -544,6 +544,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private boolean isTenDigits(String s) { return s != null && s.matches("^\\d{10}$"); }
 	
 	public void nextTab(Tabbox tab) {
+		
 		int currentIndex = tab.getSelectedIndex();
 		tab.setSelectedIndex(currentIndex + 1);
 	}

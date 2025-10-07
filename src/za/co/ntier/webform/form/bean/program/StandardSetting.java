@@ -14,6 +14,7 @@ import za.co.ntier.api.model.X_ZZStandardSetting;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 
@@ -24,6 +25,7 @@ public class StandardSetting extends AbstractProgram {
 	
 	public StandardSetting(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
+		setHandleButton(true);
 		standardSettings = new ArrayList<>();
 		String dataType = "CATEGORY A1: QDFs"; 
 		String tabTitle = "QDFs";

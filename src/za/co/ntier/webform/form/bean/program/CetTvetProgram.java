@@ -20,7 +20,7 @@ import za.co.ntier.webform.form.bean.component.ProgramInput;
 
 public class CetTvetProgram extends AbstractProgram {
 	private AddressInfo addressInfo;
-
+	
 	private List<AnnexureInfo> annexureInfos;
 	
 	private List<LearnerInputInfo> tradeInfo;
@@ -28,7 +28,7 @@ public class CetTvetProgram extends AbstractProgram {
 	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
 		super(menuContextInfo, applicationForm);
 		
-		
+		setHandleButton(menuContextInfo.getProgramType() != ProgramType.TVET_BURSARS);
 		annexureInfos = new ArrayList<>();
 		CetTvetOneLineInput annexure = null;
 		CetTvetMultiLineInput subAnnexure = null;

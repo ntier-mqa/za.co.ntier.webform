@@ -8,8 +8,8 @@
 <nodom
 	viewModel="@id('vmCetTvet') @init('za.co.ntier.webform.form.viewmodel.program.CetTvetVMWrapper')">
 
-	
-	<tabbox width="100%">
+	<div zclass="tabContainer">
+	<tabbox width="100%" id="subTab">
 		<tabs children="@load(vmCetTvet.program.annexureInfos)">
 	        <template name="children" var="annexure">
 	            <tab label="@load(annexure.tabTitle)" />
@@ -28,4 +28,13 @@
 	    </tabpanels>
 	</tabbox>
 	
+	<include if="${vm.program.handleButton}"
+							tabType="@init(TabType.MidTab)"
+							tab="@init(vmCetTvet.tab)"
+							subTab="@init(subTab)"
+							applicationProgramVM="@load(vmCetTvet.applicationProgramVM)"
+							continueGate="@init('PROGRAM')"
+  							submitGate="@init('NONE')"
+							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
+	</div>
 </nodom>

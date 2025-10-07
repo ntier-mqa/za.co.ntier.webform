@@ -29,10 +29,12 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 	public void init(
 			@ExecutionArgParam("tabType") TabType tabType,
 			@ExecutionArgParam("tab") Tabbox tab,
+			@ExecutionArgParam("subTab") Tabbox subTab,
 			@ExecutionArgParam("continueGate") String continueGate,   // <-- add
 			@ExecutionArgParam("submitGate")   String submitGate      // <-- add
 			) {
 		setComponent(new MainButtonComponent(getApplicationProgramVM(), tabType, tab));
+		getComponent().setSubTab(subTab);
 		this.continueGate = (continueGate != null) ? continueGate : "NONE"; // <-- set
 		this.submitGate   = (submitGate   != null) ? submitGate   : "NONE"; // <-- set
 	}
@@ -72,6 +74,18 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 
 	@Command
 	public void nextTab() {
+		Tabbox subTab = getComponent().getSubTab();
+		if (subTab != null) {
+			int tabCount = subTab.getTabs().getChildren().size();
+			int currentIndex = subTab.getSelectedIndex();
+			currentIndex++;
+			if (currentIndex < tabCount) {
+				
+				subTab.setSelectedIndex(currentIndex);
+				return;
+			}
+		}
+		
 		// Only enforce this when we are on the Declaration tab (index 0).
 		// Adjust if you change tab order.
 		// Martin Added 
@@ -117,6 +131,16 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 	
 	@Command
 	public void prevTab() {
+		Tabbox subTab = getComponent().getSubTab();
+		if (subTab != null) {
+			int currentIndex = subTab.getSelectedIndex();
+			if (currentIndex > 0) {
+				currentIndex--;	
+				subTab.setSelectedIndex(currentIndex);
+				return;
+			}
+		}
+		
 	    int prev = Math.max(0, component.getApplicationProgramVM().getSelectedTabIndex() - 1);
 	    getComponent().getTab().setSelectedIndex(prev);
 	    component.getApplicationProgramVM().setSelectedTabIndex(prev);

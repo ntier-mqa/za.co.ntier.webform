@@ -3,6 +3,7 @@ package za.co.ntier.webform.form;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 
 public abstract class AbstractProgram implements ISaveForm {
+	private boolean handleButton = false;
 	private MenuContextInfo menuContextInfo;
 	private X_ZZ_Application_Form applicationForm;
 
@@ -33,6 +34,20 @@ public abstract class AbstractProgram implements ISaveForm {
 
 	public boolean isProgramValid() {
 		return true;
+	}
+
+	/**
+	 * @return the handleButton
+	 */
+	public boolean isHandleButton() {
+		return handleButton;
+	}
+
+	/**
+	 * @param handleButton the handleButton to set
+	 */
+	public void setHandleButton(boolean handleButton) {
+		this.handleButton = handleButton;
 	}
 
 

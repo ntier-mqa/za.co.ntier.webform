@@ -11,11 +11,9 @@ public class MainButtonComponent {
 
 
 	private Tabbox tab;
+	private Tabbox subTab;
 	private	TabType tabType;
-
-
-
-
+	
 	public MainButtonComponent(DiscretionaryGrantsApplicationProgramVM applicationProgramVM, TabType tabType, Tabbox tab) {
 		this.applicationProgramVM = applicationProgramVM;
 		this.tabType = tabType;
@@ -63,5 +61,17 @@ public class MainButtonComponent {
 	 */
 	public void setTabType(TabType tabType) {
 		this.tabType = tabType;
+	}
+	/**
+	 * @return the subTab
+	 */
+	public Tabbox getSubTab() {
+		return subTab;
+	}
+	/**
+	 * @param subTab the subTab to set
+	 */
+	public void setSubTab(Tabbox subTab) {
+		this.subTab = subTab;
 	}
 }

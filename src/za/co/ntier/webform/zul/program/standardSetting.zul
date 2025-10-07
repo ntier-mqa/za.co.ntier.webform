@@ -3,40 +3,51 @@
 
 <nodom xmlns:n="native"
 	viewModel="@id('vmSs') @init('za.co.ntier.webform.form.viewmodel.program.StandardSettingVMWrapper')">
-
-
-	<tabbox width="100%">
-		<tabs children="@load(vmSs.program.standardSettings)">
-	        <template name="children" var="annexure">
-	            <tab label="@load(annexure.tabTitle)" />
-	        </template>
-	    </tabs>
-	    <tabpanels children="@load(vmSs.program.standardSettings)">
-	    		<template name="children" var="annexure">
-		            <tabpanel>
-		            	<hlayout if="${annexure.header ne null}" sclass="sectionHeader">
-					    	<label sclass="sectionHeaderTitle" value="@init(annexure.header)" />
-					  	</hlayout>
-		                <label style="font-weight:bold" value="The following documents must be attached with the application"/>
-		                <n:ol sclass="generalAppRules">
-							<n:li forEach="${annexure.files}">
-								<label value="${each}" />
-							</n:li>
-						</n:ol>
-		                
-		                
-		                <include component="@load(annexure)" 
-		                    applicationProgramVM="@init(vmSs.applicationProgramVM)"
-	    					notifyTarget="@init('programComplete')"
-							src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
-		            </tabpanel>
-		        </template>
-	        
-	    </tabpanels>
-	</tabbox>
 	
-	<include component="@load(vmSs.program.bankInfo)"
-	    applicationProgramVM="@init(vmSs.applicationProgramVM)"
-        notifyTarget="@init('programComplete')"
-		src="@load((WebForm.getBundleResourcePath('component/gridForm.zul')))" />
+	<div zclass="tabContainer">
+		<div sclass="formContainer">
+			<tabbox width="100%" id="subTab">
+				<tabs children="@load(vmSs.program.standardSettings)">
+			        <template name="children" var="annexure">
+			            <tab label="@load(annexure.tabTitle)" />
+			        </template>
+			    </tabs>
+			    <tabpanels children="@load(vmSs.program.standardSettings)">
+			    		<template name="children" var="annexure">
+				            <tabpanel>
+				            	<hlayout if="${annexure.header ne null}" sclass="sectionHeader">
+							    	<label sclass="sectionHeaderTitle" value="@init(annexure.header)" />
+							  	</hlayout>
+				                <label style="font-weight:bold" value="The following documents must be attached with the application"/>
+				                <n:ol sclass="generalAppRules">
+									<n:li forEach="${annexure.files}">
+										<label value="${each}" />
+									</n:li>
+								</n:ol>
+				                
+				                
+				                <include component="@load(annexure)" 
+				                    applicationProgramVM="@init(vmSs.applicationProgramVM)"
+			    					notifyTarget="@init('programComplete')"
+									src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
+				            </tabpanel>
+				        </template>
+			        
+			    </tabpanels>
+			</tabbox>
+			
+			<include component="@load(vmSs.program.bankInfo)"
+			    applicationProgramVM="@init(vmSs.applicationProgramVM)"
+		        notifyTarget="@init('programComplete')"
+				src="@load((WebForm.getBundleResourcePath('component/gridForm.zul')))" />
+		</div>	
+		<include if="${vmSs.program.handleButton}"
+							tabType="@init(TabType.MidTab)"
+							tab="@init(vmSs.tab)"
+							subTab="@init(subTab)"
+							applicationProgramVM="@load(vmSs.applicationProgramVM)"
+							continueGate="@init('PROGRAM')"
+  							submitGate="@init('NONE')"
+							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
+	</div>
 </nodom>
