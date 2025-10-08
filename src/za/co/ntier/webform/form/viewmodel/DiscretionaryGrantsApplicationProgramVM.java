@@ -800,7 +800,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 		
 		protected void showSubmitedDialog(boolean isSave) {
-			String title = isSave?"Successfully save the application form":"Successfully submitted the application form";
+			String title = isSave?"Successfully saved the application form":"Successfully submitted the application form";
 			
 			
 			StringBuilder msgs = new StringBuilder("");
@@ -809,7 +809,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			else
 				msgs.append("The application form has been submitted");
 			
-			msgs.append("Your Application Reference No is:");
+			msgs.append("\nYour Application Reference No is:");
 			msgs.append(applicationForm.getDocumentNo());
 			msgs.append("\n");
 			

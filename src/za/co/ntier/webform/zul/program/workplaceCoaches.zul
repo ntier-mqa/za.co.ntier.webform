@@ -2,70 +2,78 @@
 
 <nodom xmlns:n="native"
 	viewModel="@id('vmWorkplaceCoaches') @init('za.co.ntier.webform.form.viewmodel.program.WorkplaceCoachesVMWrapper')">
-
-	<tabbox width="100%">
-		<tabs>
-            <tab label="Placement of workplace coaches" />
-            <tab label="Training of workplace coaches" />
-	    </tabs>
-	    <tabpanels>
-            <tabpanel>
-            	<hlayout sclass="subSectionHeader">
-					<label sclass="subSectionHeaderTitle"
-						value="Placement of workplace coaches coaching learners on artisan development programmes" />
-				</hlayout>
-				<n:ol sclass="generalAppRules">
-					<n:li forEach="${vmWorkplaceCoaches.program.placementWorkplaces}">
-						<label value="${each}" />
-					</n:li>
-				</n:ol>
-				
-				<div sclass="grid-table grid-table-auto-3">
-					<div sclass="grid-cell">
-						<label value="*D1" />
-					</div>
-					<div sclass="grid-cell">
-						<label value="Number of placements of workplace coaches coaching learners on Artisan Development Programmes applying for?" />
-					</div>
-					<div sclass="grid-cell">
-					    <intbox
-						  value="@bind(vmWorkplaceCoaches.program.placementWorkplaceCoaches, save-on='onChange')"
-						  onChange="@command('notifyProgramComplete')"
-						  constraint="no negative, no zero: Must be > 0" />
-					</div>
-				</div>
-            </tabpanel>
-            <tabpanel>
-            	<hlayout sclass="subSectionHeader">
-					<label sclass="subSectionHeaderTitle"
-						value="Training of workplace coaches by the mqa appointed service provider" />
-				</hlayout>
-				
-				<n:ol sclass="generalAppRules">
-					<n:li forEach="${vmWorkplaceCoaches.program.trainingtWorkplaces}">
-						<label value="${each}" />
-					</n:li>
-				</n:ol>
-				
-				
-				<div sclass="grid-table grid-table-auto-3">
-					<div sclass="grid-cell">
-						<label value="*D2" />
-					</div>
-					<div sclass="grid-cell">
-						<label value="Number of workplace coaches to be trained applying for?" />
-					</div>
-					<div sclass="grid-cell">
-						 <intbox
-							value="@bind(vmWorkplaceCoaches.program.trainingWorkplaceCoaches, save-on='onChange')"
-							onChange="@command('notifyProgramComplete')"
-							constraint="no empty: Please enter a number, no negative, no zero" />
-					</div>
+	<div zclass="tabContainer">
+		<tabbox width="100%" id="subTab">
+			<tabs>
+	            <tab label="Placement of workplace coaches" />
+	            <tab label="Training of workplace coaches" />
+		    </tabs>
+		    <tabpanels>
+	            <tabpanel>
+	            	<hlayout sclass="subSectionHeader">
+						<label sclass="subSectionHeaderTitle"
+							value="Placement of workplace coaches coaching learners on artisan development programmes" />
+					</hlayout>
+					<n:ol sclass="generalAppRules">
+						<n:li forEach="${vmWorkplaceCoaches.program.placementWorkplaces}">
+							<label value="${each}" />
+						</n:li>
+					</n:ol>
 					
-				</div>
-            </tabpanel>
-        </tabpanels>
-	</tabbox>	            
-
-
+					<div sclass="grid-table grid-table-auto-3">
+						<div sclass="grid-cell">
+							<label value="*D1" />
+						</div>
+						<div sclass="grid-cell">
+							<label value="Number of placements of workplace coaches coaching learners on Artisan Development Programmes applying for?" />
+						</div>
+						<div sclass="grid-cell">
+						    <intbox
+							  value="@bind(vmWorkplaceCoaches.program.placementWorkplaceCoaches, save-on='onChange')"
+							  onChange="@command('notifyProgramComplete')"
+							  constraint="no negative, no zero: Must be > 0" />
+						</div>
+					</div>
+	            </tabpanel>
+	            <tabpanel>
+	            	<hlayout sclass="subSectionHeader">
+						<label sclass="subSectionHeaderTitle"
+							value="Training of workplace coaches by the mqa appointed service provider" />
+					</hlayout>
+					
+					<n:ol sclass="generalAppRules">
+						<n:li forEach="${vmWorkplaceCoaches.program.trainingtWorkplaces}">
+							<label value="${each}" />
+						</n:li>
+					</n:ol>
+					
+					
+					<div sclass="grid-table grid-table-auto-3">
+						<div sclass="grid-cell">
+							<label value="*D2" />
+						</div>
+						<div sclass="grid-cell">
+							<label value="Number of workplace coaches to be trained applying for?" />
+						</div>
+						<div sclass="grid-cell">
+							 <intbox
+								value="@bind(vmWorkplaceCoaches.program.trainingWorkplaceCoaches, save-on='onChange')"
+								onChange="@command('notifyProgramComplete')"
+								constraint="no empty: Please enter a number, no negative, no zero" />
+						</div>
+						
+					</div>
+	            </tabpanel>
+	        </tabpanels>
+		</tabbox>	            
+	
+		<include if="${vm.program.handleButton}"
+								tabType="@init(TabType.MidTab)"
+								tab="@init(vmWorkplaceCoaches.tab)"
+								subTab="@init(subTab)"
+								applicationProgramVM="@load(vmWorkplaceCoaches.applicationProgramVM)"
+								continueGate="@init('PROGRAM')"
+	  							submitGate="@init('NONE')"
+								src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
+	</div>
 </nodom>

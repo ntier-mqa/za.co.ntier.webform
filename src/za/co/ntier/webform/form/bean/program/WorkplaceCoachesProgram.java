@@ -41,6 +41,7 @@ public class WorkplaceCoachesProgram extends AbstractProgram {
 	
 	public WorkplaceCoachesProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
+		setHandleButton(true);
 		if (applicationForm != null) {
 			placementWorkplaceCoaches = Util.convert(applicationForm.getZZPlacementWorkplaceCoaches());
 			trainingWorkplaceCoaches = Util.convert(applicationForm.getZZTrainingWorkplaceCoaches());
