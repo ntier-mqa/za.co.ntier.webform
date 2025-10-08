@@ -562,10 +562,7 @@ public class AnnexureInfo implements ISaveForm{
 					}
 				}else if (col.getDataType() == DataType.FileUpload) {
 					// Martin changed to save to attachments instead to a binary file
-					UploadData uploadData = (UploadData) row.get(col);
-					if (uploadData != null && uploadData.getBytes() != null && uploadData.getBytes().length > 0) {
-						hasCellData = Boolean.TRUE;
-					}
+					hasCellData = Boolean.TRUE;// upload data become option
 					ignoreSetDao = true; // never set DAO properties for files anymore
 				}else if (col.getDataType() == DataType.List) {
 					Object selectedObj = row.get(col);
