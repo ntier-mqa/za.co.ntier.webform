@@ -268,23 +268,9 @@ public class StandardSetting extends AbstractProgram {
 	    // bank form must be complete
 	    boolean bankOk = bankInfo != null && bankInfo.areMandatoryFieldsFilled();
 
-	    // every row in every subtab must have Y/N chosen
-	    boolean radiosOk = true;
-	    for (StandardSettingInput s : standardSettings) {
-	        ColumnInfo<?> ynCol = AnnexureInfo.lookupColByDataType(DataType.Radio, s);
-	        if (ynCol == null) continue; // no radio in this annexure
+	    
 
-	        for (Map<ColumnInfo<?>, Object> r : s.getRows()) {
-	            Object v = r.get(ynCol);
-	            if (v == null || v.toString().trim().isEmpty()) {
-	                radiosOk = false;
-	                break;
-	            }
-	        }
-	        if (!radiosOk) break;
-	    }
-
-	    return bankOk && radiosOk;
+	    return bankOk;
 	}
 
 
