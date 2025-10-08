@@ -143,7 +143,9 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 	        if (v == null || !v.matches("^\\d{10}$")) {
 	            throw new WrongValueException(ref, "Cell number must be exactly 10 digits");
 	        }
-	    }
+	    } 
+	    
+	    
 	}
 
 }

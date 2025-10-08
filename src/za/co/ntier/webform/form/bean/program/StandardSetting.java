@@ -14,6 +14,7 @@ import za.co.ntier.api.model.X_ZZStandardSetting;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 
@@ -195,7 +196,7 @@ public class StandardSetting extends AbstractProgram {
 	
 	ColumnInfo<?> colTitle = ColumnInfo.getColLabel("", I_ZZStandardSetting.COLUMNNAME_Name);
 	private List<ColumnInfo<?>> cols = List.of(colTitle
-			, ColumnInfo.getColRadio("", I_ZZStandardSetting.COLUMNNAME_IsSelected));
+			, ColumnInfo.getColRadio("", I_ZZStandardSetting.COLUMNNAME_IsSelected).required());
 	
 	protected StandardSettingInput createStandardSetting(String dataType, String tabTitle, String sectionHeader, String ... rowTitles) {
 		StandardSettingInput annexure = AnnexureInfo.getAnnexureInfo(StandardSettingInput.class, cols, false);
@@ -260,5 +261,31 @@ public class StandardSetting extends AbstractProgram {
 	public void setBankInfo(AnnexureInfo bankInfo) {
 		this.bankInfo = bankInfo;
 	}
+	
+	
+	@Override
+	public boolean isProgramValid() {
+	    // bank form must be complete
+	    boolean bankOk = bankInfo != null && bankInfo.areMandatoryFieldsFilled();
+
+	    // every row in every subtab must have Y/N chosen
+	    boolean radiosOk = true;
+	    for (StandardSettingInput s : standardSettings) {
+	        ColumnInfo<?> ynCol = AnnexureInfo.lookupColByDataType(DataType.Radio, s);
+	        if (ynCol == null) continue; // no radio in this annexure
+
+	        for (Map<ColumnInfo<?>, Object> r : s.getRows()) {
+	            Object v = r.get(ynCol);
+	            if (v == null || v.toString().trim().isEmpty()) {
+	                radiosOk = false;
+	                break;
+	            }
+	        }
+	        if (!radiosOk) break;
+	    }
+
+	    return bankOk && radiosOk;
+	}
+
 
 }

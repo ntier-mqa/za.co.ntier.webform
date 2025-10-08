@@ -46,7 +46,8 @@
             
             <nodom if="${detailCol.dataType == DataType.Radio}">
               	<radiogroup
-			    		selectedItem="@bind(row[detailCol])">
+			    		selectedItem="@bind(row[detailCol])"
+			    		onCheck="@command('notifyProgramComplete')">
 			    	<radio label="YES" value="Y"/>
 			    	<radio label="NO"  value="N"/>
 				</radiogroup>

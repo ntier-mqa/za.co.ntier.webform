@@ -84,8 +84,6 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 				return;
 			}
 		}
-		//	int currentIndex = getComponent().getTab().getSelectedIndex();
-		//	getComponent().getTab().setSelectedIndex(currentIndex + 1);
 
 		int next = component.getApplicationProgramVM().getSelectedTabIndex() + 1;
 

@@ -73,16 +73,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 		        if (u != null && org.apache.commons.lang3.StringUtils.isNotBlank(name)) {
 		            u.setFileName(name);
 		        }
-		        /*
-		        org.compiere.model.MAttachment att =
-		            org.compiere.model.MAttachment.get(applicationForm.getCtx(), dao.get_Table_ID(), dao.get_ID());
-		        if (att != null && att.getEntries() != null && att.getEntries().length > 0) {
-		            String name = att.getEntries()[0].getName();
-		            za.co.ntier.webform.form.bean.component.UploadData u =
-		                (za.co.ntier.webform.form.bean.component.UploadData) learningMaterials.getRows().get(i).get(colCV);
-		            if (u != null) u.setFileName(name);
-		        }
-		        */
+		       
 		    }
 		}
 		

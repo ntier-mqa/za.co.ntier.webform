@@ -92,6 +92,14 @@ public class ComponentVMWrapper<T> {
                         (col.getTitle() != null ? col.getTitle() : "This field") + " is required");
             }
         }
+     // identify columns by DAO property name
+	    String dao = col.getDaoPropertyName();
+	    String key = dao == null ? "" : dao.toLowerCase();
+        if (key.endsWith("zz_branch_number") || key.endsWith("AccountNo")) {
+	        if (v == null || !v.matches("^\\d+$")) {
+	            throw new WrongValueException(ref, "Digits only (0–9)");
+	        }
+	    }
 
         // If valid, ensure any previous error is cleared
         Clients.clearWrongValue(ref);

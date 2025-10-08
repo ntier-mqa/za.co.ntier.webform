@@ -25,7 +25,8 @@
               value="@bind(row[col].value, save-on='onChanging')"
               onChanging="@command('instantEditCell', row=row, col=col, ref=self, newVal=event.value)"
               onChange="@command('blurValidateCell', row=row, col=col, ref=self, newVal=event.value)"
-              instant="true">
+              onBlur="@command('blurValidateCell', row=row, col=col, ref=self, newVal=self.value)"
+              instant="false">
               <custom-attributes label="@load(col.title)" required="@load(col.mandatory)"/>
             </textbox>
           </div>

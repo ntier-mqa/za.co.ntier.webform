@@ -1010,9 +1010,11 @@ public class AnnexureInfo implements ISaveForm{
 	    for (AnnexureRow r : rows) {
 	        for (ColumnInfo<?> col : columnInfos) {
 	            if (!col.isMandatory()) continue;
-	            Object v = r.get(col);
-	            if (v == null) return false;
-	            if (v instanceof CharSequence && ((CharSequence) v).toString().trim().isEmpty()) return false;
+	            var present = AnnexureInfo.getCellValue(r, col).getValue();
+	            if (!Boolean.TRUE.equals(present)) return false;
+	            //Object v = r.get(col);
+	          //  if (v == null) return false;
+	          //  if (v instanceof CharSequence && ((CharSequence) v).toString().trim().isEmpty()) return false;
 	        }
 	    }
 	    return true;
