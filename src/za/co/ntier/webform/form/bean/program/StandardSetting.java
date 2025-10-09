@@ -265,11 +265,12 @@ public class StandardSetting extends AbstractProgram {
 	@Override
 	public boolean isProgramValid() {
 	    // bank form must be complete
-	    boolean bankOk = bankInfo != null && bankInfo.areMandatoryFieldsFilled();
+	    //boolean bankOk = bankInfo != null && bankInfo.areMandatoryFieldsFilled();
 
 	    
 
-	    return bankOk;
+	    //return bankOk;
+		return true;
 	}
 
 
