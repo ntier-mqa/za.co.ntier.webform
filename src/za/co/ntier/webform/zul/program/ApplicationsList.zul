@@ -24,7 +24,7 @@
 
 
 
-    <column label="Submitted"/>
+    <column label="Date Saved"/>
     <column label="Status"/>
     <column label="Action" width="90px" align="center"/>
   </columns>
