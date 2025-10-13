@@ -197,7 +197,7 @@ public class AnnexureInfo implements ISaveForm{
 
 				} else if (columnInfo.getDataType() == DataType.Area) {
 					AreaData areaData = new AreaData(this, row);
-					areaData.setDataProvider((List<MCity>)columnInfo.getDataProvider());
+					//areaData.setDataProvider((List<MCity>)columnInfo.getDataProvider());
 					cellData = areaData;
 				} else if (columnInfo.getDataType() == DataType.Postal) {
 					PostalData textData = new PostalData(this, row, null);
