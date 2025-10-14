@@ -75,14 +75,26 @@
 
             <!-- Postal -->
             <nodom if="${detailCol.dataType == DataType.Postal}">
-              <textbox value="@bind(row[detailCol].postal, save-on='onChanging')"
-                             onChanging="@command('notifyProgramComplete')"
-                       constraint="/\d+/: Please enter digits only"/>
+              <textbox value="@load(row[detailCol].postal)"
+                             
+                       	constraint="/^$|^\d{4,6}$/: Enter a valid postal code (4–6 digits)"
+                       	onChange="@command('postalChange', annexure = vmAnnexure.component, row = row, col = detailCol)"
+			  			maxlength="6"/>
                        
                
             </nodom>
             
             
+            <!-- Area -->
+            <nodom if="${detailCol.dataType == DataType.Area}">
+              <listbox mold="select"
+                       model="@load(row[detailCol].areas)"
+  					   onSelect="@command('areaSelect', annexure = vmAnnexure.component, row = row, col = detailCol)">
+                    <template name="model" var="item">
+                        <listitem label="@load(item.name)" />
+                    </template>
+              </listbox>
+            </nodom>
 
             <!-- LearnerInfo -->
             <nodom if="${detailCol.dataType == DataType.LearnerInfo}">
@@ -125,17 +137,6 @@
               </listbox>
             </nodom>
 
-            <!-- Area -->
-            <nodom if="${detailCol.dataType == DataType.Area}">
-              <listbox mold="select"
-                       model="@load(row[detailCol].dataProvider)"
-                       selectedItem="@bind(row[detailCol].selectedArea, save-on='onSelect')"
-  					   onSelect="@command('notifyProgramComplete')">
-                    <template name="model" var="item">
-                        <listitem label="@load(item.name)" />
-                    </template>
-              </listbox>
-            </nodom>
 
             <!-- FileUpload -->
             <nodom if="${detailCol.dataType == DataType.FileUpload}">

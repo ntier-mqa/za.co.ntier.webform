@@ -85,7 +85,7 @@ public class ArtisanRPLProgram extends AbstractProgram {
 				postal = ((PostalData) pObj).getPostal();
 			}
 			Object aObj = row.get(areaCol);
-			boolean areaOk = (aObj instanceof AreaData) && ((AreaData) aObj).getSelectedArea() != null;
+			boolean areaOk = (aObj instanceof AreaData) && ((AreaData) aObj).isSelected();
 			boolean postalOk = postal != null && !postal.trim().isEmpty();
 
 			if (!postalOk || !areaOk) {

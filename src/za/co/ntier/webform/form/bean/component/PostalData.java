@@ -30,6 +30,10 @@ public class PostalData{
 	
 	public void setPostal(String postal) {
 		this.postal = postal;
+	}
+
+	public void postalChange(String postal) {
+		setPostal(postal);
 		
 		if (annexure != null && row != null) {
 			ColumnInfo<?> areaCol = AnnexureInfo.lookupColByDataType(DataType.Area, annexure);
@@ -37,22 +41,13 @@ public class PostalData{
 				List<MCity> citys = MasterUtil.getCitiesByPostal(postal);
 				
 				AreaData areaData = (AreaData) row.get(areaCol);
+				
 				areaData.setDataProvider(citys);
-				
-				areaData.setSelectedAreaInternal(null);
-				if (citys.size() == 1) {
-					areaData.setSelectedAreaInternal(citys.get(0));
-				}
-				BindUtils.postNotifyChange(areaData, "dataProvider");
-				
+				//BindUtils.postNotifyChange(this, "postal");
+				//BindUtils.postNotifyChange(areaData, "dataProvider");
 			}
 			
 		}
-		
-	}
-
-	public void setPostalInternal(String postal) {
-		this.postal = postal;
 	}
 	
 }

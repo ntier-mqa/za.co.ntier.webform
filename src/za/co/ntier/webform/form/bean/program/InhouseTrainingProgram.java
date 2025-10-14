@@ -78,7 +78,7 @@ public class InhouseTrainingProgram extends AbstractProgram{
 
 	        boolean areaOk = false;
 	        if (colArea != null && row.get(colArea) instanceof AreaData) {
-	            areaOk = ((AreaData) row.get(colArea)).getSelectedArea() != null;
+	            areaOk = ((AreaData) row.get(colArea)).isSelected();
 	        }
 
 	        if (n > 0 && postalOk && areaOk) {

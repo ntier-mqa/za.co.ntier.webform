@@ -68,7 +68,7 @@ public class AetProgram extends AbstractProgram {
             boolean postalOk = (cPostal != null && row.get(cPostal) instanceof PostalData)
                     && notEmpty(((PostalData) row.get(cPostal)).getPostal());
             boolean areaOk   = (cArea   != null && row.get(cArea)   instanceof AreaData)
-                    && ((AreaData) row.get(cArea)).getSelectedArea() != null;
+                    && ((AreaData) row.get(cArea)).isSelected();
 
             if ((emp + unemp) > 0 && postalOk && areaOk) {
                 return true;

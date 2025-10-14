@@ -67,7 +67,7 @@ public class ArtisanDevProgram extends AbstractProgram {
 	                && notEmpty(((PostalData) row.get(cPostal)).getPostal());
 
 	        boolean areaOk = (cArea != null && row.get(cArea) instanceof AreaData)
-	                && ((AreaData) row.get(cArea)).getSelectedArea() != null;
+	                && ((AreaData) row.get(cArea)).isSelected();
 
 	        if (n > 0 && postalOk && areaOk) return true;
 	    }

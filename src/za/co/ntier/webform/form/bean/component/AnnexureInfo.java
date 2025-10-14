@@ -168,7 +168,12 @@ public class AnnexureInfo implements ISaveForm{
 	public void areaSelect (Map<ColumnInfo<?>, Object> row, 
 			ColumnInfo<?> col,
 			SelectEvent<?, ?> event){
-
+		
+		AreaData areaData = (AreaData)row.get(col);
+		if (event.getSelectedObjects().isEmpty())
+			areaData.areaSelect(null);
+		else
+			areaData.areaSelect((MCity)event.getSelectedObjects().iterator().next());
 	}
 
 	public AnnexureRow createDetailRow() {
@@ -197,7 +202,7 @@ public class AnnexureInfo implements ISaveForm{
 
 				} else if (columnInfo.getDataType() == DataType.Area) {
 					AreaData areaData = new AreaData(this, row);
-					//areaData.setDataProvider((List<MCity>)columnInfo.getDataProvider());
+					areaData.setDataProvider((List<MCity>)columnInfo.getDataProvider());
 					cellData = areaData;
 				} else if (columnInfo.getDataType() == DataType.Postal) {
 					PostalData textData = new PostalData(this, row, null);
@@ -392,7 +397,9 @@ public class AnnexureInfo implements ISaveForm{
 	public void postalChange (Map<ColumnInfo<?>, Object> row, 
 			ColumnInfo<?> col,
 			InputEvent event){
-
+		PostalData postalData = (PostalData)row.get(col);
+		if (postalData != null)
+			postalData.postalChange(event.getValue());
 	}
 
 	@Override
@@ -685,19 +692,7 @@ public class AnnexureInfo implements ISaveForm{
 		Object valueObj = row.get(col);
 		if (col.getDataType() == DataType.Area) {
 			AreaData areaData = (AreaData)valueObj;
-			if (value == null || (int)value == 0) {
-				areaData.setSelectedAreaInternal(null);
-			}else {
-				//for(MCity area : areaData.getDataProvider()) {
-				for(MCity area : MasterUtil.getCities()) {// search on all cities, not only in data provider
-					if (area.getC_City_ID() == (int)value) {
-						@SuppressWarnings("unchecked")
-						List<MCity> dataProvider = (List<MCity>)col.getDataProvider();
-						dataProvider.add(area);
-						areaData.setSelectedAreaInternal(area);
-					}
-				}
-			}
+			areaData.setSelectedArea(value);
 		}else if (col.getDataType() == DataType.PositiveNumber) {
 			IntData intData = (IntData)valueObj;
 			intData.setValue(Util.convert((int)value));
@@ -706,7 +701,7 @@ public class AnnexureInfo implements ISaveForm{
 			textData.setValue(Util.convertStr((String)value));
 		}else if (col.getDataType() == DataType.Postal) {
 			PostalData postalData = (PostalData)valueObj;
-			postalData.setPostalInternal(Util.convertStr((String)value));
+			postalData.setPostal(Util.convertStr((String)value));
 		}else if (col.getDataType() == DataType.Label) {
 			LabelData valueData = (LabelData)valueObj;
 			valueData.setValue(Util.convertStr((String)value));

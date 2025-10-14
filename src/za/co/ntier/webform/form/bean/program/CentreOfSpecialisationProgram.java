@@ -112,7 +112,7 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram {
             boolean postalOk = (cPostal != null && row.get(cPostal) instanceof PostalData)
                     && notEmpty(((PostalData) row.get(cPostal)).getPostal());
             boolean areaOk   = (cArea   != null && row.get(cArea)   instanceof AreaData)
-                    && ((AreaData) row.get(cArea)).getSelectedArea() != null;
+                    && ((AreaData) row.get(cArea)).isSelected();
 
             if (n > 0 && postalOk && areaOk) return true;
         }
@@ -131,7 +131,7 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram {
         boolean postalOk = (cPostal != null && row.get(cPostal) instanceof PostalData)
                 && notEmpty(((PostalData) row.get(cPostal)).getPostal());
         boolean areaOk   = (cArea   != null && row.get(cArea)   instanceof AreaData)
-                && ((AreaData) row.get(cArea)).getSelectedArea() != null;
+                && ((AreaData) row.get(cArea)).isSelected();
 
         return n > 0 && postalOk && areaOk;
     }
