@@ -1,7 +1,6 @@
 package za.co.ntier.webform.form.viewmodel;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -44,13 +43,11 @@ import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.webform.form.AbstractProgram;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
-import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
 import za.co.ntier.webform.form.bean.component.Dialog;
 import za.co.ntier.webform.form.bean.component.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.component.FormInfo;
-import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.OrganisationInfo;
 import za.co.ntier.webform.form.bean.component.UploadDocComponent;
 import za.co.ntier.webform.form.bean.program.AetProgram;
@@ -204,17 +201,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	 */
 	public FormInfo getFormInfo() {
 		return formInfo;
-	}
-
-	private Integer getLearners(DataType dt, Object cell) {
-	    if (cell == null) return null;
-	    switch (dt) {
-	        case PositiveNumber:
-	            // your ZUL uses row[col].value for numbers
-	        	return ((IntData)cell).getValue();
-	        default:
-	            return null;
-	    }
 	}
 
 	/**

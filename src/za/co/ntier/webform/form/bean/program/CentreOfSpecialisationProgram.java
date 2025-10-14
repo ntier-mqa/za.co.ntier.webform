@@ -9,7 +9,6 @@ import za.co.ntier.webform.form.bean.component.AreaData;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.PostalData;
-import za.co.ntier.webform.form.bean.component.ProjectInput;
 
 public class CentreOfSpecialisationProgram extends ArtisanDevProgram {
 	private Boolean isCollegeRecognised= null;
@@ -117,23 +116,6 @@ public class CentreOfSpecialisationProgram extends ArtisanDevProgram {
             if (n > 0 && postalOk && areaOk) return true;
         }
         return false;
-    }
-
-    private static boolean isProjectTableValid(ProjectInput table) {
-        if (table == null || table.getRows() == null || table.getRows().isEmpty()) return false;
-
-        Map<ColumnInfo<?>, Object> row = table.getRows().get(0);
-        ColumnInfo<?> cTotal  = AnnexureInfo.lookupColByTitle(ColumnInfo.colTotalLearnersLabel, table);
-        ColumnInfo<?> cPostal = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel,    table);
-        ColumnInfo<?> cArea   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel,          table);
-
-        int n = (cTotal != null && row.get(cTotal) instanceof IntData) ? val((IntData) row.get(cTotal)) : 0;
-        boolean postalOk = (cPostal != null && row.get(cPostal) instanceof PostalData)
-                && notEmpty(((PostalData) row.get(cPostal)).getPostal());
-        boolean areaOk   = (cArea   != null && row.get(cArea)   instanceof AreaData)
-                && ((AreaData) row.get(cArea)).isSelected();
-
-        return n > 0 && postalOk && areaOk;
     }
 
     private static int  val(IntData d){ return d.getValue()==null ? 0 : d.getValue(); }

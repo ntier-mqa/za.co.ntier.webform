@@ -2,19 +2,11 @@ package za.co.ntier.webform.form.viewmodel.component;
 
 import java.io.IOException;
 
-import org.zkoss.bind.ValidationContext;
-import org.zkoss.bind.Validator;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.ContextParam;
-import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.bind.validator.AbstractValidator;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.util.Clients;
 
 import za.co.ntier.webform.form.bean.component.OrganisationInfo;
 

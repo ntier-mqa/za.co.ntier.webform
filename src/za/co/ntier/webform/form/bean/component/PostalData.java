@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.compiere.model.MCity;
-import org.zkoss.bind.BindUtils;
 
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;

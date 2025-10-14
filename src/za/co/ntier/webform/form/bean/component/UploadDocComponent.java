@@ -7,8 +7,6 @@ import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 
-import za.co.ntier.api.model.I_ZZDocumentUploadFile;
-import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
 import za.co.ntier.api.model.X_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZ_Application_Form;

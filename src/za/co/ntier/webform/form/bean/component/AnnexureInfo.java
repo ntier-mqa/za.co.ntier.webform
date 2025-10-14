@@ -39,7 +39,6 @@ import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.ISaveForm;
-import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.DataType;
 
@@ -837,7 +836,6 @@ public class AnnexureInfo implements ISaveForm{
 			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
 				Object daoValue = null;
 				if (col.getDataType() == DataType.FileUpload && StringUtils.isNotBlank(col.getDaoPropertyFileName())) {
-					String attFileName = null;
 					if (dao instanceof PO) {
 						daoValue = AttachmentUtil.getFileNameFromAttachmentEntries(
 								(PO) dao,
@@ -875,7 +873,7 @@ public class AnnexureInfo implements ISaveForm{
 		// init rows with rowTitles
 		if (rowTitles != null)
 			for (Map<ColumnInfo<?>, Object> rowTitle : rowTitles) {
-				AnnexureRow row = (AnnexureRow)createDetailRow(rowTitle);
+				createDetailRow(rowTitle);
 			}
 
 		// init rows with saved data

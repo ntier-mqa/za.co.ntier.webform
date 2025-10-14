@@ -77,8 +77,6 @@ public class NonArtisanDevProgram extends AbstractProgram {
 	    ColumnInfo<?> colUnemp = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, tbl);
 	    ColumnInfo<?> colPostal= AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel, tbl);
 	    ColumnInfo<?> colArea  = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel, tbl);
-	    ColumnInfo<?> colWpa   = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, tbl);       // may be null
-	    ColumnInfo<?> colAcc   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAccredLabel, tbl);    // may be null
 
 	    for (Map<ColumnInfo<?>, Object> row : tbl.getRows()) {
 	        IntData employed   = (colEmp   != null) ? (IntData) row.get(colEmp)   : null;
