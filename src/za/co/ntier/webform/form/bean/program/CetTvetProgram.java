@@ -44,7 +44,7 @@ public class CetTvetProgram extends AbstractProgram {
 		ColumnInfo<?> colTotalNoBeneficiaries = ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalNoBeneficiariesTitle, I_ZZAnnexure.COLUMNNAME_ZZTotalBeneficiaries);
 		colTotalNoBeneficiaries.setCalTotal(true);
 		// move from int to free text but data base not yet change because this column is not used anymore
-		//ColumnInfo<?> colProgrammeApply = ColumnInfo.getColText(ColumnInfo.colProgrammeApplyTitle, X_ZZAnnexure.COLUMNNAME_ZZProgramme);
+		//ColumnModel colProgrammeApply = ColumnModel.getColText(ColumnModel.colProgrammeApplyTitle, X_ZZAnnexure.COLUMNNAME_ZZProgramme);
 		ColumnInfo<?> colRequestedProgramme = ColumnInfo.getColText(ColumnInfo.colRequestedProgrammeTitle, I_ZZSubAnnex.COLUMNNAME_ZZRequestedProgramme);
 		ColumnInfo<?> colNoManagers = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoManagersTitle, I_ZZSubAnnex.COLUMNNAME_ZZManagers);
 		colNoManagers.setCalTotal(true);

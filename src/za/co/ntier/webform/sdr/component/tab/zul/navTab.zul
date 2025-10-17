@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><?import org.compiere.util.KeyNamePair?>
+<nodom
+	viewModel="@id('vmNavTab') @init('za.co.ntier.webform.sdr.component.tab.viewmodel.NavTabVM')">
+
+	<tabbox width="100%" vflex="1" id="nav-tab" >
+		<tabs  children="@init(vmNavTab.component.tabPanelModel)" >
+			<template name="children" var="tabPanelItem">
+				<tab  disabled="@load(tabPanelItem.disable)" selected="@load(( tabPanelItem.disable eq false ))" label="@init(tabPanelItem.tabTitle)" />
+			</template>
+		</tabs>
+    <tabpanels children="@init(vmNavTab.component.tabPanelModel)" >
+      <template name="children" var="tabPanelItem">
+        <tabpanel sclass="nav-tab-panel" >
+          <nodom children="@init(tabPanelItem.compModel)">
+            <template name="children" var="compItem">
+              <include style = "overflow-y:auto"
+                component="@init(compItem)"
+                menuContextInfo="@init(vmNavTab.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+					  </template>
+					</nodom>
+				</tabpanel>
+			</template>
+
+		</tabpanels>
+	</tabbox>
+
+</nodom>

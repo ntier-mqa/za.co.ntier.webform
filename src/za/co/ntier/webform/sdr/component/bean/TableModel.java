@@ -1,4 +1,4 @@
-package za.co.ntier.webform.form.bean.component;
+package za.co.ntier.webform.sdr.component.bean;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +23,7 @@ import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
+import org.compiere.model.MRegion;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -38,41 +38,56 @@ import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AttachmentUtil;
-import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.Util;
-import za.co.ntier.webform.form.bean.DataType;
+import za.co.ntier.webform.sdr.component.bean.cell.AbstractCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.AbstractListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.AreaData;
+import za.co.ntier.webform.sdr.component.bean.cell.ColumnModel;
+import za.co.ntier.webform.sdr.component.bean.cell.DateData;
+import za.co.ntier.webform.sdr.component.bean.cell.ISelectable;
+import za.co.ntier.webform.sdr.component.bean.cell.IValueChange;
+import za.co.ntier.webform.sdr.component.bean.cell.IntData;
+import za.co.ntier.webform.sdr.component.bean.cell.LabelData;
+import za.co.ntier.webform.sdr.component.bean.cell.PostalData;
+import za.co.ntier.webform.sdr.component.bean.cell.ProvinceData;
+import za.co.ntier.webform.sdr.component.bean.cell.RowModel;
+import za.co.ntier.webform.sdr.component.bean.cell.StringListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.TextData;
+import za.co.ntier.webform.sdr.component.bean.cell.UploadData;
+import za.co.ntier.webform.sdr.component.bean.powrapper.LearnerInputInfo;
 
-public class AnnexureInfo implements ISaveForm{
-	protected static final CLogger log = CLogger.getCLogger(AnnexureInfo.class);
+public class TableModel {
+	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
 	public final static String AnnexureTypeExitStrategy = "EXIT STRATEGY";
 	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
 	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
-
+	private String sclass = "";
+	
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
-
-	public static <T extends AnnexureInfo> T getAnnexureInfo(Class<T> clazz, List<ColumnInfo<?>> columnInfos,
+	
+	public static <T extends TableModel> T getTableBean(Class<T> clazz, List<ColumnModel> columnInfos,
 			boolean isShowTotal){
 
-		T annexureInfo;
+		T tableModel;
 		try {
-			annexureInfo = clazz.getDeclaredConstructor().newInstance();
+			tableModel = clazz.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 			throw new ApplicationException(e.getMessage(), e);
 		}
-		annexureInfo.setShowTotal(isShowTotal);
-		annexureInfo.setColumnInfos(columnInfos);
+		tableModel.setShowTotal(isShowTotal);
+		tableModel.setColumnInfos(columnInfos);
 
-		List<AnnexureRow> rows = new ArrayList<>();
-		annexureInfo.setRows(rows);
+		List<RowModel> rows = new ArrayList<>();
+		tableModel.setRows(rows);
 
 		if (isShowTotal) {
-			Map<ColumnInfo<?>, Object> totalRow = new HashMap<>();
-			for (ColumnInfo<?> columnInfo : columnInfos) {
+			Map<ColumnModel, Object> totalRow = new HashMap<>();
+			for (ColumnModel columnInfo : columnInfos) {
 				if (columnInfo.getDataType() == DataType.PositiveNumber) {
-					totalRow.put(columnInfo, new IntData(annexureInfo, totalRow, 0));
+					totalRow.put(columnInfo, new IntData(tableModel, null, 0));
 				} else {
 					totalRow.put(columnInfo, null);
 				}
@@ -82,16 +97,16 @@ public class AnnexureInfo implements ISaveForm{
 				totalRow.put(columnInfos.get(0), "Total");
 			}
 
-			annexureInfo.setTotalRow(totalRow);
+			tableModel.setTotalRow(totalRow);
 		}
-		return annexureInfo;
+		return tableModel;
 	}
 
-	public static Integer getIntegerValue(AnnexureInfo cetTvetOneLineInput, ColumnInfo<?> col) {
-		return AnnexureInfo.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
+	public static Integer getIntegerValue(TableModel cetTvetOneLineInput, ColumnModel col) {
+		return TableModel.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
 	}
 
-	public static Integer getIntegerValue(Map<ColumnInfo<?>, Object> cetTvetMultiLineRow, ColumnInfo<?> colInfo) {
+	public static Integer getIntegerValue(Map<ColumnModel, Object> cetTvetMultiLineRow, ColumnModel colInfo) {
 
 		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
 			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
@@ -101,14 +116,14 @@ public class AnnexureInfo implements ISaveForm{
 		return null;
 	}
 
-	public static ColumnInfo<?> lookupCol(DataType dataType, String colName, AnnexureInfo annexure){
+	public static ColumnModel lookupCol(DataType dataType, String colName, TableModel annexure){
 		return lookupCol(dataType, colName, annexure.getColumnInfos());
 	}
 
-	public static ColumnInfo<?> lookupCol(DataType dataType, String colName, Collection<ColumnInfo<?>> cols){
-		ColumnInfo<?> foundCol = null;
+	public static ColumnModel lookupCol(DataType dataType, String colName, Collection<ColumnModel> cols){
+		ColumnModel foundCol = null;
 
-		for (ColumnInfo<?> col : cols) {
+		for (ColumnModel col : cols) {
 			if (dataType != null  && colName != null && dataType.equals(col.getDataType()) && colName.equals(col.getTitle())) {
 				return col;
 			}
@@ -125,24 +140,24 @@ public class AnnexureInfo implements ISaveForm{
 		return foundCol;
 	}
 
-	public static ColumnInfo<?> lookupColByDataType(DataType dataType, AnnexureInfo annexure){
+	public static ColumnModel lookupColByDataType(DataType dataType, TableModel annexure){
 		return lookupCol(dataType, null, annexure);
 	}
 
-	public static ColumnInfo<?> lookupColByDataType(DataType dataType, Collection<ColumnInfo<?>> cols){
+	public static ColumnModel lookupColByDataType(DataType dataType, Collection<ColumnModel> cols){
 		return lookupCol(dataType, null, cols);
 	}
 
-	public static ColumnInfo<?> lookupColByTitle(String colName, AnnexureInfo annexure){
+	public static ColumnModel lookupColByTitle(String colName, TableModel annexure){
 		return lookupCol(null, colName, annexure);
 	}
-	public static ColumnInfo<?> lookupColByTitle(String colName, Collection<ColumnInfo<?>> cols){
+	public static ColumnModel lookupColByTitle(String colName, Collection<ColumnModel> cols){
 		return lookupCol(null, colName, cols);
 	}
 
-	private List<ColumnInfo<?>> columnInfos;
-	private BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier;
-	private List<AnnexureRow> rows;
+	private List<ColumnModel> columnModels;
+	private BiFunction<TableModel, X_ZZ_Application_Form, PO> poSupplier;
+	private List<RowModel> rows;
 	private String sectionHeader;
 
 	private boolean showAddButton = false;
@@ -151,79 +166,105 @@ public class AnnexureInfo implements ISaveForm{
 
 	private boolean showColumnHeader = true;
 
-	private AnnexureInfo subAnnexure;
+	private TableModel subAnnexure;
 
 	private String subSectionHeader;
 
 	private String tableTitle;
 
-	private Map<ColumnInfo<?>, Object> totalRow;
+	private Map<ColumnModel, Object> totalRow;
 
 	public void addRow() {
 		createDetailRow();
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
-	public void areaSelect (Map<ColumnInfo<?>, Object> row, 
-			ColumnInfo<?> col,
+	public void cmdValueChanged (Map<ColumnModel, Object> row, 
+			ColumnModel col,
+			InputEvent event){
+		IValueChange valueChange = (IValueChange)row.get(col);
+		if (valueChange != null)
+			valueChange.cmdValueChange(event);
+	}
+	
+	/**
+	 * handle event when use choose a area
+	 * @param row
+	 * @param col
+	 * @param event
+	 */
+	public void cmdSelected (Map<ColumnModel, Object> row, 
+			ColumnModel col,
 			SelectEvent<?, ?> event){
 		
-		AreaData areaData = (AreaData)row.get(col);
+		ISelectable selectable = (ISelectable)row.get(col);
 		if (event.getSelectedObjects().isEmpty())
-			areaData.areaSelect(null);
+			selectable.cmdSelected(null);
 		else
-			areaData.areaSelect((MCity)event.getSelectedObjects().iterator().next());
+			selectable.cmdSelected(event.getSelectedObjects().iterator().next());
 	}
-
-	public AnnexureRow createDetailRow() {
+	
+	public RowModel createDetailRow() {
 		return createDetailRow(null);
 	}
+	
+	
+	private AbstractCellModel createCellModel(RowModel rowModel, ColumnModel colModel) {
+		AbstractCellModel cellData = null;
+		
+		if (colModel.getDataType() == DataType.FileUpload) {
+			cellData = new UploadData(this, rowModel);
+
+		} else if (colModel.getDataType() == DataType.Area) {
+			AreaData areaData = new AreaData(this, rowModel);
+			@SuppressWarnings("unchecked")
+			List<MCity> initListData = (List<MCity>)colModel.getDataProvider();
+			areaData.setDataProvider(initListData);
+			cellData = areaData;
+		} else if (colModel.getDataType() == DataType.Province) {
+			ProvinceData provinceData = new ProvinceData(this, rowModel);
+			@SuppressWarnings("unchecked")
+			List<MRegion> initListData = (List<MRegion>)colModel.getDataProvider();
+			provinceData.setDataProvider(initListData);
+			cellData = provinceData;
+		} else if (colModel.getDataType() == DataType.StringList) {
+			StringListCellModel stringListCellModel = new StringListCellModel(this, rowModel);
+			
+			@SuppressWarnings("unchecked")
+			List<String> initListData = (List<String>)colModel.getDataProvider();
+			stringListCellModel.setDataProvider(initListData);
+			cellData = stringListCellModel;
+
+		}else if (colModel.getDataType() == DataType.Postal) {
+			PostalData textData = new PostalData(this, rowModel, null);
+			cellData = textData;
+		}else if (colModel.getDataType() == DataType.PositiveNumber) {
+			cellData = new IntData(this, rowModel, null);
+		}else if (colModel.getDataType() == DataType.Label) {
+			cellData = new LabelData(this, rowModel);
+		}else if (colModel.getDataType() == DataType.Date) {
+			cellData = new DateData(this, rowModel);
+		}else if (colModel.getDataType() == DataType.Text) {
+			cellData = new TextData(this, rowModel);
+		}	
+		
+		return cellData;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public AnnexureRow createDetailRow(Map<ColumnInfo<?>, Object> rowTitle) {
+	public RowModel createDetailRow(Map<ColumnModel, Object> rowTitle) {
 
-		AnnexureRow row = new AnnexureRow(this);
+		RowModel row = new RowModel(this);
 
-		for (ColumnInfo<?> columnInfo : columnInfos) {
-			Object cellData = null;
-
-			cellData = row.get(columnInfo);
-
-			if (cellData == null) {
-
-				if (columnInfo.getDataType() == DataType.TwoTitles) {
-					cellData = Arrays.asList(null, null);
-
-				} else if (columnInfo.getDataType() == DataType.TwoValues) {
-					cellData = Arrays.asList(null, null);
-
-				} else if (columnInfo.getDataType() == DataType.FileUpload) {
-					cellData = new UploadData();
-
-				} else if (columnInfo.getDataType() == DataType.Area) {
-					AreaData areaData = new AreaData(this, row);
-					areaData.setDataProvider((List<MCity>)columnInfo.getDataProvider());
-					cellData = areaData;
-				} else if (columnInfo.getDataType() == DataType.Postal) {
-					PostalData textData = new PostalData(this, row, null);
-					cellData = textData;
-				}else if (columnInfo.getDataType() == DataType.PositiveNumber) {
-					cellData = new IntData(this, row, null);
-				}else if (columnInfo.getDataType() == DataType.Label) {
-					cellData = new LabelData();
-				}else if (columnInfo.getDataType() == DataType.Date) {
-					cellData = new DateData();
-				}else if (columnInfo.getDataType() == DataType.Text) {
-					cellData = new TextData();
-				}
-
-			}
+		for (ColumnModel columnInfo : columnModels) {
+			Object cellData = createCellModel(row, columnInfo);
 			
 			row.put(columnInfo, cellData);
 		}
 		
 		if (rowTitle != null) {
-			for (Entry<ColumnInfo<?>, Object> colTile : rowTitle.entrySet()) {
-				AnnexureInfo.setCellValue(row, colTile.getKey(), colTile.getValue());
+			for (Entry<ColumnModel, Object> colTile : rowTitle.entrySet()) {
+				TableModel.setCellValue(row, colTile.getKey(), colTile.getValue());
 			}
 		}
 		
@@ -235,13 +276,13 @@ public class AnnexureInfo implements ISaveForm{
 		return row;
 	}
 
-	private Consumer<AnnexureRow> decoratorCell;
+	private Consumer<RowModel> decoratorCell;
 	
-	public Consumer<AnnexureRow> getDecoratorCell() {
+	public Consumer<RowModel> getDecoratorCell() {
 		return decoratorCell;
 	}
 
-	public void setDecoratorCell(Consumer<AnnexureRow> decoratorCell) {
+	public void setDecoratorCell(Consumer<RowModel> decoratorCell) {
 		this.decoratorCell = decoratorCell;
 	}
 
@@ -252,7 +293,7 @@ public class AnnexureInfo implements ISaveForm{
 		if (!showTotal)
 			return;
 
-		for (ColumnInfo<?> col:getColumnInfos()) {
+		for (ColumnModel col:getColumnInfos()) {
 			if (col.getDataType() == DataType.PositiveNumber) {
 				updateTotalRow(col, false);
 			}
@@ -264,9 +305,9 @@ public class AnnexureInfo implements ISaveForm{
 	 * @param col
 	 * @param needNotify
 	 */
-	public void updateTotalRow(ColumnInfo<?> col, boolean needNotify) {
+	public void updateTotalRow(ColumnModel col, boolean needNotify) {
 		Integer total = 0;
-		for (Map<ColumnInfo<?>, Object> r : getRows()) {
+		for (Map<ColumnModel, Object> r : getRows()) {
 			IntData intData = (IntData)r.get(col);
 			if (intData.getValue() != null) {
 				total += intData.getValue();
@@ -282,16 +323,23 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 	/**
-	 * @return the columnInfos
+	 * @return the columnModels
 	 */
-	public List<ColumnInfo<?>> getColumnInfos() {
-		return columnInfos;
+	public List<ColumnModel> getColumnInfos() {
+		return columnModels;
 	}
 
+	public RowModel getRow() {
+		if (rows == null || rows.size() == 0)
+			return null;
+		
+		return rows.get(0);
+	}
+	
 	/**
 	 * @return the rows
 	 */
-	public List<AnnexureRow> getRows() {
+	public List<RowModel> getRows() {
 		return rows;
 	}
 
@@ -305,7 +353,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @return the subAnnexure
 	 */
-	public AnnexureInfo getSubAnnexure() {
+	public TableModel getSubAnnexure() {
 		return subAnnexure;
 	}
 
@@ -326,7 +374,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @return the totalRow
 	 */
-	public Map<ColumnInfo<?>, Object> getTotalRow() {
+	public Map<ColumnModel, Object> getTotalRow() {
 		return totalRow;
 	}
 
@@ -344,7 +392,7 @@ public class AnnexureInfo implements ISaveForm{
 		return showTotal;
 	}
 
-	public void numChange(AnnexureRow row, ColumnInfo<?> col, InputEvent event) {
+	public void numChange(RowModel row, ColumnModel col, InputEvent event) {
 		// update total row
 		if (col.getDataType() == DataType.PositiveNumber && showTotal) {
 			updateTotalRow(col, true);
@@ -358,14 +406,14 @@ public class AnnexureInfo implements ISaveForm{
 
 	public void updateExpressionCol () {
 		boolean hasExpressionCol = false;
-		for (ColumnInfo<?> colTotal : getColumnInfos()) {
+		for (ColumnModel colTotal : getColumnInfos()) {
 			if (colTotal.getExpression() != null) {
 				hasExpressionCol = true;
 			}
 		}
 
 		if(hasExpressionCol) {
-			for(AnnexureRow row:getRows()) {
+			for(RowModel row:getRows()) {
 				updateExpressionCol(row, false);
 			}
 		}
@@ -374,9 +422,9 @@ public class AnnexureInfo implements ISaveForm{
 	 * update cell all Expression Col on current row
 	 * @param row
 	 */
-	public void updateExpressionCol (AnnexureRow row, boolean needNotify) {
+	public void updateExpressionCol (RowModel row, boolean needNotify) {
 		// update expression column
-		for (ColumnInfo<?> colTotal : getColumnInfos()) {
+		for (ColumnModel colTotal : getColumnInfos()) {
 			if (colTotal.getExpression() != null) {
 				Integer value = colTotal.getExpression().apply(row);
 				LabelData expressionLable = (LabelData) row.get(colTotal);
@@ -393,31 +441,18 @@ public class AnnexureInfo implements ISaveForm{
 		}
 	}
 
-	public void postalChange (Map<ColumnInfo<?>, Object> row, 
-			ColumnInfo<?> col,
-			InputEvent event){
-		PostalData postalData = (PostalData)row.get(col);
-		if (postalData != null)
-			postalData.postalChange(event.getValue());
-	}
-
-	@Override
-	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/**
-	 * @param columnInfos the columnInfos to set
+	 * @param columnModels the columnModels to set
 	 */
-	public void setColumnInfos(List<ColumnInfo<?>> columnInfos) {
-		this.columnInfos = columnInfos;
+	public void setColumnInfos(List<ColumnModel> columnInfos) {
+		this.columnModels = columnInfos;
 	}
 
 	/**
 	 * @param rows the rows to set
 	 */
-	public void setRows(List<AnnexureRow> rows) {
+	public void setRows(List<RowModel> rows) {
 		this.rows = rows;
 	}
 
@@ -445,7 +480,7 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @param subAnnexure the subAnnexure to set
 	 */
-	public void setSubAnnexure(AnnexureInfo subAnnexure) {
+	public void setSubAnnexure(TableModel subAnnexure) {
 		this.subAnnexure = subAnnexure;
 	}
 
@@ -466,12 +501,12 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @param totalRow the totalRow to set
 	 */
-	public void setTotalRow(Map<ColumnInfo<?>, Object> totalRow) {
+	public void setTotalRow(Map<ColumnModel, Object> totalRow) {
 		this.totalRow = totalRow;
 	}	
 
 
-	public void uploadFile(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, UploadEvent event) {
+	public void uploadFile(Map<ColumnModel, Object> row, ColumnModel col, UploadEvent event) {
 		UploadData ud = (UploadData) row.get(col);
 		Media m = event.getMedia();
 
@@ -531,12 +566,12 @@ public class AnnexureInfo implements ISaveForm{
 		this.dataType = dataType;
 	}
 
-	public Entry<Integer, Boolean> fillDaoData (Collection<ColumnInfo<?>> cols, AnnexureRow row, Object dao){
+	public Entry<Integer, Boolean> fillDaoData (Collection<ColumnModel> cols, RowModel row, Object dao){
 		Integer total = Integer.valueOf(0);
 		boolean isEmptyData = true;
 		boolean isFullData = true;
 		boolean hasDaoPropertyName = false;
-		for (ColumnInfo<?> col:cols) {
+		for (ColumnModel col:cols) {
 			boolean ignoreSetDao = false;
 			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
 				hasDaoPropertyName = true;
@@ -574,7 +609,7 @@ public class AnnexureInfo implements ISaveForm{
 					Object selectedObj = row.get(col);
 					if (StringUtils.isNotBlank(col.getBeanPropertyName())) {
 						if (selectedObj != null) {
-							cellValueObj = AnnexureInfo.getDaoValue(selectedObj, col.getBeanPropertyName());
+							cellValueObj = TableModel.getDaoValue(selectedObj, col.getBeanPropertyName());
 							hasCellData = Boolean.TRUE;
 						}else {
 							cellValueObj = null;
@@ -636,7 +671,7 @@ public class AnnexureInfo implements ISaveForm{
 
 		int total = 0;
 
-		for (AnnexureRow row : getRows()) {
+		for (RowModel row : getRows()) {
 			PO po = (PO) row.getData();
 			if (po == null) {
 				applicationForm.set_TrxName(trxName); // important
@@ -653,7 +688,7 @@ public class AnnexureInfo implements ISaveForm{
 				total += result.getKey();
 
 				// --- Save FileUpload columns as ATTACHMENTS (memory only) ---
-				for (ColumnInfo<?> col : getColumnInfos()) {
+				for (ColumnModel col : getColumnInfos()) {
 					if (col.getDataType() != DataType.FileUpload) continue;
 
 					UploadData upload = (UploadData) row.get(col);
@@ -686,12 +721,13 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 
-	public static void setCellValue(AnnexureRow row, ColumnInfo<?> col, Object value) {
+	public static void setCellValue(RowModel row, ColumnModel col, Object value) {
 		log.info(String.format("Set cell value: row=%s, col=%s, col datatype=%s, value=%s", row, col.getTitle(), col.getDataType(), value));
 		Object valueObj = row.get(col);
-		if (col.getDataType() == DataType.Area) {
-			AreaData areaData = (AreaData)valueObj;
-			areaData.setSelectedArea(value);
+		if (valueObj instanceof AbstractListCellModel) {
+			@SuppressWarnings("rawtypes")
+			AbstractListCellModel listCellModel = (AbstractListCellModel)valueObj;
+			listCellModel.setSelectedItemById(value);
 		}else if (col.getDataType() == DataType.PositiveNumber) {
 			IntData intData = (IntData)valueObj;
 			intData.setValue(Util.convert((int)value));
@@ -714,7 +750,7 @@ public class AnnexureInfo implements ISaveForm{
 				row.put(col, null);
 			}else {
 				for(Object selectedObj : col.getDataProvider()) {
-					Object obj = AnnexureInfo.getDaoValue(selectedObj, col.getBeanPropertyName());
+					Object obj = TableModel.getDaoValue(selectedObj, col.getBeanPropertyName());
 					if (com.google.common.base.Objects.equal(value, obj)) {
 						row.put(col, selectedObj);
 						break;
@@ -733,17 +769,14 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * return entry with value already convert (example 0 for non input int), value is true in case input non-null
 	 */
-	public static <T> Entry<T, Boolean> getCellValue(AnnexureRow row, ColumnInfo<?> col) {
+	public static <T> Entry<T, Boolean> getCellValue(RowModel row, ColumnModel col) {
 		Object valueObj = row.get(col);
 
-		if (col.getDataType() == DataType.Area) {
-			AreaData areaData = (AreaData)valueObj;
-			MCity area = areaData.getSelectedArea();
-			if (area == null)
-				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(0), Boolean.FALSE);
-			else
-				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(area.getC_City_ID()), Boolean.TRUE);
-
+		if (valueObj instanceof AbstractListCellModel) {
+			@SuppressWarnings("rawtypes")
+			AbstractListCellModel listData = (AbstractListCellModel)valueObj;
+			int id = listData.getSelectedID();
+			return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(id), id != 0);
 		}else if (col.getDataType() == DataType.PositiveNumber) {
 			IntData intData = (IntData)valueObj;
 			if (intData.getValue() == null) {
@@ -809,9 +842,9 @@ public class AnnexureInfo implements ISaveForm{
 	 * @param keyColumns
 	 * @return
 	 */
-	public boolean isMatchingRow(AnnexureRow row, Object dao, Collection<ColumnInfo<?>> keyColumns) {
+	public boolean isMatchingRow(RowModel row, Object dao, Collection<ColumnModel> keyColumns) {
 		boolean isMatching = true;
-		for (ColumnInfo<?> keyColumn : keyColumns) {
+		for (ColumnModel keyColumn : keyColumns) {
 			if (StringUtils.isNotBlank(keyColumn.getDaoPropertyName())) {
 				Entry<Object, Boolean> result = getCellValue(row, keyColumn);
 				Object daoValue = getDaoValue(dao, keyColumn.getDaoPropertyName());
@@ -831,8 +864,8 @@ public class AnnexureInfo implements ISaveForm{
 	 * @param row
 	 * @param dao
 	 */
-	public void fillRowDataFromDao(List<ColumnInfo<?>> cols, AnnexureRow row, Object dao) {
-		for (ColumnInfo<?> col : cols) {
+	public void fillRowDataFromDao(List<ColumnModel> cols, RowModel row, Object dao) {
+		for (ColumnModel col : cols) {
 			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
 				Object daoValue = null;
 				if (col.getDataType() == DataType.FileUpload && StringUtils.isNotBlank(col.getDaoPropertyFileName())) {
@@ -848,7 +881,7 @@ public class AnnexureInfo implements ISaveForm{
 					daoValue = getDaoValue(dao, col.getDaoPropertyName());
 				}
 
-				AnnexureInfo.setCellValue(row, col, daoValue);
+				TableModel.setCellValue(row, col, daoValue);
 			}
 		}
 	}
@@ -861,7 +894,7 @@ public class AnnexureInfo implements ISaveForm{
 		init(applicationForm, savedDatas, null);
 	}
 
-	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<ColumnInfo<?>, Object>> rowTitles) {
+	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
 		if(rowTitles == null || rowTitles.size() == 0)
 			init(applicationForm, savedDatas, null, null);
 		else
@@ -869,16 +902,16 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 	public void init(X_ZZ_Application_Form applicationForm, 
-			List<PO> savedDatas, List<Map<ColumnInfo<?>, Object>> rowTitles, Collection<ColumnInfo<?>> keyColumns) {
+			List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)
-			for (Map<ColumnInfo<?>, Object> rowTitle : rowTitles) {
+			for (Map<ColumnModel, Object> rowTitle : rowTitles) {
 				createDetailRow(rowTitle);
 			}
 
 		// init rows with saved data
 		if (savedDatas != null && savedDatas.size() > 0) {
-			List<AnnexureRow> matchedRows = new ArrayList<>();
+			List<RowModel> matchedRows = new ArrayList<>();
 
 			boolean learnerInfoKey = false;
 			if (keyColumns != null && keyColumns.size() > 0) {
@@ -890,7 +923,7 @@ public class AnnexureInfo implements ISaveForm{
 			for (PO dao : savedDatas) {
 				boolean isMatching = false;
 				if (keyColumns != null && keyColumns.size() > 0) {
-					for (AnnexureRow row : getRows()) {
+					for (RowModel row : getRows()) {
 						if (matchedRows.contains(row))
 							continue;
 
@@ -908,7 +941,7 @@ public class AnnexureInfo implements ISaveForm{
 				if (!isMatching && learnerInfoKey) {
 					// moment don't handle this case, in case what to handle it need to change createDetailRow to create LearnerInputInfo for LearnerInfo column
 				}else if(!isMatching) {
-					AnnexureRow row = createDetailRow();
+					RowModel row = createDetailRow();
 					row.setData(dao);
 					fillRowDataFromDao(getColumnInfos(), row, dao);
 				}
@@ -927,14 +960,14 @@ public class AnnexureInfo implements ISaveForm{
 	/**
 	 * @return the poSupplier
 	 */
-	public BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> getPoSupplier() {
+	public BiFunction<TableModel, X_ZZ_Application_Form, PO> getPoSupplier() {
 		return poSupplier;
 	}
 
 	/**
 	 * @param poSupplier the poSupplier to set
 	 */
-	public void setPoSupplier(BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier) {
+	public void setPoSupplier(BiFunction<TableModel, X_ZZ_Application_Form, PO> poSupplier) {
 		this.poSupplier = poSupplier;
 	}
 
@@ -953,7 +986,7 @@ public class AnnexureInfo implements ISaveForm{
 	}
 
 
-	public static AnnexureInfo getBankInfo(X_ZZ_Application_Form applicationForm) {
+	public static TableModel getBankInfo(X_ZZ_Application_Form applicationForm) {
 		/* List<ColumnModel> cols = new ArrayList<ColumnModel>();
 		cols.add(ColumnModel.getColText("Name of Bank", I_ZZBankingDetails.COLUMNNAME_BankName));
 		cols.add(ColumnModel.getColText("Branch Name", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name));
@@ -962,15 +995,15 @@ public class AnnexureInfo implements ISaveForm{
 		*/
 		
 		
-	    List<ColumnInfo<?>> cols = new ArrayList<>();
-	    ColumnInfo<?> cBank   = ColumnInfo.getColText("Name of Bank",  I_ZZBankingDetails.COLUMNNAME_BankName).required();
-	    ColumnInfo<?> cBranch = ColumnInfo.getColText("Branch Name",   I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name).required();
-	    ColumnInfo<?> cCode   = ColumnInfo.getColText("Branch Codes",  I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number).required();
-	    ColumnInfo<?> cAcct   = ColumnInfo.getColText("Account Number",I_ZZBankingDetails.COLUMNNAME_AccountNo).required();
+	    List<ColumnModel> cols = new ArrayList<>();
+	    ColumnModel cBank   = ColumnModel.getColText("Name of Bank",  I_ZZBankingDetails.COLUMNNAME_BankName).required();
+	    ColumnModel cBranch = ColumnModel.getColText("Branch Name",   I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name).required();
+	    ColumnModel cCode   = ColumnModel.getColText("Branch Codes",  I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number).required();
+	    ColumnModel cAcct   = ColumnModel.getColText("Account Number",I_ZZBankingDetails.COLUMNNAME_AccountNo).required();
 
 	    cols.add(cBank); cols.add(cBranch); cols.add(cCode); cols.add(cAcct);
 
-		AnnexureInfo bankInfo = AnnexureInfo.getAnnexureInfo(AnnexureInfo.class, cols, false);
+		TableModel bankInfo = TableModel.getTableBean(TableModel.class, cols, false);
 		bankInfo.setSubSectionHeader("TRAINING PROVIDER BANKING DETAILS");
 		bankInfo.setPoSupplier((ann, appForm) -> {
 			X_ZZBankingDetails po = new X_ZZBankingDetails(appForm.getCtx(), 0, null);
@@ -995,10 +1028,10 @@ public class AnnexureInfo implements ISaveForm{
 	
 	public boolean areMandatoryFieldsFilled() {
 	    if (rows == null || rows.isEmpty()) return false; // bank form needs one row
-	    for (AnnexureRow r : rows) {
-	        for (ColumnInfo<?> col : columnInfos) {
+	    for (RowModel r : rows) {
+	        for (ColumnModel col : columnModels) {
 	            if (!col.isMandatory()) continue;
-	            var present = AnnexureInfo.getCellValue(r, col).getValue();
+	            var present = TableModel.getCellValue(r, col).getValue();
 	            if (!Boolean.TRUE.equals(present)) return false;
 	            //Object v = r.get(col);
 	          //  if (v == null) return false;
@@ -1008,5 +1041,17 @@ public class AnnexureInfo implements ISaveForm{
 	    return true;
 	}
 
+	/**
+	 * @return the sclass
+	 */
+	public String getSclass() {
+		return sclass;
+	}
 
+	/**
+	 * @param sclass the sclass to set
+	 */
+	public void setSclass(String sclass) {
+		this.sclass = sclass;
+	}
 }

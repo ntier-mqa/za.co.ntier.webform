@@ -47,7 +47,7 @@ public class AddressInfoVMWrapper extends ComponentVMWrapper<AddressInfo>{
 	    if (getApplicationProgramVM() != null && getNotifyTarget() != null) {
 	        BindUtils.postNotifyChange(null, null, getApplicationProgramVM(), getNotifyTarget());
 	    }
-	    // make the MainButtonComponentVMWrapper re-evaluate next/submit
+	    // make the TabButtonVM re-evaluate next/submit
 	    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 	}
 	

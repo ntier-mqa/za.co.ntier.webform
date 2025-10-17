@@ -34,7 +34,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
         colWriterCell   = ColumnInfo.getColText("CELL NUMBER OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZCellNoWriter);
         colWriterEmail  = ColumnInfo.getColText("EMAIL ADDRESS OF WRITER", I_ZZLearningMaterial.COLUMNNAME_ZZEmailWriter);
         colProvider     = ColumnInfo.getColText("ACCREDITED TRAINING PROVIDER", I_ZZLearningMaterial.COLUMNNAME_ZZAccreditedTrainingProvider);
-        //colCV           = ColumnInfo.getColFileUpload("Unabridged CV", "CV", I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFile, I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFileName);
+        //colCV           = ColumnModel.getColFileUpload("Unabridged CV", "CV", I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFile, I_ZZLearningMaterial.COLUMNNAME_ZZUnabridgedCVFileName);
         colCV = ColumnInfo.getColFileUpload("Unabridged CV", "CV");  // To load to attachments instead
 
 		

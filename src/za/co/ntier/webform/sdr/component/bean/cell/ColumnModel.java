@@ -1,60 +1,66 @@
-package za.co.ntier.webform.form.bean.component;
+package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.beans.Introspector;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
 import org.compiere.model.MRegion;
 
-import za.co.ntier.api.model.X_ZZDocumentUpload;
-import za.co.ntier.webform.form.bean.DataType;
+import za.co.ntier.webform.sdr.component.bean.DataType;
 
-public class ColumnInfo<T> {
-	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {
-		ColumnInfo<T> colInfo = new ColumnInfo<T>(title, DataType.Area);
+public class ColumnModel {
+	
+	public static  ColumnModel getColArea(String title, List dataProvider) {
+		ColumnModel colInfo = new ColumnModel(title, DataType.Area);
 		colInfo.setDataProvider(dataProvider);
 		return colInfo;
 
 	}
 
-	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider, String daoPropertyName) {
-		ColumnInfo<T> col = getColArea(title, dataProvider);
+	public static  ColumnModel getColArea(String title, List dataProvider, String daoPropertyName) {
+		ColumnModel col = getColArea(title, dataProvider);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
 
-	public static ColumnInfo<X_ZZDocumentUpload> getColDocUpload(String title) {
-		return new ColumnInfo<X_ZZDocumentUpload>(title, DataType.DocUploadDef);
+	public static ColumnModel getColProvince(String title, List<MRegion> regions, String daoPropertyName) {
+		ColumnModel col = new ColumnModel(title, DataType.Province);
+		col.setDataProvider(regions);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
+
+	public static ColumnModel getColDocUpload(String title) {
+		return new ColumnModel(title, DataType.DocUploadDef);
 
 	}
-	public static <T> ColumnInfo<T> getColFileUpload(String title, String btText) {
-		ColumnInfo<T> colInfo = new ColumnInfo<T>(title, DataType.FileUpload);
+	public static  ColumnModel getColFileUpload(String title, String btText) {
+		ColumnModel colInfo = new ColumnModel(title, DataType.FileUpload);
 		colInfo.setBtText(btText);
 		return colInfo;
 
 	}
 
-	public static <T> ColumnInfo<T> getColFileUpload(String title, String btText, String daoPropertyName, String daoPropertyFileName) {
-		ColumnInfo<T> col = getColFileUpload(title, btText);
+	public static  ColumnModel getColFileUpload(String title, String btText, String daoPropertyName, String daoPropertyFileName) {
+		ColumnModel col = getColFileUpload(title, btText);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		col.setDaoPropertyFileName(correctDaoPropertyName(daoPropertyFileName));
 
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColLabel(String title) {
-		return new ColumnInfo<T>(title, DataType.Label);
+	public static  ColumnModel getColLabel(String title) {
+		return new ColumnModel(title, DataType.Label);
 	}
 
-	public static <T> ColumnInfo<T> getColRadio(String title, String daoPropertyName) {
-		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.Radio);
+	public static  ColumnModel getColRadio(String title, String daoPropertyName) {
+		ColumnModel col = new ColumnModel(title, DataType.Radio);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColLabel(String title, String daoPropertyName) {
-		ColumnInfo<T> col = ColumnInfo.getColLabel(title);
+	public static  ColumnModel getColLabel(String title, String daoPropertyName) {
+		ColumnModel col = ColumnModel.getColLabel(title);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
@@ -63,92 +69,98 @@ public class ColumnInfo<T> {
 		return Introspector.decapitalize(daoPropertyName);
 	}
 
-	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title) {
-		return new ColumnInfo<LearnerInputInfo>(title, DataType.LearnerInfo);
+	public static ColumnModel getColLearnerInfo(String title) {
+		return new ColumnModel(title, DataType.LearnerInfo);
 
 	}
 
-	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title, String daoPropertyName) {
-		ColumnInfo<LearnerInputInfo> col = ColumnInfo.getColLearnerInfo(title);
+	public static ColumnModel getColLearnerInfo(String title, String daoPropertyName) {
+		ColumnModel col = ColumnModel.getColLearnerInfo(title);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 
 	}
 
-	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider) {
-		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.List);
+	public static ColumnModel getColListString(String title, List<String> dataProvider) {
+		ColumnModel col = new ColumnModel(title, DataType.StringList);
+		col.setDataProvider(dataProvider);
+		return col;
+	}
+	
+	public static  ColumnModel getColList(String title, List dataProvider) {
+		ColumnModel col = new ColumnModel(title, DataType.List);
 		col.setDataProvider(dataProvider);
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider, String daoPropertyName) {
-		ColumnInfo<T> col = getColList(title, dataProvider);
+	public static  ColumnModel getColList(String title, List dataProvider, String daoPropertyName) {
+		ColumnModel col = getColList(title, dataProvider);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider, String daoPropertyName, String beanPropertyName) {
-		ColumnInfo<T> col = getColList(title, dataProvider);
+	public static  ColumnModel getColList(String title, List dataProvider, String daoPropertyName, String beanPropertyName) {
+		ColumnModel col = getColList(title, dataProvider);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		col.setBeanPropertyName(correctDaoPropertyName(beanPropertyName));
 
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColPositiveNumber(String title) {
-		return new ColumnInfo<T>(title, DataType.PositiveNumber);
+	public static  ColumnModel getColPositiveNumber(String title) {
+		return new ColumnModel(title, DataType.PositiveNumber);
 	}
 
-	public static <T> ColumnInfo<T> getColPositiveNumber(String title, String daoPropertyName) {
-		ColumnInfo<T> col = ColumnInfo.getColPositiveNumber(title);
+	public static  ColumnModel getColPositiveNumber(String title, String daoPropertyName) {
+		ColumnModel col = ColumnModel.getColPositiveNumber(title);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColDate(String title, String daoPropertyName) {
-		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.Date);
+	public static  ColumnModel getColDate(String title, String daoPropertyName) {
+		ColumnModel col = new ColumnModel(title, DataType.Date);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColPostal(String title) {
-		return new ColumnInfo<T>(title, DataType.Postal);
+	public static  ColumnModel getColPostal(String title) {
+		return new ColumnModel(title, DataType.Postal);
 
 	}
 
-	public static <T> ColumnInfo<T> getColPostal(String title, String daoPropertyName) {
-		ColumnInfo<T> col = getColPostal(title);
-		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
-		return col;
-	}
-
-
-	public static <T> ColumnInfo<T> getColText(String title) {
-		return new ColumnInfo<T>(title, DataType.Text);
-	}
-
-	public static <T> ColumnInfo<T> getColText(String title, String daoPropertyName) {
-		ColumnInfo<T> col = getColText(title);
+	public static  ColumnModel getColPostal(String title, String daoPropertyName) {
+		ColumnModel col = getColPostal(title);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
 
 
-	private Function<AnnexureRow, Integer> expression;
+	public static  ColumnModel getColText(String title) {
+		return new ColumnModel(title, DataType.Text);
+	}
 
-	public static <T> ColumnInfo<T> getColExpression(String title, Function<AnnexureRow, Integer> expression) {
-		ColumnInfo<T> colTotal = new ColumnInfo<T>(title, DataType.Label);
+	public static  ColumnModel getColText(String title, String daoPropertyName) {
+		ColumnModel col = getColText(title);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		return col;
+	}
+
+
+	private Function<RowModel, Integer> expression;
+
+	public static  ColumnModel getColExpression(String title, Function<RowModel, Integer> expression) {
+		ColumnModel colTotal = new ColumnModel(title, DataType.Label);
 		colTotal.setExpression(expression);
 		return colTotal;
 	}
 
-	public static ColumnInfo<Entry<String, String>> getColTwoTitle(String title) {
-		return new ColumnInfo<Entry<String, String>>(title, DataType.TwoTitles);
+	public static ColumnModel getColTwoTitle(String title) {
+		return new ColumnModel(title, DataType.TwoTitles);
 
 	}
 
-	public static ColumnInfo<Entry<Integer, Integer>> getColTwoValue(String title) {
-		return new ColumnInfo<Entry<Integer, Integer>>(title, DataType.TwoValues);
+	public static ColumnModel getColTwoValue(String title) {
+		return new ColumnModel(title, DataType.TwoValues);
 
 	}
 
@@ -156,7 +168,7 @@ public class ColumnInfo<T> {
 
 	private String btText;
 
-	private List<T> dataProvider;
+	private List dataProvider;
 
 	private DataType dataType;
 
@@ -219,7 +231,7 @@ public class ColumnInfo<T> {
 	// in ColumnModel (or ColumnModel)
 	private boolean mandatory;
 
-	public ColumnInfo(String colTitle, DataType dataType) {
+	public ColumnModel(String colTitle, DataType dataType) {
 		this.title = colTitle;
 		this.dataType = dataType;
 	}
@@ -228,9 +240,9 @@ public class ColumnInfo<T> {
 
 
 	public boolean isMandatory() { return mandatory; }
-	public ColumnInfo<?> setMandatory(boolean mandatory) { this.mandatory = mandatory; return this; }
+	public ColumnModel setMandatory(boolean mandatory) { this.mandatory = mandatory; return this; }
 	// (optional fluent alias)
-	public ColumnInfo<?> required() { this.mandatory = true; return this; }
+	public ColumnModel required() { this.mandatory = true; return this; }
 
 
 	/**
@@ -243,7 +255,7 @@ public class ColumnInfo<T> {
 	/**
 	 * @return the dataProvider
 	 */
-	public List<T> getDataProvider() {
+	public List getDataProvider() {
 		return dataProvider;
 	}
 
@@ -271,7 +283,7 @@ public class ColumnInfo<T> {
 	/**
 	 * @param dataProvider the dataProvider to set
 	 */
-	public void setDataProvider(List<T> dataProvider) {
+	public void setDataProvider(List dataProvider) {
 		this.dataProvider = dataProvider;
 	}
 
@@ -292,13 +304,13 @@ public class ColumnInfo<T> {
 	/**
 	 * @return the expression
 	 */
-	public Function<AnnexureRow, Integer> getExpression() {
+	public Function<RowModel, Integer> getExpression() {
 		return expression;
 	}
 	/**
 	 * @param expression the expression to set
 	 */
-	public void setExpression(Function<AnnexureRow, Integer> expression) {
+	public void setExpression(Function<RowModel, Integer> expression) {
 		this.expression = expression;
 	}
 
@@ -356,6 +368,4 @@ public class ColumnInfo<T> {
 	public void setCalTotal(boolean isCalTotal) {
 		this.isCalTotal = isCalTotal;
 	}
-
-	
 }

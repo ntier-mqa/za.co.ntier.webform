@@ -49,13 +49,11 @@ public class AreaData {
 	 * @param dataProvider the dataProvider to set
 	 */
 	public void setDataProvider(List<MCity> dataProvider) {
-		if (areas.size() > 0)
-			areas.removeRange(0, areas.size());
+		areas.clear();
 		
 		if (dataProvider != null)
 			areas.addAll(dataProvider);
 		
-		areas.clearSelection();
 		if (areas.size() == 1) {
 			areas.addToSelection(areas.get(0));
 		}

@@ -13,6 +13,7 @@ import org.zkoss.zul.impl.InputElement;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
+import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
@@ -43,6 +44,10 @@ public class ComponentVMWrapper<T> {
 		afterInit();
 	}
 
+	public ProgramType getProgramType() {
+		return menuContextInfo.getProgramType();
+	}
+	
 	public void afterInit() {
 		
 	}

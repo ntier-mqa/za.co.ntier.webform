@@ -31,8 +31,13 @@ public class WebForm extends ADForm {
 	private static final long serialVersionUID = -5402852171052424756L;
 	
 	public static final String zulPathRool = "/za/co/ntier/webform/zul/";
+	
+	public static final String zulSdrPathRool = "/za/co/ntier/webform/";
+	
 	public static String getBundleResourcePath(String zulPath) {
-		if (!zulPath.startsWith("/")) {// relative path
+		if (zulPath.startsWith("sdr/")) {
+			zulPath = zulSdrPathRool + zulPath;
+		}else if (!zulPath.startsWith("/")) {// relative path
 			zulPath = zulPathRool + zulPath;
 		}
 		

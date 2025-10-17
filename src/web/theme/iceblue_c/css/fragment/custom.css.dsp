@@ -156,16 +156,11 @@
 	flex-grow:1
 }
 
-.mqaWebForm .container .tabContainer .formBottomPanelFirst,
-.mqaWebForm .container .tabContainer .formBottomPanel{
+.mqaWebForm .container .formBottomPanel{
 	padding: 10px;
 	padding-right: 20px;
 	padding-left: 0px;
 	display: flex;
-	justify-content: right;
-}
-
-.mqaWebForm .container .tabContainer .formBottomPanel{
 	justify-content: space-between;
 }
 
@@ -477,3 +472,118 @@
 .z-notification-error .z-notification-message {
   color: #fff !important;
 }
+
+/**** new grid system ****/
+
+.mqaWebForm .grid-formview {
+    /* GRID LAYOUT */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    padding: 20px 20px 20px 0;
+    border-radius:8px;
+    box-shadow:0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mqaWebForm .grid-formview.two-col {
+  grid-template-columns: repeat(2, 1fr); 
+}
+
+.mqaWebForm .grid-formview.two-col.srd-education > :nth-child(7) {
+  grid-column: span 2;
+}
+
+.mqaWebForm .grid-formview .cell {
+    /* FLEXBOX STACKING & SPACE CONTROL */
+    display: flex;
+    flex-direction: column; 
+    width: 100%;
+    height: 100%; 
+    justify-content: flex-end;
+    padding:5px;
+}
+
+.mqaWebForm .grid-formview .cell-title {
+    /* TITLE AREA FLEXBOX (CRUCIAL FIX) */
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: flex-end; 
+    flex-shrink: 0; 
+}
+
+/* --- Styling for Label, Required, and Help Text (Adjusted margin-top) --- */
+
+.mqaWebForm .grid-formview .cell-title .label {
+	font-style:italic;
+	color:#555;
+    flex-shrink: 0; 
+    margin-right: 5px; 
+    text-transform: capitalize;
+}
+
+.mqaWebForm .grid-formview .cell-title .required {
+    margin-right: 5px; 
+    color: #cc0000;
+    font-weight: bold;
+}
+
+.mqaWebForm .grid-formview .cell-title .help-text {
+    flex-grow: 1; 
+    font-size: 0.8em;
+    font-weight: normal;
+    color: #6a6a6a;
+    line-height: 1.4;
+    
+    /* Remove the margin-top to ensure the text aligns cleanly with flex-end */
+    margin-top: 0; 
+}
+
+/* --- Content Styling (Anchoring input to bottom, Unchanged) --- */
+
+.mqaWebForm .grid-formview .cell-content {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.mqaWebForm .grid-formview .cell-content input[type="text"],
+.mqaWebForm .grid-formview .cell-content select,
+/* ... (all other inputs) ... */
+.mqaWebForm .grid-formview .cell-content textarea {
+    width: 100%; 
+    padding: 8px 10px;
+    box-sizing: border-box;
+    /* Pushes the input to the bottom of its content area */
+    margin-top: auto; 
+}
+
+
+.mqaWebForm .grid-formview .cell-content .z-textbox,
+.mqaWebForm .grid-formview .cell-content .z-datebox-input{
+	padding: 10px;
+	height:34px;
+}
+.mqaWebForm .grid-formview .cell-content .z-datebox{
+	height:34px;
+}
+
+.mqaWebForm .grid-formview .cell-content input[type="checkbox"]{
+	padding-top:5px;
+	padding-left:5px;
+	height:28px;
+	width:28px;
+	margin-left:5px
+}
+
+.mqaWebForm .grid-formview .cell-content .z-checkbox{
+	padding-bottom:2px;
+	padding-top:3px;
+}
+
+.mqaWebForm .grid-formview .cell-content .z-datebox-icon{
+	font-size:24px;
+}
+
+.mqaWebForm .grid-formview .cell-content .z-select{
+	padding:5px;
+	border-width:1px;
+}
+

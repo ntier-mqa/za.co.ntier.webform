@@ -42,8 +42,8 @@ public class UploadDocComponent implements ISaveForm {
 	
 	/*
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
-		ColumnInfo<?> uploadDefCol = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
-		ColumnInfo<?> uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload, uploadDoc);
+		ColumnModel uploadDefCol = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
+		ColumnModel uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload, uploadDoc);
 		
 		this.applicationForm = applicationForm;
 		if(applicationForm != null) {
@@ -55,8 +55,8 @@ public class UploadDocComponent implements ISaveForm {
 					setOrderBy(I_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID).
 					setParameters(applicationForm.getZZ_Application_Form_ID()).list();
 			
-			for(Map<ColumnInfo<?>, Object> rowObj : uploadDoc.getRows()) {
-				AnnexureRow row = (AnnexureRow)rowObj;
+			for(Map<ColumnModel, Object> rowObj : uploadDoc.getRows()) {
+				RowModel row = (RowModel)rowObj;
 				
 				X_ZZDocumentUpload docDef = (X_ZZDocumentUpload)row.get(uploadDefCol);
 				

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<nodom xmlns:n="native"
+	viewModel="@id('vmTabButton') @init('za.co.ntier.webform.sdr.component.tab.viewmodel.TabButtonVM')">
+
+	<div sclass="formBottomPanel">
+			
+		<button 
+			visible="@load(vmTabButton.activeFirstTab)"
+			label="Cancel Application" iconSclass="z-icon-xmark"
+			onClick="@command('deleteAppForm')" />
+		
+		
+		<button 
+			visible="@load(!vmTabButton.activeFirstTab)"
+			label="Back" 
+			iconSclass="z-icon-arrow-left"
+			onClick="@command('prevTab')" 
+			/>
+
+		<button 
+			visible="@load(!vmTabButton.activeFirstTab)"
+		  label="Save &amp; Exit" sclass="icon-on-right"
+			iconSclass="z-icon-floppy-disk"
+			onClick="@command('saveClose')" />
+
+		<button label="Next" sclass="icon-on-right"
+			visible="@load(!vmTabButton.activeEndTab)"
+			iconSclass="z-icon-arrow-right"
+			onClick="@command('nextTab')" />
+		
+		<button 
+			visible="@load(vmTabButton.activeEndTab)"
+			label="Submit Application"
+			iconSclass="z-icon-gear" sclass="icon-on-right"
+	    onClick="@command('submitApplication')" />
+	</div>
+</nodom>
