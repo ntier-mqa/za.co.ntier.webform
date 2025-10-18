@@ -168,37 +168,6 @@ public class MainSrdFormVM {
 		ColumnModel postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
 		cols.add(postalUrbanRuralCol);
 		
-		//test scroll
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
-		postalUrbanRuralCol = ColumnModel.getColText("Urban Rural");
-		cols.add(postalUrbanRuralCol);
 				
 		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
 		addressDetailBean.setSclass("two-col srd-address");
