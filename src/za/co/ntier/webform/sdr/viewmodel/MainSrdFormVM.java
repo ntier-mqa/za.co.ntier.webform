@@ -120,6 +120,9 @@ public class MainSrdFormVM {
 	private TableModel getAddressDetailComp() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
+		ColumnModel dupplicateCol = ColumnModel.getColCheckbox("Use Physical Address For Postal Address?");
+		cols.add(dupplicateCol);
+		
 		ColumnModel addressCol = ColumnModel.getColText("Address");
 		cols.add(addressCol);
 		
@@ -218,6 +221,9 @@ public class MainSrdFormVM {
 		
 		List<ColumnModel> cols = new ArrayList<>();
 		
+		ColumnModel idDocUploadCol = ColumnModel.getColFileUpload(null, "ID Document Upload");
+		cols.add(idDocUploadCol);
+		
 		ColumnModel greettingCol = ColumnModel.getColListString("Title"
 				, List.of("Adv", "Dr", "Me", "Miss", "Mr")).required();
 		cols.add(greettingCol);
@@ -264,6 +270,7 @@ public class MainSrdFormVM {
 		cols.add(socioEconomicStatusCol);
 		
 		TableModel personDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
+		personDetailBean.setSclass("srd-person-detail");
 		personDetailBean.setPoSupplier((ann, appForm) -> {
 			//X_ZZ_FormContact po = new X_ZZ_FormContact(appForm.getCtx(), 0, null);
 			//po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());

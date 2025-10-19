@@ -42,6 +42,7 @@ import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.sdr.component.bean.cell.AbstractCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.AbstractListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.AreaData;
+import za.co.ntier.webform.sdr.component.bean.cell.CheckboxData;
 import za.co.ntier.webform.sdr.component.bean.cell.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateData;
 import za.co.ntier.webform.sdr.component.bean.cell.ISelectable;
@@ -215,6 +216,10 @@ public class TableModel {
 		if (colModel.getDataType() == DataType.FileUpload) {
 			cellData = new UploadData(this, rowModel);
 
+		} else if (colModel.getDataType() == DataType.Checkbox) {
+			CheckboxData cellDataCheckbox = new CheckboxData(this, rowModel);
+			cellDataCheckbox.setTitle(colModel.getTitle());// default title for case use one row
+			cellData = cellDataCheckbox;
 		} else if (colModel.getDataType() == DataType.Area) {
 			AreaData areaData = new AreaData(this, rowModel);
 			@SuppressWarnings("unchecked")

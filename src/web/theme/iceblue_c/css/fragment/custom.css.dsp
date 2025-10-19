@@ -488,9 +488,6 @@
   grid-template-columns: repeat(2, 1fr); 
 }
 
-.mqaWebForm .grid-formview.two-col.srd-education > :nth-child(7) {
-  grid-column: span 2;
-}
 
 .mqaWebForm .grid-formview .cell {
     /* FLEXBOX STACKING & SPACE CONTROL */
@@ -586,4 +583,29 @@
 	padding:5px;
 	border-width:1px;
 }
+
+/* container of content */
+.mqaWebForm .fileUploadContent{
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  align-items:center
+}
+
+/* customize per control */
+.mqaWebForm .grid-formview.two-col.srd-education > :nth-child(7) 
+, .mqaWebForm .grid-formview.two-col.srd-address > :nth-child(1){
+  grid-column: span 2;
+}
+
+.mqaWebForm .grid-formview.srd-person-detail > :nth-child(1){
+  grid-column: span 3;
+}
+
+.mqaWebForm .grid-formview.srd-person-detail > :nth-child(1) .fileUploadContent
+, .mqaWebForm .grid-formview.srd-address > :nth-child(1) .checkboxContent{
+
+  align-items:flex-start;
+}
+
 

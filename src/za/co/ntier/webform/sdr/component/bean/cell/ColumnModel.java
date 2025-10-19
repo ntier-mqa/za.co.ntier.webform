@@ -10,14 +10,14 @@ import za.co.ntier.webform.sdr.component.bean.DataType;
 
 public class ColumnModel {
 	
-	public static  ColumnModel getColArea(String title, List dataProvider) {
+	public static  ColumnModel getColArea(String title, List<?> dataProvider) {
 		ColumnModel colInfo = new ColumnModel(title, DataType.Area);
 		colInfo.setDataProvider(dataProvider);
 		return colInfo;
 
 	}
 
-	public static  ColumnModel getColArea(String title, List dataProvider, String daoPropertyName) {
+	public static  ColumnModel getColArea(String title, List<?> dataProvider, String daoPropertyName) {
 		ColumnModel col = getColArea(title, dataProvider);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
@@ -87,19 +87,19 @@ public class ColumnModel {
 		return col;
 	}
 	
-	public static  ColumnModel getColList(String title, List dataProvider) {
+	public static  ColumnModel getColList(String title, List<?> dataProvider) {
 		ColumnModel col = new ColumnModel(title, DataType.List);
 		col.setDataProvider(dataProvider);
 		return col;
 	}
 
-	public static  ColumnModel getColList(String title, List dataProvider, String daoPropertyName) {
+	public static  ColumnModel getColList(String title, List<?> dataProvider, String daoPropertyName) {
 		ColumnModel col = getColList(title, dataProvider);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
 
-	public static  ColumnModel getColList(String title, List dataProvider, String daoPropertyName, String beanPropertyName) {
+	public static  ColumnModel getColList(String title, List<?> dataProvider, String daoPropertyName, String beanPropertyName) {
 		ColumnModel col = getColList(title, dataProvider);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		col.setBeanPropertyName(correctDaoPropertyName(beanPropertyName));
@@ -134,7 +134,10 @@ public class ColumnModel {
 		return col;
 	}
 
-
+	public static  ColumnModel getColCheckbox(String title) {
+		return new ColumnModel(title, DataType.Checkbox);
+	}
+	
 	public static  ColumnModel getColText(String title) {
 		return new ColumnModel(title, DataType.Text);
 	}
@@ -168,7 +171,7 @@ public class ColumnModel {
 
 	private String btText;
 
-	private List dataProvider;
+	private List<?> dataProvider;
 
 	private DataType dataType;
 
@@ -255,7 +258,7 @@ public class ColumnModel {
 	/**
 	 * @return the dataProvider
 	 */
-	public List getDataProvider() {
+	public List<?> getDataProvider() {
 		return dataProvider;
 	}
 
@@ -283,7 +286,7 @@ public class ColumnModel {
 	/**
 	 * @param dataProvider the dataProvider to set
 	 */
-	public void setDataProvider(List dataProvider) {
+	public void setDataProvider(List<?> dataProvider) {
 		this.dataProvider = dataProvider;
 	}
 
