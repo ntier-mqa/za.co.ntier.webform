@@ -1,4 +1,4 @@
-package za.co.ntier.webform.sdr.component.bean.cell;
+package za.co.ntier.webform.sdr.component.bean;
 
 import org.zkoss.zk.ui.event.InputEvent;
 

@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class DateData extends AbstractCellModel {

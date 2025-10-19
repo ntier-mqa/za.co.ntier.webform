@@ -5,7 +5,9 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.DataType;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 

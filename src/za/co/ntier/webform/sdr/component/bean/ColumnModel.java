@@ -1,12 +1,10 @@
-package za.co.ntier.webform.sdr.component.bean.cell;
+package za.co.ntier.webform.sdr.component.bean;
 
 import java.beans.Introspector;
 import java.util.List;
 import java.util.function.Function;
 
 import org.compiere.model.MRegion;
-
-import za.co.ntier.webform.sdr.component.bean.DataType;
 
 public class ColumnModel {
 	

@@ -9,8 +9,8 @@ import org.zkoss.bind.annotation.Init;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.cell.ColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 

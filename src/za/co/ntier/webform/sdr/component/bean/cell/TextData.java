@@ -1,5 +1,7 @@
 package za.co.ntier.webform.sdr.component.bean.cell;
 
+import za.co.ntier.webform.sdr.component.bean.IValueChange;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 

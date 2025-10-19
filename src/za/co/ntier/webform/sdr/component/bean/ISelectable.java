@@ -1,4 +1,4 @@
-package za.co.ntier.webform.sdr.component.bean.cell;
+package za.co.ntier.webform.sdr.component.bean;
 
 /**
  * implement to handle event selected a item on UI like listbox

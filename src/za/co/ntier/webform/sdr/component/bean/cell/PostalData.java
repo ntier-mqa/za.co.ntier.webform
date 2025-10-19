@@ -6,7 +6,10 @@ import java.util.Map;
 import org.compiere.model.MCity;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.DataType;
+import za.co.ntier.webform.sdr.component.bean.IValueChange;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class PostalData extends AbstractCellModel implements IValueChange{

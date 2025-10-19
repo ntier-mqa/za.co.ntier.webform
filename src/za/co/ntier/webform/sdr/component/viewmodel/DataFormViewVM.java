@@ -23,8 +23,8 @@ import za.co.ntier.api.model.X_ZZ_FormContact;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.cell.ColumnModel;
 
 public class DataFormViewVM extends ComponentVMWrapper<TableModel>{
 	

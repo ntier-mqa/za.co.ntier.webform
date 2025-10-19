@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.zkoss.zul.ListModelList;
 
+import za.co.ntier.webform.sdr.component.bean.ISelectable;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public abstract class AbstractListCellModel<T> extends AbstractCellModel implements ISelectable {

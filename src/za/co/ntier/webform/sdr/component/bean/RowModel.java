@@ -1,10 +1,8 @@
-package za.co.ntier.webform.sdr.component.bean.cell;
+package za.co.ntier.webform.sdr.component.bean;
 
 import java.util.HashMap;
 
 import org.compiere.model.PO;
-
-import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class RowModel extends HashMap<ColumnModel, Object>{
 	

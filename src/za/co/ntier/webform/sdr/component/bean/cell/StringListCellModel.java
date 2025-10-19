@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 
 import org.zkoss.zul.ListModelList;
 
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class StringListCellModel extends AbstractListCellModel<String> {
