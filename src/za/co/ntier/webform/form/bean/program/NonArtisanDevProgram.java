@@ -96,7 +96,7 @@ public class NonArtisanDevProgram extends AbstractProgram {
 	        boolean wpaOk = true;
 	        /*
 	        if (colWpa != null && anyCount) {
-	            UploadData up = (UploadData) row.get(colWpa);
+	            UploadCellModel up = (UploadCellModel) row.get(colWpa);
 	            wpaOk = (up != null && up.getFullPath() != null && !up.getFullPath().isEmpty());
 	        }
 	        */
@@ -104,7 +104,7 @@ public class NonArtisanDevProgram extends AbstractProgram {
 	        boolean accredOk = true;
 	        /*
 	        if (colAcc != null && anyCount) {
-	            UploadData up = (UploadData) row.get(colAcc);
+	            UploadCellModel up = (UploadCellModel) row.get(colAcc);
 	            accredOk = (up != null && up.getFullPath() != null && !up.getFullPath().isEmpty());
 	        }
 	        */

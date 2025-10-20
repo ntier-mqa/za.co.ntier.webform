@@ -12,11 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.I_AD_Column;
 import org.compiere.model.I_C_BP_Group;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Country;
 import org.compiere.model.I_C_Region;
 import org.compiere.model.MCity;
+import org.compiere.model.MColumn;
 import org.compiere.model.MCountry;
 import org.compiere.model.MRegion;
 import org.compiere.model.MTable;
@@ -246,4 +248,7 @@ public class MasterUtil {
 		return annexureQuery.list();
 	}
 	
+	public static String getNameOfColTranslated (String table, String colName) {
+		return MColumn.get(Env.getCtx(), table, colName).get_Translation(I_AD_Column.COLUMNNAME_Name);
+	}
 }

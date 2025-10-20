@@ -3,12 +3,14 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
+import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
-public class DateData extends AbstractCellModel {
-	public DateData(TableModel annexure, RowModel row) {
-		super(annexure, row);
+public class DateCellModel extends BaseCellModel {
+	public DateCellModel(TableModel annexure, RowModel row) {
+		super(annexure, row, DATE_CELL);
 	}
 
 	private LocalDate localDate;
@@ -42,5 +44,10 @@ public class DateData extends AbstractCellModel {
 		}else {
 			this.localDate = timestamp.toLocalDateTime().toLocalDate();
 		}
+	}
+	
+
+	public static BaseColumnModel getDateColumnModel(String title, String daoPropertyName) {
+		return BaseCellModel.getColModel(DateCellModel.class, title, daoPropertyName);
 	}
 }

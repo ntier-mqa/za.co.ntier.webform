@@ -62,7 +62,7 @@ public class UploadDocComponent implements ISaveForm {
 				
 				for (X_ZZDocumentUploadFile documentUploadFile : documentUploadFiles) {
 					if (documentUploadFile.getZZDocumentUpload_ID() == docDef.getZZDocumentUpload_ID()) {
-						UploadData uploadData = (UploadData) row.get(uploadFileCol);
+						UploadCellModel uploadData = (UploadCellModel) row.get(uploadFileCol);
 						uploadData.setFileName(documentUploadFile.getName());
 						row.setData(documentUploadFile);
 						break;

@@ -1,32 +1,22 @@
 package za.co.ntier.webform.sdr.component.bean;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.compiere.model.MCity;
-import org.compiere.model.MRegion;
-import org.compiere.model.MTable;
 import org.compiere.model.PO;
-import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
@@ -34,24 +24,9 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
-import za.co.ntier.api.model.I_ZZBankingDetails;
-import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.form.AttachmentUtil;
-import za.co.ntier.webform.form.Util;
-import za.co.ntier.webform.sdr.component.bean.cell.AbstractCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.AbstractListCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.AreaData;
-import za.co.ntier.webform.sdr.component.bean.cell.CheckboxData;
-import za.co.ntier.webform.sdr.component.bean.cell.DateData;
-import za.co.ntier.webform.sdr.component.bean.cell.IntData;
-import za.co.ntier.webform.sdr.component.bean.cell.LabelData;
-import za.co.ntier.webform.sdr.component.bean.cell.PostalData;
-import za.co.ntier.webform.sdr.component.bean.cell.ProvinceData;
-import za.co.ntier.webform.sdr.component.bean.cell.StringListCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.TextData;
-import za.co.ntier.webform.sdr.component.bean.cell.UploadData;
-import za.co.ntier.webform.sdr.component.bean.powrapper.LearnerInputInfo;
+import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
 public class TableModel {
 	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
@@ -63,7 +38,7 @@ public class TableModel {
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
 	
-	public static <T extends TableModel> T getTableBean(Class<T> clazz, List<ColumnModel> columnInfos,
+	public static <T extends TableModel> T getTableBean(Class<T> clazz, List<BaseColumnModel> columnInfos,
 			boolean isShowTotal){
 
 		T tableModel;
@@ -81,10 +56,10 @@ public class TableModel {
 		tableModel.setRows(rows);
 
 		if (isShowTotal) {
-			Map<ColumnModel, Object> totalRow = new HashMap<>();
-			for (ColumnModel columnInfo : columnInfos) {
-				if (columnInfo.getDataType() == DataType.PositiveNumber) {
-					totalRow.put(columnInfo, new IntData(tableModel, null, 0));
+			Map<BaseColumnModel, Object> totalRow = new HashMap<>();
+			for (BaseColumnModel columnInfo : columnInfos) {
+				if (columnInfo.isCalTotal()) {
+					totalRow.put(columnInfo, new IntCellModel(tableModel, 0));
 				} else {
 					totalRow.put(columnInfo, null);
 				}
@@ -99,60 +74,7 @@ public class TableModel {
 		return tableModel;
 	}
 
-	public static Integer getIntegerValue(TableModel cetTvetOneLineInput, ColumnModel col) {
-		return TableModel.getIntegerValue(cetTvetOneLineInput.getRows().get(0), col);
-	}
-
-	public static Integer getIntegerValue(Map<ColumnModel, Object> cetTvetMultiLineRow, ColumnModel colInfo) {
-
-		if (colInfo != null && colInfo.getDataType() == DataType.PositiveNumber && cetTvetMultiLineRow.get(colInfo) != null) {
-			IntData cellData = (IntData)cetTvetMultiLineRow.get(colInfo);
-			return cellData.getValue();
-		}
-
-		return null;
-	}
-
-	public static ColumnModel lookupCol(DataType dataType, String colName, TableModel annexure){
-		return lookupCol(dataType, colName, annexure.getColumnInfos());
-	}
-
-	public static ColumnModel lookupCol(DataType dataType, String colName, Collection<ColumnModel> cols){
-		ColumnModel foundCol = null;
-
-		for (ColumnModel col : cols) {
-			if (dataType != null  && colName != null && dataType.equals(col.getDataType()) && colName.equals(col.getTitle())) {
-				return col;
-			}
-
-			if (dataType != null && dataType.equals(col.getDataType())){
-				return  col;
-			}
-
-			if (colName != null && colName.equals(col.getTitle())){
-				return  col;
-			}
-		}
-
-		return foundCol;
-	}
-
-	public static ColumnModel lookupColByDataType(DataType dataType, TableModel annexure){
-		return lookupCol(dataType, null, annexure);
-	}
-
-	public static ColumnModel lookupColByDataType(DataType dataType, Collection<ColumnModel> cols){
-		return lookupCol(dataType, null, cols);
-	}
-
-	public static ColumnModel lookupColByTitle(String colName, TableModel annexure){
-		return lookupCol(null, colName, annexure);
-	}
-	public static ColumnModel lookupColByTitle(String colName, Collection<ColumnModel> cols){
-		return lookupCol(null, colName, cols);
-	}
-
-	private List<ColumnModel> columnModels;
+	private List<BaseColumnModel> baseColumnModels;
 	private BiFunction<TableModel, X_ZZ_Application_Form, PO> poSupplier;
 	private List<RowModel> rows;
 	private String sectionHeader;
@@ -169,15 +91,15 @@ public class TableModel {
 
 	private String tableTitle;
 
-	private Map<ColumnModel, Object> totalRow;
+	private Map<BaseColumnModel, Object> totalRow;
 
 	public void addRow() {
 		createDetailRow();
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
-	public void cmdValueChanged (Map<ColumnModel, Object> row, 
-			ColumnModel col,
+	public void cmdValueChanged (Map<BaseColumnModel, Object> row, 
+			BaseColumnModel col,
 			InputEvent event){
 		IValueChange valueChange = (IValueChange)row.get(col);
 		if (valueChange != null)
@@ -190,8 +112,8 @@ public class TableModel {
 	 * @param col
 	 * @param event
 	 */
-	public void cmdSelected (Map<ColumnModel, Object> row, 
-			ColumnModel col,
+	public void cmdSelected (Map<BaseColumnModel, Object> row, 
+			BaseColumnModel col,
 			SelectEvent<?, ?> event){
 		
 		ISelectable selectable = (ISelectable)row.get(col);
@@ -205,66 +127,17 @@ public class TableModel {
 		return createDetailRow(null);
 	}
 	
-	
-	private AbstractCellModel createCellModel(RowModel rowModel, ColumnModel colModel) {
-		AbstractCellModel cellData = null;
-		
-		if (colModel.getDataType() == DataType.FileUpload) {
-			cellData = new UploadData(this, rowModel);
-
-		} else if (colModel.getDataType() == DataType.Checkbox) {
-			CheckboxData cellDataCheckbox = new CheckboxData(this, rowModel);
-			cellDataCheckbox.setTitle(colModel.getTitle());// default title for case use one row
-			cellData = cellDataCheckbox;
-		} else if (colModel.getDataType() == DataType.Area) {
-			AreaData areaData = new AreaData(this, rowModel);
-			@SuppressWarnings("unchecked")
-			List<MCity> initListData = (List<MCity>)colModel.getDataProvider();
-			areaData.setDataProvider(initListData);
-			cellData = areaData;
-		} else if (colModel.getDataType() == DataType.Province) {
-			ProvinceData provinceData = new ProvinceData(this, rowModel);
-			@SuppressWarnings("unchecked")
-			List<MRegion> initListData = (List<MRegion>)colModel.getDataProvider();
-			provinceData.setDataProvider(initListData);
-			cellData = provinceData;
-		} else if (colModel.getDataType() == DataType.StringList) {
-			StringListCellModel stringListCellModel = new StringListCellModel(this, rowModel);
-			
-			@SuppressWarnings("unchecked")
-			List<String> initListData = (List<String>)colModel.getDataProvider();
-			stringListCellModel.setDataProvider(initListData);
-			cellData = stringListCellModel;
-
-		}else if (colModel.getDataType() == DataType.Postal) {
-			PostalData textData = new PostalData(this, rowModel, null);
-			cellData = textData;
-		}else if (colModel.getDataType() == DataType.PositiveNumber) {
-			cellData = new IntData(this, rowModel, null);
-		}else if (colModel.getDataType() == DataType.Label) {
-			cellData = new LabelData(this, rowModel);
-		}else if (colModel.getDataType() == DataType.Date) {
-			cellData = new DateData(this, rowModel);
-		}else if (colModel.getDataType() == DataType.Text) {
-			cellData = new TextData(this, rowModel);
-		}	
-		
-		return cellData;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public RowModel createDetailRow(Map<ColumnModel, Object> rowTitle) {
+	public RowModel createDetailRow(Map<BaseColumnModel, Object> rowTitle) {
 
 		RowModel row = new RowModel(this);
 
-		for (ColumnModel columnInfo : columnModels) {
-			Object cellData = createCellModel(row, columnInfo);
-			
-			row.put(columnInfo, cellData);
+		for (BaseColumnModel columnInfo : baseColumnModels) {
+			BaseCellModel cellModel = columnInfo.getCellModel(this, row);
+			row.put(columnInfo, cellModel);
 		}
 		
 		if (rowTitle != null) {
-			for (Entry<ColumnModel, Object> colTile : rowTitle.entrySet()) {
+			for (Entry<BaseColumnModel, Object> colTile : rowTitle.entrySet()) {
 				TableModel.setCellValue(row, colTile.getKey(), colTile.getValue());
 			}
 		}
@@ -294,8 +167,8 @@ public class TableModel {
 		if (!showTotal)
 			return;
 
-		for (ColumnModel col:getColumnInfos()) {
-			if (col.getDataType() == DataType.PositiveNumber) {
+		for (BaseColumnModel col:getColumnInfos()) {
+			if (col.isCalTotal()) {
 				updateTotalRow(col, false);
 			}
 		}
@@ -306,16 +179,16 @@ public class TableModel {
 	 * @param col
 	 * @param needNotify
 	 */
-	public void updateTotalRow(ColumnModel col, boolean needNotify) {
+	public void updateTotalRow(BaseColumnModel col, boolean needNotify) {
 		Integer total = 0;
-		for (Map<ColumnModel, Object> r : getRows()) {
-			IntData intData = (IntData)r.get(col);
-			if (intData.getValue() != null) {
-				total += intData.getValue();
+		for (Map<BaseColumnModel, BaseCellModel> r : getRows()) {
+			IntCellModel intCellModel = (IntCellModel)r.get(col);
+			if (intCellModel.getValue() != null) {
+				total += intCellModel.getValue();
 			}
 		}
 
-		IntData totalValue = (IntData)totalRow.get(col);
+		IntCellModel totalValue = (IntCellModel)totalRow.get(col);
 		totalValue.setValue(total);
 
 		if(needNotify) {
@@ -324,10 +197,10 @@ public class TableModel {
 	}
 
 	/**
-	 * @return the columnModels
+	 * @return the baseColumnModels
 	 */
-	public List<ColumnModel> getColumnInfos() {
-		return columnModels;
+	public List<BaseColumnModel> getColumnInfos() {
+		return baseColumnModels;
 	}
 
 	public RowModel getRow() {
@@ -375,7 +248,7 @@ public class TableModel {
 	/**
 	 * @return the totalRow
 	 */
-	public Map<ColumnModel, Object> getTotalRow() {
+	public Map<BaseColumnModel, Object> getTotalRow() {
 		return totalRow;
 	}
 
@@ -393,13 +266,13 @@ public class TableModel {
 		return showTotal;
 	}
 
-	public void numChange(RowModel row, ColumnModel col, InputEvent event) {
+	public void numChange(RowModel row, BaseColumnModel col, InputEvent event) {
 		// update total row
-		if (col.getDataType() == DataType.PositiveNumber && showTotal) {
+		if (showTotal && row.get(col) instanceof IntCellModel) {
 			updateTotalRow(col, true);
 		}
 
-		if (col.getDataType() == DataType.PositiveNumber) {
+		if (row.get(col) instanceof IntCellModel) {
 			updateExpressionCol (row, true);
 		}
 
@@ -407,7 +280,7 @@ public class TableModel {
 
 	public void updateExpressionCol () {
 		boolean hasExpressionCol = false;
-		for (ColumnModel colTotal : getColumnInfos()) {
+		for (BaseColumnModel colTotal : getColumnInfos()) {
 			if (colTotal.getExpression() != null) {
 				hasExpressionCol = true;
 			}
@@ -425,10 +298,10 @@ public class TableModel {
 	 */
 	public void updateExpressionCol (RowModel row, boolean needNotify) {
 		// update expression column
-		for (ColumnModel colTotal : getColumnInfos()) {
+		for (BaseColumnModel colTotal : getColumnInfos()) {
 			if (colTotal.getExpression() != null) {
 				Integer value = colTotal.getExpression().apply(row);
-				LabelData expressionLable = (LabelData) row.get(colTotal);
+				BaseCellModel expressionLable = (BaseCellModel) row.get(colTotal);
 				if (value == null) {
 					expressionLable.setValue(null);
 				}else {
@@ -444,10 +317,10 @@ public class TableModel {
 
 
 	/**
-	 * @param columnModels the columnModels to set
+	 * @param baseColumnModels the baseColumnModels to set
 	 */
-	public void setColumnInfos(List<ColumnModel> columnInfos) {
-		this.columnModels = columnInfos;
+	public void setColumnInfos(List<BaseColumnModel> columnInfos) {
+		this.baseColumnModels = columnInfos;
 	}
 
 	/**
@@ -502,13 +375,13 @@ public class TableModel {
 	/**
 	 * @param totalRow the totalRow to set
 	 */
-	public void setTotalRow(Map<ColumnModel, Object> totalRow) {
+	public void setTotalRow(Map<BaseColumnModel, Object> totalRow) {
 		this.totalRow = totalRow;
 	}	
 
 
-	public void uploadFile(Map<ColumnModel, Object> row, ColumnModel col, UploadEvent event) {
-		UploadData ud = (UploadData) row.get(col);
+	public void uploadFile(Map<BaseColumnModel, Object> row, BaseColumnModel col, UploadEvent event) {
+		UploadCellModel ud = (UploadCellModel) row.get(col);
 		Media m = event.getMedia();
 
 		ud.setFileName(m.getName());
@@ -567,18 +440,14 @@ public class TableModel {
 		this.dataType = dataType;
 	}
 
-	public Entry<Integer, Boolean> fillDaoData (Collection<ColumnModel> cols, RowModel row, Object dao){
-		Integer total = Integer.valueOf(0);
-		boolean isEmptyData = true;
-		boolean isFullData = true;
-		boolean hasDaoPropertyName = false;
-		for (ColumnModel col:cols) {
-			boolean ignoreSetDao = false;
-			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
-				hasDaoPropertyName = true;
-				Boolean hasCellData = Boolean.FALSE;
-				Object cellValueObj = null;
-				if (col.getDataType() == DataType.PositiveNumber) {
+	public void fillDaoData (Collection<BaseColumnModel> cols, RowModel row, Object dao){
+		for (BaseColumnModel col:cols) {
+			BaseCellModel cellModel = (BaseCellModel) row.get(col);
+			cellModel.setValueToDao(dao);
+		}
+			
+				//Object cellValueObj = null;
+				/*if (col.getDataType() == DataType.PositiveNumber) {
 					Entry<Integer, Boolean>  entryIntObj = getCellValue(row, col);
 					if (col.isCalTotal())
 						total += entryIntObj.getKey();
@@ -597,7 +466,7 @@ public class TableModel {
 					}
 					cellValueObj = learnerInputID;
 				}else if (col.getDataType() == DataType.Date) {
-					DateData dateData = (DateData)row.get(col);
+					DateCellModel dateData = (DateCellModel)row.get(col);
 					cellValueObj = dateData.getTimestamp();
 					if (cellValueObj != null) {
 						hasCellData = true;
@@ -606,11 +475,12 @@ public class TableModel {
 					// Martin changed to save to attachments instead to a binary file
 					hasCellData = Boolean.TRUE;// upload data become option
 					ignoreSetDao = true; // never set DAO properties for files anymore
-				}else if (col.getDataType() == DataType.List) {
+				}else if (col instanceof ListColumnModel) {
+					ListColumnModel<?> colList = (ListColumnModel<?>)col;
 					Object selectedObj = row.get(col);
-					if (StringUtils.isNotBlank(col.getBeanPropertyName())) {
+					if (StringUtils.isNotBlank(colList.getBeanPropertyName())) {
 						if (selectedObj != null) {
-							cellValueObj = TableModel.getDaoValue(selectedObj, col.getBeanPropertyName());
+							cellValueObj = TableModel.getDaoValue(selectedObj, colList.getBeanPropertyName());
 							hasCellData = Boolean.TRUE;
 						}else {
 							cellValueObj = null;
@@ -648,173 +518,50 @@ public class TableModel {
 
 					setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
 				}
-			}
-		}
+			
+		}*/
 		
 		// null mean don't need to save po (no properties for save or empty input data)
 		// false mean input some item
 		// true mean input full
-		Boolean rowStatus = null;
-		if (!hasDaoPropertyName) {
-			rowStatus = null;
-		}else if (isEmptyData) {
-			rowStatus = null;
-		}else if (!isFullData) {
-			rowStatus = false;
-		}else {
-			rowStatus = true;
-		}
-		return new AbstractMap.SimpleEntry<>(total, rowStatus);
 	}
 
 
 	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
-
-		int total = 0;
-
 		for (RowModel row : getRows()) {
 			PO po = (PO) row.getData();
 			if (po == null) {
 				applicationForm.set_TrxName(trxName); // important
 				po = poSupplier.apply(this, applicationForm);
 			}
-
-			Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, po);
-
-			if (result.getValue() == null) {
+			
+			if (row.inputState() == RowModel.INPUT_STATE_EMPTY) {
 				// delete row record if user cleared all input for this row
 				po.delete(true);
-			}else if (result.getValue()) {
+			}else if (row.inputState() == RowModel.INPUT_STATE_FULL) {
+				
 				po.saveEx(trxName);
-				total += result.getKey();
-
-				// --- Save FileUpload columns as ATTACHMENTS (memory only) ---
-				for (ColumnModel col : getColumnInfos()) {
-					if (col.getDataType() != DataType.FileUpload) continue;
-
-					UploadData upload = (UploadData) row.get(col);
-					if (upload == null) continue;
-
-					byte[] bytes = upload.getBytes(); // <-- in-memory only
-					String fileName = upload.getFileName();
-
-					if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
-						// one-entry semantics: delete-and-recreate
-						AttachmentUtil.addOrReplaceAttachmentEntry(po, fileName, bytes, col.getBtText() ,trxName);
-
-						// free memory for this row after persisting
-						upload.setBytes(null);
-					}
-
-					// If you want to support "delete attachment when user clears the file":
-					// else if ((bytes == null || bytes.length == 0)) {
-					//     MAttachment att = MAttachment.get(Env.getCtx(), po.get_Table_ID(), po.get_ID(), trxName);
-					//     if (att != null) att.delete(true);
-					// }
-				}
-			} else {
-				log.warning("row isn't input full data so don't save to dao also delete dao saved");
-				po.delete(true);
+				row.saveUploadFiles(po, trxName);
+				
+			}else {// some required column is missing (validate getting fail)
+				throw new AdempiereException("Please input full required data for all columns in the row or clear all data to remove the row (validate is fail).");
 			}
 		}
 
-		applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
+		applicationForm.setZZTotalNumberApplied(this.getGrandTotal() + applicationForm.getZZTotalNumberApplied());
 	}
 
 
-	public static void setCellValue(RowModel row, ColumnModel col, Object value) {
-		log.info(String.format("Set cell value: row=%s, col=%s, col datatype=%s, value=%s", row, col.getTitle(), col.getDataType(), value));
-		Object valueObj = row.get(col);
-		if (valueObj instanceof AbstractListCellModel) {
-			@SuppressWarnings("rawtypes")
-			AbstractListCellModel listCellModel = (AbstractListCellModel)valueObj;
-			listCellModel.setSelectedItemById(value);
-		}else if (col.getDataType() == DataType.PositiveNumber) {
-			IntData intData = (IntData)valueObj;
-			intData.setValue(Util.convert((int)value));
-		}else if (col.getDataType() == DataType.Text) {
-			TextData textData = (TextData)valueObj;
-			textData.setValue(Util.convertStr((String)value));
-		}else if (col.getDataType() == DataType.Postal) {
-			PostalData postalData = (PostalData)valueObj;
-			postalData.setPostal(Util.convertStr((String)value));
-		}else if (col.getDataType() == DataType.Label) {
-			LabelData valueData = (LabelData)valueObj;
-			valueData.setValue(Util.convertStr((String)value));
-		}else if (col.getDataType() == DataType.FileUpload) {
-			UploadData valueData = (UploadData)valueObj;
-			valueData.setFileName(Util.convertStr((String)value));
-		}else if (col.getDataType() == DataType.LearnerInfo && valueObj != null && !(value instanceof LearnerInputInfo)) {
-			// don't need, already set when init row tile
-		}else if (col.getDataType() == DataType.List && StringUtils.isNotBlank(col.getBeanPropertyName())) {
-			if (value == null || (int)value == 0) {
-				row.put(col, null);
-			}else {
-				for(Object selectedObj : col.getDataProvider()) {
-					Object obj = TableModel.getDaoValue(selectedObj, col.getBeanPropertyName());
-					if (com.google.common.base.Objects.equal(value, obj)) {
-						row.put(col, selectedObj);
-						break;
-					}
-				}
-			}
-		}else if (col.getDataType() == DataType.Date) {
-			DateData valueData = (DateData)valueObj;
-			valueData.setLocalDate((Timestamp)value);
-		}else {
-			row.put(col, value);
-		}
+	private int getGrandTotal() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-	@SuppressWarnings("unchecked")
-	/**
-	 * return entry with value already convert (example 0 for non input int), value is true in case input non-null
-	 */
-	public static <T> Entry<T, Boolean> getCellValue(RowModel row, ColumnModel col) {
-		Object valueObj = row.get(col);
-
-		if (valueObj instanceof AbstractListCellModel) {
-			@SuppressWarnings("rawtypes")
-			AbstractListCellModel listData = (AbstractListCellModel)valueObj;
-			int id = listData.getSelectedID();
-			return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(id), id != 0);
-		}else if (col.getDataType() == DataType.PositiveNumber) {
-			IntData intData = (IntData)valueObj;
-			if (intData.getValue() == null) {
-				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(0), Boolean.FALSE);
-			}else {
-				return new AbstractMap.SimpleEntry<>((T)intData.getValue(), Boolean.TRUE);
-			}
-
-		}else if (col.getDataType() == DataType.Text) {
-			TextData textData = (TextData)valueObj;
-			if (StringUtils.isBlank(textData.getValue())) {
-				return new AbstractMap.SimpleEntry<>(null, Boolean.FALSE);
-			}else {
-				return new AbstractMap.SimpleEntry<>((T)Util.convertStr(textData.getValue()), Boolean.TRUE);
-			}
-
-		}else if (col.getDataType() == DataType.Postal) {
-			PostalData postalData = (PostalData)valueObj;
-			T value = (T)postalData.getPostal();
-			return new AbstractMap.SimpleEntry<>(value, value == null?Boolean.FALSE:Boolean.TRUE);
-		}else if (col.getDataType() == DataType.Label) {
-			LabelData valueData = (LabelData)valueObj;
-			T value = (T)valueData.getValue();
-			return new AbstractMap.SimpleEntry<>(value, value == null?Boolean.FALSE:Boolean.TRUE);
-		}else if (col.getDataType() == DataType.FileUpload) {
-			UploadData valueData = (UploadData)valueObj;
-			T value = (T)valueData.getFileName();
-			return new AbstractMap.SimpleEntry<>(value, value == null?Boolean.FALSE:Boolean.TRUE);
-		}else if (col.getDataType() == DataType.LearnerInfo) {
-			LearnerInputInfo valueData = (LearnerInputInfo)valueObj;
-			Integer value = Integer.valueOf(0);
-			if(valueData != null) {
-				value = Integer.valueOf(valueData.getLearnerInputID());
-			}
-			return new AbstractMap.SimpleEntry<>((T)value, value.equals(0) ? Boolean.FALSE:Boolean.TRUE);
-		}	
-		return new AbstractMap.SimpleEntry<>((T)valueObj, valueObj == null?Boolean.FALSE:Boolean.TRUE);
+	public static void setCellValue(RowModel row, BaseColumnModel col, Object value) {
+		BaseCellModel valueObj = row.get(col);
+		log.info(String.format("Set cell value: row=%s, col=%s, cell datatype=%s, value=%s", row, col.getTitle(), valueObj.getClass().getName(), value));
+		
+		valueObj.setCellValue(value);
 	}
 
 	public void setDaoValue(Object dao, String propertyName, Object value) {
@@ -836,56 +583,6 @@ public class TableModel {
 
 	}
 
-	/**
-	 * 
-	 * @param row
-	 * @param dao
-	 * @param keyColumns
-	 * @return
-	 */
-	public boolean isMatchingRow(RowModel row, Object dao, Collection<ColumnModel> keyColumns) {
-		boolean isMatching = true;
-		for (ColumnModel keyColumn : keyColumns) {
-			if (StringUtils.isNotBlank(keyColumn.getDaoPropertyName())) {
-				Entry<Object, Boolean> result = getCellValue(row, keyColumn);
-				Object daoValue = getDaoValue(dao, keyColumn.getDaoPropertyName());
-				isMatching = Objects.equals(result.getKey(), daoValue);
-				if (!isMatching)
-					break;
-			}else {
-				log.warning(String.format("DaoPropertyName of Key column is blank: %s", keyColumn.getTitle()));
-			}
-		}
-		return isMatching;
-	}
-
-	/**
-	 * check each column to get matching property of bean, query data of bean and set to row 
-	 * @param cols
-	 * @param row
-	 * @param dao
-	 */
-	public void fillRowDataFromDao(List<ColumnModel> cols, RowModel row, Object dao) {
-		for (ColumnModel col : cols) {
-			if (StringUtils.isNotBlank(col.getDaoPropertyName())){
-				Object daoValue = null;
-				if (col.getDataType() == DataType.FileUpload && StringUtils.isNotBlank(col.getDaoPropertyFileName())) {
-					if (dao instanceof PO) {
-						daoValue = AttachmentUtil.getFileNameFromAttachmentEntries(
-								(PO) dao,
-								col.getBtText(),
-								((PO) dao).get_TrxName()
-								);
-					}
-					//daoValue = getDaoValue(dao, col.getDaoPropertyFileName());
-				}else if (col.getDataType() != DataType.FileUpload  && StringUtils.isNotBlank(col.getDaoPropertyName())) {
-					daoValue = getDaoValue(dao, col.getDaoPropertyName());
-				}
-
-				TableModel.setCellValue(row, col, daoValue);
-			}
-		}
-	}
 
 	public void init(X_ZZ_Application_Form applicationForm) {
 		init(applicationForm, null);
@@ -895,7 +592,7 @@ public class TableModel {
 		init(applicationForm, savedDatas, null);
 	}
 
-	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
+	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<BaseColumnModel, Object>> rowTitles) {
 		if(rowTitles == null || rowTitles.size() == 0)
 			init(applicationForm, savedDatas, null, null);
 		else
@@ -903,23 +600,16 @@ public class TableModel {
 	}
 
 	public void init(X_ZZ_Application_Form applicationForm, 
-			List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
+			List<PO> savedDatas, List<Map<BaseColumnModel, Object>> rowTitles, Collection<BaseColumnModel> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)
-			for (Map<ColumnModel, Object> rowTitle : rowTitles) {
+			for (Map<BaseColumnModel, Object> rowTitle : rowTitles) {
 				createDetailRow(rowTitle);
 			}
 
 		// init rows with saved data
 		if (savedDatas != null && savedDatas.size() > 0) {
 			List<RowModel> matchedRows = new ArrayList<>();
-
-			boolean learnerInfoKey = false;
-			if (keyColumns != null && keyColumns.size() > 0) {
-				if (lookupColByDataType(DataType.LearnerInfo, keyColumns) != null) {
-					learnerInfoKey = true;
-				}
-			}
 
 			for (PO dao : savedDatas) {
 				boolean isMatching = false;
@@ -928,23 +618,20 @@ public class TableModel {
 						if (matchedRows.contains(row))
 							continue;
 
-						isMatching = isMatchingRow(row, dao, keyColumns);
-
+						isMatching = row.isMatchingRow(keyColumns, dao);
 						if (isMatching) {
 							matchedRows.add(row);
 							row.setData(dao);
-							fillRowDataFromDao(getColumnInfos(), row, dao);
+							row.fillRowDataFromDao(dao);
 							break;
 						}
 					}
 				}
 
-				if (!isMatching && learnerInfoKey) {
-					// moment don't handle this case, in case what to handle it need to change createDetailRow to create LearnerInputInfo for LearnerInfo column
-				}else if(!isMatching) {
+				if(!isMatching) {
 					RowModel row = createDetailRow();
 					row.setData(dao);
-					fillRowDataFromDao(getColumnInfos(), row, dao);
+					row.fillRowDataFromDao(dao);
 				}
 			}
 
@@ -985,63 +672,6 @@ public class TableModel {
 	public void setCreateNewRowWhenEmpty(boolean createNewRowWhenEmpty) {
 		this.createNewRowWhenEmpty = createNewRowWhenEmpty;
 	}
-
-
-	public static TableModel getBankInfo(X_ZZ_Application_Form applicationForm) {
-		/* List<ColumnModel> cols = new ArrayList<ColumnModel>();
-		cols.add(ColumnModel.getColText("Name of Bank", I_ZZBankingDetails.COLUMNNAME_BankName));
-		cols.add(ColumnModel.getColText("Branch Name", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name));
-		cols.add(ColumnModel.getColText("Branch Codes", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number));
-		cols.add(ColumnModel.getColText("Account Number", I_ZZBankingDetails.COLUMNNAME_AccountNo));
-		*/
-		
-		
-	    List<ColumnModel> cols = new ArrayList<>();
-	    ColumnModel cBank   = ColumnModel.getColText("Name of Bank",  I_ZZBankingDetails.COLUMNNAME_BankName).required();
-	    ColumnModel cBranch = ColumnModel.getColText("Branch Name",   I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name).required();
-	    ColumnModel cCode   = ColumnModel.getColText("Branch Codes",  I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number).required();
-	    ColumnModel cAcct   = ColumnModel.getColText("Account Number",I_ZZBankingDetails.COLUMNNAME_AccountNo).required();
-
-	    cols.add(cBank); cols.add(cBranch); cols.add(cCode); cols.add(cAcct);
-
-		TableModel bankInfo = TableModel.getTableBean(TableModel.class, cols, false);
-		bankInfo.setSubSectionHeader("TRAINING PROVIDER BANKING DETAILS");
-		bankInfo.setPoSupplier((ann, appForm) -> {
-			X_ZZBankingDetails po = new X_ZZBankingDetails(appForm.getCtx(), 0, null);
-			po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
-			return po;
-		});
-
-
-		List<PO> savedDaos = null;
-		if(applicationForm != null) {
-			String where = String.format("%s = ?", 
-					I_ZZBankingDetails.COLUMNNAME_ZZ_Application_Form_ID);
-
-			Query querySavedDaos = MTable.get(I_ZZBankingDetails.Table_ID).createQuery(where, null);
-			savedDaos = querySavedDaos.setParameters(applicationForm.getZZ_Application_Form_ID()).list();
-		}
-
-		bankInfo.init(applicationForm, savedDaos);
-
-		return bankInfo;
-	}
-	
-	public boolean areMandatoryFieldsFilled() {
-	    if (rows == null || rows.isEmpty()) return false; // bank form needs one row
-	    for (RowModel r : rows) {
-	        for (ColumnModel col : columnModels) {
-	            if (!col.isMandatory()) continue;
-	            var present = TableModel.getCellValue(r, col).getValue();
-	            if (!Boolean.TRUE.equals(present)) return false;
-	            //Object v = r.get(col);
-	          //  if (v == null) return false;
-	          //  if (v instanceof CharSequence && ((CharSequence) v).toString().trim().isEmpty()) return false;
-	        }
-	    }
-	    return true;
-	}
-
 	/**
 	 * @return the sclass
 	 */

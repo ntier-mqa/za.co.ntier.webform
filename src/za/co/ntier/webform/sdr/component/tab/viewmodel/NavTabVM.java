@@ -1,11 +1,9 @@
 package za.co.ntier.webform.sdr.component.tab.viewmodel;
 
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
-import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 
 @Init(superclass = true)
 public class NavTabVM extends ComponentVMWrapper<NavTab> {

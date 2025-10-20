@@ -9,52 +9,45 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.form.MasterUtil;
-import za.co.ntier.webform.sdr.component.bean.ColumnModel;
-import za.co.ntier.webform.sdr.component.bean.DataType;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
-public class ProvinceData extends AbstractListCellModel<MRegion>{
+public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 	
-	public ProvinceData(TableModel annexure, RowModel row){
-		super(annexure, row);
+	public ProvinceCellModel(TableModel tableModel, RowModel rowModel){
+		super(tableModel, rowModel);
 		setModel(new ListModelList<MRegion>());		
 	}
 
 	@Override
 	public void cmdSelectedHandle(MRegion selectedProvince) {
 		if (getAnnexure() != null && getRow() != null) {
-			ColumnModel postalCol = TableModel.lookupColByDataType(DataType.Postal, getAnnexure());
-			ColumnModel areaCol = TableModel.lookupColByDataType(DataType.Area, getAnnexure());
-			
 			if (selectedProvince == null) {
 				return;
 				// do nothing
 			}
 			
-			AreaData areaData = null;
-			if (areaCol != null) {
+			AreaCellModel areaCellModel = getCellModel(AreaCellModel.class);
+			if (areaCellModel != null) {
 				List<MCity> areaFilters = new ArrayList<>();
 
 				MasterUtil.getCities().stream().filter(city -> city.getC_Region_ID() == selectedProvince.getC_Region_ID())
 						.limit(MasterUtil.limitItem).forEach(city -> {
 							areaFilters.add(city);
 						});
-				
-				areaData = (AreaData)getRow().get(areaCol);
-				areaData.setDataProvider(areaFilters);
+				areaCellModel.setDataProvider(areaFilters);
 			}
 			
-			if (postalCol != null && areaData != null) {
-				PostalData postalData = (PostalData) getRow().get(postalCol);
-				
-				if (areaData.isSelected()) {
-					postalData.setPostal(areaData.getSelectedItem().getPostal());
+			PostalCellModel postalCellModel = getCellModel(PostalCellModel.class);
+			if (postalCellModel != null && areaCellModel != null) {
+				if (areaCellModel.isSelected()) {
+					postalCellModel.setValue(areaCellModel.getSelectedItem().getPostal());
 				}else {
-					postalData.setPostal(null);
+					postalCellModel.setValue(null);
 				}
 					
-				BindUtils.postNotifyChange(postalData, "postal");
+				BindUtils.postNotifyChange(postalCellModel, "value");
 			}
 			
 		}
@@ -92,4 +85,15 @@ public class ProvinceData extends AbstractListCellModel<MRegion>{
 	public String getDisplayText(MRegion item) {
 		return item.getName();
 	}
+	
+	public static ListColumnModel<MRegion> getColumnModel(String title, String daoPropertyName) {
+		ListColumnModel<MRegion> colProvinceModel = new ListColumnModel<MRegion>(title);
+		colProvinceModel.setDaoPropertyName(daoPropertyName);
+		colProvinceModel.setCellModelSupplier((tableModel, rowModel)->{
+			return new ProvinceCellModel(tableModel, rowModel);
+		});
+		colProvinceModel.setDataProvider(MasterUtil.getRegions());
+		return colProvinceModel;
+	}
+
 }

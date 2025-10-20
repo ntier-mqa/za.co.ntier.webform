@@ -23,8 +23,12 @@ import za.co.ntier.api.model.X_ZZ_FormContact;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
-import za.co.ntier.webform.sdr.component.bean.ColumnModel;
+import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
+import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.cell.AreaCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 
 public class DataFormViewVM extends ComponentVMWrapper<TableModel>{
 	
@@ -42,8 +46,8 @@ public class DataFormViewVM extends ComponentVMWrapper<TableModel>{
 	@Command
 	public void cmdValueChanged(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
-			, @BindingParam("col") ColumnModel col
+			, @BindingParam("row") Map<BaseColumnModel, Object> row
+			, @BindingParam("col") BaseColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
 		annexure.cmdValueChanged(row, col, event);
 		//notifyProgramComplete(); 
@@ -52,8 +56,8 @@ public class DataFormViewVM extends ComponentVMWrapper<TableModel>{
 	@Command
 	public void cmdSelected(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
-			, @BindingParam("col") ColumnModel col
+			, @BindingParam("row") Map<BaseColumnModel, Object> row
+			, @BindingParam("col") BaseColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
 		annexure.cmdSelected(row, col, event);
 	}
@@ -88,45 +92,52 @@ public class DataFormViewVM extends ComponentVMWrapper<TableModel>{
 	}
 	
 	private void initAddress() {
-		List<ColumnModel> cols = new ArrayList<>();
+		List<BaseColumnModel> cols = new ArrayList<>();
 		
 		if(showSiteName()) {
-		    ColumnModel siteNameCol = ColumnModel.getColText("Site Name", I_ZZ_FormContact.COLUMNNAME_ZZ_SideName).required();
+		    BaseColumnModel siteNameCol = BaseCellModel.getColModelForText("Site Name", I_ZZ_FormContact.COLUMNNAME_ZZ_SideName).required();
 		    cols.add(siteNameCol);
 		}
 		
 		if(showLineAddress()) {
-		    ColumnModel addressCol = ColumnModel.getColText("Street Name and Number", I_ZZ_FormContact.COLUMNNAME_Address).required();
+		    BaseColumnModel addressCol = BaseCellModel.getColModelForText("Street Name and Number", I_ZZ_FormContact.COLUMNNAME_Address).required();
 		    cols.add(addressCol);
 		}
 		
 		if (showPostalAddress()) {
-			ColumnModel addressCol = ColumnModel.getColText("Post Address", I_ZZ_FormContact.COLUMNNAME_Address).required();
+			BaseColumnModel addressCol = BaseCellModel.getColModelForText("Post Address", I_ZZ_FormContact.COLUMNNAME_Address).required();
 			cols.add(addressCol);
 		}
 		
 		if (showGeographicAddress()) {
-			ColumnModel postalCodeCol = ColumnModel.getColPostal(ColumnModel.colPostalCodeLabel, I_ZZ_FormContact.COLUMNNAME_Postal).required();
+			BaseColumnModel postalCodeCol = PostalCellModel.getPostalColumnModel(
+						MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_Postal)
+						, I_ZZ_FormContact.COLUMNNAME_Postal
+					).required();
 			cols.add(postalCodeCol);
 			
-			ColumnModel areaCol = ColumnModel.getColArea(ColumnModel.colAreaLabel, MasterUtil.getInitCities(), I_ZZ_FormContact.COLUMNNAME_C_City_ID).required();
+			BaseColumnModel areaCol = AreaCellModel.getAreaColumnModel(
+						MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_City_ID)
+						, I_ZZ_FormContact.COLUMNNAME_C_City_ID).required();
 			cols.add(areaCol);
 			
-			ColumnModel provinceCol = ColumnModel.getColProvince("Province", MasterUtil.getRegions(), I_ZZ_FormContact.COLUMNNAME_C_Region_ID).required();
+			BaseColumnModel provinceCol = ProvinceCellModel.getColumnModel(
+						MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
+						, I_ZZ_FormContact.COLUMNNAME_C_Region_ID).required();
 			cols.add(provinceCol);
 		}
 		
 		if (showContact()) {
-			ColumnModel nameSurnameCol = ColumnModel.getColText("Name and Surname", I_ZZ_FormContact.COLUMNNAME_ContactName).required();
+			BaseColumnModel nameSurnameCol = BaseCellModel.getColModelForText("Name and Surname", I_ZZ_FormContact.COLUMNNAME_ContactName).required();
 			cols.add(nameSurnameCol);
 			
-			ColumnModel telNumberCol = ColumnModel.getColText("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
+			BaseColumnModel telNumberCol = BaseCellModel.getColModelForText("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
 			cols.add(telNumberCol);
 			
-			ColumnModel alternativeNumberCol = ColumnModel.getColText("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
+			BaseColumnModel alternativeNumberCol = BaseCellModel.getColModelForText("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
 			cols.add(alternativeNumberCol);
 			
-			ColumnModel emailCol = ColumnModel.getColText("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
+			BaseColumnModel emailCol = BaseCellModel.getColModelForText("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
 			cols.add(emailCol);
 		}
 		
