@@ -35,12 +35,12 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 
 	@Command(value = "saveClose")
 	public void saveClose() throws IOException {
-		
+
 	}
 
 	@Command(value = "submitApplication")
 	public void submitApplication() throws IOException {
-		
+
 	}
 
 	/**
@@ -49,16 +49,16 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 	public void setNavTab(NavTab navTab) {
 		this.navTab = navTab;
 	}
-	
+
 	public boolean isActiveFirstTab() {
 		return navTab.isActiveFirstTab();
 	}
-	
+
 	public boolean isActiveEndTab() {
 		return navTab.isActiveEndTab();
 	}
-	
+
 	public boolean isActiveMidTab() {
-		return navTab.isActiveMidTab(); 
+		return navTab.isActiveMidTab();
 	}
 }

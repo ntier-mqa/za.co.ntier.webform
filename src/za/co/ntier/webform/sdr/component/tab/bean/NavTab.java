@@ -7,7 +7,7 @@ import org.zkoss.zul.event.ListDataListener;
 
 public class NavTab implements ListDataListener{
 	private ListModelList<NavTabPanel> tabPanelModel;
-	
+
 	public NavTab() {
 		tabPanelModel = new ListModelList<NavTabPanel>();
 		tabPanelModel.addListDataListener(this);
@@ -28,10 +28,10 @@ public class NavTab implements ListDataListener{
 			}
 		}
 	}
-	
-	
+
+
 	private int activeTabIndex;
-	
+
 	public void doNextTab() {
 		if (activeTabIndex == getTabPanelModel().size() - 1
 				|| getTabPanelModel().size() == 0) {
@@ -40,7 +40,7 @@ public class NavTab implements ListDataListener{
 			setActiveTab(activeTabIndex + 1, activeTabIndex);
 		}
 	}
-	
+
 	private void setActiveTab(int newActiveIndex, int oldActiveIndex) {
 		getTabPanelModel().clearSelection();
 		NavTabPanel oldActiveTabPanel = getTabPanelModel().get(oldActiveIndex);
@@ -61,30 +61,30 @@ public class NavTab implements ListDataListener{
 		}else {
 			setActiveTab(activeTabIndex - 1, activeTabIndex);
 		}
-		
+
 	}
-	
+
 	public boolean isActiveFirstTab() {
 		if (getTabPanelModel().size() == 0)
 			return false;
-		
+
 		return activeTabIndex == 0;
 	}
-	
+
 	public boolean isActiveEndTab() {
 		if (getTabPanelModel().size() == 0)
 			return false;
-		
+
 		return activeTabIndex == getTabPanelModel().size() - 1;
 	}
-	
+
 	public boolean isActiveMidTab() {
 		if (getTabPanelModel().size() == 1)
 			return true;
-		
+
 		if (getTabPanelModel().size() == 0)
 			return false;
-		
-		return 0 < activeTabIndex && activeTabIndex < getTabPanelModel().size() - 1; 
+
+		return 0 < activeTabIndex && activeTabIndex < getTabPanelModel().size() - 1;
 	}
 }

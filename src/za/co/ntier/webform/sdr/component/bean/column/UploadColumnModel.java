@@ -25,21 +25,21 @@ public class UploadColumnModel extends BaseColumnModel {
 	}
 
 	private String btText;
-	
+
 	public UploadColumnModel(String colTitle) {
 		super(colTitle);
 	}
-			
+
 	public UploadColumnModel(String colTitle, String daoProperty, String daoPropertyFileName, String btText) {
 		super(colTitle, daoProperty);
 		this.daoPropertyFileName = daoPropertyFileName;
 		this.btText = btText;
 	}
-	
+
 	@Override
 	public BaseCellModel getCellModel(TableModel tableModel, RowModel rowModel) {
 		return new UploadCellModel(tableModel, rowModel);
 	}
 
-	
+
 }

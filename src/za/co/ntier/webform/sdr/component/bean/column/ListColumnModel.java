@@ -18,7 +18,7 @@ public class ListColumnModel<T> extends BaseColumnModel {
 	public ListColumnModel(String colTitle, String daoProperty) {
 		super(colTitle, daoProperty);
 	}
-	
+
 	public ListColumnModel(String colTitle, String daoProperty, List<T> dataProvider) {
 		super(colTitle, daoProperty);
 		setDataProvider(dataProvider);

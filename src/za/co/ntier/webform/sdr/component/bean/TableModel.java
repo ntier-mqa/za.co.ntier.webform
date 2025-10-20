@@ -34,10 +34,10 @@ public class TableModel {
 	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
 	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
 	private String sclass = "";
-	
+
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
-	
+
 	public static <T extends TableModel> T getTableBean(Class<T> clazz, List<BaseColumnModel> columnInfos,
 			boolean isShowTotal){
 
@@ -98,35 +98,35 @@ public class TableModel {
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
-	public void cmdValueChanged (Map<BaseColumnModel, Object> row, 
+	public void cmdValueChanged (Map<BaseColumnModel, Object> row,
 			BaseColumnModel col,
 			InputEvent event){
 		IValueChange valueChange = (IValueChange)row.get(col);
 		if (valueChange != null)
 			valueChange.cmdValueChange(event);
 	}
-	
+
 	/**
 	 * handle event when use choose a area
 	 * @param row
 	 * @param col
 	 * @param event
 	 */
-	public void cmdSelected (Map<BaseColumnModel, Object> row, 
+	public void cmdSelected (Map<BaseColumnModel, Object> row,
 			BaseColumnModel col,
 			SelectEvent<?, ?> event){
-		
+
 		ISelectable selectable = (ISelectable)row.get(col);
 		if (event.getSelectedObjects().isEmpty())
 			selectable.cmdSelected(null);
 		else
 			selectable.cmdSelected(event.getSelectedObjects().iterator().next());
 	}
-	
+
 	public RowModel createDetailRow() {
 		return createDetailRow(null);
 	}
-	
+
 	public RowModel createDetailRow(Map<BaseColumnModel, Object> rowTitle) {
 
 		RowModel row = new RowModel(this);
@@ -135,13 +135,13 @@ public class TableModel {
 			BaseCellModel cellModel = columnInfo.getCellModel(this, row);
 			row.put(columnInfo, cellModel);
 		}
-		
+
 		if (rowTitle != null) {
 			for (Entry<BaseColumnModel, Object> colTile : rowTitle.entrySet()) {
 				TableModel.setCellValue(row, colTile.getKey(), colTile.getValue());
 			}
 		}
-		
+
 		if (decoratorCell != null) {
 			decoratorCell.accept(row);
 		}
@@ -151,7 +151,7 @@ public class TableModel {
 	}
 
 	private Consumer<RowModel> decoratorCell;
-	
+
 	public Consumer<RowModel> getDecoratorCell() {
 		return decoratorCell;
 	}
@@ -206,10 +206,10 @@ public class TableModel {
 	public RowModel getRow() {
 		if (rows == null || rows.size() == 0)
 			return null;
-		
+
 		return rows.get(0);
 	}
-	
+
 	/**
 	 * @return the rows
 	 */
@@ -301,7 +301,7 @@ public class TableModel {
 		for (BaseColumnModel colTotal : getColumnInfos()) {
 			if (colTotal.getExpression() != null) {
 				Integer value = colTotal.getExpression().apply(row);
-				BaseCellModel expressionLable = (BaseCellModel) row.get(colTotal);
+				BaseCellModel expressionLable = row.get(colTotal);
 				if (value == null) {
 					expressionLable.setValue(null);
 				}else {
@@ -377,7 +377,7 @@ public class TableModel {
 	 */
 	public void setTotalRow(Map<BaseColumnModel, Object> totalRow) {
 		this.totalRow = totalRow;
-	}	
+	}
 
 
 	public void uploadFile(Map<BaseColumnModel, Object> row, BaseColumnModel col, UploadEvent event) {
@@ -442,12 +442,12 @@ public class TableModel {
 
 	public void fillDaoData (Collection<BaseColumnModel> cols, RowModel row, Object dao){
 		for (BaseColumnModel col:cols) {
-			BaseCellModel cellModel = (BaseCellModel) row.get(col);
+			BaseCellModel cellModel = row.get(col);
 			cellModel.setValueToDao(dao);
 		}
-			
-				//Object cellValueObj = null;
-				/*if (col.getDataType() == DataType.PositiveNumber) {
+
+		//Object cellValueObj = null;
+		/*if (col.getDataType() == DataType.PositiveNumber) {
 					Entry<Integer, Boolean>  entryIntObj = getCellValue(row, col);
 					if (col.isCalTotal())
 						total += entryIntObj.getKey();
@@ -518,9 +518,9 @@ public class TableModel {
 
 					setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
 				}
-			
+
 		}*/
-		
+
 		// null mean don't need to save po (no properties for save or empty input data)
 		// false mean input some item
 		// true mean input full
@@ -529,20 +529,20 @@ public class TableModel {
 
 	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
 		for (RowModel row : getRows()) {
-			PO po = (PO) row.getData();
+			PO po = row.getData();
 			if (po == null) {
 				applicationForm.set_TrxName(trxName); // important
 				po = poSupplier.apply(this, applicationForm);
 			}
-			
+
 			if (row.inputState() == RowModel.INPUT_STATE_EMPTY) {
 				// delete row record if user cleared all input for this row
 				po.delete(true);
 			}else if (row.inputState() == RowModel.INPUT_STATE_FULL) {
-				
+
 				po.saveEx(trxName);
 				row.saveUploadFiles(po, trxName);
-				
+
 			}else {// some required column is missing (validate getting fail)
 				throw new AdempiereException("Please input full required data for all columns in the row or clear all data to remove the row (validate is fail).");
 			}
@@ -560,7 +560,7 @@ public class TableModel {
 	public static void setCellValue(RowModel row, BaseColumnModel col, Object value) {
 		BaseCellModel valueObj = row.get(col);
 		log.info(String.format("Set cell value: row=%s, col=%s, cell datatype=%s, value=%s", row, col.getTitle(), valueObj.getClass().getName(), value));
-		
+
 		valueObj.setCellValue(value);
 	}
 
@@ -599,7 +599,7 @@ public class TableModel {
 			init(applicationForm, savedDatas, rowTitles, rowTitles.get(0).keySet());
 	}
 
-	public void init(X_ZZ_Application_Form applicationForm, 
+	public void init(X_ZZ_Application_Form applicationForm,
 			List<PO> savedDatas, List<Map<BaseColumnModel, Object>> rowTitles, Collection<BaseColumnModel> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)

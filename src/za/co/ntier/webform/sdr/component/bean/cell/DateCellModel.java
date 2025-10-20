@@ -28,16 +28,16 @@ public class DateCellModel extends BaseCellModel {
 	public void setLocalDate(LocalDate localDate) {
 		this.localDate = localDate;
 	}
-	
+
 	public Timestamp getTimestamp() {
 		if(localDate == null) {
 			return null;
 		}else {
 			return Timestamp.valueOf(localDate.atStartOfDay());
 		}
-		
+
 	}
-	
+
 	public void setLocalDate(Timestamp timestamp) {
 		if(timestamp == null) {
 			this.localDate = null;
@@ -45,7 +45,7 @@ public class DateCellModel extends BaseCellModel {
 			this.localDate = timestamp.toLocalDateTime().toLocalDate();
 		}
 	}
-	
+
 
 	public static BaseColumnModel getDateColumnModel(String title, String daoPropertyName) {
 		return BaseCellModel.getColModel(DateCellModel.class, title, daoPropertyName);

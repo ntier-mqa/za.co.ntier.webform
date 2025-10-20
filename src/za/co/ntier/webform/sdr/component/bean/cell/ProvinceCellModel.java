@@ -14,10 +14,10 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
-	
+
 	public ProvinceCellModel(TableModel tableModel, RowModel rowModel){
 		super(tableModel, rowModel);
-		setModel(new ListModelList<MRegion>());		
+		setModel(new ListModelList<MRegion>());
 	}
 
 	@Override
@@ -27,18 +27,18 @@ public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 				return;
 				// do nothing
 			}
-			
+
 			AreaCellModel areaCellModel = getCellModel(AreaCellModel.class);
 			if (areaCellModel != null) {
 				List<MCity> areaFilters = new ArrayList<>();
 
 				MasterUtil.getCities().stream().filter(city -> city.getC_Region_ID() == selectedProvince.getC_Region_ID())
-						.limit(MasterUtil.limitItem).forEach(city -> {
-							areaFilters.add(city);
-						});
+				.limit(MasterUtil.limitItem).forEach(city -> {
+					areaFilters.add(city);
+				});
 				areaCellModel.setDataProvider(areaFilters);
 			}
-			
+
 			PostalCellModel postalCellModel = getCellModel(PostalCellModel.class);
 			if (postalCellModel != null && areaCellModel != null) {
 				if (areaCellModel.isSelected()) {
@@ -46,31 +46,31 @@ public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 				}else {
 					postalCellModel.setValue(null);
 				}
-					
+
 				BindUtils.postNotifyChange(postalCellModel, "value");
 			}
-			
+
 		}
 	}
-	
+
 
 	@Override
 	public void setSelectedItemById(Object regionId) {
 		getModel().clearSelection();
 		if (regionId == null || (int)regionId == 0) {
-			;
+
 		}else {
 			//for(MCity area : areaData.getDataProvider()) {
 			for(MRegion province : MasterUtil.getRegions()) {// search on all cities, not only in data provider
 				if (province.getC_Region_ID() == (int)regionId) {
 					if (!getModel().contains(province))
 						getModel().add(province);
-					
+
 					getModel().addToSelection(province);
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 	public String getDisplayText(MRegion item) {
 		return item.getName();
 	}
-	
+
 	public static ListColumnModel<MRegion> getColumnModel(String title, String daoPropertyName) {
 		ListColumnModel<MRegion> colProvinceModel = new ListColumnModel<MRegion>(title);
 		colProvinceModel.setDaoPropertyName(daoPropertyName);

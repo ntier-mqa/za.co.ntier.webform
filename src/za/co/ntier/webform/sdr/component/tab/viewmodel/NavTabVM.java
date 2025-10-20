@@ -22,6 +22,6 @@ public class NavTabVM extends ComponentVMWrapper<NavTab> {
 	public void setActiveTabIndex(int activeTabIndex) {
 		this.activeTabIndex = activeTabIndex;
 	}
-	
-	
+
+
 }

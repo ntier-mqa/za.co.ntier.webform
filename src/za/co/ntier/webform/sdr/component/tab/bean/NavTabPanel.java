@@ -6,16 +6,16 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class NavTabPanel {
 	private NavTab parent;
-	
+
 	public boolean isDisable() {
 		return !parent.getTabPanelModel().isSelected(this);
 	}
-	
+
 	public NavTabPanel(NavTab parent) {
 		this.parent = parent;
 		parent.getTabPanelModel().add(this);
 	}
-	
+
 	private String tabTitle;
 	private ListModelList<TableModel> compModel = new ListModelList<TableModel>();
 

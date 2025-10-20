@@ -11,12 +11,12 @@ import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 
 public class AreaCellModel extends AbstractListCellModel<MCity>{
-	
+
 	public AreaCellModel(TableModel tableModel, RowModel rowModel){
 		super(tableModel, rowModel);
 		setModel(new ListModelList<MCity>());
 	}
-	
+
 	@Override
 	public void cmdSelectedHandle(MCity selectedArea) {
 		if (getAnnexure() != null && getRow() != null) {
@@ -27,32 +27,32 @@ public class AreaCellModel extends AbstractListCellModel<MCity>{
 				}else {
 					postalCellModel.setValue(selectedArea.getPostal());
 				}
-					
+
 				BindUtils.postNotifyChange(postalCellModel, "value");
 			}
-		
+
 			updateProvinceSelected();
 		}
 	}
-	
+
 	@Override
 	public void setSelectedItemById(Object cityId) {
 		getModel().clearSelection();
 		if (cityId == null || (int)cityId == 0) {
-			;
+
 		}else {
 			//for(MCity area : areaData.getDataProvider()) {
 			for(MCity area : MasterUtil.getCities()) {// search on all cities, not only in data provider
 				if (area.getC_City_ID() == (int)cityId) {
 					if (!getModel().contains(area))
 						getModel().add(area);
-					
+
 					getModel().addToSelection(area);
 				}
 			}
 		}
 	}
-	
+
 	public void updateProvinceSelected() {
 		ProvinceCellModel provinceCellModel = getCellModel(ProvinceCellModel.class);
 		if (provinceCellModel != null) {
@@ -63,7 +63,7 @@ public class AreaCellModel extends AbstractListCellModel<MCity>{
 			}
 		}
 	}
-	
+
 	@Override
 	public int getSelectedID() {
 		if (getSelectedItem() == null)
@@ -76,10 +76,10 @@ public class AreaCellModel extends AbstractListCellModel<MCity>{
 	public String getDisplayText(MCity item) {
 		return item.getName();
 	}
-	
+
 	public static ListColumnModel<MCity> getColumnModel(String title, String daoPropertyName) {
 		ListColumnModel<MCity> colAreaModel = new ListColumnModel<MCity>(title);
-		colAreaModel.setDaoPropertyName(daoPropertyName); 
+		colAreaModel.setDaoPropertyName(daoPropertyName);
 		colAreaModel.setCellModelSupplier((tableModel, rowModel)->{
 			return new AreaCellModel(tableModel, rowModel);
 		});
@@ -87,5 +87,5 @@ public class AreaCellModel extends AbstractListCellModel<MCity>{
 		return colAreaModel;
 	}
 
-	
+
 }

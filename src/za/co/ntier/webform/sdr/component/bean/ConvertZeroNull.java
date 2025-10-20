@@ -17,18 +17,18 @@ public class ConvertZeroNull implements Converter<Integer, Integer, Component>, 
 	public Integer coerceToUi(Integer beanProp, Component component, BindContext ctx) {
 		if (beanProp != null && beanProp.equals(0))
 			return null;
-		
+
 		return beanProp;
 	}
 
 	/**
-	 * when input 0 it mean no input so return null 
+	 * when input 0 it mean no input so return null
 	 */
 	@Override
 	public Integer coerceToBean(Integer compAttr, Component component, BindContext ctx) {
 		if (compAttr != null && compAttr.equals(0))
 			return null;
-		
+
 		return compAttr;
 	}
 

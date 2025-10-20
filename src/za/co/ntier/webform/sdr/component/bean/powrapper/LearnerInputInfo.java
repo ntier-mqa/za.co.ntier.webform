@@ -277,10 +277,10 @@ public class LearnerInputInfo {
 
 		if (StringUtils.isNotBlank(postalCode)) {
 			MasterUtil.getCities().stream()
-					.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
-					.limit(MasterUtil.limitItem).forEach(city -> {
-						areaFilters.add(city);
-					});
+			.filter(city -> city.getPostal() != null && postalCode.equalsIgnoreCase(city.getPostal()))
+			.limit(MasterUtil.limitItem).forEach(city -> {
+				areaFilters.add(city);
+			});
 		}
 
 		areaSelected = null;
@@ -333,5 +333,5 @@ public class LearnerInputInfo {
 		}
 
 	}
-	*/
+	 */
 }

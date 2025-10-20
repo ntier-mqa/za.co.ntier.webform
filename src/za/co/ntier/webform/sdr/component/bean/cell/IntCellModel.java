@@ -10,7 +10,7 @@ public class IntCellModel extends BaseCellModel {
 	public IntCellModel(TableModel annexure, RowModel row) {
 		super(annexure, row);
 	}
-	
+
 	public IntCellModel(TableModel annexure, Integer value) {
 		super(annexure, null);
 		setValue(value);
@@ -19,6 +19,7 @@ public class IntCellModel extends BaseCellModel {
 	/**
 	 * @return the number
 	 */
+	@Override
 	public Integer getValue() {
 		return value;
 	}
@@ -29,7 +30,7 @@ public class IntCellModel extends BaseCellModel {
 	 */
 	public void setValue(Integer value) {
 		this.value = value;
-		
+
 	}
 
 	@Override

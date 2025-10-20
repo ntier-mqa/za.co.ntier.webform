@@ -33,17 +33,17 @@ public class BaseColumnModel {
 
 	// in BaseColumnModel (or BaseColumnModel)
 	private boolean mandatory;
-	
+
 	public BaseColumnModel(String colTitle) {
 		this.title = colTitle;
 	}
-	
-	
+
+
 	public BaseColumnModel(String colTitle, String daoPropertyName) {
 		this (colTitle);
 		setDaoPropertyName(daoPropertyName);
 	}
-	
+
 	public boolean isMandatory() { return mandatory; }
 	public BaseColumnModel setMandatory(boolean mandatory) { this.mandatory = mandatory; return this; }
 	// (optional fluent alias)
@@ -90,7 +90,7 @@ public class BaseColumnModel {
 		return this;
 	}
 
-	
+
 	public BiFunction<TableModel, RowModel, BaseCellModel> getCellModelSupplier() {
 		return cellModelSupplier;
 	}

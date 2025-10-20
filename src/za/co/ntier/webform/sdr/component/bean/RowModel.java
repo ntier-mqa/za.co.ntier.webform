@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.compiere.model.PO;
 
 public class RowModel extends HashMap<BaseColumnModel, BaseCellModel>{
-	
+
 	private TableModel annexure;
 	public RowModel(TableModel annexure) {
 		this.setAnnexure(annexure);
@@ -51,7 +51,7 @@ public class RowModel extends HashMap<BaseColumnModel, BaseCellModel>{
 
 	public void saveUploadFiles(PO po, String trxName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public boolean isMatchingRow(Collection<BaseColumnModel> keyColumns, PO dao) {
@@ -61,6 +61,6 @@ public class RowModel extends HashMap<BaseColumnModel, BaseCellModel>{
 
 	public void fillRowDataFromDao(PO dao) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

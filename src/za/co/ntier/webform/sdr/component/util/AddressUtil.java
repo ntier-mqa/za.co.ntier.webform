@@ -23,54 +23,54 @@ import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 public class AddressUtil {
 	public static TableModel initAddress(ProgramType programType, AddressType addressType, String addressTitle, X_ZZ_Application_Form applicationForm) {
 		List<BaseColumnModel> cols = new ArrayList<>();
-		
+
 		if(showSiteName(programType, addressType)) {
-		    BaseColumnModel siteNameCol = BaseCellModel.getColModelForText("Site Name", I_ZZ_FormContact.COLUMNNAME_ZZ_SideName).required();
-		    cols.add(siteNameCol);
+			BaseColumnModel siteNameCol = BaseCellModel.getColModelForText("Site Name", I_ZZ_FormContact.COLUMNNAME_ZZ_SideName).required();
+			cols.add(siteNameCol);
 		}
-		
+
 		if(showLineAddress(programType, addressType)) {
-		    BaseColumnModel addressCol = BaseCellModel.getColModelForText("Street Name and Number", I_ZZ_FormContact.COLUMNNAME_Address).required();
-		    cols.add(addressCol);
+			BaseColumnModel addressCol = BaseCellModel.getColModelForText("Street Name and Number", I_ZZ_FormContact.COLUMNNAME_Address).required();
+			cols.add(addressCol);
 		}
-		
+
 		if (showPostalAddress(addressType)) {
 			BaseColumnModel addressCol = BaseCellModel.getColModelForText("Post Address", I_ZZ_FormContact.COLUMNNAME_Address).required();
 			cols.add(addressCol);
 		}
-		
+
 		if (showGeographicAddress(addressType)) {
 			BaseColumnModel postalCodeCol = PostalCellModel.getPostalColumnModel(
-						MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_Postal)
-						, I_ZZ_FormContact.COLUMNNAME_Postal
+					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_Postal)
+					, I_ZZ_FormContact.COLUMNNAME_Postal
 					).required();
 			cols.add(postalCodeCol);
-			
+
 			BaseColumnModel areaCol = AreaCellModel.getAreaColumnModel(
-						MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_City_ID)
-						, I_ZZ_FormContact.COLUMNNAME_C_City_ID).required();
+					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_City_ID)
+					, I_ZZ_FormContact.COLUMNNAME_C_City_ID).required();
 			cols.add(areaCol);
-			
+
 			BaseColumnModel provinceCol = ProvinceCellModel.getColumnModel(
-						MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
-						, I_ZZ_FormContact.COLUMNNAME_C_Region_ID).required();
+					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
+					, I_ZZ_FormContact.COLUMNNAME_C_Region_ID).required();
 			cols.add(provinceCol);
 		}
-		
+
 		if (showContact(addressType)) {
 			BaseColumnModel nameSurnameCol = BaseCellModel.getColModelForText("Name and Surname", I_ZZ_FormContact.COLUMNNAME_ContactName).required();
 			cols.add(nameSurnameCol);
-			
+
 			BaseColumnModel telNumberCol = BaseCellModel.getColModelForText("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
 			cols.add(telNumberCol);
-			
+
 			BaseColumnModel alternativeNumberCol = BaseCellModel.getColModelForText("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
 			cols.add(alternativeNumberCol);
-			
+
 			BaseColumnModel emailCol = BaseCellModel.getColModelForText("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
 			cols.add(emailCol);
 		}
-		
+
 		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
 		addressFormBean.setSectionHeader(addressTitle);
 		addressFormBean.setDataType(addressType.toString());
@@ -84,7 +84,7 @@ public class AddressUtil {
 
 		List<PO> savedDaos = null;
 		if(applicationForm != null) {
-			String where = String.format("%s = ? AND %s = ?", 
+			String where = String.format("%s = ? AND %s = ?",
 					I_ZZ_FormContact.COLUMNNAME_ZZ_Application_Form_ID
 					, I_ZZ_FormContact.COLUMNNAME_ZZ_ContactType);
 
@@ -97,32 +97,32 @@ public class AddressUtil {
 		addressFormBean.init(applicationForm, savedDaos);
 		return addressFormBean;
 	}
-	
+
 	private static boolean showSiteName(ProgramType programType, AddressType addressType) {
 		return (programType != null && programType.isShowAddressSiteField())  || addressType == AddressType.VACATION;
 	}
-	
+
 	private static boolean showLineAddress(ProgramType programType, AddressType addressType) {
 		return addressType == AddressType.MAIN || addressType == AddressType.MAIN_ALTER
 				|| addressType == AddressType.PHYSICAL || addressType == AddressType.VACATION;
 	}
-	
+
 	private static boolean showPostalAddress(AddressType addressType) {
 		return addressType == AddressType.POSTAL;
 	}
-	
+
 	private static boolean showGeographicAddress(AddressType addressType) {
 		return addressType == AddressType.MAIN || addressType == AddressType.MAIN_ALTER
 				|| addressType == AddressType.PHYSICAL || addressType == AddressType.POSTAL
 				|| addressType == AddressType.VACATION;
 	}
-	
+
 	private static boolean showContact(AddressType addressType) {
 		return addressType == AddressType.MAIN || addressType == AddressType.MAIN_ALTER
 				|| addressType == AddressType.ORG || addressType == AddressType.ORG_ALTER
 				|| addressType == AddressType.VACATION;
 	}
-	
+
 	private static String getAddressTitle(ProgramType programType, AddressType addressType) {
 		return addressType.getAddressTitle(programType, addressType == AddressType.MAIN_ALTER);
 	}

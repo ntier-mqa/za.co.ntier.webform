@@ -6,9 +6,9 @@ public class ConvertUtil {
 	public static ConvertBlankNull getConvertBlankNull() {
 		return convertBlankNull;
 	}
-	
+
 	public static ConvertZeroNull getConvertZeroNull() {
 		return convertZeroNull;
 	}
-	
+
 }

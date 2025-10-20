@@ -17,7 +17,7 @@ public class StringListCellModel extends AbstractListCellModel<String> {
 
 	@Override
 	public void cmdSelectedHandle(String selected) {
-		
+
 	}
 
 	@Override
@@ -27,14 +27,14 @@ public class StringListCellModel extends AbstractListCellModel<String> {
 
 	@Override
 	public void setSelectedItemById(Object cityId) {
-		
+
 	}
 
 	@Override
 	public String getDisplayText(String item) {
 		return item;
 	}
-	
+
 
 	public static ListColumnModel<String> getColumnModel(String title, List<String> provider) {
 		ListColumnModel<String> colStringModel = new ListColumnModel<String>(title);

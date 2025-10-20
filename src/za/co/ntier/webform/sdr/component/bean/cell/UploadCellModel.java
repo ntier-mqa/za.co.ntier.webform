@@ -6,33 +6,33 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.UploadColumnModel;
 
 public class UploadCellModel extends BaseCellModel {
-    public UploadCellModel(TableModel annexure, RowModel row) {
+	public UploadCellModel(TableModel annexure, RowModel row) {
 		super(annexure, row);
 	}
 
 	private String fileName;
-    private byte[] bytes;     // <- in-memory payload (no disk)
+	private byte[] bytes;     // <- in-memory payload (no disk)
 
-    public String getFileName() { return fileName; }
-    public void setFileName(String fileName) { this.fileName = fileName; }
+	public String getFileName() { return fileName; }
+	public void setFileName(String fileName) { this.fileName = fileName; }
 
-    public byte[] getBytes() { return bytes; }
-    public void setBytes(byte[] bytes) { this.bytes = bytes; }
+	public byte[] getBytes() { return bytes; }
+	public void setBytes(byte[] bytes) { this.bytes = bytes; }
 
-    // (optional) convenience
-    public boolean hasBytes() { return bytes != null && bytes.length > 0; }
-	
-    @Override
+	// (optional) convenience
+	public boolean hasBytes() { return bytes != null && bytes.length > 0; }
+
+	@Override
 	public int getCellType() {
 		return BTUPLOAD_CELL;
 	}
-    
-    public static UploadColumnModel getUploadColumnModel(String title, String daoPropertyName, String daoPropertyFileName, String btText) {
+
+	public static UploadColumnModel getUploadColumnModel(String title, String daoPropertyName, String daoPropertyFileName, String btText) {
 		UploadColumnModel uploadColumnModel = BaseCellModel.getColModel(UploadColumnModel.class, UploadCellModel.class, title);
 		uploadColumnModel.setDaoPropertyName(daoPropertyName);
 		uploadColumnModel.setDaoPropertyFileName(daoPropertyFileName);
 		uploadColumnModel.setBtText(btText);
-		
+
 		return uploadColumnModel;
 	}
 }
