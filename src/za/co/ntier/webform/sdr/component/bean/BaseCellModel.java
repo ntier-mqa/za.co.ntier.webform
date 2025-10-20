@@ -3,7 +3,7 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class BaseCellModel {
+public class BaseCellModel implements IValueChange {
 	private TableModel tableModel;
 	private RowModel rowModel;
 	private Object value;

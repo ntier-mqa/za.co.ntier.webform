@@ -8,6 +8,8 @@ import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
+import za.co.ntier.webform.form.bean.AddressType;
+import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
 import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
@@ -18,6 +20,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.StringListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
+import za.co.ntier.webform.sdr.component.util.AddressUtil;
 
 public class MainSrdFormVM {
 	private MenuContextInfo menuContextInfo;
@@ -45,6 +48,10 @@ public class MainSrdFormVM {
 		contactDetailTab.setTabTitle("Contact Details");
 		// new component
 		contactDetailTab.getCompModel().add(getContactDetailComp());
+		
+		//=>TEST ONLY
+		contactDetailTab.getCompModel()
+				.add(AddressUtil.initAddress(ProgramType.ARTISAN_DEV, AddressType.MAIN, "Just For Test", null));
 		
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
 		addressDetailTab.setTabTitle("Address Details");
