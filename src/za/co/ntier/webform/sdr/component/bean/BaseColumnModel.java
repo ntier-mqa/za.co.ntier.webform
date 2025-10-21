@@ -1,9 +1,9 @@
 package za.co.ntier.webform.sdr.component.bean;
 
 import java.beans.Introspector;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
 import org.apache.commons.lang3.tuple.Triple;
 
 /**

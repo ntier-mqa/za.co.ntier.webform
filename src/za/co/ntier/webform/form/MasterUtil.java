@@ -9,10 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_AD_Column;
@@ -32,16 +30,11 @@ import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
 import org.compiere.util.ValueNamePair;
-import org.idempiere.cache.ImmutablePOCache;
 import org.zkoss.util.media.Media;
-
-import com.google.common.cache.Cache;
 
 import za.co.ntier.api.model.I_ZZAnnexure;
 import za.co.ntier.api.model.I_ZZSubAnnex;
-import za.co.ntier.api.model.I_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZAnnexure;
 import za.co.ntier.api.model.X_ZZSubAnnex;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
