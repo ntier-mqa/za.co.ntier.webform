@@ -2,7 +2,7 @@
 
 <?import za.co.ntier.webform.sdr.component.bean.ConvertUtil ?>
 <?import org.adempiere.webui.AdempiereWebUI  ?>
-<?import za.co.ntier.webform.sdr.component.bean.BaseCellModel ?>
+<?import za.co.ntier.webform.sdr.component.bean.CellModel ?>
 
 
 <nodom
@@ -36,7 +36,7 @@
           <!-- title part, show description, error message -->
           <div sclass="cell-title">
             <!-- main label -->
-            <label sclass="label" value="@init(col.title)" />
+            <label sclass="label" visible="@init(col.showTitle)" value="@init(col.title)" />
             <!-- required mark -->
             <label sclass="required" value="*"
               visible="@init(col.mandatory)" />
@@ -51,14 +51,14 @@
             
             <!-- textbox -->
             <textbox
-              if="${ vmDataFormView.component.row[col].cellType eq BaseCellModel.TEXT_CELL }"
+              if="${ vmDataFormView.component.row[col].cellType eq CellModel.TEXT_CELL }"
               value="@bind(vmDataFormView.component.row[col].value)
 			  		  @converter(ConvertUtil.getConvertBlankNull())" 
               onChange="@command('cmdValueChanged', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"/>
             
             <!-- list - Area - province -->
             <listbox
-              if="${ vmDataFormView.component.row[col].cellType eq BaseCellModel.LIST_CELL }"
+              if="${ vmDataFormView.component.row[col].cellType eq CellModel.LIST_CELL }"
               mold="select"
               model="@bind(vmDataFormView.component.row[col].model)"
               onSelect="@command('cmdSelected', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)">
@@ -69,11 +69,11 @@
             </listbox>
             
             <!-- label -->
-            <label if="${vmDataFormView.component.row[col].cellType eq BaseCellModel.LABEL_CELL}"
+            <label if="${vmDataFormView.component.row[col].cellType eq CellModel.LABEL_CELL}"
               value="@load(vmDataFormView.component.row[col].value)" />
             
             <!-- radiogroup -->
-            <radiogroup if="${vmDataFormView.component.row[col].cellType eq BaseCellModel.RADIO_CELL}"
+            <radiogroup if="${vmDataFormView.component.row[col].cellType eq CellModel.RADIO_CELL}"
               selectedItem="@bind(vmDataFormView.component.row[col])"
               onCheck="@command('notifyProgramComplete')">
               <radio label="YES" value="Y" />
@@ -81,16 +81,16 @@
             </radiogroup>
 
             <!-- PositiveNumber -->
-            <intbox if="${vmDataFormView.component.row[col].cellType eq BaseCellModel.POSITIVE_NUM_CELL}"
+            <intbox if="${vmDataFormView.component.row[col].cellType eq CellModel.POSITIVE_NUM_CELL}"
               value="@bind(vmDataFormView.component.row[col].value)
 			             @converter(ConvertUtil.getConvertZeroNull())" />
             
             <!-- FileUpload -->
-            <div if="${vmDataFormView.component.row[col].cellType eq BaseCellModel.BTUPLOAD_CELL}" 
+            <div if="${vmDataFormView.component.row[col].cellType eq CellModel.BTUPLOAD_CELL}" 
               sclass="fileUploadContent">
               <fileupload
                 iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
-                label="@load(col.btText)"
+                label="@load(vmDataFormView.component.row[col].btText)"
                 onUpload="@command('uploadFile', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"
                 upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
               <label
@@ -98,14 +98,14 @@
             </div>
 
             <!-- Checkbox -->
-            <div if="${vmDataFormView.component.row[col].cellType eq BaseCellModel.CHECK_CELL}" 
+            <div if="${vmDataFormView.component.row[col].cellType eq CellModel.CHECK_CELL}" 
               sclass="checkboxContent">
               <checkbox
                 label="@init(vmDataFormView.component.row[col].title)"/>
             </div>
             
             <!-- Date -->
-            <datebox if="${vmDataFormView.component.row[col].cellType eq BaseCellModel.DATE_CELL}"
+            <datebox if="${vmDataFormView.component.row[col].cellType eq CellModel.DATE_CELL}"
               format="yyyy/MM/dd" placeholder="yyyy/MM/dd"
               valueInLocalDate="@bind(vmDataFormView.component.row[col].localDate)"
               onChange="@command('notifyProgramComplete')" />

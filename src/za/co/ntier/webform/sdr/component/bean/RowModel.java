@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import org.compiere.model.PO;
 
-public class RowModel extends HashMap<BaseColumnModel, BaseCellModel>{
+public class RowModel extends HashMap<ColumnModel, CellModel>{
 
 	private TableModel annexure;
 	public RowModel(TableModel annexure) {
@@ -54,7 +54,7 @@ public class RowModel extends HashMap<BaseColumnModel, BaseCellModel>{
 
 	}
 
-	public boolean isMatchingRow(Collection<BaseColumnModel> keyColumns, PO dao) {
+	public boolean isMatchingRow(Collection<ColumnModel> keyColumns, PO dao) {
 		// TODO Auto-generated method stub
 		return false;
 	}

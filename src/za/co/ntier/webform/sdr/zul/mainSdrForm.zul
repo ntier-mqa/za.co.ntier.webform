@@ -17,7 +17,7 @@
   
   <include
     component="@init(vm.names)"
-    menuContextInfo="@init(vmNavTab.menuContextInfo)"
+    menuContextInfo="@init(vm.menuContextInfo)"
     src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
   
   

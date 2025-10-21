@@ -9,7 +9,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 
-public class AreaCellModel extends AbstractListCellModel<MCity>{
+public class AreaCellModel extends ListCellModel<MCity>{
 
 	public AreaCellModel(TableModel tableModel, RowModel rowModel, ListColumnModel<MCity> colModel) {
 		super(tableModel, rowModel, colModel);
@@ -17,8 +17,8 @@ public class AreaCellModel extends AbstractListCellModel<MCity>{
 
 	@Override
 	public void cmdSelectedHandle(MCity selectedArea) {
-		if (getAnnexure() != null && getRow() != null) {
-			PostalCellModel postalCellModel = getCellModel(PostalCellModel.class);
+		if (getTableModel() != null && getRowModel() != null) {
+			PostalCellModel postalCellModel = getCellModelByType(PostalCellModel.class);
 			if (postalCellModel != null) {
 				if (selectedArea == null) {
 					postalCellModel.setValue(null);
@@ -52,7 +52,7 @@ public class AreaCellModel extends AbstractListCellModel<MCity>{
 	}
 
 	public void updateProvinceSelected() {
-		ProvinceCellModel provinceCellModel = getCellModel(ProvinceCellModel.class);
+		ProvinceCellModel provinceCellModel = getCellModelByType(ProvinceCellModel.class);
 		if (provinceCellModel != null) {
 			if (getModel().isSelectionEmpty()) {
 				provinceCellModel.setSelectedItemById(null);
@@ -75,14 +75,11 @@ public class AreaCellModel extends AbstractListCellModel<MCity>{
 		return item.getName();
 	}
 
-	public static ListColumnModel<MCity> getColumnModel(String title, String daoPropertyName) {
-		ListColumnModel<MCity> colAreaModel = new ListColumnModel<MCity>(title);
-		colAreaModel.setDaoPropertyName(daoPropertyName);
-		colAreaModel.setCellModelSupplier((models)->{
-			return new AreaCellModel(models.getLeft(), models.getMiddle(), (ListColumnModel<MCity>)models.getRight());
-		});
-		colAreaModel.setDataProvider(MasterUtil.getInitCities());
-		return colAreaModel;
+	public static ListColumnModel<MCity> getAreaColumnModel(String title, String daoPropertyName) {
+	
+		@SuppressWarnings("unchecked")
+		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, AreaCellModel.class, title, daoPropertyName, MasterUtil.getInitCities(), null);
+		return listColumnModel;
 	}
 
 

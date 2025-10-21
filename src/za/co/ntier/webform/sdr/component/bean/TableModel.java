@@ -38,7 +38,7 @@ public class TableModel {
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
 
-	public static <T extends TableModel> T getTableBean(Class<T> clazz, List<BaseColumnModel> columnInfos,
+	public static <T extends TableModel> T getTableBean(Class<T> clazz, List<ColumnModel> columnInfos,
 			boolean isShowTotal){
 
 		T tableModel;
@@ -56,8 +56,8 @@ public class TableModel {
 		tableModel.setRows(rows);
 
 		if (isShowTotal) {
-			Map<BaseColumnModel, Object> totalRow = new HashMap<>();
-			for (BaseColumnModel columnInfo : columnInfos) {
+			Map<ColumnModel, Object> totalRow = new HashMap<>();
+			for (ColumnModel columnInfo : columnInfos) {
 				if (columnInfo.isCalTotal()) {
 					totalRow.put(columnInfo, new IntCellModel(tableModel, 0));
 				} else {
@@ -74,7 +74,7 @@ public class TableModel {
 		return tableModel;
 	}
 
-	private List<BaseColumnModel> baseColumnModels;
+	private List<ColumnModel> columnModels;
 	private BiFunction<TableModel, X_ZZ_Application_Form, PO> poSupplier;
 	private List<RowModel> rows;
 	private String sectionHeader;
@@ -91,15 +91,15 @@ public class TableModel {
 
 	private String tableTitle;
 
-	private Map<BaseColumnModel, Object> totalRow;
+	private Map<ColumnModel, Object> totalRow;
 
 	public void addRow() {
 		createDetailRow();
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
-	public void cmdValueChanged (Map<BaseColumnModel, Object> row,
-			BaseColumnModel col,
+	public void cmdValueChanged (Map<ColumnModel, Object> row,
+			ColumnModel col,
 			InputEvent event){
 		IValueChange valueChange = (IValueChange)row.get(col);
 		if (valueChange != null)
@@ -112,8 +112,8 @@ public class TableModel {
 	 * @param col
 	 * @param event
 	 */
-	public void cmdSelected (Map<BaseColumnModel, Object> row,
-			BaseColumnModel col,
+	public void cmdSelected (Map<ColumnModel, Object> row,
+			ColumnModel col,
 			SelectEvent<?, ?> event){
 
 		ISelectable selectable = (ISelectable)row.get(col);
@@ -127,17 +127,17 @@ public class TableModel {
 		return createDetailRow(null);
 	}
 
-	public RowModel createDetailRow(Map<BaseColumnModel, Object> rowTitle) {
+	public RowModel createDetailRow(Map<ColumnModel, Object> rowTitle) {
 
 		RowModel row = new RowModel(this);
 
-		for (BaseColumnModel columnInfo : baseColumnModels) {
-			BaseCellModel cellModel = columnInfo.getCellModel(this, row);
+		for (ColumnModel columnInfo : columnModels) {
+			CellModel cellModel = columnInfo.getCellModel(this, row);
 			row.put(columnInfo, cellModel);
 		}
 
 		if (rowTitle != null) {
-			for (Entry<BaseColumnModel, Object> colTile : rowTitle.entrySet()) {
+			for (Entry<ColumnModel, Object> colTile : rowTitle.entrySet()) {
 				TableModel.setCellValue(row, colTile.getKey(), colTile.getValue());
 			}
 		}
@@ -167,7 +167,7 @@ public class TableModel {
 		if (!showTotal)
 			return;
 
-		for (BaseColumnModel col:getColumnInfos()) {
+		for (ColumnModel col:getColumnInfos()) {
 			if (col.isCalTotal()) {
 				updateTotalRow(col, false);
 			}
@@ -179,9 +179,9 @@ public class TableModel {
 	 * @param col
 	 * @param needNotify
 	 */
-	public void updateTotalRow(BaseColumnModel col, boolean needNotify) {
+	public void updateTotalRow(ColumnModel col, boolean needNotify) {
 		Integer total = 0;
-		for (Map<BaseColumnModel, BaseCellModel> r : getRows()) {
+		for (Map<ColumnModel, CellModel> r : getRows()) {
 			IntCellModel intCellModel = (IntCellModel)r.get(col);
 			if (intCellModel.getValue() != null) {
 				total += intCellModel.getValue();
@@ -197,10 +197,10 @@ public class TableModel {
 	}
 
 	/**
-	 * @return the baseColumnModels
+	 * @return the columnModels
 	 */
-	public List<BaseColumnModel> getColumnInfos() {
-		return baseColumnModels;
+	public List<ColumnModel> getColumnInfos() {
+		return columnModels;
 	}
 
 	public RowModel getRow() {
@@ -248,7 +248,7 @@ public class TableModel {
 	/**
 	 * @return the totalRow
 	 */
-	public Map<BaseColumnModel, Object> getTotalRow() {
+	public Map<ColumnModel, Object> getTotalRow() {
 		return totalRow;
 	}
 
@@ -266,7 +266,7 @@ public class TableModel {
 		return showTotal;
 	}
 
-	public void numChange(RowModel row, BaseColumnModel col, InputEvent event) {
+	public void numChange(RowModel row, ColumnModel col, InputEvent event) {
 		// update total row
 		if (showTotal && row.get(col) instanceof IntCellModel) {
 			updateTotalRow(col, true);
@@ -280,7 +280,7 @@ public class TableModel {
 
 	public void updateExpressionCol () {
 		boolean hasExpressionCol = false;
-		for (BaseColumnModel colTotal : getColumnInfos()) {
+		for (ColumnModel colTotal : getColumnInfos()) {
 			if (colTotal.getExpression() != null) {
 				hasExpressionCol = true;
 			}
@@ -298,10 +298,10 @@ public class TableModel {
 	 */
 	public void updateExpressionCol (RowModel row, boolean needNotify) {
 		// update expression column
-		for (BaseColumnModel colTotal : getColumnInfos()) {
+		for (ColumnModel colTotal : getColumnInfos()) {
 			if (colTotal.getExpression() != null) {
 				Integer value = colTotal.getExpression().apply(row);
-				BaseCellModel expressionLable = row.get(colTotal);
+				CellModel expressionLable = row.get(colTotal);
 				if (value == null) {
 					expressionLable.setValue(null);
 				}else {
@@ -317,10 +317,10 @@ public class TableModel {
 
 
 	/**
-	 * @param baseColumnModels the baseColumnModels to set
+	 * @param columnModels the columnModels to set
 	 */
-	public void setColumnInfos(List<BaseColumnModel> columnInfos) {
-		this.baseColumnModels = columnInfos;
+	public void setColumnInfos(List<ColumnModel> columnInfos) {
+		this.columnModels = columnInfos;
 	}
 
 	/**
@@ -375,12 +375,12 @@ public class TableModel {
 	/**
 	 * @param totalRow the totalRow to set
 	 */
-	public void setTotalRow(Map<BaseColumnModel, Object> totalRow) {
+	public void setTotalRow(Map<ColumnModel, Object> totalRow) {
 		this.totalRow = totalRow;
 	}
 
 
-	public void uploadFile(Map<BaseColumnModel, Object> row, BaseColumnModel col, UploadEvent event) {
+	public void uploadFile(Map<ColumnModel, Object> row, ColumnModel col, UploadEvent event) {
 		UploadCellModel ud = (UploadCellModel) row.get(col);
 		Media m = event.getMedia();
 
@@ -440,9 +440,9 @@ public class TableModel {
 		this.dataType = dataType;
 	}
 
-	public void fillDaoData (Collection<BaseColumnModel> cols, RowModel row, Object dao){
-		for (BaseColumnModel col:cols) {
-			BaseCellModel cellModel = row.get(col);
+	public void fillDaoData (Collection<ColumnModel> cols, RowModel row, Object dao){
+		for (ColumnModel col:cols) {
+			CellModel cellModel = row.get(col);
 			cellModel.setValueToDao(dao);
 		}
 
@@ -557,8 +557,8 @@ public class TableModel {
 		return 0;
 	}
 
-	public static void setCellValue(RowModel row, BaseColumnModel col, Object value) {
-		BaseCellModel valueObj = row.get(col);
+	public static void setCellValue(RowModel row, ColumnModel col, Object value) {
+		CellModel valueObj = row.get(col);
 		log.info(String.format("Set cell value: row=%s, col=%s, cell datatype=%s, value=%s", row, col.getTitle(), valueObj.getClass().getName(), value));
 
 		valueObj.setCellValue(value);
@@ -592,7 +592,7 @@ public class TableModel {
 		init(applicationForm, savedDatas, null);
 	}
 
-	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<BaseColumnModel, Object>> rowTitles) {
+	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
 		if(rowTitles == null || rowTitles.size() == 0)
 			init(applicationForm, savedDatas, null, null);
 		else
@@ -600,10 +600,10 @@ public class TableModel {
 	}
 
 	public void init(X_ZZ_Application_Form applicationForm,
-			List<PO> savedDatas, List<Map<BaseColumnModel, Object>> rowTitles, Collection<BaseColumnModel> keyColumns) {
+			List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)
-			for (Map<BaseColumnModel, Object> rowTitle : rowTitles) {
+			for (Map<ColumnModel, Object> rowTitle : rowTitles) {
 				createDetailRow(rowTitle);
 			}
 

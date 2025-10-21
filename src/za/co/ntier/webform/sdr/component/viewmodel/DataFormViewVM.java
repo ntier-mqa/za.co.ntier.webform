@@ -12,7 +12,7 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 
 import za.co.ntier.api.model.X_ZZ_Application_Form;
-import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 @Init(superclass = true)
@@ -23,8 +23,8 @@ public class DataFormViewVM extends BaseComponentVM<TableModel>{
 	@Command
 	public void cmdValueChanged(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<BaseColumnModel, Object> row
-			, @BindingParam("col") BaseColumnModel col
+			, @BindingParam("row") Map<ColumnModel, Object> row
+			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
 		annexure.cmdValueChanged(row, col, event);
 		//notifyProgramComplete();
@@ -33,8 +33,8 @@ public class DataFormViewVM extends BaseComponentVM<TableModel>{
 	@Command
 	public void cmdSelected(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<BaseColumnModel, Object> row
-			, @BindingParam("col") BaseColumnModel col
+			, @BindingParam("row") Map<ColumnModel, Object> row
+			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
 		annexure.cmdSelected(row, col, event);
 	}

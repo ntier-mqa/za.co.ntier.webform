@@ -5,19 +5,22 @@ import java.util.List;
 import org.compiere.model.MCity;
 
 import za.co.ntier.webform.form.MasterUtil;
-import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
-import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelInfo;
+import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelParams;
 
-public class PostalCellModel extends BaseCellModel{
-	public PostalCellModel(TableModel tableModel, RowModel rowModel, BaseColumnModel colModel) {
-		super(tableModel, rowModel, colModel, BaseCellModel.TEXT_CELL);
+public class PostalCellModel extends CellModel{
+	public PostalCellModel(TableModel tableModel, RowModel rowModel, ColumnModel colModel) {
+		super(tableModel, rowModel, colModel);
+		setCellType(TEXT_CELL);
 	}
 
 	@Override
 	public void cmdValueChange(String value) {
-		AreaCellModel areaCellModel = getCellModel(AreaCellModel.class);
+		AreaCellModel areaCellModel = getCellModelByType(AreaCellModel.class);
 
 		if (areaCellModel != null) {
 			List<MCity> citys = MasterUtil.getCitiesByPostal(value);
@@ -28,8 +31,8 @@ public class PostalCellModel extends BaseCellModel{
 		}
 	}
 
-	public static BaseColumnModel getPostalColumnModel(String title, String daoPropertyName) {
-		return BaseCellModel.getColModel(PostalCellModel.class, title, daoPropertyName);
+	public static ColumnModel getPostalColumnModel(String title, String daoPropertyName) {
+		return CellModel.getColModelForCell(CellModelInfo.of(ColumnModel.class, PostalCellModel.class, null), CellModelParams.of(title, daoPropertyName, null));
 	}
 
 

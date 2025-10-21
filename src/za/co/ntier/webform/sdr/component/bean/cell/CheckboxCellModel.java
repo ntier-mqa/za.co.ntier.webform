@@ -1,15 +1,18 @@
 package za.co.ntier.webform.sdr.component.bean.cell;
 
-import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
-import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
+import java.awt.image.ColorModel;
+
+import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
-public class CheckboxCellModel extends BaseCellModel {
+public class CheckboxCellModel extends CellModel {
 	private String title;
 
-	public CheckboxCellModel(TableModel annexure, RowModel row, BaseColumnModel colModel) {
-		super(annexure, row, colModel, CHECK_CELL);
+	public CheckboxCellModel(TableModel annexure, RowModel row, ColumnModel colModel) {
+		super(annexure, row, colModel);
+		setCellType(CHECK_CELL);
 	}
 
 	/**
@@ -26,8 +29,14 @@ public class CheckboxCellModel extends BaseCellModel {
 		this.title = title;
 	}
 
-	public static  BaseColumnModel getCheckboxColModel(String title, String daoPropertyName) {
-		return BaseCellModel.getColModel(CheckboxCellModel.class, title, daoPropertyName);
+	public static  ColumnModel getCheckboxColModel(String title, String daoPropertyName) {
+		return CellModel.getColModelForCell(
+					CellModelInfo.of(ColumnModel.class, CheckboxCellModel.class
+							, (colModel, celModel) -> {
+								celModel.setTitle(title);
+							}), 
+				CellModelParams.of(title, daoPropertyName, null)
+				);
 	}
 
 }

@@ -5,12 +5,12 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Triple;
 
-import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.cell.AbstractListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 
-public class ListColumnModel<T> extends BaseColumnModel {
+public class ListColumnModel<T> extends ColumnModel {
 	private List<T> dataProvider;
 	private String beanPropertyName;
 	private Function<T, String> displayConvert;
@@ -28,9 +28,9 @@ public class ListColumnModel<T> extends BaseColumnModel {
 	}
 
 	@Override
-	public AbstractListCellModel<T> getCellModel(TableModel tableModel, RowModel rowModel) {
+	public ListCellModel<T> getCellModel(TableModel tableModel, RowModel rowModel) {
 		@SuppressWarnings("unchecked")
-		AbstractListCellModel<T> listCellModel = (AbstractListCellModel<T>)getCellModelSupplier().apply(Triple.of(tableModel, rowModel, this));
+		ListCellModel<T> listCellModel = (ListCellModel<T>)getCellModelSupplier().apply(Triple.of(tableModel, rowModel, this));
 		listCellModel.setDataProvider(dataProvider);
 		return listCellModel;
 	}

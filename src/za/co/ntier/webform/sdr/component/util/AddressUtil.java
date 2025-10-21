@@ -13,8 +13,8 @@ import za.co.ntier.api.model.X_ZZ_FormContact;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
-import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.AreaCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
@@ -22,52 +22,52 @@ import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 
 public class AddressUtil {
 	public static TableModel initAddress(ProgramType programType, AddressType addressType, X_ZZ_Application_Form applicationForm) {
-		List<BaseColumnModel> cols = new ArrayList<>();
+		List<ColumnModel> cols = new ArrayList<>();
 
 		if(showSiteName(programType, addressType)) {
-			BaseColumnModel siteNameCol = BaseCellModel.getColModelForText("Site Name", I_ZZ_FormContact.COLUMNNAME_ZZ_SideName).required();
+			ColumnModel siteNameCol = CellModel.getColModelForText("Site Name", I_ZZ_FormContact.COLUMNNAME_ZZ_SideName).required();
 			cols.add(siteNameCol);
 		}
 
 		if(showLineAddress(programType, addressType)) {
-			BaseColumnModel addressCol = BaseCellModel.getColModelForText("Street Name and Number", I_ZZ_FormContact.COLUMNNAME_Address).required();
+			ColumnModel addressCol = CellModel.getColModelForText("Street Name and Number", I_ZZ_FormContact.COLUMNNAME_Address).required();
 			cols.add(addressCol);
 		}
 
 		if (showPostalAddress(addressType)) {
-			BaseColumnModel addressCol = BaseCellModel.getColModelForText("Post Address", I_ZZ_FormContact.COLUMNNAME_Address).required();
+			ColumnModel addressCol = CellModel.getColModelForText("Post Address", I_ZZ_FormContact.COLUMNNAME_Address).required();
 			cols.add(addressCol);
 		}
 
 		if (showGeographicAddress(addressType)) {
-			BaseColumnModel postalCodeCol = PostalCellModel.getPostalColumnModel(
+			ColumnModel postalCodeCol = PostalCellModel.getPostalColumnModel(
 					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_Postal)
 					, I_ZZ_FormContact.COLUMNNAME_Postal
 					).required();
 			cols.add(postalCodeCol);
 
-			BaseColumnModel areaCol = AreaCellModel.getAreaColumnModel(
+			ColumnModel areaCol = AreaCellModel.getAreaColumnModel(
 					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_City_ID)
 					, I_ZZ_FormContact.COLUMNNAME_C_City_ID).required();
 			cols.add(areaCol);
 
-			BaseColumnModel provinceCol = ProvinceCellModel.getColumnModel(
+			ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(
 					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
 					, I_ZZ_FormContact.COLUMNNAME_C_Region_ID).required();
 			cols.add(provinceCol);
 		}
 
 		if (showContact(addressType)) {
-			BaseColumnModel nameSurnameCol = BaseCellModel.getColModelForText("Name and Surname", I_ZZ_FormContact.COLUMNNAME_ContactName).required();
+			ColumnModel nameSurnameCol = CellModel.getColModelForText("Name and Surname", I_ZZ_FormContact.COLUMNNAME_ContactName).required();
 			cols.add(nameSurnameCol);
 
-			BaseColumnModel telNumberCol = BaseCellModel.getColModelForText("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
+			ColumnModel telNumberCol = CellModel.getColModelForText("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
 			cols.add(telNumberCol);
 
-			BaseColumnModel alternativeNumberCol = BaseCellModel.getColModelForText("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
+			ColumnModel alternativeNumberCol = CellModel.getColModelForText("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
 			cols.add(alternativeNumberCol);
 
-			BaseColumnModel emailCol = BaseCellModel.getColModelForText("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
+			ColumnModel emailCol = CellModel.getColModelForText("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
 			cols.add(emailCol);
 		}
 

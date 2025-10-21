@@ -43,6 +43,7 @@ import za.co.ntier.api.model.X_ZZ_LI_Disability;
 import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
+import za.co.ntier.api.model.X_lkpNationality;
 import za.co.ntier.webform.form.bean.ProgramType;
 
 public class MasterUtil {
@@ -215,8 +216,10 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpFunctionListIdentify = new AbstractMap.SimpleEntry<>("e4b70818-faaa-4af1-ae55-81563efc4633", null);
 	public static final Entry<String, Integer> LkpTitleListIdentify = new AbstractMap.SimpleEntry<>("1870ee55-4f9a-430e-ad6a-b5dc587216c7", null);
 	public static final Entry<String, Integer> LkpAppointmentListIdentify = new AbstractMap.SimpleEntry<>("6e1d8f96-0c9f-4ed5-940a-cb73aecb5d46", null);
+	public static final Entry<String, Integer> LkpEquityListIdentify = new AbstractMap.SimpleEntry<>("a2a8d729-1acb-40d7-bf8d-116e8ac4e7b4", null);
+	public static final Entry<String, Integer> LkpAlternateIDIdentify = new AbstractMap.SimpleEntry<>("04b31964-4f89-4d78-bc3c-64333fc14de3", null);
 	
-	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 5);	
+	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
 	
 	public static List<ValueNamePair> getLkpAppointment () {
 		return getRefList(LkpAppointmentListIdentify);
@@ -234,6 +237,13 @@ public class MasterUtil {
 		return getRefList(LkpTitleListIdentify);
 	}
 	
+	public static List<ValueNamePair> getLkpEquity() {
+		return getRefList(LkpEquityListIdentify);
+	}
+	
+	public static List<ValueNamePair> getLkpAltID() {
+		return getRefList(LkpAlternateIDIdentify);
+	}
 	private static int getIdFromUU(Entry<String, Integer> identify) {
 		if (identify.getValue() == null) {
 			MReference ref = MReference.get(Env.getCtx(), identify.getKey());
@@ -255,10 +265,7 @@ public class MasterUtil {
 		return lkpList;
 	}
 	
-	public static List<ValueNamePair> getLkpEquity() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	
 	private static CCache<Integer, List<X_ZZ_LI_HighestEducation>> highestEducationCache = new CCache<>("master-X_ZZ_LI_HighestEducation", 1);
 	
@@ -315,6 +322,16 @@ public class MasterUtil {
 		return socioEconomicStatusCache.get(Integer.MAX_VALUE);
 	}
 	
+	private static CCache<Integer, List<X_lkpNationality>> nationalityCache = new CCache<>("master-X_lkpNationality", 1);
+	
+	public static List<X_lkpNationality> getNationality(){
+		if (nationalityCache.isEmpty()) {
+			List<X_lkpNationality> list = getMasterList(X_lkpNationality.Table_ID);
+			nationalityCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return nationalityCache.get(Integer.MAX_VALUE);
+	}
 	
 	private static <T extends PO> List<T> getMasterList(int tableID){
 		Query annexureQuery = MTable.get(tableID).createQuery(null, null)

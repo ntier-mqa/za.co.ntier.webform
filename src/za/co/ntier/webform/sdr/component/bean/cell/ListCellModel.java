@@ -8,13 +8,22 @@ import org.compiere.model.MRegion;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.form.MasterUtil;
-import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISelectable;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelInfo;
+import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelParams;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
-public class AbstractListCellModel<T> extends BaseCellModel implements ISelectable {
+public class ListCellModel<T> extends CellModel implements ISelectable {
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public ListColumnModel<T> getColModel() {
+		return (ListColumnModel<T>)super.getColModel();
+	}
 	/**
 	 * sub class should override this method to provide display text
 	 * generic should provide DisplayConvert
@@ -22,7 +31,7 @@ public class AbstractListCellModel<T> extends BaseCellModel implements ISelectab
 	 * @return
 	 */
 	public String getDisplayText(T item) {
-		Function<T, String> displayConvert = ((ListColumnModel<T>)getColModel()).getDisplayConvert();
+		Function<T, String> displayConvert = getColModel().getDisplayConvert();
 		if (displayConvert != null) {
 			return displayConvert.apply(item);
 		}
@@ -36,8 +45,9 @@ public class AbstractListCellModel<T> extends BaseCellModel implements ISelectab
 	 * @param annexure
 	 * @param row
 	 */
-	public AbstractListCellModel(TableModel annexure, RowModel row, ListColumnModel<T> colModel) {
-		super(annexure, row, colModel, LIST_CELL);
+	public ListCellModel(TableModel annexure, RowModel row, ListColumnModel<T> colModel) {
+		super(annexure, row, colModel);
+		setCellType(LIST_CELL);
 	}
 
 	/**
@@ -93,41 +103,23 @@ public class AbstractListCellModel<T> extends BaseCellModel implements ISelectab
 	protected void setModel(ListModelList<T> model) {
 		this.model = model;
 	}
-
-	private static  <T extends AbstractListCellModel<L>, K extends ListColumnModel<L>, L> K
-			getListColumnModel(Class<K> coClass, Class<T> ceClass, String title, String daoPropertyName, List<L> dataProvider) {
-		K listColumnModel = BaseCellModel.getColModel(coClass, ceClass, title);
-		listColumnModel.setDaoPropertyName(daoPropertyName);
-		listColumnModel.setDataProvider(dataProvider);
-		return listColumnModel;
-	}
 	
-	private static  <T extends AbstractListCellModel<L>, K extends ListColumnModel<L>, L> K
+	protected static  <T extends ListCellModel<L>, K extends ListColumnModel<L>, L> K
 	getListColumnModel(Class<K> coClass, Class<T> ceClass, String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert) {
+		K listColumnModel = CellModel.getColModelForCell(CellModelInfo.of(coClass, ceClass, null), 
+				CellModelParams.of(title, daoPropertyName, null)
+				);
+				
+		listColumnModel.setDataProvider(dataProvider);
 		
-		K listColumnModel = getListColumnModel(coClass, ceClass, title, daoPropertyName, dataProvider);
 		listColumnModel.setDisplayConvert(displayConvert);
+		
 		return listColumnModel;
 	}
 	
 	public static <L> ListColumnModel<L> getListColumnModel(String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert) {
 		@SuppressWarnings("unchecked")
-		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, AbstractListCellModel.class, title, daoPropertyName, dataProvider, displayConvert);
+		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert);
 		return listColumnModel;
 	}
-
-	public static ListColumnModel<MCity> getAreaColumnModel(String title, String daoPropertyName) {
-	
-		@SuppressWarnings("unchecked")
-		ListColumnModel<MCity> listColumnModel = AbstractListCellModel.getListColumnModel(ListColumnModel.class, AreaCellModel.class, title, daoPropertyName, MasterUtil.getInitCities());
-		return listColumnModel;
-	}
-
-	public static ListColumnModel<MRegion> getProvinceColumnModel(String title, String daoPropertyName, List<MRegion> dataProvider) {
-		@SuppressWarnings("unchecked")
-		ListColumnModel<MRegion> listColumnModel = AbstractListCellModel.getListColumnModel(ListColumnModel.class, ProvinceCellModel.class, title, daoPropertyName, MasterUtil.getRegions());
-		return listColumnModel;
-	}
-	
-
 }

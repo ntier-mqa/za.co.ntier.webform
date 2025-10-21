@@ -13,10 +13,10 @@ import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.FormInfo;
-import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
-import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.cell.AbstractListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
@@ -69,15 +69,15 @@ public class MainSrdFormVM {
 	}
 
 	private TableModel getNamesComp() {
-		List<BaseColumnModel> cols = new ArrayList<>();
+		List<ColumnModel> cols = new ArrayList<>();
 
-		BaseColumnModel firstNameCol = BaseCellModel.getColModelForText("First Name").required();
+		ColumnModel firstNameCol = CellModel.getColModelForText("First Name", null).required();
 		cols.add(firstNameCol);
 
-		BaseColumnModel middleNameCol = BaseCellModel.getColModelForText("Middle Name");
+		ColumnModel middleNameCol = CellModel.getColModelForText("Middle Name", null);
 		cols.add(middleNameCol);
 
-		BaseColumnModel surNameCol = BaseCellModel.getColModelForText("Surname").required();
+		ColumnModel surNameCol = CellModel.getColModelForText("Surname", null).required();
 		cols.add(surNameCol);
 
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
@@ -95,10 +95,10 @@ public class MainSrdFormVM {
 	}
 
 	private TableModel getEducationComp() {
-		List<BaseColumnModel> cols = new ArrayList<>();
+		List<ColumnModel> cols = new ArrayList<>();
 
 		ListColumnModel<X_ZZ_LI_HighestEducation> highestEducationCol = 
-				AbstractListCellModel.getListColumnModel("Highest Education"
+				ListCellModel.getListColumnModel("Highest Education"
 						, (String)null
 						, MasterUtil.getHighestEducations()
 						, highestEducation -> {return highestEducation.getName();}
@@ -106,22 +106,22 @@ public class MainSrdFormVM {
 		highestEducationCol.required();
 		cols.add(highestEducationCol);
 
-		BaseColumnModel highestEducationDescriptionCol = BaseCellModel.getColModelForText("Highest Education Description");
+		ColumnModel highestEducationDescriptionCol = CellModel.getColModelForText("Highest Education Description", null);
 		cols.add(highestEducationDescriptionCol);
 
-		BaseColumnModel nameOfAccreditedTrainingProviderCol = BaseCellModel.getColModelForText("Name Of Accredited Training Provider");
+		ColumnModel nameOfAccreditedTrainingProviderCol = CellModel.getColModelForText("Name Of Accredited Training Provider", null);
 		cols.add(nameOfAccreditedTrainingProviderCol);
 
-		BaseColumnModel experienceCol = BaseCellModel.getColModelForText("Experience").required();
+		ColumnModel experienceCol = CellModel.getColModelForText("Experience", null).required();
 		cols.add(experienceCol);
 
-		BaseColumnModel currentOccupationCol = BaseCellModel.getColModelForText("Current Occupation").required();
+		ColumnModel currentOccupationCol = CellModel.getColModelForText("Current Occupation", null).required();
 		cols.add(currentOccupationCol);
 
-		BaseColumnModel yearInOccupationCol = BaseCellModel.getColModelForText("Year In Occupation").required();
+		ColumnModel yearInOccupationCol = CellModel.getColModelForText("Year In Occupation", null).required();
 		cols.add(yearInOccupationCol);
 
-		BaseColumnModel generalCommentsCol = BaseCellModel.getColModelForText("General Comments").required();
+		ColumnModel generalCommentsCol = CellModel.getColModelForText("General Comments", null).required();
 		cols.add(generalCommentsCol);
 
 		TableModel educationBean = TableModel.getTableBean(TableModel.class, cols, false);
@@ -139,57 +139,58 @@ public class MainSrdFormVM {
 	}
 
 	private TableModel getAddressDetailComp() {
-		List<BaseColumnModel> cols = new ArrayList<>();
+		List<ColumnModel> cols = new ArrayList<>();
 
-		BaseColumnModel dupplicateCol = CheckboxCellModel.getCheckboxColModel("Use Physical Address For Postal Address?", null);
+		ColumnModel dupplicateCol = CheckboxCellModel.getCheckboxColModel("Use Physical Address For Postal Address?", null);
+		dupplicateCol.setShowTitle(false);
 		cols.add(dupplicateCol);
 
-		BaseColumnModel addressCol = BaseCellModel.getColModelForText("Address");
+		ColumnModel addressCol = CellModel.getColModelForText("Address", null);
 		cols.add(addressCol);
 
-		BaseColumnModel gpsCoordinatesCol = BaseCellModel.getColModelForText("GPS Coordinates");
+		ColumnModel gpsCoordinatesCol = CellModel.getColModelForText("GPS Coordinates", null);
 		cols.add(gpsCoordinatesCol);
 
-		BaseColumnModel physicalAddress1Col = BaseCellModel.getColModelForText("Physical Address 1").required();
+		ColumnModel physicalAddress1Col = CellModel.getColModelForText("Physical Address 1", null).required();
 		cols.add(physicalAddress1Col);
 
-		BaseColumnModel postalAddressLine1Col = BaseCellModel.getColModelForText("Postal Address Line 1").required();
+		ColumnModel postalAddressLine1Col = CellModel.getColModelForText("Postal Address Line 1", null).required();
 		cols.add(postalAddressLine1Col);
 
-		BaseColumnModel physicalAddress2Col = BaseCellModel.getColModelForText("Physical Address 2").required();
+		ColumnModel physicalAddress2Col = CellModel.getColModelForText("Physical Address 2", null).required();
 		cols.add(physicalAddress2Col);
 
-		BaseColumnModel postalAddressLine2Col = BaseCellModel.getColModelForText("Postal Address Line 2").required();
+		ColumnModel postalAddressLine2Col = CellModel.getColModelForText("Postal Address Line 2", null).required();
 		cols.add(postalAddressLine2Col);
 
-		BaseColumnModel physicalAddress3Col = BaseCellModel.getColModelForText("Physical Address 3").required();
+		ColumnModel physicalAddress3Col = CellModel.getColModelForText("Physical Address 3", null).required();
 		cols.add(physicalAddress3Col);
 
-		BaseColumnModel postalAddressLine3Col = BaseCellModel.getColModelForText("Postal Address Line 3").required();
+		ColumnModel postalAddressLine3Col = CellModel.getColModelForText("Postal Address Line 3", null).required();
 		cols.add(postalAddressLine3Col);
 
-		BaseColumnModel physicalCodeCol = BaseCellModel.getColModelForText("Physical Code").required();
+		ColumnModel physicalCodeCol = CellModel.getColModelForText("Physical Code", null).required();
 		cols.add(physicalCodeCol);
 
-		BaseColumnModel postalCodeCol = BaseCellModel.getColModelForText("Postal Code").required();
+		ColumnModel postalCodeCol = CellModel.getColModelForText("Postal Code", null).required();
 		cols.add(postalCodeCol);
 
-		BaseColumnModel physicalProvinceCol = BaseCellModel.getColModelForText("Province");
+		ColumnModel physicalProvinceCol = CellModel.getColModelForText("Province", null);
 		cols.add(physicalProvinceCol);
 
-		BaseColumnModel postalProvinceCol = BaseCellModel.getColModelForText("Province");
+		ColumnModel postalProvinceCol = CellModel.getColModelForText("Province", null);
 		cols.add(postalProvinceCol);
 
-		BaseColumnModel physicalMunicipalityCol = BaseCellModel.getColModelForText("Municipality");
+		ColumnModel physicalMunicipalityCol = CellModel.getColModelForText("Municipality", null);
 		cols.add(physicalMunicipalityCol);
 
-		BaseColumnModel postalMunicipalityCol = BaseCellModel.getColModelForText("Municipality");
+		ColumnModel postalMunicipalityCol = CellModel.getColModelForText("Municipality", null);
 		cols.add(postalMunicipalityCol);
 
-		BaseColumnModel physicalUrbanRuralCol = BaseCellModel.getColModelForText("Urban Rural");
+		ColumnModel physicalUrbanRuralCol = CellModel.getColModelForText("Urban Rural", null);
 		cols.add(physicalUrbanRuralCol);
 
-		BaseColumnModel postalUrbanRuralCol = BaseCellModel.getColModelForText("Urban Rural");
+		ColumnModel postalUrbanRuralCol = CellModel.getColModelForText("Urban Rural", null);
 		cols.add(postalUrbanRuralCol);
 
 
@@ -208,18 +209,18 @@ public class MainSrdFormVM {
 	}
 
 	private TableModel getContactDetailComp() {
-		List<BaseColumnModel> cols = new ArrayList<>();
+		List<ColumnModel> cols = new ArrayList<>();
 
-		BaseColumnModel telephoneNumberCol = BaseCellModel.getColModelForText("Telephone Number");
+		ColumnModel telephoneNumberCol = CellModel.getColModelForText("Telephone Number", null);
 		cols.add(telephoneNumberCol);
 
-		BaseColumnModel cellPhoneNumberCol = BaseCellModel.getColModelForText("Cell Phone Number").required();
+		ColumnModel cellPhoneNumberCol = CellModel.getColModelForText("Cell Phone Number", null).required();
 		cols.add(cellPhoneNumberCol);
 
-		BaseColumnModel faxNumberCol = BaseCellModel.getColModelForText("Fax Number");
+		ColumnModel faxNumberCol = CellModel.getColModelForText("Fax Number", null);
 		cols.add(faxNumberCol);
 
-		BaseColumnModel emailCol = BaseCellModel.getColModelForText("E Mail").required();
+		ColumnModel emailCol = CellModel.getColModelForText("E Mail", null).required();
 		cols.add(emailCol);
 
 		TableModel contactDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
@@ -236,81 +237,79 @@ public class MainSrdFormVM {
 		return contactDetailBean;
 	}
 
-	public static List<String> demoData = List.of("item 1", "item 2", "item 3");
-
 	private TableModel getPersonDetailComp() {
 
-		List<BaseColumnModel> cols = new ArrayList<>();
+		List<ColumnModel> cols = new ArrayList<>();
 
-		BaseColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel(null, "ID Document Upload", null, null);
+		ColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel("ID Document Upload", null, null, "UPLOAD FILE");
 		cols.add(idDocUploadCol);
 
-		BaseColumnModel greettingCol = AbstractListCellModel.getListColumnModel("Title"
+		ColumnModel greettingCol = ListCellModel.getListColumnModel("Title"
 				, (String)null
 				, MasterUtil.getLkpTitleLists()
 				, title -> {return title.getName();}
 			).required();
 		cols.add(greettingCol);
 
-		BaseColumnModel idNoCol = BaseCellModel.getColModelForText("ID No").required();
+		ColumnModel idNoCol = CellModel.getColModelForText("ID No", null).required();
 		cols.add(idNoCol);
 
-		BaseColumnModel initialsCol = BaseCellModel.getColModelForText("Initials").required();
+		ColumnModel initialsCol = CellModel.getColModelForText("Initials", null).required();
 		cols.add(initialsCol);
 
-		BaseColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel("Date of Birth", null).required();
+		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel("Date of Birth", null).required();
 		cols.add(dateOfBirthCol);
 
-		BaseColumnModel genderCol = AbstractListCellModel.getListColumnModel("Gender"
+		ColumnModel genderCol = ListCellModel.getListColumnModel("Gender"
 				, (String)null
 				, MasterUtil.getLkpGenders()
 				, title -> {return title.getName();}
 			).required();
 		cols.add(genderCol);
 
-		BaseColumnModel equityCol = AbstractListCellModel.getListColumnModel("Equity"
+		ColumnModel equityCol = ListCellModel.getListColumnModel("Equity"
 				, (String)null
-				, demoData
-				, title -> {return title;}
+				, MasterUtil.getLkpEquity()
+				, title -> {return title.toString();}
 			).required();
 		cols.add(equityCol);
 
-		BaseColumnModel disabilityCol = AbstractListCellModel.getListColumnModel("Disability"
+		ColumnModel disabilityCol = ListCellModel.getListColumnModel("Disability"
 				, (String)null
 				, MasterUtil.getDisability()
 				, title -> {return title.getName();}
 			).required();
 		cols.add(disabilityCol);
 
-		BaseColumnModel homeLanguageCol = AbstractListCellModel.getListColumnModel("Home Language"
+		ColumnModel homeLanguageCol = ListCellModel.getListColumnModel("Home Language"
 				, (String)null
 				, MasterUtil.getHomeLanguage()
 				, title -> {return title.getName();}
 			).required();
 		cols.add(homeLanguageCol);
 
-		BaseColumnModel citizenResidentialStatusCol = AbstractListCellModel.getListColumnModel("Citizen Residential Status"
+		ColumnModel citizenResidentialStatusCol = ListCellModel.getListColumnModel("Citizen Residential Status"
 				, (String)null
 				, MasterUtil.getCitizenResidentialStatus()
 				, title -> {return title.getName();}
 			).required();
 		cols.add(citizenResidentialStatusCol);
 
-		BaseColumnModel alternateIDTypeCol = AbstractListCellModel.getListColumnModel("Alternate ID Type"
+		ColumnModel alternateIDTypeCol = ListCellModel.getListColumnModel("Alternate ID Type"
 				, (String)null
-				, demoData
-				, title -> {return title;}
+				, MasterUtil.getLkpAltID()
+				, title -> {return title.toString();}
 			).required();
 		cols.add(alternateIDTypeCol);
 
-		BaseColumnModel nationalityCol = AbstractListCellModel.getListColumnModel("Nationality"
+		ColumnModel nationalityCol = ListCellModel.getListColumnModel("Nationality"
 				, (String)null
-				, demoData
-				, title -> {return title;}
+				, MasterUtil.getNationality()
+				, title -> {return title.getDescription();}
 			).required();
 		cols.add(nationalityCol);
 
-		BaseColumnModel socioEconomicStatusCol = AbstractListCellModel.getListColumnModel("Socio Economic Status"
+		ColumnModel socioEconomicStatusCol = ListCellModel.getListColumnModel("Socio Economic Status"
 				, (String)null
 				, MasterUtil.getSocioEconomicStatus()
 				, title -> {return title.getName();}

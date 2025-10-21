@@ -10,12 +10,12 @@ import org.apache.commons.lang3.tuple.Triple;
  * do {@link #setCellModelSupplier(BiFunction)} or provide in constructor
  * otherwise override {@link #getCellModel(TableModel, RowModel)}
  */
-public class BaseColumnModel {
+public class ColumnModel {
 	private boolean isCalTotlal = false;
 	
-	private Function<Triple<TableModel, RowModel, BaseColumnModel>, BaseCellModel> cellModelSupplier;
+	private Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> cellModelSupplier;
 
-	public BaseCellModel getCellModel(TableModel tableModel, RowModel rowModel) {
+	public CellModel getCellModel(TableModel tableModel, RowModel rowModel) {
 		if (getCellModelSupplier() == null) {
 			throw new IllegalStateException("Need to provide a cellModelSupplier or override getCellModel");
 		}
@@ -34,23 +34,23 @@ public class BaseColumnModel {
 
 	private String daoPropertyName;
 
-	// in BaseColumnModel (or BaseColumnModel)
+	// in ColumnModel (or ColumnModel)
 	private boolean mandatory;
 
-	public BaseColumnModel(String colTitle) {
+	public ColumnModel(String colTitle) {
 		this.title = colTitle;
 	}
 
 
-	public BaseColumnModel(String colTitle, String daoPropertyName) {
+	public ColumnModel(String colTitle, String daoPropertyName) {
 		this (colTitle);
 		setDaoPropertyName(daoPropertyName);
 	}
 
 	public boolean isMandatory() { return mandatory; }
-	public BaseColumnModel setMandatory(boolean mandatory) { this.mandatory = mandatory; return this; }
+	public ColumnModel setMandatory(boolean mandatory) { this.mandatory = mandatory; return this; }
 	// (optional fluent alias)
-	public BaseColumnModel required() { this.mandatory = true; return this; }
+	public ColumnModel required() { this.mandatory = true; return this; }
 
 	/**
 	 * @return the title
@@ -88,20 +88,20 @@ public class BaseColumnModel {
 	/**
 	 * @param daoPropertyName the daoPropertyName to set
 	 */
-	public BaseColumnModel setDaoPropertyName(String daoPropertyName) {
+	public ColumnModel setDaoPropertyName(String daoPropertyName) {
 		this.daoPropertyName = correctDaoPropertyName(daoPropertyName);
 		return this;
 	}
 
 
-	public Function<Triple<TableModel, RowModel, BaseColumnModel>, BaseCellModel> getCellModelSupplier() {
+	public Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> getCellModelSupplier() {
 		return cellModelSupplier;
 	}
 
 	/**
 	 * @param cellModelSupplier
 	 */
-	public void setCellModelSupplier(Function<Triple<TableModel, RowModel, BaseColumnModel>, BaseCellModel> cellModelSupplier) {
+	public void setCellModelSupplier(Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> cellModelSupplier) {
 		this.cellModelSupplier = cellModelSupplier;
 	}
 	/**
@@ -131,4 +131,21 @@ public class BaseColumnModel {
 	public void setCalTotlal(boolean isCalTotlal) {
 		this.isCalTotlal = isCalTotlal;
 	}
+	
+	/**
+	 * @return the showTitle
+	 */
+	public boolean isShowTitle() {
+		return showTitle;
+	}
+
+	/**
+	 * @param showTitle the showTitle to set
+	 */
+	public void setShowTitle(boolean showTitle) {
+		this.showTitle = showTitle;
+	}
+
+	private boolean showTitle = true;
+	
 }

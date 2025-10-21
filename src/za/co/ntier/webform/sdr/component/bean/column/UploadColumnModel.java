@@ -1,12 +1,12 @@
 package za.co.ntier.webform.sdr.component.bean.column;
 
-import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
-import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
-public class UploadColumnModel extends BaseColumnModel {
+public class UploadColumnModel extends ColumnModel {
 	private String daoPropertyFileName;
 	public String getDaoPropertyFileName() {
 		return daoPropertyFileName;
@@ -37,8 +37,10 @@ public class UploadColumnModel extends BaseColumnModel {
 	}
 
 	@Override
-	public BaseCellModel getCellModel(TableModel tableModel, RowModel rowModel) {
-		return new UploadCellModel(tableModel, rowModel, this);
+	public CellModel getCellModel(TableModel tableModel, RowModel rowModel) {
+		UploadCellModel cellModel = new UploadCellModel(tableModel, rowModel, this);
+		cellModel.setBtText(btText);
+		return cellModel;
 	}
 
 

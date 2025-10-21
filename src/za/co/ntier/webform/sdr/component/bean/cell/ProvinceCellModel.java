@@ -12,7 +12,7 @@ import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
-public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
+public class ProvinceCellModel extends ListCellModel<MRegion>{
 
 	public ProvinceCellModel(TableModel tableModel, RowModel rowModel, ListColumnModel<MRegion> colModel){
 		super(tableModel, rowModel, colModel);
@@ -20,13 +20,13 @@ public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 
 	@Override
 	public void cmdSelectedHandle(MRegion selectedProvince) {
-		if (getAnnexure() != null && getRow() != null) {
+		if (getTableModel() != null && getRowModel() != null) {
 			if (selectedProvince == null) {
 				return;
 				// do nothing
 			}
 
-			AreaCellModel areaCellModel = getCellModel(AreaCellModel.class);
+			AreaCellModel areaCellModel = getCellModelByType(AreaCellModel.class);
 			if (areaCellModel != null) {
 				List<MCity> areaFilters = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 				areaCellModel.setDataProvider(areaFilters);
 			}
 
-			PostalCellModel postalCellModel = getCellModel(PostalCellModel.class);
+			PostalCellModel postalCellModel = getCellModelByType(PostalCellModel.class);
 			if (postalCellModel != null && areaCellModel != null) {
 				if (areaCellModel.isSelected()) {
 					postalCellModel.setValue(areaCellModel.getSelectedItem().getPostal());
@@ -84,14 +84,10 @@ public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 		return item.getName();
 	}
 
-	public static ListColumnModel<MRegion> getColumnModel(String title, String daoPropertyName) {
-		ListColumnModel<MRegion> colProvinceModel = new ListColumnModel<MRegion>(title);
-		colProvinceModel.setDaoPropertyName(daoPropertyName);
-		colProvinceModel.setCellModelSupplier(models ->{
-			return new ProvinceCellModel(models.getLeft(), models.getMiddle(), (ListColumnModel<MRegion>)models.getRight());
-		});
-		colProvinceModel.setDataProvider(MasterUtil.getRegions());
-		return colProvinceModel;
+	public static ListColumnModel<MRegion> getProvinceColumnModel(String title, String daoPropertyName) {
+		@SuppressWarnings("unchecked")
+		ListColumnModel<MRegion> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, ProvinceCellModel.class, title, daoPropertyName, MasterUtil.getRegions(), null);
+		return listColumnModel;
 	}
 
 }

@@ -3,14 +3,17 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
-import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
-import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelInfo;
+import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelParams;
 
-public class DateCellModel extends BaseCellModel {
-	public DateCellModel(TableModel annexure, RowModel row, BaseColumnModel colModel) {
-		super(annexure, row, colModel, DATE_CELL);
+public class DateCellModel extends CellModel {
+	public DateCellModel(TableModel annexure, RowModel row, ColumnModel colModel) {
+		super(annexure, row, colModel);
+		setCellType(DATE_CELL);
 	}
 
 	private LocalDate localDate;
@@ -47,7 +50,9 @@ public class DateCellModel extends BaseCellModel {
 	}
 
 
-	public static BaseColumnModel getDateColumnModel(String title, String daoPropertyName) {
-		return BaseCellModel.getColModel(DateCellModel.class, title, daoPropertyName);
+	public static ColumnModel getDateColumnModel(String title, String daoPropertyName) {
+		return CellModel.getColModelForCell(CellModelInfo.of(ColumnModel.class, DateCellModel.class, null), 
+				CellModelParams.of(title, daoPropertyName, null)
+				);
 	}
 }
