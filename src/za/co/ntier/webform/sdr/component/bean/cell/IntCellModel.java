@@ -1,18 +1,19 @@
 package za.co.ntier.webform.sdr.component.bean.cell;
 
 import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
+import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class IntCellModel extends BaseCellModel {
 	private Integer value;
 
-	public IntCellModel(TableModel annexure, RowModel row) {
-		super(annexure, row);
+	public IntCellModel(TableModel annexure, RowModel row, BaseColumnModel colModel) {
+		super(annexure, row, colModel);
 	}
 
 	public IntCellModel(TableModel annexure, Integer value) {
-		super(annexure, null);
+		super(annexure, null, null);
 		setValue(value);
 	}
 

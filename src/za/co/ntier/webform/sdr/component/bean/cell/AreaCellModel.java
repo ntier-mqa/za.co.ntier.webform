@@ -5,6 +5,7 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -12,9 +13,8 @@ import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class AreaCellModel extends AbstractListCellModel<MCity>{
 
-	public AreaCellModel(TableModel tableModel, RowModel rowModel){
-		super(tableModel, rowModel);
-		setModel(new ListModelList<MCity>());
+	public AreaCellModel(TableModel tableModel, RowModel rowModel, ListColumnModel<MCity> colModel) {
+		super(tableModel, rowModel, colModel);
 	}
 
 	@Override
@@ -80,8 +80,8 @@ public class AreaCellModel extends AbstractListCellModel<MCity>{
 	public static ListColumnModel<MCity> getColumnModel(String title, String daoPropertyName) {
 		ListColumnModel<MCity> colAreaModel = new ListColumnModel<MCity>(title);
 		colAreaModel.setDaoPropertyName(daoPropertyName);
-		colAreaModel.setCellModelSupplier((tableModel, rowModel)->{
-			return new AreaCellModel(tableModel, rowModel);
+		colAreaModel.setCellModelSupplier((models)->{
+			return new AreaCellModel(models.getLeft(), models.getMiddle(), (ListColumnModel<MCity>)models.getRight());
 		});
 		colAreaModel.setDataProvider(MasterUtil.getInitCities());
 		return colAreaModel;

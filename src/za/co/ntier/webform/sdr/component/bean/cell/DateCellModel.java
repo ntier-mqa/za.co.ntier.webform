@@ -9,8 +9,8 @@ import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class DateCellModel extends BaseCellModel {
-	public DateCellModel(TableModel annexure, RowModel row) {
-		super(annexure, row, DATE_CELL);
+	public DateCellModel(TableModel annexure, RowModel row, BaseColumnModel colModel) {
+		super(annexure, row, colModel, DATE_CELL);
 	}
 
 	private LocalDate localDate;

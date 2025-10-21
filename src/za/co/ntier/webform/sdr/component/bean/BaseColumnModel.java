@@ -1,8 +1,10 @@
 package za.co.ntier.webform.sdr.component.bean;
 
 import java.beans.Introspector;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * do {@link #setCellModelSupplier(BiFunction)} or provide in constructor
@@ -10,13 +12,14 @@ import java.util.function.Function;
  */
 public class BaseColumnModel {
 	private boolean isCalTotlal = false;
-	private BiFunction<TableModel, RowModel, BaseCellModel> cellModelSupplier;
+	
+	private Function<Triple<TableModel, RowModel, BaseColumnModel>, BaseCellModel> cellModelSupplier;
 
 	public BaseCellModel getCellModel(TableModel tableModel, RowModel rowModel) {
 		if (getCellModelSupplier() == null) {
 			throw new IllegalStateException("Need to provide a cellModelSupplier or override getCellModel");
 		}
-		return cellModelSupplier.apply(tableModel, rowModel);
+		return cellModelSupplier.apply(Triple.of(tableModel, rowModel, this));
 	}
 
 	private static String correctDaoPropertyName(String daoPropertyName) {
@@ -91,14 +94,14 @@ public class BaseColumnModel {
 	}
 
 
-	public BiFunction<TableModel, RowModel, BaseCellModel> getCellModelSupplier() {
+	public Function<Triple<TableModel, RowModel, BaseColumnModel>, BaseCellModel> getCellModelSupplier() {
 		return cellModelSupplier;
 	}
 
 	/**
 	 * @param cellModelSupplier
 	 */
-	public void setCellModelSupplier(BiFunction<TableModel, RowModel, BaseCellModel> cellModelSupplier) {
+	public void setCellModelSupplier(Function<Triple<TableModel, RowModel, BaseColumnModel>, BaseCellModel> cellModelSupplier) {
 		this.cellModelSupplier = cellModelSupplier;
 	}
 	/**

@@ -38,7 +38,7 @@ public class UploadColumnModel extends BaseColumnModel {
 
 	@Override
 	public BaseCellModel getCellModel(TableModel tableModel, RowModel rowModel) {
-		return new UploadCellModel(tableModel, rowModel);
+		return new UploadCellModel(tableModel, rowModel, this);
 	}
 
 

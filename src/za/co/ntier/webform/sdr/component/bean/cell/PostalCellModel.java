@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.util.List;
 
+import org.apache.ecs.xhtml.col;
 import org.compiere.model.MCity;
 
 import za.co.ntier.webform.form.MasterUtil;
@@ -11,8 +12,8 @@ import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class PostalCellModel extends BaseCellModel{
-	public PostalCellModel(TableModel tableModel, RowModel rowModel) {
-		super(tableModel, rowModel, BaseCellModel.TEXT_CELL);
+	public PostalCellModel(TableModel tableModel, RowModel rowModel, BaseColumnModel colModel) {
+		super(tableModel, rowModel, colModel, BaseCellModel.TEXT_CELL);
 	}
 
 	@Override

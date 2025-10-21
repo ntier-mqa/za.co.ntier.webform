@@ -7,9 +7,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_AD_Column;
@@ -20,28 +23,38 @@ import org.compiere.model.I_C_Region;
 import org.compiere.model.MCity;
 import org.compiere.model.MColumn;
 import org.compiere.model.MCountry;
+import org.compiere.model.MRefList;
+import org.compiere.model.MReference;
 import org.compiere.model.MRegion;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
+import org.idempiere.cache.ImmutablePOCache;
 import org.zkoss.util.media.Media;
+
+import com.google.common.cache.Cache;
 
 import za.co.ntier.api.model.I_ZZAnnexure;
 import za.co.ntier.api.model.I_ZZSubAnnex;
+import za.co.ntier.api.model.I_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZAnnexure;
 import za.co.ntier.api.model.X_ZZSubAnnex;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
+import za.co.ntier.api.model.X_ZZ_LI_Disability;
+import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
+import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
+import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.webform.form.bean.ProgramType;
 
 public class MasterUtil {
-	public static final List<KeyNamePair> districtMunicipalities;
 	public static final int limitItem = 600;
-	public static final List<KeyNamePair> localMunicipalities;
-	public static final List<KeyNamePair> municipalityTypes;
-
+	
 	private static CCache<ProgramType, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
 			I_C_BPartner.Table_Name + "_CetTvetCollege", 3);
 
@@ -49,54 +62,6 @@ public class MasterUtil {
 	private static CCache<Integer, List<MRegion>> s_Regions = new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
 	private static final List<MCity> tmpAllCity = new ArrayList<>();
 
-	static {
-		municipalityTypes = Arrays.asList(new KeyNamePair(1, "Rural"), new KeyNamePair(2, "Urban"));
-
-		localMunicipalities = Arrays.asList(new KeyNamePair(1, "Amahlathi"), new KeyNamePair(2, "Blue Crane Route"),
-				new KeyNamePair(3, "Dr Beyers Naudé"), new KeyNamePair(4, "Dihlabeng"), new KeyNamePair(5, "Kopanong"),
-				new KeyNamePair(6, "Letsemeng"), new KeyNamePair(7, "Mafube"), new KeyNamePair(8, "Maluti‑a‑Phofung"),
-				new KeyNamePair(9, "Emfuleni"), new KeyNamePair(10, "Midvaal"), new KeyNamePair(11, "Lesedi"),
-				new KeyNamePair(12, "Mogale City"), new KeyNamePair(13, "Merafong City"),
-				new KeyNamePair(14, "Rand West City"), new KeyNamePair(15, "Abaqulusi"),
-				new KeyNamePair(16, "Alfred Duma"), new KeyNamePair(17, "Big 5 Hlabisa"),
-				new KeyNamePair(18, "City of uMhlathuze"), new KeyNamePair(19, "Dannhauser"),
-				new KeyNamePair(20, "Cape Agulhas"), new KeyNamePair(21, "Cederberg"),
-				new KeyNamePair(22, "Drakenstein"), new KeyNamePair(23, "George"), new KeyNamePair(24, "Hessequa"),
-				new KeyNamePair(25, "Kannaland"));
-
-		districtMunicipalities = Arrays.asList(new KeyNamePair(1, "Alfred Nzo"), new KeyNamePair(2, "Amathole"),
-				new KeyNamePair(3, "Chris Hani"), new KeyNamePair(4, "Joe Gqabi"), new KeyNamePair(5, "OR Tambo"),
-				new KeyNamePair(6, "Sarah Baartman"),
-
-				// Free State
-				new KeyNamePair(7, "Fezile Dabi"), new KeyNamePair(8, "Lejweleputswa"), new KeyNamePair(9, "Motheo"),
-				new KeyNamePair(10, "Thabo Mofutsanyana"), new KeyNamePair(11, "Xhariep"),
-
-				// KwaZulu-Natal
-				new KeyNamePair(12, "Amajuba"), new KeyNamePair(13, "Harry Gwala"), new KeyNamePair(14, "iLembe"),
-				new KeyNamePair(15, "King Cetshwayo"), new KeyNamePair(16, "Ugu"), new KeyNamePair(17, "uMgungundlovu"),
-				new KeyNamePair(18, "uMkhanyakude"), new KeyNamePair(19, "uMzinyathi"), new KeyNamePair(20, "uThukela"),
-				new KeyNamePair(21, "Zululand"),
-
-				// Limpopo
-				new KeyNamePair(22, "Capricorn"), new KeyNamePair(23, "Mopani"), new KeyNamePair(24, "Sekhukhune"),
-				new KeyNamePair(25, "Vhembe"), new KeyNamePair(26, "Waterberg"),
-
-				// Mpumalanga
-				new KeyNamePair(27, "Ehlanzeni"), new KeyNamePair(28, "Gert Sibande"), new KeyNamePair(29, "Nkangala"),
-
-				// North West
-				new KeyNamePair(30, "Bojanala"), new KeyNamePair(31, "Dr Kenneth Kaunda"),
-				new KeyNamePair(32, "Dr Ruth Segomotsi Mompati"), new KeyNamePair(33, "Ngaka Modiri Molema"),
-
-				// Northern Cape
-				new KeyNamePair(34, "Frances Baard"), new KeyNamePair(35, "John Taolo Gaetsewe"),
-				new KeyNamePair(36, "Namakwa"), new KeyNamePair(37, "Pixley ka Seme"), new KeyNamePair(38, "ZF Mgcawu"),
-
-				// Western Cape
-				new KeyNamePair(39, "Central Karoo"), new KeyNamePair(40, "Cape Winelands"),
-				new KeyNamePair(41, "Eden"), new KeyNamePair(42, "Overberg"), new KeyNamePair(43, "West Coast"));
-	}
 	public static List<X_C_BPartner> getCetColleges() {
 		List<X_C_BPartner> cetColleges = s_CetTvetCollege.get(ProgramType.CET);
 		if (cetColleges == null) {
@@ -110,11 +75,11 @@ public class MasterUtil {
 		Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
 				String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), null);
 		queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
-		queryCetColleges.setParameters(groupValue);//"Z-CET"
+		queryCetColleges.setParameters(groupValue);// "Z-CET"
 		queryCetColleges.setOrderBy(I_C_BPartner.COLUMNNAME_Name + " ASC");
 		return queryCetColleges.list();
 	}
-	
+
 	public static List<X_C_BPartner> getUniversity() {
 		List<X_C_BPartner> universitys = s_CetTvetCollege.get(ProgramType.HET_LECTURE_SUPPORT);
 		if (universitys == null) {
@@ -123,29 +88,30 @@ public class MasterUtil {
 		}
 		return universitys;
 	}
-	
+
 	public static List<MCity> getCities() {
 		if (s_Cities.isEmpty()) {
 
 			Query citisQuery = new Query(Env.getCtx(), MCity.Table_Name, null, null);
 			citisQuery.addTableDirectJoin(MRegion.Table_Name);
 			citisQuery.addJoinClause(String.format("INNER JOIN %s ON (%s.%s = %s.%s AND %s.%s = ?)",
-					I_C_Country.Table_Name, MCountry.Table_Name, I_C_Country.COLUMNNAME_C_Country_ID, MRegion.Table_Name,
-					I_C_Region.COLUMNNAME_C_Country_ID, I_C_Country.Table_Name, I_C_Country.COLUMNNAME_C_Country_ID));
+					I_C_Country.Table_Name, MCountry.Table_Name, I_C_Country.COLUMNNAME_C_Country_ID,
+					MRegion.Table_Name, I_C_Region.COLUMNNAME_C_Country_ID, I_C_Country.Table_Name,
+					I_C_Country.COLUMNNAME_C_Country_ID));
 			citisQuery.setParameters(305);// South Africa
-			//citisQuery.setRecordstoSkip(20);
+			// citisQuery.setRecordstoSkip(20);
 
 			List<MCity> cityInfos = citisQuery.list();
 			s_Cities.put(Integer.MIN_VALUE, cityInfos);
-			
+
 			tmpAllCity.clear();
 			s_Cities.get(Integer.MIN_VALUE).stream().limit(MasterUtil.limitItem).forEach(city -> {
 				tmpAllCity.add(city);
-			}); 
-			
+			});
+
 		}
 		return s_Cities.get(Integer.MIN_VALUE);
-		//return s_Cities.get(Integer.MIN_VALUE);
+		// return s_Cities.get(Integer.MIN_VALUE);
 	}
 
 	public static List<MCity> getCitiesByPostal(String postalCode) {
@@ -160,20 +126,19 @@ public class MasterUtil {
 
 		if (areaFilters.isEmpty()) {
 			return getInitCities();
-		}else {
+		} else {
 			return areaFilters;
 		}
-		
-		
+
 	}
-	
-	public static List<MCity> getInitCities(){
+
+	public static List<MCity> getInitCities() {
 		if (tmpAllCity.isEmpty()) {
 			getCities();
 		}
 		return tmpAllCity;
 	}
-	
+
 	public static char getOffsetChar(char c, int offset) {
 
 		return (char) (c + offset);
@@ -202,7 +167,7 @@ public class MasterUtil {
 		}
 		return tvetColleges;
 	}
-	
+
 	public static String saveUploadFile(Media media) throws IOException {
 
 		// System temp base folder
@@ -225,30 +190,144 @@ public class MasterUtil {
 
 		return savedFile.getAbsolutePath();
 	}
-	
+
 	public static List<X_ZZSubAnnex> loadSubAnnex(X_ZZ_Application_Form parent) {
 		List<X_ZZSubAnnex> subAnnexs = null;
 		if (parent != null) {
-			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID).createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID), null);
+			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID)
+					.createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID), null);
 			directSubAnnexQuery.setParameters(parent.getZZ_Application_Form_ID());
 			subAnnexs = directSubAnnexQuery.list();
 		}
-		
+
 		return subAnnexs;
 	}
-	
-	public static List<X_ZZAnnexure> loadAnnexure (X_ZZ_Application_Form applicationForm, String annexureType) {
-		if(applicationForm == null)
+
+	public static List<X_ZZAnnexure> loadAnnexure(X_ZZ_Application_Form applicationForm, String annexureType) {
+		if (applicationForm == null)
 			return null;
-		
-		Query annexureQuery = MTable.get(X_ZZAnnexure.Table_ID).createQuery(String.format("%s = ? AND %s = ?", 
+
+		Query annexureQuery = MTable.get(X_ZZAnnexure.Table_ID).createQuery(String.format("%s = ? AND %s = ?",
 				I_ZZAnnexure.COLUMNNAME_ZZ_Application_Form_ID, I_ZZAnnexure.COLUMNNAME_DataType), null);
 		annexureQuery.setParameters(applicationForm.getZZ_Application_Form_ID(), annexureType);
 		annexureQuery.setOrderBy(I_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);
 		return annexureQuery.list();
 	}
-	
-	public static String getNameOfColTranslated (String table, String colName) {
+
+	public static String getNameOfColTranslated(String table, String colName) {
 		return MColumn.get(Env.getCtx(), table, colName).get_Translation(I_AD_Column.COLUMNNAME_Name);
 	}
+	
+	public static final Entry<String, Integer> LkpGenderListIdentify = new AbstractMap.SimpleEntry<>("d28327d7-01ca-485a-89a2-baa868c8f446", null);
+	public static final Entry<String, Integer> LkpFunctionListIdentify = new AbstractMap.SimpleEntry<>("e4b70818-faaa-4af1-ae55-81563efc4633", null);
+	public static final Entry<String, Integer> LkpTitleListIdentify = new AbstractMap.SimpleEntry<>("1870ee55-4f9a-430e-ad6a-b5dc587216c7", null);
+	public static final Entry<String, Integer> LkpAppointmentListIdentify = new AbstractMap.SimpleEntry<>("6e1d8f96-0c9f-4ed5-940a-cb73aecb5d46", null);
+	
+	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 5);	
+	
+	public static List<ValueNamePair> getLkpAppointment () {
+		return getRefList(LkpAppointmentListIdentify);
+	}
+	
+	public static List<ValueNamePair> getLkpGenders () {
+		return getRefList(LkpGenderListIdentify);
+	}
+	
+	public static List<ValueNamePair> getLkpFunctionLists () {
+		return getRefList(LkpFunctionListIdentify);
+	}
+	
+	public static List<ValueNamePair> getLkpTitleLists () {
+		return getRefList(LkpTitleListIdentify);
+	}
+	
+	private static int getIdFromUU(Entry<String, Integer> identify) {
+		if (identify.getValue() == null) {
+			MReference ref = MReference.get(Env.getCtx(), identify.getKey());
+			identify.setValue(ref.getAD_Reference_ID());
+		}
+		
+		return identify.getValue();
+	}
+	
+	
+	public static List<ValueNamePair> getRefList (Entry<String, Integer> identify) {
+		List<ValueNamePair> lkpList = lkpCache.get(identify);
+		if (lkpList == null) {
+			int id = MasterUtil.getIdFromUU(identify);
+			lkpList = List.of(MRefList.getList(Env.getCtx(), id, false));
+			lkpCache.put(identify, lkpList);
+		}
+		
+		return lkpList;
+	}
+	
+	public static List<ValueNamePair> getLkpEquity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private static CCache<Integer, List<X_ZZ_LI_HighestEducation>> highestEducationCache = new CCache<>("master-X_ZZ_LI_HighestEducation", 1);
+	
+	public static List<X_ZZ_LI_HighestEducation> getHighestEducations(){
+		if (highestEducationCache.isEmpty()) {
+			List<X_ZZ_LI_HighestEducation> list = getMasterList(X_ZZ_LI_HighestEducation.Table_ID);
+			highestEducationCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return highestEducationCache.get(Integer.MAX_VALUE);
+	}
+	
+	private static CCache<Integer, List<X_ZZ_LI_HomeLanguage>> homeLanguageCache = new CCache<>("master-X_ZZ_LI_HomeLanguage", 1);
+	
+	public static List<X_ZZ_LI_HomeLanguage> getHomeLanguage(){
+		if (homeLanguageCache.isEmpty()) {
+			List<X_ZZ_LI_HomeLanguage> list = getMasterList(X_ZZ_LI_HomeLanguage.Table_ID);
+			homeLanguageCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return homeLanguageCache.get(Integer.MAX_VALUE);
+	}
+	
+	private static CCache<Integer, List<X_ZZ_LI_Disability>> disabilityCache = new CCache<>("master-X_ZZ_LI_Disability", 1);
+	
+	public static List<X_ZZ_LI_Disability> getDisability(){
+		if (disabilityCache.isEmpty()) {
+			List<X_ZZ_LI_Disability> list = getMasterList(X_ZZ_LI_Disability.Table_ID);
+			disabilityCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return disabilityCache.get(Integer.MAX_VALUE);
+	}
+	
+	private static CCache<Integer, List<X_ZZ_LI_CitizenResidentialStatus>> citizenResidentialStatusCache = new CCache<>("master-X_ZZ_LI_CitizenResidentialStatus", 1);
+	
+	public static List<X_ZZ_LI_CitizenResidentialStatus> getCitizenResidentialStatus(){
+		if (citizenResidentialStatusCache.isEmpty()) {
+			List<X_ZZ_LI_CitizenResidentialStatus> list = getMasterList(X_ZZ_LI_CitizenResidentialStatus.Table_ID);
+			citizenResidentialStatusCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return citizenResidentialStatusCache.get(Integer.MAX_VALUE);
+	}
+	
+	private static CCache<Integer, List<X_ZZ_LI_SocioEconomicStatus>> socioEconomicStatusCache = new CCache<>("master-X_ZZ_LI_SocioEconomicStatus", 1);
+	
+	public static List<X_ZZ_LI_SocioEconomicStatus> getSocioEconomicStatus(){
+		if (socioEconomicStatusCache.isEmpty()) {
+			List<X_ZZ_LI_SocioEconomicStatus> list = getMasterList(X_ZZ_LI_SocioEconomicStatus.Table_ID);
+			socioEconomicStatusCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return socioEconomicStatusCache.get(Integer.MAX_VALUE);
+	}
+	
+	
+	private static <T extends PO> List<T> getMasterList(int tableID){
+		Query annexureQuery = MTable.get(tableID).createQuery(null, null)
+				.setOnlyActiveRecords(true)
+				.setClient_ID();
+		return annexureQuery.list();		
+	}
+
 }

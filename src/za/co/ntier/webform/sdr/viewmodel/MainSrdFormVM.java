@@ -6,6 +6,8 @@ import java.util.List;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
+import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.AddressType;
@@ -14,10 +16,11 @@ import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.BaseCellModel;
 import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.cell.AbstractListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.StringListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.AddressUtil;
@@ -51,7 +54,7 @@ public class MainSrdFormVM {
 
 		//=>TEST ONLY
 		contactDetailTab.getCompModel()
-		.add(AddressUtil.initAddress(ProgramType.ARTISAN_DEV, AddressType.MAIN, "Just For Test", null));
+		.add(AddressUtil.initAddress(ProgramType.ARTISAN_DEV, AddressType.MAIN, null));
 
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
 		addressDetailTab.setTabTitle("Address Details");
@@ -94,7 +97,13 @@ public class MainSrdFormVM {
 	private TableModel getEducationComp() {
 		List<BaseColumnModel> cols = new ArrayList<>();
 
-		BaseColumnModel highestEducationCol = StringListCellModel.getColumnModel("Highest Education", demoData).required();
+		ListColumnModel<X_ZZ_LI_HighestEducation> highestEducationCol = 
+				AbstractListCellModel.getListColumnModel("Highest Education"
+						, (String)null
+						, MasterUtil.getHighestEducations()
+						, highestEducation -> {return highestEducation.getName();}
+					);
+		highestEducationCol.required();
 		cols.add(highestEducationCol);
 
 		BaseColumnModel highestEducationDescriptionCol = BaseCellModel.getColModelForText("Highest Education Description");
@@ -236,8 +245,11 @@ public class MainSrdFormVM {
 		BaseColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel(null, "ID Document Upload", null, null);
 		cols.add(idDocUploadCol);
 
-		BaseColumnModel greettingCol = StringListCellModel.getColumnModel("Title"
-				, List.of("Adv", "Dr", "Me", "Miss", "Mr")).required();
+		BaseColumnModel greettingCol = AbstractListCellModel.getListColumnModel("Title"
+				, (String)null
+				, MasterUtil.getLkpTitleLists()
+				, title -> {return title.getName();}
+			).required();
 		cols.add(greettingCol);
 
 		BaseColumnModel idNoCol = BaseCellModel.getColModelForText("ID No").required();
@@ -249,36 +261,60 @@ public class MainSrdFormVM {
 		BaseColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel("Date of Birth", null).required();
 		cols.add(dateOfBirthCol);
 
-		BaseColumnModel genderCol = StringListCellModel.getColumnModel("Gender"
-				, List.of("Fermale", "Male", "Other")).required();
+		BaseColumnModel genderCol = AbstractListCellModel.getListColumnModel("Gender"
+				, (String)null
+				, MasterUtil.getLkpGenders()
+				, title -> {return title.getName();}
+			).required();
 		cols.add(genderCol);
 
-		BaseColumnModel equityCol = StringListCellModel.getColumnModel("Equity"
-				, demoData).required();
+		BaseColumnModel equityCol = AbstractListCellModel.getListColumnModel("Equity"
+				, (String)null
+				, demoData
+				, title -> {return title;}
+			).required();
 		cols.add(equityCol);
 
-		BaseColumnModel disabilityCol = StringListCellModel.getColumnModel("Disability"
-				, demoData).required();
+		BaseColumnModel disabilityCol = AbstractListCellModel.getListColumnModel("Disability"
+				, (String)null
+				, MasterUtil.getDisability()
+				, title -> {return title.getName();}
+			).required();
 		cols.add(disabilityCol);
 
-		BaseColumnModel homeLanguageCol = StringListCellModel.getColumnModel("Home Language"
-				, demoData).required();
+		BaseColumnModel homeLanguageCol = AbstractListCellModel.getListColumnModel("Home Language"
+				, (String)null
+				, MasterUtil.getHomeLanguage()
+				, title -> {return title.getName();}
+			).required();
 		cols.add(homeLanguageCol);
 
-		BaseColumnModel citizenResidentialStatusCol = StringListCellModel.getColumnModel("Citizen Residential Status"
-				, demoData).required();
+		BaseColumnModel citizenResidentialStatusCol = AbstractListCellModel.getListColumnModel("Citizen Residential Status"
+				, (String)null
+				, MasterUtil.getCitizenResidentialStatus()
+				, title -> {return title.getName();}
+			).required();
 		cols.add(citizenResidentialStatusCol);
 
-		BaseColumnModel alternateIDTypeCol = StringListCellModel.getColumnModel("Alternate ID Type"
-				, demoData).required();
+		BaseColumnModel alternateIDTypeCol = AbstractListCellModel.getListColumnModel("Alternate ID Type"
+				, (String)null
+				, demoData
+				, title -> {return title;}
+			).required();
 		cols.add(alternateIDTypeCol);
 
-		BaseColumnModel nationalityCol = StringListCellModel.getColumnModel("Nationality"
-				, demoData).required();
+		BaseColumnModel nationalityCol = AbstractListCellModel.getListColumnModel("Nationality"
+				, (String)null
+				, demoData
+				, title -> {return title;}
+			).required();
 		cols.add(nationalityCol);
 
-		BaseColumnModel socioEconomicStatusCol = StringListCellModel.getColumnModel("Socio Economic Status"
-				, demoData).required();
+		BaseColumnModel socioEconomicStatusCol = AbstractListCellModel.getListColumnModel("Socio Economic Status"
+				, (String)null
+				, MasterUtil.getSocioEconomicStatus()
+				, title -> {return title.getName();}
+			).required();
 		cols.add(socioEconomicStatusCol);
 
 		TableModel personDetailBean = TableModel.getTableBean(TableModel.class, cols, false);

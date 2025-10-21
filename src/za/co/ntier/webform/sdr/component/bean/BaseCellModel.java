@@ -7,14 +7,24 @@ public class BaseCellModel implements IValueChange {
 	private TableModel tableModel;
 	private RowModel rowModel;
 	private Object value;
+	private BaseColumnModel colModel;
 
-	public BaseCellModel(TableModel tableModel, RowModel rowModel){
-		this.setAnnexure(tableModel);
-		this.setRow(rowModel);
+	public BaseColumnModel getColModel() {
+		return colModel;
 	}
 
-	public BaseCellModel(TableModel tableModel, RowModel rowModel, int cellType){
-		this(tableModel, rowModel);
+	public void setColModel(BaseColumnModel colModel) {
+		this.colModel = colModel;
+	}
+
+	public BaseCellModel(TableModel tableModel, RowModel rowModel, BaseColumnModel colModel){
+		this.setAnnexure(tableModel);
+		this.setRow(rowModel);
+		this.colModel = colModel;
+	}
+
+	public BaseCellModel(TableModel tableModel, RowModel rowModel, BaseColumnModel colModel, int cellType){
+		this(tableModel, rowModel, colModel);
 		this.cellType = cellType;
 	}
 
@@ -73,8 +83,8 @@ public class BaseCellModel implements IValueChange {
 
 	private static  BaseColumnModel getColModel(String title, int cellType) {
 		BaseColumnModel colModel = new BaseColumnModel(title);
-		colModel.setCellModelSupplier((tableModel, rowModel) -> {
-			return new BaseCellModel(tableModel, rowModel, cellType);
+		colModel.setCellModelSupplier(models -> {
+			return new BaseCellModel(models.getLeft(), models.getMiddle(), models.getRight(), cellType);
 		});
 
 		return colModel;
@@ -95,10 +105,10 @@ public class BaseCellModel implements IValueChange {
 			throw new IllegalStateException("Error creating col model for " + coClass.getName());
 		}
 
-		colModel.setCellModelSupplier((tableModel, rowModel) -> {
+		colModel.setCellModelSupplier(models -> {
 			try {
-				Constructor<CE> cons = ceClass.getConstructor(tableModel.getClass(), rowModel.getClass());
-				return cons.newInstance(tableModel, rowModel);
+				Constructor<CE> cons = ceClass.getConstructor(models.getLeft().getClass(), models.getMiddle().getClass(), models.getRight().getClass());
+				return cons.newInstance(models.getLeft(), models.getMiddle(), models.getRight());
 			} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				e.printStackTrace();

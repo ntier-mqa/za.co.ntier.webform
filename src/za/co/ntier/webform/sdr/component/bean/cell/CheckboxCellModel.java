@@ -8,8 +8,8 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 public class CheckboxCellModel extends BaseCellModel {
 	private String title;
 
-	public CheckboxCellModel(TableModel annexure, RowModel row) {
-		super(annexure, row, CHECK_CELL);
+	public CheckboxCellModel(TableModel annexure, RowModel row, BaseColumnModel colModel) {
+		super(annexure, row, colModel, CHECK_CELL);
 	}
 
 	/**

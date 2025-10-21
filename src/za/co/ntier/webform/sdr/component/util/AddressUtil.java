@@ -21,7 +21,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 
 public class AddressUtil {
-	public static TableModel initAddress(ProgramType programType, AddressType addressType, String addressTitle, X_ZZ_Application_Form applicationForm) {
+	public static TableModel initAddress(ProgramType programType, AddressType addressType, X_ZZ_Application_Form applicationForm) {
 		List<BaseColumnModel> cols = new ArrayList<>();
 
 		if(showSiteName(programType, addressType)) {
@@ -72,7 +72,7 @@ public class AddressUtil {
 		}
 
 		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
-		addressFormBean.setSectionHeader(addressTitle);
+		addressFormBean.setSectionHeader(getAddressTitle(programType, addressType));
 		addressFormBean.setDataType(addressType.toString());
 		addressFormBean.setPoSupplier((ann, appForm) -> {
 			X_ZZ_FormContact po = new X_ZZ_FormContact(appForm.getCtx(), 0, null);

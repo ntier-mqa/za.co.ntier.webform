@@ -9,15 +9,15 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.BaseColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 
-	public ProvinceCellModel(TableModel tableModel, RowModel rowModel){
-		super(tableModel, rowModel);
-		setModel(new ListModelList<MRegion>());
+	public ProvinceCellModel(TableModel tableModel, RowModel rowModel, ListColumnModel<MRegion> colModel){
+		super(tableModel, rowModel, colModel);
 	}
 
 	@Override
@@ -89,8 +89,8 @@ public class ProvinceCellModel extends AbstractListCellModel<MRegion>{
 	public static ListColumnModel<MRegion> getColumnModel(String title, String daoPropertyName) {
 		ListColumnModel<MRegion> colProvinceModel = new ListColumnModel<MRegion>(title);
 		colProvinceModel.setDaoPropertyName(daoPropertyName);
-		colProvinceModel.setCellModelSupplier((tableModel, rowModel)->{
-			return new ProvinceCellModel(tableModel, rowModel);
+		colProvinceModel.setCellModelSupplier(models ->{
+			return new ProvinceCellModel(models.getLeft(), models.getMiddle(), (ListColumnModel<MRegion>)models.getRight());
 		});
 		colProvinceModel.setDataProvider(MasterUtil.getRegions());
 		return colProvinceModel;
