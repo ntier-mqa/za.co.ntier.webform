@@ -14,6 +14,7 @@ import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.TextData;
 
 public class LearningMaterialsDevelopment extends AbstractProgram{
 	private AnnexureInfo learningMaterials;
@@ -135,12 +136,19 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 
 	private static String s(Object o){
 	    if (o == null) return null;
-	    String t = String.valueOf(o).trim();
+	    String t = (o!=null)? ((TextData)o).getValue() : null;
+	    if (t==null) return null;
 	    return t.isEmpty() ? null : t;
 	}
-	private static boolean notEmpty(String v){ return v != null && !v.isBlank(); }
-	private static boolean isTenDigits(String s){ return s != null && s.matches("^\\s*\\d{10}\\s*$"); }
-	private static boolean isEmail(String s){ return s != null && s.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$"); }
+	private static boolean notEmpty(String v){ 
+		return v != null && !v.isBlank(); 
+		}
+	private static boolean isTenDigits(String s){
+		return s != null && s.matches("^\\s*\\d{10}\\s*$");
+		}
+	private static boolean isEmail(String s){ 
+		return s != null && s.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$"); 
+		}
 
 	/**
 	 * @return the bankInfo
