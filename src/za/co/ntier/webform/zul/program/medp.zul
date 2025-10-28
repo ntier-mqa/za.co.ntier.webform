@@ -5,14 +5,12 @@
 	viewModel="@id('vmMedp') @init('za.co.ntier.webform.form.viewmodel.program.MedpVMWrapper')">
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle"
-			value="MANAGEMENT AND EXECUTIVE DEVELOPMENT PROGRAMME (MEDP) SPECIFIC
-GUIDELINES" />
+			value="MANAGEMENT AND DEVELOPMENT PROGRAMME (MDP) SPECIFIC GUIDELINES" />
 	</hlayout>
 
 	<div>
 		<label
-			value="To support qualifying HDSA employees with Management and Executive Development
-			Programmes including MBAs/MBLs." />
+			value="To support qualifying HDSA employees with Management and Executive Development Programmes including MBAs/MBLs." />
 	</div>
 	<div>
 		<label
@@ -35,8 +33,7 @@ GUIDELINES" />
 
 		<div sclass="grid-cell">
 			<label
-				value="Number of learners applying for Management and
-	Executive Development Programme (MEDP)" />
+				value="Number of learners applying for Management Development Programme (MDP)" />
 		</div>
 		<div sclass="grid-cell">	
 				

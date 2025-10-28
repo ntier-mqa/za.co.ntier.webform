@@ -61,12 +61,12 @@ public class ProgramInput extends AnnexureInfo {
 	
 	public static Entry<Boolean, Boolean> convertUploadCondition(List<Object> uploadConditions) {
 		boolean hasWPAReq = Boolean.FALSE;
-		if(uploadConditions != null && uploadConditions.get(0) != null || "Y".equalsIgnoreCase((String)uploadConditions.get(0))) {
+		if(uploadConditions != null && uploadConditions.get(0) != null && "Y".equalsIgnoreCase((String)uploadConditions.get(0))) {
 			hasWPAReq = Boolean.TRUE;
 		}
 		
 		Boolean hasAccred = Boolean.FALSE;
-		if(uploadConditions != null && uploadConditions.get(1) != null || "Y".equalsIgnoreCase((String)uploadConditions.get(1))) {
+		if(uploadConditions != null && uploadConditions.get(1) != null && "Y".equalsIgnoreCase((String)uploadConditions.get(1))) {
 			hasAccred = Boolean.TRUE;
 		}
 		

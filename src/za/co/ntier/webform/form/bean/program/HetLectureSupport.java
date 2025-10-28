@@ -66,7 +66,7 @@ public class HetLectureSupport  extends AbstractProgram {
 
 		disciplines = ProgramInput.getDisciplines(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
 				applicationForm, columns);
-		disciplines.setSectionHeader("HET LECTURE SUPPORT GRANT APPLICATION");
+		disciplines.setSectionHeader("HEI LECTURE SUPPORT GRANT APPLICATION");
 
 		if(applicationForm != null) {
 			institutionParticipatedStr = applicationForm.getZZHasPastParticipatedLecturer();

@@ -40,9 +40,9 @@ public enum AddressType {
 		else if (programType == ProgramType.EXPERIENCE && isAlternate)
 			return "Alternate contact details of the person responsible for PRACTICAL TRAINING:";
 		else if (programType == ProgramType.DEV_PROGRAM && !isAlternate)
-			return "Contact details of person responsible for MEDP";
+			return "Contact details of person responsible for MDP";
 		else if (programType == ProgramType.DEV_PROGRAM && isAlternate)
-			return "Alternative contact details of person responsible for MEDP";
+			return "Alternative contact details of person responsible for MDP";
 		else if (programType == ProgramType.ARTISAN_AIDES)
 			return "Contact details of person responsible for Artisan Aides:";
 		else if (programType == ProgramType.ARTISAN_DEV)
