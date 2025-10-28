@@ -178,7 +178,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	/**
-	 * @return the applicationForm
+	 * @return the sdf
 	 */
 	public X_ZZ_Application_Form getApplicationForm() {
 		return applicationForm;
@@ -699,7 +699,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.alternateProgramContact = alternateProgramContact;
 	}
 	/**
-	 * @param applicationForm the applicationForm to set
+	 * @param sdf the sdf to set
 	 */
 	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;

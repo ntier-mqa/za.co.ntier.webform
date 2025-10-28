@@ -7,8 +7,6 @@ import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelInfo;
-import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelParams;
 
 public class DateCellModel extends CellModel {
 	public DateCellModel(TableModel annexure, RowModel row, ColumnModel colModel) {
@@ -30,9 +28,10 @@ public class DateCellModel extends CellModel {
 	 */
 	public void setLocalDate(LocalDate localDate) {
 		this.localDate = localDate;
+		super.setValue(getTimestamp());
 	}
 
-	public Timestamp getTimestamp() {
+	private Timestamp getTimestamp() {
 		if(localDate == null) {
 			return null;
 		}else {
@@ -40,13 +39,17 @@ public class DateCellModel extends CellModel {
 		}
 
 	}
-
-	public void setLocalDate(Timestamp timestamp) {
-		if(timestamp == null) {
+	@Override
+	public void setValue(Object timestampObj) {
+		
+		if(timestampObj == null) {
 			this.localDate = null;
 		}else {
-			this.localDate = timestamp.toLocalDateTime().toLocalDate();
+			Timestamp timeValue = Timestamp.class.cast(timestampObj);
+			this.localDate = timeValue.toLocalDateTime().toLocalDate();
 		}
+		
+		super.setValue(timestampObj);
 	}
 
 

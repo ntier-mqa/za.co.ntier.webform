@@ -5,7 +5,10 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.event.ListDataListener;
 
-public class NavTab implements ListDataListener{
+import za.co.ntier.api.model.X_ZZSdf;
+import za.co.ntier.webform.sdr.component.bean.ISupportSave;
+
+public class NavTab implements ListDataListener, ISupportSave{
 	private ListModelList<NavTabPanel> tabPanelModel;
 
 	public NavTab() {
@@ -86,5 +89,9 @@ public class NavTab implements ListDataListener{
 			return false;
 
 		return 0 < activeTabIndex && activeTabIndex < getTabPanelModel().size() - 1;
+	}
+	@Override
+	public void save(X_ZZSdf applicationForm, String trxName) {
+		saveList(tabPanelModel, applicationForm, trxName);
 	}
 }

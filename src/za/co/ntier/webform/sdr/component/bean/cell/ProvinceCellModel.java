@@ -53,7 +53,7 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 
 
 	@Override
-	public void setSelectedItemById(Object regionId) {
+	public void setValue(Object regionId) {
 		getModel().clearSelection();
 		if (regionId == null || (int)regionId == 0) {
 
@@ -71,8 +71,8 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 
 	}
 
-	@Override
-	public int getSelectedID() {
+	
+	public Object getSelectedID() {
 		if (getSelectedItem() == null)
 			return 0;
 		else
@@ -86,7 +86,8 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 
 	public static ListColumnModel<MRegion> getProvinceColumnModel(String title, String daoPropertyName) {
 		@SuppressWarnings("unchecked")
-		ListColumnModel<MRegion> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, ProvinceCellModel.class, title, daoPropertyName, MasterUtil.getRegions(), null);
+		ListColumnModel<MRegion> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, ProvinceCellModel.class, title, daoPropertyName, MasterUtil.getRegions(), null, null);
+		listColumnModel.setUseForID(true);
 		return listColumnModel;
 	}
 

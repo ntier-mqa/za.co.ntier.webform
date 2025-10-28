@@ -18,11 +18,10 @@
 			onClick="@command('prevTab')" 
 			/>
 
-		<button 
-			visible="@load(!vmTabButton.activeFirstTab)"
+		<button			
 		  label="Save &amp; Exit" sclass="icon-on-right"
 			iconSclass="z-icon-floppy-disk"
-			onClick="@command('saveClose')" />
+			onClick="@command('$vm.saveClose')" />
 
 		<button label="Next" sclass="icon-on-right"
 			visible="@load(!vmTabButton.activeEndTab)"

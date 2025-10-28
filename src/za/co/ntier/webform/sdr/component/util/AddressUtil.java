@@ -8,7 +8,7 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 
 import za.co.ntier.api.model.I_ZZ_FormContact;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZ_FormContact;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.AddressType;
@@ -21,7 +21,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 
 public class AddressUtil {
-	public static TableModel initAddress(ProgramType programType, AddressType addressType, X_ZZ_Application_Form applicationForm) {
+	public static TableModel initAddress(ProgramType programType, AddressType addressType, X_ZZSdf applicationForm) {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		if(showSiteName(programType, addressType)) {
@@ -76,7 +76,7 @@ public class AddressUtil {
 		addressFormBean.setDataType(addressType.toString());
 		addressFormBean.setPoSupplier((ann, appForm) -> {
 			X_ZZ_FormContact po = new X_ZZ_FormContact(appForm.getCtx(), 0, null);
-			po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
+			//po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
 			po.setZZ_ContactType(ann.getDataType());
 			return po;
 		});
@@ -89,9 +89,9 @@ public class AddressUtil {
 					, I_ZZ_FormContact.COLUMNNAME_ZZ_ContactType);
 
 			Query querySavedDaos = MTable.get(X_ZZ_FormContact.Table_ID).createQuery(where, null);
-			savedDaos = querySavedDaos.setParameters(
-					applicationForm.getZZ_Application_Form_ID()
-					, addressFormBean.getDataType()).list();
+			//savedDaos = querySavedDaos.setParameters(
+					//sdf.getZZ_Application_Form_ID()
+					//, addressFormBean.getDataType()).list();
 		}
 
 		addressFormBean.init(applicationForm, savedDaos);

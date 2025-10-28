@@ -34,7 +34,7 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	}
 
 	@Override
-	public void setSelectedItemById(Object cityId) {
+	public void setValue(Object cityId) {
 		getModel().clearSelection();
 		if (cityId == null || (int)cityId == 0) {
 
@@ -55,15 +55,15 @@ public class AreaCellModel extends ListCellModel<MCity>{
 		ProvinceCellModel provinceCellModel = getCellModelByType(ProvinceCellModel.class);
 		if (provinceCellModel != null) {
 			if (getModel().isSelectionEmpty()) {
-				provinceCellModel.setSelectedItemById(null);
+				provinceCellModel.setValue(0);
 			}else {
-				provinceCellModel.setSelectedItemById(getSelectedItem().getC_Region_ID());
+				provinceCellModel.setValue(getSelectedItem().getC_Region_ID());
 			}
 		}
 	}
 
 	@Override
-	public int getSelectedID() {
+	public Object getSelectedID() {
 		if (getSelectedItem() == null)
 			return 0;
 		else
@@ -78,7 +78,8 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	public static ListColumnModel<MCity> getAreaColumnModel(String title, String daoPropertyName) {
 	
 		@SuppressWarnings("unchecked")
-		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, AreaCellModel.class, title, daoPropertyName, MasterUtil.getInitCities(), null);
+		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, AreaCellModel.class, title, daoPropertyName, MasterUtil.getInitCities(), null, null);
+		listColumnModel.setUseForID(true);
 		return listColumnModel;
 	}
 

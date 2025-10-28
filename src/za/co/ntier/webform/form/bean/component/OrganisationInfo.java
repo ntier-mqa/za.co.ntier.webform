@@ -91,7 +91,7 @@ public class OrganisationInfo implements ISaveForm {
 	}
 
 	/**
-	 * @return the applicationForm
+	 * @return the sdf
 	 */
 	public X_ZZ_Application_Form getApplicationForm() {
 		return applicationForm;
@@ -303,7 +303,7 @@ public class OrganisationInfo implements ISaveForm {
 		/* Martin removed
 		if (StringUtils.isNotBlank(getFullPathVATCer()))
 			try {
-				applicationForm.setZZ_VAT_Exemption(
+				sdf.setZZ_VAT_Exemption(
 						Files.readAllBytes(Paths.get(getFullPathVATCer())));
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -396,7 +396,7 @@ public class OrganisationInfo implements ISaveForm {
 	}
 
 	/**
-	 * @param applicationForm the applicationForm to set
+	 * @param sdf the sdf to set
 	 */
 	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;

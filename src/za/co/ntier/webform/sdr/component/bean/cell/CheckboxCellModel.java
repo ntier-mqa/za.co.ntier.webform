@@ -1,7 +1,5 @@
 package za.co.ntier.webform.sdr.component.bean.cell;
 
-import java.awt.image.ColorModel;
-
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;

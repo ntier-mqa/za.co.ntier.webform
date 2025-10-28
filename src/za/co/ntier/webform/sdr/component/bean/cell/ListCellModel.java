@@ -1,23 +1,49 @@
 package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
-import org.compiere.model.MCity;
-import org.compiere.model.MRegion;
 import org.zkoss.zul.ListModelList;
 
-import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
-import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISelectable;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelInfo;
-import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelParams;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class ListCellModel<T> extends CellModel implements ISelectable {
+	
+	@Override
+	public Object getValue() {
+		return getSelectedID();
+	}
+	
+	@Override
+	public void setValue(Object value) {
+		getModel().clearSelection();
+		for (T item : getColModel().getDataProvider()) {
+			Object itemValue;
+			if (getColModel().getValueConvert() != null) {
+				itemValue = getColModel().getValueConvert().apply(item);
+			}else {
+				itemValue = item;
+			}
+			
+			if (Objects.equals(value, itemValue)) {
+				if (!getModel().contains(item)) {
+					getModel().add(item);
+				}
+				
+				getModel().addToSelection(item);
+				super.setValue(value);
+				return;
+			}
+		}
+		
+		//throw new IllegalArgumentException("value isn't on list");
+		
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -85,12 +111,20 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		return model.getSelection().iterator().next();
 	}
 
-	public int getSelectedID() {
-		return 0;
-	}
-
-	public void setSelectedItemById(Object cityId) {
+	public Object getSelectedID() {
+		T selectedItem = getSelectedItem();
 		
+		if (selectedItem == null && getColModel().isUseForID())
+			return 0;
+		else if (selectedItem == null && !getColModel().isUseForID()) 
+			return null;
+		
+		Function<T, Object> valueConvert = getColModel().getValueConvert();
+		if (valueConvert != null) {
+			return valueConvert.apply(selectedItem);
+		}else {
+			return selectedItem;
+		}
 	}
 
 	/**
@@ -105,7 +139,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	protected static  <T extends ListCellModel<L>, K extends ListColumnModel<L>, L> K
-	getListColumnModel(Class<K> coClass, Class<T> ceClass, String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert) {
+	getListColumnModel(Class<K> coClass, Class<T> ceClass, String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert, Function<L, Object> valueConvert) {
 		K listColumnModel = CellModel.getColModelForCell(CellModelInfo.of(coClass, ceClass, null), 
 				CellModelParams.of(title, daoPropertyName, null)
 				);
@@ -113,13 +147,22 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		listColumnModel.setDataProvider(dataProvider);
 		
 		listColumnModel.setDisplayConvert(displayConvert);
+		listColumnModel.setValueConvert(valueConvert);
 		
 		return listColumnModel;
 	}
 	
-	public static <L> ListColumnModel<L> getListColumnModel(String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert) {
+	@Override
+	public boolean notInputed() {
+		Object value = getValue();
+		return Objects.isNull(value) || (getColModel().isUseForID() && (int)value == 0);
+	}
+	
+	public static <L> ListColumnModel<L> getListColumnModel(String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert, Function<L, Object> valueConvert) {
 		@SuppressWarnings("unchecked")
-		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert);
+		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert, valueConvert);
 		return listColumnModel;
 	}
+
+
 }

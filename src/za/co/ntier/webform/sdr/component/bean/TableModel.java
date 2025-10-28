@@ -24,11 +24,12 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
-import za.co.ntier.api.model.X_ZZ_Application_Form;
+import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
-public class TableModel {
+public class TableModel implements ISupportSave {
+	
 	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
 	public final static String AnnexureTypeExitStrategy = "EXIT STRATEGY";
 	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
@@ -75,7 +76,39 @@ public class TableModel {
 	}
 
 	private List<ColumnModel> columnModels;
-	private BiFunction<TableModel, X_ZZ_Application_Form, PO> poSupplier;
+	private BiFunction<TableModel, X_ZZSdf, PO> poSupplier;
+	
+	public static class DaoManage{
+		Map<Integer, PO> daos = new HashMap<Integer, PO>();
+
+		/**
+		 * @return the dao
+		 */
+		public PO getDao(Integer tableId) {
+			if (tableId == null && daos.size() == 1) {
+				return daos.values().iterator().next();
+			}else {
+				return daos.get(tableId);
+			}
+
+		}
+
+		/**
+		 * @param dao the dao to set
+		 */
+		public void setDao(PO dao) {
+			daos.put(dao.get_Table_ID(), dao);
+		}
+		
+		public void saveDao(String trxName) {
+			daos.forEach((t, po) -> po.saveEx(trxName)
+					);
+		}
+	}
+	
+	private DaoManage daoManage;
+
+	
 	private List<RowModel> rows;
 	private String sectionHeader;
 
@@ -527,31 +560,6 @@ public class TableModel {
 	}
 
 
-	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
-		for (RowModel row : getRows()) {
-			PO po = row.getData();
-			if (po == null) {
-				applicationForm.set_TrxName(trxName); // important
-				po = poSupplier.apply(this, applicationForm);
-			}
-
-			if (row.inputState() == RowModel.INPUT_STATE_EMPTY) {
-				// delete row record if user cleared all input for this row
-				po.delete(true);
-			}else if (row.inputState() == RowModel.INPUT_STATE_FULL) {
-
-				po.saveEx(trxName);
-				row.saveUploadFiles(po, trxName);
-
-			}else {// some required column is missing (validate getting fail)
-				throw new AdempiereException("Please input full required data for all columns in the row or clear all data to remove the row (validate is fail).");
-			}
-		}
-
-		applicationForm.setZZTotalNumberApplied(this.getGrandTotal() + applicationForm.getZZTotalNumberApplied());
-	}
-
-
 	private int getGrandTotal() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -584,22 +592,22 @@ public class TableModel {
 	}
 
 
-	public void init(X_ZZ_Application_Form applicationForm) {
+	public void init(X_ZZSdf applicationForm) {
 		init(applicationForm, null);
 	}
 
-	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas) {
+	public void init(X_ZZSdf applicationForm, List<PO> savedDatas) {
 		init(applicationForm, savedDatas, null);
 	}
 
-	public void init(X_ZZ_Application_Form applicationForm, List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
+	public void init(X_ZZSdf applicationForm, List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
 		if(rowTitles == null || rowTitles.size() == 0)
 			init(applicationForm, savedDatas, null, null);
 		else
 			init(applicationForm, savedDatas, rowTitles, rowTitles.get(0).keySet());
 	}
 
-	public void init(X_ZZ_Application_Form applicationForm,
+	public void init(X_ZZSdf applicationForm,
 			List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)
@@ -621,7 +629,6 @@ public class TableModel {
 						isMatching = row.isMatchingRow(keyColumns, dao);
 						if (isMatching) {
 							matchedRows.add(row);
-							row.setData(dao);
 							row.fillRowDataFromDao(dao);
 							break;
 						}
@@ -630,13 +637,16 @@ public class TableModel {
 
 				if(!isMatching) {
 					RowModel row = createDetailRow();
-					row.setData(dao);
 					row.fillRowDataFromDao(dao);
 				}
 			}
-
 		}
 
+		if (daoManage != null) {
+			RowModel row = createDetailRow();
+			row.fillRowDataFromDao(null);
+		}
+		
 		if (getRows().size() == 0 && createNewRowWhenEmpty) {
 			createDetailRow();
 		}
@@ -648,14 +658,14 @@ public class TableModel {
 	/**
 	 * @return the poSupplier
 	 */
-	public BiFunction<TableModel, X_ZZ_Application_Form, PO> getPoSupplier() {
+	public BiFunction<TableModel, X_ZZSdf, PO> getPoSupplier() {
 		return poSupplier;
 	}
 
 	/**
 	 * @param poSupplier the poSupplier to set
 	 */
-	public void setPoSupplier(BiFunction<TableModel, X_ZZ_Application_Form, PO> poSupplier) {
+	public void setPoSupplier(BiFunction<TableModel, X_ZZSdf, PO> poSupplier) {
 		this.poSupplier = poSupplier;
 	}
 
@@ -684,5 +694,30 @@ public class TableModel {
 	 */
 	public void setSclass(String sclass) {
 		this.sclass = sclass;
+	}
+
+	@Override
+	public void save(X_ZZSdf applicationForm, String trxName) {
+		for(RowModel rowModel : getRows()) {
+			rowModel.save(applicationForm, trxName);
+		}
+		
+		if(getDaoManage() != null) {
+			getDaoManage().saveDao(trxName);
+		}
+	}
+
+	/**
+	 * @return the daoManage
+	 */
+	public DaoManage getDaoManage() {
+		return daoManage;
+	}
+
+	/**
+	 * @param daoManage the daoManage to set
+	 */
+	public void setDaoManage(DaoManage daoManage) {
+		this.daoManage = daoManage;
 	}
 }

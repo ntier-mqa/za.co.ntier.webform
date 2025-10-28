@@ -9,8 +9,6 @@ import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelInfo;
-import za.co.ntier.webform.sdr.component.bean.CellModel.CellModelParams;
 
 public class PostalCellModel extends CellModel{
 	public PostalCellModel(TableModel tableModel, RowModel rowModel, ColumnModel colModel) {

@@ -71,7 +71,7 @@ public class CetTvetProgram extends AbstractProgram {
 			// cols = List.of(colNoBeneficiaries);
 			identify = "ANNEXURE C";
 			tableTitle = "CET Managers receiving training on curriculum related studies";
-			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify);
+			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(sdf, cols, sectionHeader, tableTitle, identify);
 			//annexureInfos.add(annexure);
 			
 			cols = List.of(colRequestedProgramme, colNoManagers);
@@ -81,7 +81,7 @@ public class CetTvetProgram extends AbstractProgram {
 			//cols = List.of(colNoBeneficiaries);
 			identify = "ANNEXURE D";
 			tableTitle = "Number of CET Colleges lecturers awarded skills development programmes";
-			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify);
+			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(sdf, cols, sectionHeader, tableTitle, identify);
 			//annexureInfos.add(annexure);
 			
 			cols = List.of(colRequestedProgramme);
@@ -94,7 +94,7 @@ public class CetTvetProgram extends AbstractProgram {
 			String tabTile = "ANNEXURE A";
 			//cols = List.of(colNoBeneficiaries, colDiscipline);
 			tableTitle = "Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)";
-			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify);
+			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(sdf, cols, sectionHeader, tableTitle, identify);
 			//annexureInfos.add(annexure);
 			
 			cols = List.of(colFieldStudy, colNoLearners);
@@ -106,7 +106,7 @@ public class CetTvetProgram extends AbstractProgram {
 			tabTile = "ANNEXURE B";
 			//cols = List.of(colNoBeneficiaries, colProgrammeApply);
 			tableTitle = "TVET Managers receiving training on curriculum related studies";
-			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify);
+			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(sdf, cols, sectionHeader, tableTitle, identify);
 			//annexureInfos.add(annexure);
 			
 			cols = List.of(colRequestedProgramme, colNoManagers);
@@ -196,7 +196,7 @@ public class CetTvetProgram extends AbstractProgram {
 				annexure.getSubAnnexure().save(trxName, applicationForm);
 			}
 		}
-		//applicationForm.setZZTotalNumberApplied(total);
+		//sdf.setZZTotalNumberApplied(total);
 		if (addressInfo != null)
 			addressInfo.saveForm(trxName, applicationForm);
 	}

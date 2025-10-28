@@ -11,6 +11,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 
 public class ListColumnModel<T> extends ColumnModel {
+	private boolean isUseForID = false;
 	private List<T> dataProvider;
 	private String beanPropertyName;
 	private Function<T, String> displayConvert;
@@ -69,11 +70,43 @@ public class ListColumnModel<T> extends ColumnModel {
 	public Function<T, String> getDisplayConvert() {
 		return displayConvert;
 	}
+	
+	private Function<T, Object> valueConvert;
+	
 
 	/**
 	 * @param displayConvert the displayConvert to set
 	 */
 	public void setDisplayConvert(Function<T, String> displayConvert) {
 		this.displayConvert = displayConvert;
+	}
+
+	/**
+	 * @return the valueConvert
+	 */
+	public Function<T, Object> getValueConvert() {
+		return valueConvert;
+	}
+
+	/**
+	 * @param valueConvert the valueConvert to set
+	 */
+	public void setValueConvert(Function<T, Object> valueConvert) {
+		this.valueConvert = valueConvert;
+	}
+
+	/**
+	 * @return the isUseForID
+	 */
+	public boolean isUseForID() {
+		return isUseForID;
+	}
+
+	/**
+	 * @param isUseForID the isUseForID to set
+	 */
+	public ListColumnModel<T> setUseForID(boolean isUseForID) {
+		this.isUseForID = isUseForID;
+		return this;
 	}
 }

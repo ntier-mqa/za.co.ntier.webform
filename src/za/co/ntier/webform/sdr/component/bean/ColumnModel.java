@@ -25,7 +25,9 @@ public class ColumnModel {
 	private static String correctDaoPropertyName(String daoPropertyName) {
 		return Introspector.decapitalize(daoPropertyName);
 	}
-
+	
+	private int tableId = 0; 
+	
 	private Function<RowModel, Integer> expression;
 
 	private boolean isCalTotal = false;
@@ -51,6 +53,9 @@ public class ColumnModel {
 	public ColumnModel setMandatory(boolean mandatory) { this.mandatory = mandatory; return this; }
 	// (optional fluent alias)
 	public ColumnModel required() { this.mandatory = true; return this; }
+	
+	
+	private boolean readonly = false;
 
 	/**
 	 * @return the title
@@ -144,6 +149,36 @@ public class ColumnModel {
 	 */
 	public void setShowTitle(boolean showTitle) {
 		this.showTitle = showTitle;
+	}
+
+	/**
+	 * @return the readonly
+	 */
+	public boolean isReadonly() {
+		return readonly;
+	}
+
+	/**
+	 * @param readonly the readonly to set
+	 */
+	public ColumnModel setReadonly(boolean readonly) {
+		this.readonly = readonly;
+		return this;
+	}
+
+	/**
+	 * @return the tableId
+	 */
+	public int getTableId() {
+		return tableId;
+	}
+
+	/**
+	 * @param tableId the tableId to set
+	 */
+	public ColumnModel setTableId(int tableId) {
+		this.tableId = tableId;
+		return this;
 	}
 
 	private boolean showTitle = true;

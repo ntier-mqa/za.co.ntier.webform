@@ -107,8 +107,7 @@
             <!-- Date -->
             <datebox if="${vmDataFormView.component.row[col].cellType eq CellModel.DATE_CELL}"
               format="yyyy/MM/dd" placeholder="yyyy/MM/dd"
-              valueInLocalDate="@bind(vmDataFormView.component.row[col].localDate)"
-              onChange="@command('notifyProgramComplete')" />
+              valueInLocalDate="@bind(vmDataFormView.component.row[col].localDate)" />
 
           </div>
         </div>

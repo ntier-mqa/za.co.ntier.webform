@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_AD_Column;
 import org.compiere.model.I_C_BP_Group;
@@ -34,16 +36,21 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.util.media.Media;
 
 import za.co.ntier.api.model.I_ZZAnnexure;
+import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZSubAnnex;
+import za.co.ntier.api.model.I_ZZ_Application_Form;
+import za.co.ntier.api.model.I_ZZ_Nationality;
 import za.co.ntier.api.model.X_ZZAnnexure;
+import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSubAnnex;
+import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_Disability;
 import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
-import za.co.ntier.api.model.X_lkpNationality;
+import za.co.ntier.api.model.X_ZZ_Nationality;
 import za.co.ntier.webform.form.bean.ProgramType;
 
 public class MasterUtil {
@@ -208,6 +215,17 @@ public class MasterUtil {
 		return annexureQuery.list();
 	}
 
+	public static <P extends PO> List<P> loadSaved(X_ZZSdf applicationForm, int tableID) {
+		if (applicationForm == null)
+			return null;
+
+		Query savedDataQuery = MTable.get(tableID).createQuery(String.format("%s = ?",
+				I_ZZSdf.COLUMNNAME_ZZSdf_ID), null);
+		savedDataQuery.setParameters(applicationForm.getZZSdf_ID());
+		savedDataQuery.setOrderBy(I_ZZ_Application_Form.COLUMNNAME_Created);
+		return savedDataQuery.list();
+	}
+	
 	public static String getNameOfColTranslated(String table, String colName) {
 		return MColumn.get(Env.getCtx(), table, colName).get_Translation(I_AD_Column.COLUMNNAME_Name);
 	}
@@ -278,6 +296,17 @@ public class MasterUtil {
 		return highestEducationCache.get(Integer.MAX_VALUE);
 	}
 	
+	private static CCache<Integer, List<X_ZZ_AlternateIDType>> alternateIDTypeCache = new CCache<>("master-X_ZZ_AlternateIDType", 1);
+	
+	public static List<X_ZZ_AlternateIDType> getAlternateIDType() {
+		if (alternateIDTypeCache.isEmpty()) {
+			List<X_ZZ_AlternateIDType> list = getMasterList(X_ZZ_AlternateIDType.Table_ID);
+			alternateIDTypeCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return alternateIDTypeCache.get(Integer.MAX_VALUE);
+	}
+	
 	private static CCache<Integer, List<X_ZZ_LI_HomeLanguage>> homeLanguageCache = new CCache<>("master-X_ZZ_LI_HomeLanguage", 1);
 	
 	public static List<X_ZZ_LI_HomeLanguage> getHomeLanguage(){
@@ -322,11 +351,11 @@ public class MasterUtil {
 		return socioEconomicStatusCache.get(Integer.MAX_VALUE);
 	}
 	
-	private static CCache<Integer, List<X_lkpNationality>> nationalityCache = new CCache<>("master-X_lkpNationality", 1);
+	private static CCache<Integer, List<X_ZZ_Nationality>> nationalityCache = new CCache<>("master-ZZ_Nationality", 1);
 	
-	public static List<X_lkpNationality> getNationality(){
+	public static List<X_ZZ_Nationality> getNationality(){
 		if (nationalityCache.isEmpty()) {
-			List<X_lkpNationality> list = getMasterList(X_lkpNationality.Table_ID);
+			List<X_ZZ_Nationality> list = getMasterList(I_ZZ_Nationality.Table_ID);
 			nationalityCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -340,4 +369,21 @@ public class MasterUtil {
 		return annexureQuery.list();		
 	}
 
+	public static void setObjectProperty(Object obj, String propertyName, Object value) {
+		try {
+			PropertyUtils.setSimpleProperty(obj, propertyName, value);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AdempiereException(e.getMessage(), e);
+		}
+	}
+	
+	public static Object getObjectPropertyValue(Object dao, String propertyName) {
+		try {
+			return PropertyUtils.getSimpleProperty(dao, propertyName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AdempiereException(e.getMessage(), e);
+		}
+	}
 }

@@ -27,7 +27,7 @@ public class UploadDocComponent implements ISaveForm {
 	}
 
 	/**
-	 * @return the applicationForm
+	 * @return the sdf
 	 */
 	public X_ZZ_Application_Form getApplicationForm() {
 		return applicationForm;
@@ -41,19 +41,19 @@ public class UploadDocComponent implements ISaveForm {
 	}
 	
 	/*
-	public void initComponent(X_ZZ_Application_Form applicationForm) {
+	public void initComponent(X_ZZ_Application_Form sdf) {
 		ColumnModel uploadDefCol = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadDoc);
 		ColumnModel uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload, uploadDoc);
 		
-		this.applicationForm = applicationForm;
-		if(applicationForm != null) {
+		this.applicationForm = sdf;
+		if(sdf != null) {
 			Query uploadDocQuery = MTable.get(X_ZZDocumentUploadFile.Table_ID).createQuery(
 					String.format("%s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID)
 					, null);
 			
 			List<X_ZZDocumentUploadFile> documentUploadFiles = uploadDocQuery.
 					setOrderBy(I_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID).
-					setParameters(applicationForm.getZZ_Application_Form_ID()).list();
+					setParameters(sdf.getZZ_Application_Form_ID()).list();
 			
 			for(Map<ColumnModel, Object> rowObj : uploadDoc.getRows()) {
 				RowModel row = (RowModel)rowObj;
@@ -169,7 +169,7 @@ public class UploadDocComponent implements ISaveForm {
 
 
 	/**
-	 * @param applicationForm the applicationForm to set
+	 * @param sdf the sdf to set
 	 */
 	public void setApplicationForm(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;

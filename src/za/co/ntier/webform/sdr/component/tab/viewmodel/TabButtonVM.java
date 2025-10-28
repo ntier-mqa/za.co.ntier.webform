@@ -33,10 +33,7 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 		navTab.doPrevTab();
 	}
 
-	@Command(value = "saveClose")
-	public void saveClose() throws IOException {
-
-	}
+	
 
 	@Command(value = "submitApplication")
 	public void submitApplication() throws IOException {

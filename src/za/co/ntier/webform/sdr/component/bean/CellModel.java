@@ -2,10 +2,8 @@ package za.co.ntier.webform.sdr.component.bean;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
-
-import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * Represents a cell in a table, it hold data and related info
@@ -20,7 +18,10 @@ public class CellModel implements IValueChange {
 	
 	private Object value;
 	
-
+	public boolean notInputed() {
+		return Objects.isNull(value);
+	}
+	
 	public ColumnModel getColModel() {
 		return colModel;
 	}
