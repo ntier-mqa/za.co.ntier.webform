@@ -156,6 +156,10 @@ public class CellModel implements IValueChange {
 	public static  ColumnModel getColModelForText(String title, String daoPropertyName) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, TEXT_CELL));
 	}
+	
+	public static  ColumnModel getColModelForPositiveNumber(String title, String daoPropertyName) {
+		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, POSITIVE_NUM_CELL));
+	}
 
 	/**
 	 * @return the value

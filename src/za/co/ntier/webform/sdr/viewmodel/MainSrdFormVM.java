@@ -93,10 +93,6 @@ public class MainSrdFormVM {
 		// new component
 		contactDetailTab.getCompModel().add(getContactDetailComp(personManage));
 
-		//=>TEST ONLY
-		contactDetailTab.getCompModel()
-		.add(AddressUtil.initAddress(ProgramType.ARTISAN_DEV, AddressType.MAIN, null));
-
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
 		addressDetailTab.setTabTitle("Address Details");
 		// new component
@@ -105,7 +101,7 @@ public class MainSrdFormVM {
 		NavTabPanel educationDetailTab = new NavTabPanel(mainTab);
 		educationDetailTab.setTabTitle("Education & Experience");
 		// new component
-		educationDetailTab.getCompModel().add(getEducationComp());
+		educationDetailTab.getCompModel().add(getEducationComp(personManage));
 
 	}
 
@@ -128,45 +124,73 @@ public class MainSrdFormVM {
 		return namesBean;
 	}
 
-	private TableModel getEducationComp() {
+	private TableModel getEducationComp(DaoManage personManage) {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel highestEducationCol = 
-				ListCellModel.getListColumnModel("Highest Education"
-						, (String)null
+				ListCellModel.getListColumnModel(
+						MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID)
+						, I_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID
 						, MasterUtil.getHighestEducations()
 						, highestEducation -> {return highestEducation.getName();}
 						, highestEducation -> {return highestEducation.getZZ_LI_HighestEducation_ID();}
-					).setUseForID(true).required();
+					).setUseForID(true)
+					.setTableId(I_ZZPerson.Table_ID)
+					.required();
 		cols.add(highestEducationCol);
 
-		ColumnModel highestEducationDescriptionCol = CellModel.getColModelForText("Highest Education Description", null);
+		ColumnModel highestEducationDescriptionCol = 
+				CellModel.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHighestEducationDesc)
+						, I_ZZPerson.COLUMNNAME_ZZHighestEducationDesc
+						).setTableId(I_ZZPerson.Table_ID);
 		cols.add(highestEducationDescriptionCol);
 
-		ColumnModel nameOfAccreditedTrainingProviderCol = CellModel.getColModelForText("Name Of Accredited Training Provider", null);
+		ColumnModel nameOfAccreditedTrainingProviderCol = 
+				CellModel.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZAccreditedTrainingProvider)
+						, I_ZZPerson.COLUMNNAME_ZZAccreditedTrainingProvider
+						).setTableId(I_ZZPerson.Table_ID);
 		cols.add(nameOfAccreditedTrainingProviderCol);
 
-		ColumnModel experienceCol = CellModel.getColModelForText("Experience", null).required();
+		ColumnModel experienceCol = 
+				CellModel.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZExperience)
+						, I_ZZPerson.COLUMNNAME_ZZExperience
+						).required()
+						.setTableId(I_ZZPerson.Table_ID)
+				;
 		cols.add(experienceCol);
 
-		ColumnModel currentOccupationCol = CellModel.getColModelForText("Current Occupation", null).required();
+		ColumnModel currentOccupationCol = 
+				CellModel.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZCurrentOccupation)
+						, I_ZZPerson.COLUMNNAME_ZZCurrentOccupation
+				).setTableId(I_ZZPerson.Table_ID)
+				.required();
 		cols.add(currentOccupationCol);
 
-		ColumnModel yearInOccupationCol = CellModel.getColModelForText("Year In Occupation", null).required();
+		ColumnModel yearInOccupationCol = 
+				CellModel.getColModelForPositiveNumber(
+						MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZYearsInOccupation)
+						, I_ZZPerson.COLUMNNAME_ZZYearsInOccupation
+						).setTableId(I_ZZPerson.Table_ID)
+						.required();
 		cols.add(yearInOccupationCol);
 
-		ColumnModel generalCommentsCol = CellModel.getColModelForText("General Comments", null).required();
+		ColumnModel generalCommentsCol = 
+				CellModel.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZGeneralComments)
+						, I_ZZPerson.COLUMNNAME_ZZGeneralComments
+						).setTableId(I_ZZPerson.Table_ID)
+						.required();
 		cols.add(generalCommentsCol);
 
 		TableModel educationBean = TableModel.getTableBean(TableModel.class, cols, false);
 		educationBean.setSclass("two-col srd-education");
-		educationBean.setPoSupplier((ann, appForm) -> {
-			//X_ZZ_FormContact po = new X_ZZ_FormContact(appForm.getCtx(), 0, null);
-			//po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
-			//po.setZZ_ContactType(ann.getDataType());
-			return null;
-		});
 
+		educationBean.setDaoManage(personManage);
+		
 		educationBean.init(null, null);
 
 		return educationBean;
