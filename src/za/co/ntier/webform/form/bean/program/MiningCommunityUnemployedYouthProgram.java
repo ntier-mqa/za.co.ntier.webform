@@ -77,8 +77,10 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 		
 		if(menuContextInfo.getProgramType() == ProgramType.MINING_COMMUNITY)
 			setProgramTitle("MINE COMMUNITY DEVELOPMENT GRANT");
-		else if(menuContextInfo.getProgramType() == ProgramType.UNEMPLOYED_YOUTH)
+		else if(menuContextInfo.getProgramType() == ProgramType.UNEMPLOYED_YOUTH) {
 			setProgramTitle("UNEMPLOYED YOUTH DEVELOPMENT PROGRAMMES GRANT");
+			monthlyStipend = 1750;
+		}
 		else if(menuContextInfo.getProgramType() == ProgramType.SMALL_SCALE_MINING)
 			setProgramTitle("SMALL SCALE MINING PROGRAMME");
 		
