@@ -75,8 +75,12 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 		
 		budgetColLearners.setCalTotal(true);
 		
-		setProgramTitle(menuContextInfo.getProgramType() == ProgramType.MINING_COMMUNITY?
-				"MINE COMMUNITY DEVELOPMENT GRANT":"UNEMPLOYED YOUTH DEVELOPMENT PROGRAMMES GRANT");
+		if(menuContextInfo.getProgramType() == ProgramType.MINING_COMMUNITY)
+			setProgramTitle("MINE COMMUNITY DEVELOPMENT GRANT");
+		else if(menuContextInfo.getProgramType() == ProgramType.UNEMPLOYED_YOUTH)
+			setProgramTitle("UNEMPLOYED YOUTH DEVELOPMENT PROGRAMMES GRANT");
+		else if(menuContextInfo.getProgramType() == ProgramType.SMALL_SCALE_MINING)
+			setProgramTitle("SMALL SCALE MINING PROGRAMME");
 		
 		// learnerApplys
 		List<ColumnInfo<?>> learnerApplyCols = List.of(

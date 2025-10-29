@@ -310,7 +310,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		} else if (ProgramType.WORKPLACE_COACHES == programType) {
 			setProgram(new WorkplaceCoachesProgram(menuContextInfo, applicationForm));
 		}else if (ProgramType.MINING_COMMUNITY == programType
-				|| ProgramType.UNEMPLOYED_YOUTH == programType) {
+				|| ProgramType.UNEMPLOYED_YOUTH == programType
+				|| ProgramType.SMALL_SCALE_MINING == programType) {
 			program = new MiningCommunityUnemployedYouthProgram(menuContextInfo, applicationForm);
 		}else if (ProgramType.HET_LECTURE_SUPPORT == programType) {
 			program = new HetLectureSupport(menuContextInfo, applicationForm);

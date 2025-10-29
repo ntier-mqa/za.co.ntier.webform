@@ -10,6 +10,7 @@ public enum ProgramType {
 	WORKPLACE_COACHES,
 	MINING_COMMUNITY,
 	UNEMPLOYED_YOUTH,
+	SMALL_SCALE_MINING,
 	HET_LECTURE_SUPPORT,
 	SMALL_BUSINESS,
 	WORKER_INITIATED_TRAINING,
@@ -57,6 +58,8 @@ public enum ProgramType {
 				return "program/miningCommunityUnemployedYouth.zul";
 			case UNEMPLOYED_YOUTH:
 				return "program/miningCommunityUnemployedYouth.zul";
+			case SMALL_SCALE_MINING:
+				return "program/miningCommunityUnemployedYouth.zul";
 			case HET_LECTURE_SUPPORT:
 				return "program/hetLectureSupport.zul";	
 			case SMALL_BUSINESS:
@@ -102,7 +105,7 @@ public enum ProgramType {
 				|| this == ARTISAN_AIDES || this == ARTISAN_DEV || this == CENTRE_SPECIALISATION || this == ARTISAN_RPL
 				|| this == NON_ARTISAN_DEV || this == NON_ARTISAN_DEV_RPL || this == NCV_GRADUATES || this == AET
 				|| this == OHASSP || this == INHOUSE_TRAINING || this == TVET || this == CET || this == TVET_BURSARS 
-				|| this == WORKPLACE_COACHES || this == MINING_COMMUNITY || this == UNEMPLOYED_YOUTH || this == HET_LECTURE_SUPPORT
+				|| this == WORKPLACE_COACHES || this == MINING_COMMUNITY || this == UNEMPLOYED_YOUTH || this == SMALL_SCALE_MINING || this == HET_LECTURE_SUPPORT
 				|| this == SMALL_BUSINESS || this == WORKER_INITIATED_TRAINING || this == LEARNING_MATERIALS_DEVELOPMENT 
 				|| this == MULTIYEAR_PARTNERSHIP_INTERNSHIP || this == MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE || this == STANDARD_SETTING  
 				;
@@ -113,7 +116,7 @@ public enum ProgramType {
 		return isShowMainAddress() && this != ARTISAN_AIDES && this != ARTISAN_DEV && this != CENTRE_SPECIALISATION
 				&& this != ARTISAN_RPL && this != NON_ARTISAN_DEV && this != NON_ARTISAN_DEV_RPL
 				&& this != NCV_GRADUATES && this != AET && this != OHASSP && this != INHOUSE_TRAINING && this != TVET
-				&& this != CET && this != MINING_COMMUNITY && this != UNEMPLOYED_YOUTH && this != HET_LECTURE_SUPPORT && this != SMALL_BUSINESS
+				&& this != CET && this != MINING_COMMUNITY && this != UNEMPLOYED_YOUTH && this != SMALL_SCALE_MINING && this != HET_LECTURE_SUPPORT && this != SMALL_BUSINESS
 				&& this != WORKER_INITIATED_TRAINING && this != LEARNING_MATERIALS_DEVELOPMENT
 				&& this != STANDARD_SETTING;
 				
