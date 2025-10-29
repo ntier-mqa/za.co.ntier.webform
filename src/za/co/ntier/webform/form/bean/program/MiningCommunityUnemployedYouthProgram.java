@@ -25,7 +25,7 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 	private ProjectInput strategy;
 	
 	private String programTitle;
-	private Integer monthlyStipend = 1700;
+	private Integer monthlyStipend = 1750;
 	private Integer maxMonthlyAllocation = 15000;
 	
 	private ColumnInfo<?> budgetColDuration = ColumnInfo.getColPositiveNumber("Duration of program (Months)" 
@@ -79,7 +79,6 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 			setProgramTitle("MINE COMMUNITY DEVELOPMENT GRANT");
 		else if(menuContextInfo.getProgramType() == ProgramType.UNEMPLOYED_YOUTH) {
 			setProgramTitle("UNEMPLOYED YOUTH DEVELOPMENT PROGRAMMES GRANT");
-			monthlyStipend = 1750;
 		}
 		else if(menuContextInfo.getProgramType() == ProgramType.SMALL_SCALE_MINING)
 			setProgramTitle("SMALL SCALE MINING PROGRAMME");

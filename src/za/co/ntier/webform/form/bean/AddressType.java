@@ -77,7 +77,7 @@ public enum AddressType {
 		else if (programType == ProgramType.SMALL_SCALE_MINING)
 			return "Contact details of person responsible for Small Scale Mining Programmes:";
 		else if (programType == ProgramType.HET_LECTURE_SUPPORT)
-			return "Contact details of person responsible for HET:";
+			return "Contact details of person responsible for HEI:";
 		else if (programType == ProgramType.SMALL_BUSINESS)
 			return "Contact details of person responsible for Small Business/Cooperative/NPO/NGO/CBO Support:";
 		else if (programType == ProgramType.WORKER_INITIATED_TRAINING)
