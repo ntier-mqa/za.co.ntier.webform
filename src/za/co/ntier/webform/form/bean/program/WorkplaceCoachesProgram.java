@@ -82,12 +82,10 @@ public class WorkplaceCoachesProgram extends AbstractProgram {
 	}
 	
 	public boolean isProgramValid() {
-		/* may have to add back later
-	    Integer d1 = placementWorkplaceCoaches;
-	    Integer d2 = trainingWorkplaceCoaches;
-	    return (v(d1) + v(d2)) > 0; 
-	    */
 		return true;
+	    //Integer d1 = placementWorkplaceCoaches;
+	   //Integer d2 = trainingWorkplaceCoaches;
+	   // return (v(d1) + v(d2)) > 0; 
 	}
 
 	private static int v(Integer x) { return x == null ? 0 : x; }
