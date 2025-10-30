@@ -94,6 +94,7 @@ public class MainSrdFormVM {
 		contactDetailTab.getCompModel().add(getContactDetailComp(personManage));
 
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
+		addressDetailTab.setSclass("address");
 		addressDetailTab.setTabTitle("Address Details");
 		// new component
 		addressDetailTab.getCompModel().add(getAddressDetailComp());

@@ -10,7 +10,7 @@
 		</tabs>
     <tabpanels children="@init(vmNavTab.component.tabPanelModel)" >
       <template name="children" var="tabPanelItem">
-        <tabpanel sclass="nav-tab-panel" >
+        <tabpanel sclass="@init(( 'nav-tab-panel ' += tabPanelItem.sclass ))" >
           <nodom children="@init(tabPanelItem.compModel)">
             <template name="children" var="compItem">
               <include style = "overflow-y:auto"

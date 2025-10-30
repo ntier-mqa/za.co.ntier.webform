@@ -7,6 +7,7 @@ import za.co.ntier.webform.sdr.component.bean.ISupportSave;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class NavTabPanel implements ISupportSave {
+	private String sclass;
 	private NavTab parent;
 
 	public boolean isDisable() {
@@ -64,5 +65,20 @@ public class NavTabPanel implements ISupportSave {
 		saveList(compModel, applicationForm, trxName);
 		
 	}
+
+	/**
+	 * @return the sclass
+	 */
+	public String getSclass() {
+		return sclass;
+	}
+
+	/**
+	 * @param sclass the sclass to set
+	 */
+	public void setSclass(String sclass) {
+		this.sclass = sclass;
+	}
+
 
 }
