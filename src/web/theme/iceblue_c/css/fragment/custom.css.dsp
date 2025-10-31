@@ -475,6 +475,43 @@
 
 /**** new grid system ****/
 
+/****** for tab *************/
+.mqaWebForm .sdrForm{
+  height:100%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.mqaWebForm .sdrForm .navTabOuter{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+
+.mqaWebForm .sdrForm .navTabOuter .z-tabbox-top{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  height:100%;
+}
+
+.mqaWebForm .sdrForm .navTabOuter .z-tabs{
+  flex-shrink:0;
+}
+.mqaWebForm .sdrForm .navTabOuter .z-tabpanels{
+  flex:1;
+}
+
+.mqaWebForm .sdrForm .navTabOuter .nav-tab-panel.z-tabpanel{
+  overflow-y;auto;
+  height:100%;
+}
+
+/****** for tab *************/
+
 .mqaWebForm .grid-formview {
     /* GRID LAYOUT */
     display: grid;

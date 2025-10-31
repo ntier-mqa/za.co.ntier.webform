@@ -3,8 +3,7 @@
 <?import za.co.ntier.webform.form.WebForm ?>
 
 <idspace xmlns:n="native" 
-		style="height:100%; display: flex;flex-direction: column;justify-content: flex-end;"
-     
+    sclass="sdrForm"
 		viewModel="@id('vm') @init('za.co.ntier.webform.sdr.viewmodel.MainSrdFormVM')">
 
 	<div style="display:flex; padding:5px 0 40px 0; flex-direction: column;  align-items: center;">
@@ -21,7 +20,8 @@
     src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
   
   
-	<include  style = "flex-grow: 1;"
+	<include 
+    sclass="navTabOuter"
     component="@init(vm.mainTab)"
 		menuContextInfo="@init(vm.menuContextInfo)"
 		src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
