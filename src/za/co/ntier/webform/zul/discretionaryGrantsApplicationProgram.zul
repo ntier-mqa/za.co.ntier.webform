@@ -23,9 +23,9 @@
         onSelect="@command('tabChanged')" >
 		<tabs>
 			<tab label="Declaration" />
-			<tab label="Organisation Information" />
+			<tab label="@init(vm.organisationTabTile)" />
 			<tab label="Program" />
-			<tab label="Program Contact" />
+			<tab label="Program Contact" visible="@load(vm.showContact)" />
 			<tab label="Upload Document" visible="@load(vm.showUploadDoc)" />
 
 		</tabs>
@@ -37,6 +37,7 @@
 							src="@load((WebForm.getBundleResourcePath('component/generalAppRule.zul')))" />
 
 						<include
+              menuContextInfo="@load(vm.menuContextInfo)"
 							component="@load(vm.employerDeclarationInfo)"
 							src="@load((WebForm.getBundleResourcePath('component/employerDeclaration.zul')))" />
 					</div>
@@ -91,7 +92,7 @@
 							
 				</div>
 			</tabpanel>
-			<tabpanel style="color:#CC3300;overflow: scroll;">
+			<tabpanel style="color:#CC3300;overflow: scroll;"  visible="@load(vm.showContact)">
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
 					

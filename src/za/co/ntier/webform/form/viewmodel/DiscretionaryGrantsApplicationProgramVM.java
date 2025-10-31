@@ -528,6 +528,17 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		return uploadDoc != null && uploadDoc.getUploadDoc().getRows().size() > 0;
 	}
 	
+	public boolean isShowContact() {
+		return programType != ProgramType.STANDARD_SETTING;
+	}
+	
+	public String getOrganisationTabTile () {
+		if (programType == ProgramType.STANDARD_SETTING)
+			return "Individual Information";
+		else
+			return "Organisation Information";
+	}
+	
 	private boolean isTenDigits(String s) { return s != null && s.matches("^\\d{10}$"); }
 	
 	public void nextTab(Tabbox tab) {

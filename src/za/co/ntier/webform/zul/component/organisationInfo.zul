@@ -5,13 +5,17 @@
 <nodom
 	viewModel="@id('vmOrgInfo') @init('za.co.ntier.webform.form.viewmodel.component.OrganisationInfoVMWrapper')">
 
-	<hlayout sclass="sectionHeader">
+	<hlayout sclass="sectionHeader"
+    if = "${vmOrgInfo.component.menuContextInfo.programType ne ProgramType.STANDARD_SETTING}">
 		<label sclass="sectionHeaderTitle"
 			value="ORGANISATION INFORMATION" />
 	</hlayout>
 
-	<div sclass="grid-container">
-		<div sclass="form-field">
+
+	<div sclass="grid-container" 
+    if="${vmOrgInfo.component.menuContextInfo.programType ne ProgramType.STANDARD_SETTING}">
+		
+    <div sclass="form-field">
 		
 		<label sclass="label" value="@init(vmOrgInfo.component.sdlNumberTitle)" /> 
 		<textbox value="@bind(vmOrgInfo.component.sdlNumber)" 
@@ -121,7 +125,7 @@
 	    src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 	<include
-		if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
+		if="${ vmOrgInfo.component.orgSizeInfo ne null }"
 		component="@load(vmOrgInfo.component.orgSizeInfo)"
 		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"     
   		notifyTarget="@init('organisationComplete')"   
@@ -129,7 +133,7 @@
 
 		
 	<include
-		if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
+		if="${ vmOrgInfo.component.orgContact ne null }"
 		component="@load(vmOrgInfo.component.orgContact)"
 		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
 		notifyTarget="@init('organisationComplete')"
@@ -137,7 +141,7 @@
 
 		
 	<include
-	    if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
+	    if="${ vmOrgInfo.component.alternateOrgContact ne null }"
 	    component="@load(vmOrgInfo.component.alternateOrgContact)"
 	    applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
 	    notifyTarget="@init('organisationComplete')"

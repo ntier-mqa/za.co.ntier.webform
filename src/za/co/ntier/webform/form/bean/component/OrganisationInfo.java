@@ -65,12 +65,16 @@ public class OrganisationInfo implements ISaveForm {
 		postAddressInfo = new AddressInfo(AddressType.POSTAL);
 		postAddressInfo.setAddressSource(physicalAddressInfo);
 		//orgSizeInfo = new OrganisationSizeInfo();
-		if (!menuContextInfo.getProgramType().isCetTvet()) {
+		if (!menuContextInfo.getProgramType().isCetTvet() && menuContextInfo.getProgramType() != ProgramType.STANDARD_SETTING) {
 			orgSizeInfo = new OrganisationSizeInfo();  
 
 			orgContact = new AddressInfo(AddressType.ORG);
 
 			alternateOrgContact = new AddressInfo(AddressType.ORG_ALTER);
+		}
+		
+		if (menuContextInfo.getProgramType() == ProgramType.STANDARD_SETTING){
+			orgContact = new AddressInfo(AddressType.ORG);
 		}
 		
 		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {

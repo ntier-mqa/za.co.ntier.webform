@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import za.co.ntier.webform.form.bean.ProgramType ?>
+
 <nodom xmlns:n="native"
 	viewModel="@id('vmEmployerDeclaration') @init('za.co.ntier.webform.form.viewmodel.component.EmployerDeclarationInfoVMWrapper')">
 
 	<hlayout sclass="sectionHeader">
 		<label sclass="sectionHeaderTitle" value="DECLARATION" />
 	</hlayout>
-	<label
-		style="padding:20px 50px 0px;  display: block;  font-size: large;"
-		value="I declare that as the duly authorised representative of the Organisation confirms that Organisation will comply with the general rules and criteria hereunder and further confirmed that all the information provided in this application is true and accurate" />
-
+  
+  <label if = "${ vmEmployerDeclaration.menuContextInfo.programType ne ProgramType.STANDARD_SETTING }"
+	  style="padding:20px 50px 0px;  display: block;  font-size: large;"
+	  value="I declare that as the duly authorised representative of the Organisation confirms that Organisation will comply with the general rules and criteria hereunder and further confirmed that all the information provided in this application is true and accurate" />
+  
+  <div if = "${ vmEmployerDeclaration.menuContextInfo.programType eq ProgramType.STANDARD_SETTING }">
+   <label value="I declare that" />
+    <n:ol sclass="generalAppRules">
+      <n:li>
+        <label value="I have full capacity to undertake this application" />
+      </n:li>
+      
+      <n:li>
+        <label value="I confirm that i shall comply with all relevant and applicable prescripts including the MQA Funding Policy and Public Finance Management Act 1 of 1999" />
+      </n:li>
+      
+      <n:li>
+        <label value="I confirm that all information submitted is true, accurate and correct" />
+      </n:li>
+    </n:ol>
+  </div>
+  
 	<div sclass="grid-container">
 		<div sclass="form-field" style="justify-content:space-between">
 			<label sclass="label" value="Name and Surname" />
