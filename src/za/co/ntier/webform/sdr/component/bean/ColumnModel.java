@@ -1,10 +1,15 @@
 package za.co.ntier.webform.sdr.component.bean;
 
 import java.beans.Introspector;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.Functions.FailableBiConsumer;
 import org.apache.commons.lang3.tuple.Triple;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.InputEvent;
 
 /**
  * do {@link #setCellModelSupplier(BiFunction)} or provide in constructor
@@ -182,5 +187,25 @@ public class ColumnModel {
 	}
 
 	private boolean showTitle = true;
+	 
+	private BiConsumer<Event, CellModel> eventHandle;
 	
+	public void cellValueChange(Event event, CellModel cellModel) {
+		if (eventHandle != null)
+			eventHandle.accept(event, cellModel);
+	}
+
+	/**
+	 * @return the eventHandle
+	 */
+	public BiConsumer<Event, CellModel> getEventHandle() {
+		return eventHandle;
+	}
+
+	/**
+	 * @param eventHandle the eventHandle to set
+	 */
+	public void setEventHandle(BiConsumer<Event, CellModel> eventHandle) {
+		this.eventHandle = eventHandle;
+	}
 }

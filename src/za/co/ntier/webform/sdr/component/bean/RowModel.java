@@ -9,7 +9,9 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 
 import za.co.ntier.api.model.X_ZZSdf;
+import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
 public class RowModel extends HashMap<ColumnModel, CellModel> implements ISupportSave{
 	private static final CLogger log = CLogger.getCLogger(RowModel.class);
@@ -106,7 +108,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 					daoPerCol = getData();
 				
 				cellModel.setValue(MasterUtil.getObjectPropertyValue(daoPerCol, cellModel.getColModel().getDaoPropertyName()));
-			});
+ 			});
 
 	}
 
@@ -140,19 +142,29 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 		 * 
 		 * }
 		 */		
-		values().stream()
-			.filter(cellModel -> {return StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName());})
-			.forEach(cellModel -> {
-				PO daoPerCol = tableModel.getDaoManage().getDao(cellModel.getColModel().getTableId());
+		PO daoPerCol = null;
+		for (CellModel cellModel : values()) {
+			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
+				if (tableModel.getDaoManage() != null)
+					daoPerCol =  tableModel.getDaoManage().getDao(cellModel.getColModel().getTableId());
 				if (daoPerCol == null && data == null) {
 					data = tableModel.getPoSupplier().apply(tableModel, applicationForm);
 				}
 				if (daoPerCol == null)
 					daoPerCol = data;
 				MasterUtil.setObjectProperty(daoPerCol, cellModel.getColModel().getDaoPropertyName(), cellModel.getValue());
-			});
+			}
+		}
 		
-		if (data != null)
-			data.saveEx(trxName);
+		if (daoPerCol != null) {
+			daoPerCol.saveEx(trxName);
+			
+			for (CellModel cellModel : values()) {
+				if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
+					((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
+				}
+			}
+		}
+			
 	}
 }

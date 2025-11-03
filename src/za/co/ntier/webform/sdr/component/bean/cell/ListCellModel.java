@@ -85,9 +85,9 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		if (dataProvider != null)
 			model.addAll(dataProvider);
 
-		if (model.size() == 1) {
+		/*if (model.size() == 1) {
 			model.addToSelection(model.get(0));
-		}
+		}*/
 	}
 
 	@Override

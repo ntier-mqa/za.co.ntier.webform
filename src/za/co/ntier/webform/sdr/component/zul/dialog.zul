@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.DataType ?>
+<?import org.adempiere.webui.AdempiereWebUI ?>
+
+
+
+<nodom viewModel="@id('vmDialog') @init('za.co.ntier.webform.sdr.component.viewmodel.DialogVMWrapper')">
+  <window mode="modal"
+          sclass="mqaWebFormRelate"   
+          title="@init(vmDialog.component.title)"
+          position="center,center"
+          visible="@bind(vmDialog.component.visible)">
+
+    <div style="display:flex;flex-direction:column;padding-bottom:15px;justify-content:space-between;height:100%">
+      <div style="display:flex;flex-direction:column;padding:10px;overflow-y:auto;">
+        
+        <div sclass="msgs" children="@bind(vmDialog.component.msgs)">
+        	<template name="children" var="msg">
+        		<label sclass="msgLine" value="@load(msg)"/>
+        	</template>
+        </div>
+        
+        <label value="@load(vmDialog.moreInfo)"/>
+      </div>
+
+      <div sclass="modal-footer" style="flex-grow:0">  
+        <button sclass="btn btn-primary" label="OK"
+                onClick="@command('closeDialogAndOpenList')"/>
+      </div>
+    </div>
+  </window>
+</nodom>

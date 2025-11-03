@@ -13,7 +13,7 @@
         <tabpanel sclass="@init(( 'nav-tab-panel ' += tabPanelItem.sclass ))" >
           <nodom children="@init(tabPanelItem.compModel)">
             <template name="children" var="compItem">
-              <include style = "overflow-y:auto"
+              <include
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />

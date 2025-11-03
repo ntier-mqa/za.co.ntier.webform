@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -20,6 +19,7 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -85,7 +85,7 @@ public class TableModel implements ISupportSave {
 		 * @return the dao
 		 */
 		public PO getDao(Integer tableId) {
-			if (tableId == null && daos.size() == 1) {
+			if ((tableId == null || tableId == 0) && daos.size() == 1) {
 				return daos.values().iterator().next();
 			}else {
 				return daos.get(tableId);
@@ -155,7 +155,19 @@ public class TableModel implements ISupportSave {
 		else
 			selectable.cmdSelected(event.getSelectedObjects().iterator().next());
 	}
-
+	
+	public void cmdCheckeck (Map<ColumnModel, Object> row,
+			ColumnModel col,
+			CheckEvent event){
+		ICheckbox checkbox = (ICheckbox)row.get(col);
+		checkbox.cmdChecked(event);
+	}
+	
+	public void cmdUploadFile(Map<ColumnModel, Object> row, ColumnModel col, UploadEvent event) {
+		UploadCellModel uploadCellModel = (UploadCellModel)row.get(col);
+		uploadCellModel.cmdUploadFile(event);
+	}
+	
 	public RowModel createDetailRow() {
 		return createDetailRow(null);
 	}
@@ -170,9 +182,10 @@ public class TableModel implements ISupportSave {
 		}
 
 		if (rowTitle != null) {
-			for (Entry<ColumnModel, Object> colTile : rowTitle.entrySet()) {
-				TableModel.setCellValue(row, colTile.getKey(), colTile.getValue());
-			}
+			/* TODO init for column with preset value
+			 * for (Entry<ColumnModel, Object> colTile : rowTitle.entrySet()) {
+			 * TableModel.setCellValue(row, colTile.getKey(), colTile.getValue()); }
+			 */
 		}
 
 		if (decoratorCell != null) {
@@ -473,103 +486,9 @@ public class TableModel implements ISupportSave {
 		this.dataType = dataType;
 	}
 
-	public void fillDaoData (Collection<ColumnModel> cols, RowModel row, Object dao){
-		for (ColumnModel col:cols) {
-			CellModel cellModel = row.get(col);
-			cellModel.setValueToDao(dao);
-		}
-
-		//Object cellValueObj = null;
-		/*if (col.getDataType() == DataType.PositiveNumber) {
-					Entry<Integer, Boolean>  entryIntObj = getCellValue(row, col);
-					if (col.isCalTotal())
-						total += entryIntObj.getKey();
-					cellValueObj = entryIntObj.getKey();
-					hasCellData = entryIntObj.getValue();
-				}else if (col.getDataType() == DataType.Text) {
-					Entry<Integer, Boolean>  entryTextObj = getCellValue(row, col);
-					cellValueObj = entryTextObj.getKey();
-					hasCellData = entryTextObj.getValue();
-				}else if (col.getDataType() == DataType.LearnerInfo) {
-					LearnerInputInfo learnerInfo = (LearnerInputInfo)row.get(col);
-					int learnerInputID = 0;// int of PO don't accept null
-					if (learnerInfo != null) {
-						learnerInputID = learnerInfo.getLearnerInputID();
-						hasCellData = Boolean.TRUE;
-					}
-					cellValueObj = learnerInputID;
-				}else if (col.getDataType() == DataType.Date) {
-					DateCellModel dateData = (DateCellModel)row.get(col);
-					cellValueObj = dateData.getTimestamp();
-					if (cellValueObj != null) {
-						hasCellData = true;
-					}
-				}else if (col.getDataType() == DataType.FileUpload) {
-					// Martin changed to save to attachments instead to a binary file
-					hasCellData = Boolean.TRUE;// upload data become option
-					ignoreSetDao = true; // never set DAO properties for files anymore
-				}else if (col instanceof ListColumnModel) {
-					ListColumnModel<?> colList = (ListColumnModel<?>)col;
-					Object selectedObj = row.get(col);
-					if (StringUtils.isNotBlank(colList.getBeanPropertyName())) {
-						if (selectedObj != null) {
-							cellValueObj = TableModel.getDaoValue(selectedObj, colList.getBeanPropertyName());
-							hasCellData = Boolean.TRUE;
-						}else {
-							cellValueObj = null;
-						}
-					}else {
-						cellValueObj = selectedObj;
-						if (cellValueObj != null)
-							hasCellData = Boolean.TRUE;
-					}
-				}else {
-					Entry<Object, Boolean> celDataEntryObj = getCellValue(row, col);
-					cellValueObj = celDataEntryObj.getKey();
-					hasCellData = celDataEntryObj.getValue();
-				}
-
-				if (hasCellData) {
-					isEmptyData = false;
-				}else {
-					isFullData = false;
-				}
-
-				if (!ignoreSetDao) {
-					if (cellValueObj == null) {
-						try {
-							PropertyDescriptor pd = new PropertyDescriptor(col.getDaoPropertyName(), dao.getClass());
-							Class<?> propertyType = pd.getPropertyType();
-							if(propertyType.getTypeName().equals("int")) {
-								cellValueObj = 0;
-							}
-						} catch (IntrospectionException e) {
-							e.printStackTrace();
-							throw new AdempiereException(e.getMessage(), e);
-						}
-					}
-
-					setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
-				}
-
-		}*/
-
-		// null mean don't need to save po (no properties for save or empty input data)
-		// false mean input some item
-		// true mean input full
-	}
-
-
 	private int getGrandTotal() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	public static void setCellValue(RowModel row, ColumnModel col, Object value) {
-		CellModel valueObj = row.get(col);
-		log.info(String.format("Set cell value: row=%s, col=%s, cell datatype=%s, value=%s", row, col.getTitle(), valueObj.getClass().getName(), value));
-
-		valueObj.setCellValue(value);
 	}
 
 	public void setDaoValue(Object dao, String propertyName, Object value) {
@@ -720,4 +639,6 @@ public class TableModel implements ISupportSave {
 	public void setDaoManage(DaoManage daoManage) {
 		this.daoManage = daoManage;
 	}
+
+
 }

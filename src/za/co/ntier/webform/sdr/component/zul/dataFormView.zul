@@ -52,6 +52,7 @@
             <!-- textbox -->
             <textbox
               if="${ vmDataFormView.component.row[col].cellType eq CellModel.TEXT_CELL }"
+              readonly="@init(col.readonly)"
               value="@bind(vmDataFormView.component.row[col].value)
 			  		  @converter(ConvertUtil.getConvertBlankNull())" 
               onChange="@command('cmdValueChanged', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"/>
@@ -59,6 +60,7 @@
             <!-- list - Area - province -->
             <listbox
               if="${ vmDataFormView.component.row[col].cellType eq CellModel.LIST_CELL }"
+              readonly="@init(col.readonly)"
               mold="select"
               model="@bind(vmDataFormView.component.row[col].model)"
               onSelect="@command('cmdSelected', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)">
@@ -74,8 +76,7 @@
             
             <!-- radiogroup -->
             <radiogroup if="${vmDataFormView.component.row[col].cellType eq CellModel.RADIO_CELL}"
-              selectedItem="@bind(vmDataFormView.component.row[col])"
-              onCheck="@command('notifyProgramComplete')">
+              selectedItem="@bind(vmDataFormView.component.row[col])">
               <radio label="YES" value="Y" />
               <radio label="NO" value="N" />
             </radiogroup>
@@ -91,7 +92,7 @@
               <fileupload
                 iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
                 label="@load(vmDataFormView.component.row[col].btText)"
-                onUpload="@command('uploadFile', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"
+                onUpload="@command('cmdUploadFile', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"
                 upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
               <label
                 value="@load(vmDataFormView.component.row[col].fileName)" />
@@ -101,7 +102,8 @@
             <div if="${vmDataFormView.component.row[col].cellType eq CellModel.CHECK_CELL}" 
               sclass="checkboxContent">
               <checkbox
-                label="@init(vmDataFormView.component.row[col].title)"/>
+                label="@init(vmDataFormView.component.row[col].title)"
+                onCheck="@command('cmdCheckeck', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"/>
             </div>
             
             <!-- Date -->

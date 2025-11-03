@@ -505,11 +505,20 @@
   flex:1;
 }
 
-.mqaWebForm .sdrForm .navTabOuter .nav-tab-panel.z-tabpanel{
+.mqaWebForm .sdrForm .navTabOuter .nav-tab-panel{
   overflow-y;auto;
   height:100%;
 }
 
+.mqaWebForm .sdrForm .navTabOuter .nav-tab-panel.address{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: min-content;
+}
+
+.mqaWebForm .sdrForm .navTabOuter .nav-tab-panel.address > :first-child {
+    grid-column: 1 / span 2;
+}
 /****** for tab *************/
 
 .mqaWebForm .grid-formview {
@@ -525,6 +534,9 @@
   grid-template-columns: repeat(2, 1fr); 
 }
 
+.mqaWebForm .grid-formview.one-col{
+ grid-template-columns: repeat(1, 1fr);
+}
 
 .mqaWebForm .grid-formview .cell {
     /* FLEXBOX STACKING & SPACE CONTROL */

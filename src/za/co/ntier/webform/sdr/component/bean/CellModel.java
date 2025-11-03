@@ -5,6 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.bind.impl.BinderUtil;
+import org.zkoss.zk.ui.event.InputEvent;
+
 /**
  * Represents a cell in a table, it hold data and related info
  * the cell manage single value like label, text,... can use this one
@@ -26,6 +31,8 @@ public class CellModel implements IValueChange {
 		return colModel;
 	}
 
+	
+	
 	public void setColModel(ColumnModel colModel) {
 		this.colModel = colModel;
 	}
@@ -44,7 +51,18 @@ public class CellModel implements IValueChange {
 	public void cmdValueChange(String value) {
 
 	}
-
+	
+	@Override
+	public void cmdValueChange(InputEvent event) {
+		this.cmdValueChange(event.getValue());
+		callCollModelHandle(event);
+	}
+	 
+	protected void callCollModelHandle(InputEvent event) {
+		getColModel().cellValueChange(event, this);
+	}
+	
+	
 	/**
 	 * @return the tableModel
 	 */
@@ -173,16 +191,7 @@ public class CellModel implements IValueChange {
 	 */
 	public void setValue(Object value) {
 		this.value = value;
-	}
-
-	public void setValueToDao(Object dao) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setCellValue(Object value2) {
-		// TODO Auto-generated method stub
-
+		BindUtils.postNotifyChange(this, "value");
 	}
 
 	/**
