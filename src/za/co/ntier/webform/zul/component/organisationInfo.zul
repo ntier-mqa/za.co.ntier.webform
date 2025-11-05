@@ -109,7 +109,12 @@
 	</div>
 
 
-
+  <include
+    if="${ vmOrgInfo.component.orgContact ne null and vmOrgInfo.component.menuContextInfo.programType eq ProgramType.STANDARD_SETTING }"
+    component="@load(vmOrgInfo.component.orgContact)"
+    applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
+    notifyTarget="@init('organisationComplete')"
+    src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 		
 	<include
 		component="@load(vmOrgInfo.component.physicalAddressInfo)"
@@ -133,7 +138,7 @@
 
 		
 	<include
-		if="${ vmOrgInfo.component.orgContact ne null }"
+		if="${ vmOrgInfo.component.orgContact ne null and vmOrgInfo.component.menuContextInfo.programType ne ProgramType.STANDARD_SETTING }"
 		component="@load(vmOrgInfo.component.orgContact)"
 		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
 		notifyTarget="@init('organisationComplete')"

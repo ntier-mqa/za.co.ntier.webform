@@ -19,7 +19,9 @@ public enum AddressType {
 			return "PHYSICAL ADDRESS";
 		else if (this == AddressType.POSTAL)
 			return "POSTAL ADDRESS";
-		else if (this == AddressType.ORG)
+		else if (this == AddressType.ORG && programType == ProgramType.STANDARD_SETTING) {
+			return "Individual Details";
+		}else if (this == AddressType.ORG)
 			return "Primary Organisation Contact:";
 		else if (this == AddressType.ORG_ALTER)
 			return "Alternate Organisation Contact:";
