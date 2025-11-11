@@ -1,5 +1,9 @@
 package za.co.ntier.webform.sdr.component.tab.bean;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.api.model.X_ZZSdf;
@@ -20,12 +24,12 @@ public class NavTabPanel implements ISupportSave {
 	}
 
 	private String tabTitle;
-	private ListModelList<TableModel> compModel = new ListModelList<TableModel>();
+	private ListModelList<Object> compModel = new ListModelList<Object>();
 
 	/**
 	 * @return the compModel
 	 */
-	public ListModelList<TableModel> getCompModel() {
+	public ListModelList<Object> getCompModel() {
 		return compModel;
 	}
 
@@ -62,7 +66,13 @@ public class NavTabPanel implements ISupportSave {
 
 	@Override
 	public void save(X_ZZSdf applicationForm, String trxName) {
-		saveList(compModel, applicationForm, trxName);
+		List<ISupportSave> listSave = new ArrayList<>();
+		for (Object objSupportSave : compModel) {
+			if (objSupportSave instanceof ISupportSave) {
+				listSave.add((ISupportSave)objSupportSave);
+			}
+		}
+		saveList(listSave, applicationForm, trxName);
 		
 	}
 

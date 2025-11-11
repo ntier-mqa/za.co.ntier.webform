@@ -1,5 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><?import org.compiere.util.KeyNamePair?>
-<nodom
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import za.co.ntier.webform.form.MasterUtil ?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+
+<nodom 
 	viewModel="@id('vmNavTab') @init('za.co.ntier.webform.sdr.component.tab.viewmodel.NavTabVM')">
 
 	<tabbox width="100%" id="nav-tab" >
@@ -11,12 +16,37 @@
     <tabpanels children="@init(vmNavTab.component.tabPanelModel)" >
       <template name="children" var="tabPanelItem">
         <tabpanel sclass="@init(( 'nav-tab-panel ' += tabPanelItem.sclass ))" >
-          <nodom children="@init(tabPanelItem.compModel)">
+          <nodom if = "${vmNavTab.isOrglinkTabPanel(tabPanelItem)}">
+            <include
+                component="@init(tabPanelItem)"
+                menuContextInfo="@init(vmNavTab.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabPanelOrgLink.zul')))" />
+          </nodom>
+            
+        
+          <nodom unless = "${vmNavTab.isOrglinkTabPanel(tabPanelItem)}" 
+            children="@init(tabPanelItem.compModel)">
             <template name="children" var="compItem">
+              
               <include
+                if = "${ MasterUtil.isFormViewTableModel(compItem) }"
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+              
+              <include
+                if = "${ MasterUtil.isListViewTableModel(compItem) }"
+                component="@init(compItem)"
+                menuContextInfo="@init(vmNavTab.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+              
+              <include 
+                if = "${ MasterUtil.isNavTab(compItem) }"
+                sclass="navTabOuter"
+                component="@init(compItem)"
+                menuContextInfo="@init(vm.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
+               
 					  </template>
 					</nodom>
 				</tabpanel>

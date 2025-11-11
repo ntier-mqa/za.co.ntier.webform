@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import za.co.ntier.webform.form.MasterUtil ?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+
+<nodom
+  viewModel="@id('vmOrgLink') @init('za.co.ntier.webform.sdr.component.tab.viewmodel.TabPanelOrgLinkVM')">
+  
+  
+  <include
+      component="@init(vmOrgLink.component.orgLinks)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+      
+  <include
+      component="@init(vmOrgLink.component.orgLinkComp)"
+      menuContextInfo="@init(vmNavTab.menuContextInfo)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+      
+  <include
+      component="@init(vmOrgLink.component.bankDetailComp)"
+      menuContextInfo="@init(vmNavTab.menuContextInfo)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+
+</nodom>

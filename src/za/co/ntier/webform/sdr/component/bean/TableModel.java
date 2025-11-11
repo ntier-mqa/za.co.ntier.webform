@@ -35,7 +35,9 @@ public class TableModel implements ISupportSave {
 	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
 	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
 	private String sclass = "";
-
+	
+	private boolean formView = true;	
+	
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
 
@@ -227,7 +229,7 @@ public class TableModel implements ISupportSave {
 	 */
 	public void updateTotalRow(ColumnModel col, boolean needNotify) {
 		Integer total = 0;
-		for (Map<ColumnModel, CellModel> r : getRows()) {
+		for (RowModel r : getRows()) {
 			IntCellModel intCellModel = (IntCellModel)r.get(col);
 			if (intCellModel.getValue() != null) {
 				total += intCellModel.getValue();
@@ -638,6 +640,20 @@ public class TableModel implements ISupportSave {
 	 */
 	public void setDaoManage(DaoManage daoManage) {
 		this.daoManage = daoManage;
+	}
+
+	/**
+	 * @return the formView
+	 */
+	public boolean isFormView() {
+		return formView;
+	}
+
+	/**
+	 * @param formView the formView to set
+	 */
+	public void setFormView(boolean formView) {
+		this.formView = formView;
 	}
 
 

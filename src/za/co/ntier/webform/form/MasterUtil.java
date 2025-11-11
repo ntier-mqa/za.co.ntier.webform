@@ -52,6 +52,8 @@ import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public class MasterUtil {
 	public static final int limitItem = 600;
@@ -230,6 +232,10 @@ public class MasterUtil {
 		return MColumn.get(Env.getCtx(), table, colName).get_Translation(I_AD_Column.COLUMNNAME_Name);
 	}
 	
+	public static String getDescOfColTranslated(String table, String colName) {
+		return MColumn.get(Env.getCtx(), table, colName).get_Translation(I_AD_Column.COLUMNNAME_Description);
+	}
+	
 	public static final Entry<String, Integer> LkpGenderListIdentify = new AbstractMap.SimpleEntry<>("d28327d7-01ca-485a-89a2-baa868c8f446", null);
 	public static final Entry<String, Integer> LkpFunctionListIdentify = new AbstractMap.SimpleEntry<>("e4b70818-faaa-4af1-ae55-81563efc4633", null);
 	public static final Entry<String, Integer> LkpTitleListIdentify = new AbstractMap.SimpleEntry<>("1870ee55-4f9a-430e-ad6a-b5dc587216c7", null);
@@ -361,6 +367,16 @@ public class MasterUtil {
 		}
 		return nationalityCache.get(Integer.MAX_VALUE);
 	}
+	/*
+	 * private static CCache<Integer, List<X_bank>> nationalityCache = new
+	 * CCache<>("master-ZZ_Nationality", 1);
+	 * 
+	 * public static List<X_ZZ_Nationality> getNationality(){ if
+	 * (nationalityCache.isEmpty()) { List<X_ZZ_Nationality> list =
+	 * getMasterList(I_ZZ_Nationality.Table_ID);
+	 * nationalityCache.put(Integer.MAX_VALUE, list); return list; } return
+	 * nationalityCache.get(Integer.MAX_VALUE); }
+	 */
 	
 	private static <T extends PO> List<T> getMasterList(int tableID){
 		Query annexureQuery = MTable.get(tableID).createQuery(null, null)
@@ -385,5 +401,32 @@ public class MasterUtil {
 			e.printStackTrace();
 			throw new AdempiereException(e.getMessage(), e);
 		}
+	}
+	
+	public static boolean isNavTab(Object obj) {
+		return obj instanceof NavTab;
+	}
+	
+	public static boolean isFormViewTableModel(Object obj) {
+		if (obj instanceof TableModel) {
+			TableModel tableModel = (TableModel)obj;
+			return tableModel.isFormView();
+		}
+		
+		return false;
+	}
+	
+	public static boolean isListViewTableModel(Object obj) {
+		if (obj instanceof TableModel) {
+			TableModel tableModel = (TableModel)obj;
+			return !tableModel.isFormView();
+		}
+		
+		return false;
+	}
+	
+	public static boolean isListOrgLink(Object obj) {
+		return obj instanceof List<?>;
+
 	}
 }

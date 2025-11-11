@@ -23,97 +23,14 @@
   <div if="${vmDataFormView.component.tableTitle ne null}">
     <label value="@init(vmDataFormView.component.tableTitle)" />
   </div>
-
-
-  <div
-    sclass="@init(( 'grid-formview ' += vmDataFormView.component.sclass ))">
-    <nodom if="${vmDataFormView.component.row ne null}"
-      children="@bind(vmDataFormView.component.columnInfos)">
-      <!-- template to generate a title/component per col -->
-      <template name="children" var="col">
-        <!-- group title/content -->
-        <div sclass="cell">
-          <!-- title part, show description, error message -->
-          <div sclass="cell-title">
-            <!-- main label -->
-            <label sclass="label" visible="@init(col.showTitle)" value="@init(col.title)" />
-            <!-- required mark -->
-            <label sclass="required" value="*"
-              visible="@init(col.mandatory)" />
-            <!-- description -->
-            <label sclass="help-text"></label>
-            <!-- error -->
-            <label sclass="error"></label>
-          </div>
-
-          <!-- content part -->
-          <div sclass="cell-content">
+ 
+      <!-- detail -->
+      <include
+              if="${vmDataFormView.component.row ne null}"
+              sclass="@init(( 'grid-formview ' += vmDataFormView.component.sclass ))"
+              component="@init(vmDataFormView.component.row)"
+              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/cellRender.zul')))" >
+      </include>
             
-            <!-- textbox -->
-            <textbox
-              if="${ vmDataFormView.component.row[col].cellType eq CellModel.TEXT_CELL }"
-              readonly="@init(col.readonly)"
-              value="@bind(vmDataFormView.component.row[col].value)
-			  		  @converter(ConvertUtil.getConvertBlankNull())" 
-              onChange="@command('cmdValueChanged', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"/>
-            
-            <!-- list - Area - province -->
-            <listbox
-              if="${ vmDataFormView.component.row[col].cellType eq CellModel.LIST_CELL }"
-              readonly="@init(col.readonly)"
-              mold="select"
-              model="@bind(vmDataFormView.component.row[col].model)"
-              onSelect="@command('cmdSelected', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)">
-              <template name="model" var="item">
-                <listitem
-                  label="@init(( vmDataFormView.component.row[col].getDisplayText(item) ))" />
-              </template>
-            </listbox>
-            
-            <!-- label -->
-            <label if="${vmDataFormView.component.row[col].cellType eq CellModel.LABEL_CELL}"
-              value="@load(vmDataFormView.component.row[col].value)" />
-            
-            <!-- radiogroup -->
-            <radiogroup if="${vmDataFormView.component.row[col].cellType eq CellModel.RADIO_CELL}"
-              selectedItem="@bind(vmDataFormView.component.row[col])">
-              <radio label="YES" value="Y" />
-              <radio label="NO" value="N" />
-            </radiogroup>
-
-            <!-- PositiveNumber -->
-            <intbox if="${vmDataFormView.component.row[col].cellType eq CellModel.POSITIVE_NUM_CELL}"
-              value="@bind(vmDataFormView.component.row[col].value)
-			             @converter(ConvertUtil.getConvertZeroNull())" />
-            
-            <!-- FileUpload -->
-            <div if="${vmDataFormView.component.row[col].cellType eq CellModel.BTUPLOAD_CELL}" 
-              sclass="fileUploadContent">
-              <fileupload
-                iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
-                label="@load(vmDataFormView.component.row[col].btText)"
-                onUpload="@command('cmdUploadFile', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"
-                upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
-              <label
-                value="@load(vmDataFormView.component.row[col].fileName)" />
-            </div>
-
-            <!-- Checkbox -->
-            <div if="${vmDataFormView.component.row[col].cellType eq CellModel.CHECK_CELL}" 
-              sclass="checkboxContent">
-              <checkbox
-                label="@init(vmDataFormView.component.row[col].title)"
-                onCheck="@command('cmdCheckeck', annexure = vmDataFormView.component, row = vmDataFormView.component.row, col = col)"/>
-            </div>
-            
-            <!-- Date -->
-            <datebox if="${vmDataFormView.component.row[col].cellType eq CellModel.DATE_CELL}"
-              format="yyyy/MM/dd" placeholder="yyyy/MM/dd"
-              valueInLocalDate="@bind(vmDataFormView.component.row[col].localDate)" />
-
-          </div>
-        </div>
-      </template>
-    </nodom>
-  </div>
+  
 </nodom>

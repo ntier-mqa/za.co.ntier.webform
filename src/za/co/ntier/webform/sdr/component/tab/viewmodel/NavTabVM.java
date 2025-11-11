@@ -4,6 +4,8 @@ import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
+import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
+import za.co.ntier.webform.sdr.component.tab.bean.OrglinkTabPanel;
 
 @Init(superclass = true)
 public class NavTabVM extends ComponentVMWrapper<NavTab> {
@@ -23,5 +25,7 @@ public class NavTabVM extends ComponentVMWrapper<NavTab> {
 		this.activeTabIndex = activeTabIndex;
 	}
 
-
+	public boolean isOrglinkTabPanel(NavTabPanel tabModel) {
+		return tabModel instanceof OrglinkTabPanel;
+	}
 }

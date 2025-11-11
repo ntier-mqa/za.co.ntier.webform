@@ -145,14 +145,14 @@ public class ColumnModel {
 	/**
 	 * @return the showTitle
 	 */
-	public boolean isShowTitle() {
+	public Boolean getShowTitle() {
 		return showTitle;
 	}
 
 	/**
 	 * @param showTitle the showTitle to set
 	 */
-	public void setShowTitle(boolean showTitle) {
+	public void setShowTitle(Boolean showTitle) {
 		this.showTitle = showTitle;
 	}
 
@@ -186,7 +186,7 @@ public class ColumnModel {
 		return this;
 	}
 
-	private boolean showTitle = true;
+	private Boolean showTitle = null;
 	 
 	private BiConsumer<Event, CellModel> eventHandle;
 	

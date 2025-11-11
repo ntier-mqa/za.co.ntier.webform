@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -17,9 +19,11 @@ import org.zkoss.zk.ui.event.CheckEvent;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZPersonAddress;
+import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.X_AD_User;
 import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdf;
+import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -37,6 +41,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
+import za.co.ntier.webform.sdr.component.tab.bean.OrglinkTabPanel;
 
 public class MainSrdFormVM {
 	private MenuContextInfo menuContextInfo;
@@ -103,10 +108,42 @@ public class MainSrdFormVM {
 		// new component
 		educationDetailTab.getCompModel().add(getEducationComp(personManage));
 
+		
+		OrglinkTabPanel orgLinkTab = new OrglinkTabPanel(mainTab, person);
+		orgLinkTab.setTabTitle("Org Link");
 	}
 
+	
+	
 	TableModel physicalAddress;
 	TableModel postalAddress;
+	
+	private TableModel getOrgLinkComp() {
+		List<ColumnModel> cols = new ArrayList<>();
+
+		ColumnModel firstNameCol = CellModel.getColModelForText(
+				"Organisation Details", null
+				);
+		cols.add(firstNameCol);
+		
+		ColumnModel midNameCol = CheckboxCellModel.getCheckboxColModel(
+				"Consultant acting for Employer?", null
+				);
+		cols.add(midNameCol);
+		
+		ColumnModel surnameCol = ListCellModel.getColModelForText(
+				"Will you perform your SDF function in respect of"
+				, null
+				);
+		cols.add(surnameCol);
+
+		
+		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
+		namesBean.setSclass("orglink");
+		namesBean.init(sdf, null);
+
+		return namesBean;
+	}
 	
 	private TableModel getNamesComp(DaoManage personManage) {
 		List<ColumnModel> cols = new ArrayList<>();
@@ -200,7 +237,7 @@ public class MainSrdFormVM {
 		educationBean.setDaoManage(personManage);
 		
 		educationBean.init(null, null);
-
+		
 		return educationBean;
 	}
 
@@ -224,7 +261,7 @@ public class MainSrdFormVM {
 			}
 		});
 		
-		dupplicateCol.setShowTitle(false);
+		//dupplicateCol.setShowTitle(false);
 		cols.add(dupplicateCol);
 
 		ColumnModel addressCol = CellModel.getColModelForText("Address", null);

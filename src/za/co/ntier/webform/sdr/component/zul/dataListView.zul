@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><?import org.compiere.util.KeyNamePair?>
+
+<?import za.co.ntier.webform.sdr.component.bean.ConvertUtil ?>
+<?import org.adempiere.webui.AdempiereWebUI  ?>
+<?import za.co.ntier.webform.sdr.component.bean.CellModel ?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<nodom
+  viewModel="@id('vmListView') @init('za.co.ntier.webform.sdr.component.viewmodel.DataListViewVM')">
+
+
+<div
+  sclass="@init(( 'grid-listView ' += vmDataFormView.component.sclass += ' grid-listView-' += vmListView.component.columnInfos.size() ))"
+  children="@bind(vmListView.component.rows)">
+    
+  <template name="children" var="row">
+    <!-- header -->
+    <nodom if="${rowStatus.first}"
+      children="@bind(vmListView.component.columnInfos)">
+        <template name="children" var="titleCol">
+          <div sclass="cell colHead">
+            <label value="@init(titleCol.title)" />
+          </div>
+        </template>
+    </nodom>
+    
+    <!-- detail -->
+    <include
+      style = "display: contents;" 
+      component="@init(row)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/cellRender.zul')))" />
+  
+  </template>
+</div>
+
+</nodom>

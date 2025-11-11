@@ -519,7 +519,7 @@
 }
 
 .mqaWebForm .sdrForm .navTabOuter .nav-tab-panel{
-  overflow-y;auto;
+  overflow-y:auto !important;
   height:100%;
 }
 
@@ -532,6 +532,11 @@
 .mqaWebForm .sdrForm .navTabOuter .nav-tab-panel.address > :first-child {
     grid-column: 1 / span 2;
 }
+
+.mqaWebForm .sdrForm .orglink,
+.mqaWebForm .sdrForm .bankDetails{
+  grid-template-columns: 1fr;
+}
 /****** for tab *************/
 
 .mqaWebForm .grid-formview {
@@ -541,6 +546,7 @@
     padding: 20px 20px 20px 0;
     border-radius:8px;
     box-shadow:0 4px 6px rgba(0, 0, 0, 0.1);
+    height:unset !important;/* reset element style add by include height=100%*/
 }
 
 .mqaWebForm .grid-formview.two-col {
@@ -561,19 +567,24 @@
     padding:5px;
 }
 
+.mqaWebForm .grid-formview .z-select{
+  background:white;
+}
+
 .mqaWebForm .grid-formview .cell-title {
     /* TITLE AREA FLEXBOX (CRUCIAL FIX) */
     display: flex;
     flex-wrap: wrap; 
     align-items: flex-end; 
     flex-shrink: 0; 
+    background:var(--mqa-blue);
 }
 
 /* --- Styling for Label, Required, and Help Text (Adjusted margin-top) --- */
 
 .mqaWebForm .grid-formview .cell-title .label {
 	font-style:italic;
-	color:#555;
+	color:white;
     flex-shrink: 0; 
     margin-right: 5px; 
     text-transform: capitalize;
@@ -654,6 +665,11 @@
   align-items:center
 }
 
+.mqaWebForm .grid-formview.orglink .fileUploadContent,
+.mqaWebForm .grid-formview.bankDetails .fileUploadContent{
+  align-items:start;
+}
+
 /* customize per control */
 .mqaWebForm .grid-formview.two-col.srd-education > :nth-child(7) 
 , .mqaWebForm .grid-formview.two-col.srd-address > :nth-child(1){
@@ -683,4 +699,16 @@
     font-weight: bold;
     margin-left: 2px;
 }
+/******* list view **********/
+.mqaWebForm .sdrForm .grid-listView{
+  display: grid;
+  grid-auto-rows: min-content;
+}
 
+.mqaWebForm .sdrForm .grid-listView.grid-listView-7{
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-3{
+  grid-template-columns: repeat(3, 1fr);
+}
