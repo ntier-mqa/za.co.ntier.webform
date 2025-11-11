@@ -75,6 +75,7 @@ public class OrganisationInfo implements ISaveForm {
 		
 		if (menuContextInfo.getProgramType() == ProgramType.STANDARD_SETTING){
 			orgContact = new AddressInfo(AddressType.ORG);
+			orgContact.setProgramType(menuContextInfo.getProgramType());
 		}
 		
 		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {

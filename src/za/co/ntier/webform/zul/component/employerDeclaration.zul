@@ -9,15 +9,28 @@
 		<label sclass="sectionHeaderTitle" value="DECLARATION" />
 	</hlayout>
   
-  <label if = "${ vmEmployerDeclaration.menuContextInfo.programType ne ProgramType.STANDARD_SETTING }"
-	  style="padding:20px 50px 0px;  display: block;  font-size: large;"
-	  value="I declare that as the duly authorised representative of the Organisation confirms that Organisation will comply with the general rules and criteria hereunder and further confirmed that all the information provided in this application is true and accurate" />
+  <div if = "${ vmEmployerDeclaration.menuContextInfo.programType ne ProgramType.STANDARD_SETTING }">
+   <label value="I declare that;" />
+    <n:ol sclass="generalAppRules">
+      <n:li>
+        <label value="I am duly authorised to act on behalf and bind the Organisation." />
+      </n:li>
+      
+      <n:li>
+        <label value="I confirm that the Organisation will comply with all relevant and applicable prescripts including the MQA Funding Policy and Public Finance Management Act 1 of 1999" />
+      </n:li>
+      
+      <n:li>
+        <label value="I confirm that all information submitted is true, accurate and correct." />
+      </n:li>
+    </n:ol>
+  </div>
   
   <div if = "${ vmEmployerDeclaration.menuContextInfo.programType eq ProgramType.STANDARD_SETTING }">
    <label value="I declare that" />
     <n:ol sclass="generalAppRules">
       <n:li>
-        <label value="I have full capacity to undertake this application" />
+        <label value="I have full capacity to undertake this application." />
       </n:li>
       
       <n:li>

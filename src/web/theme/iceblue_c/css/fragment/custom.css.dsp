@@ -4,6 +4,11 @@
     
     --header-child-color: color-mix(in srgb, var(--header-parent-color) 70%, white);
     --header-child-text-color: color-mix(in srgb, var(--header-parent-color) 40%, black);
+    --mqa-blue:#2d2c72;/* Dark Blue representing for Sapphire */
+    --mqa-orange:#e78f39;/* Rich Orange representing for Gold */
+    --mqa-green:#3d7a45;/* Organic green representing for Emerald */
+    --mqa-black:#1b161c;/* Black representing for Coal */
+    --mqa-gray:#8a8b93;/* Gray representing for Platinum */  
     
 }
 
@@ -56,9 +61,19 @@
 }
 
 .mqaWebForm .container .sectionHeaderTitle{
-	font-weight: bold;
+    font-weight: bold;
     font-size: larger;
+    background-color:var(--mqa-green);
 }
+
+.mqaWebForm .z-button{
+  background-color:var(--mqa-blue)
+}
+
+.mqaWebForm .z-button[disabled]{
+  background-color:#D9D9D9;
+}
+
 
 .mqaWebForm .container .subSectionHeader,
 .mqaWebForm .container .subSectionHeader.address {
@@ -77,9 +92,16 @@
 	
 }
 
+.mqaWebForm .container .sectionHeaderTitle,
+.mqaWebForm .container .subSectionHeaderTitle{
+    color:#fff;
+    padding:6px 12px;
+    border-radius:4px;
+}
 .mqaWebForm .container .subSectionHeaderTitle{
     font-weight: bold;
     font-size: smaller;
+    background-color:var(--mqa-green);
 }
 
 .mqaWebForm .container .generalAppRules li{
@@ -110,6 +132,14 @@
 
 .mqaWebForm .btn-circle i{
 	font-size: x-large;
+}
+
+.mqaWebForm .container .z-tab-selected{
+  background:var(--mqa-blue);
+}
+
+.mqaWebForm .container .z-tab-selected .z-tab-text{
+  color:white;
 }
 
 .mqaWebForm .container .grid-container{
@@ -169,7 +199,8 @@
 	/* Make this a flexbox container to align the label and input vertically */
     //font-weight: bold;
     font-style: italic;
-    color: #555;
+    background-color:var(--mqa-blue);
+    color:white;
 
 }
 
@@ -220,32 +251,6 @@
     text-overflow: ellipsis; /* Displays "..." to indicate truncated text */
     display: block; /* Ensure the label is a block-level element */
 }
-
-
-/*** demo **/
-
-  /* Section header style */
-  .sectionHeaderTitle {
-      background-color: #800000;
-      color: #fff;
-      padding: 6px 12px;
-      border-radius: 4px;
-      display: inline-block;
-      font-weight: bold;
-  }
-  
- 
-  /* maroon pill-style subheader */
-  .subSectionHeader .z-label.subSectionHeaderTitle,
-  .z-label.subSectionHeaderTitle,
-  .subSectionHeaderTitle {
-    background:#800000;      /* maroon */
-    color:#fff;              /* white text */
-    padding:6px 12px;
-    border-radius:4px;
-    display:inline-block;    /* wraps just the text */
-    font-weight:700;
-  }
 
 .mqaWebForm .grid-table,
 .mqaWebForm .grid-form {
@@ -342,7 +347,7 @@
 
 /* --- Header Cell Styling --- */
 .mqaWebForm .grid-header-cell {
-    background-color: var(--header-parent-color);
+    background-color: var(--mqa-blue);
     font-weight: normal;
     /*text-transform: uppercase;*/
 }
@@ -397,7 +402,7 @@
 
 /* --- Footer Cell Styling --- */
 .mqaWebForm .grid-footer-cell {
-    background-color: var(--header-parent-color);
+    background-color: var(--mqa-blue);
     color: var(--header-text-color);
 
     font-weight: bold;
