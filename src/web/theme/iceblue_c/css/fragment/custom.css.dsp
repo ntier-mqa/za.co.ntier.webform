@@ -414,7 +414,7 @@
 
 
 .mqaWebForm .grid-footer-cell .z-label{
-    color: var(--header-child-text-color);
+    color: var(--header-text-color);
 }
 
 
