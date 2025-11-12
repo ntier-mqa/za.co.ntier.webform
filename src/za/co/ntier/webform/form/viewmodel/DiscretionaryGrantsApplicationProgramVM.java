@@ -38,6 +38,7 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.I_ZZ_Levy_Paying;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_Approvals;
+import za.co.ntier.api.model.X_AD_User;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.webform.form.AbstractProgram;
@@ -604,10 +605,13 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		Query existAppFormQuery = MTable.get(I_ZZ_Application_Form.Table_ID).createQuery(existAppFormWhere, null);
 		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), bparter.getC_BPartner_ID()).list();
 		if (exitsAppForms.size() > 0) {
+			X_AD_User createdUser = new X_AD_User(Env.getCtx(), exitsAppForms.get(0).getCreatedBy(), null);
 			showDialog("Exist Application Form", 
-					String.format("An application for %s already exists. It was created by User: %s at %s", 
+					String.format("An application for %s already exists.\n"
+							+ "It was created by User: %s - %s on %s", 
 							bparter.getName(), 
 							exitsAppForms.get(0).getUserName(),
+							createdUser.getPhone(),
 							exitsAppForms.get(0).getCreated().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS).format(dtf)));
 			return true;
 		}

@@ -52,74 +52,59 @@ public class CetTvetProgram extends AbstractProgram {
 		ColumnInfo<?> colNoLearners = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoLearners, I_ZZSubAnnex.COLUMNNAME_ZZLearners);
 		colNoLearners.setCalTotal(true);
 		
-		
-		
 		if (menuContextInfo.getProgramType() == ProgramType.CET) {
 			
 			cols = List.of(colNoBeneficiaries);
 			identify = "ANNEXURE A";
 			tableTitle = "CET learners funded to access AET Programmes";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false);
+			annexure.setTabTitle("AET");
 			annexureInfos.add(annexure);
 
 			cols = List.of(colNoBeneficiaries, colDiscipline);
 			identify = "ANNEXURE B";
 			tableTitle = "Number of TVET Colleges and HEI graduates that entered CET Internships";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, true);
+			annexure.setTabTitle("Internships");
 			annexureInfos.add(annexure);
 
-			// cols = List.of(colNoBeneficiaries);
 			identify = "ANNEXURE C";
 			tableTitle = "CET Managers receiving training on curriculum related studies";
-			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(sdf, cols, sectionHeader, tableTitle, identify);
-			//annexureInfos.add(annexure);
-			
 			cols = List.of(colRequestedProgramme, colNoManagers);
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
+			subAnnexure.setTabTitle("Mgrs Curriculum Training");
 			annexureInfos.add(subAnnexure);
 						
-			//cols = List.of(colNoBeneficiaries);
 			identify = "ANNEXURE D";
 			tableTitle = "Number of CET Colleges lecturers awarded skills development programmes";
-			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(sdf, cols, sectionHeader, tableTitle, identify);
-			//annexureInfos.add(annexure);
-			
 			cols = List.of(colRequestedProgramme);
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
+			subAnnexure.setTabTitle("Lecturers Skills Programs");
 			annexureInfos.add(subAnnexure);
 			
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET) {
 			
 			identify = "ANNEXURE E";
-			String tabTile = "ANNEXURE A";
-			//cols = List.of(colNoBeneficiaries, colDiscipline);
 			tableTitle = "Number of TVET College graduates that entered an internship programme (the MQA prioritises engineering and related disciplines and may support other disciplines at its sole discretion)";
-			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(sdf, cols, sectionHeader, tableTitle, identify);
-			//annexureInfos.add(annexure);
 			
 			cols = List.of(colFieldStudy, colNoLearners);
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
-			subAnnexure.setTabTitle(tabTile);
+			subAnnexure.setTabTitle("Internships");
 			annexureInfos.add(subAnnexure);
 			
 			identify = "ANNEXURE F";
-			tabTile = "ANNEXURE B";
-			//cols = List.of(colNoBeneficiaries, colProgrammeApply);
 			tableTitle = "TVET Managers receiving training on curriculum related studies";
-			//annexure = CetTvetOneLineInput.getCetTvetOneLineInput(sdf, cols, sectionHeader, tableTitle, identify);
-			//annexureInfos.add(annexure);
 			
 			cols = List.of(colRequestedProgramme, colNoManagers);
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
-			subAnnexure.setTabTitle(tabTile);
+			subAnnexure.setTabTitle("Mgrs Curriculum Training");
 			annexureInfos.add(subAnnexure);
 			
 			identify = "ANNEXURE G";
-			tabTile = "ANNEXURE C";
 			cols = List.of(colTotalNoBeneficiaries);
 			tableTitle = "Number of TVET students requiring Work Integrated Learning to complete their work integrated learning placements (WIL)";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false);
-			subAnnexure.setTabTitle(tabTile);
+			annexure.setTabTitle("Lecturers - WIL");
 			annexureInfos.add(annexure);
 			
 			cols = List.of(colFieldStudy, colNoLearners);
@@ -127,15 +112,13 @@ public class CetTvetProgram extends AbstractProgram {
 			annexure.setSubAnnexure(subAnnexure);
 			
 			identify = "ANNEXURE H";
-			tabTile = "ANNEXURE D";
 			cols = List.of(colTotalNoBeneficiaries);
 			tableTitle = "TVET Lecturers to be awarded bursaries to further their studies";
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false);
-			annexure.setTabTitle(tabTile);
+			annexure.setTabTitle("Lecturers - Bursaries");
 			annexureInfos.add(annexure);
 
 			identify =  "ANNEXURE I";
-			tabTile = "ANNEXURE E";
 			tableTitle = "Lecturers exposed to industry through skills programmes";
 			ColumnInfo<?> colProgrammeApply = ColumnInfo.getColLabel(ColumnInfo.colProgrammeApplyTitle);
 			cols = List.of(colTotalNoBeneficiaries, colProgrammeApply);
@@ -143,7 +126,7 @@ public class CetTvetProgram extends AbstractProgram {
 			List<Map<ColumnInfo<?>, Object>> rowTitles = List.of(Map.of(colProgrammeApply, "Occupational Health and Safety"),
 					Map.of(colProgrammeApply, "Other, specify"));
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false, rowTitles, true);
-			annexure.setTabTitle(tabTile);
+			annexure.setTabTitle("Lecturers - Programs Exposure");
 			annexureInfos.add(annexure);
 
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS) {			
