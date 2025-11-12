@@ -9,7 +9,7 @@
 			<tabbox width="100%" id="subTab">
 				<tabs children="@load(vmSs.program.standardSettings)">
 			        <template name="children" var="annexure">
-			            <tab label="@load(annexure.tabTitle)" />
+			            <tab label="@load(annexure.tabTitle)" disabled="true"/>
 			        </template>
 			    </tabs>
 			    <tabpanels children="@load(vmSs.program.standardSettings)">

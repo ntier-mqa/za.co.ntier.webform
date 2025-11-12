@@ -22,11 +22,11 @@
         selectedIndex="@bind(vm.selectedTabIndex) @save(vm.selectedTabIndex, after='onSelect')"
         onSelect="@command('tabChanged')" >
 		<tabs>
-			<tab label="Declaration" />
-			<tab label="@init(vm.organisationTabTile)" />
-			<tab label="Program" />
-			<tab label="Program Contact" visible="@load(vm.showContact)" />
-			<tab label="Upload Document" visible="@load(vm.showUploadDoc)" />
+			<tab label="Declaration" selected="true" disabled="true"/>
+			<tab label="@init(vm.organisationTabTile)" disabled="true" />
+			<tab label="Program" disabled="true"/>
+			<tab label="Program Contact" visible="@load(vm.showContact)" disabled="true"/>
+			<tab label="Upload Document" visible="@load(vm.showUploadDoc)" disabled="true"/>
 
 		</tabs>
 		<tabpanels>

@@ -5,8 +5,8 @@
 	<div zclass="tabContainer">
 		<tabbox width="100%" id="subTab">
 			<tabs>
-	            <tab label="Placement of workplace coaches" />
-	            <tab label="Training of workplace coaches" />
+	            <tab label="Placement of workplace coaches" disabled="true"/>
+	            <tab label="Training of workplace coaches" disabled="true"/>
 		    </tabs>
 		    <tabpanels>
 	            <tabpanel>
