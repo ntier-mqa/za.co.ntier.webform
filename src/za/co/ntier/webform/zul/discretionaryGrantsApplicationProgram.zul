@@ -84,7 +84,7 @@
 					
 					
 					<include unless="${vm.program.handleButton}"
-							tabType="@init(TabType.MidTab)"
+							tabType="@init( !vm.showUploadDoc and !vm.showContact?TabType.LastTab : TabType.MidTab)"
 							tab="@init(formTab)"
 							applicationProgramVM="@load(vm)"
 							continueGate="@init('PROGRAM')"

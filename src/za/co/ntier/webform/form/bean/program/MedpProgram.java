@@ -5,7 +5,7 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.Util;
 
 public class MedpProgram extends AbstractProgram {
-	private int noOfLearners;
+	private Integer noOfLearners;
 
 	public MedpProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
@@ -15,7 +15,7 @@ public class MedpProgram extends AbstractProgram {
 	/**
 	 * @return the noOfLearners
 	 */
-	public int getNoOfLearners() {
+	public Integer getNoOfLearners() {
 		return noOfLearners;
 	}
 
@@ -36,7 +36,7 @@ public class MedpProgram extends AbstractProgram {
 	/**
 	 * @param noOfLearners the noOfLearners to set
 	 */
-	public void setNoOfLearners(int noOfLearners) {
+	public void setNoOfLearners(Integer noOfLearners) {
 		this.noOfLearners = noOfLearners;
 	}
 

@@ -559,7 +559,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	public boolean isShowContact() {
-		return programType != ProgramType.STANDARD_SETTING;
+		return programType != ProgramType.STANDARD_SETTING && programType != ProgramType.DEV_PROGRAM;
 	}
 
 	public String getOrganisationTabTile () {
@@ -917,7 +917,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 
 		errBuild.append("You can not continue with this application");
-
+		
 		if (hasError) {
 			showDialog("Required criteria", errBuild.toString());
 			return true;
