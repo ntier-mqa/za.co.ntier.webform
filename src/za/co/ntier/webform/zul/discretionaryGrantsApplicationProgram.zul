@@ -25,8 +25,12 @@
 			<tab label="Declaration" selected="true" disabled="true"/>
 			<tab label="@init(vm.organisationTabTile)" disabled="true" />
 			<tab label="Program" disabled="true"/>
-			<tab label="Program Contact" visible="@load(vm.showContact)" disabled="true"/>
-			<tab label="Upload Document" visible="@load(vm.showUploadDoc)" disabled="true"/>
+			<tab 
+        if = "${vm.showContact}"
+        label="Program Contact" disabled="true"/>
+			<tab
+        if = "${vm.showUploadDoc}" 
+        label="Upload Document" disabled="true"/>
 
 		</tabs>
 		<tabpanels>
@@ -93,7 +97,9 @@
 							
 				</div>
 			</tabpanel>
-			<tabpanel style="color:#CC3300;overflow: scroll;"  visible="@load(vm.showContact)">
+			<tabpanel 
+        if = "${vm.showContact}"
+        style="color:#CC3300;overflow: scroll;" >
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
 					
@@ -124,7 +130,7 @@
 
 
 			<tabpanel style="color:#CC3300;overflow: scroll;"
-				visible="@load(vm.showUploadDoc)">
+				if = "${vm.showUploadDoc}">
 				<div if="${vm.showUploadDoc}" sclass="tabContainer">
 					<div sclass="formContainer">
 						<include component="@load(vm.uploadDoc)"
