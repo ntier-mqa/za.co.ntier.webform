@@ -606,12 +606,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), bparter.getC_BPartner_ID()).list();
 		if (exitsAppForms.size() > 0) {
 			X_AD_User createdUser = new X_AD_User(Env.getCtx(), exitsAppForms.get(0).getCreatedBy(), null);
+			String phoneInfo = null;
+			if (StringUtils.isNotBlank(createdUser.getPhone())) {
+				phoneInfo = " - " + createdUser.getPhone();
+			}else {
+				phoneInfo = "";
+			}
 			showDialog("Exist Application Form", 
 					String.format("An application for %s already exists.\n"
-							+ "It was created by User: %s - %s on %s", 
+							+ "It was created by User: %s%s on %s", 
 							bparter.getName(), 
 							exitsAppForms.get(0).getUserName(),
-							createdUser.getPhone(),
+							phoneInfo,
 							exitsAppForms.get(0).getCreated().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS).format(dtf)));
 			return true;
 		}
