@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.xhtml.table;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
@@ -19,6 +20,7 @@ import org.zkoss.zk.ui.event.CheckEvent;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZPersonAddress;
+import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.X_AD_User;
 import za.co.ntier.api.model.X_ZZPersonAddress;
@@ -51,32 +53,39 @@ public class MainSrdFormVM {
 	X_ZZSdf sdf;
 	X_AD_User person;
 	
+	private void initSDF() {
+		Query savedDataQuery = MTable.get(I_ZZSdf.Table_ID)
+					.createQuery(String.format("%s = ?", I_ZZSdf.COLUMNNAME_AD_User_ID), null);
+		savedDataQuery.setParameters(person.getAD_User_ID());
+		savedDataQuery.setOnlyActiveRecords(true);
+		sdf = savedDataQuery.firstOnly();
+		if (sdf == null) {
+			sdf = new X_ZZSdf(Env.getCtx(), 0, null);
+			sdf.setAD_User_ID(person.getAD_User_ID());
+			sdf.setZZFirstName(person.getName());
+			sdf.saveEx(null);
+		}else {
+			if(sdf.getZZFirstName() == null) {
+				sdf.setZZFirstName(person.getName());
+			}
+		}
+	}
+	
+	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.menuContextInfo = menuContextInfo;
-		//this.menuContextInfo.setApplicationFormUU("7adc5a38-163d-4c78-88f4-0236fe4ed8b2"); 
-		
-		if (StringUtils.isNotBlank(menuContextInfo.getApplicationFormUU())) {
-			sdf = new X_ZZSdf(Env.getCtx(), menuContextInfo.getApplicationFormUU(), null);
-			if (!sdf.isActive()) {
-				//showDialog("Deleted Application Form", "This application form is deleted");
-			}
-			
-		}
 		
 		setFormInfo(new FormInfo(menuContextInfo));
 
 		DaoManage personManage = new DaoManage();
 		
 		int loginUserId = Env.getAD_User_ID(Env.getCtx());
-		MUser loginUser = MUser.get(loginUserId);
-		
 		person = new X_AD_User(Env.getCtx(), loginUserId, null);
-		if (StringUtils.isBlank(person.getZZFirstName())) {
-			person.setZZFirstName(loginUser.getName());
-		}
+		initSDF();
 		
 		personManage.setDao(person);
+		personManage.setDao(sdf);
 		
 		names = getNamesComp(personManage);
 		mainTab = new NavTab();
@@ -118,59 +127,34 @@ public class MainSrdFormVM {
 	TableModel physicalAddress;
 	TableModel postalAddress;
 	
-	private TableModel getOrgLinkComp() {
-		List<ColumnModel> cols = new ArrayList<>();
-
-		ColumnModel firstNameCol = CellModel.getColModelForText(
-				"Organisation Details", null
-				);
-		cols.add(firstNameCol);
-		
-		ColumnModel midNameCol = CheckboxCellModel.getCheckboxColModel(
-				"Consultant acting for Employer?", null
-				);
-		cols.add(midNameCol);
-		
-		ColumnModel surnameCol = ListCellModel.getColModelForText(
-				"Will you perform your SDF function in respect of"
-				, null
-				);
-		cols.add(surnameCol);
-
-		
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
-		namesBean.setSclass("orglink");
-		namesBean.init(sdf, null);
-
-		return namesBean;
-	}
-	
 	private TableModel getNamesComp(DaoManage personManage) {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel firstNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZFirstName)
-				, I_AD_User.COLUMNNAME_ZZFirstName
-				).required();
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName)
+				, I_ZZSdf.COLUMNNAME_ZZFirstName
+				).required()
+				.setTableId(I_ZZSdf.Table_ID);
 		cols.add(firstNameCol);
 		
 		ColumnModel midNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZMiddleName)
-				, I_AD_User.COLUMNNAME_ZZMiddleName
-				);
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZMiddleName)
+				, I_ZZSdf.COLUMNNAME_ZZMiddleName
+				).setTableId(I_ZZSdf.Table_ID);
+				;
 		cols.add(midNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZSurname)
-				, I_AD_User.COLUMNNAME_ZZSurname
-				);
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname)
+				, I_ZZSdf.COLUMNNAME_ZZSurname
+				).setTableId(I_ZZSdf.Table_ID);
 		cols.add(surnameCol);
 
 		
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 
 		namesBean.setDaoManage(personManage);
-		namesBean.init(sdf, null);
+		namesBean.init(null, null);
 
 		return namesBean;
 	}
@@ -180,55 +164,62 @@ public class MainSrdFormVM {
 
 		ColumnModel highestEducationCol = 
 				ListCellModel.getListColumnModel(
-						MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_LI_HighestEducation_ID)
-						, I_AD_User.COLUMNNAME_ZZ_LI_HighestEducation_ID
+						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_LI_HighestEducation_ID)
+						, I_ZZSdf.COLUMNNAME_ZZ_LI_HighestEducation_ID
 						, MasterUtil.getHighestEducations()
 						, highestEducation -> {return highestEducation.getName();}
 						, highestEducation -> {return highestEducation.getZZ_LI_HighestEducation_ID();}
 					).setUseForID(true)
-					.required();
+					.required()
+					.setTableId(I_ZZSdf.Table_ID);
 		cols.add(highestEducationCol);
 
 		ColumnModel highestEducationDescriptionCol = 
 				CellModel.getColModelForText(
-						MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZHighestEducationDesc)
-						, I_AD_User.COLUMNNAME_ZZHighestEducationDesc
-						);
+						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZHighestEducationDesc)
+						, I_ZZSdf.COLUMNNAME_ZZHighestEducationDesc
+						)
+				.setTableId(I_ZZSdf.Table_ID);
 		cols.add(highestEducationDescriptionCol);
 
 		ColumnModel nameOfAccreditedTrainingProviderCol = 
 				CellModel.getColModelForText(
-						MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZAccreditedTrainingProvider)
-						, I_AD_User.COLUMNNAME_ZZAccreditedTrainingProvider
-						);
+						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZAccreditedTrainingProvider)
+						, I_ZZSdf.COLUMNNAME_ZZAccreditedTrainingProvider
+						)
+				.setTableId(I_ZZSdf.Table_ID);
 		cols.add(nameOfAccreditedTrainingProviderCol);
 
 		ColumnModel experienceCol = 
 				CellModel.getColModelForText(
-						MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZExperience)
-						, I_AD_User.COLUMNNAME_ZZExperience
-						).required();
+						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZExperience)
+						, I_ZZSdf.COLUMNNAME_ZZExperience
+						).required()
+				.setTableId(I_ZZSdf.Table_ID);
 		cols.add(experienceCol);
 
 		ColumnModel currentOccupationCol = 
 				CellModel.getColModelForText(
-						MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZCurrentOccupation)
-						, I_AD_User.COLUMNNAME_ZZCurrentOccupation
-				).required();
+						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZCurrentOccupation)
+						, I_ZZSdf.COLUMNNAME_ZZCurrentOccupation
+				).required()
+				.setTableId(I_ZZSdf.Table_ID);
 		cols.add(currentOccupationCol);
 
 		ColumnModel yearInOccupationCol = 
 				CellModel.getColModelForPositiveNumber(
-						MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZYearsInOccupation)
-						, I_AD_User.COLUMNNAME_ZZYearsInOccupation
-						).required();
+						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZYearsInOccupation)
+						, I_ZZSdf.COLUMNNAME_ZZYearsInOccupation
+						).required()
+				.setTableId(I_ZZSdf.Table_ID);
 		cols.add(yearInOccupationCol);
 
 		ColumnModel generalCommentsCol = 
 				CellModel.getColModelForText(
-						MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZGeneralComments)
-						, I_AD_User.COLUMNNAME_ZZGeneralComments
-						).required();
+						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZGeneralComments)
+						, I_ZZSdf.COLUMNNAME_ZZGeneralComments
+						).required()
+				.setTableId(I_ZZSdf.Table_ID);
 		cols.add(generalCommentsCol);
 
 		TableModel educationBean = TableModel.getTableBean(TableModel.class, cols, false);
@@ -331,31 +322,34 @@ public class MainSrdFormVM {
 		ColumnModel telephoneNumberCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
 				, I_AD_User.COLUMNNAME_Phone2
-				);
+				).setTableId(I_AD_User.Table_ID);
 		cols.add(telephoneNumberCol);
 
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone)
 				, I_AD_User.COLUMNNAME_Phone
-				).required();
+				).required()
+				.setTableId(I_AD_User.Table_ID);
 		cols.add(cellPhoneNumberCol);
 
 		ColumnModel faxNumberCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Fax)
-				, I_AD_User.COLUMNNAME_Fax);
+				, I_AD_User.COLUMNNAME_Fax)
+				.setTableId(I_AD_User.Table_ID);
 		cols.add(faxNumberCol);
 
 		ColumnModel emailCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
 				).required()
-				.setReadonly(true);
+				.setReadonly(true)
+				.setTableId(I_AD_User.Table_ID);
 		cols.add(emailCol);
 
 		TableModel contactDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
 		contactDetailBean.setSclass("two-col srd-contact");
 		contactDetailBean.setDaoManage(personManage);
-		contactDetailBean.init(sdf, null);
+		contactDetailBean.init(null, null);
 
 		return contactDetailBean;
 	}
@@ -368,109 +362,121 @@ public class MainSrdFormVM {
 		cols.add(idDocUploadCol);
 
 		ColumnModel greettingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Title)
-				, I_AD_User.COLUMNNAME_Title
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZLkpTitle)
+				, I_ZZSdf.COLUMNNAME_ZZLkpTitle
 				, MasterUtil.getLkpTitleLists()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required();
+			).required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(greettingCol);
 
 		ColumnModel idNoCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No)
 				, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No
-			).required();
+			).required()
+			.setTableId(I_AD_User.Table_ID);
 		cols.add(idNoCol);
 
 		ColumnModel initialsCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZInitials)
-				, I_AD_User.COLUMNNAME_ZZInitials
-			).required();
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZInitials)
+				, I_ZZSdf.COLUMNNAME_ZZInitials
+			).required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(initialsCol);
 
 		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Birthday)
 				, I_AD_User.COLUMNNAME_Birthday
-			).required();
+			).required()
+			.setTableId(I_AD_User.Table_ID);
 		cols.add(dateOfBirthCol);
 
 		ColumnModel genderCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZGender)
-				, I_AD_User.COLUMNNAME_ZZGender
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZGender)
+				, I_ZZSdf.COLUMNNAME_ZZGender
 				, MasterUtil.getLkpGenders()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required();
+			).required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(genderCol);
 
 		ColumnModel equityCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZEquity)
-				, I_AD_User.COLUMNNAME_ZZEquity
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZEquity)
+				, I_ZZSdf.COLUMNNAME_ZZEquity
 				, MasterUtil.getLkpEquity()
 				, title -> {return title.toString();}
 				, title -> {return title.getValue();}
-			).required();
+			).required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(equityCol);
 
 		ColumnModel disabilityCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_LI_Disability_ID)
-				, I_AD_User.COLUMNNAME_ZZ_LI_Disability_ID
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_LI_Disability_ID)
+				, I_ZZSdf.COLUMNNAME_ZZ_LI_Disability_ID
 				, MasterUtil.getDisability()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_Disability_ID();}
 			).setUseForID(true)
-			.required();
+			.required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(disabilityCol);
 
 		ColumnModel homeLanguageCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_LI_HomeLanguage_ID)
-				, I_AD_User.COLUMNNAME_ZZ_LI_HomeLanguage_ID
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_LI_HomeLanguage_ID)
+				, I_ZZSdf.COLUMNNAME_ZZ_LI_HomeLanguage_ID
 				, MasterUtil.getHomeLanguage()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_HomeLanguage_ID();}
 			).setUseForID(true)
-			.required();
+			.required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(homeLanguageCol);
 
 		ColumnModel citizenResidentialStatusCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID)
-				, I_AD_User.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID)
+				, I_ZZSdf.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID
 				, MasterUtil.getCitizenResidentialStatus()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_CitizenResidentialStatus_ID();}
 			).setUseForID(true)
-			.required();
+			.required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(citizenResidentialStatusCol);
 
 		
 		ColumnModel alternateIDTypeCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID)
-				, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_AlternateIDType_ID)
+				, I_ZZSdf.COLUMNNAME_ZZ_AlternateIDType_ID
 				, MasterUtil.getAlternateIDType()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_AlternateIDType_ID();}
 			).setUseForID(true)
-			.required();
+			.required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(alternateIDTypeCol);
 
 		ColumnModel nationalityCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_Nationality_ID)
-				, I_AD_User.COLUMNNAME_ZZ_Nationality_ID
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_Nationality_ID)
+				, I_ZZSdf.COLUMNNAME_ZZ_Nationality_ID
 				, MasterUtil.getNationality()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_Nationality_ID();}
 			).setUseForID(true)
-			.required();
+			.required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(nationalityCol);
 
 		ColumnModel socioEconomicStatusCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID)
-				, I_AD_User.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID)
+				, I_ZZSdf.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID
 				, MasterUtil.getSocioEconomicStatus()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_SocioEconomicStatus_ID();}
 			).setUseForID(true)
-			.required();
+			.required()
+			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(socioEconomicStatusCol);
 
 		TableModel personDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
@@ -478,12 +484,7 @@ public class MainSrdFormVM {
 		
 		personDetailBean.setDaoManage(personManage);
 		
-		//Query savedDataQuery = MTable.get(I_AD_User.Table_ID).createQuery(String.format("%s = ?",
-			//	I_AD_User.COLUMNNAME_ZZSdf_ID), null);
-		//savedDataQuery.setParameters(sdf.getZZSdf_ID());
-		//savedDataQuery.setOrderBy(I_ZZ_Application_Form.COLUMNNAME_Created);
-		
-		personDetailBean.init(sdf, null);
+		personDetailBean.init(null, null);
 
 		return personDetailBean;
 	}
