@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_AD_Column;
 import org.compiere.model.I_C_BP_Group;
 import org.compiere.model.I_C_BPartner;
+import org.compiere.model.I_C_Bank;
 import org.compiere.model.I_C_Country;
 import org.compiere.model.I_C_Region;
 import org.compiere.model.MCity;
@@ -30,6 +31,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
+import org.compiere.model.X_C_Bank;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
@@ -242,8 +244,20 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpAppointmentListIdentify = new AbstractMap.SimpleEntry<>("6e1d8f96-0c9f-4ed5-940a-cb73aecb5d46", null);
 	public static final Entry<String, Integer> LkpEquityListIdentify = new AbstractMap.SimpleEntry<>("a2a8d729-1acb-40d7-bf8d-116e8ac4e7b4", null);
 	public static final Entry<String, Integer> LkpAlternateIDIdentify = new AbstractMap.SimpleEntry<>("04b31964-4f89-4d78-bc3c-64333fc14de3", null);
+	public static final Entry<String, Integer> LkpAccountTypeIdentify = new AbstractMap.SimpleEntry<>("d2808f16-73a8-4ed5-b5e8-27efd62186a3", null);
+	
+	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
+	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
+	
+	public static List<ValueNamePair> getYesNoList () {
+		return getRefList(YesNoIdentify);
+	}
+	
+	public static List<ValueNamePair> getLkpAccountType () {
+		return getRefList(LkpAccountTypeIdentify);
+	}
 	
 	public static List<ValueNamePair> getLkpAppointment () {
 		return getRefList(LkpAppointmentListIdentify);
@@ -289,7 +303,16 @@ public class MasterUtil {
 		return lkpList;
 	}
 	
+	private static CCache<Integer, List<X_C_Bank>> bankCache = new CCache<>("master-X_C_Bank", 1);
 	
+	public static List<X_C_Bank> getBanks(){
+		if (bankCache.isEmpty()) {
+			List<X_C_Bank> list = getMasterList(I_C_Bank.Table_ID);
+			bankCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return bankCache.get(Integer.MAX_VALUE);
+	}
 	
 	private static CCache<Integer, List<X_ZZ_LI_HighestEducation>> highestEducationCache = new CCache<>("master-X_ZZ_LI_HighestEducation", 1);
 	

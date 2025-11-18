@@ -537,6 +537,14 @@
 .mqaWebForm .sdrForm .bankDetails{
   grid-template-columns: 1fr;
 }
+
+.mqaWebForm .sdrForm .bankDetails > :nth-child(2) .label{
+  color:red;
+}
+
+.mqaWebForm .sdrForm .bankDetails > :nth-child(2) .cell-title{
+  background-color:unset;
+}
 /****** for tab *************/
 
 .mqaWebForm .grid-formview {
