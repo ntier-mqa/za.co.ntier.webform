@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.compiere.model.MCity;
+import org.zkoss.bind.BindUtils;
 
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
@@ -42,8 +43,8 @@ public class PostalData{
 				AreaData areaData = (AreaData) row.get(areaCol);
 				
 				areaData.setDataProvider(citys);
-			//	BindUtils.postNotifyChange(this, "postal");
-			//	BindUtils.postNotifyChange(areaData, "dataProvider");
+				BindUtils.postNotifyChange(this, "postal");
+				BindUtils.postNotifyChange(areaData, "dataProvider");
 			}
 			
 		}
