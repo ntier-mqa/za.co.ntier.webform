@@ -68,6 +68,7 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 		DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
 		switch (submitGate) {
 		case "CONTACT": return !vm.isProgramContactComplete();
+		case "DOCUPLOAD": return !vm.isMandatoryDocsUploaded();
 		default:        return false;
 		}
 	}

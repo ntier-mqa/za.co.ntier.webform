@@ -39,18 +39,26 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.I_ZZ_Levy_Paying;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_Approvals;
+import za.co.ntier.api.model.X_ZZDocumentUpload;
+import za.co.ntier.api.model.X_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.webform.form.AbstractProgram;
+import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
+import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureRow;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.Dialog;
 import za.co.ntier.webform.form.bean.component.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.form.bean.component.OrganisationInfo;
+import za.co.ntier.webform.form.bean.component.UploadData;
 import za.co.ntier.webform.form.bean.component.UploadDocComponent;
+import za.co.ntier.webform.form.bean.component.UploadInput;
 import za.co.ntier.webform.form.bean.program.AetProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanAidesProgram;
 import za.co.ntier.webform.form.bean.program.ArtisanDevProgram;
@@ -463,6 +471,58 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		return true;
 	}
+
+	public Boolean isMandatoryDocsUploaded() {
+
+	    // If there is no upload section configured, nothing to enforce
+	    if (uploadDoc == null || uploadDoc.getUploadDoc() == null) {
+	        return true;
+	    }
+
+	    // This is the UploadInput that backs annexureTable.zul
+	    UploadInput uploadInput = uploadDoc.getUploadDoc();
+
+	    ColumnInfo<?> uploadDefCol  = UploadInput.lookupColByDataType(DataType.DocUploadDef, uploadInput);
+	    ColumnInfo<?> uploadFileCol = UploadInput.lookupColByDataType(DataType.FileUpload,  uploadInput);
+
+	    if (uploadDefCol == null || uploadFileCol == null) {
+	        // Misconfigured, be defensive
+	        return true;
+	    }
+
+	    for (Map<ColumnInfo<?>, Object> rowObj : uploadInput.getRows()) {
+	        AnnexureRow row = (AnnexureRow) rowObj;
+
+	        X_ZZDocumentUpload docDef = (X_ZZDocumentUpload) row.get(uploadDefCol);
+	        if (docDef == null || !docDef.isMandatory()) {
+	            continue; // only enforce mandatory docs
+	        }
+
+	        // This is whatever object backs row[detailCol] for DataType.FileUpload
+	        Object cell = row.get(uploadFileCol);
+	        if (!(cell instanceof UploadData)) {
+	            // No upload object at all -> fail
+	            return false;
+	        }
+
+	        UploadData uploadData = (UploadData) cell;
+
+	        // annexureTable.zul binds label to row[detailCol].fileName
+	        String fileName = uploadData.getFileName();
+	        byte[] bytes    = uploadData.getBytes();   // or whatever field holds the content
+
+	        if (fileName == null || fileName.trim().isEmpty() ||
+	            bytes == null || bytes.length == 0) {
+	            // Mandatory doc without a real file
+	            return false;
+	        }
+	    }
+
+	    // All mandatory docs have some file in the in-memory model
+	    return true;
+	}
+
+
 
 	/* -------------------- Helpers -------------------- */
 
@@ -923,7 +983,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 
 		errBuild.append("You can not continue with this application");
-		
+
 		if (hasError) {
 			showDialog("Required criteria", errBuild.toString());
 			return true;

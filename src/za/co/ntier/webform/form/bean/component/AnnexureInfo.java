@@ -501,6 +501,8 @@ public class AnnexureInfo implements ISaveForm{
 
 		// refresh the filename label
 		BindUtils.postNotifyChange(ud, "fileName");
+		// 2) tell all button wrappers to recalc nextDisabled & submitDisabled
+	    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 	}
 
 	/**

@@ -142,7 +142,7 @@
 							tab="@init(formTab)"
 							applicationProgramVM="@load(vm)"
 							continueGate="@init('NONE')"
-  							submitGate="@init('NONE')"
+  							submitGate="@init('DOCUPLOAD')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 									</div>
 			</tabpanel>
