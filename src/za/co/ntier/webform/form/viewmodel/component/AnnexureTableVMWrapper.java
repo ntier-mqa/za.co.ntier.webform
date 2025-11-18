@@ -80,7 +80,7 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
 			@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
 		annexure.postalChange(row, col, event);
-		//notifyProgramComplete(); 
+		notifyProgramComplete(); 
 	}
 
 	/**

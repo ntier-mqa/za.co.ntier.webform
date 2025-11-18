@@ -954,13 +954,6 @@ public class AnnexureInfo implements ISaveForm{
 
 
 	public static AnnexureInfo getBankInfo(X_ZZ_Application_Form applicationForm) {
-		/* List<ColumnModel> cols = new ArrayList<ColumnModel>();
-		cols.add(ColumnModel.getColText("Name of Bank", I_ZZBankingDetails.COLUMNNAME_BankName));
-		cols.add(ColumnModel.getColText("Branch Name", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name));
-		cols.add(ColumnModel.getColText("Branch Codes", I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number));
-		cols.add(ColumnModel.getColText("Account Number", I_ZZBankingDetails.COLUMNNAME_AccountNo));
-		*/
-		
 		
 	    List<ColumnInfo<?>> cols = new ArrayList<>();
 	    ColumnInfo<?> cBank   = ColumnInfo.getColText("Name of Bank",  I_ZZBankingDetails.COLUMNNAME_BankName).required();

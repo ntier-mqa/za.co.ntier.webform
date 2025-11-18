@@ -60,9 +60,10 @@ public class CandidacyProgram extends AbstractProgram{
 	    AnnexureInfo disciplines = ((CandidacyProgram) this).getDisciplines();
 	    if (disciplines == null) return true;
 
-	    ColumnInfo<?> learnersCol = findCol(disciplines, "No. of Learners", "Learners");
-	    ColumnInfo<?> postalCol   = findCol(disciplines, "Site Postal Code", "Postal Code");
-	    ColumnInfo<?> areaCol     = findCol(disciplines, "Area");
+	    
+	    ColumnInfo<?> learnersCol   = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLabel,   disciplines);
+	    ColumnInfo<?> postalCol   = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel,   disciplines);
+	    ColumnInfo<?> areaCol     = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel,   disciplines);
 	    // Optionally a WPA column check…
 
 	    int validRows = 0;
@@ -83,17 +84,7 @@ public class CandidacyProgram extends AbstractProgram{
 	    }
 	    return validRows >= 1;
 	}
-	
-	
-	private ColumnInfo<?> findCol(AnnexureInfo a, String... aliases) {
-	    for (ColumnInfo<?> c : a.getColumnInfos()) {
-	        String t = (c.getTitle() != null ? c.getTitle() : "").trim().toLowerCase();
-	        for (String alias : aliases) {
-	            if (t.equals(alias.toLowerCase())) return c;
-	        }
-	    }
-	    return null;
-	}
+		
 	
 	private Integer getLearners(DataType dt, Object cell) {
 	    if (cell == null) return null;

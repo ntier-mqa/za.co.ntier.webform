@@ -42,8 +42,8 @@ public class PostalData{
 				AreaData areaData = (AreaData) row.get(areaCol);
 				
 				areaData.setDataProvider(citys);
-				//BindUtils.postNotifyChange(this, "postal");
-				//BindUtils.postNotifyChange(areaData, "dataProvider");
+			//	BindUtils.postNotifyChange(this, "postal");
+			//	BindUtils.postNotifyChange(areaData, "dataProvider");
 			}
 			
 		}
