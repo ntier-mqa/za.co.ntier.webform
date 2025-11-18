@@ -77,7 +77,8 @@ public class CetTvetProgram extends AbstractProgram {
 						
 			identify = "ANNEXURE D";
 			tableTitle = "Number of CET Colleges lecturers awarded skills development programmes";
-			cols = List.of(colRequestedProgramme);
+			ColumnInfo<?> colNumber = ColumnInfo.getColPositiveNumber("Number", I_ZZSubAnnex.COLUMNNAME_ZZLearners);
+			cols = List.of(colRequestedProgramme, colNumber);
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
 			subAnnexure.setTabTitle("Lecturers Skills Programs");
 			annexureInfos.add(subAnnexure);
