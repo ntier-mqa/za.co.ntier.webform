@@ -670,4 +670,17 @@
   align-items:flex-start;
 }
 
+.mqaWebForm .sdrForm .grid-listView.grid-listView-7{
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-3{
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.mandatory-star {
+    color: red;
+    font-weight: bold;
+    margin-left: 2px;
+}
 

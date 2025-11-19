@@ -17,6 +17,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.impl.InputElement;
 
+import za.co.ntier.api.model.X_ZZDocumentUpload;
 import za.co.ntier.webform.form.InlineValidators;
 import za.co.ntier.webform.form.bean.DataType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
@@ -147,5 +148,26 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 	    
 	    
 	}
+	
+	public boolean isUploadMandatory(Map<ColumnInfo<?>, Object> row) {
+	    // find the column that holds X_ZZDocumentUpload (DataType.DocUploadDef)
+	    ColumnInfo<?> docCol = null;
+	    for (ColumnInfo<?> col : component.getColumnInfos()) {
+	        if (col.getDataType() == DataType.DocUploadDef) {
+	            docCol = col;
+	            break;
+	        }
+	    }
+	    if (docCol == null) {
+	        return false;
+	    }
+
+	    Object val = row.get(docCol);
+	    if (val instanceof X_ZZDocumentUpload) {
+	        return ((X_ZZDocumentUpload) val).isMandatory();
+	    }
+	    return false;
+	}
+
 
 }

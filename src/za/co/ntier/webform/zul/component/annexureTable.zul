@@ -148,12 +148,20 @@
                             upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
                 <label value="@load(row[detailCol].fileName)" />
               </div>
-            </nodom>
-
-            <!-- DocUploadDef -->
-            <nodom if="${detailCol.dataType == DataType.DocUploadDef}">
-              <label value="@init(row[detailCol].name)" />
-            </nodom>
+            </nodom>            
+            
+            <!-- DocUploadDef: document name + red * if mandatory -->
+			<nodom if="${detailCol.dataType == DataType.DocUploadDef}">
+			    <hbox>
+			        <!-- document name from X_ZZDocumentUpload.getName() -->
+			        <label value="@init(row[detailCol].name)" />
+			
+			        <!-- red star only when isMandatory() == true -->
+			        <label value="*"
+			               visible="@init(row[detailCol].mandatory)"
+			               sclass="mandatory-star" />
+			    </hbox>
+			</nodom>
 
             <!-- Date -->
 			<nodom if="${detailCol.dataType == DataType.Date}">
