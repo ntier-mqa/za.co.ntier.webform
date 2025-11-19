@@ -264,6 +264,11 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.mqaWebForm .grid-table{
+    max-height: 400px;
+    overflow-y: auto;
+}
+
 .mqaWebForm .grid-form {
 	grid-template-columns: 1fr 1fr;
 }
@@ -350,6 +355,8 @@
     background-color: var(--mqa-blue);
     font-weight: normal;
     /*text-transform: uppercase;*/
+    position: sticky;
+    top: 0; /* Sticks to the top when scrolling */
 }
 
 .mqaWebForm .grid-sub-header{
