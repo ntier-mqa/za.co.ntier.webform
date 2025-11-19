@@ -509,10 +509,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	        // annexureTable.zul binds label to row[detailCol].fileName
 	        String fileName = uploadData.getFileName();
-	        byte[] bytes    = uploadData.getBytes();   // or whatever field holds the content
 
-	        if (fileName == null || fileName.trim().isEmpty() ||
-	            bytes == null || bytes.length == 0) {
+	        if (fileName == null || fileName.trim().isEmpty() ) {
 	            // Mandatory doc without a real file
 	            return false;
 	        }
