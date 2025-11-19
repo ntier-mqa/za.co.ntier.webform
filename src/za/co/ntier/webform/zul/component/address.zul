@@ -55,7 +55,7 @@
 			  value="@init(vmAddress.component.postalCodeTitle)" />
 			
 			<!-- Postal code -->
-			<textbox
+			<intbox
 			  value="@load(vmAddress.component.postalCode)"          
 			  onChanging="@command('fieldChanging', field='postalCode', val=event.value)"
 			  onChange="@command('notifyParentCompleteness')"        

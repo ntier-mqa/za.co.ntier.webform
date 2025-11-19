@@ -132,12 +132,12 @@ public class MasterUtil {
 		}
 
 	}
-
-	public static List<MCity> getInitCities() {
-		if (tmpAllCity.isEmpty()) {
-			getCities();
-		}
-		return tmpAllCity;
+	
+	public static List<MCity> getInitCities(){
+		return new ArrayList<>();
+		/*
+		 * if (tmpAllCity.isEmpty()) { getCities(); } return tmpAllCity;
+		 */
 	}
 
 	public static char getOffsetChar(char c, int offset) {

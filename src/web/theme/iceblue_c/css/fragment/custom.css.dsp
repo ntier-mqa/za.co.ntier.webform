@@ -205,6 +205,7 @@
 }
 
 .mqaWebForm .container .grid-container .form-field .z-textbox,
+.mqaWebForm .container .grid-container .form-field input[type="text"],
 .mqaWebForm .container .grid-container .form-field .z-datebox-input {
 	padding: 10px;
 	height:34px;
