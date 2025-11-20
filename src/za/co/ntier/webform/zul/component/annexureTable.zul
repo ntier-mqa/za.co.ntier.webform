@@ -75,7 +75,7 @@
 
             <!-- Postal -->
             <nodom if="${detailCol.dataType == DataType.Postal}">
-              <intbox value="@load(row[detailCol].postal)"
+              <textbox value="@load(row[detailCol].postal)"
                              
                        	constraint="/^$|^\d{4,6}$/: Enter a valid postal code (4–6 digits)"
                        	onChange="@command('postalChange', annexure = vmAnnexure.component, row = row, col = detailCol)"

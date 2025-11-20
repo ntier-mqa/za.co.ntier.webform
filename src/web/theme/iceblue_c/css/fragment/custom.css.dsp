@@ -266,7 +266,7 @@
 }
 
 .mqaWebForm .grid-table{
-    max-height: 400px;
+    max-height: 350px;
     overflow-y: auto;
 }
 
