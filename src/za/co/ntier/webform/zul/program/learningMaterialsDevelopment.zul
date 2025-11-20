@@ -8,16 +8,16 @@
 	    applicationProgramVM="@init(vmLmd.applicationProgramVM)"
         notifyTarget="@init('programComplete')"
 		src="@load((WebForm.getBundleResourcePath('component/annexureTable.zul')))" />
-		
-	<include component="@load(vmLmd.program.bankInfo)"
-	    applicationProgramVM="@init(vmLmd.applicationProgramVM)"
-        notifyTarget="@init('programComplete')"
-		src="@load((WebForm.getBundleResourcePath('component/gridForm.zul')))" />
-		
-	<button 
+  
+  <button 
     sclass="text-wrap w-100" 
     iconSclass="z-icon-download z-icon-solid"
     label="Download Annexure B"
     onClick="@command('downloadFileAnnexureB')" />
+    
+	<include component="@load(vmLmd.program.bankInfo)"
+	    applicationProgramVM="@init(vmLmd.applicationProgramVM)"
+        notifyTarget="@init('programComplete')"
+		src="@load((WebForm.getBundleResourcePath('component/gridForm.zul')))" />
   
 </nodom>
