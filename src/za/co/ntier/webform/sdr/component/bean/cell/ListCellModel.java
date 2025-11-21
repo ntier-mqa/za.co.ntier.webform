@@ -19,6 +19,27 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		return getSelectedID();
 	}
 	
+	public void setValue(Object value, Function<T, Boolean> compareFunction) {
+		for (T item : getColModel().getDataProvider()) {
+			Object itemValue;
+			if (getColModel().getValueConvert() != null) {
+				itemValue = getColModel().getValueConvert().apply(item);
+			}else {
+				itemValue = item;
+			}
+			
+			if (Objects.equals(value, itemValue)) {
+				if (!getModel().contains(item)) {
+					getModel().add(item);
+				}
+				
+				getModel().addToSelection(item);
+				super.setValue(value);
+				return;
+			}
+		}
+	}
+	
 	@Override
 	public void setValue(Object value) {
 		getModel().clearSelection();

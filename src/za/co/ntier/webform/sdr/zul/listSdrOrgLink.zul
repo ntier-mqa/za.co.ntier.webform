@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.AddressType ?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vm') @init('za.co.ntier.webform.sdr.viewmodel.ListSdrOrgLinkVM')">
+      
+<hlayout sclass="sectionHeader">
+  <label sclass="sectionHeaderTitle" value="Linked Organisations"/>
+</hlayout>
+
+
+
+<grid model="@init(vm.linkedOrganisations)" sizedByContent="true" emptyMessage="No applications found">
+  <columns>
+    <column label="Organisation #" width="360px"/>
+    <column label="SDL Number" width="150px"/>
+    <column label="Role" width="100px"/>
+    <column label="Status"/>
+    <column label="Action" width="90px" align="center"/>
+  </columns>
+  <rows>
+    <template name="model" var="item">
+      <row>
+        <label value="@init(item['orgName'])"/>
+        <label value="@init(item['sdlNumber'])"/>
+        <label value="@init(item['role'])"/>
+        <label value="@init(item['ZZ_Status'])"/>
+        <div sclass="formBottomPanel">
+          <button if = "${ vm.isEditable(item) }" 
+            label="Edit"
+            onClick="@command('editLinkedOrganisation', row=item)"/>
+        </div>
+        
+      </row>
+    </template>
+  </rows>
+</grid>
+
+</idspace>

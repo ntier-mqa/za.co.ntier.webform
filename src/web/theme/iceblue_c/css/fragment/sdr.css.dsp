@@ -1,19 +1,24 @@
 /**** new grid system ****/
 
-.mqaWebForm .container .formBottomPanel{
-  padding: 10px;
-  padding-right: 20px;
-  padding-left: 0px;
-  display: flex;
-  justify-content: space-between;
-}
-
 /****** for tab *************/
 .mqaWebForm .sdrForm{
   height:100%; 
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
+}
+
+.mqaWebForm .sdrForm .flex-grow{
+  flex:1;
+  min-height:0;
+}
+
+.mqaWebForm .sdrForm .formBottomPanel{
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 0px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .mqaWebForm .sdrForm .navTabOuter{
@@ -95,7 +100,8 @@
     padding:5px;
 }
 
-.mqaWebForm .grid-formview .z-select{
+.mqaWebForm .grid-formview .z-select,
+.mqaWebForm .sdrForm .z-select{
   background:white;
 }
 
@@ -130,8 +136,6 @@
     font-weight: normal;
     color: #6a6a6a;
     line-height: 1.4;
-    
-    /* Remove the margin-top to ensure the text aligns cleanly with flex-end */
     margin-top: 0; 
 }
 
@@ -144,8 +148,10 @@
 
 .mqaWebForm .grid-formview .cell-content input[type="text"],
 .mqaWebForm .grid-formview .cell-content select,
-/* ... (all other inputs) ... */
-.mqaWebForm .grid-formview .cell-content textarea {
+.mqaWebForm .grid-formview .cell-content textarea,
+.mqaWebForm .sdrForm input[type="text"],
+.mqaWebForm .sdrForm select,
+.mqaWebForm .sdrForm textarea{
     width: 100%; 
     padding: 8px 10px;
     box-sizing: border-box;
@@ -155,15 +161,20 @@
 
 
 .mqaWebForm .grid-formview .cell-content .z-textbox,
-.mqaWebForm .grid-formview .cell-content .z-datebox-input{
+.mqaWebForm .grid-formview .cell-content .z-datebox-input,
+.mqaWebForm .sdrForm .z-textbox,
+.mqaWebForm .sdrForm .z-datebox-input{
   padding: 10px;
   height:34px;
 }
-.mqaWebForm .grid-formview .cell-content .z-datebox{
+
+.mqaWebForm .grid-formview .cell-content .z-datebox,
+.mqaWebForm .sdrForm .z-datebox{
   height:34px;
 }
 
-.mqaWebForm .grid-formview .cell-content input[type="checkbox"]{
+.mqaWebForm .grid-formview .cell-content input[type="checkbox"],
+.mqaWebForm .sdrForm input[type="checkbox"]{
   padding-top:5px;
   padding-left:5px;
   height:28px;
@@ -171,16 +182,19 @@
   margin-left:5px
 }
 
-.mqaWebForm .grid-formview .cell-content .z-checkbox{
+.mqaWebForm .grid-formview .cell-content .z-checkbox,
+.mqaWebForm .sdrForm .z-checkbox{
   padding-bottom:2px;
   padding-top:3px;
 }
 
-.mqaWebForm .grid-formview .cell-content .z-datebox-icon{
+.mqaWebForm .grid-formview .cell-content .z-datebox-icon,
+.mqaWebForm .sdrForm .z-datebox-icon{
   font-size:24px;
 }
 
-.mqaWebForm .grid-formview .cell-content .z-select{
+.mqaWebForm .grid-formview .cell-content .z-select,
+.mqaWebForm .sdrForm .z-select{
   padding:5px;
   border-width:1px;
 }

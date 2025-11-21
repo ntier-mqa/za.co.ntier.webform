@@ -2,9 +2,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ecs.xhtml.table;
@@ -15,7 +13,6 @@ import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.CheckEvent;
 
 import za.co.ntier.api.model.I_AD_User;
@@ -26,14 +23,13 @@ import za.co.ntier.api.model.X_AD_User;
 import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
+import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
-import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
-import za.co.ntier.webform.sdr.component.bean.Dialog;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
@@ -41,6 +37,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.tab.bean.OrglinkTabPanel;
@@ -118,8 +115,8 @@ public class MainSrdFormVM {
 		educationDetailTab.getCompModel().add(getEducationComp(personManage));
 
 		
-		OrglinkTabPanel orgLinkTab = new OrglinkTabPanel(mainTab, person);
-		orgLinkTab.setTabTitle("Org Link");
+		//OrglinkTabPanel orgLinkTab = new OrglinkTabPanel(mainTab, sdf);
+		//orgLinkTab.setTabTitle("Org Link");
 	}
 
 	
@@ -446,13 +443,14 @@ public class MainSrdFormVM {
 		cols.add(citizenResidentialStatusCol);
 
 		
-		ColumnModel alternateIDTypeCol = ListCellModel.getListColumnModel(
+		ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_AlternateIDType_ID)
 				, I_ZZSdf.COLUMNNAME_ZZ_AlternateIDType_ID
 				, MasterUtil.getAlternateIDType()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_AlternateIDType_ID();}
-			).setUseForID(true)
+			);
+		alternateIDTypeCol.setUseForID(true)
 			.required()
 			.setTableId(I_ZZSdf.Table_ID);
 		cols.add(alternateIDTypeCol);
@@ -486,6 +484,16 @@ public class MainSrdFormVM {
 		
 		personDetailBean.init(null, null);
 
+		X_ZZ_AlternateIDType defaultAlternateID = null;
+		for (X_ZZ_AlternateIDType alternateIDType : alternateIDTypeCol.getDataProvider()) {
+			if (alternateIDTypeCol.getDisplayConvert().apply(alternateIDType).equals("RSA ID Number")) {
+				defaultAlternateID = alternateIDType;
+				break;
+			}
+		}
+		if(defaultAlternateID != null)
+			personDetailBean.getRow().get(alternateIDTypeCol).setValue(defaultAlternateID.getZZ_AlternateIDType_ID());
+		
 		return personDetailBean;
 	}
 
@@ -554,19 +562,11 @@ public class MainSrdFormVM {
 		sdf.saveEx(null);
 		
 		if(isNewSdf) {
-			showDialog("Successfully created the SDF", new StringBuilder("A new SDF is created"));
+			MasterUtil.showDialog("Successfully created the SDF", new StringBuilder("A new SDF is created"));
 		}else {
-			showDialog("Successfully saved the SDF", new StringBuilder("Data is saved"));
+			MasterUtil.showDialog("Successfully saved the SDF", new StringBuilder("Data is saved"));
 		}
 		
 		
-	}
-	
-	protected void showDialog(String title, StringBuilder msgs) {
-		Dialog dialog = new Dialog(title, msgs.toString());
-		Map<String, Object> args = new HashMap<>();
-		args.put(ComponentVMWrapper.ComponentKey, dialog);
-		String zulPathRelative = WebForm.getBundleResourcePath("sdr/component/zul/dialog.zul");	
-		Executions.createComponents(zulPathRelative, null, args);
 	}
 }

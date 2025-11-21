@@ -9,10 +9,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.desktop.DefaultDesktop;
+import org.adempiere.webui.session.SessionManager;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
@@ -26,6 +30,7 @@ import org.compiere.model.I_C_Region;
 import org.compiere.model.MCity;
 import org.compiere.model.MColumn;
 import org.compiere.model.MCountry;
+import org.compiere.model.MMenu;
 import org.compiere.model.MRefList;
 import org.compiere.model.MReference;
 import org.compiere.model.MMenu;
@@ -40,12 +45,14 @@ import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Executions;
 
 import za.co.ntier.api.model.I_ZZAnnexure;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZSubAnnex;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.I_ZZ_Nationality;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.X_ZZAnnexure;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSubAnnex;
@@ -58,6 +65,8 @@ import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
 import za.co.ntier.webform.form.bean.ProgramType;
+import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
+import za.co.ntier.webform.sdr.component.bean.Dialog;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
@@ -481,4 +490,14 @@ public class MasterUtil {
         desktop.openForm(menu.getAD_Form_ID());  
 		
 	}
+
+	public static void showDialog(String title, StringBuilder msgs) {
+		Dialog dialog = new Dialog(title, msgs.toString());
+		Map<String, Object> args = new HashMap<>();
+		args.put(ComponentVMWrapper.ComponentKey, dialog);
+		String zulPathRelative = WebForm.getBundleResourcePath("sdr/component/zul/dialog.zul");	
+		Executions.createComponents(zulPathRelative, null, args);
+	}
+	
+	public static final String SDRRegistryOrgLinkUU = "1b8f1243-dbbf-458a-89f6-cd89a95a9d4c";
 }

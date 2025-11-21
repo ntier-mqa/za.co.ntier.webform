@@ -16,6 +16,15 @@ public class CheckboxCellModel extends CellModel implements ICheckbox {
 		setCellType(CHECK_CELL);
 	}
 
+	@Override
+	public Object getValue() {
+		if (super.getValue() == null) {
+			return false;// TODO: DAO for checkbox don't accept null because setter use boolean. neet to overider setDao for treatment null value
+			
+		}
+			
+		return super.getValue();
+	}
 	/**
 	 * @return the title
 	 */
@@ -31,19 +40,21 @@ public class CheckboxCellModel extends CellModel implements ICheckbox {
 	}
 
 	public static  ColumnModel getCheckboxColModel(String title, String daoPropertyName) {
-		return CellModel.getColModelForCell(
+		ColumnModel checkboxColModel = CellModel.getColModelForCell(
 					CellModelInfo.of(ColumnModel.class, CheckboxCellModel.class
 							, (colModel, celModel) -> {
 								celModel.setTitle(title);
 							}), 
 				CellModelParams.of(title, daoPropertyName, null)
 				);
+		
+		return checkboxColModel;
 	}
 
 	@Override
 	public void cmdChecked(CheckEvent checkEvent) {
+		this.setValue(checkEvent.isChecked());
 		getColModel().cellValueChange(checkEvent, this);
-		
 	}
 
 }

@@ -20,7 +20,8 @@ public class NavTabPanel implements ISupportSave {
 
 	public NavTabPanel(NavTab parent) {
 		this.parent = parent;
-		parent.getTabPanelModel().add(this);
+		if (parent != null)
+			parent.getTabPanelModel().add(this);
 	}
 
 	private String tabTitle;

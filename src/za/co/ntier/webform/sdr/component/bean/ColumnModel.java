@@ -187,7 +187,7 @@ public class ColumnModel {
 	}
 
 	private Boolean showTitle = null;
-	 
+	
 	private BiConsumer<Event, CellModel> eventHandle;
 	
 	public void cellValueChange(Event event, CellModel cellModel) {

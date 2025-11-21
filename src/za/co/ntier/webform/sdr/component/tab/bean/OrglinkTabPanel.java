@@ -6,8 +6,13 @@ import java.util.List;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_BPartner;
+import org.compiere.model.X_I_BPartner;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.zul.ListModelList;
 
+import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.X_AD_User;
@@ -15,6 +20,7 @@ import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
@@ -25,290 +31,367 @@ import za.co.ntier.webform.sdr.component.bean.column.UploadColumnModel;
 
 public class OrglinkTabPanel extends NavTabPanel {
 
-	private ListModelList<X_ZZSdfOrganisation> orgLinkModel;
-	
-	private X_AD_User person;
-	
-	private TableModel orgLinkComp;
-	
-	private X_ZZSdfOrganisation orgLinkPo;
-	
-	private TableModel bankDetailComp;
-	
+	private X_ZZSdf sdfPo;
+
+	private MenuContextInfo menuContextInfo;
+
+	private TableModel sdfOrgModel;
+
+	private X_ZZSdfOrganisation sdfOrgPo;
+
+	private TableModel bankDetailModel;
+
 	private X_ZZBankingDetails bankDetailPo;
-	
-	public OrglinkTabPanel(NavTab parent, X_AD_User person) {
+
+	private String orgSearchText;
+
+	private X_C_BPartner orgPo;
+
+	public OrglinkTabPanel(NavTab parent, X_ZZSdf person, MenuContextInfo menuContextInfo) {
 		super(parent);
-		this.person = person;
-		initOrgLinks();
-		orgLinkComp = initOrgLinkModel(null, null);
-		bankDetailComp = initBankInfo(null, null);
-	}
-	
-	private void initOrgLinks(){
-		Query savedDataQuery = MTable.get(I_ZZSdfOrganisation.Table_ID).createQuery(String.format("%s = ?",
-				I_ZZSdfOrganisation.COLUMNNAME_AD_User_ID), null);
-		savedDataQuery.setParameters(person.getAD_User_ID());
-		savedDataQuery.setOrderBy(I_ZZSdfOrganisation.COLUMNNAME_Created);
-		setOrgLinkModel(new ListModelList<>(savedDataQuery.list()));
-	}
-	
-	private TableModel getOrgLinks(X_AD_User person, X_ZZSdf sdf){
-		List<ColumnModel> cols = new ArrayList<>();
+		this.menuContextInfo = menuContextInfo;
 
-		ColumnModel orgNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID)
-				, I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID
-				);
-		cols.add(orgNameCol);
-		
-		ColumnModel sdfStatusCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZSdfStatus)
-				, I_ZZSdfOrganisation.COLUMNNAME_ZZSdfStatus
-				);
-		cols.add(sdfStatusCol);
-		
-		ColumnModel sdfTypeCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZSdfType)
-				, I_ZZSdfOrganisation.COLUMNNAME_ZZSdfType
-				);
-		cols.add(sdfTypeCol);
-		
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
-		namesBean.setSclass("orglinkList");
-		
-		Query savedDataQuery = MTable.get(I_ZZSdfOrganisation.Table_ID).createQuery(String.format("%s = ?",
-				I_ZZSdfOrganisation.COLUMNNAME_AD_User_ID), null);
-		savedDataQuery.setParameters(person.getAD_User_ID());
-		savedDataQuery.setOrderBy(I_ZZSdfOrganisation.COLUMNNAME_Created);
-		
-		namesBean.init(sdf, savedDataQuery.list(), null);
-		namesBean.setFormView(false);
-		return namesBean;
+		this.setSdfPo(person);
+		setSdfOrgModel(initSdfOrgModel(null, null));
+		setBankDetailModel(initBankDetailModel(null, null));
+
+		if (menuContextInfo.getRecordID() != 0) {
+			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
+			sdfOrgModel.getRow().setData(sdfOrgPo);
+			sdfOrgModel.reloadDao();
+
+			// init for org
+			orgPo = new X_C_BPartner(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
+			orgSearchText = orgPo.getValue();
+			
+			// init for bank details
+			Query queryBankDetailQuery =
+			MTable.get(I_ZZBankingDetails.Table_ID).createQuery(String.format("%s = ?",
+					I_ZZBankingDetails.COLUMNNAME_ZZSdfOrganisation_ID), null);
+			queryBankDetailQuery.setParameters(sdfOrgPo.getZZSdfOrganisation_ID());
+			
+			bankDetailPo = queryBankDetailQuery.firstOnly();
+			if (bankDetailPo != null) {
+				bankDetailModel.getRow().setData(bankDetailPo);
+				bankDetailModel.reloadDao();
+			}
+			
+		}
+
 	}
 
-	private TableModel initOrgLinkModel(X_AD_User person, X_ZZSdf sdf) {
+	public void searchOrg() {
+		Query searchOrgQuery = MTable.get(I_C_BPartner.Table_ID)
+				.createQuery(String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null);
+		searchOrgQuery.setParameters(getOrgSearchText());
+		setOrgPo(searchOrgQuery.first());
+
+		if (getOrgPo() == null) {
+			MasterUtil.showDialog(Msg.getMsg(Env.getCtx(), "ZZOrgLinksNotFoundOrgTitle"),
+					new StringBuilder(Msg.getMsg(Env.getCtx(), "ZZOrgLinksNotFoundOrg")));
+		}
+	}
+
+	private TableModel initSdfOrgModel(X_AD_User person, X_ZZSdf sdf) {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel actingForEmployerCol = CheckboxCellModel.getCheckboxColModel(
-				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZActingForEmployer)
-				, I_ZZSdfOrganisation.COLUMNNAME_ZZActingForEmployer
-				);
+				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
+						I_ZZSdfOrganisation.COLUMNNAME_ZZActingForEmployer),
+				I_ZZSdfOrganisation.COLUMNNAME_ZZActingForEmployer);
 		cols.add(actingForEmployerCol);
-		
+
 		ColumnModel sdfFunctionCol = ListCellModel.getListColumnModel(
-				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZSdfFunction)
-				, I_ZZSdfOrganisation.COLUMNNAME_ZZSdfFunction
-				, MasterUtil.getLkpFunctionLists()
-				, sdfFunction -> {return sdfFunction.getName();}
-				, sdfFunction -> {return sdfFunction.getValue();}
-				);
+				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfFunction),
+				I_ZZSdfOrganisation.COLUMNNAME_ZZSdfFunction, MasterUtil.getLkpFunctionLists(), sdfFunction -> {
+					return sdfFunction.getName();
+				}, sdfFunction -> {
+					return sdfFunction.getValue();
+				});
 		cols.add(sdfFunctionCol);
-		
+
 		ColumnModel appointmentProcedureCol = ListCellModel.getListColumnModel(
-				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedure)
-				, I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedure
-				, MasterUtil.getLkpAppointment()
-				, appointment -> {return appointment.getName();}
-				, appointment -> {return appointment.getValue();}
-				);
+				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
+						I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedure),
+				I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedure, MasterUtil.getLkpAppointment(), appointment -> {
+					return appointment.getName();
+				}, appointment -> {
+					return appointment.getValue();
+				});
 		cols.add(appointmentProcedureCol);
-		
+
 		ColumnModel appointmentOtherCol = CellModel.getColModelForText(
-				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther)
-				, I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther
-				);
+				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
+						I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther),
+				I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther);
 		cols.add(appointmentOtherCol);
-		
+
 		ColumnModel replacingPrimaryCol = CheckboxCellModel.getCheckboxColModel(
-				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZReplacingPrimarySDF)
-				, I_ZZSdfOrganisation.COLUMNNAME_ZZReplacingPrimarySDF
-				);
+				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
+						I_ZZSdfOrganisation.COLUMNNAME_ZZReplacingPrimarySDF),
+				I_ZZSdfOrganisation.COLUMNNAME_ZZReplacingPrimarySDF);
 		cols.add(replacingPrimaryCol);
-		
-		ColumnModel secondarySdfCol = CheckboxCellModel.getCheckboxColModel(
-				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZSecondarySdf)
-				, I_ZZSdfOrganisation.COLUMNNAME_ZZSecondarySdf
-				);
+
+		ColumnModel secondarySdfCol = CheckboxCellModel
+				.getCheckboxColModel(
+						MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
+								I_ZZSdfOrganisation.COLUMNNAME_ZZSecondarySdf),
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSecondarySdf);
 		cols.add(secondarySdfCol);
-		
-		UploadColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel(
-				"", null, null, "UPLOAD LETTER OF APPOINTMENT"
-				);
+
+		UploadColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
+				"UPLOAD LETTER OF APPOINTMENT");
 		cols.add(btAppointmentLetterCol);
-		
+
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setSclass("orglink");
-		
-		/*
-		 * Query savedDataQuery =
-		 * MTable.get(I_ZZSdfOrganisation.Table_ID).createQuery(String.format("%s = ?",
-		 * I_ZZSdfOrganisation.COLUMNNAME_AD_User_ID), null);
-		 * savedDataQuery.setParameters(person.getAD_User_ID());
-		 * savedDataQuery.setOrderBy(I_ZZSdfOrganisation.COLUMNNAME_Created);
-		 */
-		
-		namesBean.init(sdf, null, null);
-		
+
+		namesBean.init(null, null, null);
+
 		return namesBean;
 	}
-	
-	private TableModel initBankInfo(X_AD_User person, X_ZZSdf sdf) {
+
+	private TableModel initBankDetailModel(X_AD_User person, X_ZZSdf sdf) {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		UploadColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel(
-				"", null, null, "UPLOAD BANK DETAILS"
-				);
+		UploadColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS");
 		cols.add(btBankDetailCol);
-		
+
 		ColumnModel warningBankDetailUploadCol = CellModel.getColModelForLabel(
-				"Banking details uploaded must be signed off by the Organsation CFO as true and correct"
-				);
+				"Banking details uploaded must be signed off by the Organsation CFO as true and correct");
 		cols.add(warningBankDetailUploadCol);
-		
+
 		ColumnModel bankNameCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_BankName)
-				, I_ZZBankingDetails.COLUMNNAME_BankName
-				, MasterUtil.getBanks()
-				, bank -> {return bank.getName();}
-				, bank -> {return bank.getC_Bank_ID();}
-				).required();
+				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_C_Bank_ID),
+				I_ZZBankingDetails.COLUMNNAME_C_Bank_ID, MasterUtil.getBanks(), bank -> {
+					return bank.getName();
+				}, bank -> {
+					return bank.getC_Bank_ID();
+				}).required();
 		cols.add(bankNameCol);
-		
-		ColumnModel branchNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name)
-				, I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name
-				).required();
+
+		ColumnModel branchNameCol = CellModel
+				.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+								I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name),
+						I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Name)
+				.required();
 		cols.add(branchNameCol);
-		
-		ColumnModel branchCodeCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number)
-				, I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number
-				).required();
+
+		ColumnModel branchCodeCol = CellModel
+				.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+								I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number),
+						I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number)
+				.required();
 		cols.add(branchCodeCol);
-		
-		ColumnModel accountHolderCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_ZZAccountHolder)
-				, I_ZZBankingDetails.COLUMNNAME_ZZAccountHolder
-				).required();
+
+		ColumnModel accountHolderCol = CellModel
+				.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+								I_ZZBankingDetails.COLUMNNAME_ZZAccountHolder),
+						I_ZZBankingDetails.COLUMNNAME_ZZAccountHolder)
+				.required();
 		cols.add(accountHolderCol);
-		
+
 		ColumnModel accountTypeCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_AccountType)
-				, I_ZZBankingDetails.COLUMNNAME_AccountType
-				, MasterUtil.getLkpAccountType()
-				, lkpAccountType -> {return lkpAccountType.getName();}
-				, lkpAccountType -> {return lkpAccountType.getValue();}
-				).required();
+				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_AccountType),
+				I_ZZBankingDetails.COLUMNNAME_AccountType, MasterUtil.getLkpAccountType(), lkpAccountType -> {
+					return lkpAccountType.getName();
+				}, lkpAccountType -> {
+					return lkpAccountType.getValue();
+				}).required();
 		cols.add(accountTypeCol);
-		
-		ColumnModel accountNoCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_AccountNo)
-				, I_ZZBankingDetails.COLUMNNAME_AccountNo
-				).required();
+
+		ColumnModel accountNoCol = CellModel
+				.getColModelForText(MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_AccountNo), I_ZZBankingDetails.COLUMNNAME_AccountNo)
+				.required();
 		cols.add(accountNoCol);
-		
-		
+
 		ColumnModel adminConfirmCol = ListCellModel.getListColumnModel(
-				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_ZZAdminDetailsCorrect)
-				, I_ZZBankingDetails.COLUMNNAME_ZZAdminDetailsCorrect
-				, MasterUtil.getYesNoList()
-				, lkpAccountType -> {return lkpAccountType.getName();}
-				, lkpAccountType -> {return lkpAccountType.getValue();}
-				).required();
+				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_ZZAdminDetailsCorrect),
+				I_ZZBankingDetails.COLUMNNAME_ZZAdminDetailsCorrect, MasterUtil.getYesNoList(), lkpAccountType -> {
+					return lkpAccountType.getName();
+				}, lkpAccountType -> {
+					return lkpAccountType.getValue();
+				}).required();
 		cols.add(adminConfirmCol);
-		
+
 		ColumnModel bankConfirmCol = ListCellModel.getListColumnModel(
-				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsCorrect)
-				, I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsCorrect
-				, MasterUtil.getYesNoList()
-				, lkpAccountType -> {return lkpAccountType.getName();}
-				, lkpAccountType -> {return lkpAccountType.getValue();}
-				).required();
+				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsCorrect),
+				I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsCorrect, MasterUtil.getYesNoList(), lkpAccountType -> {
+					return lkpAccountType.getName();
+				}, lkpAccountType -> {
+					return lkpAccountType.getValue();
+				}).required();
 		cols.add(bankConfirmCol);
-		
+
 		ColumnModel bankChangeConfirmCol = ListCellModel.getListColumnModel(
-				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name, I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsChanged)
-				, I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsChanged
-				, MasterUtil.getYesNoList()
-				, lkpAccountType -> {return lkpAccountType.getName();}
-				, lkpAccountType -> {return lkpAccountType.getValue();}
-				).required();
+				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsChanged),
+				I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsChanged, MasterUtil.getYesNoList(), lkpAccountType -> {
+					return lkpAccountType.getName();
+				}, lkpAccountType -> {
+					return lkpAccountType.getValue();
+				}).required();
 		cols.add(bankChangeConfirmCol);
-		
+
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setSclass("bankDetails");
-		
-		 Query savedDataQuery =
-		 MTable.get(I_ZZBankingDetails.Table_ID).createQuery(String.format("%s = ?",
-				 I_ZZBankingDetails.COLUMNNAME_C_BPartner_ID), null);
-		 //savedDataQuery.setParameters(person.getAD_User_ID());
-		 savedDataQuery.setOrderBy(I_ZZSdfOrganisation.COLUMNNAME_Updated);
-		 //PO bankingDetails = savedDataQuery.first();
-		 
+
 		namesBean.init(null, null);
-		
+
 		return namesBean;
 	}
-	/**
-	 * @return the person
-	 */
-	public X_AD_User getPerson() {
-		return person;
+
+	public void save(X_ZZSdf applicationForm, String trxName, boolean isSubmit) {
+		if (sdfOrgPo == null) {
+			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), 0, null);
+			sdfOrgPo.setZZ_Status(X_ZZSdfOrganisation.ZZ_STATUS_Drafted);
+		}
+		
+		if (isSubmit) {
+			sdfOrgPo.setZZ_Status(X_ZZSdfOrganisation.ZZ_STATUS_Completed);
+		}
+
+		sdfOrgPo.setC_BPartner_ID(getOrgPo().getC_BPartner_ID());
+		sdfOrgPo.setZZSdf_ID(getSdfPo().getZZSdf_ID());
+		sdfOrgModel.getRow().setData(sdfOrgPo);
+		sdfOrgModel.save(applicationForm, trxName);
+		
+		if (bankDetailPo == null) {
+			bankDetailPo = new X_ZZBankingDetails(Env.getCtx(), 0, null);
+			bankDetailPo.setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
+		}
+		getBankDetailModel().getRow().setData(bankDetailPo);
+		bankDetailModel.save(applicationForm, trxName);
+		
+	}
+	@Override
+	public void save(X_ZZSdf applicationForm, String trxName) {
+		save(applicationForm, trxName, false);
 	}
 
-
-	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(X_AD_User person) {
-		this.person = person;
-	}
-
-
-	/**
-	 * @return the orgLinkComp
-	 */
-	public TableModel getOrgLinkComp() {
-		return orgLinkComp;
-	}
-
-
-	/**
-	 * @param orgLinkComp the orgLinkComp to set
-	 */
-	public void setOrgLinkComp(TableModel orgLinkComp) {
-		this.orgLinkComp = orgLinkComp;
-	}
-
-
-	/**
-	 * @return the bankDetailComp
-	 */
-	public TableModel getBankDetailComp() {
-		return bankDetailComp;
-	}
-
-
-	/**
-	 * @param bankDetailComp the bankDetailComp to set
-	 */
-	public void setBankDetailComp(TableModel bankDetailComp) {
-		this.bankDetailComp = bankDetailComp;
+	public void submit(X_ZZSdf applicationForm, String trxName) {
+		save(applicationForm, trxName, true);
 	}
 
 	/**
-	 * @return the orgLinkModel
+	 * @return the orgSearchText
 	 */
-	public ListModelList<X_ZZSdfOrganisation> getOrgLinkModel() {
-		return orgLinkModel;
+	public String getOrgSearchText() {
+		return orgSearchText;
 	}
 
 	/**
-	 * @param orgLinkModel the orgLinkModel to set
+	 * @param orgSearchText the orgSearchText to set
 	 */
-	public void setOrgLinkModel(ListModelList<X_ZZSdfOrganisation> orgLinkModel) {
-		this.orgLinkModel = orgLinkModel;
+	public void setOrgSearchText(String orgSearchText) {
+		this.orgSearchText = orgSearchText;
+	}
+
+	/**
+	 * @return the orgPo
+	 */
+	public X_C_BPartner getOrgPo() {
+		return orgPo;
+	}
+
+	/**
+	 * @param orgPo the orgPo to set
+	 */
+	public void setOrgPo(X_C_BPartner orgPo) {
+		this.orgPo = orgPo;
+	}
+
+	/**
+	 * @return the bankDetailPo
+	 */
+	public X_ZZBankingDetails getBankDetailPo() {
+		return bankDetailPo;
+	}
+
+	/**
+	 * @param bankDetailPo the bankDetailPo to set
+	 */
+	public void setBankDetailPo(X_ZZBankingDetails bankDetailPo) {
+		this.bankDetailPo = bankDetailPo;
+	}
+
+	/**
+	 * @return the bankDetailModel
+	 */
+	public TableModel getBankDetailModel() {
+		return bankDetailModel;
+	}
+
+	/**
+	 * @param bankDetailModel the bankDetailModel to set
+	 */
+	public void setBankDetailModel(TableModel bankDetailModel) {
+		this.bankDetailModel = bankDetailModel;
+	}
+
+	/**
+	 * @return the sdfOrgPo
+	 */
+	public X_ZZSdfOrganisation getSdfOrgPo() {
+		return sdfOrgPo;
+	}
+
+	/**
+	 * @param sdfOrgPo the sdfOrgPo to set
+	 */
+	public void setSdfOrgPo(X_ZZSdfOrganisation sdfOrgPo) {
+		this.sdfOrgPo = sdfOrgPo;
+	}
+
+	/**
+	 * @return the sdfOrgModel
+	 */
+	public TableModel getSdfOrgModel() {
+		return sdfOrgModel;
+	}
+
+	/**
+	 * @param sdfOrgModel the sdfOrgModel to set
+	 */
+	public void setSdfOrgModel(TableModel sdfOrgModel) {
+		this.sdfOrgModel = sdfOrgModel;
+	}
+
+	/**
+	 * @return the sdfPo
+	 */
+	public X_ZZSdf getSdfPo() {
+		return sdfPo;
+	}
+
+	/**
+	 * @param sdfPo the sdfPo to set
+	 */
+	public void setSdfPo(X_ZZSdf sdfPo) {
+		this.sdfPo = sdfPo;
+	}
+
+	/**
+	 * @return the menuContextInfo
+	 */
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
+	}
+
+	/**
+	 * @param menuContextInfo the menuContextInfo to set
+	 */
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
 	}
 
 }

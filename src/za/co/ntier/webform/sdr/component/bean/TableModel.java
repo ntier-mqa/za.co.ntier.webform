@@ -550,7 +550,8 @@ public class TableModel implements ISupportSave {
 						isMatching = row.isMatchingRow(keyColumns, dao);
 						if (isMatching) {
 							matchedRows.add(row);
-							row.fillRowDataFromDao(dao);
+							row.setData(dao);
+							row.fillRowDataFromDao();
 							break;
 						}
 					}
@@ -558,14 +559,15 @@ public class TableModel implements ISupportSave {
 
 				if(!isMatching) {
 					RowModel row = createDetailRow();
-					row.fillRowDataFromDao(dao);
+					row.setData(dao);
+					row.fillRowDataFromDao();
 				}
 			}
 		}
 
 		if (daoManage != null) {
 			RowModel row = createDetailRow();
-			row.fillRowDataFromDao(null);
+			row.fillRowDataFromDao();
 		}
 		
 		if (getRows().size() == 0 && createNewRowWhenEmpty) {
@@ -576,6 +578,10 @@ public class TableModel implements ISupportSave {
 		updateTotalRow();
 	}
 
+	public void reloadDao() {
+		getRow().fillRowDataFromDao();
+	}
+	
 	/**
 	 * @return the poSupplier
 	 */

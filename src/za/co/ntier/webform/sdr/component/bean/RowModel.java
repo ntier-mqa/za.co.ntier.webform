@@ -94,8 +94,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 		return false;
 	}
 
-	public void fillRowDataFromDao(PO dao) {
-		setData(dao);
+	public void fillRowDataFromDao() {
 		values().stream()
 			.filter(cellModel -> {return StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName());})
 			.forEach(cellModel -> {

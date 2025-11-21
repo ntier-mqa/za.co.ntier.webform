@@ -7,22 +7,7 @@
 
 <nodom
   viewModel="@id('vmOrgLink') @init('za.co.ntier.webform.sdr.component.tab.viewmodel.TabPanelOrgLinkVM')">
-  
-  <listbox model="@bind(vmOrgLink.component.orgLinkModel)"
-      >
-    <listhead>
-      <listheader label="@init(( MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID) ))"/>
-      <listheader label="@init(( MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZSdfStatus) ))"/>
-      <listheader label="@init(( MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_ZZSdfType) ))"/>
-    </listhead>
-    <template name="model" var="item" status="s">
-      <listitem>
-        <listcell label="@load(item.c_BPartner_ID)"/>
-        <listcell label="@bind(item.zZSdfStatus)"/>
-        <listcell label="@bind(s.zZSdfType)"/>
-      </listitem>
-    </template>
-  </listbox>
+
   
   <div 
       style="display:flex;justify-content: space-between;flex-direction:column;padding-top:30px">
@@ -31,19 +16,18 @@
         value="@init(( MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID) ))" />
     
     <div style="display:flex;align-items:flex-start;padding-top:10px;padding-bottom:10px">
-      <textbox></textbox>
-      <button label="Search"/>
+      <textbox value="@bind(vmOrgLink.component.orgSearchText)" 
+      onChange="@command('searchOrg')"/>
     </div>
-    <button label="Add Org Link"/>
   </div>
   
   <include
-      component="@init(vmOrgLink.component.orgLinkComp)"
+      component="@init(vmOrgLink.component.sdfOrgModel)"
       menuContextInfo="@init(vmNavTab.menuContextInfo)"
       src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
       
   <include
-      component="@init(vmOrgLink.component.bankDetailComp)"
+      component="@init(vmOrgLink.component.bankDetailModel)"
       menuContextInfo="@init(vmNavTab.menuContextInfo)"
       src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
 

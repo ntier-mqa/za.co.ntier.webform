@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.AddressType ?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vm') @init('za.co.ntier.webform.sdr.viewmodel.SdrOrgLinkVM')">
+
+  <div style="display:flex; padding:5px 0 40px 0; flex-direction: column;  align-items: center;">
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vm.formInfo.formHeader)" />
+    <div style="padding-bottom:10px;font-size:smaller">
+      <html content="@init(( vm.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
+    </div>
+  </div>
+  
+
+  <include sclass="flex-grow" style="overflow-y:auto"
+    component="@init(vm.orgLinkTab)"
+    menuContextInfo="@init(vm.menuContextInfo)"
+    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabPanelOrgLink.zul')))" />
+    
+  <div sclass="formBottomPanel">
+
+    <button     
+      label="Save &amp; Exit" sclass="icon-on-right"
+      iconSclass="z-icon-floppy-disk"
+      onClick="@command('saveClose')" />
+
+    <button 
+      label="Submit Request"
+      iconSclass="z-icon-gear" sclass="icon-on-right"
+      onClick="@command('submit')" />
+  </div>
+</idspace>
