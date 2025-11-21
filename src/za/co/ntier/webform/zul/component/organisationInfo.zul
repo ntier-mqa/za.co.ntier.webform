@@ -142,6 +142,7 @@
 		component="@load(vmOrgInfo.component.orgContact)"
 		applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
 		notifyTarget="@init('organisationComplete')"
+		relaxedConstraints="true"
 		src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 		
@@ -150,6 +151,7 @@
 	    component="@load(vmOrgInfo.component.alternateOrgContact)"
 	    applicationProgramVM="@init(vmOrgInfo.applicationProgramVM)"
 	    notifyTarget="@init('organisationComplete')"
+	    relaxedConstraints="true"
 	    src="@load((WebForm.getBundleResourcePath('component/address.zul')))" />
 
 </nodom>
