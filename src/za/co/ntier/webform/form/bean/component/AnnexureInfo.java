@@ -599,12 +599,15 @@ public class AnnexureInfo implements ISaveForm{
 				}
 
 				if (!ignoreSetDao) {
+					boolean isInt = false;
 					if (cellValueObj == null) {
 						try {
 							PropertyDescriptor pd = new PropertyDescriptor(col.getDaoPropertyName(), dao.getClass());
 							Class<?> propertyType = pd.getPropertyType();
-							if(propertyType.getTypeName().equals("int")) {
+							if(propertyType.getTypeName().equals("int") && col.getDaoPropertyName().endsWith("_ID")) {
 								cellValueObj = 0;
+							}else if (propertyType.getTypeName().equals("int")) {
+								isInt = true;
 							}
 						} catch (IntrospectionException e) {
 							e.printStackTrace();
@@ -612,7 +615,11 @@ public class AnnexureInfo implements ISaveForm{
 						}
 					}
 
-					setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
+					if (cellValueObj == null && isInt) {
+						((PO)dao).set_ValueOfColumn(col.getDaoPropertyName(), null);
+					}else {
+						setDaoValue(dao, col.getDaoPropertyName(), cellValueObj);
+					}
 				}
 			}
 		}
@@ -650,7 +657,7 @@ public class AnnexureInfo implements ISaveForm{
 			if (result.getValue() == null) {
 				// delete row record if user cleared all input for this row
 				po.delete(true);
-			}else if (result.getValue()) {
+			}else {
 				po.saveEx(trxName);
 				total += result.getKey();
 
@@ -678,10 +685,11 @@ public class AnnexureInfo implements ISaveForm{
 					//     if (att != null) att.delete(true);
 					// }
 				}
-			} else {
-				log.warning("row isn't input full data so don't save to dao also delete dao saved");
-				po.delete(true);
-			}
+			} 
+			//else {
+				//log.warning("row isn't input full data so don't save to dao also delete dao saved");
+				// po.delete(true);
+			//}
 		}
 
 		applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
