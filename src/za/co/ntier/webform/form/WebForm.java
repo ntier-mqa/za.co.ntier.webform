@@ -24,6 +24,13 @@ public class WebForm extends ADForm {
 	public static final String isUploadWPAForNVCMenuContextKey = "+uploadWPAForNVC";
 	public static final String menuContextInfoKey = "menuContextInfo";
 	
+	public static final String recordUUMenuContextKey = "+recordUU";
+	public static final String recordUUMenuContextKeyNonPlus = "recordUU";
+	public static final String recordIDMenuContextKey = "+recordID";
+	public static final String recordIDMenuContextKeyNonPlus = "recordID";
+	
+	
+	
 	public static final String programMasterDataUUMenuContextKey = "+"
 			+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
 	public static final String programTypeMenuContextKey = "+programType";
@@ -102,7 +109,13 @@ public class WebForm extends ADForm {
 		
 		MenuContextInfo menuContextInfo = new MenuContextInfo(ProgramType.valueOf(programTypeValue), zulPath,
 				masterData, isUploadWPAForNVC, formTitle, applicationFormUU);
-
+		
+		String recordUUValue = Env.getContext(Env.getCtx(), m_WindowNo, recordUUMenuContextKey);
+		menuContextInfo.setRecordUU(recordUUValue);
+		
+		int recordIDValue = Env.getContextAsInt(Env.getCtx(), m_WindowNo, recordIDMenuContextKey);
+		menuContextInfo.setRecordID(recordIDValue);
+		
 		return menuContextInfo;
 	}
 }

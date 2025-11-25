@@ -10,7 +10,9 @@ public class MenuContextInfo {
 	private I_ZZ_Program_Master_Data programMasterData;
 	private ProgramType programType;
 	private String zulPath;
-
+	private String recordUU;
+	private int recordID = 0;
+	
 	public MenuContextInfo(ProgramType programType, String zulPath, I_ZZ_Program_Master_Data programMasterData,
 			boolean isUploadWPAForNVC, String formTitle, String applicationFormUU) {
 		super();
@@ -104,5 +106,33 @@ public class MenuContextInfo {
 	 */
 	public void setZulPath(String zulPath) {
 		this.zulPath = zulPath;
+	}
+
+	/**
+	 * @return the recordUU
+	 */
+	public String getRecordUU() {
+		return recordUU;
+	}
+
+	/**
+	 * @param recordUU the recordUU to set
+	 */
+	public void setRecordUU(String recordUU) {
+		this.recordUU = recordUU;
+	}
+
+	/**
+	 * @return the recordID
+	 */
+	public int getRecordID() {
+		return recordID;
+	}
+
+	/**
+	 * @param recordID the recordID to set
+	 */
+	public void setRecordID(int recordID) {
+		this.recordID = recordID;
 	}
 }
