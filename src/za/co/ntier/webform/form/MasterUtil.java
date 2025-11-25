@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.adempiere.webui.desktop.DefaultDesktop;
+import org.adempiere.webui.session.SessionManager;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_AD_Column;
 import org.compiere.model.I_C_BP_Group;
@@ -26,6 +28,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MCountry;
 import org.compiere.model.MRefList;
 import org.compiere.model.MReference;
+import org.compiere.model.MMenu;
 import org.compiere.model.MRegion;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -445,5 +448,37 @@ public class MasterUtil {
 	public static boolean isListOrgLink(Object obj) {
 		return obj instanceof List<?>;
 
+	}
+
+	public static void openForm(String menuUU, String recordUU) {
+		openForm(menuUU, WebForm.recordUUMenuContextKeyNonPlus, recordUU);
+	}
+	
+	public static void openForm(String menuUU, Integer recordID) {
+		if (recordID != null)
+			openForm(menuUU, WebForm.recordIDMenuContextKeyNonPlus, recordID.toString());
+	}
+	
+	public static void openForm(String menuUU) {
+		openForm(menuUU, null, null);
+	}
+	
+	public static void openForm(String menuUU, String key, String value) {
+		MMenu menu = new MMenu(Env.getCtx(), menuUU, null);
+		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+		
+		String contextVariables = menu.getPredefinedContextVariables();
+		if (contextVariables == null && (key != null && value != null)) {
+			contextVariables = "";
+		}
+		
+		if (key != null && value != null) {
+			contextVariables += String.format("\n%s=%s", key, value);
+		}
+		
+		desktop.setPredefinedContextVariables(contextVariables);
+		desktop.setMenuIsSOTrx(menu.isSOTrx());
+        desktop.openForm(menu.getAD_Form_ID());  
+		
 	}
 }

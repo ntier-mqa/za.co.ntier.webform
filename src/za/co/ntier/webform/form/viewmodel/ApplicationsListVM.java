@@ -8,10 +8,12 @@ import java.util.Map;
 
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_Menu;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.BindingParam;
@@ -21,10 +23,13 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 
+import za.co.ntier.api.model.I_ZZAnnexure;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.X_ZZAnnexure;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 
 public class ApplicationsListVM {
@@ -38,22 +43,18 @@ public class ApplicationsListVM {
 	@Command
 	public void editSelected(@BindingParam("application") X_ZZ_Application_Form app) {
 		if (app == null) return;
-
+		
 		X_ZZ_Program_Master_Data programDefine = new X_ZZ_Program_Master_Data(Env.getCtx(), app.getZZ_Program_Master_Data_ID(), null);
+		
+		Query menuQuery = MTable.get(I_AD_Menu.Table_ID).createQuery(String.format("%s = ? AND %s LIKE ? AND %s LIKE ?", 
+				I_AD_Menu.COLUMNNAME_AD_Form_ID
+				, I_AD_Menu.COLUMNNAME_PredefinedContextVariables
+				, I_AD_Menu.COLUMNNAME_PredefinedContextVariables), null);
 
-		Map<String,Object> args = new HashMap<>();
-		args.put("applicationId", app.getZZ_Application_Form_ID());
-		args.put("menuContextInfo", menuContextInfo);
-
-		String menuContext = "zulPath=/za/co/ntier/webform/zul/discretionaryGrantsApplicationProgram.zul\n"
-				+ "formTitle=" + programDefine.getTitle() + "\n"
-				+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU + "=" + programDefine.getZZ_Program_Master_Data_UU() + "\n"
-				+ "programType=" + app.getZZProgramType() + "\n"
-				+ I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU + "=" + app.getZZ_Application_Form_UU();
-
-		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
-		desktop.setPredefinedContextVariables(menuContext);
-		desktop.openForm(1000000);
+		menuQuery.setParameters(1000000, "%" + programDefine.getZZ_Program_Master_Data_UU() + "%", "%" + app.getZZProgramType() + "%");
+		X_AD_Menu menu = menuQuery.first();
+		MasterUtil.openForm(menu.getAD_Menu_UU(), I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU, app.getZZ_Application_Form_UU());
+		
 	}
 
 	// IMPORTANT: return ListModel so <grid model="..."> works
@@ -160,6 +161,7 @@ public class ApplicationsListVM {
 		if (app == null) return false;
 
 		final int appId = app.getZZ_Application_Form_ID();
+//editableCache.put(appId, true);
 		Boolean cached = editableCache.get(appId);
 		if (cached != null) return cached;
 
