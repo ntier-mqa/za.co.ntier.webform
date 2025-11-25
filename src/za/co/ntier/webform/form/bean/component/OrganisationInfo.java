@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MBPartner;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_BP_Group;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -18,6 +19,7 @@ import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
@@ -78,13 +80,8 @@ public class OrganisationInfo implements ISaveForm {
 			orgContact.setProgramType(menuContextInfo.getProgramType());
 		}
 		
-		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
-			cetTvetColleges = MasterUtil.getCetColleges();
-		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())
-				|| ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType())) {
-			cetTvetColleges = MasterUtil.getTvetColleges();
-		} else if (ProgramType.HET_LECTURE_SUPPORT.equals(menuContextInfo.getProgramType())){
-			cetTvetColleges = MasterUtil.getUniversity();
+		if (StringUtils.isNoneBlank(menuContextInfo.getContextParam(WebForm.bpGroupMenuContextKeyNonPlus))) {
+			cetTvetColleges = MasterUtil.getBpartnersByGroup(menuContextInfo.getContextParam(WebForm.bpGroupMenuContextKeyNonPlus));
 		}
 	}
 
@@ -115,13 +112,9 @@ public class OrganisationInfo implements ISaveForm {
 	}
 	
 	public String getCetTvetNameTitle() {
-		if (ProgramType.CET.equals(menuContextInfo.getProgramType())) {
-			return "Name of CET College";
-		} else if (ProgramType.TVET.equals(menuContextInfo.getProgramType())
-				|| ProgramType.TVET_BURSARS.equals(menuContextInfo.getProgramType()))
-			return "Name of TVET College";
-		else if (ProgramType.HET_LECTURE_SUPPORT.equals(menuContextInfo.getProgramType())){
-			return "Name of University";
+		if (StringUtils.isNoneBlank(menuContextInfo.getContextParam(WebForm.bpGroupMenuContextKeyNonPlus))) {
+			X_C_BP_Group group = MasterUtil.getBPGroup(menuContextInfo.getContextParam(WebForm.bpGroupMenuContextKeyNonPlus));
+			return group.getDescription();
 		}else
 			return "unknownCetNameTitle";
 	}

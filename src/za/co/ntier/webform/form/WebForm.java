@@ -29,7 +29,8 @@ public class WebForm extends ADForm {
 	public static final String recordIDMenuContextKey = "+recordID";
 	public static final String recordIDMenuContextKeyNonPlus = "recordID";
 	
-	
+	public static final String bpGroupMenuContextKey = "+bpGroupUU";
+	public static final String bpGroupMenuContextKeyNonPlus = "bpGroupUU";
 	
 	public static final String programMasterDataUUMenuContextKey = "+"
 			+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
@@ -115,6 +116,9 @@ public class WebForm extends ADForm {
 		
 		int recordIDValue = Env.getContextAsInt(Env.getCtx(), m_WindowNo, recordIDMenuContextKey);
 		menuContextInfo.setRecordID(recordIDValue);
+		
+		String bpGroupValue = Env.getContext(Env.getCtx(), m_WindowNo, bpGroupMenuContextKey);
+		menuContextInfo.getMoreContext().put(bpGroupMenuContextKeyNonPlus, bpGroupValue);
 		
 		return menuContextInfo;
 	}

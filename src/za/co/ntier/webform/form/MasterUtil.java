@@ -30,6 +30,7 @@ import org.compiere.model.MRegion;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_BP_Group;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_Bank;
 import org.compiere.util.CCache;
@@ -60,40 +61,42 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 public class MasterUtil {
 	public static final int limitItem = 600;
 	
-	private static CCache<ProgramType, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
+	private static CCache<String, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
 			I_C_BPartner.Table_Name + "_CetTvetCollege", 3);
 
 	private static CCache<Integer, List<MCity>> s_Cities = new CCache<>(MCity.Table_Name + "_DisciplineHDSA", 1);
 	private static CCache<Integer, List<MRegion>> s_Regions = new CCache<>(MRegion.Table_Name + "_DisciplineHDSA", 1);
 	private static final List<MCity> tmpAllCity = new ArrayList<>();
-
-	public static List<X_C_BPartner> getCetColleges() {
-		List<X_C_BPartner> cetColleges = s_CetTvetCollege.get(ProgramType.CET);
-		if (cetColleges == null) {
-			cetColleges = getBpartnerByGroup("Z-CET");
-			s_CetTvetCollege.put(ProgramType.CET, cetColleges);
+	
+	public static X_ZZSdf querySdf(int userId) {
+		Query savedDataQuery = MTable.get(I_ZZSdf.Table_ID)
+				.createQuery(String.format("%s = ?", I_ZZSdf.COLUMNNAME_AD_User_ID), null);
+		savedDataQuery.setParameters(userId);
+		savedDataQuery.setOnlyActiveRecords(true);
+		return savedDataQuery.firstOnly();
+	}
+	
+	public static X_C_BP_Group getBPGroup(String bpGroupUU) {
+		Query queryBpGroup = new Query(Env.getCtx(), I_C_BP_Group.Table_Name,
+				String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_C_BP_Group_UU), null);
+		queryBpGroup.setParameters(bpGroupUU);//"Z-CET"
+		return queryBpGroup.firstOnly();
+	}
+	
+	public static List<X_C_BPartner> getBpartnersByGroup(String bpGroupUU) {
+		List<X_C_BPartner> bpartners = s_CetTvetCollege.get(bpGroupUU);
+		if (bpartners == null) {
+			Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
+					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_C_BP_Group_UU), null);
+			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
+			queryCetColleges.setParameters(bpGroupUU);//"Z-CET"
+			queryCetColleges.setOrderBy(I_C_BPartner.COLUMNNAME_Name + " ASC");
+			bpartners = queryCetColleges.list();
+			s_CetTvetCollege.put(bpGroupUU, bpartners);
 		}
-		return cetColleges;
+		return bpartners;
 	}
-
-	public static List<X_C_BPartner> getBpartnerByGroup(String groupValue) {
-		Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
-				String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_Value), null);
-		queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
-		queryCetColleges.setParameters(groupValue);// "Z-CET"
-		queryCetColleges.setOrderBy(I_C_BPartner.COLUMNNAME_Name + " ASC");
-		return queryCetColleges.list();
-	}
-
-	public static List<X_C_BPartner> getUniversity() {
-		List<X_C_BPartner> universitys = s_CetTvetCollege.get(ProgramType.HET_LECTURE_SUPPORT);
-		if (universitys == null) {
-			universitys = getBpartnerByGroup("Z-UNIVERSITY");
-			s_CetTvetCollege.put(ProgramType.HET_LECTURE_SUPPORT, universitys);
-		}
-		return universitys;
-	}
-
+	
 	public static List<MCity> getCities() {
 		if (s_Cities.isEmpty()) {
 
@@ -162,15 +165,6 @@ public class MasterUtil {
 		}
 
 		return s_Regions.get(Integer.MIN_VALUE);
-	}
-
-	public static List<X_C_BPartner> getTvetColleges() {
-		List<X_C_BPartner> tvetColleges = s_CetTvetCollege.get(ProgramType.TVET);
-		if (tvetColleges == null) {
-			tvetColleges = getBpartnerByGroup("Z-TVET");
-			s_CetTvetCollege.put(ProgramType.TVET, tvetColleges);
-		}
-		return tvetColleges;
 	}
 
 	public static String saveUploadFile(Media media) throws IOException {

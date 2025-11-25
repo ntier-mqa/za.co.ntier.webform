@@ -1,5 +1,8 @@
 package za.co.ntier.webform.form;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.webform.form.bean.ProgramType;
 
@@ -12,6 +15,11 @@ public class MenuContextInfo {
 	private String zulPath;
 	private String recordUU;
 	private int recordID = 0;
+	private Map<String, String> moreContext = new HashMap<>();
+	
+	public String getContextParam(String paramKey) {
+		return moreContext.get(paramKey);
+	}
 	
 	public MenuContextInfo(ProgramType programType, String zulPath, I_ZZ_Program_Master_Data programMasterData,
 			boolean isUploadWPAForNVC, String formTitle, String applicationFormUU) {
@@ -134,5 +142,12 @@ public class MenuContextInfo {
 	 */
 	public void setRecordID(int recordID) {
 		this.recordID = recordID;
+	}
+
+	/**
+	 * @return the moreParaContext
+	 */
+	public Map<String, String> getMoreContext() {
+		return moreContext;
 	}
 }
