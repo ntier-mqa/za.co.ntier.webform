@@ -132,17 +132,20 @@ public class CetTvetProgram extends AbstractProgram {
 			annexureInfos.add(annexure);
 
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS || menuContextInfo.getProgramType() == ProgramType.TVET_UNIVERSITY) {			
-			List<LearnerInputInfo> tradeObj = ProgramInput.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), true);
+			List<LearnerInputInfo> tradeObj = null;
+			if(menuContextInfo.getProgramType() == ProgramType.TVET_UNIVERSITY) {
+				tradeObj = ProgramInput.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), false);
+				identify = "University Graduates Placement";
+			}else {
+				tradeObj = ProgramInput.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), true);
+				identify = "TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION";
+			}
+			
 			tradeInfo = tradeObj;
 			if (tradeInfo != null) {
 
 				ColumnInfo<?> colRowTitle = ColumnInfo.getColList("Field of Study", tradeInfo, I_ZZSubAnnex.COLUMNNAME_ZZ_Trade_ID, "learnerInputID");
 				cols = List.of(colRowTitle, colNoLearners);
-				if(menuContextInfo.getProgramType() == ProgramType.TVET_UNIVERSITY) {
-					identify = "University Graduates Placement";
-				}else {
-					identify = "TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION";
-				}
 				
 				subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, null, identify);
 				subAnnexure.getTotalRow().put(colRowTitle, "Total Number of beneficiaries applying for");
