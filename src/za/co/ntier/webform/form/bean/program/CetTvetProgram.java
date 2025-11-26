@@ -28,7 +28,7 @@ public class CetTvetProgram extends AbstractProgram {
 	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
 		super(menuContextInfo, applicationForm);
 		
-		setHandleButton(menuContextInfo.getProgramType() != ProgramType.TVET_BURSARS && menuContextInfo.getProgramType() != ProgramType.TVET_UNIVERSITY);
+		setHandleButton(menuContextInfo.getProgramType() != ProgramType.TVET_BURSARS && menuContextInfo.getProgramType() != ProgramType.UNIVERSITY);
 		annexureInfos = new ArrayList<>();
 		CetTvetOneLineInput annexure = null;
 		CetTvetMultiLineInput subAnnexure = null;
@@ -131,9 +131,9 @@ public class CetTvetProgram extends AbstractProgram {
 			annexure.setTabTitle("Lecturers - Programs Exposure");
 			annexureInfos.add(annexure);
 
-		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS || menuContextInfo.getProgramType() == ProgramType.TVET_UNIVERSITY) {			
+		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS || menuContextInfo.getProgramType() == ProgramType.UNIVERSITY) {			
 			List<LearnerInputInfo> tradeObj = null;
-			if(menuContextInfo.getProgramType() == ProgramType.TVET_UNIVERSITY) {
+			if(menuContextInfo.getProgramType() == ProgramType.UNIVERSITY) {
 				tradeObj = ProgramInput.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), false);
 				identify = "University Graduates Placement";
 			}else {

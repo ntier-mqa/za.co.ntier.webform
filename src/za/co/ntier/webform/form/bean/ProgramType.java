@@ -6,7 +6,7 @@ public enum ProgramType {
 	CET, DEV_PROGRAM,
 	EXPERIENCE, INHOUSE_TRAINING,
 	INTERNSHIP, NCV_GRADUATES, NON_ARTISAN_DEV,
-	NON_ARTISAN_DEV_RPL, OHASSP, TVET, TVET_BURSARS, TVET_UNIVERSITY,
+	NON_ARTISAN_DEV_RPL, OHASSP, TVET, TVET_BURSARS, UNIVERSITY,
 	WORKPLACE_COACHES,
 	MINING_COMMUNITY,
 	UNEMPLOYED_YOUTH,
@@ -77,7 +77,7 @@ public enum ProgramType {
 			case CET:
 			case TVET:
 			case TVET_BURSARS:
-			case TVET_UNIVERSITY:
+			case UNIVERSITY:
 				return "program/cetTvet.zul";
 			default:
 				return null;
@@ -86,7 +86,7 @@ public enum ProgramType {
 	
 
 	public boolean isCetTvet() {
-		return ProgramType.CET.equals(this) || ProgramType.TVET.equals(this) || ProgramType.TVET_BURSARS.equals(this) || ProgramType.TVET_UNIVERSITY.equals(this);
+		return ProgramType.CET.equals(this) || ProgramType.TVET.equals(this) || ProgramType.TVET_BURSARS.equals(this) || ProgramType.UNIVERSITY.equals(this);
 	}
 
 	public boolean isDev_Program() {
@@ -105,7 +105,7 @@ public enum ProgramType {
 		return this == CANDIDACY || this == INTERNSHIP || this == EXPERIENCE || this == DEV_PROGRAM
 				|| this == ARTISAN_AIDES || this == ARTISAN_DEV || this == CENTRE_SPECIALISATION || this == ARTISAN_RPL
 				|| this == NON_ARTISAN_DEV || this == NON_ARTISAN_DEV_RPL || this == NCV_GRADUATES || this == AET
-				|| this == OHASSP || this == INHOUSE_TRAINING || this == TVET || this == CET || this == TVET_BURSARS || this == TVET_UNIVERSITY
+				|| this == OHASSP || this == INHOUSE_TRAINING || this == TVET || this == CET || this == TVET_BURSARS || this == UNIVERSITY
 				|| this == WORKPLACE_COACHES || this == MINING_COMMUNITY || this == UNEMPLOYED_YOUTH || this == SMALL_SCALE_MINING || this == HET_LECTURE_SUPPORT
 				|| this == SMALL_BUSINESS || this == WORKER_INITIATED_TRAINING || this == LEARNING_MATERIALS_DEVELOPMENT 
 				|| this == MULTIYEAR_PARTNERSHIP_INTERNSHIP || this == MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE
