@@ -141,21 +141,25 @@ public class CetTvetProgram extends AbstractProgram {
 
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS || menuContextInfo.getProgramType() == ProgramType.UNIVERSITY) {			
 			List<LearnerInputInfo> tradeObj = null;
+			String daoColumn = I_ZZSubAnnex.COLUMNNAME_ZZ_Trade_ID;
 			if(menuContextInfo.getProgramType() == ProgramType.UNIVERSITY) {
 				tradeObj = ProgramInput.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), false);
 				identify = "University Graduates Placement";
+				daoColumn = I_ZZSubAnnex.COLUMNNAME_ZZ_Disciplines_ID;
 			}else {
 				tradeObj = ProgramInput.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), true);
 				identify = "TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION";
 			}
 			
+			
+			
 			tradeInfo = tradeObj;
 			if (tradeInfo != null) {
-
-				ColumnInfo<?> colRowTitle = ColumnInfo.getColList("Field of Study", tradeInfo, I_ZZSubAnnex.COLUMNNAME_ZZ_Trade_ID, "learnerInputID");
+				ColumnInfo<?> colRowTitle = ColumnInfo.getColList("Field of Study", tradeInfo, daoColumn, "learnerInputID");
 				// keep a reference for validation
 				this.colFieldOfStudyCol = colRowTitle;
-				this.colNoLearnersCol = colNoLearners; // defined earlier in the constructor
+				this.colNoLearnersCol = colNoLearners; // defined earlier in the constructor				
+
 				cols = List.of(colRowTitle, colNoLearners);
 				
 				subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, null, identify);
