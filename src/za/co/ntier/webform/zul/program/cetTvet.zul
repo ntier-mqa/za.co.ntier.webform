@@ -9,8 +9,8 @@
 	viewModel="@id('vmCetTvet') @init('za.co.ntier.webform.form.viewmodel.program.CetTvetVMWrapper')">
 
 	<div zclass="tabContainer">
-		<div zclass="formContainer">
-			<tabbox width="100%" id="subTab">
+		
+			<tabbox width="100%" vflex="1" id="subTab">
 				<tabs children="@load(vmCetTvet.program.annexureInfos)">
 			        <template name="children" var="annexure">
 			            <tab label="@load(annexure.tabTitle)" disabled="true" />
@@ -28,7 +28,7 @@
 			        
 			    </tabpanels>
 			</tabbox>
-		</div>
+		
 		<include if="${vm.program.handleButton}"
 							tabType="@init(TabType.MidTab)"
 							tab="@init(vmCetTvet.tab)"

@@ -74,7 +74,7 @@
 				</div>
 			</tabpanel>
 
-			<tabpanel style="color:#CC0033;overflow: scroll;">
+			<tabpanel style="color:#CC0033">
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
 						<!-- DGA_Form_Cluster 2 for 2025-2026 FY.pdf -->

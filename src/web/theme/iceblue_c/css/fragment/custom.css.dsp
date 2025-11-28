@@ -496,6 +496,10 @@
   color: #fff !important;
 }
 
+.mqaWebForm .z-tabbox.z-flex-item .z-tabpanel{
+  overflow-y: auto;
+}
+
 .mandatory-star {
     color: red;
     font-weight: bold;

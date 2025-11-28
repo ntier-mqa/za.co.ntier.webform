@@ -3,7 +3,7 @@
 <nodom xmlns:n="native"
 	viewModel="@id('vmWorkplaceCoaches') @init('za.co.ntier.webform.form.viewmodel.program.WorkplaceCoachesVMWrapper')">
 	<div zclass="tabContainer">
-		<tabbox width="100%" id="subTab">
+		<tabbox width="100%" vflex="1"  id="subTab">
 			<tabs>
 	            <tab label="Placement of workplace coaches" disabled="true"/>
 	            <tab label="Training of workplace coaches" disabled="true"/>
