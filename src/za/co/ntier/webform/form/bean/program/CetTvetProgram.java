@@ -12,6 +12,7 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AddressInfo;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.CetTvetMultiLineInput;
 import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
@@ -25,8 +26,14 @@ public class CetTvetProgram extends AbstractProgram {
 	
 	private List<LearnerInputInfo> tradeInfo;
 	
+	private CetTvetMultiLineInput tradeAnnexure;       // bursars/university table
+	private ColumnInfo<?> colFieldOfStudyCol;          // "Field of Study" column
+	private ColumnInfo<?> colNoLearnersCol;            // "Number of learners" column
+    private final ProgramType programType;
+	
 	public CetTvetProgram(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm){
 		super(menuContextInfo, applicationForm);
+		this.programType = menuContextInfo.getProgramType();
 		
 		setHandleButton(menuContextInfo.getProgramType() != ProgramType.TVET_BURSARS && menuContextInfo.getProgramType() != ProgramType.UNIVERSITY);
 		annexureInfos = new ArrayList<>();
@@ -145,9 +152,15 @@ public class CetTvetProgram extends AbstractProgram {
 			if (tradeInfo != null) {
 
 				ColumnInfo<?> colRowTitle = ColumnInfo.getColList("Field of Study", tradeInfo, I_ZZSubAnnex.COLUMNNAME_ZZ_Trade_ID, "learnerInputID");
+				// keep a reference for validation
+				this.colFieldOfStudyCol = colRowTitle;
+				this.colNoLearnersCol = colNoLearners; // defined earlier in the constructor
 				cols = List.of(colRowTitle, colNoLearners);
 				
 				subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, null, identify);
+				// keep a reference for validation
+				this.tradeAnnexure = subAnnexure;
+
 				subAnnexure.getTotalRow().put(colRowTitle, "Total Number of beneficiaries applying for");
 				annexureInfos.add(subAnnexure);
 			}
@@ -217,11 +230,88 @@ public class CetTvetProgram extends AbstractProgram {
 	
 	@Override
 	public boolean isProgramValid() {
-	    return true; // no partial rows found -> allow Next
+	    // Only enforce the rule for TVET_BURSARS / UNIVERSITY
+	    if (programType != ProgramType.TVET_BURSARS
+	            && programType != ProgramType.UNIVERSITY) {
+	        return true;
+	    }
+
+	    if (tradeAnnexure == null || colFieldOfStudyCol == null || colNoLearnersCol == null) {
+	        return false; // misconfigured
+	    }
+
+	    java.util.List<AnnexureRow> rows = tradeAnnexure.getRows();
+	    if (rows == null || rows.isEmpty()) {
+	        return false;
+	    }
+
+	    boolean hasCompleteRow = false;
+
+	    for (AnnexureRow row : rows) {
+	        if (row == null) {
+	            continue;
+	        }
+
+	        if (isTradeRowBlank(row)) {
+	            // completely empty row is allowed
+	            continue;
+	        }
+
+	        if (isTradeRowComplete(row)) {
+	            hasCompleteRow = true;
+	            continue;
+	        }
+
+	        // If we get here: row is NOT blank and NOT complete -> partial row -> invalid
+	        return false;
+	    }
+
+	    // Need at least one complete row overall
+	    return hasCompleteRow;
 	}
 
-	
+	private boolean isTradeRowBlank(AnnexureRow row) {
+	    Object fieldVal    = row.get(colFieldOfStudyCol);
+	    Object learnersVal = row.get(colNoLearnersCol);
 
+	    boolean fieldBlank = (fieldVal == null || fieldVal.toString().trim().isEmpty());
+
+	    Integer nLearners = null;
+	    if (learnersVal instanceof Number) {
+	        nLearners = ((Number) learnersVal).intValue();
+	    } else if (learnersVal != null) {
+	        try {
+	            nLearners = Integer.valueOf(learnersVal.toString().trim());
+	        } catch (NumberFormatException e) {
+	            // treat as blank/invalid
+	        }
+	    }
+	    // treat null or 0 as "not filled"
+	    boolean learnersBlank = (nLearners == null || nLearners == 0);
+
+	    return fieldBlank && learnersBlank;
+	}
+
+	private boolean isTradeRowComplete(AnnexureRow row) {
+	    Object fieldVal    = row.get(colFieldOfStudyCol);
+	    Object learnersVal = row.get(colNoLearnersCol);
+
+	    boolean hasField = fieldVal != null && !fieldVal.toString().trim().isEmpty();
+
+	    Integer nLearners = null;
+	    if (learnersVal instanceof Number) {
+	        nLearners = ((Number) learnersVal).intValue();
+	    } else if (learnersVal != null) {
+	        try {
+	            nLearners = Integer.valueOf(learnersVal.toString().trim());
+	        } catch (NumberFormatException e) {
+	            // leave as null
+	        }
+	    }
+	    boolean hasLearners = nLearners != null && nLearners > 0;
+
+	    return hasField && hasLearners;
+	}
 
 	
 
