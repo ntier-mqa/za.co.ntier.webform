@@ -101,7 +101,7 @@ public class StandardSetting extends AbstractProgram {
 				, "Certified ID copy"
 				, "Certified copies of technical qualifications"
 				, "Detailed record of service or an employer confirmation letter detailing the minimum 3 years work and moderation experience"
-				, "MQA moderator registration letter (any applicants that have certificates of competency issued by MINCOSA formerly known as Chamber of Mines are exempt from this criteria)"
+				, "MQA moderator registration letter (any applicants that have certificates of competency issued by Mineral Council South Africa are exempt from this criteria)"
 				));
 				
 		standardSettings.add(standardSettingInput);
@@ -119,7 +119,7 @@ public class StandardSetting extends AbstractProgram {
 				, "Certified ID Copy"
 				, "Certified copies of technical qualifications"
 				, "Detailed record of service or an employer confirmation letter detailing the minimum 3 years relevant technical work and marking or assessing experience"
-				, "MQA assessor registration letter (any applicants that have certificates of competency issued by MINCOSA formerly known as Chamber of Mines are exempt from this criteria)"
+				, "MQA assessor registration letter (any applicants that have certificates of competency issued by Mineral Council South Africa are exempt from this criteria)"
 				));
 		
 		standardSettings.add(standardSettingInput);
