@@ -16,6 +16,7 @@ import za.co.ntier.webform.form.bean.component.AnnexureRow;
 import za.co.ntier.webform.form.bean.component.CetTvetMultiLineInput;
 import za.co.ntier.webform.form.bean.component.CetTvetOneLineInput;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
+import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 
@@ -230,7 +231,7 @@ public class CetTvetProgram extends AbstractProgram {
 	
 	@Override
 	public boolean isProgramValid() {
-	    // Only enforce the rule for TVET_BURSARS / UNIVERSITY
+	    // Only enforce for these program types
 	    if (programType != ProgramType.TVET_BURSARS
 	            && programType != ProgramType.UNIVERSITY) {
 	        return true;
@@ -253,7 +254,7 @@ public class CetTvetProgram extends AbstractProgram {
 	        }
 
 	        if (isTradeRowBlank(row)) {
-	            // completely empty row is allowed
+	            // completely empty row (e.g. freshly added but untouched) – allowed
 	            continue;
 	        }
 
@@ -262,57 +263,71 @@ public class CetTvetProgram extends AbstractProgram {
 	            continue;
 	        }
 
-	        // If we get here: row is NOT blank and NOT complete -> partial row -> invalid
+	        // If we get here, user started the line but did not finish it → invalid
 	        return false;
 	    }
 
-	    // Need at least one complete row overall
+	    // Must have at least one full row overall
 	    return hasCompleteRow;
 	}
 
-	private boolean isTradeRowBlank(AnnexureRow row) {
-	    Object fieldVal    = row.get(colFieldOfStudyCol);
-	    Object learnersVal = row.get(colNoLearnersCol);
-
-	    boolean fieldBlank = (fieldVal == null || fieldVal.toString().trim().isEmpty());
-
-	    Integer nLearners = null;
-	    if (learnersVal instanceof Number) {
-	        nLearners = ((Number) learnersVal).intValue();
-	    } else if (learnersVal != null) {
-	        try {
-	            nLearners = Integer.valueOf(learnersVal.toString().trim());
-	        } catch (NumberFormatException e) {
-	            // treat as blank/invalid
-	        }
+	
+	private boolean isFieldOfStudyFilled(AnnexureRow row) {
+	    Object fieldVal = row.get(colFieldOfStudyCol);
+	    if (fieldVal == null) {
+	        return false;
 	    }
-	    // treat null or 0 as "not filled"
+
+	    // What you saw in the debugger: LearnerInputInfo@...
+	    if (fieldVal instanceof LearnerInputInfo) {
+	        String text = ((LearnerInputInfo) fieldVal).getLearnerInputText();
+	        return text != null && !text.trim().isEmpty();
+	    }
+
+	    // Fallback – non-null means “chosen”
+	    return true;
+	}
+
+	private Integer extractLearners(AnnexureRow row) {
+	    Object learnersVal = row.get(colNoLearnersCol);
+	    if (learnersVal == null) {
+	        return null;
+	    }
+
+	    // <<< IMPORTANT: IntData wrapper >>>
+	    if (learnersVal instanceof IntData) {
+	        return ((IntData) learnersVal).getValue();
+	    }
+
+	    if (learnersVal instanceof Number) {
+	        return ((Number) learnersVal).intValue();
+	    }
+
+	    try {
+	        return Integer.valueOf(learnersVal.toString().trim());
+	    } catch (NumberFormatException e) {
+	        return null;
+	    }
+	}
+
+	private boolean isTradeRowBlank(AnnexureRow row) {
+	    boolean fieldFilled = isFieldOfStudyFilled(row);
+	    Integer nLearners = extractLearners(row);
+
 	    boolean learnersBlank = (nLearners == null || nLearners == 0);
 
-	    return fieldBlank && learnersBlank;
+	    // Blank means: nothing selected + no learners entered
+	    return !fieldFilled && learnersBlank;
 	}
 
 	private boolean isTradeRowComplete(AnnexureRow row) {
-	    Object fieldVal    = row.get(colFieldOfStudyCol);
-	    Object learnersVal = row.get(colNoLearnersCol);
+	    boolean fieldFilled = isFieldOfStudyFilled(row);
+	    Integer nLearners = extractLearners(row);
 
-	    boolean hasField = fieldVal != null && !fieldVal.toString().trim().isEmpty();
-
-	    Integer nLearners = null;
-	    if (learnersVal instanceof Number) {
-	        nLearners = ((Number) learnersVal).intValue();
-	    } else if (learnersVal != null) {
-	        try {
-	            nLearners = Integer.valueOf(learnersVal.toString().trim());
-	        } catch (NumberFormatException e) {
-	            // leave as null
-	        }
-	    }
-	    boolean hasLearners = nLearners != null && nLearners > 0;
-
-	    return hasField && hasLearners;
+	    return fieldFilled && nLearners != null && nLearners > 0;
 	}
 
 	
-
+	
+	
 }
