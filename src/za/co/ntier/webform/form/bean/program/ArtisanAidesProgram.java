@@ -84,14 +84,92 @@ public class ArtisanAidesProgram extends AbstractProgram {
 
 	@Override
 	public boolean isProgramValid() {
-	    // valid if either table has at least one valid line
-	    return hasAtLeastOneValidRow(qualification) || hasAtLeastOneValidRow(skill);
+	    // 1) No incomplete lines in either table
+	    if (!tableHasNoPartialRows(qualification)) return false;
+	    if (!tableHasNoPartialRows(skill))         return false;
+
+	    // 2) At least one complete line in either qualification OR skills
+	    boolean hasCompleteInQualification = hasCompleteRow(qualification);
+	    boolean hasCompleteInSkill         = hasCompleteRow(skill);
+
+	    return hasCompleteInQualification || hasCompleteInSkill;
 	}
 
-	private static boolean hasAtLeastOneValidRow(AnnexureInfo table) {
-	    if (table == null || table.getRows() == null) return false;
+	/**
+	 * Returns true if the table has:
+	 *  - only blank and/or complete rows
+	 *  - NO partial rows
+	 */
+	private static boolean tableHasNoPartialRows(AnnexureInfo table) {
+	    if (table == null || table.getRows() == null) {
+	        return true; // treat as empty/OK; overall validity checked elsewhere
+	    }
 
-	    // try all possible learner-count columns the table might use
+	   // ColumnInfo<?> cNoLearners   = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLabel,   table);
+	    ColumnInfo<?> cNoEmployed   = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel,   table);
+	    ColumnInfo<?> cNoUnemployed = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, table);
+
+	    ColumnInfo<?> cPostal = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel, table);
+	    ColumnInfo<?> cArea   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel,       table);
+
+	    boolean requiresPostal = (cPostal != null);
+	    boolean requiresArea   = (cArea != null);
+
+	    for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
+	        if (row == null) {
+	            continue;
+	        }
+
+	        int n = 0;
+	       // if (cNoLearners   != null && row.get(cNoLearners)   instanceof IntData) n += safeInt((IntData) row.get(cNoLearners));
+	        if (cNoEmployed   != null && row.get(cNoEmployed)   instanceof IntData) n += safeInt((IntData) row.get(cNoEmployed));
+	        if (cNoUnemployed != null && row.get(cNoUnemployed) instanceof IntData) n += safeInt((IntData) row.get(cNoUnemployed));
+
+	        boolean learnersFilled = n > 0;
+
+	        boolean postalFilled = false;
+	        if (cPostal != null && row.get(cPostal) instanceof PostalData) {
+	            postalFilled = notEmpty(((PostalData) row.get(cPostal)).getPostal());
+	        }
+
+	        boolean areaFilled = false;
+	        if (cArea != null && row.get(cArea) instanceof AreaData) {
+	            areaFilled = ((AreaData) row.get(cArea)).isSelected();
+	        }
+
+	        boolean isBlank = !learnersFilled
+	                && (!requiresPostal || !postalFilled)
+	                && (!requiresArea   || !areaFilled);
+
+	        boolean isComplete = learnersFilled
+	                && (!requiresPostal || postalFilled)
+	                && (!requiresArea   || areaFilled);
+
+	        if (isBlank) {
+	            // empty line – allowed
+	            continue;
+	        }
+
+	        if (isComplete) {
+	            // good line – allowed
+	            continue;
+	        }
+
+	        // Not blank and not complete = partial -> invalid
+	        return false;
+	    }
+
+	    return true;
+	}
+
+	/**
+	 * Returns true if the table has at least one complete row.
+	 */
+	private static boolean hasCompleteRow(AnnexureInfo table) {
+	    if (table == null || table.getRows() == null) {
+	        return false;
+	    }
+
 	    ColumnInfo<?> cNoLearners   = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoLearnersLabel,   table);
 	    ColumnInfo<?> cNoEmployed   = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoEmployedLabel,   table);
 	    ColumnInfo<?> cNoUnemployed = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, table);
@@ -99,28 +177,52 @@ public class ArtisanAidesProgram extends AbstractProgram {
 	    ColumnInfo<?> cPostal = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel, table);
 	    ColumnInfo<?> cArea   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel,       table);
 
+	    boolean requiresPostal = (cPostal != null);
+	    boolean requiresArea   = (cArea != null);
+
 	    for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
+	        if (row == null) {
+	            continue;
+	        }
+
 	        int n = 0;
 	        if (cNoLearners   != null && row.get(cNoLearners)   instanceof IntData) n += safeInt((IntData) row.get(cNoLearners));
 	        if (cNoEmployed   != null && row.get(cNoEmployed)   instanceof IntData) n += safeInt((IntData) row.get(cNoEmployed));
 	        if (cNoUnemployed != null && row.get(cNoUnemployed) instanceof IntData) n += safeInt((IntData) row.get(cNoUnemployed));
 
-	        boolean postalOk = (cPostal != null && row.get(cPostal) instanceof PostalData)
-	                && notEmpty(((PostalData) row.get(cPostal)).getPostal());
+	        boolean learnersFilled = n > 0;
 
-	        boolean areaOk = (cArea != null && row.get(cArea) instanceof AreaData)
-	                && ((AreaData) row.get(cArea)).isSelected();
+	        boolean postalFilled = false;
+	        if (cPostal != null && row.get(cPostal) instanceof PostalData) {
+	            postalFilled = notEmpty(((PostalData) row.get(cPostal)).getPostal());
+	        }
 
-	        if (n > 0 && postalOk && areaOk) return true;
+	        boolean areaFilled = false;
+	        if (cArea != null && row.get(cArea) instanceof AreaData) {
+	            areaFilled = ((AreaData) row.get(cArea)).isSelected();
+	        }
+
+	        boolean isComplete = learnersFilled
+	                && (!requiresPostal || postalFilled)
+	                && (!requiresArea   || areaFilled);
+
+	        if (isComplete) {
+	            return true;
+	        }
 	    }
+
 	    return false;
 	}
 
 	private static int safeInt(IntData d) {
 	    return (d.getValue() == null) ? 0 : d.getValue();
 	}
+
 	private static boolean notEmpty(String s) {
 	    return s != null && !s.trim().isEmpty();
 	}
+
+
+	
 
 }
