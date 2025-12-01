@@ -73,6 +73,9 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 public class MasterUtil {
 	public static final int limitItem = 600;
 	
+	public static final String SDRLinkedOrganisationsUU = "114344c0-6344-4d49-8dc9-3ba80e98e0b1";
+	public static final String SDRRegistryOrgLinkUU = "1b8f1243-dbbf-458a-89f6-cd89a95a9d4c";
+	
 	private static CCache<String, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
 			I_C_BPartner.Table_Name + "_CetTvetCollege", 3);
 
@@ -497,7 +500,5 @@ public class MasterUtil {
 		args.put(ComponentVMWrapper.ComponentKey, dialog);
 		String zulPathRelative = WebForm.getBundleResourcePath("sdr/component/zul/dialog.zul");	
 		Executions.createComponents(zulPathRelative, null, args);
-	}
-	
-	public static final String SDRRegistryOrgLinkUU = "1b8f1243-dbbf-458a-89f6-cd89a95a9d4c";
+	}	
 }

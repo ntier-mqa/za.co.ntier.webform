@@ -82,7 +82,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 	public void searchOrg() {
 		Query searchOrgQuery = MTable.get(I_C_BPartner.Table_ID)
-				.createQuery(String.format("%s = ?", I_C_BPartner.COLUMNNAME_Value), null);
+				.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
 		searchOrgQuery.setParameters(getOrgSearchText());
 		setOrgPo(searchOrgQuery.first());
 

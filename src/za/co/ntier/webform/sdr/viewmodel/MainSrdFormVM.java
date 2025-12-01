@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.desktop.DefaultDesktop;
+import org.adempiere.webui.session.SessionManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ecs.xhtml.table;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.zkoss.bind.annotation.Command;
@@ -19,6 +22,7 @@ import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZPersonAddress;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
+import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.X_AD_User;
 import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdf;
@@ -33,9 +37,12 @@ import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.cell.AreaCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
@@ -102,11 +109,11 @@ public class MainSrdFormVM {
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
 		addressDetailTab.setSclass("address");
 		addressDetailTab.setTabTitle("Address Details");
-		// new component
-		physicalAddress = getAddressDetailComp(true);
-		postalAddress = getAddressDetailComp(false);
-		addressDetailTab.getCompModel().add(getAddressControlComp());
+		
+		physicalAddress = getAddressDetailComp("Physical ", "Physical", "Physical");
+		postalAddress = getAddressDetailComp("Postal ", "Postal", "Postal");
 		addressDetailTab.getCompModel().add(physicalAddress);
+		addressDetailTab.getCompModel().add(getAddressControlComp());
 		addressDetailTab.getCompModel().add(postalAddress);
 
 		NavTabPanel educationDetailTab = new NavTabPanel(mainTab);
@@ -232,6 +239,9 @@ public class MainSrdFormVM {
 	private TableModel getAddressControlComp() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
+		ColumnModel gpsCoordinatesCol = CellModel.getColModelForText("GPS Coordinates", null).setReadonly(true);
+		cols.add(gpsCoordinatesCol);
+		
 		ColumnModel dupplicateCol = CheckboxCellModel.getCheckboxColModel("Use Physical Address For Postal Address?", null);
 		dupplicateCol.setEventHandle((inputEvent, cellModel) -> {
 			CheckEvent checkEvent = (CheckEvent)inputEvent;
@@ -252,23 +262,26 @@ public class MainSrdFormVM {
 		//dupplicateCol.setShowTitle(false);
 		cols.add(dupplicateCol);
 
-		ColumnModel addressCol = CellModel.getColModelForText("Address", null);
-		cols.add(addressCol);
-
-		ColumnModel gpsCoordinatesCol = CellModel.getColModelForText("GPS Coordinates", null);
-		cols.add(gpsCoordinatesCol);
+		/*
+		 * ColumnModel addressCol = CellModel.getColModelForText("Address", null);
+		 * cols.add(addressCol);
+		 */
 		
 		TableModel addressDetailCtr = TableModel.getTableBean(TableModel.class, cols, false);
-		addressDetailCtr.setSclass("two-col srd-address");
+		addressDetailCtr.setSclass("srd-address-ctrl");
 
 		addressDetailCtr.init(null, null);
 		return addressDetailCtr;
 	}
 	
-	private TableModel getAddressDetailComp(boolean isPhysicalAddress) {
+	private TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader) {
 		List<ColumnModel> colsAddress = new ArrayList<>();
-
-		String prefixName = isPhysicalAddress?"Physical":"Postal"; 
+		
+		ColumnModel complexSectionFarmCol = CellModel.getColModelForText(
+				prefixName + MasterUtil.getDescOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_ZZComplexSectionFarm)
+				, I_ZZPersonAddress.COLUMNNAME_ZZComplexSectionFarm
+				).required();
+		colsAddress.add(complexSectionFarmCol);
 		
 		ColumnModel physicalAddress1Col = CellModel.getColModelForText(
 				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_Address1)
@@ -276,39 +289,45 @@ public class MainSrdFormVM {
 				).required();
 		colsAddress.add(physicalAddress1Col);
 
-		ColumnModel physicalAddress2Col = CellModel.getColModelForText(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_Address2)
-				, I_ZZPersonAddress.COLUMNNAME_Address2
-				).required();
-		colsAddress.add(physicalAddress2Col);
-
-		ColumnModel physicalAddress3Col = CellModel.getColModelForText(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_Address3)
-				, I_ZZPersonAddress.COLUMNNAME_Address3
-				).required();
-		colsAddress.add(physicalAddress3Col);
-
-		ColumnModel physicalCodeCol = CellModel.getColModelForText(
+		ColumnModel physicalCodeCol = PostalCellModel.getPostalColumnModel(
 				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_Postal)
 				, I_ZZPersonAddress.COLUMNNAME_Postal
 				).required();
 		colsAddress.add(physicalCodeCol);
 
-		ColumnModel physicalProvinceCol = CellModel.getColModelForText(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_ZZProvince)
-				, I_ZZPersonAddress.COLUMNNAME_ZZProvince);
+		ColumnModel physicalAreaCol = AreaCellModel.getAreaColumnModel(
+				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_C_City_ID)
+				, I_ZZPersonAddress.COLUMNNAME_C_City_ID).required();
+		colsAddress.add(physicalAreaCol);
+		
+		ColumnModel physicalProvinceCol = ProvinceCellModel.getProvinceColumnModel(
+				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_C_Region_ID)
+				, I_ZZPersonAddress.COLUMNNAME_C_Region_ID).required();
 		colsAddress.add(physicalProvinceCol);
 
 		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false);
-		addressDetailBean.setSclass("one-col srd-address");
+		addressDetailBean.setSclass(addressType + " srd-address");
 		addressDetailBean.setPoSupplier((ann, appForm) -> {
 			X_ZZPersonAddress po = new X_ZZPersonAddress(appForm.getCtx(), 0, null);
-			po.setZZAddressType(prefixName);
-			po.setAD_User_ID(person.getAD_User_ID());
+			po.setZZAddressType(addressType);
+			po.setAD_User_ID(sdf.getAD_User_ID());
 			return po;
 		});
 
-		addressDetailBean.init(null, null);
+		addressDetailBean.setSubSectionHeader(subHeader);
+		
+		Query savedDataQuery = MTable.get(X_ZZPersonAddress.Table_ID)
+				.createQuery(String.format("%s = ? AND %s = ?"
+						, X_ZZPersonAddress.COLUMNNAME_AD_User_ID, I_ZZPersonAddress.COLUMNNAME_ZZAddressType), null);
+		savedDataQuery.setParameters(sdf.getAD_User_ID(), addressType);
+		savedDataQuery.setOrderBy(X_ZZPersonAddress.COLUMNNAME_Created + " DESC");
+		PO po = savedDataQuery.first();
+		if (po == null) {
+			addressDetailBean.init(null, null);
+		}else {
+			addressDetailBean.init(null, List.of(po));
+		}
+		
 
 		return addressDetailBean;
 	}
@@ -328,12 +347,6 @@ public class MainSrdFormVM {
 				).required()
 				.setTableId(I_AD_User.Table_ID);
 		cols.add(cellPhoneNumberCol);
-
-		ColumnModel faxNumberCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Fax)
-				, I_AD_User.COLUMNNAME_Fax)
-				.setTableId(I_AD_User.Table_ID);
-		cols.add(faxNumberCol);
 
 		ColumnModel emailCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
@@ -484,15 +497,12 @@ public class MainSrdFormVM {
 		
 		personDetailBean.init(null, null);
 
-		X_ZZ_AlternateIDType defaultAlternateID = null;
-		for (X_ZZ_AlternateIDType alternateIDType : alternateIDTypeCol.getDataProvider()) {
-			if (alternateIDTypeCol.getDisplayConvert().apply(alternateIDType).equals("RSA ID Number")) {
-				defaultAlternateID = alternateIDType;
-				break;
-			}
-		}
-		if(defaultAlternateID != null)
-			personDetailBean.getRow().get(alternateIDTypeCol).setValue(defaultAlternateID.getZZ_AlternateIDType_ID());
+		@SuppressWarnings("unchecked")
+		ListCellModel<X_ZZ_AlternateIDType> listCellModel = (ListCellModel<X_ZZ_AlternateIDType>)personDetailBean.getRow().get(alternateIDTypeCol);
+		listCellModel.setValue("RSA ID Number", 
+					item -> {
+						return alternateIDTypeCol.getDisplayConvert().apply(item).equals("RSA ID Number");
+					});
 		
 		return personDetailBean;
 	}
@@ -567,6 +577,9 @@ public class MainSrdFormVM {
 			MasterUtil.showDialog("Successfully saved the SDF", new StringBuilder("Data is saved"));
 		}
 		
+		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+		desktop.closeActiveWindow();
 		
+		//MasterUtil.openForm(MasterUtil.SDRLinkedOrganisationsUU);
 	}
 }

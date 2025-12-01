@@ -245,7 +245,7 @@
 }
 
 .mqaWebForm .container .grid-container .form-field .z-select{
-  padding:5px;
+  padding:1px;
   border-width:1px;
 }
 

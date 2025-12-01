@@ -48,20 +48,11 @@
   height:100%;
 }
 
-.mqaWebForm .sdrForm .navTabOuter .nav-tab-panel.address{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-auto-rows: min-content;
-}
-
-.mqaWebForm .sdrForm .navTabOuter .nav-tab-panel.address > :first-child {
-    grid-column: 1 / span 2;
-}
-
 .mqaWebForm .sdrForm .orglink,
-.mqaWebForm .sdrForm .bankDetails{
+.mqaWebForm .sdrForm .bankDetails,
+.mqaWebForm .sdrForm .srd-address-ctrl{
   grid-template-columns: 1fr;
-}
+} 
 
 .mqaWebForm .sdrForm .bankDetails > :nth-child(2) .label{
   color:red;
@@ -89,6 +80,20 @@
 .mqaWebForm .grid-formview.one-col{
  grid-template-columns: repeat(1, 1fr);
 }
+
+.mqaWebForm .sdrForm .nav-tab-panel.address .srd-address{
+  grid-template-columns: repeat(6, 1fr); 
+}
+
+.mqaWebForm .sdrForm .nav-tab-panel.address .srd-address > :nth-child(n){
+  grid-column: span 2;
+}
+
+.mqaWebForm .sdrForm .nav-tab-panel.address .srd-address > :nth-child(1)
+,.mqaWebForm .sdrForm .nav-tab-panel.address .srd-address > :nth-child(2){
+  grid-column: span 3;
+}
+
 
 .mqaWebForm .grid-formview .cell {
     /* FLEXBOX STACKING & SPACE CONTROL */
@@ -160,6 +165,7 @@
 }
 
 
+.mqaWebForm .sdrForm input[type="text"],
 .mqaWebForm .grid-formview .cell-content .z-textbox,
 .mqaWebForm .grid-formview .cell-content .z-datebox-input,
 .mqaWebForm .sdrForm .z-textbox,
@@ -195,7 +201,7 @@
 
 .mqaWebForm .grid-formview .cell-content .z-select,
 .mqaWebForm .sdrForm .z-select{
-  padding:5px;
+  padding:0px;
   border-width:1px;
 }
 
@@ -213,8 +219,7 @@
 }
 
 /* customize per control */
-.mqaWebForm .grid-formview.two-col.srd-education > :nth-child(7) 
-, .mqaWebForm .grid-formview.two-col.srd-address > :nth-child(1){
+.mqaWebForm .grid-formview.two-col.srd-education > :nth-child(7) {
   grid-column: span 2;
 }
 
@@ -223,7 +228,7 @@
 }
 
 .mqaWebForm .grid-formview.srd-person-detail > :nth-child(1) .fileUploadContent
-, .mqaWebForm .grid-formview.srd-address > :nth-child(1) .checkboxContent{
+, .mqaWebForm .grid-formview.srd-address .checkboxContent {
 
   align-items:flex-start;
 }

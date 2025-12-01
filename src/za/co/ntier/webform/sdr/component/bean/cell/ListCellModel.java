@@ -20,15 +20,24 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	public void setValue(Object value, Function<T, Boolean> compareFunction) {
+		getModel().clearSelection();
 		for (T item : getColModel().getDataProvider()) {
-			Object itemValue;
-			if (getColModel().getValueConvert() != null) {
-				itemValue = getColModel().getValueConvert().apply(item);
+			Boolean isSelectedValue = null;
+
+			if (compareFunction != null) {
+				isSelectedValue = compareFunction.apply(item);
 			}else {
-				itemValue = item;
+				Object itemValue;
+				if (getColModel().getValueConvert() != null) {
+					itemValue = getColModel().getValueConvert().apply(item);
+				}else {
+					itemValue = item;
+				}
+				
+				isSelectedValue = Objects.equals(value, itemValue);
 			}
-			
-			if (Objects.equals(value, itemValue)) {
+				
+			if (isSelectedValue) {
 				if (!getModel().contains(item)) {
 					getModel().add(item);
 				}
@@ -42,28 +51,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	
 	@Override
 	public void setValue(Object value) {
-		getModel().clearSelection();
-		for (T item : getColModel().getDataProvider()) {
-			Object itemValue;
-			if (getColModel().getValueConvert() != null) {
-				itemValue = getColModel().getValueConvert().apply(item);
-			}else {
-				itemValue = item;
-			}
-			
-			if (Objects.equals(value, itemValue)) {
-				if (!getModel().contains(item)) {
-					getModel().add(item);
-				}
-				
-				getModel().addToSelection(item);
-				super.setValue(value);
-				return;
-			}
-		}
-		
-		//throw new IllegalArgumentException("value isn't on list");
-		
+		setValue(value, null);
 	}
 	
 	@SuppressWarnings("unchecked")

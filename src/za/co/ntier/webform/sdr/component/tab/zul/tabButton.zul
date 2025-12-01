@@ -29,7 +29,7 @@
 			onClick="@command('nextTab')" />
 		
 		<button 
-			visible="@load(vmTabButton.activeEndTab)"
+			visible="false"
 			label="Submit Application"
 			iconSclass="z-icon-gear" sclass="icon-on-right"
 	    onClick="@command('submitApplication')" />
