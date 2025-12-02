@@ -65,36 +65,46 @@ public class SmallBusiness extends AbstractProgram{
 	public void setDetailSmallBusiness(AnnexureInfo detailSmallBusiness) {
 		this.detailSmallBusiness = detailSmallBusiness;
 	}
-	
 	@Override
 	public boolean isProgramValid() {
-	    // Columns in a row that must all be filled
-	    List<ColumnInfo<?>> cols = detailSmallBusiness.getColumnInfos();
+	    if (detailSmallBusiness == null || detailSmallBusiness.getRows() == null) {
+	        return false;
+	    }
 
+	    var cols = detailSmallBusiness.getColumnInfos();
 	    boolean hasCompleteRow = false;
 
 	    for (var row : detailSmallBusiness.getRows()) {
-	        int filled = 0;
-	        for (var c : cols) {
-	            Object v = row.get(c);
-	            if (!isBlank(v)) filled++;
+	        int present = 0;
+
+	        for (ColumnInfo<?> c : cols) {
+	            // Use AnnexureInfo.getCellValue to interpret wrappers (IntData, TextData, etc.)
+	            var entry = AnnexureInfo.getCellValue(row, c);
+	            Boolean filled = entry.getValue(); // TRUE if user has entered something meaningful
+	            if (Boolean.TRUE.equals(filled)) {
+	                present++;
+	            }
 	        }
-	        if (filled > 0 && filled < cols.size()) {
-	            // Partial row: something typed but not all fields completed
-	            return false;
+
+	        if (present == 0) {
+	            // completely blank row -> allowed, ignore
+	            continue;
 	        }
-	        if (filled == cols.size()) {
+
+	        if (present == cols.size()) {
+	            // all fields filled -> complete row
 	            hasCompleteRow = true;
+	            continue;
 	        }
+
+	        // some but not all fields filled -> partial row -> INVALID
+	        return false;
 	    }
+
+	    // need at least one complete row overall
 	    return hasCompleteRow;
 	}
 
-	private static boolean isBlank(Object v) {
-	    if (v == null) return true;
-	    String s = v.toString().trim();
-	    return s.isEmpty();
-	}
 
 
 }
