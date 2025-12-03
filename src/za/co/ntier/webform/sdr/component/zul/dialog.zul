@@ -6,7 +6,7 @@
 
 <nodom viewModel="@id('vmDialog') @init('za.co.ntier.webform.sdr.component.viewmodel.DialogVMWrapper')">
   <window mode="modal"
-          sclass="mqaWebFormRelate"   
+          sclass="@init(vmDialog.component.sclass)"   
           title="@init(vmDialog.component.title)"
           position="center,center"
           visible="@bind(vmDialog.component.visible)">
@@ -24,8 +24,8 @@
       </div>
 
       <div sclass="modal-footer" style="flex-grow:0">  
-        <button sclass="btn btn-primary" label="OK"
-                onClick="@command('closeDialogAndOpenList')"/>
+        <button sclass="btn btn-primary" label="OK" visible="@init(vmDialog.component.showCloseFormBt)"
+                onClick="@command('closeCurrentForm')"/>
       </div>
     </div>
   </window>

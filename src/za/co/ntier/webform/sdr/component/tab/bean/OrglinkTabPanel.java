@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.component.tab.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -15,6 +16,7 @@ import org.zkoss.zul.ListModelList;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
+import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
 import za.co.ntier.api.model.X_AD_User;
 import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZSdf;
@@ -35,6 +37,8 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 	private MenuContextInfo menuContextInfo;
 
+	private TableModel orgSearchModel;
+	
 	private TableModel sdfOrgModel;
 
 	private X_ZZSdfOrganisation sdfOrgPo;
@@ -43,17 +47,17 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 	private X_ZZBankingDetails bankDetailPo;
 
-	private String orgSearchText;
-
 	private X_C_BPartner orgPo;
 
 	public OrglinkTabPanel(NavTab parent, X_ZZSdf person, MenuContextInfo menuContextInfo) {
 		super(parent);
 		this.menuContextInfo = menuContextInfo;
 
+		orgSearchModel = initOrgSearchModel(null, null);
+		
 		this.setSdfPo(person);
-		setSdfOrgModel(initSdfOrgModel(null, null));
-		setBankDetailModel(initBankDetailModel(null, null));
+		sdfOrgModel = initSdfOrgModel(null, null);
+		bankDetailModel = initBankDetailModel(null, null);
 
 		if (menuContextInfo.getRecordID() != 0) {
 			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
@@ -62,7 +66,8 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 			// init for org
 			orgPo = new X_C_BPartner(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
-			orgSearchText = orgPo.getValue();
+			orgSearchModel.getRow().setData(orgPo);
+			orgSearchModel.reloadDao();
 			
 			// init for bank details
 			Query queryBankDetailQuery =
@@ -80,18 +85,47 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 	}
 
-	public void searchOrg() {
-		Query searchOrgQuery = MTable.get(I_C_BPartner.Table_ID)
-				.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
-		searchOrgQuery.setParameters(getOrgSearchText());
-		setOrgPo(searchOrgQuery.first());
+	private TableModel initOrgSearchModel(X_AD_User person, X_ZZSdf sdf) {
+		List<ColumnModel> cols = new ArrayList<>();
+		
+		ColumnModel sdlNoCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZ_SDL_No), 
+				I_C_BPartner.COLUMNNAME_Value);
+		cols.add(sdlNoCol);
+		
+		sdlNoCol.setEventHandle((event, cellModel) -> {
+			if (StringUtils.isBlank((String)cellModel.getValue())) {
+				return;
+			}
+			Query searchOrgQuery = MTable.get(I_C_BPartner.Table_ID)
+					.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
+			searchOrgQuery.setParameters(cellModel.getValue());
+			
+			X_C_BPartner sOrgPo = searchOrgQuery.first();
+			
+			if (sOrgPo == null) {
+				MasterUtil.showDialog("ZZOrgLinksNotFoundOrg");
+			}else {
+				orgPo = sOrgPo;
+				orgSearchModel.getRow().setData(orgPo);
+				orgSearchModel.reloadDao();
+			}
+		});
+		
+		ColumnModel orgNameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation_v.Table_Name,
+						I_ZZSdfOrganisation_v.COLUMNNAME_OrgName), 
+				I_C_BPartner.COLUMNNAME_Name).setReadonly(true);
+		cols.add(orgNameCol);
 
-		if (getOrgPo() == null) {
-			MasterUtil.showDialog(Msg.getMsg(Env.getCtx(), "ZZOrgLinksNotFoundOrgTitle"),
-					new StringBuilder(Msg.getMsg(Env.getCtx(), "ZZOrgLinksNotFoundOrg")));
-		}
+		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
+		namesBean.setSclass("orgSearch");
+
+		namesBean.init(null, null, null);
+
+		return namesBean;
 	}
-
+	
 	private TableModel initSdfOrgModel(X_AD_User person, X_ZZSdf sdf) {
 		List<ColumnModel> cols = new ArrayList<>();
 
@@ -162,6 +196,14 @@ public class OrglinkTabPanel extends NavTabPanel {
 				"Banking details uploaded must be signed off by the Organsation CFO as true and correct");
 		cols.add(warningBankDetailUploadCol);
 
+		ColumnModel accountHolderCol = CellModel
+				.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+								I_ZZBankingDetails.COLUMNNAME_ZZAccountHolder),
+						I_ZZBankingDetails.COLUMNNAME_ZZAccountHolder)
+				.required();
+		cols.add(accountHolderCol);
+		
 		ColumnModel bankNameCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
 						I_ZZBankingDetails.COLUMNNAME_C_Bank_ID),
@@ -172,6 +214,14 @@ public class OrglinkTabPanel extends NavTabPanel {
 				}).required();
 		cols.add(bankNameCol);
 
+		ColumnModel branchCodeCol = CellModel
+				.getColModelForText(
+						MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+								I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number),
+						I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number)
+				.required();
+		cols.add(branchCodeCol);
+		
 		ColumnModel branchNameCol = CellModel
 				.getColModelForText(
 						MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
@@ -180,21 +230,11 @@ public class OrglinkTabPanel extends NavTabPanel {
 				.required();
 		cols.add(branchNameCol);
 
-		ColumnModel branchCodeCol = CellModel
-				.getColModelForText(
-						MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
-								I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number),
-						I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number)
+		ColumnModel accountNoCol = CellModel
+				.getColModelForText(MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_AccountNo), I_ZZBankingDetails.COLUMNNAME_AccountNo)
 				.required();
-		cols.add(branchCodeCol);
-
-		ColumnModel accountHolderCol = CellModel
-				.getColModelForText(
-						MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
-								I_ZZBankingDetails.COLUMNNAME_ZZAccountHolder),
-						I_ZZBankingDetails.COLUMNNAME_ZZAccountHolder)
-				.required();
-		cols.add(accountHolderCol);
+		cols.add(accountNoCol);
 
 		ColumnModel accountTypeCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
@@ -205,33 +245,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return lkpAccountType.getValue();
 				}).required();
 		cols.add(accountTypeCol);
-
-		ColumnModel accountNoCol = CellModel
-				.getColModelForText(MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
-						I_ZZBankingDetails.COLUMNNAME_AccountNo), I_ZZBankingDetails.COLUMNNAME_AccountNo)
-				.required();
-		cols.add(accountNoCol);
-
-		ColumnModel adminConfirmCol = ListCellModel.getListColumnModel(
-				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name,
-						I_ZZBankingDetails.COLUMNNAME_ZZAdminDetailsCorrect),
-				I_ZZBankingDetails.COLUMNNAME_ZZAdminDetailsCorrect, MasterUtil.getYesNoList(), lkpAccountType -> {
-					return lkpAccountType.getName();
-				}, lkpAccountType -> {
-					return lkpAccountType.getValue();
-				}).required();
-		cols.add(adminConfirmCol);
-
-		ColumnModel bankConfirmCol = ListCellModel.getListColumnModel(
-				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name,
-						I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsCorrect),
-				I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsCorrect, MasterUtil.getYesNoList(), lkpAccountType -> {
-					return lkpAccountType.getName();
-				}, lkpAccountType -> {
-					return lkpAccountType.getValue();
-				}).required();
-		cols.add(bankConfirmCol);
-
+		
 		ColumnModel bankChangeConfirmCol = ListCellModel.getListColumnModel(
 				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name,
 						I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsChanged),
@@ -241,6 +255,26 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return lkpAccountType.getValue();
 				}).required();
 		cols.add(bankChangeConfirmCol);
+		
+		ColumnModel bankConfirmCol = ListCellModel.getListColumnModel(
+				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsCorrect),
+				I_ZZBankingDetails.COLUMNNAME_ZZBankDetailsCorrect, MasterUtil.getYesNoList(), lkpAccountType -> {
+					return lkpAccountType.getName();
+				}, lkpAccountType -> {
+					return lkpAccountType.getValue();
+				}).required();
+		cols.add(bankConfirmCol);
+		
+		ColumnModel adminConfirmCol = ListCellModel.getListColumnModel(
+				MasterUtil.getDescOfColTranslated(I_ZZBankingDetails.Table_Name,
+						I_ZZBankingDetails.COLUMNNAME_ZZAdminDetailsCorrect),
+				I_ZZBankingDetails.COLUMNNAME_ZZAdminDetailsCorrect, MasterUtil.getYesNoList(), lkpAccountType -> {
+					return lkpAccountType.getName();
+				}, lkpAccountType -> {
+					return lkpAccountType.getValue();
+				}).required();
+		cols.add(adminConfirmCol);
 
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setSclass("bankDetails");
@@ -253,14 +287,15 @@ public class OrglinkTabPanel extends NavTabPanel {
 	public void save(X_ZZSdf applicationForm, String trxName, boolean isSubmit) {
 		if (sdfOrgPo == null) {
 			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), 0, null);
-			sdfOrgPo.setZZ_Status(X_ZZSdfOrganisation.ZZ_STATUS_Drafted);
+			//sdfOrgPo.setZZ_Status(X_ZZSdfOrganisation.ZZsd_STATUS_Drafted);
 		}
 		
 		if (isSubmit) {
-			sdfOrgPo.setZZ_Status(X_ZZSdfOrganisation.ZZ_STATUS_Completed);
+			sdfOrgPo.setZZ_Status(X_ZZSdfOrganisation.ZZSDFSTATUS_Pending);
 		}
 
-		sdfOrgPo.setC_BPartner_ID(getOrgPo().getC_BPartner_ID());
+		if (getOrgPo() != null)
+			sdfOrgPo.setC_BPartner_ID(getOrgPo().getC_BPartner_ID());
 		sdfOrgPo.setZZSdf_ID(getSdfPo().getZZSdf_ID());
 		sdfOrgModel.getRow().setData(sdfOrgPo);
 		sdfOrgModel.save(applicationForm, trxName);
@@ -271,7 +306,6 @@ public class OrglinkTabPanel extends NavTabPanel {
 		}
 		getBankDetailModel().getRow().setData(bankDetailPo);
 		bankDetailModel.save(applicationForm, trxName);
-		
 	}
 	@Override
 	public void save(X_ZZSdf applicationForm, String trxName) {
@@ -280,20 +314,6 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 	public void submit(X_ZZSdf applicationForm, String trxName) {
 		save(applicationForm, trxName, true);
-	}
-
-	/**
-	 * @return the orgSearchText
-	 */
-	public String getOrgSearchText() {
-		return orgSearchText;
-	}
-
-	/**
-	 * @param orgSearchText the orgSearchText to set
-	 */
-	public void setOrgSearchText(String orgSearchText) {
-		this.orgSearchText = orgSearchText;
 	}
 
 	/**
@@ -392,6 +412,20 @@ public class OrglinkTabPanel extends NavTabPanel {
 	 */
 	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
+	}
+
+	/**
+	 * @return the orgSearchModel
+	 */
+	public TableModel getOrgSearchModel() {
+		return orgSearchModel;
+	}
+
+	/**
+	 * @param orgSearchModel the orgSearchModel to set
+	 */
+	public void setOrgSearchModel(TableModel orgSearchModel) {
+		this.orgSearchModel = orgSearchModel;
 	}
 
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import za.co.ntier.webform.form.bean.AddressType ?>
 <?import za.co.ntier.webform.form.WebForm ?>
+<?import za.co.ntier.api.model.I_ZZSdfOrganisation_v ?>
+
 
 <idspace xmlns:n="native" 
     sclass="sdrForm"
@@ -23,10 +25,10 @@
   <rows>
     <template name="model" var="item">
       <row>
-        <label value="@init(item['orgName'])"/>
-        <label value="@init(item['sdlNumber'])"/>
+        <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_OrgName])"/>
+        <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No])"/>
         <label value="@init(item['role'])"/>
-        <label value="@init(item['ZZ_Status'])"/>
+        <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfStatus])"/>
         <div sclass="formBottomPanel">
           <button if = "${ vm.isEditable(item) }" 
             label="Edit"

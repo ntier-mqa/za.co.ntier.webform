@@ -3,10 +3,11 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.util.List;
 
 public class Dialog {
-	private String documentNo;
 	private List<String> msgs;
 	private String title;
 	private boolean visible = false;
+	private boolean showCloseFormBt = true;
+	private String sclass = "sdrDialog";
 	
 	public Dialog(String title, String msg) {
 		this(title, msg, true);
@@ -16,15 +17,8 @@ public class Dialog {
 		this.visible = visible;
 		this.title = title;
 		if (msg != null) {
-			msgs = List.of(msg.split("\n"));
+			msgs = List.of(msg.split("\\n"));
 		}
-		this.setDocumentNo(documentNo);
-	}
-	/**
-	 * @return the documentNo
-	 */
-	public String getDocumentNo() {
-		return documentNo;
 	}
 	
 	
@@ -40,12 +34,7 @@ public class Dialog {
 	public boolean isVisible() {
 		return visible;
 	}
-	/**
-	 * @param documentNo the documentNo to set
-	 */
-	public void setDocumentNo(String documentNo) {
-		this.documentNo = documentNo;
-	}
+	
 	
 	/**
 	 * @param title the title to set
@@ -73,4 +62,36 @@ public class Dialog {
 	public void setMsgs(List<String> msgs) {
 		this.msgs = msgs;
 	}
+
+	/**
+	 * @return the showCloseFormBt
+	 */
+	public boolean isShowCloseFormBt() {
+		return showCloseFormBt;
+	}
+
+	/**
+	 * @param showCloseFormBt the showCloseFormBt to set
+	 */
+	public void setShowCloseFormBt(boolean showCloseFormBt) {
+		this.showCloseFormBt = showCloseFormBt;
+	}
+
+	/**
+	 * @return the sclass
+	 */
+	public String getSclass() {
+		return sclass;
+	}
+
+	/**
+	 * @param sclass the sclass to set
+	 */
+	public void setSclass(String sclass) {
+		this.sclass = "sdrDialog";
+		if (sclass != null) {
+			this.sclass = this.sclass + " " + sclass;
+		}
+	}
+
 }

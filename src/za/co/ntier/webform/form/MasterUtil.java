@@ -43,6 +43,7 @@ import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_Bank;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
@@ -494,11 +495,18 @@ public class MasterUtil {
 		
 	}
 
-	public static void showDialog(String title, StringBuilder msgs) {
-		Dialog dialog = new Dialog(title, msgs.toString());
+	public static void showDialog(String msgKey) {
+		Dialog dialog = new Dialog(Msg.getMsg(Env.getCtx(), msgKey, false), 
+				new StringBuilder(Msg.getMsg(Env.getCtx(), msgKey, true)).toString());
+		dialog.setSclass(msgKey);
 		Map<String, Object> args = new HashMap<>();
 		args.put(ComponentVMWrapper.ComponentKey, dialog);
 		String zulPathRelative = WebForm.getBundleResourcePath("sdr/component/zul/dialog.zul");	
 		Executions.createComponents(zulPathRelative, null, args);
-	}	
+	}
+	
+	public static void closeActiveWindow() {
+		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+		desktop.closeActiveWindow();
+	}
 }

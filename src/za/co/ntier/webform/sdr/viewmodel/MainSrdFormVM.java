@@ -572,13 +572,10 @@ public class MainSrdFormVM {
 		sdf.saveEx(null);
 		
 		if(isNewSdf) {
-			MasterUtil.showDialog("Successfully created the SDF", new StringBuilder("A new SDF is created"));
+			MasterUtil.showDialog("ZZSDFCreatedSuccess");
 		}else {
-			MasterUtil.showDialog("Successfully saved the SDF", new StringBuilder("Data is saved"));
+			MasterUtil.showDialog("ZZSDFSavedSuccess");
 		}
-		
-		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
-		desktop.closeActiveWindow();
 		
 		//MasterUtil.openForm(MasterUtil.SDRLinkedOrganisationsUU);
 	}

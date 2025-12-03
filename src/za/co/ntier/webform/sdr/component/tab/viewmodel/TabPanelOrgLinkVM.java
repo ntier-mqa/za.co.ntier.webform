@@ -9,8 +9,4 @@ import za.co.ntier.webform.sdr.component.tab.bean.OrglinkTabPanel;
 @Init(superclass = true)
 public class TabPanelOrgLinkVM extends ComponentVMWrapper<OrglinkTabPanel>{
 
-	@Command
-	public void searchOrg() {
-		getComponent().searchOrg();
-	}
 }

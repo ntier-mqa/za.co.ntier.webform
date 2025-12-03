@@ -13,6 +13,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.ListModelList;
 
+import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -35,18 +36,24 @@ public class ListSdrOrgLinkVM {
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);
 
-		List<List<Object>> linkedOrganisationsPo = DB.getSQLArrayObjectsEx(null, """
-				SELECT orgName, zz_SdlNumber, 
+		List<List<Object>> linkedOrganisationsPo = DB.getSQLArrayObjectsEx(null, String.format("""
+				SELECT %s, %s, 
 					    CASE
 					    WHEN ZZReplacingPrimarySDF = 'Y' THEN 'Primary'
 					    WHEN ZZSecondarySdf = 'Y' THEN 'Secondary'
 					    ELSE 'Primary' END
 				    AS role,
-				    ZZ_Status,
-				    ZZSdfOrganisation_ID
-			    FROM ZZSdfOrganisation_V
+				    %s,
+				    %s
+			    FROM %s
 			    WHERE CreatedBy = ?
-				""", Env.getAD_User_ID(Env.getCtx()));
+				""", 
+				I_ZZSdfOrganisation_v.COLUMNNAME_OrgName
+				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No
+				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfStatus
+				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID
+				, I_ZZSdfOrganisation_v.Table_Name
+				), Env.getAD_User_ID(Env.getCtx()));
 		
 		if (linkedOrganisationsPo == null) {
 			setLinkedOrganisations(new ListModelList<>());
@@ -54,11 +61,11 @@ public class ListSdrOrgLinkVM {
 			List<Map<String, Object>> linkedOrganisationsList = new java.util.ArrayList<>();
 			linkedOrganisationsPo.stream().forEach(row -> {
 				Map<String, Object> linkedOrganisation = new HashMap<>();
-				linkedOrganisation.put("orgName", row.get(0));
-				linkedOrganisation.put("sdlNumber", row.get(1));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_OrgName, row.get(0));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No, row.get(1));
 				linkedOrganisation.put("role", row.get(2));
-				linkedOrganisation.put("ZZ_Status", row.get(3));
-				linkedOrganisation.put("ZZSdfOrganisation_ID", row.get(4));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfStatus, row.get(3) == null ? "Drafted" : row.get(3));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID, row.get(4));
 				
 				linkedOrganisationsList.add(linkedOrganisation);
 			});

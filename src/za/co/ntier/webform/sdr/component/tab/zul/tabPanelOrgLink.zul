@@ -8,18 +8,10 @@
 <nodom
   viewModel="@id('vmOrgLink') @init('za.co.ntier.webform.sdr.component.tab.viewmodel.TabPanelOrgLinkVM')">
 
-  
-  <div 
-      style="display:flex;justify-content: space-between;flex-direction:column;padding-top:30px">
-    <label 
-        style = "background: var(--mqa-blue);color:white"  
-        value="@init(( MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation.Table_Name, I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID) ))" />
-    
-    <div style="display:flex;align-items:flex-start;padding-top:10px;padding-bottom:10px">
-      <textbox value="@bind(vmOrgLink.component.orgSearchText)" 
-      onChange="@command('searchOrg')"/>
-    </div>
-  </div>
+  <include
+      component="@init(vmOrgLink.component.orgSearchModel)"
+      menuContextInfo="@init(vmNavTab.menuContextInfo)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
   
   <include
       component="@init(vmOrgLink.component.sdfOrgModel)"
