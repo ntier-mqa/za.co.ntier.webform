@@ -68,9 +68,9 @@ public enum AddressType {
 		else if (programType == ProgramType.TVET || programType == ProgramType.CET
 				|| programType == ProgramType.TVET_BURSARS || programType == ProgramType.UNIVERSITY)
 			return "Contact details of the responsible person:";
-		else if (programType == ProgramType.WORKPLACE_COACHES && isAlternate)
-			return "Contact details of person responsible for Workplace Coache:";
 		else if (programType == ProgramType.WORKPLACE_COACHES && !isAlternate)
+			return "Contact details of person responsible for Workplace Coaches:";
+		else if (programType == ProgramType.WORKPLACE_COACHES && isAlternate)
 			return "Alternative contact details of person responsible for Workplace Coaches:";
 		else if (programType == ProgramType.MINING_COMMUNITY)
 			return "Contact details of person responsible for Mine Community Development:";

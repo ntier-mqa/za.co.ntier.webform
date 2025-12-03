@@ -38,7 +38,7 @@
 	            <tabpanel>
 	            	<hlayout sclass="subSectionHeader">
 						<label sclass="subSectionHeaderTitle"
-							value="Training of workplace coaches by the mqa appointed service provider" />
+							value="Training of workplace coaches by the MQA appointed service provider" />
 					</hlayout>
 					
 					<n:ol sclass="generalAppRules">
