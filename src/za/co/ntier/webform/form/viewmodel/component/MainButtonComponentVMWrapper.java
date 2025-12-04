@@ -39,26 +39,55 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 		this.submitGate   = (submitGate   != null) ? submitGate   : "NONE"; // <-- set
 	}
 
-	// === Reactive disabled flags ===
+	
+	
 	@DependsOn({
-		"component.applicationProgramVM.selectedTabIndex", 
-		"component.applicationProgramVM.declarationComplete",
-		"component.applicationProgramVM.organisationComplete",
-		"component.applicationProgramVM.programComplete",
-		"component.applicationProgramVM.programContactComplete"
+	    "component.applicationProgramVM.selectedTabIndex", 
+	    "component.applicationProgramVM.declarationComplete",
+	    "component.applicationProgramVM.organisationComplete",
+	    "component.applicationProgramVM.programComplete",
+	    "component.applicationProgramVM.programContactComplete"
 	})
 	public boolean isNextDisabled() {
-		//int tabIndex = getComponent().getTab().getSelectedIndex();
-		int tabIndex = component.getApplicationProgramVM().getSelectedTabIndex();
-		DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
-		switch (continueGate) {
-		case "DECLARATION": return (tabIndex == 0) ? !vm.isDeclarationComplete() : true;
-		case "ORG":         return (tabIndex >= 1) ? !vm.isOrganisationComplete() : true;
-		case "PROGRAM":     return (tabIndex >= 2) ? !vm.isProgramComplete() : true;
-		case "PROGRAMCONTACT": return (tabIndex >= 3) ? !vm.isProgramContactComplete() : true;
-		default:            return false;
-		}
+	    int tabIndex = component.getApplicationProgramVM().getSelectedTabIndex();
+	    DiscretionaryGrantsApplicationProgramVM vm = component.getApplicationProgramVM();
+
+	    switch (continueGate) {
+	    case "DECLARATION":
+	        return (tabIndex == 0) ? !vm.isDeclarationComplete() : true;
+
+	    case "ORG":
+	        return (tabIndex >= 1) ? !vm.isOrganisationComplete() : true;
+
+	    case "PROGRAM": {
+	        // Special handling for Standards Setting (has subtabs)
+	        if (vm.getProgram() instanceof za.co.ntier.webform.form.bean.program.StandardSetting) {
+	            Tabbox sub = component.getSubTab();
+	            if (sub != null && sub.getTabs() != null && !sub.getTabs().getChildren().isEmpty()) {
+	                int lastIdx = sub.getTabs().getChildren().size() - 1;
+	                int idx     = sub.getSelectedIndex();
+
+	                // If we are NOT on the last sub-tab (i.e. not Invigilators),
+	                // Next must always be enabled.
+	                if (idx >= 0 && idx < lastIdx) {
+	                    return false;   // enabled
+	                }
+	                // If we ARE on the last sub-tab (Invigilators),
+	                // fall through to normal PROGRAM gate, which uses programComplete
+	                // (StandardSetting.isProgramValid()).
+	            }
+	        }
+	        return (tabIndex >= 2) ? !vm.isProgramComplete() : true;
+	    }
+
+	    case "PROGRAMCONTACT":
+	        return (tabIndex >= 3) ? !vm.isProgramContactComplete() : true;
+
+	    default:
+	        return false;
+	    }
 	}
+
 
 
 	@DependsOn({
@@ -73,45 +102,41 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 		}
 	}
 
+	
+
 	@Command
 	public void nextTab() {
-		Tabbox subTab = getComponent().getSubTab();
-		if (subTab != null) {
-			int tabCount = subTab.getTabs().getChildren().size();
-			int currentIndex = subTab.getSelectedIndex();
-			currentIndex++;
-			if (currentIndex < tabCount) {
-				
-				subTab.setSelectedIndex(currentIndex);
-				return;
-			}
-		}
-		
-		// Only enforce this when we are on the Declaration tab (index 0).
-		// Adjust if you change tab order.
-		// Martin Added 
-		if (getComponent().getTab().getSelectedIndex() == 0) {
-			if (!Boolean.TRUE.equals(getComponent().getApplicationProgramVM().getEmployerDeclarationInfo().getAcknowledged())) {
-				Clients.showNotification(
-						"Please tick the acknowledgement checkbox before continuing.",
-						"error", null, "end_center", 3000
-						);
-				return;
-			}
-		}
+	    Tabbox subTab = getComponent().getSubTab();
+	    if (subTab != null) {
+	        int tabCount     = subTab.getTabs().getChildren().size();
+	        int currentIndex = subTab.getSelectedIndex();
+	        currentIndex++;
+	        if (currentIndex < tabCount) {
+	            subTab.setSelectedIndex(currentIndex);
 
-		int next = component.getApplicationProgramVM().getSelectedTabIndex() + 1;
+	            // tell bindings that selection changed so nextDisabled refreshes
+	            org.zkoss.bind.BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
+	            return;
+	        }
+	    }
 
-		// 1) move the UI
-		getComponent().getTab().setSelectedIndex(next);
+	    // (rest of your method unchanged...)
+	    if (getComponent().getTab().getSelectedIndex() == 0) {
+	        if (!Boolean.TRUE.equals(getComponent().getApplicationProgramVM()
+	                .getEmployerDeclarationInfo().getAcknowledged())) {
+	            Clients.showNotification(
+	                    "Please tick the acknowledgement checkbox before continuing.",
+	                    "error", null, "end_center", 3000
+	            );
+	            return;
+	        }
+	    }
 
-		// 2) update the VM (this is what @DependsOn listens to)
-		component.getApplicationProgramVM().setSelectedTabIndex(next);
-
-		// 3) (optional) if you still want to poke other binders
-		org.zkoss.bind.BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
+	    int next = component.getApplicationProgramVM().getSelectedTabIndex() + 1;
+	    getComponent().getTab().setSelectedIndex(next);
+	    component.getApplicationProgramVM().setSelectedTabIndex(next);
+	    org.zkoss.bind.BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 	}
-
 
 
 
@@ -138,6 +163,9 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 			if (currentIndex > 0) {
 				currentIndex--;	
 				subTab.setSelectedIndex(currentIndex);
+				
+				 // IMPORTANT: tell ZK to recompute nextDisabled / submitDisabled
+	            org.zkoss.bind.BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 				return;
 			}
 		}
@@ -147,6 +175,8 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 	    component.getApplicationProgramVM().setSelectedTabIndex(prev);
 	    org.zkoss.bind.BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 	}
+	
+
 
 	@Command(value = "saveClose")
 	public void saveClose() throws IOException {

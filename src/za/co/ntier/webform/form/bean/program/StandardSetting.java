@@ -265,14 +265,48 @@ public class StandardSetting extends AbstractProgram {
 	
 	@Override
 	public boolean isProgramValid() {
-	    // bank form must be complete
-	    //boolean bankOk = bankInfo != null && bankInfo.areMandatoryFieldsFilled();
+	    // Bank details must be complete
+	   // boolean bankOk = bankInfo != null && bankInfo.areMandatoryFieldsFilled();
+	   // if (!bankOk) {
+	    //    return false;
+	   // }
 
-	    
-
-	    //return bankOk;
-		return true;
+	    // At least one sub-program with EVERY row == YES
+	    for (StandardSettingInput ss : standardSettings) {
+	        if (isSubProgramApplied(ss)) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
+
+	private boolean isSubProgramApplied(StandardSettingInput ss) {
+	    if (ss == null || ss.getRows() == null || ss.getRows().isEmpty()) {
+	        return false;
+	    }
+
+	    // The radio column (YES/NO)
+	    ColumnInfo<?> radioCol =
+	        AnnexureInfo.lookupColByDataType(
+	            za.co.ntier.webform.form.bean.DataType.Radio, ss);
+
+	    if (radioCol == null) {
+	        return false;
+	    }
+
+	    for (Map<ColumnInfo<?>, Object> row : ss.getRows()) {
+	        Object cell = row.get(radioCol);
+	        if (cell == null) {
+	            return false; // unanswered -> fail this sub-program
+	        }
+	        String val = cell.toString();
+	        if (!"Y".equalsIgnoreCase(val.trim())) {
+	            return false; // any NO -> not applied for
+	        }
+	    }
+	    return true; // all YES
+	}
+
 
 
 }
