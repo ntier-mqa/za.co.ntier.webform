@@ -1,14 +1,12 @@
 package za.co.ntier.webform.sdr.component.tab.bean;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.webform.sdr.component.bean.ISupportSave;
-import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class NavTabPanel implements ISupportSave {
 	private String sclass;

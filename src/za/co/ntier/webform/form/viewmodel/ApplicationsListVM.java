@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.adempiere.webui.desktop.DefaultDesktop;
-import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MTable;
@@ -23,10 +21,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 
-import za.co.ntier.api.model.I_ZZAnnexure;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
-import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
-import za.co.ntier.api.model.X_ZZAnnexure;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.webform.form.MasterUtil;
@@ -35,7 +30,6 @@ import za.co.ntier.webform.form.MenuContextInfo;
 public class ApplicationsListVM {
 
 	private ListModelList<X_ZZ_Application_Form> applications;
-	private MenuContextInfo menuContextInfo;
 
 	//In the class:
 	private final Map<Integer, Boolean> editableCache = new HashMap<>();
@@ -65,8 +59,6 @@ public class ApplicationsListVM {
 
 	@Init
 	public void init(@ExecutionArgParam("menuContextInfo") MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-
 		// default empty model (avoid NPEs in ZUL)
 		this.applications = new ListModelList<>(Collections.emptyList());
 

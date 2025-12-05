@@ -3,13 +3,10 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.beans.Introspector;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.Functions.FailableBiConsumer;
 import org.apache.commons.lang3.tuple.Triple;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.InputEvent;
 
 /**
  * do {@link #setCellModelSupplier(BiFunction)} or provide in constructor

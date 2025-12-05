@@ -9,15 +9,11 @@ import za.co.ntier.api.model.X_ZZDocumentUpload;
 import za.co.ntier.webform.form.bean.DataType;
 
 public class ColumnInfo<T> {
-	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider) {
-		ColumnInfo<T> colInfo = new ColumnInfo<T>(title, DataType.Area);
-		colInfo.setDataProvider(dataProvider);
-		return colInfo;
-
-	}
 
 	public static <T> ColumnInfo<T> getColArea(String title, List<T> dataProvider, String daoPropertyName) {
-		ColumnInfo<T> col = getColArea(title, dataProvider);
+		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.Area);
+		col.setDataProvider(dataProvider);
+		
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
@@ -61,44 +57,24 @@ public class ColumnInfo<T> {
 		return Introspector.decapitalize(daoPropertyName);
 	}
 
-	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title) {
-		return new ColumnInfo<LearnerInputInfo>(title, DataType.LearnerInfo);
-
-	}
-
 	public static ColumnInfo<LearnerInputInfo> getColLearnerInfo(String title, String daoPropertyName) {
-		ColumnInfo<LearnerInputInfo> col = ColumnInfo.getColLearnerInfo(title);
+		ColumnInfo<LearnerInputInfo> col = new ColumnInfo<LearnerInputInfo>(title, DataType.LearnerInfo);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 
-	}
-
-	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider) {
-		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.List);
-		col.setDataProvider(dataProvider);
-		return col;
-	}
-
-	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider, String daoPropertyName) {
-		ColumnInfo<T> col = getColList(title, dataProvider);
-		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
-		return col;
 	}
 
 	public static <T> ColumnInfo<T> getColList(String title, List<T> dataProvider, String daoPropertyName, String beanPropertyName) {
-		ColumnInfo<T> col = getColList(title, dataProvider);
+		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.List);
+		col.setDataProvider(dataProvider);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		col.setBeanPropertyName(correctDaoPropertyName(beanPropertyName));
 
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColPositiveNumber(String title) {
-		return new ColumnInfo<T>(title, DataType.PositiveNumber);
-	}
-
 	public static <T> ColumnInfo<T> getColPositiveNumber(String title, String daoPropertyName) {
-		ColumnInfo<T> col = ColumnInfo.getColPositiveNumber(title);
+		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.PositiveNumber);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
@@ -109,24 +85,14 @@ public class ColumnInfo<T> {
 		return col;
 	}
 
-	public static <T> ColumnInfo<T> getColPostal(String title) {
-		return new ColumnInfo<T>(title, DataType.Postal);
-
-	}
-
 	public static <T> ColumnInfo<T> getColPostal(String title, String daoPropertyName) {
-		ColumnInfo<T> col = getColPostal(title);
+		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.Postal);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}
 
-
-	public static <T> ColumnInfo<T> getColText(String title) {
-		return new ColumnInfo<T>(title, DataType.Text);
-	}
-
 	public static <T> ColumnInfo<T> getColText(String title, String daoPropertyName) {
-		ColumnInfo<T> col = getColText(title);
+		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.Text);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
 		return col;
 	}

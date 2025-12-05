@@ -119,13 +119,16 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 				titleColExitStrategy,
 				valueColExitStrategy
 				);
-		String specialRowTitle = "Provide a description of what post training opportunity/ies exist/s for the learners after completing programme (Exit strategy)";
+		String exitStrategyTitle = "Provide a description of what post training opportunity/ies exist/s for the learners after completing programme (Exit strategy)";
+		String setaTitle = "Seta accredited with";	
 		strategy = ProjectInput.getProject(strategyCols, null, false);
 		strategy.setDecoratorCell((row) -> {
 			LabelData titleData = (LabelData)row.get(titleColExitStrategy);
-			if (specialRowTitle.equals(titleData.getValue())) {
+			if (exitStrategyTitle.equals(titleData.getValue())) {
 				TextData textData = (TextData)row.get(valueColExitStrategy);
 				textData.setLines(3);
+			}else if (setaTitle.equals(titleData.getValue())) {
+				
 			}
 		});
 		strategy.setSubSectionHeader("EXIT STRATEGY");
@@ -134,8 +137,8 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 		
 		titleRows = List.of(Map.of(titleColExitStrategy, "Name of Training Intervention")
 						, Map.of(titleColExitStrategy, "NQF Level and Credits")
-						, Map.of(titleColExitStrategy, "Seta accredited with")
-						, Map.of(titleColExitStrategy, specialRowTitle));
+						, Map.of(titleColExitStrategy, setaTitle)
+						, Map.of(titleColExitStrategy, exitStrategyTitle));
 		strategy.initProject(applicationForm, titleRows);				
 	}
 	

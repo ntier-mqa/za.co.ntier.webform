@@ -17,7 +17,6 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zul.Textbox;
 
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AttachmentUtil;

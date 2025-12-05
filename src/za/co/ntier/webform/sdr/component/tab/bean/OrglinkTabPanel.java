@@ -5,13 +5,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
-import org.compiere.model.X_I_BPartner;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
-import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;

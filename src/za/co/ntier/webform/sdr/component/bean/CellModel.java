@@ -6,8 +6,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.bind.impl.BinderUtil;
 import org.zkoss.zk.ui.event.InputEvent;
 
 /**

@@ -4,12 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adempiere.webui.desktop.DefaultDesktop;
-import org.adempiere.webui.session.SessionManager;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ecs.xhtml.table;
 import org.compiere.model.MTable;
-import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -21,12 +17,9 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZPersonAddress;
 import za.co.ntier.api.model.I_ZZSdf;
-import za.co.ntier.api.model.I_ZZSdfOrganisation;
-import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.X_AD_User;
 import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdf;
-import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -47,7 +40,6 @@ import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
-import za.co.ntier.webform.sdr.component.tab.bean.OrglinkTabPanel;
 
 public class MainSrdFormVM {
 	private MenuContextInfo menuContextInfo;

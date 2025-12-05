@@ -5,7 +5,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.bean.component.Dialog;
-import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 /**
  * If super has an init method but its ChildViewModel doesn't, you can

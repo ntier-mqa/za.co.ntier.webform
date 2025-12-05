@@ -1,7 +1,6 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;

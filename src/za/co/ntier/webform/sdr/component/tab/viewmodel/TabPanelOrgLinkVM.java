@@ -1,6 +1,5 @@
 package za.co.ntier.webform.sdr.component.tab.viewmodel;
 
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;

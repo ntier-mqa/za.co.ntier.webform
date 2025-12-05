@@ -9,7 +9,6 @@ import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 
 import za.co.ntier.api.model.X_ZZSdf;
-import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
