@@ -618,7 +618,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	public boolean isShowContact() {
-		return programType != ProgramType.STANDARD_SETTING && programType != ProgramType.DEV_PROGRAM;
+		return programType != ProgramType.STANDARD_SETTING; // && programType != ProgramType.DEV_PROGRAM;
 	}
 
 	public String getOrganisationTabTile () {
