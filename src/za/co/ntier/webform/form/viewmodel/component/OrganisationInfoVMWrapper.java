@@ -4,17 +4,20 @@ import java.io.IOException;
 
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.event.InputEvent;
 
 import za.co.ntier.webform.form.bean.component.OrganisationInfo;
 
 @Init(superclass = true)
 public class OrganisationInfoVMWrapper extends ComponentVMWrapper<OrganisationInfo>{
 	@Command
-	public void sdlNumberChange() {
-		getComponent().sdlNumberChange();
+	public void sdlNumberChange(@ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) {
+		getComponent().sdlNumberChange(event);
 	}
 	@Command
  	public void uploadFile(@BindingParam("media") Media media) throws IOException {

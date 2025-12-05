@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.adempiere.model.GenericPO;
 import org.adempiere.model.POWrapper;
@@ -889,10 +890,6 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		this.uploadDoc = uploadDoc;
 	}
 
-	protected void showDialog(String title, String msg) {
-		Dialog dialog = new Dialog(title, msg);
-		showDialog(dialog);
-	}
 
 	protected void showSubmitedDialog(boolean isSave) {
 		String title = isSave?"Successfully saved the application form":"Successfully submitted the application form";
@@ -914,11 +911,24 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			msgs.append("This has been sent as an email to you for future reference");
 		}
 
-		Dialog dialog = new Dialog(title, msgs.toString());
-		showDialog(dialog);
+		showDialog(title, msgs.toString());
 	}
 
-	protected void showDialog(Dialog dialog) {
+	protected void showDialog(String title, String msg) {
+		showDialog(title, msg, true, null);
+	}
+	
+	protected void showDialog(String title, String msg, boolean isCloseApp, Consumer<Object> onCloseDialog) {
+		Dialog dialog = new Dialog(title, msg);
+		dialog.setOnCloseDialog(t -> {
+			if (isCloseApp) {
+				DiscretionaryGrantsApplicationProgramVM.showAppList();
+			}else if (onCloseDialog != null){
+				onCloseDialog.accept(null);
+			}
+			
+		});
+		
 		Map<String, Object> args = new HashMap<>();
 		args.put(ComponentVMWrapper.ComponentKey, dialog);
 		String zulPathRelative = WebForm.getBundleResourcePath("component/dialog.zul");				
@@ -940,7 +950,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 	}
 
-	public boolean checkCriteria(X_C_BPartner bPartner) {
+	public boolean checkCriteria(X_C_BPartner bPartner, Consumer<Object> onCloseDialog) {
 		String criteriaValueAll = getMenuContextInfo().getProgramMasterData().getZZ_Criteria();
 		if (StringUtils.isBlank(criteriaValueAll)){
 			return false;
@@ -948,7 +958,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			if (bPartner == null) {
 				StringBuilder errBuild = new StringBuilder("Your company has not met the required criteria");
 				errBuild.append("\nThe Skills Development Levy (SDL) Number does not exist\nYou can not continue with this application");
-				showDialog("Required criteria", errBuild.toString());
+				showDialog("Required criteria", errBuild.toString(), false, onCloseDialog);
 				return true;
 			}
 		}
@@ -983,7 +993,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		errBuild.append("You can not continue with this application");
 
 		if (hasError) {
-			showDialog("Required criteria", errBuild.toString());
+			showDialog("Required criteria", errBuild.toString(), false, onCloseDialog);
 			return true;
 		}else {
 			return false;	

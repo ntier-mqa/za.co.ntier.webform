@@ -2,6 +2,7 @@ package za.co.ntier.webform.form.bean.component;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BPartner;
@@ -13,6 +14,10 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zul.Textbox;
 
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AttachmentUtil;
@@ -341,9 +346,10 @@ public class OrganisationInfo implements ISaveForm {
 		}
 	}
 
-	
+	private Component sdlNumberComp = null;
 
-	public void sdlNumberChange() {
+	public void sdlNumberChange(InputEvent event) {
+		sdlNumberComp = event.getTarget();
 		X_C_BPartner bPartner = null;
 		if (StringUtils.isNoneBlank(sdlNumber)) {
 			bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
@@ -371,7 +377,7 @@ public class OrganisationInfo implements ISaveForm {
 
 			bPartnerId = bPartner.getC_BPartner_ID();
 			
-			if(discretionaryGrantsApplicationProgramVM.checkCriteria(bPartner)) {
+			if(discretionaryGrantsApplicationProgramVM.checkCriteria(bPartner, onCloseDialog)) {
 				return;
 			}
 			
@@ -380,12 +386,16 @@ public class OrganisationInfo implements ISaveForm {
 			}
 		} else {
 			bPartnerId = 0;
-			if(discretionaryGrantsApplicationProgramVM.checkCriteria(null)) {
+			if(discretionaryGrantsApplicationProgramVM.checkCriteria(null, onCloseDialog)) {
 				return;
 			}
 		}
 	}
-
+	
+	private boolean sdlNumberFocus = true;
+	private Consumer<Object> onCloseDialog = (obj) -> {
+		((HtmlBasedComponent)sdlNumberComp).setFocus(true);
+	};
 	/**
 	 * @param alternateOrgContact the alternateOrgContact to set
 	 */
@@ -574,6 +584,20 @@ public class OrganisationInfo implements ISaveForm {
 	 */
 	public boolean isUseBpartner() {
 		return getMenuContextInfo().getProgramType().isCetTvet() || getMenuContextInfo().getProgramType() == ProgramType.HET_LECTURE_SUPPORT;
+	}
+
+	/**
+	 * @return the sdlNumberFocus
+	 */
+	public boolean isSdlNumberFocus() {
+		return sdlNumberFocus;
+	}
+
+	/**
+	 * @param sdlNumberFocus the sdlNumberFocus to set
+	 */
+	public void setSdlNumberFocus(boolean sdlNumberFocus) {
+		this.sdlNumberFocus = sdlNumberFocus;
 	}
 
 }

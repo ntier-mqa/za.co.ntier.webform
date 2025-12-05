@@ -1,13 +1,15 @@
 package za.co.ntier.webform.form.bean.component;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Dialog {
 	private String documentNo;
 	private List<String> msgs;
 	private String title;
 	private boolean visible = false;
-	
+	private Consumer<Object> onCloseDialog;
 	public Dialog(String title, String msg) {
 		this(title, msg, true);
 	}
@@ -72,5 +74,19 @@ public class Dialog {
 	 */
 	public void setMsgs(List<String> msgs) {
 		this.msgs = msgs;
+	}
+
+	/**
+	 * @return the onCloseDialog
+	 */
+	public Consumer<Object> getOnCloseDialog() {
+		return onCloseDialog;
+	}
+
+	/**
+	 * @param onCloseDialog the onCloseDialog to set
+	 */
+	public void setOnCloseDialog(Consumer<Object> onCloseDialog) {
+		this.onCloseDialog = onCloseDialog;
 	}
 }

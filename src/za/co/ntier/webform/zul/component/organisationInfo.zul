@@ -19,7 +19,8 @@
 		
 		<label sclass="label" value="@init(vmOrgInfo.component.sdlNumberTitle)" /> 
 		<textbox value="@bind(vmOrgInfo.component.sdlNumber)" 
-		onChange="@command('sdlNumberChange')" 
+		onChange="@command('sdlNumberChange')"
+    onFocus="@load(vmOrgInfo.component.sdlNumberFocus)" 
 		constraint="no empty: Please enter the SDL number"/>
 				
 				
