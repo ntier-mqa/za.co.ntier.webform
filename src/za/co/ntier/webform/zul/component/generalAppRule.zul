@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><?import za.co.ntier.webform.form.MasterUtil ?>
 
 <zk xmlns:n="native">
+  <textbox height="0px;padding:0px;border-width:0px"/>
 	<hlayout sclass="sectionHeader">
-		<label sclass="sectionHeaderTitle"
+		<label sclass="sectionHeaderTitle" focus="true"
 			value="GENERAL APPLICATION RULES" />
 	</hlayout>
 
