@@ -215,7 +215,7 @@ public class AnnexureInfo implements ISaveForm{
 				}else if (columnInfo.getDataType() == DataType.Text) {
 					cellData = new TextData();
 				}else if (columnInfo.getDataType() == DataType.TextList) {
-					cellData = new TextListData();
+					cellData = new TextListData(columnInfo);
 				}
 
 			}
@@ -729,6 +729,9 @@ public class AnnexureInfo implements ISaveForm{
 					}
 				}
 			}
+		}else if (col.getDataType() == DataType.TextList) {
+			TextListData textData = (TextListData)valueObj;
+			textData.setValue(Util.convertStr((String)value));
 		}else if (col.getDataType() == DataType.Date) {
 			DateData valueData = (DateData)valueObj;
 			valueData.setLocalDate((Timestamp)value);
@@ -777,7 +780,7 @@ public class AnnexureInfo implements ISaveForm{
 				
 				if (StringUtils.isNotBlank(col.getBeanPropertyName())) {
 					if (selectedObj != null) {
-						cellValueObj = (String)AnnexureInfo.getDaoValue(selectedObj, col.getBeanPropertyName());
+						cellValueObj = String.valueOf(AnnexureInfo.getDaoValue(selectedObj, col.getBeanPropertyName()));
 						hasCellData = Boolean.TRUE;
 					}else {
 						cellValueObj = null;
@@ -793,10 +796,10 @@ public class AnnexureInfo implements ISaveForm{
 				
 				return new AbstractMap.SimpleEntry<>((T)cellValueObj, hasCellData);
 			}else {
-				if (StringUtils.isBlank(textData.getValue())) {
+				if (StringUtils.isBlank((String)textData.getValue())) {
 					return new AbstractMap.SimpleEntry<>(null, Boolean.FALSE);
 				}else {	
-					return new AbstractMap.SimpleEntry<>((T)Util.convertStr(textData.getValue()), Boolean.TRUE);
+					return new AbstractMap.SimpleEntry<>((T)Util.convertStr((String)textData.getValue()), Boolean.TRUE);
 				}
 			}
 			

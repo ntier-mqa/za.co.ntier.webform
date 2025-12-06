@@ -187,7 +187,7 @@ public class MainSrdFormVM {
 		cols.add(nameOfAccreditedTrainingProviderCol);
 
 		ColumnModel experienceCol = 
-				CellModel.getColModelForText(
+				CellModel.getColModelForPositiveNumber(
 						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZExperience)
 						, I_ZZSdf.COLUMNNAME_ZZExperience
 						).required()

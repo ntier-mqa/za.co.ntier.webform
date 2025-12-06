@@ -131,7 +131,7 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 		strategy.setDecoratorCell((row) -> {
 			LabelData titleData = (LabelData)row.get(titleColExitStrategy);
 			if (exitStrategyTitle.equals(titleData.getValue())) {
-				TextData textData = (TextData)row.get(valueColExitStrategy);
+				TextListData textData = (TextListData)row.get(valueColExitStrategy);
 				textData.setLines(3);
 			}else if (setaTitle.equals(titleData.getValue())) {
 				TextListData textListData = (TextListData)row.get(valueColExitStrategy);
