@@ -5,8 +5,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 import za.co.ntier.api.model.I_ZZLearnersApplied;
+import za.co.ntier.api.model.I_ZZ_SETA_Master;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AbstractProgram;
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.bean.component.AnnexureInfo;
@@ -16,6 +18,7 @@ import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LabelData;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
 import za.co.ntier.webform.form.bean.component.TextData;
+import za.co.ntier.webform.form.bean.component.TextListData;
 
 public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 
@@ -42,8 +45,11 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 			, I_ZZLearnersApplied.COLUMNNAME_Name);
 	private ColumnInfo<?> titleColExitStrategy = ColumnInfo.getColLabel(""
 			, I_ZZLearnersApplied.COLUMNNAME_Name);
-	private ColumnInfo<?> valueColExitStrategy = ColumnInfo.getColText(""
-			, I_ZZLearnersApplied.COLUMNNAME_Name2);
+	
+	
+	
+	private ColumnInfo<?> valueColExitStrategy = ColumnInfo.getColTextList("", MasterUtil.getSetaMaster()
+			, I_ZZLearnersApplied.COLUMNNAME_Name2, I_ZZ_SETA_Master.COLUMNNAME_Name);
 	
 	Function<AnnexureRow, Integer> stipendExpression = (row) -> {
 		Integer duration = ((IntData)row.get(budgetColDuration)).getValue();
@@ -128,7 +134,8 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 				TextData textData = (TextData)row.get(valueColExitStrategy);
 				textData.setLines(3);
 			}else if (setaTitle.equals(titleData.getValue())) {
-				
+				TextListData textListData = (TextListData)row.get(valueColExitStrategy);
+				textListData.setList(true);
 			}
 		});
 		strategy.setSubSectionHeader("EXIT STRATEGY");

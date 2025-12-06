@@ -61,6 +61,7 @@ import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
+import za.co.ntier.api.model.X_ZZ_SETA_Master;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.bean.Dialog;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
@@ -339,6 +340,16 @@ public class MasterUtil {
 			return list;
 		}
 		return alternateIDTypeCache.get(Integer.MAX_VALUE);
+	}
+	
+	private static CCache<Integer, List<X_ZZ_SETA_Master>> setaMasterCache = new CCache<>("master-X_ZZ_SETA_Master", 1);
+	public static List<X_ZZ_SETA_Master> getSetaMaster() {
+		if (setaMasterCache.isEmpty()) {
+			List<X_ZZ_SETA_Master> list = getMasterList(X_ZZ_SETA_Master.Table_ID);
+			setaMasterCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return setaMasterCache.get(Integer.MAX_VALUE);
 	}
 	
 	private static CCache<Integer, List<X_ZZ_LI_HomeLanguage>> homeLanguageCache = new CCache<>("master-X_ZZ_LI_HomeLanguage", 1);

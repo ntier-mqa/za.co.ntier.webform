@@ -62,6 +62,14 @@
 			   onChanging="@command('instantEdit', row=row, col=detailCol, ref=self, newVal=event.value)"
 			   onChange="@command('blurValidate', row=row, col=detailCol, ref=self, newVal=event.value)" />
 			</nodom>
+      
+      <nodom if="${detailCol.dataType == DataType.TextList}">
+           <textbox 
+            rows="1"
+            value="@bind(detailCol)"
+            onChanging="@command('instantEdit', row=row, col=detailCol, ref=self, newVal=event.value)"
+            onChange="@command('blurValidate', row=row, col=detailCol, ref=self, newVal=event.value)" />            
+      </nodom>
 			
             <!-- PositiveNumber (notify while typing + keep totals update onChange) -->
 			<nodom if="${detailCol.dataType == DataType.PositiveNumber}">

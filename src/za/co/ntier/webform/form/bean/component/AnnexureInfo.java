@@ -214,6 +214,8 @@ public class AnnexureInfo implements ISaveForm{
 					cellData = new DateData();
 				}else if (columnInfo.getDataType() == DataType.Text) {
 					cellData = new TextData();
+				}else if (columnInfo.getDataType() == DataType.TextList) {
+					cellData = new TextListData();
 				}
 
 			}
@@ -550,10 +552,6 @@ public class AnnexureInfo implements ISaveForm{
 						total += entryIntObj.getKey();
 					cellValueObj = entryIntObj.getKey();
 					hasCellData = entryIntObj.getValue();
-				}else if (col.getDataType() == DataType.Text) {
-					Entry<Integer, Boolean>  entryTextObj = getCellValue(row, col);
-					cellValueObj = entryTextObj.getKey();
-					hasCellData = entryTextObj.getValue();
 				}else if (col.getDataType() == DataType.LearnerInfo) {
 					LearnerInputInfo learnerInfo = (LearnerInputInfo)row.get(col);
 					int learnerInputID = 0;// int of PO don't accept null
@@ -586,7 +584,7 @@ public class AnnexureInfo implements ISaveForm{
 						if (cellValueObj != null)
 							hasCellData = Boolean.TRUE;
 					}
-				}else {
+				}else {//DataType.Text, DataType.TextList
 					Entry<Object, Boolean> celDataEntryObj = getCellValue(row, col);
 					cellValueObj = celDataEntryObj.getKey();
 					hasCellData = celDataEntryObj.getValue();
@@ -769,6 +767,39 @@ public class AnnexureInfo implements ISaveForm{
 			}else {
 				return new AbstractMap.SimpleEntry<>((T)Util.convertStr(textData.getValue()), Boolean.TRUE);
 			}
+
+		}else if (col.getDataType() == DataType.TextList) {
+			TextListData textData = (TextListData)valueObj;
+			if (textData.isList()) {
+				Object selectedObj = textData.getValue();
+				String cellValueObj = null;
+				Boolean hasCellData = null;
+				
+				if (StringUtils.isNotBlank(col.getBeanPropertyName())) {
+					if (selectedObj != null) {
+						cellValueObj = (String)AnnexureInfo.getDaoValue(selectedObj, col.getBeanPropertyName());
+						hasCellData = Boolean.TRUE;
+					}else {
+						cellValueObj = null;
+						hasCellData = Boolean.FALSE;
+					}
+				}else {
+					cellValueObj = (String)selectedObj;
+					if (cellValueObj != null)
+						hasCellData = Boolean.TRUE;
+					else
+						hasCellData = Boolean.FALSE;
+				}
+				
+				return new AbstractMap.SimpleEntry<>((T)cellValueObj, hasCellData);
+			}else {
+				if (StringUtils.isBlank(textData.getValue())) {
+					return new AbstractMap.SimpleEntry<>(null, Boolean.FALSE);
+				}else {	
+					return new AbstractMap.SimpleEntry<>((T)Util.convertStr(textData.getValue()), Boolean.TRUE);
+				}
+			}
+			
 
 		}else if (col.getDataType() == DataType.Postal) {
 			PostalData postalData = (PostalData)valueObj;

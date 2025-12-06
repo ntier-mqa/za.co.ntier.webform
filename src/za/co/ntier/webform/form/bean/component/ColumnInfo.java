@@ -73,6 +73,15 @@ public class ColumnInfo<T> {
 		return col;
 	}
 
+	public static <T> ColumnInfo<T> getColTextList(String title, List<T> dataProvider, String daoPropertyName, String beanPropertyName) {
+		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.TextList);
+		col.setDataProvider(dataProvider);
+		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
+		col.setBeanPropertyName(correctDaoPropertyName(beanPropertyName));
+
+		return col;
+	}
+	
 	public static <T> ColumnInfo<T> getColPositiveNumber(String title, String daoPropertyName) {
 		ColumnInfo<T> col = new ColumnInfo<T>(title, DataType.PositiveNumber);
 		col.setDaoPropertyName(correctDaoPropertyName(daoPropertyName));
