@@ -283,11 +283,11 @@ public class OrglinkTabPanel extends NavTabPanel {
 	public void save(X_ZZSdf applicationForm, String trxName, boolean isSubmit) {
 		if (sdfOrgPo == null) {
 			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), 0, null);
-			//sdfOrgPo.setZZ_Status(X_ZZSdfOrganisation.ZZsd_STATUS_Drafted);
+			sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Draft);
 		}
 		
 		if (isSubmit) {
-			sdfOrgPo.setZZ_Status(X_ZZSdfOrganisation.ZZSDFSTATUS_Pending);
+			sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Pending);
 		}
 
 		if (getOrgPo() != null)
