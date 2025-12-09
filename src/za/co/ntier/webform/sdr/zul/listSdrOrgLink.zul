@@ -28,7 +28,7 @@
         <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_OrgName])"/>
         <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No])"/>
         <label value="@init(item['role'])"/>
-        <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfStatus])"/>
+        <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus])"/>
         <div sclass="formBottomPanel">
           <button if = "${ vm.isEditable(item) }" 
             label="Edit"

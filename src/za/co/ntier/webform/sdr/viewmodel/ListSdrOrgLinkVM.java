@@ -50,7 +50,7 @@ public class ListSdrOrgLinkVM {
 				""", 
 				I_ZZSdfOrganisation_v.COLUMNNAME_OrgName
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No
-				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfStatus
+				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID
 				, I_ZZSdfOrganisation_v.Table_Name
 				), Env.getAD_User_ID(Env.getCtx()));
@@ -64,7 +64,7 @@ public class ListSdrOrgLinkVM {
 				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_OrgName, row.get(0));
 				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No, row.get(1));
 				linkedOrganisation.put("role", row.get(2));
-				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfStatus, row.get(3) == null ? "Drafted" : row.get(3));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus, row.get(3) == null ? "Drafted" : row.get(3));
 				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID, row.get(4));
 				
 				linkedOrganisationsList.add(linkedOrganisation);
