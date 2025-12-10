@@ -28,8 +28,14 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 	private boolean isSubAnnexure = false;
 
 	@Command
-	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure) {
-		annexure.addRow();
+	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure, @BindingParam("row") AnnexureRow row) {
+		annexure.addRow(row);
+		notifyProgramComplete();
+	}
+	
+	@Command
+	public void removeDetailLine(@BindingParam("annexure") AnnexureInfo annexure, @BindingParam("row") AnnexureRow row) {
+		annexure.removeRow(row);
 		notifyProgramComplete();
 	}
 

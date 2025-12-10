@@ -23,7 +23,7 @@
   </hlayout>
 
   <div
-    sclass="@init(('grid-table grid-table-' += vmAnnexure.component.columnInfos.size() ))"
+    sclass="@init(('grid-table grid-table-' += (vmAnnexure.component.columnInfos.size() + 1) ))"
     children="@bind(vmAnnexure.component.rows)">
 
     <template name="children" var="row">
@@ -36,6 +36,14 @@
               sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-header':'grid-cell grid-header-cell'))">
               <label value="@init(titleCol.title)" />
             </div>
+            
+            
+            <div if="${titleColStatus.last and vmAnnexure.component.showAddButton}"
+              sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-header':'grid-cell grid-header-cell'))">
+              <label value="" />
+            </div>
+            
+            
           </template>
         </nodom>
       </nodom>
@@ -44,7 +52,7 @@
       <nodom children="@bind(vmAnnexure.component.columnInfos)">
         <template name="children" var="detailCol">
           <div
-            sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.component.columnInfos.size() ))">
+            sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += (vmAnnexure.component.columnInfos.size() + 1) ))">
 
             <!-- Label -->
             <nodom if="${detailCol.dataType == DataType.Label}">
@@ -204,14 +212,23 @@
                 valueInLocalDate="@bind(row[detailCol].localDate)"
                 onChange="@command('notifyProgramComplete')" />
             </nodom>
-
-
-            <!-- Add Row button -->
-            <button sclass="btn-circle addrow"
-              if="${ rowStatus.last and detailColStatus.last and vmAnnexure.component.showAddButton}"
-              iconSclass="z-icon-plus" label="" tooltiptext="New Line"
-              onClick="@command('addDetailLine', annexure=vmAnnexure.component)" />
+            
           </div>
+          <div  
+              style="display:flex;"
+              if="${detailColStatus.last and vmAnnexure.component.showAddButton}"
+              sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += (vmAnnexure.component.columnInfos.size() + 1) ))">
+            
+            <!-- command button -->
+            <button sclass="btn-circle addrow"
+              iconSclass="z-icon-plus" label="" tooltiptext="New Line"
+              onClick="@command('addDetailLine', annexure=vmAnnexure.component, row = row)" />
+            <button sclass="btn-circle addrow"
+              iconSclass="z-icon-circle-minus" label="" tooltiptext="Delete Line"
+              onClick="@command('removeDetailLine', annexure=vmAnnexure.component, row = row)" />
+          </div>
+            
+          
         </template>
       </nodom>
 

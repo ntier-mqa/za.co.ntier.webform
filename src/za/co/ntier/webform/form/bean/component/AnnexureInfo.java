@@ -159,8 +159,17 @@ public class AnnexureInfo implements ISaveForm{
 
 	private Map<ColumnInfo<?>, Object> totalRow;
 
-	public void addRow() {
-		createDetailRow();
+	public void addRow(AnnexureRow row) {
+		AnnexureRow newRow = createDetailRow(false);
+		int index = getRows().indexOf(row);
+		getRows().add(index + 1, newRow);
+		BindUtils.postNotifyChange(this, "rows");
+	}
+	
+	List<AnnexureRow> removedRows = new ArrayList<>();
+	public void removeRow(AnnexureRow row) {
+		getRows().remove(row);
+		removedRows.add(row);
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
@@ -175,11 +184,21 @@ public class AnnexureInfo implements ISaveForm{
 			areaData.areaSelect((MCity)event.getSelectedObjects().iterator().next());
 	}
 
-	public AnnexureRow createDetailRow() {
-		return createDetailRow(null);
+	public AnnexureRow createDetailRow(boolean autoAddRow) {
+		return createDetailRow(null, autoAddRow);
 	}
-	@SuppressWarnings("unchecked")
+	
+	public AnnexureRow createDetailRow() {
+		return createDetailRow(null, true);
+	}
+	
 	public AnnexureRow createDetailRow(Map<ColumnInfo<?>, Object> rowTitle) {
+		return createDetailRow(rowTitle, true);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public AnnexureRow createDetailRow(Map<ColumnInfo<?>, Object> rowTitle, boolean autoAddRow) {
 
 		AnnexureRow row = new AnnexureRow(this);
 
@@ -232,8 +251,8 @@ public class AnnexureInfo implements ISaveForm{
 		if (decoratorCell != null) {
 			decoratorCell.accept(row);
 		}
-
-		getRows().add(row);
+		if (autoAddRow)
+			getRows().add(row);
 		return row;
 	}
 
@@ -643,6 +662,11 @@ public class AnnexureInfo implements ISaveForm{
 
 		int total = 0;
 
+		for (AnnexureRow removedRow : removedRows) {
+			if (removedRow.getData() != null)
+				removedRow.getData().deleteEx(true, trxName);
+		}
+		
 		for (AnnexureRow row : getRows()) {
 			PO po = (PO) row.getData();
 			if (po == null) {
@@ -691,6 +715,7 @@ public class AnnexureInfo implements ISaveForm{
 		}
 
 		applicationForm.setZZTotalNumberApplied(total + applicationForm.getZZTotalNumberApplied());
+		removedRows.clear();
 	}
 
 
