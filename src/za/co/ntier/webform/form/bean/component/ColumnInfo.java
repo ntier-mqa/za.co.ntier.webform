@@ -326,8 +326,9 @@ public class ColumnInfo<T> {
 	/**
 	 * @param isCalTotal the isCalTotal to set
 	 */
-	public void setCalTotal(boolean isCalTotal) {
+	public ColumnInfo<?> setCalTotal(boolean isCalTotal) {
 		this.isCalTotal = isCalTotal;
+		return this;
 	}
 
 	

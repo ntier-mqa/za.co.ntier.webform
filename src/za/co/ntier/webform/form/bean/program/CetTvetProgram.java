@@ -68,13 +68,16 @@ public class CetTvetProgram extends AbstractProgram {
 			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false);
 			annexure.setTabTitle("AET");
 			annexureInfos.add(annexure);
-
-			cols = List.of(colNoBeneficiaries, colDiscipline);
+			
+			
+			cols = List.of(ColumnInfo.getColText(ColumnInfo.colDisciplineTitle, I_ZZSubAnnex.COLUMNNAME_ZZFieldStudy), 
+					ColumnInfo.getColPositiveNumber(ColumnInfo.colNoBeneficiariesTitle, I_ZZSubAnnex.COLUMNNAME_ZZLearners).setCalTotal(true));
 			identify = "ANNEXURE B";
 			tableTitle = "Number of TVET Colleges and HEI graduates that entered CET Internships";
-			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, true);
-			annexure.setTabTitle("Internships");
-			annexureInfos.add(annexure);
+			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
+			subAnnexure.setShowAddButton(true);
+			subAnnexure.setTabTitle("Internships");
+			annexureInfos.add(subAnnexure);
 
 			identify = "ANNEXURE C";
 			tableTitle = "CET Managers receiving training on curriculum related studies";
@@ -130,14 +133,14 @@ public class CetTvetProgram extends AbstractProgram {
 
 			identify =  "ANNEXURE I";
 			tableTitle = "Lecturers exposed to industry through skills programmes";
-			ColumnInfo<?> colProgrammeApply = ColumnInfo.getColLabel(ColumnInfo.colProgrammeApplyTitle);
-			cols = List.of(colTotalNoBeneficiaries, colProgrammeApply);
+			cols = List.of(ColumnInfo.getColText("Programme", I_ZZSubAnnex.COLUMNNAME_ZZRequestedProgramme)
+					, ColumnInfo.getColPositiveNumber("Number Applied For", I_ZZSubAnnex.COLUMNNAME_ZZLearners).setCalTotal(true));
 			
-			List<Map<ColumnInfo<?>, Object>> rowTitles = List.of(Map.of(colProgrammeApply, "Occupational Health and Safety"),
-					Map.of(colProgrammeApply, "Other, specify"));
-			annexure = CetTvetOneLineInput.getCetTvetOneLineInput(applicationForm, cols, sectionHeader, tableTitle, identify, false, rowTitles, true);
-			annexure.setTabTitle("Lecturers - Programs Exposure");
-			annexureInfos.add(annexure);
+			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
+			subAnnexure.setShowAddButton(true);
+			subAnnexure.setShowColumnHeader(false);
+			subAnnexure.setTabTitle("Lecturers - Programs Exposure");
+			annexureInfos.add(subAnnexure);
 
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET_BURSARS || menuContextInfo.getProgramType() == ProgramType.UNIVERSITY) {			
 			List<LearnerInputInfo> tradeObj = null;

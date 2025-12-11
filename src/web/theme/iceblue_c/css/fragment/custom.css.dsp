@@ -125,8 +125,8 @@
 
 
 .mqaWebForm .btn-circle {
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     padding: 0;
     border-radius: 50%;
     display: flex;
@@ -136,7 +136,7 @@
 }
 
 .mqaWebForm .btn-circle i{
-  font-size: x-large;
+  font-size: medium;
 }
 
 .mqaWebForm .container .z-tab-selected{
@@ -289,19 +289,39 @@
     grid-template-columns: 230px 100px 100px 100px 1fr 1fr 1fr;
 }
 
+.mqaWebForm .grid-table-7.command{
+  /* Define 3 columns with relative widths */
+    grid-template-columns: 230px 100px 100px 100px 1fr 1fr 1fr max-content;
+}
+
+.mqaWebForm .learningMaterial .grid-table{
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr max-content;
+
+}
+
+.mqaWebForm .learningMaterial .grid-table.command{
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr max-content;
+
+}
+
 .mqaWebForm .grid-table-6{
   /* Define 3 columns with relative widths */
     grid-template-columns: 230px 110px 110px 1fr 1fr 1fr;
 }
 
-.mqaWebForm .learningMaterial .grid-table-6{
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-
+.mqaWebForm .grid-table-6.command{
+  /* Define 3 columns with relative widths */
+    grid-template-columns: 230px 110px 110px 1fr 1fr 1fr max-content;
 }
 
 .mqaWebForm .grid-table-5{
   /* Define 3 columns with relative widths */
     grid-template-columns: 240px 130px 130px 1fr 1fr;
+}
+
+.mqaWebForm .grid-table-5.command{
+  /* Define 3 columns with relative widths */
+    grid-template-columns: 240px 130px 130px 1fr 1fr max-content;
 }
 
 /* annexure */
@@ -310,14 +330,30 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
+.mqaWebForm .grid-table-4.command{
+  /* Define 3 columns with relative widths */
+    grid-template-columns: 1fr 1fr 1fr 1fr max-content;
+}
+
+
 .mqaWebForm .grid-table-3{
   /* Define 3 columns with relative widths */
     grid-template-columns: 1fr 1fr 1fr;
 }
 
+.mqaWebForm .grid-table-3.command{
+  /* Define 3 columns with relative widths */
+    grid-template-columns: 1fr 1fr 1fr max-content;
+}
+
 .mqaWebForm .grid-table-2{
   /* Define 3 columns with relative widths */
     grid-template-columns: 1fr 1fr;
+}
+
+.mqaWebForm .grid-table-2.command{
+  /* Define 3 columns with relative widths */
+    grid-template-columns: 1fr 1fr max-content;
 }
 
 .mqaWebForm .grid-table-auto-2{
@@ -371,7 +407,7 @@
 }
 
 .mqaWebForm .grid-sub-header{
-    background-color: var(--header-child-color);
+    background-color: var(--mqa-blue);
 
 }
 
@@ -427,12 +463,12 @@
 }
 
 .mqaWebForm .grid-sub-footer{
-  background-color: var(--header-child-color);
+  background-color: var(--mqa-blue);
 }
 
 
 .mqaWebForm .grid-footer-cell .z-label{
-    color: var(--header-text-color);
+    color: white;
 }
 
 

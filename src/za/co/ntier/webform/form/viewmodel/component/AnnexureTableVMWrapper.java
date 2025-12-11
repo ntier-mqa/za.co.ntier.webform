@@ -26,7 +26,21 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 
 public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 	private boolean isSubAnnexure = false;
+	
+	public String getSclassCmd() {
+		if (getComponent().isShowAddButton())
+			return " command";
+		return "";
+	}
 
+	public String getNumCol() {
+		int num = getComponent().getColumnInfos().size();
+		if (getComponent().isShowAddButton()) {
+			num++;
+		}
+		return String.valueOf(num);
+	}
+	
 	@Command
 	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure, @BindingParam("row") AnnexureRow row) {
 		annexure.addRow(row);

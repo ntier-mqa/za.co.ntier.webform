@@ -23,7 +23,7 @@
   </hlayout>
 
   <div
-    sclass="@init(('grid-table grid-table-' += (vmAnnexure.component.columnInfos.size() + 1) ))"
+    sclass="@init(('grid-table grid-table-' += vmAnnexure.component.columnInfos.size() += vmAnnexure.sclassCmd ))"
     children="@bind(vmAnnexure.component.rows)">
 
     <template name="children" var="row">
@@ -52,7 +52,7 @@
       <nodom children="@bind(vmAnnexure.component.columnInfos)">
         <template name="children" var="detailCol">
           <div
-            sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += (vmAnnexure.component.columnInfos.size() + 1) ))">
+            sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.numCol ))">
 
             <!-- Label -->
             <nodom if="${detailCol.dataType == DataType.Label}">
@@ -217,7 +217,7 @@
           <div  
               style="display:flex;"
               if="${detailColStatus.last and vmAnnexure.component.showAddButton}"
-              sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += (vmAnnexure.component.columnInfos.size() + 1) ))">
+              sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.numCol ))">
             
             <!-- command button -->
             <button sclass="btn-circle addrow"
@@ -250,6 +250,13 @@
                 value="@load(vmAnnexure.component.totalRow[totalCol])" />
             </nodom>
           </div>
+          <div  
+              if="${totalColStatus.last and vmAnnexure.component.showAddButton}"
+              sclass="@init((vmAnnexure.subAnnexure? 'grid-cell grid-sub-footer':'grid-cell grid-footer-cell'))"
+              visible="@load((vmAnnexure.component.isShowTotal() and rowStatus.last))">
+              <label value="" />
+          </div>
+          
         </template>
       </nodom>
 
