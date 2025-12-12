@@ -333,7 +333,7 @@ public class ProgramInput extends AnnexureInfo {
 		if(applicationForm != null) {
 			String whereFormDiscipline = String.format("%s = ?", 
 					I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Application_Form_ID);
-			Query queryFormDiscipline = MTable.get(X_ZZ_FormDiscipline.Table_ID).createQuery(whereFormDiscipline, null);
+			Query queryFormDiscipline = MTable.get(Env.getCtx(), X_ZZ_FormDiscipline.Table_Name).createQuery(whereFormDiscipline, null);
 			formDisciplines = queryFormDiscipline.setParameters(applicationForm.getZZ_Application_Form_ID()).list();
 		}
 		

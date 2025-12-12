@@ -643,7 +643,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	public boolean checkExistAppForm(String registrationNumber){
 		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, I_ZZ_Application_Form.COLUMNNAME_ZZ_Org_Reg_No);
-		Query existAppFormQuery = MTable.get(I_ZZ_Application_Form.Table_ID).createQuery(existAppFormWhere, null);
+		Query existAppFormQuery = MTable.get(Env.getCtx(), I_ZZ_Application_Form.Table_Name).createQuery(existAppFormWhere, null);
 		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true)
 				.setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), registrationNumber)
 				.list();
@@ -659,7 +659,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	public boolean checkExistAppForm(X_C_BPartner bparter){
 		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Program_Master_Data_ID, I_ZZ_Application_Form.COLUMNNAME_C_BPartner_ID);
-		Query existAppFormQuery = MTable.get(I_ZZ_Application_Form.Table_ID).createQuery(existAppFormWhere, null);
+		Query existAppFormQuery = MTable.get(Env.getCtx(), I_ZZ_Application_Form.Table_Name).createQuery(existAppFormWhere, null);
 		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), bparter.getC_BPartner_ID()).list();
 		if (exitsAppForms.size() > 0) {
 			X_AD_User createdUser = new X_AD_User(Env.getCtx(), exitsAppForms.get(0).getCreatedBy(), null);
@@ -1006,7 +1006,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		String fiscalYearStr = currentFinYear.getFiscalYear();
 		String prevFiscalYearStr = String.valueOf(Integer.valueOf(fiscalYearStr) - 1);
 
-		Query queryLevyPaying = MTable.get(I_ZZ_Levy_Paying.Table_ID).createQuery(
+		Query queryLevyPaying = MTable.get(Env.getCtx(), I_ZZ_Levy_Paying.Table_Name).createQuery(
 				String.format("%s = ? AND %s = ?", I_ZZ_Levy_Paying.COLUMNNAME_C_BPartner_ID, I_C_Year.COLUMNNAME_FiscalYear), null);
 		queryLevyPaying.addTableDirectJoin(I_C_Year.Table_Name);
 		queryLevyPaying.setParameters(bPartner.getC_BPartner_ID(), prevFiscalYearStr);
@@ -1015,7 +1015,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 	protected boolean checkATRSubmitted(I_C_BPartner bPartner) {
 		MYear currentFinYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
-		Query queryLevyPaying = MTable.get(I_ZZ_WSP_ATR_Approvals.Table_ID).createQuery(
+		Query queryLevyPaying = MTable.get(Env.getCtx(), I_ZZ_WSP_ATR_Approvals.Table_Name).createQuery(
 				String.format("%s = ? AND %s = ?", I_ZZ_WSP_ATR_Approvals.COLUMNNAME_C_BPartner_ID, I_ZZ_WSP_ATR_Approvals.COLUMNNAME_ZZ_Financial_Year), null);
 		queryLevyPaying.setParameters(bPartner.getC_BPartner_ID(), currentFinYear.getFiscalYear());
 		return queryLevyPaying.list().size() == 0;

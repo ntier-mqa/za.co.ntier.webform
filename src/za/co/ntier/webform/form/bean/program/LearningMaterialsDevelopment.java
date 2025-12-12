@@ -5,6 +5,7 @@ import java.util.List;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.Env;
 
 import za.co.ntier.api.model.I_ZZLearningMaterial;
 import za.co.ntier.api.model.X_ZZLearningMaterial;
@@ -57,7 +58,7 @@ public class LearningMaterialsDevelopment extends AbstractProgram{
 			String where = String.format("%s = ?", 
 					I_ZZLearningMaterial.COLUMNNAME_ZZ_Application_Form_ID);
 			
-			Query querySavedDaos = MTable.get(I_ZZLearningMaterial.Table_ID).createQuery(where, null);
+			Query querySavedDaos = MTable.get(Env.getCtx(), I_ZZLearningMaterial.Table_Name).createQuery(where, null);
 			savedDaos = querySavedDaos.setParameters(getApplicationForm().getZZ_Application_Form_ID()).list();
 		}
 		

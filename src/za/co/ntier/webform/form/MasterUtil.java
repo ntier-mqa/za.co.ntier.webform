@@ -81,7 +81,7 @@ public class MasterUtil {
 	private static final List<MCity> tmpAllCity = new ArrayList<>();
 	
 	public static X_ZZSdf querySdf(int userId) {
-		Query savedDataQuery = MTable.get(I_ZZSdf.Table_ID)
+		Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZSdf.Table_Name)
 				.createQuery(String.format("%s = ?", I_ZZSdf.COLUMNNAME_AD_User_ID), null);
 		savedDataQuery.setParameters(userId);
 		savedDataQuery.setOnlyActiveRecords(true);
@@ -205,7 +205,7 @@ public class MasterUtil {
 	public static List<X_ZZSubAnnex> loadSubAnnex(X_ZZ_Application_Form parent) {
 		List<X_ZZSubAnnex> subAnnexs = null;
 		if (parent != null) {
-			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID)
+			Query directSubAnnexQuery = MTable.get(Env.getCtx(), X_ZZSubAnnex.Table_Name)
 					.createQuery(String.format("%s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID), null);
 			directSubAnnexQuery.setParameters(parent.getZZ_Application_Form_ID());
 			subAnnexs = directSubAnnexQuery.list();
@@ -218,7 +218,7 @@ public class MasterUtil {
 		if (applicationForm == null)
 			return null;
 
-		Query annexureQuery = MTable.get(X_ZZAnnexure.Table_ID).createQuery(String.format("%s = ? AND %s = ?",
+		Query annexureQuery = MTable.get(Env.getCtx(), X_ZZAnnexure.Table_Name).createQuery(String.format("%s = ? AND %s = ?",
 				I_ZZAnnexure.COLUMNNAME_ZZ_Application_Form_ID, I_ZZAnnexure.COLUMNNAME_DataType), null);
 		annexureQuery.setParameters(applicationForm.getZZ_Application_Form_ID(), annexureType);
 		annexureQuery.setOrderBy(I_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);
@@ -313,7 +313,7 @@ public class MasterUtil {
 	
 	public static List<X_C_Bank> getBanks(){
 		if (bankCache.isEmpty()) {
-			List<X_C_Bank> list = getMasterList(I_C_Bank.Table_ID);
+			List<X_C_Bank> list = getMasterList(I_C_Bank.Table_Name);
 			bankCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -324,7 +324,7 @@ public class MasterUtil {
 	
 	public static List<X_ZZ_LI_HighestEducation> getHighestEducations(){
 		if (highestEducationCache.isEmpty()) {
-			List<X_ZZ_LI_HighestEducation> list = getMasterList(X_ZZ_LI_HighestEducation.Table_ID);
+			List<X_ZZ_LI_HighestEducation> list = getMasterList(X_ZZ_LI_HighestEducation.Table_Name);
 			highestEducationCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -335,7 +335,7 @@ public class MasterUtil {
 	
 	public static List<X_ZZ_AlternateIDType> getAlternateIDType() {
 		if (alternateIDTypeCache.isEmpty()) {
-			List<X_ZZ_AlternateIDType> list = getMasterList(X_ZZ_AlternateIDType.Table_ID);
+			List<X_ZZ_AlternateIDType> list = getMasterList(X_ZZ_AlternateIDType.Table_Name);
 			alternateIDTypeCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -345,7 +345,7 @@ public class MasterUtil {
 	private static CCache<Integer, List<X_ZZ_SETA_Master>> setaMasterCache = new CCache<>("master-X_ZZ_SETA_Master", 1);
 	public static List<X_ZZ_SETA_Master> getSetaMaster() {
 		if (setaMasterCache.isEmpty()) {
-			List<X_ZZ_SETA_Master> list = getMasterList(X_ZZ_SETA_Master.Table_ID);
+			List<X_ZZ_SETA_Master> list = getMasterList(X_ZZ_SETA_Master.Table_Name);
 			setaMasterCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -356,7 +356,7 @@ public class MasterUtil {
 	
 	public static List<X_ZZ_LI_HomeLanguage> getHomeLanguage(){
 		if (homeLanguageCache.isEmpty()) {
-			List<X_ZZ_LI_HomeLanguage> list = getMasterList(X_ZZ_LI_HomeLanguage.Table_ID);
+			List<X_ZZ_LI_HomeLanguage> list = getMasterList(X_ZZ_LI_HomeLanguage.Table_Name);
 			homeLanguageCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -367,7 +367,7 @@ public class MasterUtil {
 	
 	public static List<X_ZZ_LI_Disability> getDisability(){
 		if (disabilityCache.isEmpty()) {
-			List<X_ZZ_LI_Disability> list = getMasterList(X_ZZ_LI_Disability.Table_ID);
+			List<X_ZZ_LI_Disability> list = getMasterList(X_ZZ_LI_Disability.Table_Name);
 			disabilityCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -378,7 +378,7 @@ public class MasterUtil {
 	
 	public static List<X_ZZ_LI_CitizenResidentialStatus> getCitizenResidentialStatus(){
 		if (citizenResidentialStatusCache.isEmpty()) {
-			List<X_ZZ_LI_CitizenResidentialStatus> list = getMasterList(X_ZZ_LI_CitizenResidentialStatus.Table_ID);
+			List<X_ZZ_LI_CitizenResidentialStatus> list = getMasterList(X_ZZ_LI_CitizenResidentialStatus.Table_Name);
 			citizenResidentialStatusCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -389,7 +389,7 @@ public class MasterUtil {
 	
 	public static List<X_ZZ_LI_SocioEconomicStatus> getSocioEconomicStatus(){
 		if (socioEconomicStatusCache.isEmpty()) {
-			List<X_ZZ_LI_SocioEconomicStatus> list = getMasterList(X_ZZ_LI_SocioEconomicStatus.Table_ID);
+			List<X_ZZ_LI_SocioEconomicStatus> list = getMasterList(X_ZZ_LI_SocioEconomicStatus.Table_Name);
 			socioEconomicStatusCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -400,7 +400,7 @@ public class MasterUtil {
 	
 	public static List<X_ZZ_Nationality> getNationality(){
 		if (nationalityCache.isEmpty()) {
-			List<X_ZZ_Nationality> list = getMasterList(I_ZZ_Nationality.Table_ID);
+			List<X_ZZ_Nationality> list = getMasterList(I_ZZ_Nationality.Table_Name);
 			nationalityCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}
@@ -417,8 +417,8 @@ public class MasterUtil {
 	 * nationalityCache.get(Integer.MAX_VALUE); }
 	 */
 	
-	private static <T extends PO> List<T> getMasterList(int tableID){
-		Query annexureQuery = MTable.get(tableID).createQuery(null, null)
+	private static <T extends PO> List<T> getMasterList(String tableName){
+		Query annexureQuery = MTable.get(Env.getCtx(), tableName).createQuery(null, null)
 				.setOnlyActiveRecords(true)
 				.setClient_ID();
 		return annexureQuery.list();		
@@ -514,5 +514,10 @@ public class MasterUtil {
 	public static void closeActiveWindow() {
 		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
 		desktop.closeActiveWindow();
+	}
+	
+	public static int getTableId(String tableName) {
+		return MTable.get(Env.getCtx(), tableName).get_Table_ID();
+		
 	}
 }

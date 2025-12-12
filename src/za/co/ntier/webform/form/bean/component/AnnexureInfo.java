@@ -28,6 +28,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -1060,7 +1061,7 @@ public class AnnexureInfo implements ISaveForm{
 			String where = String.format("%s = ?", 
 					I_ZZBankingDetails.COLUMNNAME_ZZ_Application_Form_ID);
 
-			Query querySavedDaos = MTable.get(I_ZZBankingDetails.Table_ID).createQuery(where, null);
+			Query querySavedDaos = MTable.get(Env.getCtx(), I_ZZBankingDetails.Table_Name).createQuery(where, null);
 			savedDaos = querySavedDaos.setParameters(applicationForm.getZZ_Application_Form_ID()).list();
 		}
 

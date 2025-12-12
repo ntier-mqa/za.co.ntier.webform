@@ -5,6 +5,7 @@ import java.util.List;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.Env;
 
 import za.co.ntier.api.model.I_ZZSubAnnex;
 import za.co.ntier.api.model.X_ZZSubAnnex;
@@ -49,7 +50,7 @@ public class CetTvetMultiLineInput extends AnnexureInfo{
 		
 		List<PO> subAnnexs = null;
 		if (appForm != null) {
-			Query directSubAnnexQuery = MTable.get(X_ZZSubAnnex.Table_ID)
+			Query directSubAnnexQuery = MTable.get(Env.getCtx(), X_ZZSubAnnex.Table_Name)
 					.createQuery(String.format("%s = ? AND %s = ?", I_ZZSubAnnex.COLUMNNAME_ZZ_Application_Form_ID, I_ZZSubAnnex.COLUMNNAME_DataType), null);
 			directSubAnnexQuery.setOrderBy(I_ZZSubAnnex.COLUMNNAME_ZZSubAnnex_ID);
 			directSubAnnexQuery.setParameters(appForm.getZZ_Application_Form_ID(), annexureInfo.getDataType());

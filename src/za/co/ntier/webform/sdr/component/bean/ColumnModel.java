@@ -28,7 +28,7 @@ public class ColumnModel {
 		return Introspector.decapitalize(daoPropertyName);
 	}
 	
-	private int tableId = 0; 
+	private String tableName; 
 	
 	private Function<RowModel, Integer> expression;
 
@@ -171,15 +171,15 @@ public class ColumnModel {
 	/**
 	 * @return the tableId
 	 */
-	public int getTableId() {
-		return tableId;
+	public String getTableName() {
+		return tableName;
 	}
 
 	/**
 	 * @param tableId the tableId to set
 	 */
-	public ColumnModel setTableId(int tableId) {
-		this.tableId = tableId;
+	public ColumnModel setTableName(String tableName) {
+		this.tableName = tableName;
 		return this;
 	}
 

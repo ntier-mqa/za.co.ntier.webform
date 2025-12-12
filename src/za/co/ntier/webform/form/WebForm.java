@@ -95,7 +95,7 @@ public class WebForm extends ADForm {
 		boolean isUploadWPAForNVC = uploadWPAForNVCValue != null && ("Y".equalsIgnoreCase(uploadWPAForNVCValue) ||
 				"true".equalsIgnoreCase(uploadWPAForNVCValue));
 
-		I_ZZ_Program_Master_Data masterData = MTable.get(I_ZZ_Program_Master_Data.Table_ID)
+		I_ZZ_Program_Master_Data masterData = MTable.get(Env.getCtx(), I_ZZ_Program_Master_Data.Table_Name)
 					.createQuery(String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU), null)
 					.setParameters(programMasterDataUUValue).firstOnly();
 		if (masterData == null) {

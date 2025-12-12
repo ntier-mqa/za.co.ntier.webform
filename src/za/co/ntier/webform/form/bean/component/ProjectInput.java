@@ -80,7 +80,7 @@ public class ProjectInput extends AnnexureInfo {
 						I_ZZLearnersApplied.COLUMNNAME_DataType);
 			}
 
-			Query queryLearnersApplied = MTable.get(I_ZZLearnersApplied.Table_ID).createQuery(whereLearnersApplied, null);
+			Query queryLearnersApplied = MTable.get(Env.getCtx(), I_ZZLearnersApplied.Table_Name).createQuery(whereLearnersApplied, null);
 			if(getDataType() == null) {
 				queryLearnersApplied.setParameters(applicationForm.getZZ_Application_Form_ID());
 			}else {

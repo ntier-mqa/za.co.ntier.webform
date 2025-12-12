@@ -79,7 +79,7 @@ public class UploadDocComponent implements ISaveForm {
 
 	    this.applicationForm = applicationForm;
 	    if (applicationForm != null) {
-	        Query uploadDocQuery = MTable.get(X_ZZDocumentUploadFile.Table_ID).createQuery(
+	        Query uploadDocQuery = MTable.get(Env.getCtx(), X_ZZDocumentUploadFile.Table_Name).createQuery(
 	            String.format("%s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID), null
 	        );
 

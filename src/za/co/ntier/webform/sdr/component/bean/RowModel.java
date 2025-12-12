@@ -99,7 +99,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 			.forEach(cellModel -> {
 				PO daoPerCol = null;
 				if (tableModel.getDaoManage() != null) {
-					daoPerCol = tableModel.getDaoManage().getDao(cellModel.getColModel().getTableId());
+					daoPerCol = tableModel.getDaoManage().getDao(cellModel.getColModel().getTableName());
 				}
 				
 				if (daoPerCol == null)
@@ -144,7 +144,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 		for (CellModel cellModel : values()) {
 			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
 				if (tableModel.getDaoManage() != null)
-					daoPerCol =  tableModel.getDaoManage().getDao(cellModel.getColModel().getTableId());
+					daoPerCol =  tableModel.getDaoManage().getDao(cellModel.getColModel().getTableName());
 				if (daoPerCol == null && data == null) {
 					data = tableModel.getPoSupplier().apply(tableModel, applicationForm);
 				}

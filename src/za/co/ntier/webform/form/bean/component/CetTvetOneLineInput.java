@@ -6,6 +6,7 @@ import java.util.Map;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.Env;
 
 import za.co.ntier.api.model.I_ZZAnnexure;
 import za.co.ntier.api.model.X_ZZAnnexure;
@@ -40,7 +41,7 @@ public class CetTvetOneLineInput extends AnnexureInfo{
 		
 		List<PO> daos = null;
 		if (applicationForm != null) {
-			Query annexureQuery = MTable.get(X_ZZAnnexure.Table_ID).createQuery(String.format("%s = ? AND %s = ?", 
+			Query annexureQuery = MTable.get(Env.getCtx(), X_ZZAnnexure.Table_Name).createQuery(String.format("%s = ? AND %s = ?", 
 			I_ZZAnnexure.COLUMNNAME_ZZ_Application_Form_ID, I_ZZAnnexure.COLUMNNAME_DataType), null);
 			annexureQuery.setParameters(applicationForm.getZZ_Application_Form_ID(), annexureInfo.getDataType());
 			annexureQuery.setOrderBy(I_ZZAnnexure.COLUMNNAME_ZZAnnexure_ID);

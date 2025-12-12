@@ -5,6 +5,7 @@ import java.util.List;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.Env;
 
 import za.co.ntier.api.model.I_ZZDetailSmallBusinesse;
 import za.co.ntier.api.model.X_ZZDetailSmallBusinesse;
@@ -45,7 +46,7 @@ public class SmallBusiness extends AbstractProgram{
 			String where = String.format("%s = ?", 
 					I_ZZDetailSmallBusinesse.COLUMNNAME_ZZ_Application_Form_ID);
 			
-			Query querySavedDaos = MTable.get(I_ZZDetailSmallBusinesse.Table_ID).createQuery(where, null);
+			Query querySavedDaos = MTable.get(Env.getCtx(), I_ZZDetailSmallBusinesse.Table_Name).createQuery(where, null);
 			savedDaos = querySavedDaos.setParameters(getApplicationForm().getZZ_Application_Form_ID()).list();
 		}
 		detailSmallBusiness.init(applicationForm, savedDaos);

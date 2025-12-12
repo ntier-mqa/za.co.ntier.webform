@@ -13,7 +13,7 @@ import za.co.ntier.api.model.X_ZZDocumentUpload;
 public class UploadInput extends AnnexureInfo {
 	public static UploadInput getUploadInput(int programMasterDataID){
 		// query upload info
-		List<X_ZZDocumentUpload> docUploads = MTable.get(Env.getCtx(), I_ZZDocumentUpload.Table_ID)
+		List<X_ZZDocumentUpload> docUploads = MTable.get(Env.getCtx(), I_ZZDocumentUpload.Table_Name)
 				.createQuery(I_ZZDocumentUpload.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?", null)
 				.setParameters(programMasterDataID).list();
 

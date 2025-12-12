@@ -312,7 +312,7 @@ public class AddressInfo implements ISaveForm {
 	public void initComponent(X_ZZ_Application_Form applicationForm) {
 		this.applicationForm = applicationForm;
 		if (applicationForm != null) {
-			Query formContactQuery = MTable.get(X_ZZ_FormContact.Table_ID).createQuery(
+			Query formContactQuery = MTable.get(Env.getCtx(), X_ZZ_FormContact.Table_Name).createQuery(
 					String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, I_ZZ_FormContact.COLUMNNAME_ZZ_ContactType)
 					, null);
 			

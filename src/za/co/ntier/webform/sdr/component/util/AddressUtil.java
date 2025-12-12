@@ -6,6 +6,7 @@ import java.util.List;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.Env;
 
 import za.co.ntier.api.model.I_ZZ_FormContact;
 import za.co.ntier.api.model.X_ZZSdf;
@@ -88,7 +89,7 @@ public class AddressUtil {
 					I_ZZ_FormContact.COLUMNNAME_ZZ_Application_Form_ID
 					, I_ZZ_FormContact.COLUMNNAME_ZZ_ContactType);
 
-			Query querySavedDaos = MTable.get(X_ZZ_FormContact.Table_ID).createQuery(where, null);
+			Query querySavedDaos = MTable.get(Env.getCtx(), X_ZZ_FormContact.Table_Name).createQuery(where, null);
 			//savedDaos = querySavedDaos.setParameters(
 					//sdf.getZZ_Application_Form_ID()
 					//, addressFormBean.getDataType()).list();

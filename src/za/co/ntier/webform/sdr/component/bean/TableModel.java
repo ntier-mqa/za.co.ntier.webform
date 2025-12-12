@@ -81,16 +81,16 @@ public class TableModel implements ISupportSave {
 	private BiFunction<TableModel, X_ZZSdf, PO> poSupplier;
 	
 	public static class DaoManage{
-		Map<Integer, PO> daos = new HashMap<Integer, PO>();
+		Map<String, PO> daos = new HashMap<>();
 
 		/**
 		 * @return the dao
 		 */
-		public PO getDao(Integer tableId) {
-			if ((tableId == null || tableId == 0) && daos.size() == 1) {
+		public PO getDao(String tableName) {
+			if (tableName == null && daos.size() == 1) {
 				return daos.values().iterator().next();
 			}else {
-				return daos.get(tableId);
+				return daos.get(tableName);
 			}
 
 		}
@@ -99,7 +99,7 @@ public class TableModel implements ISupportSave {
 		 * @param dao the dao to set
 		 */
 		public void setDao(PO dao) {
-			daos.put(dao.get_Table_ID(), dao);
+			daos.put(dao.get_TableName(), dao);
 		}
 		
 		public void saveDao(String trxName) {
