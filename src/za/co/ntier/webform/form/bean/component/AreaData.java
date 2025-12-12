@@ -11,7 +11,7 @@ import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
 
 
-public class AreaData {
+public class AreaData implements ICellData{
 	private AnnexureInfo annexure;
 	private ListModelList<MCity> areas;
 	private Map<ColumnInfo<?>, Object> row;
@@ -117,5 +117,12 @@ public class AreaData {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void clearData() {
+		if (areas != null)
+			areas.clearSelection();
+		
 	}
 }

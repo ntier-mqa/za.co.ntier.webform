@@ -2,7 +2,7 @@ package za.co.ntier.webform.form.bean.component;
 
 import java.util.Map;
 
-public class IntData {
+public class IntData implements ICellData{
 	private AnnexureInfo annexure;
 	private Map<ColumnInfo<?>, Object> row;
 	private Integer value;
@@ -59,6 +59,12 @@ public class IntData {
 	 */
 	public void setValue(Integer value) {
 		this.value = value;
+		
+	}
+
+	@Override
+	public void clearData() {
+		value = null;
 		
 	}
 }

@@ -411,7 +411,8 @@
 
 }
 
-.mqaWebForm .grid-header-cell .z-label{
+.mqaWebForm .grid-sub-header .z-label
+, .mqaWebForm .grid-header-cell .z-label{
   color: var(--header-text-color);
 }
 
@@ -467,7 +468,8 @@
 }
 
 
-.mqaWebForm .grid-footer-cell .z-label{
+.mqaWebForm .grid-sub-footer .z-label
+, .mqaWebForm .grid-footer-cell .z-label{
     color: white;
 }
 

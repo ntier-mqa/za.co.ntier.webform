@@ -1,6 +1,6 @@
 package za.co.ntier.webform.form.bean.component;
 
-public class TextListData{
+public class TextListData implements ICellData{
 	private ColumnInfo<?> col;
 	public TextListData(ColumnInfo<?> col) {
 		this.col = col;
@@ -58,5 +58,11 @@ public class TextListData{
 	 */
 	public void setLines(int lines) {
 		this.lines = lines;
+	}
+
+	@Override
+	public void clearData() {
+		value = null;
+		
 	}
 }

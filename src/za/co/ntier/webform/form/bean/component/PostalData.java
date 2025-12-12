@@ -9,7 +9,7 @@ import org.zkoss.bind.BindUtils;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.DataType;
 
-public class PostalData{
+public class PostalData implements ICellData{
 	private AnnexureInfo annexure;
 	private String postal;
 	private Map<ColumnInfo<?>, Object> row;
@@ -48,6 +48,12 @@ public class PostalData{
 			}
 			
 		}
+	}
+
+	@Override
+	public void clearData() {
+		setPostal(null);
+		
 	}
 	
 }

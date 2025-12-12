@@ -2,7 +2,7 @@ package za.co.ntier.webform.form.bean.component;
 
 
 
-public class UploadData {
+public class UploadData implements ICellData{
     private String fileName;
     private byte[] bytes;     // <- in-memory payload (no disk)
 
@@ -14,4 +14,10 @@ public class UploadData {
 
     // (optional) convenience
     public boolean hasBytes() { return bytes != null && bytes.length > 0; }
+	@Override
+	public void clearData() {
+		bytes = null;
+		fileName = null;
+		
+	}
 }

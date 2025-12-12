@@ -138,7 +138,6 @@ public class CetTvetProgram extends AbstractProgram {
 			
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
 			subAnnexure.setShowAddButton(true);
-			subAnnexure.setShowColumnHeader(false);
 			subAnnexure.setTabTitle("Lecturers - Programs Exposure");
 			annexureInfos.add(subAnnexure);
 

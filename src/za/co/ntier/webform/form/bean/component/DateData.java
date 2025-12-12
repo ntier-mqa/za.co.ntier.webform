@@ -3,7 +3,7 @@ package za.co.ntier.webform.form.bean.component;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
-public class DateData {
+public class DateData implements ICellData{
 	private LocalDate localDate;
 
 	/**
@@ -35,5 +35,11 @@ public class DateData {
 		}else {
 			this.localDate = timestamp.toLocalDateTime().toLocalDate();
 		}
+	}
+
+	@Override
+	public void clearData() {
+		localDate = null;
+		
 	}
 }

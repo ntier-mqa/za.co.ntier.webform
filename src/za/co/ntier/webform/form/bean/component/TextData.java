@@ -3,7 +3,7 @@ package za.co.ntier.webform.form.bean.component;
 import java.util.Map;
 
 
-public class TextData {
+public class TextData implements ICellData{
 	private AnnexureInfo annexure;
 	private Map<ColumnInfo<?>, Object> row;
 	private String value;
@@ -76,5 +76,11 @@ public class TextData {
 	 */
 	public void setLines(int lines) {
 		this.lines = lines;
+	}
+
+	@Override
+	public void clearData() {
+		value = null;
+		
 	}
 }

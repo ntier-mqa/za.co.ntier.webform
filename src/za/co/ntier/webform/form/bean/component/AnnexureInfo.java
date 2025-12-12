@@ -166,10 +166,25 @@ public class AnnexureInfo implements ISaveForm{
 		BindUtils.postNotifyChange(this, "rows");
 	}
 	
-	List<AnnexureRow> removedRows = new ArrayList<>();
+	List<PO> removedRows = new ArrayList<>();
 	public void removeRow(AnnexureRow row) {
-		getRows().remove(row);
-		removedRows.add(row);
+		if (row.getData() != null) {
+			removedRows.add(row.getData());
+			row.setData(null);
+		}
+		if (getRows().size() > 1)
+			getRows().remove(row);
+		else {
+			for (var col : columnInfos) {
+				if (row.get(col) != null && row.get(col) instanceof ICellData) {
+					((ICellData)row.get(col)).clearData();
+				}else {
+					row.put(col, null);
+				}
+			}
+		}
+		
+		updateTotalRow();
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
@@ -662,9 +677,8 @@ public class AnnexureInfo implements ISaveForm{
 
 		int total = 0;
 
-		for (AnnexureRow removedRow : removedRows) {
-			if (removedRow.getData() != null)
-				removedRow.getData().deleteEx(true, trxName);
+		for (PO removedRow : removedRows) {
+			removedRow.deleteEx(true, trxName);
 		}
 		
 		for (AnnexureRow row : getRows()) {
