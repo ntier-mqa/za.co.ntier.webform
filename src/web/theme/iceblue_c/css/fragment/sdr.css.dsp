@@ -89,17 +89,16 @@
     grid-template-columns: repeat(2, 1fr);
 }
 
-.mqaWebForm .sdrForm .bankDetails > :nth-child(2) .label{
+.mqaWebForm .sdrForm .bankDetails > :nth-child(1) .label{
   color:red;
 }
 
-.mqaWebForm .sdrForm .bankDetails > :nth-child(2) .cell-title{
+.mqaWebForm .sdrForm .bankDetails > :nth-child(1) .cell-title{
   background-color:unset;
 }
 
-.mqaWebForm .sdrForm .bankDetails > :nth-child(1)
-, .mqaWebForm .sdrForm .bankDetails > :nth-child(3)
-, .mqaWebForm .sdrForm .bankDetails > :nth-child(4){
+.mqaWebForm .sdrForm .bankDetails > :nth-child(2)
+, .mqaWebForm .sdrForm .bankDetails > :nth-child(3){
   grid-column: span 2;
   width:50%;
 }
@@ -168,6 +167,10 @@
     height: 100%; 
     justify-content: flex-end;
     padding:5px;
+}
+
+.mqaWebForm .grid-formview .cell.cellType6{/*upload button*/
+  justify-content: flex-start;
 }
 
 .mqaWebForm .grid-formview .z-select,

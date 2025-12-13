@@ -67,7 +67,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 			
 			// init for bank details
 			Query queryBankDetailQuery =
-			MTable.get(I_ZZBankingDetails.Table_ID).createQuery(String.format("%s = ?",
+			MTable.get(Env.getCtx(), I_ZZBankingDetails.Table_Name).createQuery(String.format("%s = ?",
 					I_ZZBankingDetails.COLUMNNAME_ZZSdfOrganisation_ID), null);
 			queryBankDetailQuery.setParameters(sdfOrgPo.getZZSdfOrganisation_ID());
 			
@@ -93,7 +93,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 			if (StringUtils.isBlank((String)cellModel.getValue())) {
 				return;
 			}
-			Query searchOrgQuery = MTable.get(I_C_BPartner.Table_ID)
+			Query searchOrgQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
 					.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
 			searchOrgQuery.setParameters(cellModel.getValue());
 			
@@ -173,6 +173,9 @@ public class OrglinkTabPanel extends NavTabPanel {
 		UploadColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
 				"UPLOAD LETTER OF APPOINTMENT");
 		cols.add(btAppointmentLetterCol);
+		
+		UploadColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS");
+		cols.add(btBankDetailCol);
 
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setSclass("orglink");
@@ -184,9 +187,6 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 	private TableModel initBankDetailModel(X_AD_User person, X_ZZSdf sdf) {
 		List<ColumnModel> cols = new ArrayList<>();
-
-		UploadColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS");
-		cols.add(btBankDetailCol);
 
 		ColumnModel warningBankDetailUploadCol = CellModel.getColModelForLabel(
 				"Banking details uploaded must be signed off by the Organsation CFO as true and correct");

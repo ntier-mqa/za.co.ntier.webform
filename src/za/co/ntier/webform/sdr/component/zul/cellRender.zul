@@ -12,7 +12,7 @@
       <!-- template to generate a title/component per col -->
       <template name="children" var="col">
         <!-- group title/content -->
-        <div sclass="cell">
+        <div sclass="@init(( 'cell cellType' += vmCellRender.row[col].cellType ))">
           <!-- title part, show description, error message -->
           <div sclass="cell-title">
             <!-- main label -->
