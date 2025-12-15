@@ -29,7 +29,7 @@ public class StandardSetting extends AbstractProgram {
 		standardSettings = new ArrayList<>();
 		String dataType = "CATEGORY A1: QDFs"; 
 		String tabTitle = "QDFs";
-		String sectionHeader = "CATEGORY A1: QDFs previously registered by the QCTO on their databas";
+		String sectionHeader = "CATEGORY A1: QDFs previously registered by the QCTO on their database";
 		StandardSettingInput standardSettingInput = createStandardSetting(dataType, tabTitle, sectionHeader
 				, "Applicants must have been trained and previously registered as a QDF by the QCTO");
 		standardSettingInput.setFiles(List.of(
