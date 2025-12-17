@@ -39,7 +39,7 @@ public class ApplicationsListVM {
 	private ListModelList<X_ZZ_Application_Form> applications;
 	
 	  // NEW: one open window per application (keyed by Application UU)
-    private final Map<String, Integer> openAppWindows = new HashMap<>();
+	private final Map<ZZ_App, Integer> openAppWindows = new HashMap<>();
 
 	//In the class:
 	private final Map<Integer, Boolean> editableCache = new HashMap<>();
@@ -98,21 +98,6 @@ public class ApplicationsListVM {
 	            I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU,
 	            app.getZZ_Application_Form_UU()
 	    );
-/*
-	    // 4) Record which window number we got back
-	    if (desktop != null) {
-	        Component activeWin = desktop.getActiveWindow();
-	        if (activeWin != null) {
-	            Object winNoAttr = activeWin.getAttribute(IDesktop.WINDOWNO_ATTRIBUTE);
-	            if (winNoAttr instanceof Integer) {
-	                String appKey = app.getZZ_Application_Form_UU();
-	                if (!Util.isEmpty(appKey, true)) {
-	                    openAppWindows.put(appKey, (Integer) winNoAttr);
-	                }
-	            }
-	        }
-	    }
-	    */
 	 // 4) Record which window number we got back (AFTER it opens)
 	    if (desktop != null) {
 	        Executions.schedule(desktop.getComponent().getDesktop(), evt -> {
@@ -122,7 +107,8 @@ public class ApplicationsListVM {
 	                if (winNoAttr instanceof Integer) {
 	                    String appKey = app.getZZ_Application_Form_UU();
 	                    if (!Util.isEmpty(appKey, true)) {
-	                        openAppWindows.put(appKey, (Integer) winNoAttr);
+	                       // openAppWindows.put(appKey, (Integer) winNoAttr);
+	                        put(appKey,app.getZZ_SDL_No(),(Integer) winNoAttr);
 	                    }
 	                }
 	            }
@@ -274,7 +260,8 @@ public class ApplicationsListVM {
 	    String appKey = app.getZZ_Application_Form_UU();
 	    if (Util.isEmpty(appKey, true)) return false;
 
-	    Integer winNo = openAppWindows.get(appKey);
+	    Integer winNo = get(appKey,app.getZZ_SDL_No());
+	    	//	openAppWindows.get(appKey);
 	    if (winNo == null) return false;
 
 	    Object winObj = desktop.findWindow(winNo);
@@ -291,7 +278,41 @@ public class ApplicationsListVM {
 	    }
 
 	    // stale
-	    openAppWindows.remove(appKey);
+	   // openAppWindows.remove(appKey);
+	    remove(appKey,app.getZZ_SDL_No());
 	    return false;
 	}
+	
+	public void put(String appKey, String sdlNo, int winNo) {
+        openAppWindows.put(new ZZ_App(appKey, sdlNo), winNo);
+    }
+	
+	public void remove(String appKey, String sdlNo) {
+		openAppWindows.remove(new ZZ_App(appKey, sdlNo));
+	}
+
+    public Integer get(String appKey, String sdlNo) {
+        return openAppWindows.get(new ZZ_App(appKey, sdlNo));
+    }
+    
+	public static final class ZZ_App {
+        private final String appKey;
+        private final String zzSdlNo;
+
+        public ZZ_App(String appKey, String zzSdlNo) {
+            this.appKey = appKey;
+            this.zzSdlNo = zzSdlNo;
+        }
+
+        @Override public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof ZZ_App other)) return false;
+            return java.util.Objects.equals(appKey, other.appKey)
+                && java.util.Objects.equals(zzSdlNo, other.zzSdlNo);
+        }
+
+        @Override public int hashCode() {
+            return java.util.Objects.hash(appKey, zzSdlNo);
+        }
+    }
 }
