@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.webui.desktop.DefaultDesktop;
+import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MTable;
@@ -14,10 +17,14 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_Menu;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 
@@ -30,25 +37,98 @@ import za.co.ntier.webform.form.MenuContextInfo;
 public class ApplicationsListVM {
 
 	private ListModelList<X_ZZ_Application_Form> applications;
+	
+	  // NEW: one open window per application (keyed by Application UU)
+    private final Map<String, Integer> openAppWindows = new HashMap<>();
 
 	//In the class:
 	private final Map<Integer, Boolean> editableCache = new HashMap<>();
 
+	
+	
 	@Command
 	public void editSelected(@BindingParam("application") X_ZZ_Application_Form app) {
-		if (app == null) return;
-		
-		X_ZZ_Program_Master_Data programDefine = new X_ZZ_Program_Master_Data(Env.getCtx(), app.getZZ_Program_Master_Data_ID(), null);
-		
-		Query menuQuery = MTable.get(I_AD_Menu.Table_ID).createQuery(String.format("%s = ? AND %s LIKE ? AND %s LIKE ?", 
-				I_AD_Menu.COLUMNNAME_AD_Form_ID
-				, I_AD_Menu.COLUMNNAME_PredefinedContextVariables
-				, I_AD_Menu.COLUMNNAME_PredefinedContextVariables), null);
+	    if (app == null) return;
 
-		menuQuery.setParameters(1000000, "%" + programDefine.getZZ_Program_Master_Data_UU() + "%", "%" + app.getZZProgramType() + "%");
-		X_AD_Menu menu = menuQuery.first();
-		MasterUtil.openForm(menu.getAD_Menu_UU(), I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU, app.getZZ_Application_Form_UU());
-		
+	    // 1) If already open, just notify and exit
+	    if (activateExistingWindow(app)) {
+	        return;
+	    }
+
+	    // 2) Resolve menu as you already do
+	    X_ZZ_Program_Master_Data programDefine =
+	            new X_ZZ_Program_Master_Data(
+	                    Env.getCtx(),
+	                    app.getZZ_Program_Master_Data_ID(),
+	                    null
+	            );
+
+	    Query menuQuery = MTable.get(I_AD_Menu.Table_ID).createQuery(
+	            String.format(
+	                    "%s = ? AND %s LIKE ? AND %s LIKE ?",
+	                    I_AD_Menu.COLUMNNAME_AD_Form_ID,
+	                    I_AD_Menu.COLUMNNAME_PredefinedContextVariables,
+	                    I_AD_Menu.COLUMNNAME_PredefinedContextVariables
+	            ),
+	            null
+	    );
+
+	    menuQuery.setParameters(
+	            1000000,
+	            "%" + programDefine.getZZ_Program_Master_Data_UU() + "%",
+	            "%" + app.getZZProgramType() + "%"
+	    );
+
+	    X_AD_Menu menu = menuQuery.first();
+	    if (menu == null) {
+	        Clients.showNotification(
+	                "No menu configuration found for this application.",
+	                Clients.NOTIFICATION_TYPE_WARNING,
+	                null,
+	                "top_center",
+	                3000
+	        );
+	        return;
+	    }
+
+	    // 3) Open form once
+	    DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+	    MasterUtil.openForm(
+	            menu.getAD_Menu_UU(),
+	            I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU,
+	            app.getZZ_Application_Form_UU()
+	    );
+/*
+	    // 4) Record which window number we got back
+	    if (desktop != null) {
+	        Component activeWin = desktop.getActiveWindow();
+	        if (activeWin != null) {
+	            Object winNoAttr = activeWin.getAttribute(IDesktop.WINDOWNO_ATTRIBUTE);
+	            if (winNoAttr instanceof Integer) {
+	                String appKey = app.getZZ_Application_Form_UU();
+	                if (!Util.isEmpty(appKey, true)) {
+	                    openAppWindows.put(appKey, (Integer) winNoAttr);
+	                }
+	            }
+	        }
+	    }
+	    */
+	 // 4) Record which window number we got back (AFTER it opens)
+	    if (desktop != null) {
+	        Executions.schedule(desktop.getComponent().getDesktop(), evt -> {
+	            Component activeWin = desktop.getActiveWindow();
+	            if (activeWin != null) {
+	                Object winNoAttr = activeWin.getAttribute(IDesktop.WINDOWNO_ATTRIBUTE);
+	                if (winNoAttr instanceof Integer) {
+	                    String appKey = app.getZZ_Application_Form_UU();
+	                    if (!Util.isEmpty(appKey, true)) {
+	                        openAppWindows.put(appKey, (Integer) winNoAttr);
+	                    }
+	                }
+	            }
+	        }, new org.zkoss.zk.ui.event.Event("onAfterOpenApp"));
+	    }
+
 	}
 
 	// IMPORTANT: return ListModel so <grid model="..."> works
@@ -56,9 +136,12 @@ public class ApplicationsListVM {
 		return applications;
 	}
 
+	
 
 	@Init
 	public void init(@ExecutionArgParam("menuContextInfo") MenuContextInfo menuContextInfo) {
+		//this.menuContextInfo = menuContextInfo;
+
 		// default empty model (avoid NPEs in ZUL)
 		this.applications = new ListModelList<>(Collections.emptyList());
 
@@ -182,5 +265,33 @@ public class ApplicationsListVM {
 		boolean ok = (found > 0); // 1 if exists; -1/0 means no match
 		editableCache.put(appId, ok);
 		return ok;
+	}
+	
+	private boolean activateExistingWindow(X_ZZ_Application_Form app) {
+	    DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+	    if (desktop == null || app == null) return false;
+
+	    String appKey = app.getZZ_Application_Form_UU();
+	    if (Util.isEmpty(appKey, true)) return false;
+
+	    Integer winNo = openAppWindows.get(appKey);
+	    if (winNo == null) return false;
+
+	    Object winObj = desktop.findWindow(winNo);
+	    if (winObj instanceof Component) {
+	        Component c = (Component) winObj;
+
+	        // IMPORTANT: only "open" if still attached
+	        boolean alive = c.getDesktop() != null && c.getPage() != null;
+	        if (alive) {
+	            Clients.showNotification("This application is already open in another tab.",
+	                    Clients.NOTIFICATION_TYPE_INFO, null, "top_center", 3000);
+	            return true;
+	        }
+	    }
+
+	    // stale
+	    openAppWindows.remove(appKey);
+	    return false;
 	}
 }
