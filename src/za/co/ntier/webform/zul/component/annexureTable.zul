@@ -188,7 +188,14 @@
                   label="@load(detailCol.btText)"
                   onUpload="@command('uploadFile', annexure = vmAnnexure.component, row = row, col = detailCol)"
                   upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
-                <label value="@load(row[detailCol].fileName)" />
+               <div
+                    sclass="uploadFileBox"
+                    visible="@load(( row[detailCol].fileName ne null ))">
+                  <label  value="@load(row[detailCol].fileName)" />
+                  <button sclass="btn-circle removeAttachment"
+                    iconSclass="z-icon-xmark" label="" tooltiptext="Remove"
+                    onClick="@command('removeAttachment', annexure=vmAnnexure.component, row = row, col = detailCol)" />
+               </div>
               </div>
             </nodom>
 

@@ -12,6 +12,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -117,7 +118,15 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 			@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
 		annexure.uploadFile(row, col, event);
 	}
-
+	
+	@Command
+	public void removeAttachment(@BindingParam("annexure") AnnexureInfo annexure,
+			@BindingParam("row") AnnexureRow row, @BindingParam("col") ColumnInfo<?> col,
+			@ContextParam(ContextType.TRIGGER_EVENT) MouseEvent event) throws IOException {
+		annexure.removeAttachment(row, col, event);
+	}
+	
+	
 	@Command
 	public void validateContact(@BindingParam("row") AnnexureRow row,
 			@BindingParam("col") ColumnInfo<?> col,

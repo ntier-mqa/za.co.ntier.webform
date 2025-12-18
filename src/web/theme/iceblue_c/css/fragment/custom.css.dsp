@@ -150,7 +150,7 @@
 .mqaWebForm .container .grid-container{
   display: grid;
     /* Create 3 equal-width columns */
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     /* Add space between columns and rows */
     //gap: 20px;
     padding: 20px 20px 20px 0;
@@ -273,6 +273,7 @@
     border-radius: 8px;
     overflow: hidden; /* Ensures rounded corners are respected */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    word-break: break-all;
 }
 
 .mqaWebForm .grid-table{
@@ -281,79 +282,79 @@
 }
 
 .mqaWebForm .grid-form {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .mqaWebForm .grid-table-7{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 230px 100px 100px 100px 1fr 1fr 1fr;
+    grid-template-columns: 230px 100px 100px 100px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .mqaWebForm .grid-table-7.command{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 230px 100px 100px 100px 1fr 1fr 1fr max-content;
+    grid-template-columns: 230px 100px 100px 100px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) max-content;
 }
 
 .mqaWebForm .learningMaterial .grid-table{
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr max-content;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) max-content;
 
 }
 
 .mqaWebForm .learningMaterial .grid-table.command{
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr max-content;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) max-content;
 
 }
 
 .mqaWebForm .grid-table-6{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 230px 110px 110px 1fr 1fr 1fr;
+    grid-template-columns: 230px 110px 110px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .mqaWebForm .grid-table-6.command{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 230px 110px 110px 1fr 1fr 1fr max-content;
+    grid-template-columns: 230px 110px 110px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) max-content;
 }
 
 .mqaWebForm .grid-table-5{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 240px 130px 130px 1fr 1fr;
+    grid-template-columns: 240px 130px 130px minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .mqaWebForm .grid-table-5.command{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 240px 130px 130px 1fr 1fr max-content;
+    grid-template-columns: 240px 130px 130px minmax(0, 1fr) minmax(0, 1fr) max-content;
 }
 
 /* annexure */
 .mqaWebForm .grid-table-4{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .mqaWebForm .grid-table-4.command{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 1fr 1fr 1fr 1fr max-content;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) max-content;
 }
 
 
 .mqaWebForm .grid-table-3{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .mqaWebForm .grid-table-3.command{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 1fr 1fr 1fr max-content;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) max-content;
 }
 
 .mqaWebForm .grid-table-2{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .mqaWebForm .grid-table-2.command{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 1fr 1fr max-content;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) max-content;
 }
 
 .mqaWebForm .grid-table-auto-2{
@@ -368,7 +369,7 @@
 
 .mqaWebForm .grid-table-oneline-4{
   /* Define 3 columns with relative widths */
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
 /* --- Style for all grid items (cells) --- */
@@ -544,6 +545,11 @@
     margin-left: 2px;
 }
 
-
+.mqaWebForm .uploadFileBox{
+  display:grid;
+  width:100%;
+  grid-template-columns: minmax(0, 1fr) min-content;
+  align-items: center;
+}
 
 <c:include page="sdr.css.dsp" />

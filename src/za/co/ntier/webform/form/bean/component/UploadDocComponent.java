@@ -133,7 +133,12 @@ public class UploadDocComponent implements ISaveForm {
 	        String name  = (uploadData != null) ? uploadData.getFileName() : null;
 
 	        // Only act when there is a new upload this round
-	        if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(name)) {
+	        if (bytes == null || bytes.length == 0) {
+	        	if (docUploadedFile != null) {
+	        		docUploadedFile.deleteEx(true, trxName);
+	        		//AttachmentUtil.removeAttachmentEntry(docUploadedFile, uploadFileCol.getBtText(), trxName);
+	        	}
+	        }else if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(name)) {
 
 	            // Create the row if needed
 	            if (docUploadedFile == null) {
@@ -156,7 +161,7 @@ public class UploadDocComponent implements ISaveForm {
 
 	            // === Attach the file (exactly one entry per record) ===
 	            // Uses your helper that deletes any existing attachment and creates a fresh one.
-	            za.co.ntier.webform.form.AttachmentUtil.addOrReplaceAttachmentEntry(docUploadedFile, name, bytes, uploadFileCol.getBtText(), trxName);
+	            AttachmentUtil.addOrReplaceAttachmentEntry(docUploadedFile, name, bytes, uploadFileCol.getBtText(), trxName);
 
 	            // Free memory after persisting
 	            uploadData.setBytes(null);

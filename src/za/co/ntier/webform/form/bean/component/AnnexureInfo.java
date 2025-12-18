@@ -32,6 +32,7 @@ import org.compiere.util.Env;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
@@ -508,6 +509,15 @@ public class AnnexureInfo implements ISaveForm{
 	}	
 
 
+	public void removeAttachment (AnnexureRow row, ColumnInfo<?> col, MouseEvent event) {
+		UploadData ud = (UploadData) row.get(col);
+		ud.clearData();
+
+		BindUtils.postNotifyChange(ud, "fileName", "bytes");
+		// 2) tell all button wrappers to recalc nextDisabled & submitDisabled
+	    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
+	}
+	
 	public void uploadFile(Map<ColumnInfo<?>, Object> row, ColumnInfo<?> col, UploadEvent event) {
 		UploadData ud = (UploadData) row.get(col);
 		Media m = event.getMedia();
@@ -537,7 +547,7 @@ public class AnnexureInfo implements ISaveForm{
 		}
 
 		// refresh the filename label
-		BindUtils.postNotifyChange(ud, "fileName");
+		BindUtils.postNotifyChange(ud, "fileName", "bytes");
 		// 2) tell all button wrappers to recalc nextDisabled & submitDisabled
 	    BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);
 	}
@@ -708,7 +718,9 @@ public class AnnexureInfo implements ISaveForm{
 					byte[] bytes = upload.getBytes(); // <-- in-memory only
 					String fileName = upload.getFileName();
 
-					if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
+					if (bytes == null || bytes.length == 0) {
+						AttachmentUtil.removeAttachmentEntry(po, col.getBtText(), trxName);
+					}else if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
 						// one-entry semantics: delete-and-recreate
 						AttachmentUtil.addOrReplaceAttachmentEntry(po, fileName, bytes, col.getBtText() ,trxName);
 

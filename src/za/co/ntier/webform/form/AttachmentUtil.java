@@ -9,6 +9,30 @@ import org.compiere.util.Env;
 public final class AttachmentUtil {
     private AttachmentUtil() {}
 
+    private record EntryNames(String normalizedPrefix, String newEntryName) {}
+    
+    private static EntryNames normalizedEntryNames (String btText, String fileName) {
+    	// sanitize btText: trim and remove '/'
+    	String rawPrefix = btText == null ? "" : btText.trim().replace("/", "");
+        String normalizedPrefix = rawPrefix.isEmpty() ? "" : (rawPrefix + ":");
+        String newEntryName = normalizedPrefix.isEmpty() ? fileName : (rawPrefix + ": " + fileName);
+        return new EntryNames(normalizedPrefix, newEntryName);
+    }
+    
+    public static void removeAttachmentEntry(
+            PO po, String btText, String trxName) {
+    	
+    	EntryNames entryNames = AttachmentUtil.normalizedEntryNames (btText, null);
+
+        // get or create container
+        MAttachment att = MAttachment.get(Env.getCtx(), po.get_Table_ID(), po.get_ID(), trxName);
+        if (att != null) {
+        	// find existing entry by sanitized "<btText>:" prefix (with optional space in stored name)
+            int idx = findEntryIndexByPrefix(att, entryNames.normalizedPrefix);
+            att.deleteEntry(idx);
+            att.saveEx(trxName);
+        }        
+    }
     /**
      * Add or replace exactly one attachment entry identified by name prefix "<btText>:".
      * If found, updates its bytes; if the displayed file name changed, it deletes+readds
@@ -24,10 +48,7 @@ public final class AttachmentUtil {
         if (bytes == null || bytes.length == 0)
             throw new IllegalArgumentException("Empty attachment data");
 
-        // sanitize btText: trim and remove '/'
-        final String rawPrefix = btText == null ? "" : btText.trim().replace("/", "");
-        final String normalizedPrefix = rawPrefix.isEmpty() ? "" : (rawPrefix + ":");
-        final String newEntryName = normalizedPrefix.isEmpty() ? fileName : (rawPrefix + ": " + fileName);
+        EntryNames entryNames = AttachmentUtil.normalizedEntryNames (btText, fileName);
 
         // get or create container
         MAttachment att = MAttachment.get(Env.getCtx(), po.get_Table_ID(), po.get_ID(), trxName);
@@ -36,20 +57,20 @@ public final class AttachmentUtil {
         }
 
         // find existing entry by sanitized "<btText>:" prefix (with optional space in stored name)
-        int idx = findEntryIndexByPrefix(att, normalizedPrefix);
+        int idx = findEntryIndexByPrefix(att, entryNames.normalizedPrefix);
 
         if (idx >= 0) {
             String currentName = safeName(att.getEntryName(idx));
             // if the visible name is the same, just update bytes; else rename via delete+add
-            if (currentName.equals(newEntryName)) {
+            if (currentName.equals(entryNames.newEntryName)) {
                 att.updateEntry(idx, bytes);
             } else {
                 att.deleteEntry(idx);
-                att.addEntry(newEntryName, bytes);
+                att.addEntry(entryNames.newEntryName, bytes);
             }
         } else {
             // not present -> append
-            att.addEntry(newEntryName, bytes);
+            att.addEntry(entryNames.newEntryName, bytes);
         }
 
         att.saveEx(trxName);
