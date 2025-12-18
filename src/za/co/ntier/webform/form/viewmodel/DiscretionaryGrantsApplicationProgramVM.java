@@ -626,7 +626,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			return "Organisation Information";
 	}
 
-	private boolean isTenDigits(String s) { return s != null && s.matches("^\\d{10}$"); }
+	
+	private boolean isTenDigits(String s) {
+	    return s != null && s.matches("^0[1-9]\\d{8}$");
+	}
 
 	public void nextTab(Tabbox tab) {
 

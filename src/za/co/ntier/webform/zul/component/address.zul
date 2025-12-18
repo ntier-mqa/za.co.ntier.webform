@@ -129,11 +129,12 @@
 			  value="@load(vmAddress.component.mobileNumber)"
 			  onChanging="@command('fieldChanging', field='mobileNumber', val=event.value)"
 			  type="tel"
-			  constraint="@load(
-		      vmAddress.relaxedConstraints
-		        ? '/^$|^\\s*\\d{10}\\s*$/: Please enter a 10 digit phone'
-		        : '/^\\s*\\d{10}\\s*$/: Please enter a 10 digit phone'
-		       )"/>
+		       constraint="@load(
+			  vmAddress.relaxedConstraints
+			    ? '/^$|^0[1-9]\\d{8}$/: Invalid Phone Number'
+			    : '/^0[1-9]\\d{8}$/: Invalid Phone Number'
+			  )"/>
+		       
 		</div>
 
 		<div if="${vmAddress.component.showContact()}"
@@ -146,11 +147,12 @@
 			  value="@load(vmAddress.component.landlineNumber)"
 			  onChanging="@command('fieldChanging', field='landlineNumber', val=event.value)"
 			  type="tel"
-			  constraint="@load(
-		      vmAddress.relaxedConstraints
-		        ? '/^$|^\\s*\\d{10}\\s*$/: Please enter a 10 digit phone'
-		        : '/^\\s*\\d{10}\\s*$/: Please enter a 10 digit phone'
-		       )"/>
+		       constraint="@load(
+	  		   vmAddress.relaxedConstraints
+			    ? '/^$|^0[1-9]\\d{8}$/: Invalid Phone Number'
+			    : '/^0[1-9]\\d{8}$/: Invalid Phone Number'
+			   )"/>
+		       
 			  
 		</div>
 

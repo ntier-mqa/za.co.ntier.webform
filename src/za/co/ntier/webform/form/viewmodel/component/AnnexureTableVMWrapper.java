@@ -27,7 +27,7 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 
 public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 	private boolean isSubAnnexure = false;
-	
+
 	public String getSclassCmd() {
 		if (getComponent().isShowAddButton())
 			return " command";
@@ -41,13 +41,13 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 		}
 		return String.valueOf(num);
 	}
-	
+
 	@Command
 	public void addDetailLine(@BindingParam("annexure") AnnexureInfo annexure, @BindingParam("row") AnnexureRow row) {
 		annexure.addRow(row);
 		notifyProgramComplete();
 	}
-	
+
 	@Command
 	public void removeDetailLine(@BindingParam("annexure") AnnexureInfo annexure, @BindingParam("row") AnnexureRow row) {
 		annexure.removeRow(row);
@@ -133,69 +133,70 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 			@BindingParam("ref") Component ref) {
 		InlineValidators.validateContactField(ref, row, col);
 	}
-	
-		
+
+
 	@Command
 	public void instantEdit(@BindingParam("row") AnnexureRow row,
-	                        @BindingParam("col") ColumnInfo<?> col,
-	                        @BindingParam("ref") Component ref,
-	                        @BindingParam("newVal") String newVal) {
-	    // Commit value to the backing cell so completeness logic sees it
-	    if (col.getDataType() == DataType.Text) {
-	        AnnexureInfo.setCellValue(row, col, newVal);
-	    }
-	    // Clear any previous error while typing
-	    Clients.clearWrongValue(ref);
-	    if (ref instanceof InputElement ie) ie.setErrorMessage(null);
+			@BindingParam("col") ColumnInfo<?> col,
+			@BindingParam("ref") Component ref,
+			@BindingParam("newVal") String newVal) {
+		// Commit value to the backing cell so completeness logic sees it
+		if (col.getDataType() == DataType.Text) {
+			AnnexureInfo.setCellValue(row, col, newVal);
+		}
+		// Clear any previous error while typing
+		Clients.clearWrongValue(ref);
+		if (ref instanceof InputElement ie) ie.setErrorMessage(null);
 
-	    // Re-evaluate Next/Submit buttons
-	    notifyProgramComplete();
+		// Re-evaluate Next/Submit buttons
+		notifyProgramComplete();
 
-	    // IMPORTANT: do NOT throw here — we only validate on blur
+		// IMPORTANT: do NOT throw here — we only validate on blur
 	}
 
 	@Command
 	public void blurValidate(@BindingParam("row") AnnexureRow row,
-	                         @BindingParam("col") ColumnInfo<?> col,
-	                         @BindingParam("ref") Component ref,
-	                         @BindingParam("newVal") String newVal) {
-	    String v = newVal == null ? null : newVal.trim();
+			@BindingParam("col") ColumnInfo<?> col,
+			@BindingParam("ref") Component ref,
+			@BindingParam("newVal") String newVal) {
+		String v = newVal == null ? null : newVal.trim();
 
-	    // identify columns by DAO property name
-	    String dao = col.getDaoPropertyName();
-	    String key = dao == null ? "" : dao.toLowerCase();
+		// identify columns by DAO property name
+		String dao = col.getDaoPropertyName();
+		String key = dao == null ? "" : dao.toLowerCase();
 
-	    if (key.endsWith("emailwriter")) {
-	        if (v == null || !v.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$")) {
-	            throw new WrongValueException(ref, "Please enter a valid email address");
-	        }
-	    } else if (key.endsWith("cellnowriter")) {
-	        if (v == null || !v.matches("^\\d{10}$")) {
-	            throw new WrongValueException(ref, "Cell number must be exactly 10 digits");
-	        }
-	    } 
-	    
-	    
+		if (key.endsWith("emailwriter")) {
+			if (v == null || !v.matches("^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$")) {
+				throw new WrongValueException(ref, "Please enter a valid email address");
+			}
+		} else if (key.endsWith("cellnowriter")) {	        
+			if (v == null || !v.matches("^0[1-9]\\d{8}$")) {
+				throw new WrongValueException(ref,
+						"Cell number must be 10 digits, start with 0, and the 2nd digit cannot be 0");
+			}
+		} 
+
+
 	}
-	
-	public boolean isUploadMandatory(Map<ColumnInfo<?>, Object> row) {
-	    // find the column that holds X_ZZDocumentUpload (DataType.DocUploadDef)
-	    ColumnInfo<?> docCol = null;
-	    for (ColumnInfo<?> col : component.getColumnInfos()) {
-	        if (col.getDataType() == DataType.DocUploadDef) {
-	            docCol = col;
-	            break;
-	        }
-	    }
-	    if (docCol == null) {
-	        return false;
-	    }
 
-	    Object val = row.get(docCol);
-	    if (val instanceof X_ZZDocumentUpload) {
-	        return ((X_ZZDocumentUpload) val).isMandatory();
-	    }
-	    return false;
+	public boolean isUploadMandatory(Map<ColumnInfo<?>, Object> row) {
+		// find the column that holds X_ZZDocumentUpload (DataType.DocUploadDef)
+		ColumnInfo<?> docCol = null;
+		for (ColumnInfo<?> col : component.getColumnInfos()) {
+			if (col.getDataType() == DataType.DocUploadDef) {
+				docCol = col;
+				break;
+			}
+		}
+		if (docCol == null) {
+			return false;
+		}
+
+		Object val = row.get(docCol);
+		if (val instanceof X_ZZDocumentUpload) {
+			return ((X_ZZDocumentUpload) val).isMandatory();
+		}
+		return false;
 	}
 
 
