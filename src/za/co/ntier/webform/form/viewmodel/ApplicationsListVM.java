@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.webui.desktop.DefaultDesktop;
-import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.desktop.WindowRegistry;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MBPartner;
@@ -93,27 +93,37 @@ public class ApplicationsListVM {
 
 	    // 3) Open form once
 	    DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+
 	    MasterUtil.openForm(
-	            menu.getAD_Menu_UU(),
-	            I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU,
-	            app.getZZ_Application_Form_UU()
+	        menu.getAD_Menu_UU(),
+	        I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU,
+	        app.getZZ_Application_Form_UU()
 	    );
-	 // 4) Record which window number we got back (AFTER it opens)
+
 	    if (desktop != null) {
 	        Executions.schedule(desktop.getComponent().getDesktop(), evt -> {
 	            Component activeWin = desktop.getActiveWindow();
-	            if (activeWin != null) {
-	                Object winNoAttr = activeWin.getAttribute(IDesktop.WINDOWNO_ATTRIBUTE);
-	                if (winNoAttr instanceof Integer) {
-	                    String appKey = app.getZZ_Application_Form_UU();
-	                    if (!Util.isEmpty(appKey, true)) {
-	                       // openAppWindows.put(appKey, (Integer) winNoAttr);
-	                        put(appKey,app.getZZ_SDL_No(),(Integer) winNoAttr);
-	                    }
-	                }
+	            if (activeWin == null) return;
+
+	            Integer winNo = WindowRegistry.getWindowNo(activeWin);
+	            if (winNo == null) return;
+
+	            // 1) register "application window" (your existing logic)
+	            String appKey = app.getZZ_Application_Form_UU();
+	            if (!Util.isEmpty(appKey, true)) {
+	                put(appKey, app.getZZ_SDL_No(), winNo);
+	                activeWin.addEventListener("onDetach", e -> remove(appKey, app.getZZ_SDL_No()));
 	            }
+
+	            // 2) register menuId -> winNo so the TOP toolbar click code sees it too
+	            WindowRegistry.menuMap(desktop).put(menu.getAD_Menu_ID(), winNo);
+	            activeWin.addEventListener("onDetach", e ->
+	                WindowRegistry.menuMap(desktop).remove(menu.getAD_Menu_ID())
+	            );
+
 	        }, new org.zkoss.zk.ui.event.Event("onAfterOpenApp"));
 	    }
+
 
 	}
 
