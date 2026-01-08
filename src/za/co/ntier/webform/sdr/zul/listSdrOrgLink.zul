@@ -20,7 +20,7 @@
     <column label="SDL Number" width="150px"/>
     <column label="Role" width="100px"/>
     <column label="Status"/>
-    <column label="Action" width="90px" align="center"/>
+    <column label="Action" align="center"/>
   </columns>
   <rows>
     <template name="model" var="item">
@@ -31,8 +31,12 @@
         <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus])"/>
         <div sclass="formBottomPanel">
           <button if = "${ vm.isEditable(item) }" 
-            label="Edit"
+            label="Edit Request"
             onClick="@command('editLinkedOrganisation', row=item)"/>
+            
+          <button if = "${ vm.isOrgEditable(item) }" 
+            label="Edit Organisation"
+            onClick="@command('editOrganisation', row=item)"/>
         </div>
         
       </row>

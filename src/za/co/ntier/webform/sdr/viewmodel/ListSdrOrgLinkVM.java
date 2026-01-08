@@ -27,9 +27,18 @@ public class ListSdrOrgLinkVM {
 		return true;
 	}
 	
+	public boolean isOrgEditable(Map<String, Object> row) {
+		return true;
+	}
+	
 	@Command
 	public void editLinkedOrganisation(@BindingParam("row") Map<String, Object> row) {		
 		MasterUtil.openForm(MasterUtil.SDRRegistryOrgLinkUU, Integer.valueOf(((BigDecimal)row.get("ZZSdfOrganisation_ID")).intValue()));
+	}
+	
+	@Command
+	public void editOrganisation(@BindingParam("row") Map<String, Object> row) {		
+		MasterUtil.openForm(MasterUtil.SDRMaintainOrganisationUU, Integer.valueOf(((BigDecimal)row.get("ZZSdfOrganisation_ID")).intValue()));
 	}
 	
 	@Init

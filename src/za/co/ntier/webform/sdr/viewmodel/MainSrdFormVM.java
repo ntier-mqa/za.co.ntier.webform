@@ -41,7 +41,7 @@ import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 
-public class MainSrdFormVM {
+public class MainSrdFormVM extends BaseVM {
 	private MenuContextInfo menuContextInfo;
 	private FormInfo formInfo;
 	private NavTab mainTab;
@@ -102,10 +102,10 @@ public class MainSrdFormVM {
 		addressDetailTab.setSclass("address");
 		addressDetailTab.setTabTitle("Address Details");
 		
-		physicalAddress = getAddressDetailComp("Physical ", "Physical", "Physical");
-		postalAddress = getAddressDetailComp("Postal ", "Postal", "Postal");
+		physicalAddress = getAddressDetailComp("Physical ", "Physical", "Physical", true, sdf.getAD_User_ID());
+		postalAddress = getAddressDetailComp("Postal ", "Postal", "Postal", true, sdf.getAD_User_ID());
 		addressDetailTab.getCompModel().add(physicalAddress);
-		addressDetailTab.getCompModel().add(getAddressControlComp());
+		addressDetailTab.getCompModel().add(getAddressControlComp(physicalAddress, postalAddress));
 		addressDetailTab.getCompModel().add(postalAddress);
 
 		NavTabPanel educationDetailTab = new NavTabPanel(mainTab);
@@ -228,7 +228,7 @@ public class MainSrdFormVM {
 		return educationBean;
 	}
 
-	private TableModel getAddressControlComp() {
+	public static TableModel getAddressControlComp(TableModel physicalAddress, TableModel postalAddress) {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel gpsCoordinatesCol = CellModel.getColModelForText("GPS Coordinates", null).setReadonly(true);
@@ -266,7 +266,7 @@ public class MainSrdFormVM {
 		return addressDetailCtr;
 	}
 	
-	private TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader) {
+	public static TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader, boolean isSdfAddress, int parentId) {
 		List<ColumnModel> colsAddress = new ArrayList<>();
 		
 		ColumnModel complexSectionFarmCol = CellModel.getColModelForText(
@@ -302,7 +302,12 @@ public class MainSrdFormVM {
 		addressDetailBean.setPoSupplier((ann, appForm) -> {
 			X_ZZPersonAddress po = new X_ZZPersonAddress(appForm.getCtx(), 0, null);
 			po.setZZAddressType(addressType);
-			po.setAD_User_ID(sdf.getAD_User_ID());
+			if(isSdfAddress) {
+				po.setAD_User_ID(parentId);
+			}else {//org address
+				po.setC_BPartner_ID(parentId);
+			}
+			
 			return po;
 		});
 
@@ -310,8 +315,11 @@ public class MainSrdFormVM {
 		
 		Query savedDataQuery = MTable.get(Env.getCtx(), X_ZZPersonAddress.Table_Name)
 				.createQuery(String.format("%s = ? AND %s = ?"
-						, X_ZZPersonAddress.COLUMNNAME_AD_User_ID, I_ZZPersonAddress.COLUMNNAME_ZZAddressType), null);
-		savedDataQuery.setParameters(sdf.getAD_User_ID(), addressType);
+						, isSdfAddress ? X_ZZPersonAddress.COLUMNNAME_AD_User_ID : X_ZZPersonAddress.COLUMNNAME_C_BPartner_ID
+						, I_ZZPersonAddress.COLUMNNAME_ZZAddressType), null);
+		
+		savedDataQuery.setParameters(parentId, addressType);
+		
 		savedDataQuery.setOrderBy(X_ZZPersonAddress.COLUMNNAME_Created + " DESC");
 		PO po = savedDataQuery.first();
 		if (po == null) {
@@ -546,29 +554,40 @@ public class MainSrdFormVM {
 		this.names = names;
 	}
 	
-	@Command(value = "saveClose")
-	public void saveClose() throws IOException {
-		boolean isNewSdf = false;
+	private boolean isNewSdf = false;
+	
+	@Override
+	protected void doSave(String trxName) {
+		isNewSdf = false;
+		
 		if (sdf == null) {
 			sdf = new X_ZZSdf(Env.getCtx(), 0, null);
 			sdf.setAD_Org_ID(0);
 			sdf.setAD_User_ID(person.getAD_User_ID());
-			sdf.saveEx(null);
+			sdf.saveEx(trxName);
 			isNewSdf = true;
 			
 		}
 		
-		mainTab.save(sdf, null);
-		names.save(sdf, null);
+		mainTab.save(sdf, trxName);
+		names.save(sdf, trxName);
 		//sdf.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));
-		sdf.saveEx(null);
-		
-		if(isNewSdf) {
-			MasterUtil.showDialog("ZZSDFCreatedSuccess");
-		}else {
-			MasterUtil.showDialog("ZZSDFSavedSuccess");
-		}
-		
-		//MasterUtil.openForm(MasterUtil.SDRLinkedOrganisationsUU);
+		sdf.saveEx(trxName);
 	}
+	
+	@Override
+	protected boolean showResult(Exception exc) {
+		if (exc != null) {
+			showException(exc);
+		}else {
+			if(isNewSdf) {
+				MasterUtil.showDialog("ZZSDFCreatedSuccess", MasterUtil.fCloseActiveWindow);
+			}else {
+				MasterUtil.showDialog("ZZSDFSavedSuccess", MasterUtil.fCloseActiveWindow);
+			}
+		}
+
+		return false;
+	}
+
 }

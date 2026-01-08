@@ -244,10 +244,6 @@
   font-size:24px;
 }
 
-.mqaWebForm .container .grid-container .form-field .z-select{
-  padding:1px;
-  border-width:1px;
-}
 
 .icon-on-right{
   display: flex;

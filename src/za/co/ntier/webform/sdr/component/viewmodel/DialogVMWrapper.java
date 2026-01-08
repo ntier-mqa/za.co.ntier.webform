@@ -4,7 +4,6 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 
-import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.Dialog;
 
 /**
@@ -17,20 +16,17 @@ public class DialogVMWrapper extends BaseComponentVM<Dialog> {
 
 	private String moreInfo;
 	
-	@Command
-	public void closeDialog() {
-		getComponent().setVisible(false);
-		BindUtils.postNotifyChange(this.getComponent(), "visible");
-	}
-
-	@Command("closeCurrentForm")
-    public void closeCurrentForm() {
+	@Command("closeDialog")
+    public void closeDialog() {
         // Close the modal via the bound component's 'visible' property
         if (getComponent() != null) {
             getComponent().setVisible(false);
             BindUtils.postNotifyChange(null, null, getComponent(), "visible");
         }
-        MasterUtil.closeActiveWindow();
+        
+        if (getComponent().getOnCloseDialog() != null) {
+        	getComponent().getOnCloseDialog().accept(null);
+        }
     }
 
 

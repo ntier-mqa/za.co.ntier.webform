@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MBPartner;
@@ -21,6 +22,7 @@ import org.zkoss.zk.ui.event.InputEvent;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.IgnoreException;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -293,6 +295,10 @@ public class OrganisationInfo implements ISaveForm {
 		
 	}
 
+	@Override
+	public boolean validateForm() {
+		return !sdlNumberChange(null);
+	}
 	
 	@Override
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
@@ -347,8 +353,15 @@ public class OrganisationInfo implements ISaveForm {
 
 	private Component sdlNumberComp = null;
 
-	public void sdlNumberChange(InputEvent event) {
-		sdlNumberComp = event.getTarget();
+	public boolean sdlNumberChange(InputEvent event) {
+		Consumer<Object> onCloseDialogTmp = null;
+		if (event != null) {
+			sdlNumberComp = event.getTarget();
+			onCloseDialogTmp = onCloseDialog;
+		}
+		
+			
+		
 		X_C_BPartner bPartner = null;
 		if (StringUtils.isNoneBlank(sdlNumber)) {
 			bPartner = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
@@ -376,19 +389,21 @@ public class OrganisationInfo implements ISaveForm {
 
 			bPartnerId = bPartner.getC_BPartner_ID();
 			
-			if(discretionaryGrantsApplicationProgramVM.checkCriteria(bPartner, onCloseDialog)) {
-				return;
+			if(discretionaryGrantsApplicationProgramVM.checkCriteria(bPartner, onCloseDialogTmp)) {
+				return true;
 			}
 			
 			if(discretionaryGrantsApplicationProgramVM.checkExistAppForm(bPartner)) {
-				return;
+				return true;
 			}
 		} else {
 			bPartnerId = 0;
-			if(discretionaryGrantsApplicationProgramVM.checkCriteria(null, onCloseDialog)) {
-				return;
+			if(discretionaryGrantsApplicationProgramVM.checkCriteria(null, onCloseDialogTmp)) {
+				return true;
 			}
 		}
+		
+		return false;
 	}
 	
 	private boolean sdlNumberFocus = true;

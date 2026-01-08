@@ -1,13 +1,16 @@
 package za.co.ntier.webform.form.viewmodel;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 import org.adempiere.model.GenericPO;
 import org.adempiere.model.POWrapper;
@@ -27,6 +30,7 @@ import org.compiere.model.X_AD_User;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.DependsOn;
@@ -44,6 +48,9 @@ import za.co.ntier.api.model.X_ZZDocumentUpload;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.webform.form.AbstractProgram;
+import za.co.ntier.webform.form.ISaveForm;
+import za.co.ntier.webform.form.IgnoreException;
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.DataType;
@@ -85,6 +92,8 @@ import za.co.ntier.webform.form.bean.program.WorkplaceCoachesProgram;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 
 public class DiscretionaryGrantsApplicationProgramVM {
+	List<ISaveForm> saveForms = new ArrayList<>();
+	
 	public class EmailPoInfo extends GenericPO {
 
 		private static final long serialVersionUID = -433026634223871908L;
@@ -279,12 +288,16 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		employerDeclarationInfo = new EmployerDeclarationInfo();
 		employerDeclarationInfo.initComponent(applicationForm);
+		
+		saveForms.add(employerDeclarationInfo);
 
 		formInfo = new FormInfo(menuContextInfo);
 
 		organisationInfo = new OrganisationInfo(menuContextInfo, this);
 		organisationInfo.initComponent(applicationForm);
 
+		saveForms.add(organisationInfo);
+		
 		if (programType.isCetTvet()) {
 			setProgram(new CetTvetProgram(menuContextInfo, applicationForm));
 		} else if (ProgramType.INTERNSHIP == programType) {
@@ -337,12 +350,15 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			program = new LearningMaterialsDevelopment(menuContextInfo, applicationForm);
 		}
 
-
+		if (program != null)
+			saveForms.add(program);
 
 		// main contact
 		if (programType.isShowMainAddress()) {
 			programContact = new AddressInfo(programType, false);
 			programContact.initComponent(applicationForm);
+			
+			saveForms.add(programContact);
 		}
 
 
@@ -350,11 +366,17 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		if (programType.isShowMainAddressAlter()) {
 			alternateProgramContact = new AddressInfo(programType, true);
 			alternateProgramContact.initComponent(applicationForm);
+			
+			saveForms.add(alternateProgramContact);
 		}
 
 
 		uploadDoc = new UploadDocComponent(menuContextInfo, applicationForm);
-
+		if (uploadDoc.getUploadDoc().getRows().size() > 0) {
+			saveForms.add(uploadDoc);
+		}
+		
+		
 		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "declarationComplete");
 		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "organisationComplete");
 		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "programComplete");
@@ -645,6 +667,9 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	public boolean checkExistAppForm(String registrationNumber){
+		if (applicationForm != null) {
+			return false;// edit mode
+		}
 		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, I_ZZ_Application_Form.COLUMNNAME_ZZ_Org_Reg_No);
 		Query existAppFormQuery = MTable.get(Env.getCtx(), I_ZZ_Application_Form.Table_Name).createQuery(existAppFormWhere, null);
 		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true)
@@ -661,6 +686,9 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	public boolean checkExistAppForm(X_C_BPartner bparter){
+		if (applicationForm != null) {
+			return false;// edit mode
+		}
 		String existAppFormWhere = String.format("%s = ? AND %s = ?", I_ZZ_Application_Form.COLUMNNAME_ZZ_Program_Master_Data_ID, I_ZZ_Application_Form.COLUMNNAME_C_BPartner_ID);
 		Query existAppFormQuery = MTable.get(Env.getCtx(), I_ZZ_Application_Form.Table_Name).createQuery(existAppFormWhere, null);
 		List<X_ZZ_Application_Form> exitsAppForms = existAppFormQuery.setOnlyActiveRecords(true).setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), bparter.getC_BPartner_ID()).list();
@@ -684,13 +712,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		return false;
 	}
 
+	
 
-	public void saveAppForm(boolean isSave) throws IOException {
-		String trxName = null;
-
+	public void saveAppForm(boolean isSave, String trxName) throws IOException {
 		if (applicationForm == null) {
 			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), 0, trxName);
 			applicationForm.setZZProgramType(programType.toString());
+		}else {
+			applicationForm.set_TrxName(trxName);
 		}
 
 
@@ -705,31 +734,15 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		saveAppFormCommonPart(applicationForm);
 
-		if (employerDeclarationInfo != null) {
-			employerDeclarationInfo.saveForm(trxName, applicationForm);
-		}
-
 		applicationForm.saveEx(trxName);// save here to get id when save address on org info
 
-		if (organisationInfo != null){
-			organisationInfo.saveForm(trxName, applicationForm);
+		applicationForm.setZZTotalNumberApplied(0);
+		for (ISaveForm saveForm:saveForms) {
+			saveForm.doSaveForm(trxName, applicationForm);
 		}
+		applicationForm.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));
+		applicationForm.saveEx(trxName);
 
-		if (programContact != null) {
-			programContact.saveForm(trxName, applicationForm);
-		}
-
-		if (alternateProgramContact != null) {
-			alternateProgramContact.saveForm(trxName, applicationForm);
-		}
-
-		if(uploadDoc != null) {
-			uploadDoc.saveForm(trxName, applicationForm);
-		}
-
-		program.doSaveForm(trxName, applicationForm);
-
-		applicationForm.saveEx();
 		// Attach VAT certificate to ZZ_Application_Form (one entry per record)
 		if (organisationInfo.getVatCertBytes() != null && organisationInfo.getVatCertBytes().length > 0
 				&& org.apache.commons.lang3.StringUtils.isNotBlank(organisationInfo.getFileNameVATCer())) {
@@ -763,8 +776,71 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		applicationForm.setName(loginUser.getName() + " - " + LocalDateTime.now().format(dtf));
 	}
 	public void saveClose() throws IOException {
-		saveAppForm(true);
+		doSaveClose(true);
+		
 	}
+	
+	public boolean validateForm() {
+		for (ISaveForm saveForm : saveForms) {
+			if (saveForm == null)
+				continue;
+			if (saveForm.validateForm()) {
+				// validate next form
+			}else {
+				return false;
+			}
+		}
+		
+		return true;
+		
+	}
+	
+	public void doSaveClose(boolean isSave) throws IOException {
+		
+		Trx trx = null;
+		Boolean success = null;
+		Exception exc = null;
+		
+		try {
+			if (!validateForm())
+				return;
+			
+			trx = Trx.get(Trx.createTrxName("ApplicationProgramVM"), true);
+			trx.setDisplayName(getClass().getName()+"_saveClose");
+			
+			saveAppForm(isSave, trx.getTrxName());
+
+			success = true;
+		}catch (Exception e) {
+			success = false;
+			exc = e;
+			log.log(Level.WARNING, "App error", exc);
+		}finally {
+			if (success != null && success && trx != null) {
+				try {
+					trx.commit(true);
+				} catch (Exception e){
+					log.log(Level.SEVERE, "Commit failed", e);
+					exc = e;
+				}
+			}
+			
+			if (success != null && !success && trx != null) {
+				log.log(Level.INFO, "Rollback");
+				trx.rollback();
+			}
+			
+			if (trx != null)
+				trx.close();
+			
+			if (exc != null && exc instanceof IgnoreException) {
+				// don't need show dialog anymore
+			}else if (exc != null) {
+				showDialog("Error", exc.getMessage(), false, null);
+			}
+		}
+	}
+	
 
 	public void sentEmail() {
 		EmailPoInfo emailPoInfo = new EmailPoInfo();
@@ -936,8 +1012,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		Executions.createComponents(zulPathRelative, null, args);
 	}
 	public void submitApplication() throws IOException {
-		saveAppForm(false);
-
+		doSaveClose(false);
 	}
 
 

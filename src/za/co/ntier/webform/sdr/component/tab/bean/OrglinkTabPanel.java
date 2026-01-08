@@ -100,7 +100,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 			X_C_BPartner sOrgPo = searchOrgQuery.first();
 			
 			if (sOrgPo == null) {
-				MasterUtil.showDialog("ZZOrgLinksNotFoundOrg");
+				MasterUtil.showDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
 			}else {
 				orgPo = sOrgPo;
 				orgSearchModel.getRow().setData(orgPo);

@@ -171,6 +171,7 @@
 
 .mqaWebForm .grid-formview .cell.cellType6{/*upload button*/
   justify-content: flex-start;
+  
 }
 
 .mqaWebForm .grid-formview .z-select,
@@ -219,6 +220,7 @@
     width: 100%;
 }
 
+.mqaWebForm .container .grid-container .form-field select,
 .mqaWebForm .grid-formview .cell-content input[type="text"],
 .mqaWebForm .grid-formview .cell-content select,
 .mqaWebForm .grid-formview .cell-content textarea,
@@ -232,6 +234,13 @@
     margin-top: auto; 
 }
 
+.mqaWebForm .container .grid-container .form-field select
+, .mqaWebForm .grid-formview .cell-content select
+, .mqaWebForm .sdrForm select{
+  padding-top:6px;
+  padding-bottom:6px;
+  border-width:1px;
+}
 
 .mqaWebForm .sdrForm input[type="text"],
 .mqaWebForm .grid-formview .cell-content .z-textbox,
@@ -267,12 +276,6 @@
   font-size:24px;
 }
 
-.mqaWebForm .grid-formview .cell-content .z-select,
-.mqaWebForm .sdrForm .z-select{
-  padding:0px;
-  border-width:1px;
-}
-
 /* container of content */
 .mqaWebForm .fileUploadContent{
   display:flex;
@@ -287,10 +290,13 @@
 }
 
 /* customize per control */
+
+/* person education */
 .mqaWebForm .grid-formview.two-col.srd-education > :nth-child(7) {
   grid-column: span 2;
 }
 
+/* person detail */
 .mqaWebForm .grid-formview.srd-person-detail > :nth-child(1){
   grid-column: span 3;
 }
@@ -300,6 +306,27 @@
 
   align-items:flex-start;
 }
+
+/* org general */
+.mqaWebForm .grid-formview.srd-org-general{
+	grid-template-columns: repeat(2, 1fr);
+}
+
+.mqaWebForm .grid-formview.srd-org-general > :nth-child(9){
+  grid-column: span 2;
+  width:50%;
+}
+
+/* org contact */
+.mqaWebForm .grid-formview.srd-org-contact{
+	grid-template-columns: repeat(2, 1fr);
+}
+
+.mqaWebForm .grid-formview.srd-org-contact > :nth-child(1){
+  grid-column: span 2;
+  width:50%;
+}
+
 
 .mqaWebForm .sdrForm .grid-listView.grid-listView-7{
   grid-template-columns: repeat(7, 1fr);

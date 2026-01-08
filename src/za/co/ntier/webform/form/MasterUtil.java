@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.desktop.DefaultDesktop;
@@ -72,6 +73,8 @@ public class MasterUtil {
 	
 	public static final String SDRLinkedOrganisationsUU = "114344c0-6344-4d49-8dc9-3ba80e98e0b1";
 	public static final String SDRRegistryOrgLinkUU = "1b8f1243-dbbf-458a-89f6-cd89a95a9d4c";
+	public static final String SDRMaintainOrganisationUU = "d1c16a4b-9a05-41fc-a2f8-050f1f383431";
+	
 	
 	private static CCache<String, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
 			I_C_BPartner.Table_Name + "_CetTvetCollege", 3);
@@ -252,10 +255,41 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpAlternateIDIdentify = new AbstractMap.SimpleEntry<>("04b31964-4f89-4d78-bc3c-64333fc14de3", null);
 	public static final Entry<String, Integer> LkpAccountTypeIdentify = new AbstractMap.SimpleEntry<>("d2808f16-73a8-4ed5-b5e8-27efd62186a3", null);
 	
+	public static final Entry<String, Integer> LkpOrganisationRegistrationNumberType = new AbstractMap.SimpleEntry<>("d406001b-56dd-4ce9-a92b-1f70bb2a7cf3", null);
+	public static final Entry<String, Integer> LkpOrganisationType = new AbstractMap.SimpleEntry<>("2d43c7e3-b8ac-4269-8501-5585db71d754", null);
+	public static final Entry<String, Integer> LkpLevyNumberType = new AbstractMap.SimpleEntry<>("778e320f-85ec-4577-9c60-c7db46a9e3d7", null);
+	public static final Entry<String, Integer> LkpSicCode = new AbstractMap.SimpleEntry<>("cddc9d77-2c4f-4650-a8a5-58c87f72dbb4", null);
+	public static final Entry<String, Integer> LkpSubSector = new AbstractMap.SimpleEntry<>("bc9bef41-360e-4fbc-b4f1-93ec2892cef9", null);
+	public static final Entry<String, Integer> LkpChamberCode = new AbstractMap.SimpleEntry<>("15a4a826-3bcb-402b-9ff4-602beeec8c3f", null);
+	
 	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
 	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
+	
+	public static List<ValueNamePair> getChamberCode () {
+		return getRefList(LkpChamberCode);
+	}
+	
+	public static List<ValueNamePair> getSubSector () {
+		return getRefList(LkpSubSector);
+	}
+	
+	public static List<ValueNamePair> getSicCode () {
+		return getRefList(LkpSicCode);
+	}
+	
+	public static List<ValueNamePair> getLevyNumberType () {
+		return getRefList(LkpLevyNumberType);
+	}
+	
+	public static List<ValueNamePair> getOrganisationType () {
+		return getRefList(LkpOrganisationType);
+	}
+	
+	public static List<ValueNamePair> getOrganisationRegistrationNumberType () {
+		return getRefList(LkpOrganisationRegistrationNumberType);
+	}
 	
 	public static List<ValueNamePair> getYesNoList () {
 		return getRefList(YesNoIdentify);
@@ -501,15 +535,21 @@ public class MasterUtil {
 		
 	}
 
-	public static void showDialog(String msgKey) {
+	public static void showDialog(String msgKey, Consumer<Object> onCloseDialog) {
 		Dialog dialog = new Dialog(Msg.getMsg(Env.getCtx(), msgKey, false), 
 				new StringBuilder(Msg.getMsg(Env.getCtx(), msgKey, true)).toString());
 		dialog.setSclass(msgKey);
+		dialog.setOnCloseDialog(onCloseDialog);
+		
 		Map<String, Object> args = new HashMap<>();
 		args.put(ComponentVMWrapper.ComponentKey, dialog);
 		String zulPathRelative = WebForm.getBundleResourcePath("sdr/component/zul/dialog.zul");	
 		Executions.createComponents(zulPathRelative, null, args);
 	}
+	
+	public static Consumer<Object> fCloseActiveWindow =  t -> {
+		MasterUtil.closeActiveWindow();
+	};
 	
 	public static void closeActiveWindow() {
 		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();

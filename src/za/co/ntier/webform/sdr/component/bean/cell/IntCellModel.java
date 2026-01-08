@@ -5,6 +5,9 @@ import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
+/**
+ * use for total line only
+ */
 public class IntCellModel extends CellModel {
 	private Integer value;
 

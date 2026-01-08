@@ -73,7 +73,7 @@
             <!-- PositiveNumber -->
             <intbox if="${vmCellRender.row[col].cellType eq CellModel.POSITIVE_NUM_CELL}"
               value="@bind(vmCellRender.row[col].value)
-                   @converter(ConvertUtil.getConvertZeroNull())" />
+                   @converter(ConvertUtil.getConvertZeroNull(), cellMode = vmCellRender.row[col])" />
             
             <!-- FileUpload -->
             <div if="${vmCellRender.row[col].cellType eq CellModel.BTUPLOAD_CELL}" 

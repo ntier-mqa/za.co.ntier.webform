@@ -24,8 +24,8 @@
       </div>
 
       <div sclass="modal-footer" style="flex-grow:0">  
-        <button sclass="btn btn-primary" label="OK" visible="@init(vmDialog.component.showCloseFormBt)"
-                onClick="@command('closeCurrentForm')"/>
+        <button sclass="btn btn-primary" label="OK"
+                onClick="@command('closeDialog')"/>
       </div>
     </div>
   </window>

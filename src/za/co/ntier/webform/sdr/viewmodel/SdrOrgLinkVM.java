@@ -25,19 +25,19 @@ public class SdrOrgLinkVM {
 		if (sdf != null)
 			orgLinkTab= new OrglinkTabPanel(null, sdf, menuContextInfo);
 		else
-			MasterUtil.showDialog("ZZOrgLinksSDFNotFound");
+			MasterUtil.showDialog("ZZOrgLinksSDFNotFound", MasterUtil.fCloseActiveWindow);
 	}
 
 	@Command
 	public void saveClose() {
 		orgLinkTab.save(null, null);
-		MasterUtil.showDialog("ZZOrgLinksSaveSuccess");
+		MasterUtil.showDialog("ZZOrgLinksSaveSuccess", MasterUtil.fCloseActiveWindow);
 	}
 	
 	@Command
 	public void submit() {
 		orgLinkTab.submit(null, null);
-		MasterUtil.showDialog("ZZOrgLinksSubmitSuccess");
+		MasterUtil.showDialog("ZZOrgLinksSubmitSuccess", MasterUtil.fCloseActiveWindow);
 	}
 	
 	/**

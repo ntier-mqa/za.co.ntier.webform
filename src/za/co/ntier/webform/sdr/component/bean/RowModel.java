@@ -1,12 +1,19 @@
 package za.co.ntier.webform.sdr.component.bean;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.webform.form.MasterUtil;
@@ -150,7 +157,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 				}
 				if (daoPerCol == null)
 					daoPerCol = data;
-				MasterUtil.setObjectProperty(daoPerCol, cellModel.getColModel().getDaoPropertyName(), cellModel.getValue());
+				
+				//TODO:Move logic set ui value to dao to cellMode
+				Object value = convertDataType(daoPerCol, cellModel);
+				MasterUtil.setObjectProperty(daoPerCol, cellModel.getColModel().getDaoPropertyName(), value);
 			}
 		}
 		
@@ -164,5 +174,32 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 			}
 		}
 			
+	}
+
+	private Object convertDataType(PO daoPerCol, CellModel cellModel) {
+		if (cellModel.getValue() == null)
+			return null;
+		
+		if (cellModel.getCellType() != CellModel.POSITIVE_NUM_CELL) {
+			return cellModel.getValue();
+		}
+		
+		int colDataType = MTable.get(Env.getCtx(), daoPerCol.get_TableName())
+			.getColumn(cellModel.getColModel().getDaoPropertyName()).getAD_Reference_ID();
+		
+		if (colDataType == DisplayType.Amount || colDataType == DisplayType.Number || colDataType == DisplayType.CostPrice
+				|| colDataType == DisplayType.Quantity) {
+			if (cellModel.getValue() instanceof Integer) {
+				return BigDecimal.valueOf(((Integer)cellModel.getValue()).longValue());
+			}else if (cellModel.getValue() instanceof BigDecimal) {
+				return cellModel.getValue();
+			}else {
+				throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
+			}
+		}else {// DisplayType.Integer
+			return cellModel.getValue();
+		}
+		
+		
 	}
 }
