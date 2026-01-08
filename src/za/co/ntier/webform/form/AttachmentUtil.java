@@ -109,7 +109,11 @@ public final class AttachmentUtil {
         final String want = rawPrefix.isEmpty() ? "" : (rawPrefix + ":");
 
         int idx = findEntryIndexByPrefix(att, want);
-        if (idx < 0) idx = 0; // fallback to first entry
+        if (idx < 0 && StringUtils.isNotBlank(btText)) {
+        	return null;
+        }else if (idx < 0) {
+        	idx = 0; // fallback to first entry
+        }
 
         String entryName = safe(att.getEntryName(idx));
         // strip "<btText>:" (with optional space) to return the pure file name
