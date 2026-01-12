@@ -52,7 +52,7 @@
       <nodom children="@bind(vmAnnexure.component.columnInfos)">
         <template name="children" var="detailCol">
           <div
-            sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.numCol ))">
+            sclass="@init(('break-text grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.numCol ))">
 
             <!-- Label -->
             <nodom if="${detailCol.dataType == DataType.Label}">

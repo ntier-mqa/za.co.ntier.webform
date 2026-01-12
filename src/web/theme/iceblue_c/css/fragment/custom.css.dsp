@@ -250,7 +250,7 @@
     flex-direction: row-reverse;
     align-items: center;
 }
-
+ 
 .ellipsis {
   /* The key properties for the ellipsis effect */
     white-space: nowrap; /* Prevents the text from wrapping to the next line */
@@ -269,7 +269,10 @@
     border-radius: 8px;
     overflow: hidden; /* Ensures rounded corners are respected */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    word-break: break-all;
+}
+
+.mqaWebForm .break-text{
+	word-break: break-all;
 }
 
 .mqaWebForm .grid-table{

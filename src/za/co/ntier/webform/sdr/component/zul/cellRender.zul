@@ -36,7 +36,7 @@
 
           
           <!-- content part -->
-          <div sclass="cell-content">
+          <div sclass="cell-content break-text">
             
             <!-- textbox -->
             <textbox

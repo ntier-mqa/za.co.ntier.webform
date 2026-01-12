@@ -24,6 +24,11 @@ public class OrganisationInfoVMWrapper extends ComponentVMWrapper<OrganisationIn
  		getComponent().uploadFile(media);
  	}
 	
+	@Command
+ 	public void removeAttachment() throws IOException {
+ 		getComponent().removeFile();
+ 	}
+	
 	
 	private boolean collegeTouched;
 

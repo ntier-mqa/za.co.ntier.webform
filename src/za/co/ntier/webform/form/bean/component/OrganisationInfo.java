@@ -304,7 +304,7 @@ public class OrganisationInfo implements ISaveForm {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		applicationForm.setZZ_SDL_No(getSdlNumber());
 		applicationForm.setZZ_Side_SDL_No(getSiteSDLNumber());
-		applicationForm.setZZ_VAT(getOrgTaxNumber());
+		applicationForm.setZZ_VAT(orgTaxNumber);
 		applicationForm.setOrgName(getOrgName());
 		applicationForm.setC_BPartner_ID(getbPartnerId());
 		applicationForm.setReferenceNo(orgRegistrationNumber);
@@ -354,6 +354,7 @@ public class OrganisationInfo implements ISaveForm {
 	private Component sdlNumberComp = null;
 
 	public boolean sdlNumberChange(InputEvent event) {
+		boolean validateOnly = event == null;
 		Consumer<Object> onCloseDialogTmp = null;
 		if (event != null) {
 			sdlNumberComp = event.getTarget();
@@ -370,10 +371,12 @@ public class OrganisationInfo implements ISaveForm {
 		
 
 		if (bPartner != null) {
-			orgName = bPartner.getName();
-			orgTaxNumber = bPartner.getTaxID();
-			orgRegistrationNumber = bPartner.getReferenceNo();
-			BindUtils.postNotifyChange(this, "orgName", "orgTaxNumber", "orgRegistrationNumber");
+			if (!validateOnly) {
+				orgName = bPartner.getName();
+				orgTaxNumber = bPartner.getTaxID();
+				orgRegistrationNumber = bPartner.getReferenceNo();
+				BindUtils.postNotifyChange(this, "orgName", "orgTaxNumber", "orgRegistrationNumber");
+			}
 
 			if (orgSizeInfo != null) {
 				orgSizeInfo.setNumOfEmployer(bPartner.get_ValueAsInt("ZZ_Number_Of_Employees"));
@@ -593,6 +596,12 @@ public class OrganisationInfo implements ISaveForm {
 	    this.vatCertBytes = bytes;
 	}
 
+	public void removeFile() {
+		setFileNameVATCer(null);
+		this.vatCertBytes = null;
+		
+	}
+	
 	/**
 	 * @return the isUseBpartner
 	 */
@@ -613,5 +622,7 @@ public class OrganisationInfo implements ISaveForm {
 	public void setSdlNumberFocus(boolean sdlNumberFocus) {
 		this.sdlNumberFocus = sdlNumberFocus;
 	}
+
+	
 
 }

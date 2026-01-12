@@ -122,12 +122,11 @@ public class MaintainOrganisationVM extends BaseVM {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel registrationNumCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZOrgRegistrationNumber)
-				, I_C_BPartner.COLUMNNAME_ZZOrgRegistrationNumber
+				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ReferenceNo)
+				, I_C_BPartner.COLUMNNAME_ReferenceNo
 			).required()
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(registrationNumCol);
-		
 
 		ColumnModel sdlNumTypeCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZLevyNumberType)

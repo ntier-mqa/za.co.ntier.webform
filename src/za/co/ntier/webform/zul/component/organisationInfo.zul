@@ -98,9 +98,15 @@
 		<div
 			if="${!vmOrgInfo.component.menuContextInfo.programType.isCetTvet()}"
 			sclass="form-field">
-			<label sclass="label"
-				value="@load(vmOrgInfo.component.fileNameVATCer)" />
-
+			<div style="display:flex">
+				<label sclass="label break-text" style="padding-right: 5px;background-color:unset;color:unset"
+					value="@load(vmOrgInfo.component.fileNameVATCer)" />
+				<button
+					visible="@load(( vmOrgInfo.component.fileNameVATCer ne null ))" 
+					sclass="btn-circle removeAttachment"
+                	iconSclass="z-icon-xmark" label="" tooltiptext="Remove"
+                	onClick="@command('removeAttachment'" />
+            </div>   
 			<fileupload sclass="text-wrap w-100"
 				iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
 				label=" VAT Exempt Cert."
