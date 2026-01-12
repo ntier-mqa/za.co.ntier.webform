@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.zkoss.bind.BindUtils;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 
 /**
@@ -56,8 +57,13 @@ public class CellModel implements IValueChange {
 		callCollModelHandle(event);
 	}
 	 
-	protected void callCollModelHandle(InputEvent event) {
+	protected void callCollModelHandle(Event event) {
 		getColModel().cellValueChange(event, this);
+	}
+	
+	public void cmdCellAction(Event event) {
+		callCollModelHandle(event);
+		
 	}
 	
 	
@@ -95,6 +101,7 @@ public class CellModel implements IValueChange {
 	public static int DATE_CELL=7;
 	public static int POSITIVE_NUM_CELL=8;
 	public static int DOCUPLOAD_CELL=9;
+	public static int BUTTON_CELL=10;
 
 	private int cellType;
 
@@ -176,6 +183,12 @@ public class CellModel implements IValueChange {
 	public static  ColumnModel getColModelForPositiveNumber(String title, String daoPropertyName) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, POSITIVE_NUM_CELL));
 	}
+	
+	public static ColumnModel getColModelForGenericCell(
+			String title, String daoPropertyName, int cellType) {
+		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null)
+				, CellModelParams.of(title, daoPropertyName, cellType));
+	}
 
 	/**
 	 * @return the value
@@ -209,5 +222,7 @@ public class CellModel implements IValueChange {
 
 		return null;
 	}
+
+	
 
 }

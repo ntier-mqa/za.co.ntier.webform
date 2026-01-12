@@ -10,6 +10,7 @@ import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.CheckEvent;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -62,6 +63,15 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) throws IOException {
 		annexure.cmdCheckeck(row, col, event);
+	}
+	
+	@Command
+	public void cmdBtClick(
+			@BindingParam("annexure") TableModel annexure
+			, @BindingParam("row") RowModel row
+			, @BindingParam("col") ColumnModel col
+			, @ContextParam(ContextType.TRIGGER_EVENT) Event event) throws IOException {
+		annexure.cmdCellAction(row, col, event);
 	}
 	
 	@Command

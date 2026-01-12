@@ -234,10 +234,10 @@ public class MainSrdFormVM extends BaseVM {
 		ColumnModel gpsCoordinatesCol = CellModel.getColModelForText("GPS Coordinates", null).setReadonly(true);
 		cols.add(gpsCoordinatesCol);
 		
-		ColumnModel dupplicateCol = CheckboxCellModel.getCheckboxColModel("Use Physical Address For Postal Address?", null);
+		ColumnModel dupplicateCol = CellModel.getColModelForGenericCell("Use Physical Address For Postal Address?", null, CellModel.BUTTON_CELL);
+		dupplicateCol.setShowTitle(false);
 		dupplicateCol.setEventHandle((inputEvent, cellModel) -> {
-			CheckEvent checkEvent = (CheckEvent)inputEvent;
-			if (checkEvent.isChecked()) {
+			
 				RowModel physicalRow = physicalAddress.getRow();
 				RowModel postalRow = postalAddress.getRow();
 				for (ColumnModel physicalColModel : physicalAddress.getColumnInfos()) {
@@ -248,7 +248,6 @@ public class MainSrdFormVM extends BaseVM {
 						}
 					}
 				}
-			}
 		});
 		
 		//dupplicateCol.setShowTitle(false);

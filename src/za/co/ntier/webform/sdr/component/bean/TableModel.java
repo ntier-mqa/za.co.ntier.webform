@@ -20,6 +20,7 @@ import org.compiere.util.CLogger;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.CheckEvent;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -163,6 +164,13 @@ public class TableModel implements ISupportSave {
 			CheckEvent event){
 		ICheckbox checkbox = (ICheckbox)row.get(col);
 		checkbox.cmdChecked(event);
+	}
+	
+
+	public void cmdCellAction(RowModel row, ColumnModel col, Event event) {
+		CellModel cellModel = row.get(col);
+		cellModel.cmdCellAction(event);
+		
 	}
 	
 	public void cmdUploadFile(Map<ColumnModel, Object> row, ColumnModel col, UploadEvent event) {
@@ -661,6 +669,7 @@ public class TableModel implements ISupportSave {
 	public void setFormView(boolean formView) {
 		this.formView = formView;
 	}
+
 
 
 }

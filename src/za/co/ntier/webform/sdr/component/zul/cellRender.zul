@@ -100,6 +100,10 @@
               format="yyyy/MM/dd" placeholder="yyyy/MM/dd"
               valueInLocalDate="@bind(vmCellRender.row[col].localDate)" />
 
+			<button if="${vmCellRender.row[col].cellType eq CellModel.BUTTON_CELL}"
+			  label="@load(col.title)"
+              onClick="@command('cmdBtClick', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
+              
           </div>
         </div>
       </template>
