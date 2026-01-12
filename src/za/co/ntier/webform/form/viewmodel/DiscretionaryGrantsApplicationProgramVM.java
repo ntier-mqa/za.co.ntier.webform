@@ -759,6 +759,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 			// free memory after persisting
 			organisationInfo.setFileNameVATCer(null);
+		}else if (organisationInfo.getVatCertBytes() == null && organisationInfo.getFileNameVATCer() == null) {
+			za.co.ntier.webform.form.AttachmentUtil.removeAttachmentEntry(applicationForm, null, trxName);
 		}
 
 		recordId = applicationForm.getZZ_Application_Form_ID();

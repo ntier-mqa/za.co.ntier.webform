@@ -105,7 +105,7 @@
 					visible="@load(( vmOrgInfo.component.fileNameVATCer ne null ))" 
 					sclass="btn-circle removeAttachment"
                 	iconSclass="z-icon-xmark" label="" tooltiptext="Remove"
-                	onClick="@command('removeAttachment'" />
+                	onClick="@command('removeAttachment')" />
             </div>   
 			<fileupload sclass="text-wrap w-100"
 				iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
