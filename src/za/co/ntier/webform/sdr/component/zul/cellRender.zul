@@ -101,6 +101,7 @@
               valueInLocalDate="@bind(vmCellRender.row[col].localDate)" />
 
 			<button if="${vmCellRender.row[col].cellType eq CellModel.BUTTON_CELL}"
+			  iconSclass="@init(vmCellRender.row[col].iconSclass)"
 			  label="@load(col.title)"
               onClick="@command('cmdBtClick', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
               

@@ -16,6 +16,8 @@ import org.zkoss.zk.ui.event.InputEvent;
  *
  */
 public class CellModel implements IValueChange {
+	private String iconSclass;
+	
 	private TableModel tableModel;
 	private RowModel rowModel;
 	private ColumnModel colModel;
@@ -221,6 +223,14 @@ public class CellModel implements IValueChange {
 		}
 
 		return null;
+	}
+
+	public String getIconSclass() {
+		return iconSclass;
+	}
+
+	public void setIconSclass(String iconSclass) {
+		this.iconSclass = iconSclass;
 	}
 
 	

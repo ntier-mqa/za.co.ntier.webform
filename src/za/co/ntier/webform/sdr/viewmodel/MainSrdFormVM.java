@@ -236,6 +236,7 @@ public class MainSrdFormVM extends BaseVM {
 		
 		ColumnModel dupplicateCol = CellModel.getColModelForGenericCell("Use Physical Address For Postal Address?", null, CellModel.BUTTON_CELL);
 		dupplicateCol.setShowTitle(false);
+		
 		dupplicateCol.setEventHandle((inputEvent, cellModel) -> {
 			
 				RowModel physicalRow = physicalAddress.getRow();
@@ -261,6 +262,11 @@ public class MainSrdFormVM extends BaseVM {
 		TableModel addressDetailCtr = TableModel.getTableBean(TableModel.class, cols, false);
 		addressDetailCtr.setSclass("srd-address-ctrl");
 
+		addressDetailCtr.setDecoratorCell(rowModel -> {
+			CellModel btDupplicate = rowModel.get(dupplicateCol);
+			btDupplicate.setIconSclass("z-icon-fw z-icon-clone z-icon-solid");
+		});
+		
 		addressDetailCtr.init(null, null);
 		return addressDetailCtr;
 	}
