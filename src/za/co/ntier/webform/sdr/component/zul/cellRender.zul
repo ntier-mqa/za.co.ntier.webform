@@ -36,7 +36,7 @@
 
           
           <!-- content part -->
-          <div sclass="cell-content break-text">
+          <div sclass="cell-content">
             
             <!-- textbox -->
             <textbox
@@ -84,6 +84,7 @@
                 onUpload="@command('cmdUploadFile', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"
                 upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
               <label
+              	sclass="break-text"
                 value="@load(vmCellRender.row[col].fileName)" />
             </div>
 

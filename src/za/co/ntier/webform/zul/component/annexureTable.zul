@@ -52,7 +52,7 @@
       <nodom children="@bind(vmAnnexure.component.columnInfos)">
         <template name="children" var="detailCol">
           <div
-            sclass="@init(('break-text grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.numCol ))">
+            sclass="@init(('grid-cell grid-detail-cell grid-detail-cell-' += vmAnnexure.numCol ))">
 
             <!-- Label -->
             <nodom if="${detailCol.dataType == DataType.Label}">
@@ -191,7 +191,7 @@
                <div
                     sclass="uploadFileBox"
                     visible="@load(( row[detailCol].fileName ne null ))">
-                  <label  value="@load(row[detailCol].fileName)" />
+                  <label sclass="break-text" value="@load(row[detailCol].fileName)" />
                   <button sclass="btn-circle removeAttachment"
                     iconSclass="z-icon-xmark" label="" tooltiptext="Remove"
                     onClick="@command('removeAttachment', annexure=vmAnnexure.component, row = row, col = detailCol)" />

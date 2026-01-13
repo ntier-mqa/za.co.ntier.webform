@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -608,12 +609,11 @@ public class AnnexureInfo implements ISaveForm{
 				}else if (col.getDataType() == DataType.Date) {
 					DateData dateData = (DateData)row.get(col);
 					cellValueObj = dateData.getTimestamp();
-					if (cellValueObj != null) {
-						hasCellData = true;
-					}
+					hasCellData = true;
 				}else if (col.getDataType() == DataType.FileUpload) {
 					// Martin changed to save to attachments instead to a binary file
-					hasCellData = Boolean.TRUE;// upload data become option
+					UploadData uploadData = (UploadData)row.get(col);
+					hasCellData = uploadData.getFileName() != null;
 					ignoreSetDao = true; // never set DAO properties for files anymore
 				}else if (col.getDataType() == DataType.List) {
 					Object selectedObj = row.get(col);
@@ -632,13 +632,18 @@ public class AnnexureInfo implements ISaveForm{
 				}else {//DataType.Text, DataType.TextList
 					Entry<Object, Boolean> celDataEntryObj = getCellValue(row, col);
 					cellValueObj = celDataEntryObj.getKey();
+					
 					hasCellData = celDataEntryObj.getValue();
 				}
 
-				if (hasCellData) {
-					isEmptyData = false;
-				}else {
-					isFullData = false;
+				// effect to check input data
+				if (col.getDataType() != DataType.Label
+						&& col.getDataType() != DataType.LearnerInfo) {
+					if (hasCellData) {
+						isEmptyData = false;
+					}else {
+						isFullData = false;
+					}
 				}
 
 				if (!ignoreSetDao) {
@@ -683,6 +688,7 @@ public class AnnexureInfo implements ISaveForm{
 		return new AbstractMap.SimpleEntry<>(total, rowStatus);
 	}
 
+	private Function<AnnexureRow, Boolean> ignoreRecordHandle; 
 
 	public void save(String trxName, X_ZZ_Application_Form applicationForm) {
 
@@ -699,11 +705,22 @@ public class AnnexureInfo implements ISaveForm{
 				po = poSupplier.apply(this, applicationForm);
 			}
 
-			Entry<Integer, Boolean> result = fillDaoData(getColumnInfos(), row, po);
+			Boolean ignoreRecord = null;
+			if (ignoreRecordHandle != null)
+				ignoreRecord = ignoreRecordHandle.apply(row);
+			
+			Entry<Integer, Boolean> result = null;
+			if (ignoreRecord == null || !ignoreRecord) {
+				result = fillDaoData(getColumnInfos(), row, po);
+				if (result.getValue() == null) {
+					ignoreRecord = true;
+				}
+			}
+			
 
-			if (result.getValue() == null) {
+			if (ignoreRecord != null && ignoreRecord) {
 				// delete row record if user cleared all input for this row
-				po.delete(true);
+				po.deleteEx(true, trxName);
 			}else {
 				po.saveEx(trxName);
 				total += result.getKey();
@@ -809,7 +826,7 @@ public class AnnexureInfo implements ISaveForm{
 
 		}else if (col.getDataType() == DataType.PositiveNumber) {
 			IntData intData = (IntData)valueObj;
-			if (intData.getValue() == null) {
+			if (intData.getValue() == null || intData.getValue() == 0) {
 				return new AbstractMap.SimpleEntry<>((T)Integer.valueOf(0), Boolean.FALSE);
 			}else {
 				return new AbstractMap.SimpleEntry<>((T)intData.getValue(), Boolean.TRUE);
@@ -1095,6 +1112,14 @@ public class AnnexureInfo implements ISaveForm{
 	        }
 	    }
 	    return true;
+	}
+
+	public Function<AnnexureRow, Boolean> getIgnoreRecordHandle() {
+		return ignoreRecordHandle;
+	}
+
+	public void setIgnoreRecordHandle(Function<AnnexureRow, Boolean> ignoreRecordHandle) {
+		this.ignoreRecordHandle = ignoreRecordHandle;
 	}
 
 
