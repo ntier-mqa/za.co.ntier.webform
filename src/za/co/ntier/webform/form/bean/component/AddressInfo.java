@@ -364,6 +364,14 @@ public class AddressInfo implements ISaveForm {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		int applicationFormID = applicationForm.getZZ_Application_Form_ID();
 		
+		if (getProvinceSelected() == null && getAreaSelected() == null && StringUtils.isBlank(getPostalCode())
+				&& StringUtils.isBlank(getSiteName()) && StringUtils.isBlank(getAddressLine())
+				&& StringUtils.isBlank(getNameSiteRepresentative()) && StringUtils.isBlank(getRepresentativeDesignation())
+				&& StringUtils.isBlank(getMobileNumber()) && StringUtils.isBlank(getLandlineNumber())
+				&& StringUtils.isBlank(getEmail())) {
+			return;
+		}
+		
 		if (formContact == null) {
 			formContact = new X_ZZ_FormContact(Env.getCtx(), 0, null);
 			formContact.setZZ_Application_Form_ID(applicationFormID);
