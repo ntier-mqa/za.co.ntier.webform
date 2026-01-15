@@ -117,6 +117,7 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 			@BindingParam("row") Map<ColumnInfo<?>, Object> row, @BindingParam("col") ColumnInfo<?> col,
 			@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
 		annexure.uploadFile(row, col, event);
+		notifyProgramComplete(); 
 	}
 	
 	@Command
@@ -124,6 +125,7 @@ public class AnnexureTableVMWrapper extends ComponentVMWrapper<AnnexureInfo>{
 			@BindingParam("row") AnnexureRow row, @BindingParam("col") ColumnInfo<?> col,
 			@ContextParam(ContextType.TRIGGER_EVENT) MouseEvent event) throws IOException {
 		annexure.removeAttachment(row, col, event);
+		notifyProgramComplete(); 
 	}
 	
 	

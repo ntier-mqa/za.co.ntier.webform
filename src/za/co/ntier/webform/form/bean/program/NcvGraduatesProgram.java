@@ -75,60 +75,70 @@ public class NcvGraduatesProgram extends AbstractProgram {
 	}
 
 	@Override
-    public boolean isProgramValid() {
-        return hasValidRow(unemployed, false);
-    }
+	public boolean isProgramValid() {
+	    // WPA is required only when the column exists (same flag you used to add it)
+	    boolean wpaRequired = getMenuContextInfo().getIsUploadWPAForNVC(); // if you have getter, else pass in via field
+	    return hasValidRow(unemployed, true, wpaRequired);
+	}
 
-    // --- helpers ---
-    private static boolean hasValidRow(AnnexureInfo table, boolean wpaRequired) {
-        if (table == null || table.getRows() == null) return false;
+	// --- helpers ---
+	private static boolean hasValidRow(AnnexureInfo table, boolean tradeRequired, boolean wpaRequired) {
+	    if (table == null || table.getRows() == null) return false;
 
-        ColumnInfo<?> colNum    = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, table);
-        ColumnInfo<?> colPostal = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel, table);
-        ColumnInfo<?> colArea   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel, table);
-        ColumnInfo<?> colWPA    = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, table); // may be null if not added
+	    ColumnInfo<?> colTrade  = AnnexureInfo.lookupColByTitle("Trades", table);
+	    ColumnInfo<?> colNum    = AnnexureInfo.lookupColByTitle(ColumnInfo.colNoUnEmployedLabel, table);
+	    ColumnInfo<?> colPostal = AnnexureInfo.lookupColByTitle(ColumnInfo.colPostalCodeLabel, table);
+	    ColumnInfo<?> colArea   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel, table);
+	    ColumnInfo<?> colWPA    = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, table);
 
-        for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
-            // number
-            int n = 0;
-            if (colNum != null && row.get(colNum) instanceof IntData) {
-                Integer v = ((IntData) row.get(colNum)).getValue();
-                n = (v != null) ? v : 0;
-            }
+	    for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
 
-            // postal
-            boolean postalOk = false;
-            if (colPostal != null && row.get(colPostal) instanceof PostalData) {
-                String p = ((PostalData) row.get(colPostal)).getPostal();
-                postalOk = p != null && !p.trim().isEmpty();
-            }
+	        // trade
+	        boolean tradeOk = true;
+	        if (tradeRequired) {
+	            Object t = (colTrade != null) ? row.get(colTrade) : null;
+	            tradeOk = (t != null); // for DataType.List this is usually the selected item object
+	        }
 
-            // area
-            boolean areaOk = false;
-            if (colArea != null && row.get(colArea) instanceof AreaData) {
-                areaOk = ((AreaData) row.get(colArea)).getSelectedArea() != null;
-            }
+	        // number
+	        int n = 0;
+	        if (colNum != null && row.get(colNum) instanceof IntData) {
+	            Integer v = ((IntData) row.get(colNum)).getValue();
+	            n = (v != null) ? v : 0;
+	        }
 
-            // wpa (only if required)
-            boolean wpaOk = true;
-            if (wpaRequired) {
-                wpaOk = (colWPA != null && row.get(colWPA) instanceof UploadData)
-                        && hasFile((UploadData) row.get(colWPA));
-            }
+	        // postal
+	        boolean postalOk = false;
+	        if (colPostal != null && row.get(colPostal) instanceof PostalData) {
+	            String p = ((PostalData) row.get(colPostal)).getPostal();
+	            postalOk = p != null && !p.trim().isEmpty();
+	        }
 
-            if (n > 0 && postalOk && areaOk && wpaOk) {
-                return true;
-            }
-        }
-        return false;
-    }
+	        // area
+	        boolean areaOk = false;
+	        if (colArea != null && row.get(colArea) instanceof AreaData) {
+	            areaOk = ((AreaData) row.get(colArea)).getSelectedArea() != null;
+	        }
 
-    private static boolean hasFile(UploadData up) {
-        if (up == null) return false;
-        // New upload in this session
-        if (up.getBytes() != null && up.getBytes().length > 0) return true;
-        // Or an already-saved file (filename populated on init)
-        return up.getFileName() != null && !up.getFileName().isBlank();
-    }
+	        // wpa
+	        boolean wpaOk = true;
+	        if (wpaRequired) {
+	            wpaOk = (colWPA != null && row.get(colWPA) instanceof UploadData)
+	                    && hasFile((UploadData) row.get(colWPA));
+	        }
+
+	        if (tradeOk && n > 0 && postalOk && areaOk && wpaOk) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+	private static boolean hasFile(UploadData up) {
+	    if (up == null) return false;
+	    if (up.getBytes() != null && up.getBytes().length > 0) return true;
+	    return up.getFileName() != null && !up.getFileName().isBlank();
+	}
+
 
 }
