@@ -1,23 +1,19 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
+import org.compiere.model.I_AD_User;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
-import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Trx;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_C_BPartner;
+import za.co.ntier.api.model.I_ZZ_FormContact;
 import za.co.ntier.api.model.X_C_BPartner;
-import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -28,8 +24,10 @@ import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
+import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
 public class MaintainOrganisationVM extends BaseVM {
 	private FormInfo formInfo;
@@ -78,35 +76,77 @@ public class MaintainOrganisationVM extends BaseVM {
 		addressDetailTab.setSclass("address");
 		addressDetailTab.setTabTitle("ADDRESS DETAILS");
 		
-		physicalAddress = MainSrdFormVM.getAddressDetailComp("Physical ", "Physical", "Physical", false, orgPO.getC_BPartner_ID());
-		postalAddress = MainSrdFormVM.getAddressDetailComp("Postal ", "Postal", "Postal", false, orgPO.getC_BPartner_ID());
+		physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", false, orgPO.getC_BPartner_ID());
+		postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", false, orgPO.getC_BPartner_ID());
 		addressDetailTab.getCompModel().add(physicalAddress);
-		addressDetailTab.getCompModel().add(MainSrdFormVM.getAddressControlComp(physicalAddress, postalAddress));
+		addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(physicalAddress, postalAddress));
 		addressDetailTab.getCompModel().add(postalAddress);
 	}
 	
 	private TableModel initContactDetailComp() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		ColumnModel orgEmailCol = CellModel.getColModelForText(
-				Msg.getElement(Env.getCtx(), "ZZOrgEmail")
-				, I_C_BPartner.COLUMNNAME_ZZOrgEmail
+		ColumnModel titleCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Title)
+				, I_AD_User.COLUMNNAME_Title
 				).required()
-				.setTableName(I_C_BPartner.Table_Name);
-		cols.add(orgEmailCol);
+				.setTableName(I_AD_User.Table_Name);
+		cols.add(titleCol);
 		
+		ColumnModel firstNameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Name)//TODO SDF name
+				, I_AD_User.COLUMNNAME_Name
+				).required()
+				.setTableName(I_AD_User.Table_Name);
+		cols.add(firstNameCol);
+		
+		ColumnModel lastNameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Name)//TODO name 2
+				, I_AD_User.COLUMNNAME_Name
+				).required()
+				.setTableName(I_AD_User.Table_Name);
+		cols.add(lastNameCol);
+		
+		//Designation
+		/*ColumnModel lastNameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_de)//TODO name 2
+				, I_AD_User.COLUMNNAME_Name
+				).required()
+				.setTableName(I_AD_User.Table_Name);
+		cols.add(lastNameCol);*/
+		
+		ColumnModel telephoneNumberCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
+				, I_AD_User.COLUMNNAME_Phone2
+				).setTableName(I_AD_User.Table_Name);
+		cols.add(telephoneNumberCol);
+
+		ColumnModel cellPhoneNumberCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone)
+				, I_AD_User.COLUMNNAME_Phone
+				).required()
+				.setTableName(I_AD_User.Table_Name);
+		cols.add(cellPhoneNumberCol);
+
 		ColumnModel orgFaxCol = CellModel.getColModelForText(
-				Msg.getElement(Env.getCtx(), "ZZOrgFax")
-				, I_C_BPartner.COLUMNNAME_ZZOrgFax
-				).setTableName(I_C_BPartner.Table_Name);
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Fax)
+				, I_AD_User.COLUMNNAME_Fax
+				).setTableName(I_AD_User.Table_Name);
 		cols.add(orgFaxCol);
 		
-		ColumnModel orgPhoneCol = CellModel.getColModelForText(
-				Msg.getElement(Env.getCtx(), "ZZOrgPhone")
-				, I_C_BPartner.COLUMNNAME_ZZOrgPhone
+		ColumnModel emailCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
+				, I_AD_User.COLUMNNAME_EMail
 				).required()
-				.setTableName(I_C_BPartner.Table_Name);
-		cols.add(orgPhoneCol);
+				.setReadonly(true)
+				.setTableName(I_AD_User.Table_Name);
+		cols.add(emailCol);
+		
+		ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
+				, I_ZZ_FormContact.COLUMNNAME_C_Region_ID).required();
+		cols.add(provinceCol);
+		
 		
 		TableModel orgContactDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
 		orgContactDetailBean.setSclass("srd-org-contact");

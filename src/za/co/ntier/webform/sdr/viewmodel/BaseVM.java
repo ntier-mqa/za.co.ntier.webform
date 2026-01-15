@@ -1,7 +1,6 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;

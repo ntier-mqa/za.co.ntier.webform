@@ -7,7 +7,6 @@ import java.util.HashMap;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
-import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MBPartner;
@@ -22,7 +21,6 @@ import org.zkoss.zk.ui.event.InputEvent;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.ISaveForm;
-import za.co.ntier.webform.form.IgnoreException;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
