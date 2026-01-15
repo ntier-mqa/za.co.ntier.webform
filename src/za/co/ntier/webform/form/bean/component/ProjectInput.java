@@ -19,12 +19,21 @@ import za.co.ntier.webform.form.MasterUtil;
 public class ProjectInput extends AnnexureInfo {
 	
 	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos) {
-		return ProjectInput.getProject(initColumnInfos, null);
+		return getProject(initColumnInfos, false);
+	}
+	
+	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, boolean isShowTotal) {
+		return getProject(initColumnInfos, null, true, isShowTotal);
 	}
 	
 	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String secctionTitle){
 		return getProject(initColumnInfos, secctionTitle, true);
 	}
+	
+	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String secctionTitle, boolean addAreaCol) {
+		return getProject(initColumnInfos, secctionTitle, addAreaCol, false);
+	}
+	
 	/**
 	 * no row title, no total, has section title
 	 * 
@@ -32,7 +41,7 @@ public class ProjectInput extends AnnexureInfo {
 	 * @param initColumnInfos
 	 * @return
 	 */
-	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String secctionTitle, boolean addAreaCol){
+	public static ProjectInput getProject(List<ColumnInfo<?>> initColumnInfos, String secctionTitle, boolean addAreaCol, boolean isShowTotal){
 		List<ColumnInfo<?>> columnInfos = new ArrayList<>(initColumnInfos);
 		if(addAreaCol) {
 			columnInfos.add(ColumnInfo.getColPostal(ColumnInfo.colPostalCodeLabel, I_ZZLearnersApplied.COLUMNNAME_Postal));
@@ -40,7 +49,7 @@ public class ProjectInput extends AnnexureInfo {
 					ColumnInfo.getColArea(ColumnInfo.colAreaLabel, MasterUtil.getInitCities(), I_ZZLearnersApplied.COLUMNNAME_C_City_ID));	
 		}
 				
-		ProjectInput projectInput = AnnexureInfo.getAnnexureInfo(ProjectInput.class, columnInfos, false);
+		ProjectInput projectInput = AnnexureInfo.getAnnexureInfo(ProjectInput.class, columnInfos, isShowTotal);
 		
 		BiFunction<AnnexureInfo, X_ZZ_Application_Form, PO> poSupplier = (annexure, appForm) -> {
 			X_ZZLearnersApplied po = new X_ZZLearnersApplied(Env.getCtx(), 0, appForm.get_TrxName());

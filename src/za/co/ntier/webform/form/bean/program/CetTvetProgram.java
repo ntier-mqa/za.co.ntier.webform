@@ -47,7 +47,6 @@ public class CetTvetProgram extends AbstractProgram {
 
 		ColumnInfo<?> colNoBeneficiaries = ColumnInfo.getColPositiveNumber(ColumnInfo.colNoBeneficiariesTitle, I_ZZAnnexure.COLUMNNAME_ZZBeneficiaries);
 		colNoBeneficiaries.setCalTotal(true);
-		ColumnInfo<?> colDiscipline = ColumnInfo.getColText(ColumnInfo.colDisciplineTitle, I_ZZAnnexure.COLUMNNAME_ZZDiscipline);
 		ColumnInfo<?> colTotalNoBeneficiaries = ColumnInfo.getColPositiveNumber(ColumnInfo.colTotalNoBeneficiariesTitle, I_ZZAnnexure.COLUMNNAME_ZZTotalBeneficiaries);
 		colTotalNoBeneficiaries.setCalTotal(true);
 		// move from int to free text but data base not yet change because this column is not used anymore
@@ -92,6 +91,14 @@ public class CetTvetProgram extends AbstractProgram {
 			cols = List.of(colRequestedProgramme, colNumber);
 			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
 			subAnnexure.setTabTitle("Lecturers Skills Programs");
+			annexureInfos.add(subAnnexure);
+			
+			identify = "ANNEXURE D1";
+			ColumnInfo<?> qualifications = ColumnInfo.getColText("Qualifications", I_ZZSubAnnex.COLUMNNAME_ZZRequestedProgramme);
+			cols = List.of(qualifications, colNoLearners);
+			tableTitle = "CET Lecturers to be awarded bursaries to further their studies";
+			subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, sectionHeader, tableTitle);
+			subAnnexure.setTabTitle("Lecturers - Bursaries");
 			annexureInfos.add(subAnnexure);
 			
 		} else if (menuContextInfo.getProgramType() == ProgramType.TVET) {
