@@ -4,9 +4,16 @@
 <nodom xmlns:n="native"
 	viewModel="@id('vmMcuy') @init('za.co.ntier.webform.form.viewmodel.program.MiningCommunityUnemployedYouthVMWrapper')">
 	
-	<hlayout sclass="subSectionHeader">
+	<hlayout sclass="subSectionHeader" style="display:flex; justify-content:space-between">
 		<label sclass="subSectionHeaderTitle"
 			value="@init(vmMcuy.program.programTitle)" />
+			
+		<include
+			visible="@init(vmMcuy.showDownload)"
+	    	menuContextInfo="@init(vmMcuy.menuContextInfo)"
+	    	label="Download Annexure"
+	    	fileName="Annexure.pdf"
+			src="@load((WebForm.getBundleResourcePath('component/downloadButton.zul')))" />
 	</hlayout>
 	
 	<include  component="@load(vmMcuy.program.learnerApplys)" 
