@@ -91,48 +91,74 @@ public class NcvGraduatesProgram extends AbstractProgram {
 	    ColumnInfo<?> colArea   = AnnexureInfo.lookupColByTitle(ColumnInfo.colAreaLabel, table);
 	    ColumnInfo<?> colWPA    = AnnexureInfo.lookupColByTitle(ColumnInfo.colWPALabel, table);
 
+	    boolean hasCompleteRow = false;
+
 	    for (Map<ColumnInfo<?>, Object> row : table.getRows()) {
 
 	        // trade
-	        boolean tradeOk = true;
-	        if (tradeRequired) {
-	            Object t = (colTrade != null) ? row.get(colTrade) : null;
-	            tradeOk = (t != null); // for DataType.List this is usually the selected item object
-	        }
+	        Object tradeObj = (colTrade != null) ? row.get(colTrade) : null;
+	        boolean tradeFilled = !tradeRequired || tradeObj != null;
 
 	        // number
-	        int n = 0;
+	        Integer nVal = null;
 	        if (colNum != null && row.get(colNum) instanceof IntData) {
-	            Integer v = ((IntData) row.get(colNum)).getValue();
-	            n = (v != null) ? v : 0;
+	            nVal = ((IntData) row.get(colNum)).getValue();
 	        }
+	        boolean numFilled = (nVal != null && nVal > 0);
 
 	        // postal
-	        boolean postalOk = false;
+	        String pVal = null;
 	        if (colPostal != null && row.get(colPostal) instanceof PostalData) {
-	            String p = ((PostalData) row.get(colPostal)).getPostal();
-	            postalOk = p != null && !p.trim().isEmpty();
+	            pVal = ((PostalData) row.get(colPostal)).getPostal();
 	        }
+	        boolean postalFilled = (pVal != null && !pVal.trim().isEmpty());
 
 	        // area
-	        boolean areaOk = false;
+	        boolean areaFilled = false;
 	        if (colArea != null && row.get(colArea) instanceof AreaData) {
-	            areaOk = ((AreaData) row.get(colArea)).getSelectedArea() != null;
+	            areaFilled = ((AreaData) row.get(colArea)).getSelectedArea() != null;
 	        }
 
 	        // wpa
-	        boolean wpaOk = true;
+	        boolean wpaFilled = !wpaRequired;
+	        UploadData up = null;
 	        if (wpaRequired) {
-	            wpaOk = (colWPA != null && row.get(colWPA) instanceof UploadData)
-	                    && hasFile((UploadData) row.get(colWPA));
+	            if (colWPA != null && row.get(colWPA) instanceof UploadData) {
+	                up = (UploadData) row.get(colWPA);
+	                wpaFilled = hasFile(up);
+	            } else {
+	                wpaFilled = false;
+	            }
 	        }
 
-	        if (tradeOk && n > 0 && postalOk && areaOk && wpaOk) {
-	            return true;
+	        // ---- row state checks ----
+
+	        // Is this row "started" (user touched anything)?
+	        boolean started =
+	                (tradeRequired && tradeObj != null)
+	             || (nVal != null && nVal > 0)
+	             || (pVal != null && !pVal.trim().isEmpty())
+	             || areaFilled
+	             || (wpaRequired && up != null && (hasFile(up)));
+
+	        // If not started at all -> ignore (blank row allowed)
+	        if (!started) {
+	            continue;
 	        }
+
+	        // If started, it must be fully complete, otherwise program invalid (disable Next)
+	        boolean complete = tradeFilled && numFilled && postalFilled && areaFilled && wpaFilled;
+	        if (!complete) {
+	            return false; // <-- this is what disables Next when a new line is partially filled
+	        }
+
+	        hasCompleteRow = true;
 	    }
-	    return false;
+
+	    // Must have at least one complete row overall
+	    return hasCompleteRow;
 	}
+
 
 	private static boolean hasFile(UploadData up) {
 	    if (up == null) return false;

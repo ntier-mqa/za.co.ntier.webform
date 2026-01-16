@@ -200,6 +200,7 @@ public class AnnexureInfo implements ISaveForm{
 			areaData.areaSelect(null);
 		else
 			areaData.areaSelect((MCity)event.getSelectedObjects().iterator().next());
+		// BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null);   May need this
 	}
 
 	public AnnexureRow createDetailRow(boolean autoAddRow) {
@@ -438,6 +439,7 @@ public class AnnexureInfo implements ISaveForm{
 		PostalData postalData = (PostalData)row.get(col);
 		if (postalData != null)
 			postalData.postalChange(event.getValue());
+		// BindUtils.postGlobalCommand(null, null, "tabSelectionChanged", null); may need this
 	}
 
 	@Override
