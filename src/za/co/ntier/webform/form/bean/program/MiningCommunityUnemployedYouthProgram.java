@@ -28,8 +28,8 @@ public class MiningCommunityUnemployedYouthProgram extends AbstractProgram{
 	private ProjectInput strategy;
 	
 	private String programTitle;
-	private Integer monthlyStipend = 1750;
-	private Integer maxMonthlyAllocation = 15000;
+	private Integer monthlyStipend = 2000;
+	private Integer maxMonthlyAllocation = 16000;
 	
 	private ColumnInfo<?> budgetColDuration = ColumnInfo.getColPositiveNumber("Duration of program (Months)" 
 			, I_ZZLearnersApplied.COLUMNNAME_NoMonths);
