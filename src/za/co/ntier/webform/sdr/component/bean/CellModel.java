@@ -104,6 +104,7 @@ public class CellModel implements IValueChange {
 	public static int POSITIVE_NUM_CELL=8;
 	public static int DOCUPLOAD_CELL=9;
 	public static int BUTTON_CELL=10;
+	public static int PHONE_CELL=11;
 
 	private int cellType;
 
@@ -184,6 +185,10 @@ public class CellModel implements IValueChange {
 	
 	public static  ColumnModel getColModelForPositiveNumber(String title, String daoPropertyName) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, POSITIVE_NUM_CELL));
+	}
+	
+	public static  ColumnModel getColModelForPhone(String title, String daoPropertyName) {
+		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, PHONE_CELL));
 	}
 	
 	public static ColumnModel getColModelForGenericCell(

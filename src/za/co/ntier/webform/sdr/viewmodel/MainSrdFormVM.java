@@ -11,7 +11,7 @@ import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZSdf;
-import za.co.ntier.api.model.X_AD_User;
+import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.webform.form.MasterUtil;
@@ -36,7 +36,7 @@ public class MainSrdFormVM extends BaseVM {
 	private NavTab mainTab;
 	private TableModel names;
 	X_ZZSdf sdf;
-	X_AD_User person;
+	MUser_New person;
 	
 	private void initSDF() {
 		Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZSdf.Table_Name)
@@ -66,7 +66,7 @@ public class MainSrdFormVM extends BaseVM {
 		DaoManage personManage = new DaoManage();
 		
 		int loginUserId = Env.getAD_User_ID(Env.getCtx());
-		person = new X_AD_User(Env.getCtx(), loginUserId, null);
+		person = new MUser_New(Env.getCtx(), loginUserId, null);
 		initSDF();
 		
 		personManage.setDao(person);

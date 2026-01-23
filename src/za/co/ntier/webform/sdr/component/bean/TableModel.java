@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -82,8 +83,12 @@ public class TableModel implements ISupportSave {
 	private BiFunction<TableModel, X_ZZSdf, PO> poSupplier;
 	
 	public static class DaoManage{
-		Map<String, PO> daos = new HashMap<>();
-
+		private String trxName;
+		
+		private Map<String, PO> daos = new HashMap<>();
+		
+		private Map<String, Function<DaoManage, PO>> poSuppliers = new HashMap<>();
+		
 		/**
 		 * @return the dao
 		 */
@@ -94,6 +99,16 @@ public class TableModel implements ISupportSave {
 				return daos.get(tableName);
 			}
 
+		}
+		
+
+		public PO getDaoForSave(String tableName) {
+			PO dao = getDao(tableName);
+			if (dao == null && getPoSupplier(tableName) != null) {
+				dao = getPoSupplier(tableName).apply(this);
+				daos.put(tableName, dao);
+			}
+			return dao;
 		}
 
 		/**
@@ -106,6 +121,22 @@ public class TableModel implements ISupportSave {
 		public void saveDao(String trxName) {
 			daos.forEach((t, po) -> po.saveEx(trxName)
 					);
+		}
+
+		private Function<DaoManage, PO> getPoSupplier(String tableName) {
+			return poSuppliers.get(tableName);
+		}
+
+		public void setPoSupplier(String tableName, Function<DaoManage, PO> poSupplier) {
+			poSuppliers.put(tableName, poSupplier);
+		}
+
+		public String getTrxName() {
+			return trxName;
+		}
+
+		public void setTrxName(String trxName) {
+			this.trxName = trxName;
 		}
 	}
 	
@@ -633,13 +664,15 @@ public class TableModel implements ISupportSave {
 
 	@Override
 	public void save(X_ZZSdf applicationForm, String trxName) {
+		saveList(getRows(), applicationForm, trxName);
+	}
+	
+	@Override
+	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
 		for(RowModel rowModel : getRows()) {
-			rowModel.save(applicationForm, trxName);
+			rowModel.saveAttachment(applicationForm, trxName);
 		}
 		
-		if(getDaoManage() != null) {
-			getDaoManage().saveDao(trxName);
-		}
 	}
 
 	/**
@@ -669,6 +702,7 @@ public class TableModel implements ISupportSave {
 	public void setFormView(boolean formView) {
 		this.formView = formView;
 	}
+
 
 
 

@@ -94,4 +94,9 @@ public class NavTab implements ListDataListener, ISupportSave{
 	public void save(X_ZZSdf applicationForm, String trxName) {
 		saveList(tabPanelModel, applicationForm, trxName);
 	}
+	@Override
+	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+		tabPanelModel.forEach(t -> t.saveAttachment(applicationForm, trxName));
+		
+	}
 }

@@ -13,6 +13,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.jfree.util.Log;
 
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.webform.form.MasterUtil;
@@ -111,7 +112,13 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 				if (daoPerCol == null)
 					daoPerCol = getData();
 				
-				cellModel.setValue(MasterUtil.getObjectPropertyValue(daoPerCol, cellModel.getColModel().getDaoPropertyName()));
+				if (daoPerCol != null) {
+					cellModel.setValue(MasterUtil.getObjectPropertyValue(daoPerCol, cellModel.getColModel().getDaoPropertyName()));
+				}else {
+					if (Log.isInfoEnabled())
+						log.info(String.format("not yet dao for table %s to set to properties %s", cellModel.getColModel().getTableName(), cellModel.getColModel().getDaoPropertyName()));
+				}
+				
  			});
 
 	}
@@ -149,13 +156,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 		PO daoPerCol = null;
 		for (CellModel cellModel : values()) {
 			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
-				if (tableModel.getDaoManage() != null)
-					daoPerCol =  tableModel.getDaoManage().getDao(cellModel.getColModel().getTableName());
-				if (daoPerCol == null && data == null) {
-					data = tableModel.getPoSupplier().apply(tableModel, applicationForm);
-				}
-				if (daoPerCol == null)
-					daoPerCol = data;
+				daoPerCol = getDao(cellModel, applicationForm);
 				
 				//TODO:Move logic set ui value to dao to cellMode
 				Object value = convertDataType(daoPerCol, cellModel);
@@ -163,7 +164,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 			}
 		}
 		
-		if (daoPerCol != null) {
+		if (tableModel.getDaoManage() == null && daoPerCol != null) {
 			daoPerCol.saveEx(trxName);
 			
 			for (CellModel cellModel : values()) {
@@ -173,6 +174,34 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 			}
 		}
 			
+	}
+	
+	private PO getDao(CellModel cellModel, X_ZZSdf applicationForm) {
+		PO daoPerCol = null;
+		if (tableModel.getDaoManage() != null)
+			daoPerCol =  tableModel.getDaoManage().getDaoForSave(cellModel.getColModel().getTableName());
+		
+		if (daoPerCol == null && data == null) {
+			data = tableModel.getPoSupplier().apply(tableModel, applicationForm);
+		}
+		if (daoPerCol == null)
+			daoPerCol = data;
+		
+		return daoPerCol;
+	}
+	
+	/**
+	 * @param applicationForm
+	 * @param trxName
+	 */
+	@Override
+	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+		for (CellModel cellModel : values()) {
+			if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
+				PO daoPerCol = getDao(cellModel, applicationForm);
+				((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
+			}
+		}
 	}
 
 	private Object convertDataType(PO daoPerCol, CellModel cellModel) {

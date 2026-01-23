@@ -209,7 +209,7 @@ public class BuildFormUtil {
 		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false);
 		addressDetailBean.setSclass(addressType + " srd-address");
 		addressDetailBean.setPoSupplier((ann, appForm) -> {
-			X_ZZPersonAddress po = new X_ZZPersonAddress(appForm.getCtx(), 0, null);
+			X_ZZPersonAddress po = new X_ZZPersonAddress(Env.getCtx(), 0, null);
 			po.setZZAddressType(addressType);
 			if(isSdfAddress) {
 				po.setAD_User_ID(parentId);

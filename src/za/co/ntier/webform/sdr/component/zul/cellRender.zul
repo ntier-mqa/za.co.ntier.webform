@@ -6,7 +6,8 @@
 
 
 <nodom
-  viewModel="@id('vmCellRender') @init('za.co.ntier.webform.sdr.component.viewmodel.CellRenderVM')">
+  viewModel="@id('vmCellRender') @init('za.co.ntier.webform.sdr.component.viewmodel.CellRenderVM')"
+  validationMessages="@id('vmsgs')">
     <nodom
       children="@bind(vmCellRender.cols)">
       <!-- template to generate a title/component per col -->
@@ -26,14 +27,13 @@
               if = "${vmCellRender.formView}" 
               sclass="required" value="*"
               visible="@init(col.mandatory)" />
-            <!-- description -->
+          </div>
+		  <!-- description -->
             <label
               if = "${vmCellRender.formView}" 
               sclass="help-text"/>
             <!-- error -->
-            <label sclass="error"></label>
-          </div>
-
+            <label sclass="error" value="@bind(vmsgs[vmCellRender.random])"></label>
           
           <!-- content part -->
           <div sclass="cell-content">
@@ -44,6 +44,15 @@
               readonly="@init(col.readonly)"
               value="@bind(vmCellRender.row[col].value)
               @converter(ConvertUtil.getConvertBlankNull())" 
+              onChange="@command('cmdValueChanged', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
+            <!-- textbox - phone -->  
+            <longbox
+              if="${ vmCellRender.row[col].cellType eq CellModel.PHONE_CELL }"
+              readonly="@init(col.readonly)"
+              
+              value="@bind(vmCellRender.row[col].value)
+              @converter(ConvertUtil.getConvertLongText())
+              @validator(vmCellRender.phoneValidator, cellModel=vmCellRender.row[col], vm=vmCellRender)"
               onChange="@command('cmdValueChanged', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
             
             <!-- list - Area - province -->

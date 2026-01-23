@@ -222,6 +222,7 @@
 
 .mqaWebForm .container .grid-container .form-field select,
 .mqaWebForm .grid-formview .cell-content input[type="text"],
+.mqaWebForm .grid-formview .cell-content input[type="tel"],
 .mqaWebForm .grid-formview .cell-content select,
 .mqaWebForm .grid-formview .cell-content textarea,
 .mqaWebForm .sdrForm input[type="text"],

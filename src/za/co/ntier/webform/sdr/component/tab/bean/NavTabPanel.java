@@ -65,16 +65,32 @@ public class NavTabPanel implements ISupportSave {
 
 	@Override
 	public void save(X_ZZSdf applicationForm, String trxName) {
+		
+		saveList(getList(), applicationForm, trxName);
+		
+	}
+
+	private List<ISupportSave> getList() {
 		List<ISupportSave> listSave = new ArrayList<>();
 		for (Object objSupportSave : compModel) {
 			if (objSupportSave instanceof ISupportSave) {
 				listSave.add((ISupportSave)objSupportSave);
 			}
 		}
-		saveList(listSave, applicationForm, trxName);
+		
+		return listSave;
+	}
+	
+	@Override
+	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+		for (Object objSupportSave : compModel) {
+			if (objSupportSave instanceof ISupportSave) {
+				((ISupportSave)objSupportSave).saveAttachment(applicationForm, trxName);
+			}
+		}
 		
 	}
-
+	
 	/**
 	 * @return the sclass
 	 */
@@ -88,6 +104,7 @@ public class NavTabPanel implements ISupportSave {
 	public void setSclass(String sclass) {
 		this.sclass = sclass;
 	}
+
 
 
 }

@@ -12,4 +12,6 @@ public interface ISupportSave {
 			supportSave.save(applicationForm, trxName);
 		}
 	}
+	
+	public void saveAttachment(X_ZZSdf applicationForm, String trxName);
 }

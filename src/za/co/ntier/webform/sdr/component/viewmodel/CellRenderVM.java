@@ -3,18 +3,25 @@ package za.co.ntier.webform.sdr.component.viewmodel;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+import org.zkoss.bind.ValidationContext;
+import org.zkoss.bind.Validator;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.validator.AbstractValidator;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
+import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
@@ -22,7 +29,33 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 @Init(superclass = true)
 public class CellRenderVM extends BaseComponentVM<RowModel>{
+	
+	public static class PhoneValidator extends AbstractValidator{
 
+		@Override
+		public void validate(ValidationContext ctx) {
+			String phoneInput = (String)ctx.getProperty().getValue();
+			CellModel cellModel = (CellModel)ctx.getValidatorArg("cellModel");
+			CellRenderVM vm = (CellRenderVM)ctx.getBindContext().getValidatorArg("vm");
+			if(StringUtils.isNoneBlank(phoneInput) && !MUser_New.isValidPhoneNumber(phoneInput)) {
+				addInvalidMessage(ctx, vm.getRandom(), "Phone number must be in format +27999999999");
+			}
+		}
+		
+	}
+	
+	private Validator phoneValidator = new PhoneValidator();
+	
+	String random = UUID.randomUUID().toString();
+	
+	public String getRandom() {
+		return random;
+	}
+	
+	public Validator getPhoneValidator() {
+		return phoneValidator;
+	}
+	
 	public List<ColumnModel> getCols() {
 		return getComponent().getAnnexure().getColumnInfos();
 

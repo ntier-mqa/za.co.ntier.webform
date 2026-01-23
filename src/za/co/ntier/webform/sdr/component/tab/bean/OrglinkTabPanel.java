@@ -13,7 +13,7 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
-import za.co.ntier.api.model.X_AD_User;
+import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
@@ -81,7 +81,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 	}
 
-	private TableModel initOrgSearchModel(X_AD_User person, X_ZZSdf sdf) {
+	private TableModel initOrgSearchModel(MUser_New person, X_ZZSdf sdf) {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel sdlNoCol = CellModel.getColModelForText(
@@ -122,7 +122,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 		return namesBean;
 	}
 	
-	private TableModel initSdfOrgModel(X_AD_User person, X_ZZSdf sdf) {
+	private TableModel initSdfOrgModel(MUser_New person, X_ZZSdf sdf) {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel actingForEmployerCol = CheckboxCellModel.getCheckboxColModel(
@@ -185,7 +185,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 		return namesBean;
 	}
 
-	private TableModel initBankDetailModel(X_AD_User person, X_ZZSdf sdf) {
+	private TableModel initBankDetailModel(MUser_New person, X_ZZSdf sdf) {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel warningBankDetailUploadCol = CellModel.getColModelForLabel(
