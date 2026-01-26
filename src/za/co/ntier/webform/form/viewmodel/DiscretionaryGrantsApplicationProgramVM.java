@@ -71,6 +71,7 @@ import za.co.ntier.webform.form.bean.program.ArtisanRPLProgram;
 import za.co.ntier.webform.form.bean.program.CandidacyProgram;
 import za.co.ntier.webform.form.bean.program.CentreOfSpecialisationProgram;
 import za.co.ntier.webform.form.bean.program.CetTvetProgram;
+import za.co.ntier.webform.form.bean.program.EdpAppIndividualProgram;
 import za.co.ntier.webform.form.bean.program.HetLectureSupport;
 import za.co.ntier.webform.form.bean.program.InhouseTrainingProgram;
 import za.co.ntier.webform.form.bean.program.InternshipProgram;
@@ -347,6 +348,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			program = new SmallBusiness(menuContextInfo, applicationForm);
 		}else if (ProgramType.LEARNING_MATERIALS_DEVELOPMENT == programType) {
 			program = new LearningMaterialsDevelopment(menuContextInfo, applicationForm);
+		}else if (ProgramType.EDP_APP_INDIVIDUAL == programType) {
+			program = new EdpAppIndividualProgram(menuContextInfo, applicationForm);
 		}
 
 		if (program != null)
