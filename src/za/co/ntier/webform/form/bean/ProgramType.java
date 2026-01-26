@@ -18,6 +18,7 @@ public enum ProgramType {
 	MULTIYEAR_PARTNERSHIP_INTERNSHIP,
 	MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE,
 	STANDARD_SETTING,
+	EDP_APP_INDIVIDUAL,
 	
 	UNKNOWN;
 	
@@ -74,6 +75,8 @@ public enum ProgramType {
 				return "program/multiyearPartnershipWorkExperience.zul";
 			case STANDARD_SETTING:
 				return "program/standardSetting.zul";
+			case EDP_APP_INDIVIDUAL:
+				return "program/edpAppIndividual.zul";
 			case CET:
 			case TVET:
 			case TVET_BURSARS:
@@ -109,6 +112,7 @@ public enum ProgramType {
 				|| this == WORKPLACE_COACHES || this == MINING_COMMUNITY || this == UNEMPLOYED_YOUTH || this == SMALL_SCALE_MINING || this == HET_LECTURE_SUPPORT
 				|| this == SMALL_BUSINESS || this == WORKER_INITIATED_TRAINING || this == LEARNING_MATERIALS_DEVELOPMENT 
 				|| this == MULTIYEAR_PARTNERSHIP_INTERNSHIP || this == MULTIYEAR_PARTNERSHIP_WORK_EXPERIENCE
+				|| this == EDP_APP_INDIVIDUAL
 				;
 
 	}
