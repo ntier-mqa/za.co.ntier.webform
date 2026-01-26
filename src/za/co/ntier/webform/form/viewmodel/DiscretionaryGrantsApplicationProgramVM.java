@@ -370,6 +370,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 			program = new SmallBusiness(menuContextInfo, applicationForm);
 		}else if (ProgramType.LEARNING_MATERIALS_DEVELOPMENT == programType) {
 			program = new LearningMaterialsDevelopment(menuContextInfo, applicationForm);
+		}else if (ProgramType.EDP_APP_INDIVIDUAL == programType) {
+			program = new EdpAppIndividualProgram(menuContextInfo, applicationForm);
 		}
 //		else if (ProgramType.EDP_APP_INDIVIDUAL == programType) {
 //			program = new EdpAppIndividualProgram(menuContextInfo, applicationForm);
