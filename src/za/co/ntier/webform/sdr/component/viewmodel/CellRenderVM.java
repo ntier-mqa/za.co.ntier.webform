@@ -30,29 +30,64 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 @Init(superclass = true)
 public class CellRenderVM extends BaseComponentVM<RowModel>{
 	
-	public static class PhoneValidator extends AbstractValidator{
-
+	public static class BaseValidator extends AbstractValidator{
+		CellModel cellModel;
+		Object value;
+		CellRenderVM vm;
+		
 		@Override
 		public void validate(ValidationContext ctx) {
-			String phoneInput = (String)ctx.getProperty().getValue();
-			CellModel cellModel = (CellModel)ctx.getValidatorArg("cellModel");
-			CellRenderVM vm = (CellRenderVM)ctx.getBindContext().getValidatorArg("vm");
+			cellModel = (CellModel)ctx.getValidatorArg("cellModel");
+			value = ctx.getProperty().getValue();
+			vm = (CellRenderVM)ctx.getBindContext().getValidatorArg("vm");
+		}
+	}
+	
+	public static class RequiredValidator extends BaseValidator{
+		@Override
+		public void validate(ValidationContext ctx) {
+			super.validate(ctx);
+			if (cellModel.getColModel().isMandatory()) {
+				if (value == null) {
+					addInvalidMessage(ctx, cellModel.getValidateMsgKey(), cellModel.getColModel().getTitle() + " is mandatory");
+				}
+			}
+		}
+	}
+	
+	public static class PhoneValidator extends RequiredValidator{
+		@Override
+		public void validate(ValidationContext ctx) {
+			super.validate(ctx);
+			String phoneInput = (String)value;
 			if(StringUtils.isNoneBlank(phoneInput) && !MUser_New.isValidPhoneNumber(phoneInput)) {
-				addInvalidMessage(ctx, vm.getRandom(), "Phone number must be in format +27999999999");
+				addInvalidMessage(ctx, cellModel.getValidateMsgKey(), "Phone number must be in format +27999999999");
 			}
 		}
 		
 	}
 	
-	private Validator phoneValidator = new PhoneValidator();
-	
-	String random = UUID.randomUUID().toString();
-	
-	public String getRandom() {
-		return random;
+	public static class TextValidator extends RequiredValidator{
+		@Override
+		public void validate(ValidationContext ctx) {
+			super.validate(ctx);
+		}
 	}
 	
+	private TextValidator textValidator;
+	public Validator getTextValidator() {
+		if (textValidator == null) {
+			textValidator = new TextValidator();
+		}
+		return textValidator;
+	}
+	
+	
+	private PhoneValidator phoneValidator;
 	public Validator getPhoneValidator() {
+		if (phoneValidator == null) {
+			phoneValidator = new PhoneValidator();
+		}
 		return phoneValidator;
 	}
 	

@@ -132,50 +132,7 @@ public class BuildFormUtil {
 		return addressType.getAddressTitle(programType, addressType == AddressType.MAIN_ALTER);
 	}
 
-	public static TableModel getAddressControlComp(TableModel physicalAddress, TableModel postalAddress) {
-		List<ColumnModel> cols = new ArrayList<>();
-		
-		ColumnModel gpsCoordinatesCol = CellModel.getColModelForText("GPS Coordinates", null).setReadonly(true);
-		cols.add(gpsCoordinatesCol);
-		
-		ColumnModel dupplicateCol = CellModel.getColModelForGenericCell("Use Physical Address For Postal Address?", null, CellModel.BUTTON_CELL);
-		dupplicateCol.setShowTitle(false);
-		
-		dupplicateCol.setEventHandle((inputEvent, cellModel) -> {
-			
-				RowModel physicalRow = physicalAddress.getRow();
-				RowModel postalRow = postalAddress.getRow();
-				for (ColumnModel physicalColModel : physicalAddress.getColumnInfos()) {
-					for (ColumnModel postalColModel : postalAddress.getColumnInfos()) {
-						if (physicalColModel.getDaoPropertyName() != null && StringUtils.equals(postalColModel.getDaoPropertyName(), physicalColModel.getDaoPropertyName())) {
-							postalRow.get(postalColModel).setValue(physicalRow.get(physicalColModel).getValue());
-							break;
-						}
-					}
-				}
-		});
-		
-		//dupplicateCol.setShowTitle(false);
-		cols.add(dupplicateCol);
-	
-		/*
-		 * ColumnModel addressCol = CellModel.getColModelForText("Address", null);
-		 * cols.add(addressCol);
-		 */
-		
-		TableModel addressDetailCtr = TableModel.getTableBean(TableModel.class, cols, false);
-		addressDetailCtr.setSclass("srd-address-ctrl");
-	
-		addressDetailCtr.setDecoratorCell(rowModel -> {
-			CellModel btDupplicate = rowModel.get(dupplicateCol);
-			btDupplicate.setIconSclass("z-icon-fw z-icon-clone z-icon-solid");
-		});
-		
-		addressDetailCtr.init(null, null);
-		return addressDetailCtr;
-	}
-
-	public static TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader, boolean isSdfAddress, int parentId) {
+	public static TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader, boolean isSdfAddress, int parentId, TableModel copyto) {
 		List<ColumnModel> colsAddress = new ArrayList<>();
 		
 		ColumnModel complexSectionFarmCol = CellModel.getColModelForText(
@@ -206,6 +163,28 @@ public class BuildFormUtil {
 				, I_ZZPersonAddress.COLUMNNAME_C_Region_ID).required();
 		colsAddress.add(physicalProvinceCol);
 	
+		ColumnModel dupplicateCol = null;
+		if (copyto != null) {
+			dupplicateCol = CellModel.getColModelForGenericCell("Use Physical Address For Postal Address?", null, CellModel.BUTTON_CELL);
+			dupplicateCol.setShowTitle(false);
+			
+			dupplicateCol.setEventHandle((inputEvent, cellModel) -> {
+				
+					RowModel physicalRow = cellModel.getRowModel();
+					RowModel postalRow = copyto.getRow();
+					for (ColumnModel physicalColModel : cellModel.getTableModel().getColumnInfos()) {
+						for (ColumnModel postalColModel : copyto.getColumnInfos()) {
+							if (physicalColModel.getDaoPropertyName() != null && StringUtils.equals(postalColModel.getDaoPropertyName(), physicalColModel.getDaoPropertyName())) {
+								postalRow.get(postalColModel).setValue(physicalRow.get(physicalColModel).getValue());
+								break;
+							}
+						}
+					}
+			});
+			
+			colsAddress.add(dupplicateCol);
+		}
+		
 		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false);
 		addressDetailBean.setSclass(addressType + " srd-address");
 		addressDetailBean.setPoSupplier((ann, appForm) -> {
@@ -221,6 +200,14 @@ public class BuildFormUtil {
 		});
 	
 		addressDetailBean.setSubSectionHeader(subHeader);
+		
+		final ColumnModel dupplicateColF = dupplicateCol;
+		if (copyto != null) {
+			addressDetailBean.setDecoratorCell(rowModel -> {
+				CellModel btDupplicate = rowModel.get(dupplicateColF);
+				btDupplicate.setIconSclass("z-icon-fw z-icon-clone z-icon-solid");
+			});
+		}
 		
 		Query savedDataQuery = MTable.get(Env.getCtx(), X_ZZPersonAddress.Table_Name)
 				.createQuery(String.format("%s = ? AND %s = ?"

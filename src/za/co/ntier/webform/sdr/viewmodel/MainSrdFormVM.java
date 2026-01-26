@@ -45,6 +45,7 @@ public class MainSrdFormVM extends BaseVM {
 		savedDataQuery.setOnlyActiveRecords(true);
 		sdf = savedDataQuery.firstOnly();
 		if (sdf == null) {
+			isNewSdf = true;
 			sdf = new X_ZZSdf(Env.getCtx(), 0, null);
 			sdf.setAD_User_ID(person.getAD_User_ID());
 			sdf.setZZFirstName(person.getName());
@@ -56,14 +57,12 @@ public class MainSrdFormVM extends BaseVM {
 		}
 	}
 	
-	
+	DaoManage personManage = new DaoManage();
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.menuContextInfo = menuContextInfo;
 		
 		setFormInfo(new FormInfo(menuContextInfo));
-
-		DaoManage personManage = new DaoManage();
 		
 		int loginUserId = Env.getAD_User_ID(Env.getCtx());
 		person = new MUser_New(Env.getCtx(), loginUserId, null);
@@ -91,10 +90,11 @@ public class MainSrdFormVM extends BaseVM {
 		addressDetailTab.setSclass("address");
 		addressDetailTab.setTabTitle("Address Details");
 		
-		physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", true, sdf.getAD_User_ID());
-		postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", true, sdf.getAD_User_ID());
+		TableModel postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", true, sdf.getAD_User_ID(), null);
+		TableModel physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", true, sdf.getAD_User_ID(), postalAddress);
+		
 		addressDetailTab.getCompModel().add(physicalAddress);
-		addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(physicalAddress, postalAddress));
+		//addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(physicalAddress, postalAddress));
 		addressDetailTab.getCompModel().add(postalAddress);
 
 		NavTabPanel educationDetailTab = new NavTabPanel(mainTab);
@@ -107,10 +107,6 @@ public class MainSrdFormVM extends BaseVM {
 		//orgLinkTab.setTabTitle("Org Link");
 	}
 
-	
-	
-	TableModel physicalAddress;
-	TableModel postalAddress;
 	
 	private TableModel getNamesComp(DaoManage personManage) {
 		List<ColumnModel> cols = new ArrayList<>();
@@ -220,13 +216,13 @@ public class MainSrdFormVM extends BaseVM {
 	private TableModel getContactDetailComp(DaoManage personManage) {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ColumnModel telephoneNumberCol = CellModel.getColModelForText(
+		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
 				, I_AD_User.COLUMNNAME_Phone2
 				).setTableName(I_AD_User.Table_Name);
 		cols.add(telephoneNumberCol);
 
-		ColumnModel cellPhoneNumberCol = CellModel.getColModelForText(
+		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone)
 				, I_AD_User.COLUMNNAME_Phone
 				).required()
@@ -253,7 +249,8 @@ public class MainSrdFormVM extends BaseVM {
 
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel("ID Document Upload", null, null, "UPLOAD FILE");
+		ColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel("ID Document Upload", null, null, "UPLOAD FILE")
+				.setTableName(I_ZZSdf.Table_Name);
 		cols.add(idDocUploadCol);
 
 		ColumnModel greettingCol = ListCellModel.getListColumnModel(
@@ -443,21 +440,12 @@ public class MainSrdFormVM extends BaseVM {
 	
 	@Override
 	protected void doSave(String trxName) {
-		isNewSdf = false;
-		
-		if (sdf == null) {
-			sdf = new X_ZZSdf(Env.getCtx(), 0, null);
-			sdf.setAD_Org_ID(0);
-			sdf.setAD_User_ID(person.getAD_User_ID());
-			sdf.saveEx(trxName);
-			isNewSdf = true;
-			
-		}
-		
 		mainTab.save(sdf, trxName);
 		names.save(sdf, trxName);
 		//sdf.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));
-		sdf.saveEx(trxName);
+		personManage.saveDao(trxName);
+		mainTab.saveAttachment(sdf, trxName);
+		names.saveAttachment(sdf, trxName);
 	}
 	
 	@Override

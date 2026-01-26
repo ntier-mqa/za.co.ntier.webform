@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import org.zkoss.bind.BindUtils;
@@ -32,7 +33,11 @@ public class CellModel implements IValueChange {
 		return colModel;
 	}
 
+	private String validateMsgKey = UUID.randomUUID().toString();
 	
+	public String getValidateMsgKey() {
+		return validateMsgKey;
+	}
 	
 	public void setColModel(ColumnModel colModel) {
 		this.colModel = colModel;
@@ -105,6 +110,7 @@ public class CellModel implements IValueChange {
 	public static int DOCUPLOAD_CELL=9;
 	public static int BUTTON_CELL=10;
 	public static int PHONE_CELL=11;
+	public static int EMAIL_CELL=12;
 
 	private int cellType;
 
@@ -189,6 +195,10 @@ public class CellModel implements IValueChange {
 	
 	public static  ColumnModel getColModelForPhone(String title, String daoPropertyName) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, PHONE_CELL));
+	}
+	
+	public static  ColumnModel getColModelForEmail(String title, String daoPropertyName) {
+		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, EMAIL_CELL));
 	}
 	
 	public static ColumnModel getColModelForGenericCell(

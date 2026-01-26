@@ -113,7 +113,8 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 					daoPerCol = getData();
 				
 				if (daoPerCol != null) {
-					cellModel.setValue(MasterUtil.getObjectPropertyValue(daoPerCol, cellModel.getColModel().getDaoPropertyName()));
+					Object fieldValue = daoPerCol.get_Value(cellModel.getColModel().getDaoPropertyName());
+					cellModel.setValue(fieldValue);
 				}else {
 					if (Log.isInfoEnabled())
 						log.info(String.format("not yet dao for table %s to set to properties %s", cellModel.getColModel().getTableName(), cellModel.getColModel().getDaoPropertyName()));
