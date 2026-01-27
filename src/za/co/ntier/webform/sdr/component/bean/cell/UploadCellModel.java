@@ -99,4 +99,16 @@ public class UploadCellModel extends CellModel {
 		}
 		
 	}
+	
+	@Override
+	public void setValueFromDao(PO daoPerCol) {
+		String fileName = AttachmentUtil.getFileNameFromAttachmentEntries(
+				daoPerCol,
+				getBtText(),
+				null
+				);
+		
+		setFileName(fileName);
+		
+	}
 }

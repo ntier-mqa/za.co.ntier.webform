@@ -6,6 +6,10 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
+import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.PO;
+import org.compiere.util.CLogger;
+import org.jfree.util.Log;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -17,6 +21,7 @@ import org.zkoss.zk.ui.event.InputEvent;
  *
  */
 public class CellModel implements IValueChange {
+	protected static final CLogger log = CLogger.getCLogger(CellModel.class);
 	private String iconSclass;
 	
 	private TableModel tableModel;
@@ -246,6 +251,19 @@ public class CellModel implements IValueChange {
 
 	public void setIconSclass(String iconSclass) {
 		this.iconSclass = iconSclass;
+	}
+
+	public void setValueFromDao(PO daoPerCol) {
+		if (StringUtils.isNotBlank(getColModel().getDaoPropertyName())) {
+			Object fieldValue = daoPerCol.get_Value(getColModel().getDaoPropertyName());
+			setValue(fieldValue);
+		}else {
+			if(Log.isInfoEnabled()) {
+				log.info("Column " + getColModel().getTitle() + " don't set matching to dao");
+			}
+			
+		}
+		
 	}
 
 	

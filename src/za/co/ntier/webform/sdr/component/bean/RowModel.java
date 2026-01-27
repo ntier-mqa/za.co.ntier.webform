@@ -102,7 +102,6 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 
 	public void fillRowDataFromDao() {
 		values().stream()
-			.filter(cellModel -> {return StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName());})
 			.forEach(cellModel -> {
 				PO daoPerCol = null;
 				if (tableModel.getDaoManage() != null) {
@@ -113,8 +112,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 					daoPerCol = getData();
 				
 				if (daoPerCol != null) {
-					Object fieldValue = daoPerCol.get_Value(cellModel.getColModel().getDaoPropertyName());
-					cellModel.setValue(fieldValue);
+					cellModel.setValueFromDao(daoPerCol);
 				}else {
 					if (Log.isInfoEnabled())
 						log.info(String.format("not yet dao for table %s to set to properties %s", cellModel.getColModel().getTableName(), cellModel.getColModel().getDaoPropertyName()));
