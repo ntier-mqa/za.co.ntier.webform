@@ -17,11 +17,17 @@ public class ColumnModel {
 	
 	private Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> cellModelSupplier;
 
-	public CellModel getCellModel(TableModel tableModel, RowModel rowModel) {
+	public CellModel initCellModel(TableModel tableModel, RowModel rowModel) {
 		if (getCellModelSupplier() == null) {
-			throw new IllegalStateException("Need to provide a cellModelSupplier or override getCellModel");
+			throw new IllegalStateException("Need to provide a cellModelSupplier or override initCellModel");
 		}
 		return cellModelSupplier.apply(Triple.of(tableModel, rowModel, this));
+	}
+	
+	public final CellModel getCellModel(TableModel tableModel, RowModel rowModel) {
+		CellModel cellModel = initCellModel(tableModel, rowModel);
+		cellModel.initDefaultValue(tableModel, rowModel);
+		return cellModel;
 	}
 
 	private static String correctDaoPropertyName(String daoPropertyName) {
@@ -55,6 +61,15 @@ public class ColumnModel {
 	public ColumnModel setMandatory(boolean mandatory) { this.mandatory = mandatory; return this; }
 	// (optional fluent alias)
 	public ColumnModel required() { this.mandatory = true; return this; }
+	
+	private Object defaultValue;
+	public Object getDefaultValue() {
+		return defaultValue;
+	}
+	public ColumnModel setDefaultValue(Object defaultValue) { 
+		this.defaultValue = defaultValue; 
+		return this; 
+	}
 	
 	
 	private boolean readonly = false;

@@ -346,10 +346,14 @@ public class MainSrdFormVM extends BaseVM {
 				, title -> {return title.getZZ_AlternateIDType_ID();}
 			);
 		alternateIDTypeCol.setUseForID(true)
+			.setDefaultValue("RSA ID Number", item -> {
+				return alternateIDTypeCol.getDisplayConvert().apply(item).equals("RSA ID Number");
+			})
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(alternateIDTypeCol);
-
+		
+		
 		ColumnModel nationalityCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_Nationality_ID)
 				, I_ZZSdf.COLUMNNAME_ZZ_Nationality_ID
@@ -378,13 +382,6 @@ public class MainSrdFormVM extends BaseVM {
 		personDetailBean.setDaoManage(personManage);
 		
 		personDetailBean.init(null, null);
-
-		@SuppressWarnings("unchecked")
-		ListCellModel<X_ZZ_AlternateIDType> listCellModel = (ListCellModel<X_ZZ_AlternateIDType>)personDetailBean.getRow().get(alternateIDTypeCol);
-		listCellModel.setValue("RSA ID Number", 
-					item -> {
-						return alternateIDTypeCol.getDisplayConvert().apply(item).equals("RSA ID Number");
-					});
 		
 		return personDetailBean;
 	}

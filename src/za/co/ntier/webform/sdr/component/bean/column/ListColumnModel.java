@@ -15,6 +15,7 @@ public class ListColumnModel<T> extends ColumnModel {
 	private List<T> dataProvider;
 	private String beanPropertyName;
 	private Function<T, String> displayConvert;
+	
 	public ListColumnModel(String colTitle) {
 		super(colTitle);
 	}
@@ -29,13 +30,28 @@ public class ListColumnModel<T> extends ColumnModel {
 	}
 
 	@Override
-	public ListCellModel<T> getCellModel(TableModel tableModel, RowModel rowModel) {
+	public ListCellModel<T> initCellModel(TableModel tableModel, RowModel rowModel) {
 		@SuppressWarnings("unchecked")
 		ListCellModel<T> listCellModel = (ListCellModel<T>)getCellModelSupplier().apply(Triple.of(tableModel, rowModel, this));
 		listCellModel.setDataProvider(dataProvider);
 		return listCellModel;
 	}
 
+	@Override
+	public ColumnModel setDefaultValue(Object defaultValue) {
+		//if (defaultValue != null && value instanceof T)
+		
+		throw new IllegalArgumentException("call overload function setDefaultValue(Object defaultValue, Function<T, Boolean> compareFunction)");
+	}
+	
+	private Function<T, Boolean> compareFunction;
+	
+	public ListColumnModel<T> setDefaultValue(Object defaultValue, Function<T, Boolean> compareFunction) {
+		super.setDefaultValue(defaultValue);
+		this.compareFunction = compareFunction;
+		return this;
+	}
+	
 	/**
 	 * @return the dataProvider
 	 */
@@ -108,5 +124,13 @@ public class ListColumnModel<T> extends ColumnModel {
 	public ListColumnModel<T> setUseForID(boolean isUseForID) {
 		this.isUseForID = isUseForID;
 		return this;
+	}
+
+	public Function<T, Boolean> getCompareFunction() {
+		return compareFunction;
+	}
+
+	public void setCompareFunction(Function<T, Boolean> compareFunction) {
+		this.compareFunction = compareFunction;
 	}
 }

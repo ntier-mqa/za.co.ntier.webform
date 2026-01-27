@@ -54,6 +54,10 @@ public class CellModel implements IValueChange {
 		this.colModel = colModel;
 	}
 
+	public void initDefaultValue (TableModel tableModel, RowModel rowModel) {
+		setValue(colModel.getDefaultValue());
+	}
+	
 	/**
 	 * child classes should override this method to handle value changes
 	 * @param value The new value

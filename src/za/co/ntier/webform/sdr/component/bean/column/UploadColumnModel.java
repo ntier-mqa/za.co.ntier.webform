@@ -37,7 +37,7 @@ public class UploadColumnModel extends ColumnModel {
 	}
 
 	@Override
-	public CellModel getCellModel(TableModel tableModel, RowModel rowModel) {
+	public CellModel initCellModel(TableModel tableModel, RowModel rowModel) {
 		UploadCellModel cellModel = new UploadCellModel(tableModel, rowModel, this);
 		cellModel.setBtText(btText);
 		return cellModel;

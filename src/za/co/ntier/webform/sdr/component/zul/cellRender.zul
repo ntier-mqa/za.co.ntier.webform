@@ -50,7 +50,9 @@
               readonly="@init(col.readonly)"
               
               type="@init(vmCellRender.row[col].cellType eq CellModel.PHONE_CELL ? 'tel' : 'text')"
-              value="@bind(vmCellRender.row[col].value)
+              value="
+              	@load(vmCellRender.row[col].value)
+              	@save(vmCellRender.row[col].value)
               	@converter(ConvertUtil.getConvertBlankNull())
               	@validator(vmCellRender.textValidator, cellModel=vmCellRender.row[col], vm=vmCellRender)" 
               onChange="@command('cmdValueChanged', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
