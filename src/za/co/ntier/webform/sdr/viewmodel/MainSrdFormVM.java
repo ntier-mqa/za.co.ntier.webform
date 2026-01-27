@@ -263,7 +263,7 @@ public class MainSrdFormVM extends BaseVM {
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(greettingCol);
 
-		ColumnModel idNoCol = CellModel.getColModelForText(
+		ColumnModel idNoCol = CellModel.getColModelForIDPASS(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No)
 				, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No
 			).required()

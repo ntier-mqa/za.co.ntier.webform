@@ -133,6 +133,7 @@ public class BuildFormUtil {
 	}
 
 	public static TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader, boolean isSdfAddress, int parentId, TableModel copyto) {
+		prefixName = "";
 		List<ColumnModel> colsAddress = new ArrayList<>();
 		
 		ColumnModel complexSectionFarmCol = CellModel.getColModelForText(

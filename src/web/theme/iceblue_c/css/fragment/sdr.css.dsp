@@ -188,6 +188,14 @@
     background:var(--mqa-blue);
 }
 
+.mqaWebForm .grid-formview .cell-error {
+	flex-grow:1;
+}
+
+.mqaWebForm .grid-formview .cell-error .z-label{
+	color:red;
+}
+
 /* --- Styling for Label, Required, and Help Text (Adjusted margin-top) --- */
 
 .mqaWebForm .grid-formview .cell-title .label {

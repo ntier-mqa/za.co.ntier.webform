@@ -116,6 +116,7 @@ public class CellModel implements IValueChange {
 	public static int BUTTON_CELL=10;
 	public static int PHONE_CELL=11;
 	public static int EMAIL_CELL=12;
+	public static int ID_PASSPORTNO_CELL=13;
 
 	private int cellType;
 
@@ -206,12 +207,19 @@ public class CellModel implements IValueChange {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, EMAIL_CELL));
 	}
 	
+	public static  ColumnModel getColModelForIDPASS(String title, String daoPropertyName) {
+		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, ID_PASSPORTNO_CELL));
+	}
+	
 	public static ColumnModel getColModelForGenericCell(
 			String title, String daoPropertyName, int cellType) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null)
 				, CellModelParams.of(title, daoPropertyName, cellType));
 	}
 
+	public boolean isTextfield () {
+		return getCellType() == TEXT_CELL || getCellType() == EMAIL_CELL || getCellType() == ID_PASSPORTNO_CELL || getCellType() == PHONE_CELL; 
+	}
 	/**
 	 * @return the value
 	 */

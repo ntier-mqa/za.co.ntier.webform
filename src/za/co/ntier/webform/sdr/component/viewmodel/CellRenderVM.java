@@ -1,11 +1,13 @@
 package za.co.ntier.webform.sdr.component.viewmodel;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import org.adempiere.webui.panel.RegistrationWindow;
 import org.apache.commons.lang3.StringUtils;
 import org.zkoss.bind.ValidationContext;
 import org.zkoss.bind.Validator;
@@ -14,7 +16,11 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.sys.BinderCtrl;
+import org.zkoss.bind.sys.ValidationMessages;
 import org.zkoss.bind.validator.AbstractValidator;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -34,43 +40,58 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 		CellModel cellModel;
 		Object value;
 		CellRenderVM vm;
+		List<String> msgs = new ArrayList<>();
+		
+		void doValidate(ValidationContext ctx) {
+			
+		}
 		
 		@Override
 		public void validate(ValidationContext ctx) {
+			msgs.clear();
 			cellModel = (CellModel)ctx.getValidatorArg("cellModel");
 			value = ctx.getProperty().getValue();
 			vm = (CellRenderVM)ctx.getBindContext().getValidatorArg("vm");
+			
+			doValidate(ctx);
+			
+			addInvalidMessages(ctx, cellModel.getValidateMsgKey(), msgs.toArray(new String[0]));
 		}
+		
 	}
 	
 	public static class RequiredValidator extends BaseValidator{
 		@Override
-		public void validate(ValidationContext ctx) {
-			super.validate(ctx);
+		public void doValidate(ValidationContext ctx) {
+			super.doValidate(ctx);
 			if (cellModel.getColModel().isMandatory()) {
 				if (value == null) {
-					addInvalidMessage(ctx, cellModel.getValidateMsgKey(), cellModel.getColModel().getTitle() + " is mandatory");
+					msgs.add("mandatory");
 				}
 			}
 		}
 	}
 	
-	public static class PhoneValidator extends RequiredValidator{
-		@Override
-		public void validate(ValidationContext ctx) {
-			super.validate(ctx);
-			String phoneInput = (String)value;
-			if(StringUtils.isNoneBlank(phoneInput) && !MUser_New.isValidPhoneNumber(phoneInput)) {
-				addInvalidMessage(ctx, cellModel.getValidateMsgKey(), "Phone number must be in format +27999999999");
-			}
-		}
-		
-	}
-	
 	public static class TextValidator extends RequiredValidator{
 		@Override
-		public void validate(ValidationContext ctx) {
-			super.validate(ctx);
+		public void doValidate(ValidationContext ctx) {
+			super.doValidate(ctx);
+			String textValue = (String)value;
+			if (cellModel.getCellType() == CellModel.PHONE_CELL) {
+				if(StringUtils.isNoneBlank(textValue) && !MUser_New.isValidPhoneNumber(textValue)) {
+					msgs.add("Phone number must be in format +27999999999");
+				}
+			}else if (cellModel.getCellType() == CellModel.EMAIL_CELL) {
+				
+			}else if (cellModel.getCellType() == CellModel.ID_PASSPORTNO_CELL) {
+				try {
+					RegistrationWindow.validateIdNo(null, textValue);
+				}catch (WrongValueException e) {
+					msgs.add(e.getMessage());
+					
+				}
+				
+			}
 		}
 	}
 	
@@ -80,15 +101,6 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 			textValidator = new TextValidator();
 		}
 		return textValidator;
-	}
-	
-	
-	private PhoneValidator phoneValidator;
-	public Validator getPhoneValidator() {
-		if (phoneValidator == null) {
-			phoneValidator = new PhoneValidator();
-		}
-		return phoneValidator;
 	}
 	
 	public List<ColumnModel> getCols() {
