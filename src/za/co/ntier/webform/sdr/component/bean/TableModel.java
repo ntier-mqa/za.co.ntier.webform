@@ -664,7 +664,7 @@ public class TableModel implements ISupportSave {
 
 	@Override
 	public void save(X_ZZSdf applicationForm, String trxName) {
-		saveList(getRows(), applicationForm, trxName);
+		ISupportSave.saveList(getRows(), applicationForm, trxName);
 	}
 	
 	@Override

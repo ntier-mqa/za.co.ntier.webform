@@ -92,7 +92,7 @@ public class NavTab implements ListDataListener, ISupportSave{
 	}
 	@Override
 	public void save(X_ZZSdf applicationForm, String trxName) {
-		saveList(tabPanelModel, applicationForm, trxName);
+		ISupportSave.saveList(tabPanelModel, applicationForm, trxName);
 	}
 	@Override
 	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {

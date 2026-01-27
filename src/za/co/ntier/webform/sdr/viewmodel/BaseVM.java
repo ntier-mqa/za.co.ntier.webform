@@ -8,12 +8,13 @@ import org.compiere.util.Trx;
 import org.zkoss.bind.annotation.Command;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.ISupportSaveApp;
 
-public abstract class BaseVM {
+public abstract class BaseVM implements ISupportSaveApp{
 	protected CLogger log = CLogger.getCLogger (getClass());
 	
 	@Command(value = "saveClose")
-	public void saveClose() throws IOException {
+	public void saveClose() {
 		Trx trx = null;
 		Boolean success = null;
 		Exception exc = null;
@@ -68,7 +69,5 @@ public abstract class BaseVM {
 			MasterUtil.showDialog(exc.getMessage(), null);
 		}
 	}
-	
-	protected abstract void doSave(String trxName);
 	
 }

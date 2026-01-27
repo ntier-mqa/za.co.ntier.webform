@@ -20,6 +20,7 @@ import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
+import za.co.ntier.webform.sdr.component.bean.ISupportSave;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
@@ -434,15 +435,15 @@ public class MainSrdFormVM extends BaseVM {
 	}
 	
 	private boolean isNewSdf = false;
+
+	@Override
+	public List<DaoManage> getDaoManages() {
+		return List.of(personManage);
+	}
 	
 	@Override
-	protected void doSave(String trxName) {
-		mainTab.save(sdf, trxName);
-		names.save(sdf, trxName);
-		//sdf.setDateDoc(Timestamp.valueOf(LocalDateTime.now()));
-		personManage.saveDao(trxName);
-		mainTab.saveAttachment(sdf, trxName);
-		names.saveAttachment(sdf, trxName);
+	public List<ISupportSave> getSaveComponents() {
+		return List.of(mainTab, names);
 	}
 	
 	@Override

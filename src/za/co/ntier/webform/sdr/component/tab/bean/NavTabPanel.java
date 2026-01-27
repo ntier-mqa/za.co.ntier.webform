@@ -66,7 +66,7 @@ public class NavTabPanel implements ISupportSave {
 	@Override
 	public void save(X_ZZSdf applicationForm, String trxName) {
 		
-		saveList(getList(), applicationForm, trxName);
+		ISupportSave.saveList(getList(), applicationForm, trxName);
 		
 	}
 

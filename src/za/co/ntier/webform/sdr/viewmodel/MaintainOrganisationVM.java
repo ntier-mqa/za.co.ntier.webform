@@ -28,6 +28,7 @@ import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
+import za.co.ntier.webform.sdr.component.bean.ISupportSave;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
@@ -419,14 +420,14 @@ public class MaintainOrganisationVM extends BaseVM {
 		this.mainTab = mainTab;
 	}
 	
+	@Override
+	public List<DaoManage> getDaoManages() {
+		return List.of(orgDaoManage);
+	}
 	
 	@Override
-	protected void doSave(String trxName) {
-		orgDaoManage.setTrxName(trxName);
-		mainTab.save(null, trxName);
-		names.save(null, trxName);
-		orgDaoManage.saveDao(trxName);
-		mainTab.saveAttachment(null, trxName);
+	public List<ISupportSave> getSaveComponents() {
+		return List.of(mainTab, names);
 	}
 	
 	@Override

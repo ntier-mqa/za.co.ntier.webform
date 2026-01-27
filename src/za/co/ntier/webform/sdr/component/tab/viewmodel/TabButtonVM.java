@@ -7,6 +7,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
@@ -33,7 +34,10 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 		navTab.doPrevTab();
 	}
 
-	
+	@Command
+	public void deleteAppForm() {
+		MasterUtil.closeActiveWindow();
+	}
 
 	@Command(value = "submitApplication")
 	public void submitApplication() throws IOException {
