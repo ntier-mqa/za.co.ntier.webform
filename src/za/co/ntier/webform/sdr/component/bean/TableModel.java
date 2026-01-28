@@ -119,7 +119,8 @@ public class TableModel implements ISupportSave {
 		}
 		
 		public void saveDao(String trxName) {
-			daos.forEach((t, po) -> po.saveEx(trxName)
+			daos.forEach(
+					(t, po) -> po.saveEx(trxName)
 					);
 		}
 

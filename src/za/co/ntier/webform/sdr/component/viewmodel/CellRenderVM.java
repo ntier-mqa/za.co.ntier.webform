@@ -54,8 +54,8 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 			vm = (CellRenderVM)ctx.getBindContext().getValidatorArg("vm");
 			
 			doValidate(ctx);
-			
-			addInvalidMessages(ctx, cellModel.getValidateMsgKey(), msgs.toArray(new String[0]));
+			if (msgs.size() > 0)
+				addInvalidMessages(ctx, cellModel.getValidateMsgKey(), msgs.toArray(new String[0]));
 		}
 		
 	}

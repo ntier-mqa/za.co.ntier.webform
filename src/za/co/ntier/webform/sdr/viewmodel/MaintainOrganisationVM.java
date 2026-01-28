@@ -7,6 +7,7 @@ import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_User;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_BPartner_Location;
 import org.compiere.model.X_C_Location;
@@ -148,7 +149,6 @@ public class MaintainOrganisationVM extends BaseVM {
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
 				)
-				.setReadonly(true)
 				.setTableName(I_AD_User.Table_Name);
 		cols.add(emailCol);
 		
@@ -201,6 +201,7 @@ public class MaintainOrganisationVM extends BaseVM {
 		orgDaoManage.setPoSupplier(I_AD_User.Table_Name, daoManage -> {
 			MUser_New nContact = new MUser_New(Env.getCtx(), 0, daoManage.getTrxName());
 			nContact.setC_BPartner_ID(orgPO.getC_BPartner_ID());
+			nContact.setNotificationType(X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice);
 			return nContact;
 		});
 		
@@ -272,7 +273,7 @@ public class MaintainOrganisationVM extends BaseVM {
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZSicCode)
 				, I_C_BPartner.COLUMNNAME_ZZSicCode
 				, MasterUtil.getSicCode()
-				, title -> {return title.getName();}
+				, title -> {return title.getValue() + " - " + title.getName();}
 				, title -> {return title.getValue();}
 			).required()
 			.setTableName(I_C_BPartner.Table_Name);
