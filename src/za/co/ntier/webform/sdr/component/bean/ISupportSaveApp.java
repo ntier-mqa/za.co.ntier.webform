@@ -2,9 +2,22 @@ package za.co.ntier.webform.sdr.component.bean;
 
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 
 public interface ISupportSaveApp {
+	public static class ValidateException extends AdempiereException{
+
+		private static final long serialVersionUID = -3877257428244735438L;
+		
+		public ValidateException(String msg) {
+			super(msg);
+		}
+	}
+	
 	public default List<ISupportSave> getSaveComponents(){
 		return List.of();
 	}
@@ -21,15 +34,10 @@ public interface ISupportSaveApp {
 			daoManage.setTrxName(trxName);
 		}
 		
-		boolean isValidate = true;
-		for (ISupportSave saveComponent : saveComponents) {
-			 if (!saveComponent.validate()) {
-				 isValidate = false;
-			 }
-		}
+		boolean isValidate = ISupportSave.validates(saveComponents);
 		
 		if (!isValidate)
-			return;
+			throw new ValidateException(Msg.getMsg(Env.getCtx(), "ZZValidateFormFail"));
 					
 		for (ISupportSave saveComponent : saveComponents) {
 			saveComponent.save(null, trxName);

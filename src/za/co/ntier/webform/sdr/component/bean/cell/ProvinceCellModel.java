@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.compiere.model.MCity;
 import org.compiere.model.MRegion;
@@ -51,24 +52,22 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 		}
 	}
 
-
 	@Override
-	public void setValue(Object regionId) {
-		getModel().clearSelection();
-		if (regionId == null || (int)regionId == 0) {
-
+	public List<MRegion> getDataProvider() {
+		return MasterUtil.getRegions();// search on all cities, not only in data provider
+	}
+	
+	private Function<MRegion, Object> defaultValueConvert = province -> {
+		return province.getC_Region_ID();
+	};
+	
+	@Override
+	public Function<MRegion, Object> getValueConvert() {
+		if (getColModel().getValueConvert() == null) {
+			return defaultValueConvert;
 		}else {
-			//for(MCity area : areaData.getDataProvider()) {
-			for(MRegion province : MasterUtil.getRegions()) {// search on all cities, not only in data provider
-				if (province.getC_Region_ID() == (int)regionId) {
-					if (!getModel().contains(province))
-						getModel().add(province);
-
-					getModel().addToSelection(province);
-				}
-			}
+			return getColModel().getValueConvert();
 		}
-
 	}
 
 	

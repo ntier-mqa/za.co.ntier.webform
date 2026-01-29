@@ -27,17 +27,25 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		}
 	}
 	
+	public List<T> getDataProvider(){
+		return getColModel().getDataProvider();
+	}
+	
+	public Function<T, Object> getValueConvert() {
+		return getColModel().getValueConvert();
+	}
+	
 	protected void setValue(Object value, Function<T, Boolean> compareFunction) {
 		getModel().clearSelection();
-		for (T item : getColModel().getDataProvider()) {
+		for (T item : getDataProvider()) {
 			Boolean isSelectedValue = null;
 
 			if (compareFunction != null) {
 				isSelectedValue = compareFunction.apply(item);
 			}else {
 				Object itemValue;
-				if (getColModel().getValueConvert() != null) {
-					itemValue = getColModel().getValueConvert().apply(item);
+				if (getValueConvert() != null) {
+					itemValue = getValueConvert().apply(item);
 				}else {
 					itemValue = item;
 				}
@@ -51,15 +59,17 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 				}
 				
 				getModel().addToSelection(item);
-				super.setValue(value);
+				//super.setValue(value);
 				return;
 			}
 		}
 	}
 	
+	
 	@Override
 	public void setValue(Object value) {
 		setValue(value, null);
+		dirtyValue = getValue();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -136,7 +146,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		else if (selectedItem == null && !getColModel().isUseForID()) 
 			return null;
 		
-		Function<T, Object> valueConvert = getColModel().getValueConvert();
+		Function<T, Object> valueConvert = getValueConvert();
 		if (valueConvert != null) {
 			return valueConvert.apply(selectedItem);
 		}else {

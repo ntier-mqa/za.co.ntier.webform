@@ -2,17 +2,26 @@ package za.co.ntier.webform.sdr.component.bean;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
+import org.adempiere.webui.panel.RegistrationWindow;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.jfree.util.Log;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.Converter;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
+
+import za.co.ntier.api.model.MUser_New;
 
 /**
  * Represents a cell in a table, it hold data and related info
@@ -21,6 +30,7 @@ import org.zkoss.zk.ui.event.InputEvent;
  *
  */
 public class CellModel implements IValueChange {
+	
 	protected static final CLogger log = CLogger.getCLogger(CellModel.class);
 	private String iconSclass;
 	
@@ -29,6 +39,12 @@ public class CellModel implements IValueChange {
 	private ColumnModel colModel;
 	
 	private Object value;
+	
+	/**
+	 * 
+	 * when a field not pass validate by org.zkoss.bind.Validator value isn't save 
+	 */
+	protected Object dirtyValue;
 	
 	public boolean notInputed() {
 		return Objects.isNull(value);
@@ -56,6 +72,53 @@ public class CellModel implements IValueChange {
 
 	public void initDefaultValue (TableModel tableModel, RowModel rowModel) {
 		setValue(colModel.getDefaultValue());
+	}
+	
+	private boolean formValidate = false;
+	private List<String> validateMsgs = new ArrayList<>();
+	
+	/**
+	 * call when save or move next tab for validate form
+	 */
+	public boolean validate() {
+		setFormValidate(true);
+		setValidateMsgs(doValidate(dirtyValue));
+		return validateMsgs.size() == 0;
+	}
+	
+	protected List<String> doValidate(Object inputValue) {
+		List<String> validateMsgs = new ArrayList<>();
+		if (getColModel().isMandatory() && inputValue == null) {
+			validateMsgs.add(Msg.getMsg(Env.getCtx(), "ZZValidateNotNull"));
+		}else if (inputValue == null) {
+			// no validate	
+		}else {
+			try {
+				if (getCellType() == CellModel.PHONE_CELL) {
+					RegistrationWindow.validateCellNo(null, inputValue.toString());
+				}else if (getCellType() == CellModel.EMAIL_CELL) {
+					RegistrationWindow.validateEmail(null, inputValue.toString());
+				}else if (getCellType() == CellModel.ID_PASSPORTNO_CELL) {
+					RegistrationWindow.validateIdNo(null, inputValue.toString());
+				}
+				
+			}catch (WrongValueException e) {
+				validateMsgs.add(e.getMessage());
+				
+			}
+		}
+		return validateMsgs;
+	}
+	/**
+	 * call from org.zkoss.bind.Validator for immediate validate a input
+	 * If validation fails, ViewModel's (or middle object's) properties will be unchanged
+	 * @param inputValue
+	 * @return
+	 */
+	public List<String> validate(Object inputValue) {
+		setFormValidate(false);
+		dirtyValue = inputValue;
+		return doValidate(inputValue);
 	}
 	
 	/**
@@ -236,6 +299,7 @@ public class CellModel implements IValueChange {
 	 */
 	public void setValue(Object value) {
 		this.value = value;
+		this.dirtyValue = value;
 		BindUtils.postNotifyChange(this, "value");
 	}
 
@@ -278,6 +342,29 @@ public class CellModel implements IValueChange {
 		
 	}
 
+	public boolean isFormValidate() {
+		return formValidate;
+	}
+
+	public boolean isFieldValidate() {
+		return !formValidate;
+	}
+	
+	public void setFormValidate(boolean formValidate) {
+		this.formValidate = formValidate;
+		BindUtils.postNotifyChange(this, "formValidate");
+		BindUtils.postNotifyChange(this, "fieldValidate");
+		
+	}
+
+	public List<String> getValidateMsgs() {
+		return validateMsgs;
+	}
+
+	public void setValidateMsgs(List<String> validateMsgs) {
+		this.validateMsgs = validateMsgs;
+		BindUtils.postNotifyChange(this, "validateMsgs");
+	}
 	
 
 }

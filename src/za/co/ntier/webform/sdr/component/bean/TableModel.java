@@ -705,6 +705,12 @@ public class TableModel implements ISupportSave {
 	}
 
 
+	@Override
+	public boolean validate() {
+		return ISupportSave.validates(rows);
+	}
+
+
 
 
 }

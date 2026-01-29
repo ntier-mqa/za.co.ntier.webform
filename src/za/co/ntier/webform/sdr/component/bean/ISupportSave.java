@@ -15,10 +15,10 @@ public interface ISupportSave {
 	
 	public void saveAttachment(X_ZZSdf applicationForm, String trxName);
 
-	public static <T extends ISupportSave> boolean validates(Collection<T> list, X_ZZSdf applicationForm, String trxName) {
+	public static boolean validates(Collection<?> list) {
 		boolean isValid = true;
-		for (ISupportSave supportSave : list) {
-			if (!supportSave.validate()) {
+		for (Object supportSave : list) {
+			if (supportSave instanceof ISupportSave && !((ISupportSave)supportSave).validate()) {
 				isValid = false;
 			}
 		}
@@ -26,7 +26,5 @@ public interface ISupportSave {
 		return isValid;
 	}
 	
-	public default boolean validate() {
-		return true;
-	}
+	public boolean validate();
 }

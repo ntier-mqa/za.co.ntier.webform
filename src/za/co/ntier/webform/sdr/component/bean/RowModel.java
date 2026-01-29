@@ -229,4 +229,15 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 		
 		
 	}
+	
+	@Override
+	public boolean validate() {
+		boolean isValid = true;
+		for (CellModel supportSave : this.values()) {
+			if (!supportSave.validate()) {
+				isValid = false;
+			}
+		}
+		return isValid;
+	}
 }
