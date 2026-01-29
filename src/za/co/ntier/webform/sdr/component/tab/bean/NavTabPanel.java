@@ -105,6 +105,11 @@ public class NavTabPanel implements ISupportSave {
 		this.sclass = sclass;
 	}
 
+	@Override
+	public boolean validate() {
+		return ISupportSave.validates(compModel);
+	}
+
 
 
 }
