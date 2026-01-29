@@ -24,6 +24,12 @@
 		<tabs>
 			<tab label="Declaration" selected="true" disabled="true"/>
 			<tab label="@init(vm.organisationTabTile)" disabled="true" />
+			
+			<!-- INDIVIDUAL INFORMATION CHANGE: add tab only for EDP_APP_INDIVIDUAL -->
+			<tab
+			if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL}"
+	     	label="Individual Information" disabled="true" />
+	     	
 			<tab label="Program" disabled="true"/>
 			<tab 
         if = "${vm.showContact}"
@@ -72,6 +78,24 @@
   							submitGate="@init('NONE')"
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 				</div>
+			</tabpanel>
+			
+			<!-- INDIVIDUAL INFORMATION CHANGE: new tabpanel -->
+			<tabpanel if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL}">
+			    <div sclass="tabContainer">
+			        <div sclass="formContainer">
+			            <include component="@load(vm.individualInformation)"
+			                     applicationProgramVM="@init(vm)"
+			                     src="@load((WebForm.getBundleResourcePath('component/individualInformation.zul')))" />
+			        </div>
+			
+			        <include tabType="@init(TabType.MidTab)"
+			                 tab="@init(formTab)"
+			                 applicationProgramVM="@load(vm)"
+			                 continueGate="@init('INDIVIDUALINFO')"
+			                 submitGate="@init('NONE')"
+			                 src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
+			    </div>
 			</tabpanel>
 
 			<tabpanel style="color:#CC0033">
@@ -146,7 +170,6 @@
 							src="@load((WebForm.getBundleResourcePath('component/mainButton.zul')))" />
 									</div>
 			</tabpanel>
-
 
 		</tabpanels>
 	</tabbox>
