@@ -72,7 +72,7 @@ public class BuildFormUtil {
 			ColumnModel alternativeNumberCol = CellModel.getColModelForText("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
 			cols.add(alternativeNumberCol);
 
-			ColumnModel emailCol = CellModel.getColModelForText("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
+			ColumnModel emailCol = CellModel.getColModelForEmail("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
 			cols.add(emailCol);
 		}
 

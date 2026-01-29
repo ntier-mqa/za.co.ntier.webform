@@ -145,7 +145,7 @@ public class MaintainOrganisationVM extends BaseVM {
 				).setTableName(I_AD_User.Table_Name);
 		cols.add(orgFaxCol);
 		
-		ColumnModel emailCol = CellModel.getColModelForText(
+		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
 				)
