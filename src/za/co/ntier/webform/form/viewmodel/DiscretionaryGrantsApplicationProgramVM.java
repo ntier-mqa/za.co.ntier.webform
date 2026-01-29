@@ -60,6 +60,7 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.Dialog;
 import za.co.ntier.webform.form.bean.component.EmployerDeclarationInfo;
 import za.co.ntier.webform.form.bean.component.FormInfo;
+import za.co.ntier.webform.form.bean.component.IndividualInformation;
 import za.co.ntier.webform.form.bean.component.OrganisationInfo;
 import za.co.ntier.webform.form.bean.component.UploadData;
 import za.co.ntier.webform.form.bean.component.UploadDocComponent;
@@ -169,6 +170,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	private UploadDocComponent uploadDoc;
 
 	private int selectedTabIndex; // defaults to 0
+	
+	private IndividualInformation individualInformation;
 
 	public void deleteApp() {
 		if (applicationForm != null) {
@@ -271,6 +274,16 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	public UploadDocComponent getUploadDoc() {
 		return uploadDoc;
 	}
+	
+	public IndividualInformation getIndividualInformation() {
+	    return individualInformation;
+	}
+
+	public void setIndividualInformation(IndividualInformation individualInformation) {
+	    this.individualInformation = individualInformation;
+	    BindUtils.postNotifyChange(null, null, this, "individualInformation");
+	    BindUtils.postNotifyChange(null, null, this, "individualComplete");
+	}
 
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
@@ -297,6 +310,15 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		organisationInfo.initComponent(applicationForm);
 
 		saveForms.add(organisationInfo);
+		
+		if (programType == ProgramType.EDP_APP_INDIVIDUAL) {
+			individualInformation = new IndividualInformation(menuContextInfo, this);
+			individualInformation.initComponent(applicationForm);
+			saveForms.add(individualInformation);
+		} else {
+			individualInformation = null;
+		}
+
 		
 		if (programType.isCetTvet()) {
 			setProgram(new CetTvetProgram(menuContextInfo, applicationForm));
@@ -494,7 +516,16 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		return true;
 	}
-
+	
+	@DependsOn({ "IndividualInformation.firstName", "IndividualInformation.surname", "IndividualInformation.idNumber" })
+	public boolean isIndividualComplete()
+	{
+		if (individualInformation == null)
+			return true;
+		return notEmpty(individualInformation.getFirstName()) && notEmpty(individualInformation.getSurname())
+				&& notEmpty(individualInformation.getIdNumber());
+	}
+	
 	public Boolean isMandatoryDocsUploaded() {
 
 	    // If there is no upload section configured, nothing to enforce
@@ -640,7 +671,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	public boolean isShowContact() {
-		return programType != ProgramType.STANDARD_SETTING; // && programType != ProgramType.DEV_PROGRAM;
+		return programType != ProgramType.STANDARD_SETTING && programType != ProgramType.EDP_APP_INDIVIDUAL; // && programType != ProgramType.DEV_PROGRAM;
 	}
 
 	public String getOrganisationTabTile () {
@@ -1102,6 +1133,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		queryLevyPaying.setParameters(bPartner.getC_BPartner_ID(), currentFinYear.getFiscalYear());
 		return queryLevyPaying.list().size() == 0;
 	}
-
+	
+	@Command("idNumberChanged")
+	public void idNumberChanged()
+	{
+		if (individualInformation != null)
+			individualInformation.onIdNumberChanged();
+		BindUtils.postNotifyChange(null, null, individualInformation, "age");
+		BindUtils.postNotifyChange(null, null, individualInformation, "gender");
+	}
 
 }
