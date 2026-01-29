@@ -11,6 +11,7 @@ import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.zk.ui.util.Clients;
 
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_EDP_Application;
@@ -183,6 +184,8 @@ public class IndividualInformation implements ISaveForm
 		catch (Exception ex)
 		{
 			age = null;
+			Clients.showNotification("Invalid ID number. Age/Gender not calculated.",
+					Clients.NOTIFICATION_TYPE_WARNING, null, "middle_center", 3000, true);
 		}
 
 		int g = Character.getNumericValue(id.charAt(6)); // 7th digit

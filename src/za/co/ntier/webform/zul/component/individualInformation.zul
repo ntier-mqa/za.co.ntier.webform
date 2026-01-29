@@ -35,6 +35,7 @@
                         </div>
                         <div sclass="cell-content">
                             <textbox value="@bind(vm.individualInformation.idNumber)"
+                            onChange="@command('idNumberChanged')"
                              constraint="no empty,/^[0-9]{13}$/: ID number must be 13 digits"/>
                         </div>
                     </div>
