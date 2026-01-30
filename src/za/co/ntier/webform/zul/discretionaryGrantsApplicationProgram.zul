@@ -28,7 +28,7 @@
 			<tab
 				if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL or vm.programType == ProgramType.EDP_APP_EMPLOYER}"
 				label="@load(vm.individualTabTitle)" disabled="true" />
-			<tab label="Program" disabled="true"/>
+			<tab if = "${vm.showProgram}" label="Program" disabled="true"/>
 			<tab 
         if = "${vm.showContact}"
         label="Program Contact" disabled="true"/>
@@ -100,7 +100,7 @@
 			    </div>
 			</tabpanel>
 
-			<tabpanel style="color:#CC0033">
+			<tabpanel if="${vm.showProgram}" style="color:#CC0033">
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
 						<!-- DGA_Form_Cluster 2 for 2025-2026 FY.pdf -->
