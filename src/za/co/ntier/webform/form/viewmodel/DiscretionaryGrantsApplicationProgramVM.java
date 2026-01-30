@@ -311,6 +311,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		saveForms.add(organisationInfo);
 		
+
 		if (programType == ProgramType.EDP_APP_INDIVIDUAL || programType == ProgramType.EDP_APP_EMPLOYER) {
 			individualInformation = new IndividualInformation(menuContextInfo, this);
 			individualInformation.initComponent(applicationForm);

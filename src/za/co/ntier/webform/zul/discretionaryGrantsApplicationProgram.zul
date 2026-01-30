@@ -24,12 +24,10 @@
 		<tabs>
 			<tab label="Declaration" selected="true" disabled="true"/>
 			<tab label="@init(vm.organisationTabTile)" disabled="true" />
-			
 			<!-- INDIVIDUAL INFORMATION CHANGE: add tab only for EDP_APP_INDIVIDUAL and EDP_APP_EMPLOYER -->
 			<tab
 				if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL or vm.programType == ProgramType.EDP_APP_EMPLOYER}"
 				label="@load(vm.individualTabTitle)" disabled="true" />
-
 			<tab label="Program" disabled="true"/>
 			<tab 
         if = "${vm.showContact}"
@@ -81,7 +79,11 @@
 			</tabpanel>
 			
 			<!-- INDIVIDUAL INFORMATION CHANGE: new tabpanel -->
+<<<<<<< HEAD
 			<tabpanel if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL or vm.programType == ProgramType.EDP_APP_EMPLOYER}">
+=======
+			<tabpanel if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL}">
+>>>>>>> 0f0966b4064aceaf2ebdaa063a2b93287fc20a2b
 			    <div sclass="tabContainer">
 			        <div sclass="formContainer">
 			            <include component="@load(vm.individualInformation)"
