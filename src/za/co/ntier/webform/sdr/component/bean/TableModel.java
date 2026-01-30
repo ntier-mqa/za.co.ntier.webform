@@ -180,7 +180,7 @@ public class TableModel implements ISupportSave {
 	 * @param col
 	 * @param event
 	 */
-	public void cmdSelected (Map<ColumnModel, Object> row,
+	public void cmdSelected (RowModel row,
 			ColumnModel col,
 			SelectEvent<?, ?> event){
 
@@ -191,7 +191,7 @@ public class TableModel implements ISupportSave {
 			selectable.cmdSelected(event.getSelectedObjects().iterator().next());
 	}
 	
-	public void cmdCheckeck (Map<ColumnModel, Object> row,
+	public void cmdCheckeck (RowModel row,
 			ColumnModel col,
 			CheckEvent event){
 		ICheckbox checkbox = (ICheckbox)row.get(col);
@@ -205,7 +205,7 @@ public class TableModel implements ISupportSave {
 		
 	}
 	
-	public void cmdUploadFile(Map<ColumnModel, Object> row, ColumnModel col, UploadEvent event) {
+	public void cmdUploadFile(RowModel row, ColumnModel col, UploadEvent event) {
 		UploadCellModel uploadCellModel = (UploadCellModel)row.get(col);
 		uploadCellModel.cmdUploadFile(event);
 	}

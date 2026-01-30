@@ -102,16 +102,17 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 	@Command
 	public void cmdSelected(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
+			, @BindingParam("row") RowModel row
 			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
+		row.get(col).resetValidate();// clear form validate for listbox
 		annexure.cmdSelected(row, col, event);
 	}
 	
 	@Command
 	public void cmdCheckeck(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
+			, @BindingParam("row") RowModel row
 			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) throws IOException {
 		annexure.cmdCheckeck(row, col, event);
@@ -129,7 +130,7 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 	@Command
 	public void cmdUploadFile(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
+			, @BindingParam("row") RowModel row
 			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
 		annexure.cmdUploadFile(row, col, event);

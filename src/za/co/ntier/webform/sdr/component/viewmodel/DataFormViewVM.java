@@ -14,6 +14,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 @Init(superclass = true)
@@ -32,7 +33,7 @@ public class DataFormViewVM extends BaseComponentVM<TableModel>{
 	@Command
 	public void cmdSelected(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
+			, @BindingParam("row") RowModel row
 			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
 		annexure.cmdSelected(row, col, event);
@@ -41,7 +42,7 @@ public class DataFormViewVM extends BaseComponentVM<TableModel>{
 	@Command
 	public void cmdCheckeck(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
+			, @BindingParam("row") RowModel row
 			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) throws IOException {
 		annexure.cmdCheckeck(row, col, event);
@@ -50,7 +51,7 @@ public class DataFormViewVM extends BaseComponentVM<TableModel>{
 	@Command
 	public void cmdUploadFile(
 			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
+			, @BindingParam("row") RowModel row
 			, @BindingParam("col") ColumnModel col
 			, @ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
 		annexure.cmdUploadFile(row, col, event);

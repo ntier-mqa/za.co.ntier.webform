@@ -86,6 +86,11 @@ public class CellModel implements IValueChange {
 		return validateMsgs.size() == 0;
 	}
 	
+	public void resetValidate() {
+		dirtyValue = getValue();
+		formValidate = false;
+	}
+	
 	protected List<String> doValidate(Object inputValue) {
 		List<String> validateMsgs = new ArrayList<>();
 		if (getColModel().isMandatory() && inputValue == null) {
