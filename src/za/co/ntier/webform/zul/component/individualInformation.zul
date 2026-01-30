@@ -51,7 +51,8 @@
 						</div>
 						<div sclass="cell-content">
 							<textbox
-								value="@load(vm.individualInformation.gender)" />
+								value="@load(vm.individualInformation.gender)"
+								readonly="true" />
 						</div>
 					</div>
 
@@ -61,7 +62,8 @@
 						</div>
 						<div sclass="cell-content">
 							<intbox
-								value="@load(vm.individualInformation.age)" />
+								value="@load(vm.individualInformation.age)" 
+								readonly="true"/>
 						</div>
 					</div>
 
@@ -219,7 +221,8 @@
 						</div>
 						<div sclass="cell-content">
 							<textbox
-								value="@load(vm.individualInformation.gender)" />
+								value="@load(vm.individualInformation.gender)"
+								readonly="true" />
 						</div>
 					</div>
 
@@ -229,7 +232,8 @@
 						</div>
 						<div sclass="cell-content">
 							<intbox
-								value="@load(vm.individualInformation.age)" />
+								value="@load(vm.individualInformation.age)"
+								readonly="true" />
 						</div>
 					</div>
 				</div>
