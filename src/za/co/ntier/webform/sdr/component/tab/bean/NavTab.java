@@ -35,12 +35,21 @@ public class NavTab implements ListDataListener, ISupportSave{
 
 	private int activeTabIndex;
 
+	protected boolean validateActiveTab() {
+		NavTabPanel activeTabPanel = getTabPanelModel().get(activeTabIndex);
+		return activeTabPanel.validate();
+	}
+	
 	public void doNextTab() {
 		if (activeTabIndex == getTabPanelModel().size() - 1
 				|| getTabPanelModel().size() == 0) {
 			// end tab do nothing
 		}else {
-			setActiveTab(activeTabIndex + 1, activeTabIndex);
+			if (validateActiveTab()) {
+				setActiveTab(activeTabIndex + 1, activeTabIndex);
+			}else {
+				// do nothing
+			}
 		}
 	}
 
@@ -62,7 +71,12 @@ public class NavTab implements ListDataListener, ISupportSave{
 				|| getTabPanelModel().size() == 0) {
 			// begin tab do nothing
 		}else {
-			setActiveTab(activeTabIndex - 1, activeTabIndex);
+			if (validateActiveTab()) {
+				setActiveTab(activeTabIndex - 1, activeTabIndex);
+			}else {
+				// do nothing
+			}
+			
 		}
 
 	}
@@ -98,5 +112,9 @@ public class NavTab implements ListDataListener, ISupportSave{
 	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
 		tabPanelModel.forEach(t -> t.saveAttachment(applicationForm, trxName));
 		
+	}
+	@Override
+	public boolean validate() {
+		return ISupportSave.validates(tabPanelModel);
 	}
 }

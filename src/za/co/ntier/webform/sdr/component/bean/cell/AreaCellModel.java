@@ -1,5 +1,8 @@
 package za.co.ntier.webform.sdr.component.bean.cell;
 
+import java.util.List;
+import java.util.function.Function;
+
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
 
@@ -34,20 +37,20 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	}
 
 	@Override
-	public void setValue(Object cityId) {
-		getModel().clearSelection();
-		if (cityId == null || (int)cityId == 0) {
-
+	public List<MCity> getDataProvider() {
+		return MasterUtil.getCities();// search on all cities, not only in data provider
+	}
+	
+	private Function<MCity, Object> defaultValueConvert = area -> {
+		return area.getC_City_ID();
+	};
+	
+	@Override
+	public Function<MCity, Object> getValueConvert() {
+		if (getColModel().getValueConvert() == null) {
+			return defaultValueConvert;
 		}else {
-			//for(MCity area : areaData.getDataProvider()) {
-			for(MCity area : MasterUtil.getCities()) {// search on all cities, not only in data provider
-				if (area.getC_City_ID() == (int)cityId) {
-					if (!getModel().contains(area))
-						getModel().add(area);
-
-					getModel().addToSelection(area);
-				}
-			}
+			return getColModel().getValueConvert();
 		}
 	}
 

@@ -60,47 +60,19 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 		
 	}
 	
-	public static class RequiredValidator extends BaseValidator{
-		@Override
-		public void doValidate(ValidationContext ctx) {
-			super.doValidate(ctx);
-			if (cellModel.getColModel().isMandatory()) {
-				if (value == null) {
-					msgs.add("mandatory");
-				}
-			}
+	
+	public static class CellValidator extends BaseValidator{
+		void doValidate(ValidationContext ctx) {
+			msgs.addAll(cellModel.validate(value));
 		}
 	}
 	
-	public static class TextValidator extends RequiredValidator{
-		@Override
-		public void doValidate(ValidationContext ctx) {
-			super.doValidate(ctx);
-			String textValue = (String)value;
-			if (cellModel.getCellType() == CellModel.PHONE_CELL) {
-				if(StringUtils.isNoneBlank(textValue) && !MUser_New.isValidPhoneNumber(textValue)) {
-					msgs.add("Phone number must be in format +27999999999");
-				}
-			}else if (cellModel.getCellType() == CellModel.EMAIL_CELL) {
-				
-			}else if (cellModel.getCellType() == CellModel.ID_PASSPORTNO_CELL) {
-				try {
-					RegistrationWindow.validateIdNo(null, textValue);
-				}catch (WrongValueException e) {
-					msgs.add(e.getMessage());
-					
-				}
-				
-			}
+	private CellValidator cellValidator;
+	public Validator getCellValidator() {
+		if (cellValidator == null) {
+			cellValidator = new CellValidator();
 		}
-	}
-	
-	private TextValidator textValidator;
-	public Validator getTextValidator() {
-		if (textValidator == null) {
-			textValidator = new TextValidator();
-		}
-		return textValidator;
+		return cellValidator;
 	}
 	
 	public List<ColumnModel> getCols() {
