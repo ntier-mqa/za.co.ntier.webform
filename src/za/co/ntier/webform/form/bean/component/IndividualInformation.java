@@ -19,6 +19,7 @@ import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.bean.ProgramType;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class IndividualInformation implements ISaveForm
@@ -63,7 +64,8 @@ public class IndividualInformation implements ISaveForm
 
 		loadNqfLevelOptionsFromReference();
 		loadHighestEducationOptionsFromTable();
-		autofillFromLoggedInUserIfEmpty();
+		if (!ProgramType.EDP_APP_EMPLOYER.equals(menuContextInfo.getProgramType()))
+			autofillFromLoggedInUserIfEmpty();
 
 		if (applicationForm == null || applicationForm.get_ID() <= 0)
 		{
