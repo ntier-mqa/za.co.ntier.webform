@@ -141,10 +141,12 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	public Object getSelectedID() {
 		T selectedItem = getSelectedItem();
 		
-		if (selectedItem == null && getColModel().isUseForID())
-			return 0;
-		else if (selectedItem == null && !getColModel().isUseForID()) 
+		if (selectedItem == null)
 			return null;
+		//if (selectedItem == null && getColModel().isUseForID())
+			//return 0;
+		//else if (selectedItem == null && !getColModel().isUseForID()) 
+			//return null;
 		
 		Function<T, Object> valueConvert = getValueConvert();
 		if (valueConvert != null) {
