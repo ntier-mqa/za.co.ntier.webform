@@ -149,8 +149,12 @@ public class IndividualInformation implements ISaveForm
 
 		edp.setisExecutive("EXECUTIVE".equalsIgnoreCase(executiveStatus));
 		edp.setisAspiringExecutive("ASPIRING".equalsIgnoreCase(executiveStatus));
-
+		
 		edp.saveEx(trxName);
+		
+		//set value for Total Number Applied For to 1
+		applicationForm.setZZTotalNumberApplied(1);
+		applicationForm.saveEx();
 	}
 
 	public void onIdNumberChanged()
