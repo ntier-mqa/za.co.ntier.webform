@@ -44,7 +44,7 @@
                 if = "${ MasterUtil.isNavTab(compItem) }"
                 sclass="navTabOuter"
                 component="@init(compItem)"
-                menuContextInfo="@init(vm.menuContextInfo)"
+                menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
                
 					  </template>

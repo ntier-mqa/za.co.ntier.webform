@@ -192,6 +192,10 @@
 	flex-grow:1;
 }
 
+.mqaWebForm .cell-error .z-grid{
+	border-width:0px;
+}
+
 .mqaWebForm .grid-formview .cell-error .z-label{
 	color:red;
 }

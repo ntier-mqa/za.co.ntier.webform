@@ -23,6 +23,7 @@
 	<include 
     sclass="navTabOuter"
     component="@init(vm.mainTab)"
+    	supportSaveApp="@init(vm)"
 		menuContextInfo="@init(vm.menuContextInfo)"
 		src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
     

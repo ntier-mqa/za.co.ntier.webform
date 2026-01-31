@@ -22,39 +22,39 @@ public class DataFormViewVM extends BaseComponentVM<TableModel>{
 
 	@Command
 	public void cmdValueChanged(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
-		annexure.cmdValueChanged(row, col, event);
+		tableModel.cmdValueChanged(rowModel, colModel, event);
 		//notifyProgramComplete();
 	}
 
 	@Command
 	public void cmdSelected(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") RowModel row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
-		annexure.cmdSelected(row, col, event);
+		tableModel.cmdSelected(rowModel, colModel, event);
 	}
 	
 	@Command
 	public void cmdCheckeck(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") RowModel row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) throws IOException {
-		annexure.cmdCheckeck(row, col, event);
+		tableModel.cmdCheckeck(rowModel, colModel, event);
 	}
 	
 	@Command
 	public void cmdUploadFile(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") RowModel row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
-		annexure.cmdUploadFile(row, col, event);
+		tableModel.cmdUploadFile(rowModel, colModel, event);
 	}
 
 }

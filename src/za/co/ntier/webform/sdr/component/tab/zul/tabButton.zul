@@ -21,7 +21,7 @@
 		<button			
 		  label="Save &amp; Exit" sclass="icon-on-right"
 			iconSclass="z-icon-floppy-disk"
-			onClick="@command('$vm.saveClose')" />
+			onClick="@command('saveClose')" />
 
 		<button label="Next" sclass="icon-on-right"
 			visible="@load(!vmTabButton.activeEndTab)"

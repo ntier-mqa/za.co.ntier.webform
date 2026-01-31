@@ -33,9 +33,6 @@ import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 public class TableModel implements ISupportSave {
 	
 	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
-	public final static String AnnexureTypeExitStrategy = "EXIT STRATEGY";
-	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
-	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
 	private String sclass = "";
 	
 	private boolean formView = true;	
@@ -166,7 +163,7 @@ public class TableModel implements ISupportSave {
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
-	public void cmdValueChanged (Map<ColumnModel, Object> row,
+	public void cmdValueChanged (RowModel row,
 			ColumnModel col,
 			InputEvent event){
 		IValueChange valueChange = (IValueChange)row.get(col);

@@ -76,7 +76,7 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 	}
 	
 	public List<ColumnModel> getCols() {
-		return getComponent().getAnnexure().getColumnInfos();
+		return getComponent().getTableModel().getColumnInfos();
 
 	}
 	
@@ -85,62 +85,62 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 	}
 	
 	public TableModel getTableModel() {
-		return getComponent().getAnnexure();
+		return getComponent().getTableModel();
 	}
 
 	
 	@Command
 	public void cmdValueChanged(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") Map<ColumnModel, Object> row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) InputEvent event) throws IOException {
-		annexure.cmdValueChanged(row, col, event);
+		tableModel.cmdValueChanged(rowModel, colModel, event);
 		//notifyProgramComplete();
 	}
 
 	@Command
 	public void cmdSelected(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") RowModel row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
-		row.get(col).resetValidate();// clear form validate for listbox
-		annexure.cmdSelected(row, col, event);
+		rowModel.get(colModel).resetValidate();// clear form validate for listbox
+		tableModel.cmdSelected(rowModel, colModel, event);
 	}
 	
 	@Command
 	public void cmdCheckeck(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") RowModel row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) throws IOException {
-		annexure.cmdCheckeck(row, col, event);
+		tableModel.cmdCheckeck(rowModel, colModel, event);
 	}
 	
 	@Command
 	public void cmdBtClick(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") RowModel row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) Event event) throws IOException {
-		annexure.cmdCellAction(row, col, event);
+		tableModel.cmdCellAction(rowModel, colModel, event);
 	}
 	
 	@Command
 	public void cmdUploadFile(
-			@BindingParam("annexure") TableModel annexure
-			, @BindingParam("row") RowModel row
-			, @BindingParam("col") ColumnModel col
+			@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
-		annexure.cmdUploadFile(row, col, event);
+		tableModel.cmdUploadFile(rowModel, colModel, event);
 	}
 
 	/**
 	 * @return the formView
 	 */
 	public boolean isFormView() {
-		return getComponent().getAnnexure().isFormView();
+		return getComponent().getTableModel().isFormView();
 	}
 	
 	public boolean showTitle(CellModel cell) {

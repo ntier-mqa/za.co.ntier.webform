@@ -7,10 +7,13 @@ import org.zkoss.zul.event.ListDataListener;
 
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.webform.sdr.component.bean.ISupportSave;
+import za.co.ntier.webform.sdr.component.bean.ISupportSaveApp;
 
 public class NavTab implements ListDataListener, ISupportSave{
 	private ListModelList<NavTabPanel> tabPanelModel;
-
+	
+	private ISupportSaveApp supportSaveApp;
+	
 	public NavTab() {
 		tabPanelModel = new ListModelList<NavTabPanel>();
 		tabPanelModel.addListDataListener(this);
@@ -116,5 +119,11 @@ public class NavTab implements ListDataListener, ISupportSave{
 	@Override
 	public boolean validate() {
 		return ISupportSave.validates(tabPanelModel);
+	}
+	public ISupportSaveApp getSupportSaveApp() {
+		return supportSaveApp;
+	}
+	public void setSupportSaveApp(ISupportSaveApp supportSaveApp) {
+		this.supportSaveApp = supportSaveApp;
 	}
 }

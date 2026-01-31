@@ -65,7 +65,7 @@
               	@bind(vmCellRender.row[col].value)
               	@converter(ConvertUtil.getConvertBlankNull())
               	@validator(vmCellRender.cellValidator, cellModel=vmCellRender.row[col], vm=vmCellRender)" 
-              onChange="@command('cmdValueChanged', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
+              onChange="@command('cmdValueChanged', tableModel = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
             
             <!-- list - Area - province -->
             <listbox
@@ -74,7 +74,7 @@
               
               mold="select"
               model="@bind(vmCellRender.row[col].model)"
-              onSelect="@command('cmdSelected', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)">
+              onSelect="@command('cmdSelected', tableModel = vmCellRender.tableModel, row = vmCellRender.row, col = col)">
               <template name="model" var="item">
                 <listitem
                   label="@init(( vmCellRender.row[col].getDisplayText(item) ))" />
@@ -103,7 +103,7 @@
               <fileupload
                 iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
                 label="@load(vmCellRender.row[col].btText)"
-                onUpload="@command('cmdUploadFile', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"
+                onUpload="@command('cmdUploadFile', tableModel = vmCellRender.tableModel, row = vmCellRender.row, col = col)"
                 upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
               <label
               	sclass="break-text"
@@ -115,7 +115,7 @@
               sclass="checkboxContent">
               <checkbox
                 label="@init(vmCellRender.row[col].title)"
-                onCheck="@command('cmdCheckeck', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
+                onCheck="@command('cmdCheckeck', tableModel = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
             </div>
             
             <!-- Date -->
@@ -126,7 +126,7 @@
 			<button if="${vmCellRender.row[col].cellType eq CellModel.BUTTON_CELL}"
 			  iconSclass="@init(vmCellRender.row[col].iconSclass)"
 			  label="@load(col.title)"
-              onClick="@command('cmdBtClick', annexure = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
+              onClick="@command('cmdBtClick', tableModel = vmCellRender.tableModel, row = vmCellRender.row, col = col)"/>
               
           </div>
         </div>

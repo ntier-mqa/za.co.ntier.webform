@@ -22,8 +22,8 @@ import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 public class RowModel extends HashMap<ColumnModel, CellModel> implements ISupportSave{
 	private static final CLogger log = CLogger.getCLogger(RowModel.class);
 	private TableModel tableModel;
-	public RowModel(TableModel annexure) {
-		this.setAnnexure(annexure);
+	public RowModel(TableModel tableModel) {
+		this.setTableModel(tableModel);
 	}
 	private static final long serialVersionUID = 3444756682531476154L;
 	public static final int INPUT_STATE_EMPTY = 0;
@@ -47,15 +47,15 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 	/**
 	 * @return the tableModel
 	 */
-	public TableModel getAnnexure() {
+	public TableModel getTableModel() {
 		return tableModel;
 	}
 
 	/**
 	 * @param tableModel the tableModel to set
 	 */
-	public void setAnnexure(TableModel annexure) {
-		this.tableModel = annexure;
+	public void setTableModel(TableModel tableModel) {
+		this.tableModel = tableModel;
 	}
 
 	public boolean checkState(int state) {

@@ -18,8 +18,8 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.UploadColumnModel;
 
 public class UploadCellModel extends CellModel {
-	public UploadCellModel(TableModel annexure, RowModel row, ColumnModel colModel) {
-		super(annexure, row, colModel);
+	public UploadCellModel(TableModel tableModel, RowModel rowModel, ColumnModel colModel) {
+		super(tableModel, rowModel, colModel);
 		setCellType(BTUPLOAD_CELL);
 	}
 

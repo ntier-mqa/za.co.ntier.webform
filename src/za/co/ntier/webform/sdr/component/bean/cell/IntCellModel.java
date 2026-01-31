@@ -11,12 +11,12 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 public class IntCellModel extends CellModel {
 	private Integer value;
 
-	public IntCellModel(TableModel annexure, RowModel row, ColumnModel colModel) {
-		super(annexure, row, colModel);
+	public IntCellModel(TableModel tableModel, RowModel rowModel, ColumnModel colModel) {
+		super(tableModel, rowModel, colModel);
 	}
 
-	public IntCellModel(TableModel annexure, Integer value) {
-		super(annexure, null, null);
+	public IntCellModel(TableModel tableModel, Integer value) {
+		super(tableModel, null, null);
 		setValue(value);
 	}
 

@@ -11,8 +11,8 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 public class CheckboxCellModel extends CellModel implements ICheckbox {
 	private String title;
 
-	public CheckboxCellModel(TableModel annexure, RowModel row, ColumnModel colModel) {
-		super(annexure, row, colModel);
+	public CheckboxCellModel(TableModel tableModel, RowModel rowModel, ColumnModel colModel) {
+		super(tableModel, rowModel, colModel);
 		setCellType(CHECK_CELL);
 	}
 

@@ -23,6 +23,12 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 	}
 
 	@Command
+	public void saveClose() {
+		if (navTab.getSupportSaveApp() != null)
+			navTab.getSupportSaveApp().saveClose();
+	}
+	
+	@Command
 	@NotifyChange({"activeFirstTab", "activeEndTab", "activeMidTab"})
 	public void nextTab() {
 		navTab.doNextTab();

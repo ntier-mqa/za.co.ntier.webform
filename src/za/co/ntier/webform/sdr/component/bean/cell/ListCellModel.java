@@ -95,11 +95,11 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	
 	/**
 	 * need to init model on constructor of child class
-	 * @param annexure
-	 * @param row
+	 * @param tableModel
+	 * @param rowModel
 	 */
-	public ListCellModel(TableModel annexure, RowModel row, ListColumnModel<T> colModel) {
-		super(annexure, row, colModel);
+	public ListCellModel(TableModel tableModel, RowModel rowModel, ListColumnModel<T> colModel) {
+		super(tableModel, rowModel, colModel);
 		setCellType(LIST_CELL);
 	}
 
