@@ -150,8 +150,6 @@ public class TableModel implements ISupportSave {
 
 	private boolean showColumnHeader = true;
 
-	private TableModel subAnnexure;
-
 	private String subSectionHeader;
 
 	private String tableTitle;
@@ -309,12 +307,6 @@ public class TableModel implements ISupportSave {
 		return sectionHeader;
 	}
 
-	/**
-	 * @return the subAnnexure
-	 */
-	public TableModel getSubAnnexure() {
-		return subAnnexure;
-	}
 
 	/**
 	 * @return the subSectionHeader
@@ -437,13 +429,6 @@ public class TableModel implements ISupportSave {
 	}
 
 	/**
-	 * @param subAnnexure the subAnnexure to set
-	 */
-	public void setSubAnnexure(TableModel subAnnexure) {
-		this.subAnnexure = subAnnexure;
-	}
-
-	/**
 	 * @param subSectionHeader the subSectionHeader to set
 	 */
 	public void setSubSectionHeader(String subSectionHeader) {
@@ -523,11 +508,6 @@ public class TableModel implements ISupportSave {
 	 */
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
-	}
-
-	private int getGrandTotal() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	public void setDaoValue(Object dao, String propertyName, Object value) {

@@ -1,7 +1,6 @@
 package za.co.ntier.webform.sdr.component.viewmodel;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;

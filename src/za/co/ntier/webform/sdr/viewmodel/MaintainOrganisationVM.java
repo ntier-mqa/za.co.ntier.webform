@@ -5,10 +5,8 @@ import java.util.List;
 
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_User;
-import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_BPartner_Location;
 import org.compiere.model.X_C_Location;
 import org.compiere.util.Env;
@@ -30,7 +28,6 @@ import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISupportSave;
-import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;

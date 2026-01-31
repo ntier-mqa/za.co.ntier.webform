@@ -16,12 +16,9 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.util.Log;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.Converter;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
-
-import za.co.ntier.api.model.MUser_New;
 
 /**
  * Represents a cell in a table, it hold data and related info
