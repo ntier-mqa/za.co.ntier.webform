@@ -25,12 +25,15 @@
 			<tab label="Declaration" selected="true" disabled="true"/>
 			<tab label="@init(vm.organisationTabTile)" disabled="true" />
 			
-			<!-- INDIVIDUAL INFORMATION CHANGE: add tab only for EDP_APP_INDIVIDUAL -->
+
+			<!-- INDIVIDUAL INFORMATION CHANGE: add tab only for EDP_APP_INDIVIDUAL and EDP_APP_EMPLOYER -->
 			<tab
-			if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL}"
-	     	label="Individual Information" disabled="true" />
-	     	
-			<tab label="Program" disabled="true"/>
+				if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL or vm.programType == ProgramType.EDP_APP_EMPLOYER}"
+				label="@load(vm.individualTabTitle)" disabled="true" />
+
+			<tab if = "${vm.showProgram}" label="Program" disabled="true"/>
+			
+
 			<tab 
         if = "${vm.showContact}"
         label="Program Contact" disabled="true"/>
@@ -81,7 +84,7 @@
 			</tabpanel>
 			
 			<!-- INDIVIDUAL INFORMATION CHANGE: new tabpanel -->
-			<tabpanel if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL}">
+			<tabpanel if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL or vm.programType == ProgramType.EDP_APP_EMPLOYER}">
 			    <div sclass="tabContainer">
 			        <div sclass="formContainer">
 			            <include component="@load(vm.individualInformation)"
@@ -98,7 +101,7 @@
 			    </div>
 			</tabpanel>
 
-			<tabpanel style="color:#CC0033">
+			<tabpanel if="${vm.showProgram}" style="color:#CC0033">
 				<div sclass="tabContainer">
 					<div sclass="formContainer">
 						<!-- DGA_Form_Cluster 2 for 2025-2026 FY.pdf -->

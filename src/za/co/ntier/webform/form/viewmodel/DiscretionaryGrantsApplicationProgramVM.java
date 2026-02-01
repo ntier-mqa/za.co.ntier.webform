@@ -311,7 +311,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 		saveForms.add(organisationInfo);
 		
-		if (programType == ProgramType.EDP_APP_INDIVIDUAL) {
+
+		if (programType == ProgramType.EDP_APP_INDIVIDUAL || programType == ProgramType.EDP_APP_EMPLOYER) {
 			individualInformation = new IndividualInformation(menuContextInfo, this);
 			individualInformation.initComponent(applicationForm);
 			saveForms.add(individualInformation);
@@ -373,6 +374,11 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}else if (ProgramType.EDP_APP_INDIVIDUAL == programType) {
 			program = new EdpAppIndividualProgram(menuContextInfo, applicationForm);
 		}
+//		else if (ProgramType.EDP_APP_INDIVIDUAL == programType) {
+//			program = new EdpAppIndividualProgram(menuContextInfo, applicationForm);
+//		}else if (ProgramType.EDP_APP_EMPLOYER == programType) {
+//			program = new EdpAppIndividualProgram(menuContextInfo, applicationForm);
+//		}
 
 		if (program != null)
 			saveForms.add(program);
@@ -671,7 +677,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 
 	public boolean isShowContact() {
-		return programType != ProgramType.STANDARD_SETTING && programType != ProgramType.EDP_APP_INDIVIDUAL; // && programType != ProgramType.DEV_PROGRAM;
+		return programType != ProgramType.STANDARD_SETTING && programType != ProgramType.EDP_APP_INDIVIDUAL
+				&& programType != ProgramType.EDP_APP_EMPLOYER; // && programType != ProgramType.DEV_PROGRAM;
 	}
 
 	public String getOrganisationTabTile () {
@@ -1142,5 +1149,18 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		BindUtils.postNotifyChange(null, null, individualInformation, "age");
 		BindUtils.postNotifyChange(null, null, individualInformation, "gender");
 	}
+	
+	public String getIndividualTabTitle() {
+	    if (ProgramType.EDP_APP_EMPLOYER.equals(programType)) {
+	        return "Employee Information";
+	    }
+	    return "Individual Information";
+	}
+	
+	public boolean isShowProgram()
+	{
+		return programType != ProgramType.EDP_APP_INDIVIDUAL && programType != ProgramType.EDP_APP_EMPLOYER;
+	}
+
 
 }

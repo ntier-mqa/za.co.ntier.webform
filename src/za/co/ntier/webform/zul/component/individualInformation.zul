@@ -1,146 +1,347 @@
 <zk xmlns="http://www.zkoss.org/2005/zul">
-    <tabbox width="100%">
-        <tabs>
-            <tab label="Individual Details"/>
-            <tab label="Applicant Details"/>
-        </tabs>
 
-        <tabpanels>
 
-            <!-- SubTab 1 -->
-            <tabpanel>
-                
-                <div sclass="grid-formview">
-                    <div sclass="cell">
-                        <div sclass="cell-title">
-                            <label sclass="label" value="First Name"/>
-                        </div>
-                        <div sclass="cell-content">
-                            <textbox value="@bind(vm.individualInformation.firstName)"/>
-                        </div>
-                    </div>
+	<!-- ========================= -->
+	<!-- EMPLOYER -->
+	<!-- ========================= -->
+	<tabbox if="${vm.programType == ProgramType.EDP_APP_EMPLOYER}"
+		width="100%">
+		<tabs>
+			<tab label="Applicant Details" />
+		</tabs>
 
-                    <div sclass="cell">
-                        <div sclass="cell-title">
-                            <label sclass="label" value="Surname"/>
-                        </div>
-                        <div sclass="cell-content">
-                            <textbox value="@bind(vm.individualInformation.surname)"/>
-                        </div>
-                    </div>
+		<tabpanels>
+			<tabpanel>
+				<div sclass="grid-formview">
 
-                    <div sclass="cell">
-                        <div sclass="cell-title">
-                            <label sclass="label" value="ID Number"/>
-                        </div>
-                        <div sclass="cell-content">
-                            <textbox value="@bind(vm.individualInformation.idNumber)"
-                            onChange="@command('idNumberChanged')"
-                             constraint="no empty,/^[0-9]{13}$/: ID number must be 13 digits"/>
-                        </div>
-                    </div>
-                    
-                    <div sclass="cell">
-						<div sclass="cell-title"><label sclass="label" value="Gender"/></div>
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="First Name" />
+						</div>
 						<div sclass="cell-content">
-						  <textbox value="@load(vm.individualInformation.gender)"/>
+							<textbox
+								value="@bind(vm.individualInformation.firstName)" />
 						</div>
 					</div>
-					
+
 					<div sclass="cell">
-						<div sclass="cell-title"><label sclass="label" value="Age"/></div>
+						<div sclass="cell-title">
+							<label sclass="label" value="Surname" />
+						</div>
 						<div sclass="cell-content">
-						  <intbox value="@load(vm.individualInformation.age)"/>
+							<textbox
+								value="@bind(vm.individualInformation.surname)" />
 						</div>
 					</div>
-                    
-                </div>
-            </tabpanel>
 
-            <!-- SubTab 2 -->
-            <tabpanel>
-                <div sclass="grid-formview">
-                    <div sclass="cell">
-                        <div sclass="cell-title">
-                            <label sclass="label" value="Contact Number"/>
-                        </div>
-                        <div sclass="cell-content">
-                            <textbox value="@bind(vm.individualInformation.contactNumber)"
-                             constraint="no empty,/^[0-9]{10}$/: Contact number must be 10 digits"/>
-                        </div>
-                    </div>
-
-                    <div sclass="cell">
-                        <div sclass="cell-title">
-                            <label sclass="label" value="Alternate Contact Number"/>
-                        </div>
-                        <div sclass="cell-content">
-                            <textbox value="@bind(vm.individualInformation.alternateContactNumber)"
-                             constraint="no empty,/^[0-9]{10}$/: Contact number must be 10 digits"/>
-                        </div>
-                    </div>
-
-                    <div sclass="cell">
-                        <div sclass="cell-title">
-                            <label sclass="label" value="Email"/>
-                        </div>
-                        <div sclass="cell-content">
-                            <textbox value="@bind(vm.individualInformation.email)"
-                            constraint="no empty,/^[A-Za-z0-9+_.-]+@(.+)$/: Invalid email address"/>
-                        </div>
-                    </div>
-
-                    <div sclass="cell">
-                        <div sclass="cell-title">
-                            <label sclass="label" value="Current Position"/>
-                        </div>
-                        <div sclass="cell-content">
-                            <textbox value="@bind(vm.individualInformation.currentPosition)"/>
-                        </div>
-                    </div>
-
-                    <div sclass="cell">
-					    <div sclass="cell-title">
-					        <label sclass="label" value="Highest Qualification"/>
-					    </div>
-					    <div sclass="cell-content">
-					        <combobox model="@load(vm.individualInformation.highestEducationOptions)"
-					                  selectedItem="@bind(vm.individualInformation.selectedHighestEducation)">
-					            <template name="model">
-					                <comboitem label="@load(each.name)" value="@load(each)"/>
-					            </template>
-					        </combobox>
-					    </div>
-					</div>
-					
 					<div sclass="cell">
-					    <div sclass="cell-title">
-					        <label sclass="label" value="NQF Level"/>
-					    </div>
-					    <div sclass="cell-content">
-					        <combobox model="@load(vm.individualInformation.nqfLevelOptions)"
-					                  selectedItem="@bind(vm.individualInformation.selectedNqfLevel)">
-					            <template name="model">
-					                <comboitem label="@load(each.name)" value="@load(each)"/>
-					            </template>
-					        </combobox>
-					    </div>
+						<div sclass="cell-title">
+							<label sclass="label" value="ID Number" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.idNumber)"
+								onChange="@command('idNumberChanged')"
+								constraint="no empty,/^[0-9]{13}$/: ID number must be 13 digits" />
+						</div>
 					</div>
 
-                    <div sclass="cell">
-                        <div sclass="cell-title">
-                            <label sclass="label" value="Executive Status"/>
-                        </div>
-                        <div sclass="cell-content">
-                            <radiogroup selectedItem="@bind(vm.individualInformation.executiveStatus)">
-                                <radio label="Already an Executive" value="EXECUTIVE"/>
-                                <radio label="Aspiring Executive" value="ASPIRING"/>
-                            </radiogroup>
-                        </div>
-                    </div>
-                </div>
-            </tabpanel>
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="Gender" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@load(vm.individualInformation.gender)"
+								readonly="true" />
+						</div>
+					</div>
 
-        </tabpanels>
-    </tabbox>
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="Age" />
+						</div>
+						<div sclass="cell-content">
+							<intbox
+								value="@load(vm.individualInformation.age)" 
+								readonly="true"/>
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Contact Number" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.contactNumber)"
+								constraint="no empty,/^[0-9]{10}$/: Contact number must be 10 digits" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Alternate Contact Number" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.alternateContactNumber)"
+								constraint="no empty,/^[0-9]{10}$/: Contact number must be 10 digits" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="Email" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.email)"
+								constraint="no empty,/^[A-Za-z0-9+_.-]+@(.+)$/: Invalid email address" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Current Position" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.currentPosition)" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Highest Qualification" />
+						</div>
+						<div sclass="cell-content">
+							<combobox
+								model="@load(vm.individualInformation.highestEducationOptions)"
+								selectedItem="@bind(vm.individualInformation.selectedHighestEducation)">
+								<template name="model">
+									<comboitem label="@load(each.name)"
+										value="@load(each)" />
+								</template>
+							</combobox>
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="NQF Level" />
+						</div>
+						<div sclass="cell-content">
+							<combobox
+								model="@load(vm.individualInformation.nqfLevelOptions)"
+								selectedItem="@bind(vm.individualInformation.selectedNqfLevel)">
+								<template name="model">
+									<comboitem label="@load(each.name)"
+										value="@load(each)" />
+								</template>
+							</combobox>
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Executive Status" />
+						</div>
+						<div sclass="cell-content">
+							<radiogroup
+								selectedItem="@bind(vm.individualInformation.executiveStatus)">
+								<radio label="Already an Executive"
+									value="EXECUTIVE" />
+								<radio label="Aspiring Executive"
+									value="ASPIRING" />
+							</radiogroup>
+						</div>
+					</div>
+
+				</div>
+			</tabpanel>
+		</tabpanels>
+	</tabbox>
+
+
+	<!-- ====================================== -->
+	<!-- INDIVIDUAL -->
+	<!-- ====================================== -->
+	<tabbox if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL}"
+		width="100%">
+		<tabs>
+			<tab label="Individual Details" />
+			<tab label="Applicant Details" />
+		</tabs>
+
+		<tabpanels>
+
+			<!-- SubTab 1 -->
+			<tabpanel>
+				<div sclass="grid-formview">
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="First Name" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.firstName)" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="Surname" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.surname)" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="ID Number" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.idNumber)"
+								onChange="@command('idNumberChanged')"
+								constraint="no empty,/^[0-9]{13}$/: ID number must be 13 digits" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="Gender" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@load(vm.individualInformation.gender)"
+								readonly="true" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="Age" />
+						</div>
+						<div sclass="cell-content">
+							<intbox
+								value="@load(vm.individualInformation.age)"
+								readonly="true" />
+						</div>
+					</div>
+				</div>
+			</tabpanel>
+
+			<!-- SubTab 2 -->
+			<tabpanel>
+				<div sclass="grid-formview">
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Contact Number" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.contactNumber)"
+								constraint="no empty,/^[0-9]{10}$/: Contact number must be 10 digits" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Alternate Contact Number" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.alternateContactNumber)"
+								constraint="no empty,/^[0-9]{10}$/: Contact number must be 10 digits" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="Email" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.email)"
+								constraint="no empty,/^[A-Za-z0-9+_.-]+@(.+)$/: Invalid email address" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Current Position" />
+						</div>
+						<div sclass="cell-content">
+							<textbox
+								value="@bind(vm.individualInformation.currentPosition)" />
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Highest Qualification" />
+						</div>
+						<div sclass="cell-content">
+							<combobox
+								model="@load(vm.individualInformation.highestEducationOptions)"
+								selectedItem="@bind(vm.individualInformation.selectedHighestEducation)">
+								<template name="model">
+									<comboitem label="@load(each.name)"
+										value="@load(each)" />
+								</template>
+							</combobox>
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label" value="NQF Level" />
+						</div>
+						<div sclass="cell-content">
+							<combobox
+								model="@load(vm.individualInformation.nqfLevelOptions)"
+								selectedItem="@bind(vm.individualInformation.selectedNqfLevel)">
+								<template name="model">
+									<comboitem label="@load(each.name)"
+										value="@load(each)" />
+								</template>
+							</combobox>
+						</div>
+					</div>
+
+					<div sclass="cell">
+						<div sclass="cell-title">
+							<label sclass="label"
+								value="Executive Status" />
+						</div>
+						<div sclass="cell-content">
+							<radiogroup
+								selectedItem="@bind(vm.individualInformation.executiveStatus)">
+								<radio label="Already an Executive"
+									value="EXECUTIVE" />
+								<radio label="Aspiring Executive"
+									value="ASPIRING" />
+							</radiogroup>
+						</div>
+					</div>
+				</div>
+			</tabpanel>
+
+		</tabpanels>
+	</tabbox>
+
+
 </zk>
