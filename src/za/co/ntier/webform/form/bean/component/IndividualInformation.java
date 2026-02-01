@@ -20,7 +20,6 @@ import za.co.ntier.webform.form.ISaveForm;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.bean.ProgramType;
-
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class IndividualInformation implements ISaveForm
@@ -67,7 +66,6 @@ public class IndividualInformation implements ISaveForm
 		loadHighestEducationOptionsFromTable();
 		if (!ProgramType.EDP_APP_EMPLOYER.equals(menuContextInfo.getProgramType()))
 			autofillFromLoggedInUserIfEmpty();
-
 
 		if (applicationForm == null || applicationForm.get_ID() <= 0)
 		{
