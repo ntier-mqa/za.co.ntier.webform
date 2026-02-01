@@ -5,10 +5,9 @@ import java.util.List;
 
 import org.zkoss.zul.ListModelList;
 
-import za.co.ntier.api.model.X_ZZSdf;
-import za.co.ntier.webform.sdr.component.bean.ISupportSave;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 
-public class NavTabPanel implements ISupportSave {
+public class NavTabPanel implements ISaveForm {
 	private String sclass;
 	private NavTab parent;
 
@@ -64,17 +63,17 @@ public class NavTabPanel implements ISupportSave {
 	}
 
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
+	public void save(String trxName) {
 		
-		ISupportSave.saveList(getList(), applicationForm, trxName);
+		ISaveForm.saveList(getList(), trxName);
 		
 	}
 
-	private List<ISupportSave> getList() {
-		List<ISupportSave> listSave = new ArrayList<>();
+	private List<ISaveForm> getList() {
+		List<ISaveForm> listSave = new ArrayList<>();
 		for (Object objSupportSave : compModel) {
-			if (objSupportSave instanceof ISupportSave) {
-				listSave.add((ISupportSave)objSupportSave);
+			if (objSupportSave instanceof ISaveForm) {
+				listSave.add((ISaveForm)objSupportSave);
 			}
 		}
 		
@@ -82,10 +81,10 @@ public class NavTabPanel implements ISupportSave {
 	}
 	
 	@Override
-	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+	public void saveAttachment(String trxName) {
 		for (Object objSupportSave : compModel) {
-			if (objSupportSave instanceof ISupportSave) {
-				((ISupportSave)objSupportSave).saveAttachment(applicationForm, trxName);
+			if (objSupportSave instanceof ISaveForm) {
+				((ISaveForm)objSupportSave).saveAttachment(trxName);
 			}
 		}
 		
@@ -107,7 +106,7 @@ public class NavTabPanel implements ISupportSave {
 
 	@Override
 	public boolean validate() {
-		return ISupportSave.validates(compModel);
+		return ISaveForm.validates(compModel);
 	}
 
 

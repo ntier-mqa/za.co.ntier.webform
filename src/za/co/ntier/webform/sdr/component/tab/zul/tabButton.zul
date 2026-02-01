@@ -5,10 +5,10 @@
 
 	<div sclass="formBottomPanel">
 			
-		<button 
-			visible="@load(vmTabButton.activeFirstTab)"
+		<button
+			visible="@load(vmTabButton.supportDeleteApp and vmTabButton.activeFirstTab)"
 			label="Cancel Application" iconSclass="z-icon-xmark"
-			onClick="@command('deleteAppForm')" />
+			onClick="@command('deleteApp')" />
 		
 		
 		<button 
@@ -18,20 +18,21 @@
 			onClick="@command('prevTab')" 
 			/>
 
-		<button			
-		  label="Save &amp; Exit" sclass="icon-on-right"
+		<button
+			visible="@load(vmTabButton.supportSaveApp)"			
+		  	label="Save &amp; Exit" sclass="icon-on-right"
 			iconSclass="z-icon-floppy-disk"
-			onClick="@command('saveClose')" />
+			onClick="@command('saveApp')" />
 
 		<button label="Next" sclass="icon-on-right"
 			visible="@load(!vmTabButton.activeEndTab)"
 			iconSclass="z-icon-arrow-right"
 			onClick="@command('nextTab')" />
 		
-		<button 
-			visible="false"
+		<button
+			visible="@load(vmTabButton.supportSubmitApp)"
 			label="Submit Application"
 			iconSclass="z-icon-gear" sclass="icon-on-right"
-	    onClick="@command('submitApplication')" />
+	    	onClick="@command('submitApp')" />
 	</div>
 </nodom>

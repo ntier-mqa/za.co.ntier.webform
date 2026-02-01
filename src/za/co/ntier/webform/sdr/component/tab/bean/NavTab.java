@@ -5,14 +5,10 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.event.ListDataListener;
 
-import za.co.ntier.api.model.X_ZZSdf;
-import za.co.ntier.webform.sdr.component.bean.ISupportSave;
-import za.co.ntier.webform.sdr.component.bean.ISupportSaveApp;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 
-public class NavTab implements ListDataListener, ISupportSave{
+public class NavTab implements ListDataListener, ISaveForm{
 	private ListModelList<NavTabPanel> tabPanelModel;
-	
-	private ISupportSaveApp supportSaveApp;
 	
 	public NavTab() {
 		tabPanelModel = new ListModelList<NavTabPanel>();
@@ -108,22 +104,17 @@ public class NavTab implements ListDataListener, ISupportSave{
 		return 0 < activeTabIndex && activeTabIndex < getTabPanelModel().size() - 1;
 	}
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
-		ISupportSave.saveList(tabPanelModel, applicationForm, trxName);
+	public void save(String trxName) {
+		ISaveForm.saveList(tabPanelModel, trxName);
 	}
 	@Override
-	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
-		tabPanelModel.forEach(t -> t.saveAttachment(applicationForm, trxName));
+	public void saveAttachment(String trxName) {
+		tabPanelModel.forEach(t -> t.saveAttachment(trxName));
 		
 	}
 	@Override
 	public boolean validate() {
-		return ISupportSave.validates(tabPanelModel);
+		return ISaveForm.validates(tabPanelModel);
 	}
-	public ISupportSaveApp getSupportSaveApp() {
-		return supportSaveApp;
-	}
-	public void setSupportSaveApp(ISupportSaveApp supportSaveApp) {
-		this.supportSaveApp = supportSaveApp;
-	}
+	
 }

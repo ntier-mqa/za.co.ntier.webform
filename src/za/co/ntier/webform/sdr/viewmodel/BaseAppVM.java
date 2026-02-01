@@ -4,16 +4,15 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Trx;
-import org.zkoss.bind.annotation.Command;
 
 import za.co.ntier.webform.form.MasterUtil;
-import za.co.ntier.webform.sdr.component.bean.ISupportSaveApp;
+import za.co.ntier.webform.sdr.component.bean.ISaveApp;
 
-public abstract class BaseVM implements ISupportSaveApp{
+public abstract class BaseAppVM implements ISaveApp{
 	protected CLogger log = CLogger.getCLogger (getClass());
 	
-	@Command(value = "saveClose")
-	public void saveClose() {
+	@Override
+	public void saveApp() {
 		Trx trx = null;
 		Boolean success = null;
 		Exception exc = null;

@@ -12,7 +12,7 @@ import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.tab.bean.OrglinkTabPanel;
 
-public class SdrOrgLinkVM {
+public class SdrOrgLinkVM extends BaseAppVM {
 	private MenuContextInfo menuContextInfo;
 	private FormInfo formInfo;
 	private OrglinkTabPanel orgLinkTab;
@@ -29,14 +29,14 @@ public class SdrOrgLinkVM {
 	}
 
 	@Command
-	public void saveClose() {
-		orgLinkTab.save(null, null);
+	public void saveApp() {
+		orgLinkTab.save(null);
 		MasterUtil.showDialog("ZZOrgLinksSaveSuccess", MasterUtil.fCloseActiveWindow);
 	}
 	
 	@Command
 	public void submit() {
-		orgLinkTab.submit(null, null);
+		orgLinkTab.submit(null);
 		MasterUtil.showDialog("ZZOrgLinksSubmitSuccess", MasterUtil.fCloseActiveWindow);
 	}
 	

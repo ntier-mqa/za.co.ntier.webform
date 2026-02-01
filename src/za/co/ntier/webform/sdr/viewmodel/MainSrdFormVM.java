@@ -20,7 +20,7 @@ import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
-import za.co.ntier.webform.sdr.component.bean.ISupportSave;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
@@ -31,7 +31,7 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
-public class MainSrdFormVM extends BaseVM {
+public class MainSrdFormVM extends BaseAppVM {
 	private MenuContextInfo menuContextInfo;
 	private FormInfo formInfo;
 	private NavTab mainTab;
@@ -442,7 +442,7 @@ public class MainSrdFormVM extends BaseVM {
 	}
 	
 	@Override
-	public List<ISupportSave> getSaveComponents() {
+	public List<ISaveForm> getSaveComponents() {
 		return List.of(mainTab, names);
 	}
 	

@@ -27,7 +27,7 @@
     src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
     
   <include
-  	supportSaveApp="@init(vm)"
+  	saveApp="@init(vm)"
     navTab="@init(vm.mainTab)"
     src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
 </idspace>

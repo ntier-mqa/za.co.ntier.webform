@@ -21,13 +21,13 @@
   
   
 	<include 
-    sclass="navTabOuter"
-    component="@init(vm.mainTab)"
-    	supportSaveApp="@init(vm)"
+    	sclass="navTabOuter"
+    	component="@init(vm.mainTab)"
 		menuContextInfo="@init(vm.menuContextInfo)"
 		src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
     
   <include
+  	saveApp="@init(vm)"
     navTab="@init(vm.mainTab)"
     src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
 </idspace>

@@ -280,7 +280,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 		return namesBean;
 	}
 
-	public void save(X_ZZSdf applicationForm, String trxName, boolean isSubmit) {
+	public void save(String trxName, boolean isSubmit) {
 		if (sdfOrgPo == null) {
 			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), 0, null);
 			sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Draft);
@@ -294,22 +294,22 @@ public class OrglinkTabPanel extends NavTabPanel {
 			sdfOrgPo.setC_BPartner_ID(getOrgPo().getC_BPartner_ID());
 		sdfOrgPo.setZZSdf_ID(getSdfPo().getZZSdf_ID());
 		sdfOrgModel.getRow().setData(sdfOrgPo);
-		sdfOrgModel.save(applicationForm, trxName);
+		sdfOrgModel.save(trxName);
 		
 		if (bankDetailPo == null) {
 			bankDetailPo = new X_ZZBankingDetails(Env.getCtx(), 0, null);
 			bankDetailPo.setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
 		}
 		getBankDetailModel().getRow().setData(bankDetailPo);
-		bankDetailModel.save(applicationForm, trxName);
+		bankDetailModel.save(trxName);
 	}
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
-		save(applicationForm, trxName, false);
+	public void save(String trxName) {
+		save(trxName, false);
 	}
 
-	public void submit(X_ZZSdf applicationForm, String trxName) {
-		save(applicationForm, trxName, true);
+	public void submit(String trxName) {
+		save(trxName, true);
 	}
 
 	/**

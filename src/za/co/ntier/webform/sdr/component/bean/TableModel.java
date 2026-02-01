@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -30,7 +29,7 @@ import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
-public class TableModel implements ISupportSave {
+public class TableModel implements ISaveForm {
 	
 	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
 	private String sclass = "";
@@ -77,7 +76,7 @@ public class TableModel implements ISupportSave {
 	}
 
 	private List<ColumnModel> columnModels;
-	private BiFunction<TableModel, X_ZZSdf, PO> poSupplier;
+	private Function<TableModel, PO> poSupplier;
 	
 	public static class DaoManage{
 		private String trxName;
@@ -602,14 +601,14 @@ public class TableModel implements ISupportSave {
 	/**
 	 * @return the poSupplier
 	 */
-	public BiFunction<TableModel, X_ZZSdf, PO> getPoSupplier() {
+	public Function<TableModel, PO> getPoSupplier() {
 		return poSupplier;
 	}
 
 	/**
 	 * @param poSupplier the poSupplier to set
 	 */
-	public void setPoSupplier(BiFunction<TableModel, X_ZZSdf, PO> poSupplier) {
+	public void setPoSupplier(Function<TableModel, PO> poSupplier) {
 		this.poSupplier = poSupplier;
 	}
 
@@ -641,14 +640,14 @@ public class TableModel implements ISupportSave {
 	}
 
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
-		ISupportSave.saveList(getRows(), applicationForm, trxName);
+	public void save(String trxName) {
+		ISaveForm.saveList(getRows(), trxName);
 	}
 	
 	@Override
-	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+	public void saveAttachment(String trxName) {
 		for(RowModel rowModel : getRows()) {
-			rowModel.saveAttachment(applicationForm, trxName);
+			rowModel.saveAttachment(trxName);
 		}
 		
 	}
@@ -684,7 +683,7 @@ public class TableModel implements ISupportSave {
 
 	@Override
 	public boolean validate() {
-		return ISupportSave.validates(rows);
+		return ISaveForm.validates(rows);
 	}
 
 

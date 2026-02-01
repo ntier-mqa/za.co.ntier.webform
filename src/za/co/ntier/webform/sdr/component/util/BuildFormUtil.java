@@ -79,8 +79,8 @@ public class BuildFormUtil {
 		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
 		addressFormBean.setSectionHeader(getAddressTitle(programType, addressType));
 		addressFormBean.setDataType(addressType.toString());
-		addressFormBean.setPoSupplier((ann, appForm) -> {
-			X_ZZ_FormContact po = new X_ZZ_FormContact(appForm.getCtx(), 0, null);
+		addressFormBean.setPoSupplier((ann) -> {
+			X_ZZ_FormContact po = new X_ZZ_FormContact(Env.getCtx(), 0, null);
 			//po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
 			po.setZZ_ContactType(ann.getDataType());
 			return po;
@@ -94,7 +94,7 @@ public class BuildFormUtil {
 					, I_ZZ_FormContact.COLUMNNAME_ZZ_ContactType);
 
 			Query querySavedDaos = MTable.get(Env.getCtx(), X_ZZ_FormContact.Table_Name).createQuery(where, null);
-			//savedDaos = querySavedDaos.setParameters(
+			//TODO savedDaos = querySavedDaos.setParameters(
 					//sdf.getZZ_Application_Form_ID()
 					//, addressFormBean.getDataType()).list();
 		}
@@ -188,7 +188,7 @@ public class BuildFormUtil {
 		
 		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false);
 		addressDetailBean.setSclass(addressType + " srd-address");
-		addressDetailBean.setPoSupplier((ann, appForm) -> {
+		addressDetailBean.setPoSupplier((ann) -> {
 			X_ZZPersonAddress po = new X_ZZPersonAddress(Env.getCtx(), 0, null);
 			po.setZZAddressType(addressType);
 			if(isSdfAddress) {

@@ -15,11 +15,10 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.util.Log;
 
-import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
-public class RowModel extends HashMap<ColumnModel, CellModel> implements ISupportSave{
+public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveForm{
 	private static final CLogger log = CLogger.getCLogger(RowModel.class);
 	private TableModel tableModel;
 	public RowModel(TableModel tableModel) {
@@ -123,7 +122,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 	}
 
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
+	public void save(String trxName) {
 		boolean isNothingInputed = checkState(RowModel.INPUT_STATE_EMPTY);
 		if (isNothingInputed && data != null) {
 			data.deleteEx(true);
@@ -155,7 +154,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 		PO daoPerCol = null;
 		for (CellModel cellModel : values()) {
 			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
-				daoPerCol = getDao(cellModel, applicationForm);
+				daoPerCol = getDao(cellModel);
 				
 				//TODO:Move logic set ui value to dao to cellMode
 				Object value = convertDataType(daoPerCol, cellModel);
@@ -175,13 +174,13 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 			
 	}
 	
-	private PO getDao(CellModel cellModel, X_ZZSdf applicationForm) {
+	private PO getDao(CellModel cellModel) {
 		PO daoPerCol = null;
 		if (tableModel.getDaoManage() != null)
 			daoPerCol =  tableModel.getDaoManage().getDaoForSave(cellModel.getColModel().getTableName());
 		
 		if (daoPerCol == null && data == null) {
-			data = tableModel.getPoSupplier().apply(tableModel, applicationForm);
+			data = tableModel.getPoSupplier().apply(tableModel);
 		}
 		if (daoPerCol == null)
 			daoPerCol = data;
@@ -194,10 +193,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 	 * @param trxName
 	 */
 	@Override
-	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+	public void saveAttachment(String trxName) {
 		for (CellModel cellModel : values()) {
 			if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
-				PO daoPerCol = getDao(cellModel, applicationForm);
+				PO daoPerCol = getDao(cellModel);
 				((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
 			}
 		}
