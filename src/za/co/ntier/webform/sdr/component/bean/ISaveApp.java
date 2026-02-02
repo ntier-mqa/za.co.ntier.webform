@@ -32,38 +32,13 @@ public interface ISaveApp {
 	
 	public void saveApp();
 	
-	public default void doSave(String trxName) {
-		List<ISaveForm> saveComponents = getSaveComponents();
-		List<DaoManage> daoManages = getDaoManages();
-		for (DaoManage daoManage : daoManages) {
-			daoManage.setTrxName(trxName);
-		}
-		
-		boolean isValidate = ISaveForm.validates(saveComponents);
-		
-		if (!isValidate)
-			throw new ValidateException(Msg.getMsg(Env.getCtx(), "ZZValidateFormFail"));
-					
-		for (ISaveForm saveComponent : saveComponents) {
-			saveComponent.save(trxName);
-		}
-		
-		for (DaoManage daoManage : daoManages) {
-			daoManage.saveDao(trxName);
-		}
-		
-		for (ISaveForm saveComponent : saveComponents) {
-			saveComponent.saveAttachment(trxName);
-		}
-	}
+	public void submitApp() ;
 	
 	public default boolean isSupportSubmit() {
 		return false;
 	}
 	
-	public default void submitApp() {
-		// do nothing
-	}
+	
 	
 	public default boolean isSupportDelete() {
 		return true;

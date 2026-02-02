@@ -55,16 +55,26 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 			getSaveApp().submitApp();
 	}
 	
+	public boolean isSupportNextTab() {
+		return navTab == null;
+	}
+	
+	public boolean isSupportPrevTab() {
+		return navTab == null;
+	}
+	
 	@Command
-	@NotifyChange({"activeFirstTab", "activeEndTab", "activeMidTab"})
+	@NotifyChange({"showDel", "showPrev", "showNext", "activeMidTab"})
 	public void nextTab() {
-		navTab.doNextTab();
+		if (navTab != null) 
+			navTab.doNextTab();
 	}
 
 	@Command
-	@NotifyChange({"activeFirstTab", "activeEndTab", "activeMidTab"})
+	@NotifyChange({"showDel", "showPrev", "showNext", "activeMidTab"})
 	public void prevTab() {
-		navTab.doPrevTab();
+		if (navTab != null)
+			navTab.doPrevTab();
 	}
 
 	/**
@@ -74,16 +84,20 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 		this.navTab = navTab;
 	}
 
-	public boolean isActiveFirstTab() {
-		return navTab.isActiveFirstTab();
+	public boolean isShowDel() {
+		return navTab != null && navTab.isActiveFirstTab();
+	}
+	
+	public boolean isShowPrev() {
+		return navTab != null && !navTab.isActiveFirstTab();
 	}
 
-	public boolean isActiveEndTab() {
-		return navTab.isActiveEndTab();
+	public boolean isShowNext() {
+		return navTab != null && !navTab.isActiveEndTab();
 	}
 
 	public boolean isActiveMidTab() {
-		return navTab.isActiveMidTab();
+		return navTab != null && navTab.isActiveMidTab();
 	}
 
 	public ISaveApp getSaveApp() {
