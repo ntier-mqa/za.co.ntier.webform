@@ -26,15 +26,156 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.api.model.X_ZZSdf;
+import za.co.ntier.webform.form.bean.component.AnnexureRow;
+import za.co.ntier.webform.form.bean.component.ICellData;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
 public class TableModel implements ISaveForm {
+	private RowModel activeRow;
+	private RowModel virtualRow;
+	public RowModel getVirtualRow() {
+		if (virtualRow == null) {
+			virtualRow = doCreateDetailRow(null);
+			if (getRows().size() == 0) {
+				init();
+			}
+			
+			setActiveRow(rows.get(0));
+		}
+		
+		return virtualRow;
+	}
+	public int getCurrentIndex () {
+		return getRows().indexOf(activeRow);
+	}
+	public boolean navNextRow() {
+		// first
+		if (activeRow == null && getRows().size() > 0) {
+			setActiveRow(getRows().get(0));
+			return true;
+		}
+		
+		// not yet init
+		if (activeRow == null && getRows().size() == 0) {
+			return false;
+		}
+		
+		// already end
+		if (activeRow != null && getRows().indexOf(activeRow) == getRows().size() - 1) {
+			return false;
+		}
+		
+		// just next
+		if (activeRow != null && getRows().indexOf(activeRow) < getRows().size() - 1){
+			int newIndex = getRows().indexOf(activeRow) + 1;
+			setActiveRow(getRows().get(newIndex));
+			return true;
+		}
+		
+		
+		// not yet handle
+		throw new AdempiereException("wrong condition - rows size:" + getRows().size());
+
+	}
+	
+	public void deleteRow() {
+		int newIndex = getRows().indexOf(activeRow) - 1;
+		
+		if (activeRow != null)
+			removeRow(activeRow);
+		
+		if (newIndex < 0 && getRows().size() > 0) {
+			newIndex = 0;
+		}
+		
+		if (getRows().size() > 0)// always exists 1 record because latest record is reset not remove
+			setActiveRow(getRows().get(newIndex));
+		
+	}
+	
+	List<PO> removedRows = new ArrayList<>();
+	public void removeRow(RowModel row) {
+		if (row.getData() != null) {
+			removedRows.add(row.getData());
+			row.setData(null);
+		}
+		if (getRows().size() > 1)
+			getRows().remove(row);
+		else {
+			row.resetRow();
+		}
+		
+		updateTotalRow();
+		BindUtils.postNotifyChange(this, "rows");
+	}
+	
+	protected void setActiveRow(RowModel newActiveRow) {
+		// copy virtual row to active row
+		copyRow(virtualRow, activeRow);
+		// reset virtual row
+		virtualRow.resetRow();
+		// set new active
+		activeRow = newActiveRow;
+		// copy new row to virtual row
+		copyRow(activeRow, virtualRow);
+	}
+	
+	public boolean navPrevRow() {
+		// not yet init
+		if (activeRow == null) {
+			return false;
+		}
+		
+		int newIndex = getRows().indexOf(activeRow) - 1;
+
+		// not yet init or already first
+		if (activeRow != null && newIndex < 0) {
+			return false;
+		}
+		
+		// just prev
+		if (activeRow != null && newIndex >= 0){
+			setActiveRow(getRows().get(newIndex));
+			return true;
+		}
+		
+		// not yet handle
+		throw new AdempiereException("wrong condition - rows size:" + getRows().size());
+	}
+	
+	public void newRow() {
+		RowModel newRow = addNewRow(activeRow);
+		
+		setActiveRow(newRow);
+	}
+	
+	public RowModel addNewRow(RowModel currentRow) {
+		RowModel newRow = doCreateDetailRow(null);
+		
+		if (currentRow == null) {
+			getRows().add(newRow);
+		}else {
+			int index = getRows().indexOf(currentRow);
+			getRows().add(index + 1, newRow);
+		}
+		
+		BindUtils.postNotifyChange(this, "rows");
+		
+		return newRow;
+	}
+	
+	public void copyRow(RowModel rowSrc, RowModel rowDes) {
+		if (rowSrc != null && rowDes != null)
+			for (ColumnModel col : rowSrc.getTableModel().getColumnInfos()) {
+				rowSrc.get(col).copyTo(rowDes.get(col));
+			}
+	}
 	
 	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
 	private String sclass = "";
 	
-	private boolean formView = true;	
+	private int viewMode = VIEW_FORM;	
 	
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
@@ -155,11 +296,6 @@ public class TableModel implements ISaveForm {
 
 	private Map<ColumnModel, Object> totalRow;
 
-	public void addRow() {
-		createDetailRow();
-		BindUtils.postNotifyChange(this, "rows");
-	}
-
 	public void cmdValueChanged (RowModel row,
 			ColumnModel col,
 			InputEvent event){
@@ -204,11 +340,22 @@ public class TableModel implements ISaveForm {
 		uploadCellModel.cmdUploadFile(event);
 	}
 	
+	public void cmdRemoveAttachment(RowModel row, ColumnModel col, Event event) {
+		UploadCellModel uploadCellModel = (UploadCellModel)row.get(col);
+		uploadCellModel.cmdRemoveAttachment();
+	}
+	
 	public RowModel createDetailRow() {
 		return createDetailRow(null);
 	}
 
 	public RowModel createDetailRow(Map<ColumnModel, Object> rowTitle) {
+		RowModel row = doCreateDetailRow(rowTitle);
+		getRows().add(row);
+		return row;
+	}
+	
+	public RowModel doCreateDetailRow(Map<ColumnModel, Object> rowTitle) {
 
 		RowModel row = new RowModel(this);
 
@@ -228,7 +375,6 @@ public class TableModel implements ISaveForm {
 			decoratorCell.accept(row);
 		}
 
-		getRows().add(row);
 		return row;
 	}
 
@@ -529,22 +675,22 @@ public class TableModel implements ISaveForm {
 	}
 
 
-	public void init(X_ZZSdf applicationForm) {
-		init(applicationForm, null);
+	public void init() {
+		init(null);
 	}
 
-	public void init(X_ZZSdf applicationForm, List<PO> savedDatas) {
-		init(applicationForm, savedDatas, null);
+	public void init(List<PO> savedDatas) {
+		init(savedDatas, null);
 	}
 
-	public void init(X_ZZSdf applicationForm, List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
+	public void init(List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
 		if(rowTitles == null || rowTitles.size() == 0)
-			init(applicationForm, savedDatas, null, null);
+			init(savedDatas, null, null);
 		else
-			init(applicationForm, savedDatas, rowTitles, rowTitles.get(0).keySet());
+			init(savedDatas, rowTitles, rowTitles.get(0).keySet());
 	}
 
-	public void init(X_ZZSdf applicationForm,
+	public void init(
 			List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)
@@ -641,6 +787,16 @@ public class TableModel implements ISaveForm {
 
 	@Override
 	public void save(String trxName) {
+		for (PO removedRow : removedRows) {
+			removedRow.deleteEx(true, trxName);
+		}
+		
+		if (virtualRow != null) {
+			// sync value from virtual row to active to validate and save
+			copyRow(virtualRow, activeRow);
+		}
+			
+		
 		ISaveForm.saveList(getRows(), trxName);
 	}
 	
@@ -666,27 +822,44 @@ public class TableModel implements ISaveForm {
 		this.daoManage = daoManage;
 	}
 
+	public final static int VIEW_FORM = 1;
+	public final static int VIEW_GRID = 2;
+	public final static int VIEW_CARD = 3;
 	/**
 	 * @return the formView
 	 */
 	public boolean isFormView() {
-		return formView;
+		return viewMode == VIEW_FORM;
+	}
+	
+	public boolean isGridView() {
+		return viewMode == VIEW_GRID;
+	}
+	
+	public boolean isCardView() {
+		return viewMode == VIEW_CARD;
 	}
 
 	/**
 	 * @param formView the formView to set
 	 */
-	public void setFormView(boolean formView) {
-		this.formView = formView;
+	public void setViewModel(int viewMode) {
+		this.viewMode = viewMode;
 	}
 
 
 	@Override
 	public boolean validate() {
-		return ISaveForm.validates(rows);
+		List<RowModel> validateRows = null;
+		if (virtualRow != null) {
+			validateRows = new ArrayList<>();
+			validateRows.remove(activeRow);
+			validateRows.add(virtualRow);
+		}else {
+			validateRows = rows;
+		}
+		return ISaveForm.validates(validateRows);
 	}
-
-
 
 
 }

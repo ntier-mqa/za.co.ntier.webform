@@ -24,6 +24,8 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		ListColumnModel<T> colModel = getColModel();
 		if (colModel.getDefaultValue() != null) {
 			setValue(colModel.getDefaultValue(), colModel.getCompareFunction());
+		}else {
+			setValue(null);
 		}
 	}
 	

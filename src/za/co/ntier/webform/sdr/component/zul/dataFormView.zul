@@ -29,7 +29,7 @@
               if="${vmDataFormView.component.row ne null}"
               sclass="@init(( 'grid-formview ' += vmDataFormView.component.sclass ))"
               component="@init(vmDataFormView.component.row)"
-              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/cellRender.zul')))" >
+              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/rowRender.zul')))" >
       </include>
             
   

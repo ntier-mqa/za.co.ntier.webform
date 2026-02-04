@@ -99,7 +99,7 @@ public class BuildFormUtil {
 					//, addressFormBean.getDataType()).list();
 		}
 
-		addressFormBean.init(applicationForm, savedDaos);
+		addressFormBean.init(savedDaos);
 		return addressFormBean;
 	}
 
@@ -220,9 +220,9 @@ public class BuildFormUtil {
 		savedDataQuery.setOrderBy(X_ZZPersonAddress.COLUMNNAME_Created + " DESC");
 		PO po = savedDataQuery.first();
 		if (po == null) {
-			addressDetailBean.init(null, null);
+			addressDetailBean.init(null);
 		}else {
-			addressDetailBean.init(null, List.of(po));
+			addressDetailBean.init(List.of(po));
 		}
 		
 	

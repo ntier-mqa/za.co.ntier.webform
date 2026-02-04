@@ -362,3 +362,7 @@
 .mqaWebForm .sdrForm .grid-listView.grid-listView-3{
   grid-template-columns: repeat(3, 1fr);
 }
+
+.mqaWebForm .sdrForm a.z-button{
+	text-decoration:none;
+}

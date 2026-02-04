@@ -489,10 +489,19 @@ public class MasterUtil {
 		return false;
 	}
 	
-	public static boolean isListViewTableModel(Object obj) {
+	public static boolean isGridViewTableModel(Object obj) {
 		if (obj instanceof TableModel) {
 			TableModel tableModel = (TableModel)obj;
-			return !tableModel.isFormView();
+			return tableModel.isGridView();
+		}
+		
+		return false;
+	}
+	
+	public static boolean isCardViewTableModel(Object obj) {
+		if (obj instanceof TableModel) {
+			TableModel tableModel = (TableModel)obj;
+			return tableModel.isCardView();
 		}
 		
 		return false;

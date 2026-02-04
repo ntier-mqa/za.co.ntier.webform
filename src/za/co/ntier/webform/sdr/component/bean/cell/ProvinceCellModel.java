@@ -70,14 +70,6 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 		}
 	}
 
-	
-	public Object getSelectedID() {
-		if (getSelectedItem() == null)
-			return 0;
-		else
-			return getSelectedItem().getC_Region_ID();
-	}
-
 	@Override
 	public String getDisplayText(MRegion item) {
 		return item.getName();

@@ -76,7 +76,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		NavTabPanel contactDetailTab = new NavTabPanel(mainTab);
 		contactDetailTab.setTabTitle("CONTACT DETAILS");
 		// new component
-		contactDetailTab.getCompModel().add(initContactDetailComp());
+		TableModel contactTableModel = initContactDetailComp();
+		contactTableModel.setViewModel(TableModel.VIEW_CARD);
+		contactDetailTab.getCompModel().add(contactTableModel);
 
 		// address tab
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);

@@ -15,21 +15,25 @@ import org.zkoss.bind.validator.AbstractValidator;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
+import za.co.ntier.webform.form.bean.component.AnnexureInfo;
+import za.co.ntier.webform.form.bean.component.AnnexureRow;
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 @Init(superclass = true)
-public class CellRenderVM extends BaseComponentVM<RowModel>{
+public class RowRenderVM extends BaseComponentVM<RowModel>{
 	
 	public static class BaseValidator extends AbstractValidator{
 		CellModel cellModel;
 		Object value;
-		CellRenderVM vm;
+		RowRenderVM vm;
 		List<String> msgs = new ArrayList<>();
 		
 		void doValidate(ValidationContext ctx) {
@@ -41,7 +45,7 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 			msgs.clear();
 			cellModel = (CellModel)ctx.getValidatorArg("cellModel");
 			value = ctx.getProperty().getValue();
-			vm = (CellRenderVM)ctx.getBindContext().getValidatorArg("vm");
+			vm = (RowRenderVM)ctx.getBindContext().getValidatorArg("vm");
 			
 			doValidate(ctx);
 			if (msgs.size() > 0)
@@ -105,6 +109,7 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 			, @BindingParam("row") RowModel rowModel
 			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) CheckEvent event) throws IOException {
+		rowModel.get(colModel).resetValidate();
 		tableModel.cmdCheckeck(rowModel, colModel, event);
 	}
 	
@@ -123,25 +128,26 @@ public class CellRenderVM extends BaseComponentVM<RowModel>{
 			, @BindingParam("row") RowModel rowModel
 			, @BindingParam("col") ColumnModel colModel
 			, @ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) throws IOException {
+		rowModel.get(colModel).resetValidate();
 		tableModel.cmdUploadFile(rowModel, colModel, event);
 	}
 
+	@Command
+	public void cmdRemoveAttachment(@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
+			, @ContextParam(ContextType.TRIGGER_EVENT) Event event) throws IOException {
+		tableModel.cmdRemoveAttachment(rowModel, colModel, event);
+		
+	}
+	
 	/**
 	 * @return the formView
 	 */
-	public boolean isFormView() {
-		return getComponent().getTableModel().isFormView();
-	}
-	
-	public boolean showTitle(CellModel cell) {
-		if (cell.getColModel().getShowTitle() == null) {
-			if (isFormView() && cell.getCellType() == CellModel.CHECK_CELL)
-				return false;
-			else{
-				return true;
-			}
-		}else {
-			return cell.getColModel().getShowTitle().booleanValue();
-		}
+	public boolean showFieldTitle(CellModel cell) {
+		return (cell.getColModel().getShowTitle() == null || cell.getColModel().getShowTitle()) &&
+		(getComponent().getTableModel().isFormView() || getComponent().getTableModel().isCardView()) &&
+		cell.getCellType() != CellModel.CHECK_CELL;
+		
 	}
 }

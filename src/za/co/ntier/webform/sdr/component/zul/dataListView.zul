@@ -28,7 +28,7 @@
     <include
       style = "display: contents;" 
       component="@init(row)"
-      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/cellRender.zul')))" />
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/rowRender.zul')))" />
   
   </template>
 </div>

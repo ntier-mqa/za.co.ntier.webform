@@ -16,6 +16,7 @@ public class ColumnModel {
 	private boolean isCalTotlal = false;
 	
 	private Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> cellModelSupplier;
+	private Function<CellModel, Boolean> composeValidator;
 
 	public CellModel initCellModel(TableModel tableModel, RowModel rowModel) {
 		if (getCellModelSupplier() == null) {
@@ -219,5 +220,13 @@ public class ColumnModel {
 	 */
 	public void setEventHandle(BiConsumer<Event, CellModel> eventHandle) {
 		this.eventHandle = eventHandle;
+	}
+
+	public Function<CellModel, Boolean> getComposeValidator() {
+		return composeValidator;
+	}
+
+	public void setComposeValidator(Function<CellModel, Boolean> composeValidator) {
+		this.composeValidator = composeValidator;
 	}
 }

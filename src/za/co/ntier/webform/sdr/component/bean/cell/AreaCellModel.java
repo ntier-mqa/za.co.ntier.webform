@@ -66,14 +66,6 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	}
 
 	@Override
-	public Object getSelectedID() {
-		if (getSelectedItem() == null)
-			return 0;
-		else
-			return getSelectedItem().getC_City_ID();
-	}
-
-	@Override
 	public String getDisplayText(MCity item) {
 		return item.getName();
 	}

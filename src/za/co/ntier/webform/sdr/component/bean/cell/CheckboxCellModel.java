@@ -16,15 +16,6 @@ public class CheckboxCellModel extends CellModel implements ICheckbox {
 		setCellType(CHECK_CELL);
 	}
 
-	@Override
-	public Object getValue() {
-		if (super.getValue() == null) {
-			return false;// TODO: DAO for checkbox don't accept null because setter use boolean. neet to overider setDao for treatment null value
-			
-		}
-			
-		return super.getValue();
-	}
 	/**
 	 * @return the title
 	 */

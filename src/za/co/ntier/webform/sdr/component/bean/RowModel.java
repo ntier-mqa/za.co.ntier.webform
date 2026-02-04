@@ -29,6 +29,12 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	public static final int INPUT_STATE_FULL_REQUIRED = 1;
 	private PO data;
 
+	public void resetRow() {
+		for (CellModel cell : values()) {
+			cell.dirtyValue = null;//TODO: move to reset function of cell
+			cell.initDefaultValue(tableModel, this);
+		}
+	}
 	/**
 	 * @return the data
 	 */
@@ -232,8 +238,13 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	@Override
 	public boolean validate() {
 		boolean isValid = true;
-		for (CellModel supportSave : this.values()) {
-			if (!supportSave.validate()) {
+		for (CellModel validation : this.values()) {
+			if (!validation.validate()) {
+				isValid = false;
+			}
+			
+			if (validation.getColModel().getComposeValidator() != null &&
+					!validation.getColModel().getComposeValidator().apply(validation)) {
 				isValid = false;
 			}
 		}

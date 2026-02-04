@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -90,6 +91,8 @@ public abstract class BaseAppVM implements ISaveApp{
 	public void doSave(String trxName) {
 		List<ISaveForm> saveComponents = getSaveComponents();
 		List<DaoManage> daoManages = getDaoManages();
+		List<PO> daos = getDaos();
+		
 		for (DaoManage daoManage : daoManages) {
 			daoManage.setTrxName(trxName);
 		}
@@ -105,6 +108,10 @@ public abstract class BaseAppVM implements ISaveApp{
 		
 		for (DaoManage daoManage : daoManages) {
 			daoManage.saveDao(trxName);
+		}
+		
+		for (PO dao : daos) {
+			dao.saveEx(trxName);
 		}
 		
 		for (ISaveForm saveComponent : saveComponents) {

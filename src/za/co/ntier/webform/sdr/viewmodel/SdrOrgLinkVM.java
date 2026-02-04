@@ -3,11 +3,13 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
@@ -52,6 +54,11 @@ public class SdrOrgLinkVM extends BaseAppVM {
 
 	private X_C_BPartner orgPo;
 	
+	@Override
+	public List<ISaveForm> getSaveComponents() {
+		return List.of(sdfOrgModel, bankDetailModel);
+	}
+	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);
@@ -66,15 +73,15 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	}
 
 	private void initForm() {
-		orgSearchModel = initOrgSearchModel(null, null);
+		orgSearchModel = initOrgSearchModel();
 		
-		sdfOrgModel = initSdfOrgModel(null, null);
+		sdfOrgModel = initSdfOrgModel();
 		
-		bankDetailModel = initBankDetailModel(null, null);
+		bankDetailModel = initBankDetailModel();
 
 	}
 	
-	private TableModel initOrgSearchModel(MUser_New person, X_ZZSdf sdf) {
+	private TableModel initOrgSearchModel() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel sdlNoCol = CellModel.getColModelForText(
@@ -110,12 +117,12 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setSclass("orgSearch");
 
-		namesBean.init(null, null, null);
+		namesBean.init();
 
 		return namesBean;
 	}
 	
-	private TableModel initSdfOrgModel(MUser_New person, X_ZZSdf sdf) {
+	private TableModel initSdfOrgModel() {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel actingForEmployerCol = CheckboxCellModel.getCheckboxColModel(
@@ -161,24 +168,58 @@ public class SdrOrgLinkVM extends BaseAppVM {
 						MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
 								I_ZZSdfOrganisation.COLUMNNAME_ZZSecondarySdf),
 						I_ZZSdfOrganisation.COLUMNNAME_ZZSecondarySdf);
+		
+		secondarySdfCol.setComposeValidator(cellModel -> {
+				CheckboxCellModel replacingPrimaryCell = (CheckboxCellModel)cellModel.getRowModel().get(replacingPrimaryCol);
+				CheckboxCellModel secondarySdfCell = (CheckboxCellModel)cellModel;
+				if ((secondarySdfCell.getValue() == null || !((Boolean)secondarySdfCell.getValue())) && 
+						(replacingPrimaryCell.getValue() == null || !((Boolean)replacingPrimaryCell.getValue()))) {
+					cellModel.getValidateMsgs().add(Msg.getMsg(Env.getCtx(), "ZZValidateOrgLinkRequiedSDFType"));
+					return Boolean.FALSE;
+				}
+					
+				
+				return Boolean.TRUE;
+			});
 		cols.add(secondarySdfCol);
 
-		UploadColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
-				"UPLOAD LETTER OF APPOINTMENT");
+		ColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
+				"UPLOAD LETTER OF APPOINTMENT")
+			.required();
 		cols.add(btAppointmentLetterCol);
 		
-		UploadColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS");
+		ColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS")
+			.required();
 		cols.add(btBankDetailCol);
 
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setSclass("orglink");
 
-		namesBean.init(null, null, null);
+		namesBean.setPoSupplier(t -> {
+			if (orgPo == null) {
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinkMissingOrg"));
+			}
+			
+			if (sdfOrgPo == null) {
+				sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), 0, null);
+				sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Draft);
+			}
+			
+			
+			sdfOrgPo.setC_BPartner_ID(orgPo.getC_BPartner_ID());
+			sdfOrgPo.setZZSdf_ID(sdfPo.getZZSdf_ID());
+			
+			return sdfOrgPo;
+				
+		});
+		
+		namesBean.init();
+		
 
 		return namesBean;
 	}
 	
-	private TableModel initBankDetailModel(MUser_New person, X_ZZSdf sdf) {
+	private TableModel initBankDetailModel() {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel warningBankDetailUploadCol = CellModel.getColModelForLabel(
@@ -268,7 +309,19 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setSclass("bankDetails");
 
-		namesBean.init(null, null);
+		namesBean.setPoSupplier(t -> {
+			if (sdfOrgPo == null) {
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinkMissingOrg"));
+			}
+			
+			if (bankDetailPo == null) {
+				bankDetailPo = new X_ZZBankingDetails(Env.getCtx(), 0, null);
+			}
+			
+			bankDetailPo.setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
+			return bankDetailPo;
+		});
+		namesBean.init();
 
 		return namesBean;
 	}
@@ -363,8 +416,4 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		sdfOrgPo.saveEx(trxName);
 	}
 	
-	@Override
-	public List<ISaveForm> getSaveComponents() {
-		return List.of();
-	}
 }

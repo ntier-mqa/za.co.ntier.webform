@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><?import org.compiere.util.KeyNamePair?>
+
+<?import za.co.ntier.webform.sdr.component.bean.ConvertUtil ?>
+<?import org.adempiere.webui.AdempiereWebUI  ?>
+<?import za.co.ntier.webform.sdr.component.bean.CellModel ?>
+
+
+<nodom
+  viewModel="@id('vmRowRender') @init('za.co.ntier.webform.sdr.component.viewmodel.RowRenderVM')"
+  validationMessages="@id('vmsgs')">
+    <nodom
+      children="@bind(vmRowRender.cols)">
+      <!-- template to generate a title/component per col -->
+      <template name="children" var="col">
+        <!-- group title/content -->
+        <div sclass="@init(( 'cell cellType' += vmRowRender.row[col].cellType ))">
+          <!-- title part, show description, error message -->
+          <div sclass="cell-title">
+            <!-- main label -->
+            <label
+              sclass="label" 
+              visible="@init(( vmRowRender.showFieldTitle(vmRowRender.row[col]) ))" 
+              value="@init(col.title)" />
+            <!-- required mark -->
+            <label
+              sclass="required" value="*"
+              visible="@init(( vmRowRender.showFieldTitle(vmRowRender.row[col]) and col.mandatory and vmRowRender.row[col].cellType ne CellModel.BTUPLOAD_CELL ))" />
+              
+          </div>
+		  <!-- description -->
+            <label
+              visible="@init(( vmRowRender.showFieldTitle(vmRowRender.row[col]) ))" 
+              sclass="help-text"/>
+            <!-- error -->
+            <div sclass="cell-error">
+          		<grid visible="@load(vmRowRender.row[col].fieldValidate)" model="@bind(vmsgs.texts[vmRowRender.row[col].validateMsgKey])" >
+					<template name="model" var="msg">
+					<row>
+					<label value="@load(( 'field ' += msg  ))" />
+					</row>
+					</template>
+				</grid>
+				
+				
+				<grid visible="@load(vmRowRender.row[col].formValidate)" model="@bind(vmRowRender.row[col].validateMsgs)" >
+					<template name="model" var="msg">
+					<row>
+					<label value="@load(( 'form ' += msg ))" />
+					</row>
+					</template>
+				</grid>
+				
+          </div>
+          <!-- content part -->
+          <div sclass="cell-content">
+            
+            <!-- textbox -->
+            <textbox
+              if="${ vmRowRender.row[col].textfield }"
+              readonly="@init(col.readonly)"
+              
+              type="@init(vmRowRender.row[col].cellType eq CellModel.PHONE_CELL ? 'tel' : 'text')"
+              value="
+              	@bind(vmRowRender.row[col].value)
+              	@converter(ConvertUtil.getConvertBlankNull())
+              	@validator(vmRowRender.cellValidator, cellModel=vmRowRender.row[col], vm=vmRowRender)" 
+              onChange="@command('cmdValueChanged', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
+            
+            <!-- list - Area - province -->
+            <listbox
+              if="${ vmRowRender.row[col].cellType eq CellModel.LIST_CELL }"
+              readonly="@init(col.readonly)"
+              
+              mold="select"
+              model="@bind(vmRowRender.row[col].model)"
+              onSelect="@command('cmdSelected', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)">
+              <template name="model" var="item">
+                <listitem
+                  label="@init(( vmRowRender.row[col].getDisplayText(item) ))" />
+              </template>
+            </listbox>
+            
+            <!-- label -->
+            <label if="${vmRowRender.row[col].cellType eq CellModel.LABEL_CELL}"
+              value="@load(vmRowRender.row[col].value)" />
+            
+            <!-- radiogroup -->
+            <radiogroup if="${vmRowRender.row[col].cellType eq CellModel.RADIO_CELL}"
+              selectedItem="@bind(vmRowRender.row[col])">
+              <radio label="YES" value="Y" />
+              <radio label="NO" value="N" />
+            </radiogroup>
+
+            <!-- PositiveNumber -->
+            <intbox if="${vmRowRender.row[col].cellType eq CellModel.POSITIVE_NUM_CELL}"
+              value="@bind(vmRowRender.row[col].value)
+                   " />
+            
+            <!-- FileUpload -->
+            <div if="${vmRowRender.row[col].cellType eq CellModel.BTUPLOAD_CELL}" 
+              sclass="fileUploadContent">
+              <fileupload
+                iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
+                label="@init(( col.mandatory ? vmRowRender.row[col].btText += ' * ' : vmRowRender.row[col].btText ))"
+                onUpload="@command('cmdUploadFile', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"
+                upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
+              
+              <div
+                    sclass="uploadFileBox"
+                    visible="@load(( vmRowRender.row[col].fileName ne null ))">
+              
+	              <label
+	              	sclass="break-text"
+	                value="@load(vmRowRender.row[col].fileName)" />
+	              
+	              <button sclass="btn-circle removeAttachment"
+	                iconSclass="z-icon-xmark" label="" tooltiptext="Remove"
+	                onClick="@command('cmdRemoveAttachment', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)" />
+               </div>
+                
+            </div>
+
+            <!-- Checkbox -->
+            <div if="${vmRowRender.row[col].cellType eq CellModel.CHECK_CELL}" 
+              sclass="checkboxContent">
+              <checkbox
+                label="@init(vmRowRender.row[col].title)"
+                onCheck="@command('cmdCheckeck', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
+            </div>
+            
+            <!-- Date -->
+            <datebox if="${vmRowRender.row[col].cellType eq CellModel.DATE_CELL}"
+              format="yyyy/MM/dd" placeholder="yyyy/MM/dd"
+              valueInLocalDate="@bind(vmRowRender.row[col].localDate)" />
+
+			<button if="${vmRowRender.row[col].cellType eq CellModel.BUTTON_CELL}"
+			  iconSclass="@init(vmRowRender.row[col].iconSclass)"
+			  label="@load(col.title)"
+              onClick="@command('cmdBtClick', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
+              
+          </div>
+        </div>
+      </template>
+    </nodom>
+</nodom>

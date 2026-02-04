@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.PO;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -25,7 +26,9 @@ public interface ISaveApp {
 	public default List<DaoManage> getDaoManages(){
 		return List.of();
 	}
-	
+	public default List<PO> getDaos(){
+		return List.of();
+	}
 	public default boolean isSupportSave() {
 		return true;
 	}

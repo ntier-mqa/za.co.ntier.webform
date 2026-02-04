@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.adempiere.webui.panel.RegistrationWindow;
 import org.apache.commons.lang3.StringUtils;
@@ -85,7 +86,7 @@ public class CellModel implements IValueChange {
 	
 	public void resetValidate() {
 		dirtyValue = getValue();
-		formValidate = false;
+		setFormValidate(false);
 	}
 	
 	protected List<String> doValidate(Object inputValue) {
@@ -367,6 +368,10 @@ public class CellModel implements IValueChange {
 		this.validateMsgs = validateMsgs;
 		BindUtils.postNotifyChange(this, "validateMsgs");
 	}
-	
+
+	public void copyTo(CellModel cellModel) {
+		cellModel.setValue(getValue());
+		
+	}	
 
 }

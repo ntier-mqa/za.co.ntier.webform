@@ -35,10 +35,16 @@
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
               
               <include
-                if = "${ MasterUtil.isListViewTableModel(compItem) }"
+                if = "${ MasterUtil.isGridViewTableModel(compItem) }"
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+                
+              <include
+                if = "${ MasterUtil.isCardViewTableModel(compItem) }"
+                component="@init(compItem)"
+                menuContextInfo="@init(vmNavTab.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataCardView.zul')))" />
               
               <include 
                 if = "${ MasterUtil.isNavTab(compItem) }"

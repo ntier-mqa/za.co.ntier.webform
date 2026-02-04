@@ -3,11 +3,16 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.PO;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.form.AttachmentUtil;
@@ -54,6 +59,14 @@ public class UploadCellModel extends CellModel {
 		return uploadColumnModel;
 	}
 	
+	@Override
+	public List<String> doValidate(Object inputValue) {
+		if (getColModel().isMandatory() && StringUtils.isBlank(fileName) && bytes == null)
+			return List.of(Msg.getMsg(Env.getCtx(), "ZZValidateNotNull"));
+		
+		return List.of();
+	}
+	
 	public void cmdUploadFile(UploadEvent event) {
 		Media m = event.getMedia();
 
@@ -86,11 +99,22 @@ public class UploadCellModel extends CellModel {
 		
 	}
 	
+	private boolean removed = false;
+	
+	public void cmdRemoveAttachment() {
+		bytes = null;
+		fileName = null;
+		removed = true;
+		BindUtils.postNotifyChange(this, "fileName");
+	}
+	
 	public void attachFile(PO data, String trxName) {
 		byte[] bytes = getBytes(); // <-- in-memory only
 		String fileName = getFileName();
 
-		if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
+		if (removed) {
+			AttachmentUtil.removeAttachmentEntry(data, getBtText(), trxName);
+		}else if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
 			// one-entry semantics: delete-and-recreate
 			AttachmentUtil.addOrReplaceAttachmentEntry(data, fileName, bytes, getBtText() ,trxName);
 
@@ -111,4 +135,6 @@ public class UploadCellModel extends CellModel {
 		setFileName(fileName);
 		
 	}
+
+	
 }
