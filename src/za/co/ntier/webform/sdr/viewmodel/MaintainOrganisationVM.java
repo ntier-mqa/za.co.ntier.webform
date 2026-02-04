@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_User;
 import org.compiere.model.X_C_BPartner_Location;
@@ -100,21 +101,21 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Title)
 				, I_AD_User.COLUMNNAME_Title
 				).required()
-				.setTableName(I_AD_User.Table_Name);
+				;
 		cols.add(titleCol);
 		
 		ColumnModel firstNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName)
 				, I_AD_User.COLUMNNAME_Name
 				).required()
-				.setTableName(I_AD_User.Table_Name);
+				;
 		cols.add(firstNameCol);
 		
 		ColumnModel lastNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname)
 				, I_AD_User.COLUMNNAME_Name
 				).required()
-				.setTableName(I_AD_User.Table_Name);
+				;
 		cols.add(lastNameCol);
 		
 		
@@ -122,47 +123,47 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_Designation)
 				, I_AD_User.COLUMNNAME_ZZ_Designation
 				).required()
-				.setTableName(I_AD_User.Table_Name);
+				;
 		cols.add(designationCol);
 		
 		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
 				, I_AD_User.COLUMNNAME_Phone2
-				).setTableName(I_AD_User.Table_Name);
+				);
 		cols.add(telephoneNumberCol);
 
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone)
 				, I_AD_User.COLUMNNAME_Phone
 				).required()
-				.setTableName(I_AD_User.Table_Name);
+				;
 		cols.add(cellPhoneNumberCol);
 
 		ColumnModel orgFaxCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Fax)
 				, I_AD_User.COLUMNNAME_Fax
-				).setTableName(I_AD_User.Table_Name);
+				);
 		cols.add(orgFaxCol);
 		
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
 				)
-				.setTableName(I_AD_User.Table_Name);
+				;
 		cols.add(emailCol);
 		
-		ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(
+		/*ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
 				, I_C_Location.COLUMNNAME_C_Region_ID)
 				.required()
 				.setTableName(I_C_Location.Table_Name);
 		cols.add(provinceCol);
-		
+		*/
 		
 		TableModel orgContactDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
 		orgContactDetailBean.setSclass("srd-org-contact");
 		
-		X_C_Location location;
+		/*X_C_Location location;
 		orgPO.getLocations(true);
 		X_C_BPartner_Location bpLocation = orgPO.getPrimaryC_BPartner_Location();
 		if (bpLocation != null) {
@@ -170,9 +171,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				location = (X_C_Location)bpLocation.getC_Location();
 				orgDaoManage.setDao(location);
 			}
-		}
+		}*/
 		
-		orgDaoManage.setPoSupplier(I_C_Location.Table_Name, daoManage -> {
+		/*orgDaoManage.setPoSupplier(I_C_Location.Table_Name, daoManage -> {
 			X_C_BPartner_Location bpLocationx = orgPO.getPrimaryC_BPartner_Location();
 			if (bpLocationx == null) {
 				bpLocationx = new X_C_BPartner_Location(Env.getCtx(), 0, daoManage.getTrxName());
@@ -185,28 +186,36 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			bpLocationx.saveEx();
 			
 			return locationx;
-		});
+		});*/
 		
 		Query contactQuery = MTable.get(Env.getCtx(), org.compiere.model.I_AD_User.Table_Name)
 				.createQuery(
 						String.format("%s = ?", I_AD_User.COLUMNNAME_C_BPartner_ID), null);
 		contactQuery.setParameters(orgPO.getC_BPartner_ID());
-		MUser_New contact = contactQuery.first();
+		List<PO> contacts = contactQuery.list();
 		
-		if (contact != null) {
+		/*if (contact != null) {
 			orgDaoManage.setDao(contact);
 		}
 		
 		orgDaoManage.setPoSupplier(I_AD_User.Table_Name, daoManage -> {
 			MUser_New nContact = new MUser_New(Env.getCtx(), 0, daoManage.getTrxName());
+			nContact.setAD_Org_ID(0);
 			nContact.setC_BPartner_ID(orgPO.getC_BPartner_ID());
 			nContact.setNotificationType(X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice);
 			return nContact;
 		});
 		
 		orgContactDetailBean.setDaoManage(orgDaoManage);
-		
-		orgContactDetailBean.init(null, null);
+		*/
+		orgContactDetailBean.setPoSupplier(tableModel -> {
+			MUser_New nContact = new MUser_New(Env.getCtx(), 0, null);
+			nContact.setAD_Org_ID(0);
+			nContact.setC_BPartner_ID(orgPO.getC_BPartner_ID());
+			nContact.setNotificationType(X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice);
+			return nContact;
+		});
+		orgContactDetailBean.init(contacts);
 		
 		return orgContactDetailBean;
 	}
