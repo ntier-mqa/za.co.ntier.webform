@@ -10,7 +10,6 @@ import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -18,7 +17,6 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
-import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
@@ -33,8 +31,6 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
-import za.co.ntier.webform.sdr.component.bean.column.UploadColumnModel;
-import za.co.ntier.webform.sdr.component.tab.bean.OrglinkTabPanel;
 
 public class SdrOrgLinkVM extends BaseAppVM {
 	private MenuContextInfo menuContextInfo;

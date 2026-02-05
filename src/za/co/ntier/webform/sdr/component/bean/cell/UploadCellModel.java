@@ -12,7 +12,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.form.AttachmentUtil;

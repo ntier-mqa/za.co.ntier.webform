@@ -2,7 +2,6 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.logging.Level;
 
 import org.compiere.model.PO;
@@ -15,7 +14,6 @@ import org.zkoss.bind.annotation.Command;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.ISaveApp;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
-import za.co.ntier.webform.sdr.component.bean.ISaveApp.ValidateException;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 
 public abstract class BaseAppVM implements ISaveApp{
