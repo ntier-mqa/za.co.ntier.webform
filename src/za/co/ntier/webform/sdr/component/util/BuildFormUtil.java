@@ -13,6 +13,7 @@ import za.co.ntier.api.model.I_ZZPersonAddress;
 import za.co.ntier.api.model.I_ZZ_FormContact;
 import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdf;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_FormContact;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.AddressType;
@@ -26,9 +27,32 @@ import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 
 public class BuildFormUtil {
-	public static TableModel initAddress(ProgramType programType, AddressType addressType, X_ZZSdf applicationForm) {
+	public static TableModel buildFormContact(ProgramType programType, AddressType addressType, X_ZZ_Application_Form applicationForm, TableModel copyFrom) {
 		List<ColumnModel> cols = new ArrayList<>();
 
+		ColumnModel dupplicateCol = null;
+		if (copyFrom != null) {
+			dupplicateCol = CellModel.getColModelForGenericCell("Copy Address", null, CellModel.BUTTON_CELL);
+			dupplicateCol.setShowTitle(false);
+			
+			dupplicateCol.setEventHandle((inputEvent, cellModel) -> {
+				
+					RowModel postalRow = cellModel.getRowModel();
+					RowModel physicalRow = copyFrom.getRow();
+					
+					for (ColumnModel postalColModel : cellModel.getTableModel().getColumnInfos()) {
+						for (ColumnModel physicalColModel : copyFrom.getColumnInfos()) {
+							if (postalColModel.getDaoPropertyName() != null && StringUtils.equals(physicalColModel.getDaoPropertyName(), postalColModel.getDaoPropertyName())) {
+								postalRow.get(postalColModel).setValue(physicalRow.get(physicalColModel).getValue());
+								break;
+							}
+						}
+					}
+			});
+			
+			cols.add(dupplicateCol);
+		}
+		
 		if(showSiteName(programType, addressType)) {
 			ColumnModel siteNameCol = CellModel.getColModelForText("Site Name", I_ZZ_FormContact.COLUMNNAME_ZZ_SideName).required();
 			cols.add(siteNameCol);
@@ -66,10 +90,10 @@ public class BuildFormUtil {
 			ColumnModel nameSurnameCol = CellModel.getColModelForText("Name and Surname", I_ZZ_FormContact.COLUMNNAME_ContactName).required();
 			cols.add(nameSurnameCol);
 
-			ColumnModel telNumberCol = CellModel.getColModelForText("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
+			ColumnModel telNumberCol = CellModel.getColModelForPhone("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
 			cols.add(telNumberCol);
 
-			ColumnModel alternativeNumberCol = CellModel.getColModelForText("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
+			ColumnModel alternativeNumberCol = CellModel.getColModelForPhone("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
 			cols.add(alternativeNumberCol);
 
 			ColumnModel emailCol = CellModel.getColModelForEmail("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
@@ -77,16 +101,17 @@ public class BuildFormUtil {
 		}
 
 		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
-		addressFormBean.setSectionHeader(getAddressTitle(programType, addressType));
+		addressFormBean.setSubSectionHeader(getAddressTitle(programType, addressType));
 		addressFormBean.setDataType(addressType.toString());
-		addressFormBean.setPoSupplier((ann) -> {
-			X_ZZ_FormContact po = new X_ZZ_FormContact(Env.getCtx(), 0, null);
-			//po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
-			po.setZZ_ContactType(ann.getDataType());
-			return po;
-		});
 
-
+		final ColumnModel dupplicateColF = dupplicateCol;
+		if (copyFrom != null) {
+			addressFormBean.setDecoratorCell(rowModel -> {
+				CellModel btDupplicate = rowModel.get(dupplicateColF);
+				btDupplicate.setIconSclass("z-icon-fw z-icon-clone z-icon-solid");
+			});
+		}
+		
 		List<PO> savedDaos = null;
 		if(applicationForm != null) {
 			String where = String.format("%s = ? AND %s = ?",
@@ -94,9 +119,12 @@ public class BuildFormUtil {
 					, I_ZZ_FormContact.COLUMNNAME_ZZ_ContactType);
 
 			Query querySavedDaos = MTable.get(Env.getCtx(), X_ZZ_FormContact.Table_Name).createQuery(where, null);
-			//TODO savedDaos = querySavedDaos.setParameters(
-					//sdf.getZZ_Application_Form_ID()
-					//, addressFormBean.getDataType()).list();
+			PO savedDao = querySavedDaos.setParameters(
+					applicationForm.getZZ_Application_Form_ID()
+					, addressFormBean.getDataType()).first();
+			
+			if (savedDao != null)
+				savedDaos = List.of(savedDao);
 		}
 
 		addressFormBean.init(savedDaos);

@@ -108,7 +108,11 @@ public class WebForm extends ADForm {
 
 		String applicationFormUU = Env.getContext(Env.getCtx(), m_WindowNo, applicationFormUUKey);
 		
-		MenuContextInfo menuContextInfo = new MenuContextInfo(ProgramType.valueOf(programTypeValue), zulPath,
+		ProgramType programType = ProgramType.valueOf(programTypeValue);
+		if (programType == ProgramType.EDP_APP_EMPLOYER) {
+			zulPath = "/za/co/ntier/webform/dga/dga.zul";
+		}
+		MenuContextInfo menuContextInfo = new MenuContextInfo(programType, zulPath,
 				masterData, isUploadWPAForNVC, formTitle, applicationFormUU);
 		
 		String recordUUValue = Env.getContext(Env.getCtx(), m_WindowNo, recordUUMenuContextKey);

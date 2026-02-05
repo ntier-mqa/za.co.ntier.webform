@@ -2,6 +2,8 @@ package za.co.ntier.webform.sdr.component.tab.viewmodel;
 
 import org.zkoss.bind.annotation.Init;
 
+import za.co.ntier.webform.component.DeclarationPanel;
+import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
@@ -28,4 +30,5 @@ public class NavTabVM extends ComponentVMWrapper<NavTab> {
 	public boolean isOrglinkTabPanel(NavTabPanel tabModel) {
 		return tabModel instanceof OrglinkTabPanel;
 	}
+	
 }

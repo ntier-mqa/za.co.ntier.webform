@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.AddressType ?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native"
+	viewModel="@id('vmDeclare') @init('za.co.ntier.webform.component.DeclarationVM')">
+
+	<textbox height="0px;padding:0px;border-width:0px" />
+
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle" focus="true"
+			value="GENERAL APPLICATION RULES" />
+	</hlayout>
+
+
+	<n:ol sclass="generalAppRules">
+
+		<n:li forEach="${vmDeclare.generalAppRules}">
+			<label value="${each.key}" />
+			<n:ul>
+				<n:li forEach="${each.value}">
+					<label value="${each}" />
+				</n:li>
+			</n:ul>
+		</n:li>
+
+	</n:ol>
+
+	<hlayout sclass="sectionHeader">
+		<label sclass="sectionHeaderTitle" value="DECLARATION" />
+	</hlayout>
+
+	<div
+		visible= "@init( vmDeclare.menuContextInfo.programType ne ProgramType.STANDARD_SETTING )">
+		<label value="I declare that;" />
+		<n:ol sclass="generalAppRules">
+			<n:li>
+				<label
+					value="I am duly authorised to act on behalf and bind the Organisation." />
+			</n:li>
+
+			<n:li>
+				<label
+					value="I confirm that the Organisation will comply with all relevant and applicable prescripts including the MQA Funding Policy and Public Finance Management Act 1 of 1999" />
+			</n:li>
+
+			<n:li>
+				<label
+					value="I confirm that all information submitted is true, accurate and correct." />
+			</n:li>
+		</n:ol>
+	</div>
+
+	<div
+		visible= "@init( vmDeclare.menuContextInfo.programType eq ProgramType.STANDARD_SETTING )">
+		<label value="I declare that" />
+		<n:ol sclass="generalAppRules">
+			<n:li>
+				<label
+					value="I have full capacity to undertake this application." />
+			</n:li>
+
+			<n:li>
+				<label
+					value="I confirm that I shall comply with all relevant and applicable prescripts including the MQA Funding Policy and Public Finance Management Act 1 of 1999" />
+			</n:li>
+
+			<n:li>
+				<label
+					value="I confirm that all information submitted is true, accurate and correct" />
+			</n:li>
+		</n:ol>
+	</div>
+
+<!-- this one share with navTab.zul should break to fragment -->
+	<nodom 
+		children="@init(vmDeclare.component.compModel)">
+		<template name="children" var="compItem">
+
+			<include if="${ MasterUtil.isFormViewTableModel(compItem) }"
+				component="@init(compItem)"
+				menuContextInfo="@init(vmNavTab.menuContextInfo)"
+				src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+
+			<include if="${ MasterUtil.isGridViewTableModel(compItem) }"
+				component="@init(compItem)"
+				menuContextInfo="@init(vmNavTab.menuContextInfo)"
+				src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+
+			<include if="${ MasterUtil.isCardViewTableModel(compItem) }"
+				component="@init(compItem)"
+				menuContextInfo="@init(vmNavTab.menuContextInfo)"
+				src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataCardView.zul')))" />
+
+			<include if="${ MasterUtil.isNavTab(compItem) }"
+				sclass="navTabOuter" component="@init(compItem)"
+				menuContextInfo="@init(vmNavTab.menuContextInfo)"
+				src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
+
+		</template>
+	</nodom>
+</idspace>

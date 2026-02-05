@@ -104,8 +104,8 @@ public class NavTab implements ListDataListener, ISaveForm{
 		return 0 < activeTabIndex && activeTabIndex < getTabPanelModel().size() - 1;
 	}
 	@Override
-	public void save(String trxName) {
-		ISaveForm.saveList(tabPanelModel, trxName);
+	public void syncUIToDao(String trxName) {
+		ISaveForm.batchSyncToDao(tabPanelModel, trxName);
 	}
 	@Override
 	public void saveAttachment(String trxName) {
@@ -115,6 +115,11 @@ public class NavTab implements ListDataListener, ISaveForm{
 	@Override
 	public boolean validate() {
 		return ISaveForm.validates(tabPanelModel);
+	}
+	@Override
+	public void saveToDb(String trxName) {
+		ISaveForm.batchSaveToDb(tabPanelModel, trxName);
+		
 	}
 	
 }

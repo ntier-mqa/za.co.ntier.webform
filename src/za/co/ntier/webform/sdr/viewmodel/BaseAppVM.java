@@ -103,7 +103,7 @@ public abstract class BaseAppVM implements ISaveApp{
 			throw new ValidateException(Msg.getMsg(Env.getCtx(), "ZZValidateFormFail"));
 					
 		for (ISaveForm saveComponent : saveComponents) {
-			saveComponent.save(trxName);
+			saveComponent.syncUIToDao(trxName);
 		}
 		
 		for (DaoManage daoManage : daoManages) {
@@ -112,6 +112,10 @@ public abstract class BaseAppVM implements ISaveApp{
 		
 		for (PO dao : daos) {
 			dao.saveEx(trxName);
+		}
+		
+		for (ISaveForm saveComponent : saveComponents) {
+			saveComponent.syncUIToDao(trxName);
 		}
 		
 		for (ISaveForm saveComponent : saveComponents) {

@@ -294,17 +294,17 @@ public class OrglinkTabPanel extends NavTabPanel {
 			sdfOrgPo.setC_BPartner_ID(getOrgPo().getC_BPartner_ID());
 		sdfOrgPo.setZZSdf_ID(getSdfPo().getZZSdf_ID());
 		sdfOrgModel.getRow().setData(sdfOrgPo);
-		sdfOrgModel.save(trxName);
+		sdfOrgModel.syncUIToDao(trxName);
 		
 		if (bankDetailPo == null) {
 			bankDetailPo = new X_ZZBankingDetails(Env.getCtx(), 0, null);
 			bankDetailPo.setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
 		}
 		getBankDetailModel().getRow().setData(bankDetailPo);
-		bankDetailModel.save(trxName);
+		bankDetailModel.syncUIToDao(trxName);
 	}
 	@Override
-	public void save(String trxName) {
+	public void syncUIToDao(String trxName) {
 		save(trxName, false);
 	}
 

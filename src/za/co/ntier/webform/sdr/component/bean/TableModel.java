@@ -786,7 +786,7 @@ public class TableModel implements ISaveForm {
 	}
 
 	@Override
-	public void save(String trxName) {
+	public void syncUIToDao(String trxName) {
 		for (PO removedRow : removedRows) {
 			removedRow.deleteEx(true, trxName);
 		}
@@ -797,7 +797,7 @@ public class TableModel implements ISaveForm {
 		}
 			
 		
-		ISaveForm.saveList(getRows(), trxName);
+		ISaveForm.batchSyncToDao(getRows(), trxName);
 	}
 	
 	@Override
@@ -859,6 +859,11 @@ public class TableModel implements ISaveForm {
 			validateRows = rows;
 		}
 		return ISaveForm.validates(validateRows);
+	}
+	@Override
+	public void saveToDb(String trxName) {
+		ISaveForm.batchSaveToDb(getRows(), trxName);
+		
 	}
 
 

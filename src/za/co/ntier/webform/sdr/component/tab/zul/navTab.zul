@@ -16,15 +16,15 @@
     <tabpanels children="@init(vmNavTab.component.tabPanelModel)" >
       <template name="children" var="tabPanelItem">
         <tabpanel sclass="@init(( 'nav-tab-panel ' += tabPanelItem.sclass ))" >
-          <nodom if = "${vmNavTab.isOrglinkTabPanel(tabPanelItem)}">
+          <nodom unless = "${ tabPanelItem.defaultTabPanel }">
             <include
                 component="@init(tabPanelItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
-                src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabPanelOrgLink.zul')))" />
+                src="@load( tabPanelItem.zulPath )" />
           </nodom>
             
         
-          <nodom unless = "${vmNavTab.isOrglinkTabPanel(tabPanelItem)}" 
+          <nodom if = "${ tabPanelItem.defaultTabPanel }" 
             children="@init(tabPanelItem.compModel)">
             <template name="children" var="compItem">
               

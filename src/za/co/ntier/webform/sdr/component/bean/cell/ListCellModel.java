@@ -186,7 +186,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	@Override
 	public boolean notInputed() {
 		Object value = getValue();
-		return Objects.isNull(value) || (getColModel().isUseForID() && (int)value == 0);
+		return Objects.isNull(value);
 	}
 	
 	public static <L> ListColumnModel<L> getListColumnModel(String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert, Function<L, Object> valueConvert) {

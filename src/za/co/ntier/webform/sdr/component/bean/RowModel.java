@@ -128,7 +128,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	}
 
 	@Override
-	public void save(String trxName) {
+	public void syncUIToDao(String trxName) {
 		boolean isNothingInputed = checkState(RowModel.INPUT_STATE_EMPTY);
 		if (isNothingInputed && data != null) {
 			data.deleteEx(true);
@@ -167,16 +167,6 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 				MasterUtil.setObjectProperty(daoPerCol, cellModel.getColModel().getDaoPropertyName(), value);
 			}
 		}
-		
-		if (tableModel.getDaoManage() == null && daoPerCol != null) {
-			daoPerCol.saveEx(trxName);
-			
-			for (CellModel cellModel : values()) {
-				if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
-					((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
-				}
-			}
-		}
 			
 	}
 	
@@ -185,15 +175,23 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		if (tableModel.getDaoManage() != null)
 			daoPerCol =  tableModel.getDaoManage().getDaoForSave(cellModel.getColModel().getTableName());
 		
-		if (daoPerCol == null && data == null) {
-			data = tableModel.getPoSupplier().apply(tableModel);
+		if (daoPerCol == null) {
+			daoPerCol = getDao();
 		}
-		if (daoPerCol == null)
-			daoPerCol = data;
 		
 		return daoPerCol;
 	}
 	
+	private PO getDao() {
+		if (data == null && tableModel.getPoSupplier() == null) {
+			throw new AdempiereException("ZZTableModelMissingPO");
+		}
+		
+		if (data == null)
+			data = tableModel.getPoSupplier().apply(tableModel);
+		
+		return data;
+	}
 	/**
 	 * @param applicationForm
 	 * @param trxName
@@ -249,5 +247,20 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			}
 		}
 		return isValid;
+	}
+	@Override
+	public void saveToDb(String trxName) {
+		
+		if (tableModel.getDaoManage() == null) {
+			PO daoToSave = getDao();
+			daoToSave.saveEx(trxName);
+			
+			for (CellModel cellModel : values()) {
+				if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
+					((UploadCellModel)cellModel).attachFile(daoToSave, trxName);
+				}
+			}
+		}
+		
 	}
 }

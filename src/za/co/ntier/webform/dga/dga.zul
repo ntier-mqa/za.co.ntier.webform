@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.AddressType ?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" sclass="sdrForm"
+	viewModel="@id('vmDga') @init('za.co.ntier.webform.dga.DgaVM')">
+
+	<div
+		style="display:flex; padding:5px 0 40px 0; flex-direction: column;  align-items: center;">
+		<label style="font-weight: bold;font-size: x-large;"
+			value="@init(vmDga.formInfo.formHeader)" />
+		<div style="padding-bottom:10px;font-size:smaller">
+			<html
+				content="@init(( vmDga.menuContextInfo.programMasterData.getZZSupportInfo() ))" />
+		</div>
+	</div>
+
+
+	<include sclass="navTabOuter" component="@init(vmDga.mainTab)"
+		menuContextInfo="@init(vmDga.menuContextInfo)"
+		src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
+
+	<include saveApp="@init(vmDga)" navTab="@init(vmDga.mainTab)"
+		src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
+</idspace>

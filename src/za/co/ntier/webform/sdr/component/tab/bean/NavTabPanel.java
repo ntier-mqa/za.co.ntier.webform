@@ -11,6 +11,14 @@ public class NavTabPanel implements ISaveForm {
 	private String sclass;
 	private NavTab parent;
 
+	public boolean isDefaultTabPanel() {
+		return true;
+	}
+	
+	public String getZulPath() {
+		return null;
+	}
+	
 	public boolean isDisable() {
 		return !parent.getTabPanelModel().isSelected(this);
 	}
@@ -63,21 +71,10 @@ public class NavTabPanel implements ISaveForm {
 	}
 
 	@Override
-	public void save(String trxName) {
+	public void syncUIToDao(String trxName) {
 		
-		ISaveForm.saveList(getList(), trxName);
+		ISaveForm.batchSyncToDao(compModel, trxName);
 		
-	}
-
-	private List<ISaveForm> getList() {
-		List<ISaveForm> listSave = new ArrayList<>();
-		for (Object objSupportSave : compModel) {
-			if (objSupportSave instanceof ISaveForm) {
-				listSave.add((ISaveForm)objSupportSave);
-			}
-		}
-		
-		return listSave;
 	}
 	
 	@Override
@@ -107,6 +104,12 @@ public class NavTabPanel implements ISaveForm {
 	@Override
 	public boolean validate() {
 		return ISaveForm.validates(compModel);
+	}
+
+	@Override
+	public void saveToDb(String trxName) {
+		ISaveForm.batchSaveToDb(compModel, trxName);
+		
 	}
 
 

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +70,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public class MasterUtil {
+	public static DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 	public static final int limitItem = 600;
 	
 	public static final String SDRLinkedOrganisationsUU = "114344c0-6344-4d49-8dc9-3ba80e98e0b1";
@@ -261,11 +263,17 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpSicCode = new AbstractMap.SimpleEntry<>("cddc9d77-2c4f-4650-a8a5-58c87f72dbb4", null);
 	public static final Entry<String, Integer> LkpSubSector = new AbstractMap.SimpleEntry<>("bc9bef41-360e-4fbc-b4f1-93ec2892cef9", null);
 	public static final Entry<String, Integer> LkpChamberCode = new AbstractMap.SimpleEntry<>("15a4a826-3bcb-402b-9ff4-602beeec8c3f", null);
+	public static final Entry<String, Integer> LkpNQFLevel = new AbstractMap.SimpleEntry<>("2b47e027-cb5a-45d6-8fc6-2c9bc9c6c3ad", null);
+	
 	
 	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
 	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
+	
+	public static List<ValueNamePair> getNQFLevel () {
+		return getRefList(LkpNQFLevel);
+	}
 	
 	public static List<ValueNamePair> getChamberCode () {
 		return getRefList(LkpChamberCode);
