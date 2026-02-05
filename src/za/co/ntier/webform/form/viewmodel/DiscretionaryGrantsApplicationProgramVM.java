@@ -512,10 +512,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		}
 
 		// --- Contacts (orgContact only when not STANDARD; alternate always "if shown") ---
-		if (isShowContact() && !validateContactIfShown(organisationInfo.getOrgContact())) {
+		if (!isStandard && !validateContactIfShown(organisationInfo.getOrgContact())) {
 			return false;
 		}
-		if (isShowContact() && !validateContactIfShown(organisationInfo.getAlternateOrgContact())) {
+		if (!isStandard && !validateContactIfShown(organisationInfo.getAlternateOrgContact())) {
 			return false;
 		}
 
