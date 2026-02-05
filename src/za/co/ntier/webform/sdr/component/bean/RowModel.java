@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -248,11 +249,16 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		}
 		return isValid;
 	}
+	
 	@Override
 	public void saveToDb(String trxName) {
 		
 		if (tableModel.getDaoManage() == null) {
 			PO daoToSave = getDao();
+			if (tableModel.getBeforeSave() != null) {
+				tableModel.getBeforeSave().apply(daoToSave);
+			}
+			
 			daoToSave.saveEx(trxName);
 			
 			for (CellModel cellModel : values()) {

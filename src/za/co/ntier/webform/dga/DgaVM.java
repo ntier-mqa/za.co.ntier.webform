@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_AD_User;
 import org.compiere.model.MUser;
@@ -13,6 +14,7 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -89,6 +91,24 @@ public class DgaVM extends BaseAppVM{
 		});
 
 	}
+	
+	Function<PO, Boolean> beforeSave = po -> {
+		if (po.get_TableName().equals(X_ZZ_Application_Form.Table_Name) || 
+				po.get_ColumnIndex(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) < 0
+				){
+			return Boolean.TRUE;
+		}
+		
+		if (applicationForm == null || applicationForm.get_ValueAsInt(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) == 0) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZDGAAppNotYetInitAppForm"));
+		}
+		
+		if (po.get_Value(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) == null) {
+			po.set_ValueOfColumn(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, applicationForm.getZZ_Application_Form_ID());
+		}
+		return Boolean.TRUE;
+		
+	};
 	
 	private void initDeclareForm() {
 		NavTabPanel declareDetailTab = new DeclarationPanel(mainTab);
@@ -195,18 +215,18 @@ public class DgaVM extends BaseAppVM{
 		
 		Function<TableModel, PO> poSupplier = tableModel -> {
 				X_ZZ_FormContact po = new X_ZZ_FormContact(Env.getCtx(), 0, null);
-				po.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
 				po.setZZ_ContactType(tableModel.getDataType());
 				return po;
 			};
 		// physical address 
-		TableModel tmPhysicalAddress = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.PHYSICAL, applicationForm, null);
+		TableModel tmPhysicalAddress = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.PHYSICAL, applicationForm, 
+				poSupplier, beforeSave, null);
 		tmPhysicalAddress.setPoSupplier(poSupplier);
 		
 		orgInfoTab.getCompModel().add(tmPhysicalAddress);
 		
 		// postal address
-		TableModel tmPostalAddress = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.POSTAL, applicationForm, tmPhysicalAddress);
+		TableModel tmPostalAddress = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.POSTAL, applicationForm, poSupplier, beforeSave, tmPhysicalAddress);
 		tmPostalAddress.setPoSupplier(poSupplier);
 		
 		orgInfoTab.getCompModel().add(tmPostalAddress);
@@ -215,17 +235,17 @@ public class DgaVM extends BaseAppVM{
 		if (!menuContextInfo.getProgramType().isCetTvet() && menuContextInfo.getProgramType() != ProgramType.STANDARD_SETTING) {
 			//orgSizeInfo = new OrganisationSizeInfo();  
 
-			TableModel orgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG, applicationForm, null);
+			TableModel orgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG, applicationForm, poSupplier, beforeSave, null);
 			orgContact.setPoSupplier(poSupplier);
 			orgInfoTab.getCompModel().add(orgContact);
 			
-			TableModel alternateOrgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG_ALTER, applicationForm, null);
+			TableModel alternateOrgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG_ALTER, applicationForm, poSupplier, beforeSave, null);
 			alternateOrgContact.setPoSupplier(poSupplier);
 			orgInfoTab.getCompModel().add(alternateOrgContact);
 		}
 		
 		if (menuContextInfo.getProgramType() == ProgramType.STANDARD_SETTING){
-			TableModel alternateOrgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG_ALTER, applicationForm, null);
+			TableModel alternateOrgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG_ALTER, applicationForm, poSupplier, beforeSave, null);
 			alternateOrgContact.setPoSupplier(poSupplier);
 			orgInfoTab.getCompModel().add(alternateOrgContact);
 		}
@@ -342,15 +362,13 @@ public class DgaVM extends BaseAppVM{
 		tmEdpEmpInfo.setViewModel(TableModel.VIEW_CARD);
 		tmEdpEmpInfo.setColumnInfos(cols);
 		tmEdpEmpInfo.setSclass("edpEmpInfo");
+		tmEdpEmpInfo.setBeforeSave(beforeSave);
 		
 		tmEdpEmpInfo.setPoSupplier(daoManage -> {
 			X_ZZ_EDP_Application edp = new X_ZZ_EDP_Application(Env.getCtx(), 0, null);
-			edp.setZZ_Application_Form_ID(applicationForm.getZZ_Application_Form_ID());
 			edp.setAD_Org_ID(applicationForm.getAD_Org_ID());
 			return edp;
 		});
-		
-		
 		
 		tmEdpEmpInfo.init(saveds);
 		

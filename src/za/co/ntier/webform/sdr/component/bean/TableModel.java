@@ -379,6 +379,7 @@ public class TableModel implements ISaveForm {
 	}
 
 	private Consumer<RowModel> decoratorCell;
+	private Function<PO, Boolean> beforeSave;
 
 	public Consumer<RowModel> getDecoratorCell() {
 		return decoratorCell;
@@ -864,6 +865,12 @@ public class TableModel implements ISaveForm {
 	public void saveToDb(String trxName) {
 		ISaveForm.batchSaveToDb(getRows(), trxName);
 		
+	}
+	public Function<PO, Boolean> getBeforeSave() {
+		return beforeSave;
+	}
+	public void setBeforeSave(Function<PO, Boolean> beforeSave) {
+		this.beforeSave = beforeSave;
 	}
 
 

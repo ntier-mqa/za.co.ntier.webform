@@ -115,7 +115,7 @@ public abstract class BaseAppVM implements ISaveApp{
 		}
 		
 		for (ISaveForm saveComponent : saveComponents) {
-			saveComponent.syncUIToDao(trxName);
+			saveComponent.saveToDb(trxName);
 		}
 		
 		for (ISaveForm saveComponent : saveComponents) {

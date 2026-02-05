@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
@@ -27,7 +28,10 @@ import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 
 public class BuildFormUtil {
-	public static TableModel buildFormContact(ProgramType programType, AddressType addressType, X_ZZ_Application_Form applicationForm, TableModel copyFrom) {
+	public static TableModel buildFormContact(ProgramType programType, AddressType addressType, 
+			X_ZZ_Application_Form applicationForm,
+			Function<TableModel, PO> poSupplier, Function<PO, Boolean> beforeSave,
+			TableModel copyFrom) {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel dupplicateCol = null;
@@ -103,6 +107,11 @@ public class BuildFormUtil {
 		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
 		addressFormBean.setSubSectionHeader(getAddressTitle(programType, addressType));
 		addressFormBean.setDataType(addressType.toString());
+		
+		if (beforeSave != null)
+			addressFormBean.setBeforeSave(beforeSave);
+		if (poSupplier != null)
+			addressFormBean.setPoSupplier(poSupplier);
 
 		final ColumnModel dupplicateColF = dupplicateCol;
 		if (copyFrom != null) {
