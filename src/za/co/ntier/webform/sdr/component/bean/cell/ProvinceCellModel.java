@@ -76,6 +76,8 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 	}
 
 	public static ListColumnModel<MRegion> getProvinceColumnModel(String title, String daoPropertyName) {
+		if (title == null)
+			title = "Province";
 		@SuppressWarnings("unchecked")
 		ListColumnModel<MRegion> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, ProvinceCellModel.class, title, daoPropertyName, MasterUtil.getRegions(), null, null);
 		listColumnModel.setUseForID(true);

@@ -32,7 +32,7 @@ public class AreaCellModel extends ListCellModel<MCity>{
 				BindUtils.postNotifyChange(postalCellModel, "value");
 			}
 
-			updateProvinceSelected();
+			updateProvinceSelected(null);
 		}
 	}
 
@@ -54,13 +54,20 @@ public class AreaCellModel extends ListCellModel<MCity>{
 		}
 	}
 
-	public void updateProvinceSelected() {
+	/**
+	 * linkCity != null called by change postal
+	 * @param linkCity
+	 */
+	public void updateProvinceSelected(MCity linkCity) {
 		ProvinceCellModel provinceCellModel = getCellModelByType(ProvinceCellModel.class);
 		if (provinceCellModel != null) {
-			if (getModel().isSelectionEmpty()) {
-				provinceCellModel.setValue(0);
+			if(linkCity == null && getModel().isSelectionEmpty()) {
+				provinceCellModel.setValue(null);
 			}else {
-				provinceCellModel.setValue(getSelectedItem().getC_Region_ID());
+				if (linkCity == null)
+					linkCity = getSelectedItem();
+				
+				provinceCellModel.setValue(linkCity.getC_Region_ID());
 			}
 		}
 	}
@@ -71,7 +78,8 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	}
 
 	public static ListColumnModel<MCity> getAreaColumnModel(String title, String daoPropertyName) {
-	
+		if (title == null)
+			title = "Area/Suburb";
 		@SuppressWarnings("unchecked")
 		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, AreaCellModel.class, title, daoPropertyName, MasterUtil.getInitCities(), null, null);
 		listColumnModel.setUseForID(true);

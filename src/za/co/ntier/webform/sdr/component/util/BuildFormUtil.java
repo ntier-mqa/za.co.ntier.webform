@@ -73,18 +73,21 @@ public class BuildFormUtil {
 
 		if (showGeographicAddress(addressType)) {
 			ColumnModel postalCodeCol = PostalCellModel.getPostalColumnModel(
-					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_Postal)
+					//MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_Postal)
+					null
 					, I_ZZ_FormContact.COLUMNNAME_Postal
 					).required();
 			cols.add(postalCodeCol);
 
 			ColumnModel areaCol = AreaCellModel.getAreaColumnModel(
-					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_City_ID)
+					//MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_City_ID)
+					null
 					, I_ZZ_FormContact.COLUMNNAME_C_City_ID).required();
 			cols.add(areaCol);
 
 			ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(
-					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
+					//MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
+					null
 					, I_ZZ_FormContact.COLUMNNAME_C_Region_ID).required();
 			cols.add(provinceCol);
 		}
@@ -106,6 +109,12 @@ public class BuildFormUtil {
 		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
 		addressFormBean.setSubSectionHeader(getAddressTitle(programType, addressType));
 		addressFormBean.setDataType(addressType.toString());
+		if (copyFrom != null) {
+			addressFormBean.setSclass("formContact formContactCopy");
+		}else{
+			addressFormBean.setSclass("formContact");
+		}
+		
 		
 		if (beforeSave != null)
 			addressFormBean.setBeforeSave(beforeSave);

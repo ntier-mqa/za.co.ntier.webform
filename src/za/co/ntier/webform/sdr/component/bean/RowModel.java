@@ -106,8 +106,13 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	}
 
 	public void fillRowDataFromDao() {
-		values().stream()
-			.forEach(cellModel -> {
+		for (CellModel cellModel : values()) {
+			boolean isDaoValue = false;
+			if (cellModel instanceof UploadCellModel || cellModel.getColModel().getDaoPropertyName() != null) {
+				isDaoValue = true;
+			}
+			
+			if (isDaoValue) {
 				PO daoPerCol = null;
 				if (tableModel.getDaoManage() != null) {
 					daoPerCol = tableModel.getDaoManage().getDao(cellModel.getColModel().getTableName());
@@ -122,9 +127,9 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 					if (Log.isInfoEnabled())
 						log.info(String.format("not yet dao for table %s to set to properties %s", cellModel.getColModel().getTableName(), cellModel.getColModel().getDaoPropertyName()));
 				}
-				
- 			});
-
+			}
+		}
+		
 	}
 
 	@Override

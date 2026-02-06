@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 
 import za.co.ntier.webform.form.MasterUtil;
@@ -22,14 +23,19 @@ public class PostalCellModel extends CellModel{
 
 		if (areaCellModel != null) {
 			List<MCity> citys = MasterUtil.getCitiesByPostal(value);
-
+			
 			areaCellModel.setDataProvider(citys);
 
-			areaCellModel.updateProvinceSelected();
+			if (citys.size() > 0) {
+				areaCellModel.updateProvinceSelected(citys.get(0));
+			}
+			
 		}
 	}
-
+	
 	public static ColumnModel getPostalColumnModel(String title, String daoPropertyName) {
+		if (title == null)
+			title = "Postal Code";
 		return CellModel.getColModelForCell(CellModelInfo.of(ColumnModel.class, PostalCellModel.class, null), CellModelParams.of(title, daoPropertyName, null));
 	}
 

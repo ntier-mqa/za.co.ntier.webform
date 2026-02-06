@@ -108,12 +108,14 @@ public class DgaVM extends BaseAppVM{
 	
 	private void initDeclareForm() {
 		NavTabPanel declareDetailTab = new DeclarationPanel(mainTab);
+		declareDetailTab.setSclass("tabDeclare");
 		declareDetailTab.setTabTitle("Declaration");
 		// name component
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel userNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_UserName)
+				//MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_UserName)
+				"Name and Surname"
 				, I_ZZ_Application_Form.COLUMNNAME_UserName
 				).required()
 				.setTableName(I_ZZ_Application_Form.Table_Name)
@@ -122,7 +124,8 @@ public class DgaVM extends BaseAppVM{
 		cols.add(userNameCol);
 		
 		ColumnModel docDateCol = DateCellModel.getDateColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_DateDoc)
+				//MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_DateDoc)
+				"Date"
 				, I_ZZ_Application_Form.COLUMNNAME_DateDoc
 				).setReadonly(true)
 				.setTableName(I_ZZ_Application_Form.Table_Name)
@@ -130,10 +133,14 @@ public class DgaVM extends BaseAppVM{
 						Timestamp.valueOf(LocalDateTime.now()));
 		cols.add(docDateCol);
 		
+		boolean acknowledge = applicationForm != null;
+		
 		ColumnModel acknowledgeCol = CheckboxCellModel.getCheckboxColModel(
 				"Click here to acknowledge commitment"
 				, null
-				).required();
+				).setRequireChecked(true)
+				.setDefaultValue(acknowledge)
+				;
 		acknowledgeCol.setEventHandle((event, cellModel) -> {});;
 		cols.add(acknowledgeCol);
 
@@ -170,7 +177,7 @@ public class DgaVM extends BaseAppVM{
 		cols.add(orgNameCol);
 		
 		ColumnModel sideSdlNoCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_ZZ_Side_SDL_No)
+				MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_ZZ_Side_SDL_No) + " (if applicable)"
 				, I_ZZ_Application_Form.COLUMNNAME_ZZ_Side_SDL_No
 				).required()
 				.setTableName(I_ZZ_Application_Form.Table_Name);
@@ -194,7 +201,6 @@ public class DgaVM extends BaseAppVM{
 		cols.add(vatCol);
 		
 		ColumnModel vatUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "VAT Exempt Cert.")
-				.required()
 				.setTableName(I_ZZ_Application_Form.Table_Name);
 		
 		cols.add(vatUploadCol);

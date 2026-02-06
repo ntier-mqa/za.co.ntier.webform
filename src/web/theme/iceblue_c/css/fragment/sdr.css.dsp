@@ -235,6 +235,7 @@
 .mqaWebForm .container .grid-container .form-field select,
 .mqaWebForm .grid-formview .cell-content input[type="text"],
 .mqaWebForm .grid-formview .cell-content input[type="tel"],
+.mqaWebForm .grid-formview .cell-content .z-datebox-input,
 .mqaWebForm .grid-formview .cell-content select,
 .mqaWebForm .grid-formview .cell-content textarea,
 .mqaWebForm .sdrForm input[type="text"],
@@ -365,4 +366,20 @@
 
 .mqaWebForm .sdrForm a.z-button{
 	text-decoration:none;
+}
+
+.mqaWebForm .nav-tab-panel .dgaAppInfo .z-checkbox{
+	display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}  
+
+.mqaWebForm .formContactCopy > :nth-child(1){
+	grid-column: span 3;
+	
+}
+
+.mqaWebForm .formContactCopy > :nth-child(1) .cell-content{
+	display:flex;
+  	justify-content:flex-end;
 }

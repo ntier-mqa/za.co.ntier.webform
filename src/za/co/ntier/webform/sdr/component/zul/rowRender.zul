@@ -125,7 +125,9 @@
               sclass="checkboxContent">
               <checkbox
                 label="@init(vmRowRender.row[col].title)"
-                onCheck="@command('cmdCheckeck', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
+                onCheck="@command('cmdCheckeck', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"
+                checked="@bind(vmRowRender.row[col].value)" />
+                
             </div>
             
             <!-- Date -->
