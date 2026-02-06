@@ -552,16 +552,24 @@ public class MasterUtil {
 		
 	}
 
-	public static void showDialog(String msgKey, Consumer<Object> onCloseDialog) {
-		Dialog dialog = new Dialog(Msg.getMsg(Env.getCtx(), msgKey, false), 
-				new StringBuilder(Msg.getMsg(Env.getCtx(), msgKey, true)).toString());
-		dialog.setSclass(msgKey);
+	public static void showDialog(String msgTile, List<String> msgContent, Consumer<Object> onCloseDialog) {
+		MasterUtil.showDialog("dialog", msgTile, msgContent, onCloseDialog);
+	}
+	public static void showDialog(String sClass, String msgTile, List<String> msgContent, Consumer<Object> onCloseDialog) {
+		Dialog dialog = new Dialog(msgTile, msgContent);
+		dialog.setVisible(true);
+		dialog.setSclass(sClass);
 		dialog.setOnCloseDialog(onCloseDialog);
 		
 		Map<String, Object> args = new HashMap<>();
 		args.put(ComponentVMWrapper.ComponentKey, dialog);
 		String zulPathRelative = WebForm.getBundleResourcePath("sdr/component/zul/dialog.zul");	
 		Executions.createComponents(zulPathRelative, null, args);
+	}
+	
+	public static void showDialog(String msgKey, Consumer<Object> onCloseDialog) {
+		MasterUtil.showDialog(msgKey, Msg.getMsg(Env.getCtx(), msgKey, false), 
+				List.of(Msg.getMsg(Env.getCtx(), msgKey, true)), onCloseDialog);
 	}
 	
 	public static Consumer<Object> fCloseActiveWindow =  t -> {

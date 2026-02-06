@@ -435,13 +435,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	}
 	
 	@Override
-	protected boolean showResult(Exception exc) {
-		if (exc != null) {
-			showException(exc);
-		}else {
-			MasterUtil.showDialog("ZZOrgSavedSuccess", MasterUtil.fCloseActiveWindow);
-		}
-
-		return false;
+	protected void showResult(boolean isSubmit) {
+		MasterUtil.showDialog("ZZOrgSavedSuccess", MasterUtil.fCloseActiveWindow);
 	}
 }

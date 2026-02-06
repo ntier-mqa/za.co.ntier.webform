@@ -37,6 +37,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.SDLCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
@@ -160,8 +161,9 @@ public class DgaVM extends BaseAppVM{
 		
 		// name component
 		List<ColumnModel> cols = new ArrayList<>();
-		ColumnModel sdlNumberCol = CellModel.getColModelForText(
-				"Skills Development Levy (SDL) Number (Paying or Exempted)"
+		ColumnModel sdlNumberCol = SDLCellModel.getSDLColumnModel(
+				//"Skills Development Levy (SDL) Number (Paying or Exempted)"
+				null
 				, I_ZZ_Application_Form.COLUMNNAME_ZZ_SDL_No
 				).required()
 				.setTableName(I_ZZ_Application_Form.Table_Name);
@@ -201,6 +203,7 @@ public class DgaVM extends BaseAppVM{
 		cols.add(vatCol);
 		
 		ColumnModel vatUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "VAT Exempt Cert.")
+				.setShowTitle(false)
 				.setTableName(I_ZZ_Application_Form.Table_Name);
 		
 		cols.add(vatUploadCol);
@@ -221,14 +224,14 @@ public class DgaVM extends BaseAppVM{
 				return po;
 			};
 		// physical address 
-		TableModel tmPhysicalAddress = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.PHYSICAL, applicationForm, 
+		TableModel tmPhysicalAddress = BuildFormUtil.buildFormContact(null, AddressType.PHYSICAL, applicationForm, 
 				poSupplier, beforeSave, null);
 		tmPhysicalAddress.setPoSupplier(poSupplier);
 		
 		orgInfoTab.getCompModel().add(tmPhysicalAddress);
 		
 		// postal address
-		TableModel tmPostalAddress = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.POSTAL, applicationForm, poSupplier, beforeSave, tmPhysicalAddress);
+		TableModel tmPostalAddress = BuildFormUtil.buildFormContact(null, AddressType.POSTAL, applicationForm, poSupplier, beforeSave, tmPhysicalAddress);
 		tmPostalAddress.setPoSupplier(poSupplier);
 		
 		orgInfoTab.getCompModel().add(tmPostalAddress);
@@ -237,17 +240,17 @@ public class DgaVM extends BaseAppVM{
 		if (!menuContextInfo.getProgramType().isCetTvet() && menuContextInfo.getProgramType() != ProgramType.STANDARD_SETTING) {
 			//orgSizeInfo = new OrganisationSizeInfo();  
 
-			TableModel orgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG, applicationForm, poSupplier, beforeSave, null);
+			TableModel orgContact = BuildFormUtil.buildFormContact(null, AddressType.ORG, applicationForm, poSupplier, beforeSave, null);
 			orgContact.setPoSupplier(poSupplier);
 			orgInfoTab.getCompModel().add(orgContact);
 			
-			TableModel alternateOrgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG_ALTER, applicationForm, poSupplier, beforeSave, null);
+			TableModel alternateOrgContact = BuildFormUtil.buildFormContact(null, AddressType.ORG_ALTER, applicationForm, poSupplier, beforeSave, null);
 			alternateOrgContact.setPoSupplier(poSupplier);
 			orgInfoTab.getCompModel().add(alternateOrgContact);
 		}
 		
 		if (menuContextInfo.getProgramType() == ProgramType.STANDARD_SETTING){
-			TableModel alternateOrgContact = BuildFormUtil.buildFormContact(menuContextInfo.getProgramType(), AddressType.ORG_ALTER, applicationForm, poSupplier, beforeSave, null);
+			TableModel alternateOrgContact = BuildFormUtil.buildFormContact(null, AddressType.ORG_ALTER, applicationForm, poSupplier, beforeSave, null);
 			alternateOrgContact.setPoSupplier(poSupplier);
 			orgInfoTab.getCompModel().add(alternateOrgContact);
 		}
@@ -347,6 +350,7 @@ public class DgaVM extends BaseAppVM{
 		
 		ColumnModel letterUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "Motivation Letter")
 				.required()
+				.setShowTitle(false)
 				.setTableName(I_ZZ_EDP_Application.Table_Name);
 		
 		cols.add(letterUploadCol);
@@ -376,6 +380,37 @@ public class DgaVM extends BaseAppVM{
 		
 		edpEmpInfoTab.getCompModel().add(tmEdpEmpInfo);
 	}
+	
+	
+	@Override
+	public void doSubmit(String trxName) {
+		applicationForm.setZZ_DocStatus(X_ZZ_Application_Form.ZZ_DOCSTATUS_Submitted);
+	}
+	
+	@Override
+	protected void showResult(boolean isSubmit) {
+		String title = isSubmit?"Successfully submitted the application form":"Successfully saved the application form";
+		
+		List<String> msgs = new ArrayList<>();
+		if (isSubmit)
+			msgs.add("The application form has been submitted");
+		else
+			msgs.add("The application form has been saved");
+
+		msgs.add("Your Application Reference No is:" + applicationForm.getDocumentNo());
+		
+		if (isSubmit) {
+			msgs.add("This has been sent as an email to you for future reference");
+		}else {
+			msgs.add("Please note this for future queries");
+		}
+
+		MasterUtil.showDialog(title, msgs, t -> {
+			MasterUtil.closeActiveWindow();
+			MasterUtil.openForm("3b0c2d85-8f2e-44e9-b030-4b134159a052");
+		});	
+	}
+
 	
 	@Override
 	public List<ISaveForm> getSaveComponents() {
@@ -409,5 +444,10 @@ public class DgaVM extends BaseAppVM{
 
 	public void setMainTab(NavTab mainTab) {
 		this.mainTab = mainTab;
+	}
+	
+	@Override
+	public boolean isSupportSubmit() {
+		return true;
 	}
 }

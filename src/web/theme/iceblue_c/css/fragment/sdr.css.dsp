@@ -181,15 +181,19 @@
 
 .mqaWebForm .grid-formview .cell-title {
     /* TITLE AREA FLEXBOX (CRUCIAL FIX) */
-    display: flex;
+    /*display: flex;
     flex-wrap: wrap; 
-    align-items: flex-end; 
+    align-items: flex-end; */
     flex-shrink: 0; 
     background:var(--mqa-blue);
 }
 
 .mqaWebForm .grid-formview .cell-error {
 	flex-grow:1;
+}
+
+.mqaWebForm .grid-formview .cell-error .z-grid-body .z-grid-emptybody td{
+	height:0px;
 }
 
 .mqaWebForm .cell-error .z-grid{
@@ -373,6 +377,11 @@
     flex-direction: row-reverse;
     align-items: center;
 }  
+
+.mqaWebForm .formContactCopy{
+	position:relative;
+	top:-45px;
+}
 
 .mqaWebForm .formContactCopy > :nth-child(1){
 	grid-column: span 3;

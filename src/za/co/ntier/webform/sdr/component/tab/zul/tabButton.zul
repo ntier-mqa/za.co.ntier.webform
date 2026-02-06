@@ -19,7 +19,7 @@
 			/>
 
 		<button
-			visible="@load(vmTabButton.supportSaveApp)"			
+			visible="@load(vmTabButton.showSaveApp)"			
 		  	label="Save &amp; Exit" sclass="icon-on-right"
 			iconSclass="z-icon-floppy-disk"
 			onClick="@command('saveApp')" />
@@ -31,7 +31,7 @@
 			onClick="@command('nextTab')" />
 		
 		<button
-			visible="@load(vmTabButton.supportSubmitApp)"
+			visible="@load(vmTabButton.showSubmitApp)"
 			label="Submit Application"
 			iconSclass="z-icon-gear" sclass="icon-on-right"
 	    	onClick="@command('submitApp')" />

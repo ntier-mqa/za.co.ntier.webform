@@ -25,7 +25,19 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 		this.saveApp = saveApp;
 	}
 
-	public boolean isSupportSaveApp() {
+	public boolean isShowSubmitApp() {
+		if (getSaveApp() != null && getSaveApp().isSupportSubmit()) {
+			if (navTab != null) {
+				return navTab.isActiveEndTab();
+			}else {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isShowSaveApp() {
 		return getSaveApp() != null && getSaveApp().isSupportSave();
 	}
 	
@@ -64,14 +76,14 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 	}
 	
 	@Command
-	@NotifyChange({"showDel", "showPrev", "showNext", "activeMidTab"})
+	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp"})
 	public void nextTab() {
 		if (navTab != null) 
 			navTab.doNextTab();
 	}
 
 	@Command
-	@NotifyChange({"showDel", "showPrev", "showNext", "activeMidTab"})
+	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp"})
 	public void prevTab() {
 		if (navTab != null)
 			navTab.doPrevTab();

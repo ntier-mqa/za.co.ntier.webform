@@ -58,7 +58,6 @@
             <textbox
               if="${ vmRowRender.row[col].textfield }"
               readonly="@init(col.readonly)"
-              
               type="@init(vmRowRender.row[col].cellType eq CellModel.PHONE_CELL ? 'tel' : 'text')"
               value="
               	@bind(vmRowRender.row[col].value)
@@ -99,12 +98,6 @@
             <!-- FileUpload -->
             <div if="${vmRowRender.row[col].cellType eq CellModel.BTUPLOAD_CELL}" 
               sclass="fileUploadContent">
-              <fileupload
-                iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
-                label="@init(( col.mandatory ? vmRowRender.row[col].btText += ' * ' : vmRowRender.row[col].btText ))"
-                onUpload="@command('cmdUploadFile', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"
-                upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
-              
               <div
                     sclass="uploadFileBox"
                     visible="@load(( vmRowRender.row[col].fileName ne null ))">
@@ -117,6 +110,14 @@
 	                iconSclass="z-icon-xmark" label="" tooltiptext="Remove"
 	                onClick="@command('cmdRemoveAttachment', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)" />
                </div>
+               
+              <fileupload
+                iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
+                label="@init(( col.mandatory ? vmRowRender.row[col].btText += ' * ' : vmRowRender.row[col].btText ))"
+                onUpload="@command('cmdUploadFile', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"
+                upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
+              
+              
                 
             </div>
 

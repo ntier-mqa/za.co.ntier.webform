@@ -22,16 +22,21 @@ public abstract class BaseAppVM implements ISaveApp{
 	@Command
 	@Override
 	public void saveApp() {
+		isSubmit = false;
 		trxWrapper(trxName -> doSave(trxName));
 	}
 	
 	@Command
 	@Override
 	public void submitApp() {
+		isSubmit = true;
 		trxWrapper(trxName -> {
 			doSave(trxName);
+			doSubmit(trxName);
 		});
 	}
+	
+	private boolean isSubmit = false;
 	
 	/**
 	 * override to change doc status
@@ -74,12 +79,11 @@ public abstract class BaseAppVM implements ISaveApp{
 			if (trx != null)
 				trx.close();
 			
-			if (showResult(exc)) {
-				if (exc != null) {
-					showException(exc);
-				}else {
-					MasterUtil.showDialog("ZZSuccess", MasterUtil.fCloseActiveWindow);
-				}
+			
+			if (exc != null) {
+				showException(exc);
+			}else {
+				showResult(isSubmit);	
 			}
 			
 		}
@@ -121,8 +125,8 @@ public abstract class BaseAppVM implements ISaveApp{
 		}
 	}
 	
-	protected boolean showResult(Exception exc) {
-		return true;
+	protected void showResult(boolean isSubmit) {
+		MasterUtil.showDialog("ZZSuccess", MasterUtil.fCloseActiveWindow);
 	}
 	
 	protected void showException(Exception exc) {

@@ -96,6 +96,12 @@ public class BuildFormUtil {
 			ColumnModel nameSurnameCol = CellModel.getColModelForText("Name and Surname", I_ZZ_FormContact.COLUMNNAME_ContactName).required();
 			cols.add(nameSurnameCol);
 
+			ColumnModel designCol = CellModel.getColModelForText(
+					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_ZZ_Designation)
+					, I_ZZ_FormContact.COLUMNNAME_ZZ_Designation
+					).required();
+			cols.add(designCol);
+			
 			ColumnModel telNumberCol = CellModel.getColModelForPhone("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
 			cols.add(telNumberCol);
 

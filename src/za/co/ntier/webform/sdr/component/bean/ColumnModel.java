@@ -165,8 +165,9 @@ public class ColumnModel {
 	/**
 	 * @param showTitle the showTitle to set
 	 */
-	public void setShowTitle(Boolean showTitle) {
+	public ColumnModel setShowTitle(Boolean showTitle) {
 		this.showTitle = showTitle;
+		return this;
 	}
 
 	/**
