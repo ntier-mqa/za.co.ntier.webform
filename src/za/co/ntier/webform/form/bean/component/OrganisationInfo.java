@@ -376,7 +376,7 @@ public class OrganisationInfo implements ISaveForm {
 				BindUtils.postNotifyChange(this, "orgName", "orgTaxNumber", "orgRegistrationNumber");
 			}
 
-			if (orgSizeInfo != null) {
+			if (orgSizeInfo != null && !validateOnly) {
 				orgSizeInfo.setNumOfEmployer(bPartner.get_ValueAsInt("ZZ_Number_Of_Employees"));
 
 				int prevApprovedCount = DB.getSQLValueEx(null, String.format(
