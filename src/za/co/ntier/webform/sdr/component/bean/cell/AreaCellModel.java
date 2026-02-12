@@ -7,6 +7,7 @@ import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -47,10 +48,10 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	
 	@Override
 	public Function<MCity, Object> getValueConvert() {
-		if (getColModel().getValueConvert() == null) {
+		if (getColModel().getSelectedItemValueConvert() == null) {
 			return defaultValueConvert;
 		}else {
-			return getColModel().getValueConvert();
+			return getColModel().getSelectedItemValueConvert();
 		}
 	}
 
@@ -81,7 +82,10 @@ public class AreaCellModel extends ListCellModel<MCity>{
 		if (title == null)
 			title = "Area/Suburb";
 		@SuppressWarnings("unchecked")
-		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, AreaCellModel.class, title, daoPropertyName, MasterUtil.getInitCities(), null, null);
+		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(
+				ListColumnModel.class, AreaCellModel.class, 
+				title, daoPropertyName, MasterUtil.getInitCities(), 
+				null, null, CellModel.LIST_CELL);
 		listColumnModel.setUseForID(true);
 		return listColumnModel;
 	}

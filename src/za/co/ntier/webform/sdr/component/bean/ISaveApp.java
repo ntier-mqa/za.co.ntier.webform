@@ -6,9 +6,14 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.PO;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 
 public interface ISaveApp {
+	
+	abstract public Object getMainApp();
+	abstract public MenuContextInfo getMenuContextInfo();
+	
 	public static class ValidateException extends AdempiereException{
 
 		private static final long serialVersionUID = -3877257428244735438L;

@@ -95,12 +95,15 @@ import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 public class DiscretionaryGrantsApplicationProgramVM {
 	List<ISaveForm> saveForms = new ArrayList<>();
 	
-	public class EmailPoInfo extends GenericPO {
-
+	public static class EmailPoInfo extends GenericPO {
+		X_ZZ_Application_Form applicationForm;
+		MenuContextInfo menuContextInfo;
 		private static final long serialVersionUID = -433026634223871908L;
 
-		public EmailPoInfo() {
+		public EmailPoInfo(X_ZZ_Application_Form applicationForm, MenuContextInfo menuContextInfo) {
 			super(MUser.Table_Name, Env.getCtx(), 0);
+			this.applicationForm = applicationForm;
+			this.menuContextInfo = menuContextInfo;
 		}
 
 		public String getAppFormDocno(){
@@ -809,7 +812,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		// sent email
 		showSubmitedDialog(isSave);
 		if (!isSave)
-			sentEmail();
+			DiscretionaryGrantsApplicationProgramVM.sentEmail(applicationForm, menuContextInfo);
 	}
 
 	private void saveAppFormCommonPart(X_ZZ_Application_Form applicationForm) {
@@ -883,8 +886,8 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	}
 	
 
-	public void sentEmail() {
-		EmailPoInfo emailPoInfo = new EmailPoInfo();
+	public static void sentEmail(X_ZZ_Application_Form applicationForm, MenuContextInfo menuContextInfo) {
+		EmailPoInfo emailPoInfo = new EmailPoInfo(applicationForm, menuContextInfo);
 
 		MMailText submitedEmail = new MMailText(Env.getCtx(), "bb8d6f79-4bea-448d-a55e-43f52116a03c", null);
 		MClient client = MClient.get(Env.getCtx());

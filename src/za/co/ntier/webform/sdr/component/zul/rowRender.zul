@@ -33,22 +33,21 @@
               sclass="help-text"/>
             <!-- error -->
             <div sclass="cell-error">
-          		<grid visible="@load(vmRowRender.row[col].fieldValidate)" model="@bind(vmsgs.texts[vmRowRender.row[col].validateMsgKey])" >
-					<template name="model" var="msg">
-					<row>
-					<label value="@load(( 'field ' += msg  ))" />
-					</row>
-					</template>
-				</grid>
+          		<div visible="@load(vmRowRender.row[col].fieldValidate)"
+      				children="@load(vmsgs.texts[vmRowRender.row[col].validateMsgKey])">
+      				<template name="children" var="msg">
+      					<label value="@load(msg)"></label>
+      				</template>
+      				
+      			</div>
 				
-				
-				<grid visible="@load(vmRowRender.row[col].formValidate)" model="@bind(vmRowRender.row[col].validateMsgs)" >
-					<template name="model" var="msg">
-					<row>
-					<label value="@load(( 'form ' += msg ))" />
-					</row>
-					</template>
-				</grid>
+				<div visible="@load(vmRowRender.row[col].formValidate)"
+      				children="@load(vmRowRender.row[col].validateMsgs)">
+      				<template name="children" var="msg">
+      					<label value="@load(msg)"></label>
+      				</template>
+      				
+      			</div>
 				
           </div>
           <!-- content part -->
@@ -79,16 +78,23 @@
               </template>
             </listbox>
             
+            <!-- radiogroup -->
+            <radiogroup if="${vmRowRender.row[col].cellType eq CellModel.RADIO_CELL}"
+            	children="@load(vmRowRender.row[col].model)"
+            	selectedItem="@bind(vmRowRender.row[col].selectedItem)">
+            	<template name="children" var="item">
+            		<radio label="@load(vmRowRender.row[col].getDisplayText(item))" 
+            			value="@load(item)" />
+            	</template>
+            </radiogroup>
+            
             <!-- label -->
             <label if="${vmRowRender.row[col].cellType eq CellModel.LABEL_CELL}"
               value="@load(vmRowRender.row[col].value)" />
-            
-            <!-- radiogroup -->
-            <radiogroup if="${vmRowRender.row[col].cellType eq CellModel.RADIO_CELL}"
-              selectedItem="@bind(vmRowRender.row[col])">
-              <radio label="YES" value="Y" />
-              <radio label="NO" value="N" />
-            </radiogroup>
+              
+            <!-- preset label -->
+            <label if="${vmRowRender.row[col].cellType eq CellModel.PRESET_TITLE_CELL}"
+              value="@load(vmRowRender.row[col].titleValue)" />
 
             <!-- PositiveNumber -->
             <intbox if="${vmRowRender.row[col].cellType eq CellModel.POSITIVE_NUM_CELL}"
@@ -113,7 +119,7 @@
                
               <fileupload
                 iconSclass="z-icon-arrow-up-from-bracket z-icon-solid"
-                label="@init(( col.mandatory ? vmRowRender.row[col].btText += ' * ' : vmRowRender.row[col].btText ))"
+                label="@init(( vmRowRender.row[col].mandatory ? vmRowRender.row[col].btText += ' * ' : vmRowRender.row[col].btText ))"
                 onUpload="@command('cmdUploadFile', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"
                 upload="@load(( AdempiereWebUI.getUploadSetting() += ',multiple=false'))" />
               

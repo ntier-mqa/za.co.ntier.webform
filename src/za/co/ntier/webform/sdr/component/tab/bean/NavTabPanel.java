@@ -1,8 +1,10 @@
 package za.co.ntier.webform.sdr.component.tab.bean;
 
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class NavTabPanel implements ISaveForm {
 	private String sclass;
@@ -99,8 +101,8 @@ public class NavTabPanel implements ISaveForm {
 	}
 
 	@Override
-	public boolean validate() {
-		return ISaveForm.validates(compModel);
+	public boolean validate(Boolean isSubmit) {
+		return ISaveForm.validates(compModel, isSubmit);
 	}
 
 	@Override
@@ -109,6 +111,17 @@ public class NavTabPanel implements ISaveForm {
 		
 	}
 
-
+	public boolean isInputEmpty () {
+		for (Object comp : getCompModel()) {
+			if (comp instanceof TableModel) {
+				TableModel tbModel = (TableModel)comp;
+				if (!tbModel.isInputEmpty()) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
 
 }

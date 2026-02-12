@@ -14,7 +14,7 @@ public class ListColumnModel<T> extends ColumnModel {
 	private boolean isUseForID = false;
 	private List<T> dataProvider;
 	private String beanPropertyName;
-	private Function<T, String> displayConvert;
+	private Function<T, String> selectedItemDisplayConvert;
 	
 	public ListColumnModel(String colTitle) {
 		super(colTitle);
@@ -83,32 +83,32 @@ public class ListColumnModel<T> extends ColumnModel {
 	/**
 	 * @return the displayConvert
 	 */
-	public Function<T, String> getDisplayConvert() {
-		return displayConvert;
+	public Function<T, String> getSelectedItemDisplayConvert() {
+		return selectedItemDisplayConvert;
 	}
 	
-	private Function<T, Object> valueConvert;
+	private Function<T, Object> selectedItemValueConvert;
 	
 
 	/**
-	 * @param displayConvert the displayConvert to set
+	 * @param selectedItemDisplayConvert the displayConvert to set
 	 */
-	public void setDisplayConvert(Function<T, String> displayConvert) {
-		this.displayConvert = displayConvert;
+	public void setSelectedItemDisplayConvert(Function<T, String> selectedItemDisplayConvert) {
+		this.selectedItemDisplayConvert = selectedItemDisplayConvert;
 	}
 
 	/**
 	 * @return the valueConvert
 	 */
-	public Function<T, Object> getValueConvert() {
-		return valueConvert;
+	public Function<T, Object> getSelectedItemValueConvert() {
+		return selectedItemValueConvert;
 	}
 
 	/**
-	 * @param valueConvert the valueConvert to set
+	 * @param selectedItemValueConvert the valueConvert to set
 	 */
-	public void setValueConvert(Function<T, Object> valueConvert) {
-		this.valueConvert = valueConvert;
+	public void setSelectedItemValueConvert(Function<T, Object> selectedItemValueConvert) {
+		this.selectedItemValueConvert = selectedItemValueConvert;
 	}
 
 	/**

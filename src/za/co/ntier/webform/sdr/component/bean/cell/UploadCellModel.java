@@ -14,6 +14,7 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.UploadEvent;
 
+import za.co.ntier.api.model.I_ZZDocumentUpload;
 import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
@@ -39,7 +40,11 @@ public class UploadCellModel extends CellModel {
 	private byte[] bytes;     // <- in-memory payload (no disk)
 
 	public String getFileName() { return fileName; }
-	public void setFileName(String fileName) { this.fileName = fileName; }
+	public void setFileName(String fileName) { 
+		this.fileName = fileName; 
+		// refresh the filename label
+		BindUtils.postNotifyChange(this, "fileName");
+	}
 
 	public byte[] getBytes() { return bytes; }
 	public void setBytes(byte[] bytes) { this.bytes = bytes; }
@@ -60,7 +65,7 @@ public class UploadCellModel extends CellModel {
 	
 	@Override
 	public List<String> doValidate(Object inputValue) {
-		if (getColModel().isMandatory() && StringUtils.isBlank(fileName) && bytes == null)
+		if (isMandatory() && StringUtils.isBlank(fileName) && bytes == null)
 			return List.of(Msg.getMsg(Env.getCtx(), "ZZValidateNotNull"));
 		
 		return List.of();
@@ -92,9 +97,6 @@ public class UploadCellModel extends CellModel {
 		} catch (Exception e) {
 			throw new AdempiereException("Unable to read uploaded file", e);
 		}
-
-		// refresh the filename label
-		BindUtils.postNotifyChange(this, "fileName");
 		
 	}
 	
@@ -135,5 +137,48 @@ public class UploadCellModel extends CellModel {
 		
 	}
 
+	@Override
+	public void copyTo(CellModel cellModel) {
+		UploadCellModel upCellModelTo = (UploadCellModel)cellModel;
+		upCellModelTo.setValue(getValue());
+		upCellModelTo.setBytes(getBytes());
+		upCellModelTo.setFileName(getFileName());
+		upCellModelTo.removed = removed;
+	}
 	
+	@Override
+	public void reset(boolean perRow) {
+		removed = false;
+		bytes = null;
+		setFileName(null);
+		super.reset(perRow);
+
+	}
+	
+	@Override
+	public boolean isMandatory() {
+		CellModel refDocUploadDefCell = null;
+		if (getColModel().getRefDocUploadDefCol() != null) {
+			refDocUploadDefCell = getRowModel().get(getColModel().getRefDocUploadDefCol());
+		}
+		
+		Object refDocUploadDefObj = null;
+		if (refDocUploadDefCell != null) {
+			refDocUploadDefObj = refDocUploadDefCell.getValue();
+		}
+		
+		if (refDocUploadDefObj !=null && refDocUploadDefObj instanceof I_ZZDocumentUpload) {
+			I_ZZDocumentUpload refDocUploadDefPo = (I_ZZDocumentUpload)refDocUploadDefObj;
+			return refDocUploadDefPo.isMandatory();
+		}else if (refDocUploadDefObj !=null && !(refDocUploadDefObj instanceof I_ZZDocumentUpload)) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZWrongValueForDocUploadDef"));
+		}else {
+			return super.isMandatory();
+		}
+	}
+	
+	@Override
+	public boolean notInputed() {
+		return StringUtils.isEmpty(fileName);
+	}
 }

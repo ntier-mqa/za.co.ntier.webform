@@ -29,7 +29,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 public class BuildFormUtil {
 	public static TableModel buildFormContact(ProgramType programType, AddressType addressType, 
 			X_ZZ_Application_Form applicationForm,
-			Function<TableModel, PO> poSupplier, Function<PO, Boolean> beforeSave,
+			Function<RowModel, PO> poSupplier, Function<PO, Boolean> beforeSave,
 			TableModel copyFrom) {
 		List<ColumnModel> cols = new ArrayList<>();
 
@@ -200,18 +200,18 @@ public class BuildFormUtil {
 		colsAddress.add(physicalAddress1Col);
 	
 		ColumnModel physicalCodeCol = PostalCellModel.getPostalColumnModel(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_Postal)
+				null
 				, I_ZZPersonAddress.COLUMNNAME_Postal
 				).required();
 		colsAddress.add(physicalCodeCol);
 	
 		ColumnModel physicalAreaCol = AreaCellModel.getAreaColumnModel(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_C_City_ID)
+				null
 				, I_ZZPersonAddress.COLUMNNAME_C_City_ID).required();
 		colsAddress.add(physicalAreaCol);
 		
 		ColumnModel physicalProvinceCol = ProvinceCellModel.getProvinceColumnModel(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_C_Region_ID)
+				null
 				, I_ZZPersonAddress.COLUMNNAME_C_Region_ID).required();
 		colsAddress.add(physicalProvinceCol);
 	

@@ -109,7 +109,7 @@ public class WebForm extends ADForm {
 		String applicationFormUU = Env.getContext(Env.getCtx(), m_WindowNo, applicationFormUUKey);
 		
 		ProgramType programType = ProgramType.valueOf(programTypeValue);
-		if (programType == ProgramType.EDP_APP_EMPLOYER) {
+		if (programType == ProgramType.EDP_APP_EMPLOYER || programType == ProgramType.EDP_APP_INDIVIDUAL) {
 			zulPath = "/za/co/ntier/webform/dga/dga.zul";
 		}
 		MenuContextInfo menuContextInfo = new MenuContextInfo(programType, zulPath,

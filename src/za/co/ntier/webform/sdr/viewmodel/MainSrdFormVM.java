@@ -348,7 +348,7 @@ public class MainSrdFormVM extends BaseAppVM {
 			);
 		alternateIDTypeCol.setUseForID(true)
 			.setDefaultValue("RSA ID Number", item -> {
-				return alternateIDTypeCol.getDisplayConvert().apply(item).equals("RSA ID Number");
+				return alternateIDTypeCol.getSelectedItemDisplayConvert().apply(item).equals("RSA ID Number");
 			})
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
@@ -453,6 +453,12 @@ public class MainSrdFormVM extends BaseAppVM {
 		}else {
 			MasterUtil.showDialog("ZZSDFSavedSuccess", MasterUtil.fCloseActiveWindow);
 		}
+	}
+
+
+	@Override
+	public Object getMainApp() {
+		return sdf;
 	}
 
 }

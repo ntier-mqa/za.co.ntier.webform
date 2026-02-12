@@ -30,25 +30,28 @@
               
               <include
                 if = "${ MasterUtil.isFormViewTableModel(compItem) }"
+                sclass="@init(( MasterUtil.prefixSclass('outter', compItem) ))"
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
               
               <include
                 if = "${ MasterUtil.isGridViewTableModel(compItem) }"
+                sclass="@init(( MasterUtil.prefixSclass('outter', compItem) ))"
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
                 
               <include
                 if = "${ MasterUtil.isCardViewTableModel(compItem) }"
+                sclass="@init(( MasterUtil.prefixSclass('outter', compItem) ))"
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataCardView.zul')))" />
               
               <include 
                 if = "${ MasterUtil.isNavTab(compItem) }"
-                sclass="navTabOuter"
+                sclass="@init(( MasterUtil.prefixSclass('outter', compItem) ))"
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />

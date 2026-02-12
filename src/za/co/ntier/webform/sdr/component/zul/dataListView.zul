@@ -8,6 +8,21 @@
 <nodom
   viewModel="@id('vmListView') @init('za.co.ntier.webform.sdr.component.viewmodel.DataListViewVM')">
 
+<div if="${vmListView.component.sectionHeader ne null}"
+    sclass="sectionHeader">
+    <label sclass="sectionHeaderTitle"
+      value="@init(vmListView.component.sectionHeader)" />
+  </div>
+
+  <div if="${vmListView.component.subSectionHeader ne null}"
+    sclass="subSectionHeader">
+    <label sclass="subSectionHeaderTitle" style="width:100%"
+      value="@init(vmListView.component.subSectionHeader)" />
+  </div>
+
+  <div if="${vmListView.component.tableTitle ne null}">
+    <label value="@init(vmListView.component.tableTitle)" />
+  </div>
 
 <div
   sclass="@init(( 'grid-listView ' += vmDataFormView.component.sclass += ' grid-listView-' += vmListView.component.columnInfos.size() ))"

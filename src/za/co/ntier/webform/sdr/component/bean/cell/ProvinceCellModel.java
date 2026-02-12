@@ -9,6 +9,7 @@ import org.compiere.model.MRegion;
 import org.zkoss.bind.BindUtils;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -63,10 +64,10 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 	
 	@Override
 	public Function<MRegion, Object> getValueConvert() {
-		if (getColModel().getValueConvert() == null) {
+		if (getColModel().getSelectedItemValueConvert() == null) {
 			return defaultValueConvert;
 		}else {
-			return getColModel().getValueConvert();
+			return getColModel().getSelectedItemValueConvert();
 		}
 	}
 
@@ -79,7 +80,7 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 		if (title == null)
 			title = "Province";
 		@SuppressWarnings("unchecked")
-		ListColumnModel<MRegion> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, ProvinceCellModel.class, title, daoPropertyName, MasterUtil.getRegions(), null, null);
+		ListColumnModel<MRegion> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, ProvinceCellModel.class, title, daoPropertyName, MasterUtil.getRegions(), null, null, CellModel.LIST_CELL);
 		listColumnModel.setUseForID(true);
 		return listColumnModel;
 	}

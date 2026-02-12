@@ -20,7 +20,8 @@
       value="@init(vmDataFormView.component.subSectionHeader)" />
   </div>
 
-  <div if="${vmDataFormView.component.tableTitle ne null}">
+  <div if="${vmDataFormView.component.tableTitle ne null}"
+  	sclass="tableTitle">
     <label value="@init(vmDataFormView.component.tableTitle)" />
   </div>
  

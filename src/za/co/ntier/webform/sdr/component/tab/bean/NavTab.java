@@ -34,9 +34,18 @@ public class NavTab implements ListDataListener, ISaveForm{
 
 	private int activeTabIndex;
 
-	protected boolean validateActiveTab() {
+	/**
+	 * emptyAsValid = true mean return true if nothing input to active tab. use for prev tab
+	 * emptyAsValid = false mean validate active tab, use for next, save, submit
+	 * @param emptyAsValid
+	 * @return
+	 */
+	protected boolean validateActiveTab(boolean emptyAsValid) {
 		NavTabPanel activeTabPanel = getTabPanelModel().get(activeTabIndex);
-		return activeTabPanel.validate();
+		if (emptyAsValid && activeTabPanel.isInputEmpty())
+			return true;
+		
+		return activeTabPanel.validate(null);
 	}
 	
 	public void doNextTab() {
@@ -44,7 +53,7 @@ public class NavTab implements ListDataListener, ISaveForm{
 				|| getTabPanelModel().size() == 0) {
 			// end tab do nothing
 		}else {
-			if (validateActiveTab()) {
+			if (validateActiveTab(false)) {
 				setActiveTab(activeTabIndex + 1, activeTabIndex);
 			}else {
 				// do nothing
@@ -70,7 +79,7 @@ public class NavTab implements ListDataListener, ISaveForm{
 				|| getTabPanelModel().size() == 0) {
 			// begin tab do nothing
 		}else {
-			if (validateActiveTab()) {
+			if (validateActiveTab(true)) {
 				setActiveTab(activeTabIndex - 1, activeTabIndex);
 			}else {
 				// do nothing
@@ -113,8 +122,13 @@ public class NavTab implements ListDataListener, ISaveForm{
 		
 	}
 	@Override
-	public boolean validate() {
-		return ISaveForm.validates(tabPanelModel);
+	public boolean validate(Boolean isSubmit) {
+		if (isSubmit)
+			// validate all tab
+			return ISaveForm.validates(tabPanelModel, isSubmit);
+		else
+			// need validate only active tab
+			return validateActiveTab(false);
 	}
 	@Override
 	public void saveToDb(String trxName) {

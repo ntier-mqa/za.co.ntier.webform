@@ -67,6 +67,7 @@ import za.co.ntier.api.model.X_ZZ_SETA_Master;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.bean.Dialog;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public class MasterUtil {
@@ -77,6 +78,17 @@ public class MasterUtil {
 	public static final String SDRRegistryOrgLinkUU = "1b8f1243-dbbf-458a-89f6-cd89a95a9d4c";
 	public static final String SDRMaintainOrganisationUU = "d1c16a4b-9a05-41fc-a2f8-050f1f383431";
 	
+	public static String prefixSclass (String prefix, TableModel tbModel) {
+		
+		StringBuilder sclass = new StringBuilder();
+		sclass.append(prefix).append("-").append(tbModel.getViewModel().name().toLowerCase());
+		
+		if (tbModel.getSclass() != null) {
+			sclass.append(" ").append(tbModel.getSclass().replaceAll("(\\S+)", prefix + "-$1"));
+		}
+		
+		return sclass.toString();
+	}
 	
 	private static CCache<String, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
 			I_C_BPartner.Table_Name + "_CetTvetCollege", 3);
@@ -265,11 +277,17 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpChamberCode = new AbstractMap.SimpleEntry<>("15a4a826-3bcb-402b-9ff4-602beeec8c3f", null);
 	public static final Entry<String, Integer> LkpNQFLevel = new AbstractMap.SimpleEntry<>("2b47e027-cb5a-45d6-8fc6-2c9bc9c6c3ad", null);
 	
+	public static final Entry<String, Integer> ExecutiveStatus = new AbstractMap.SimpleEntry<>("de34e9e2-ce0d-4877-b912-d1e7a5615a02", null);
+	 
 	
 	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
 	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
+	
+	public static List<ValueNamePair> getExecutiveStatus () {
+		return getRefList(ExecutiveStatus);
+	}
 	
 	public static List<ValueNamePair> getNQFLevel () {
 		return getRefList(LkpNQFLevel);

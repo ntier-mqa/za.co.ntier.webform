@@ -15,8 +15,10 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.util.Log;
 
+import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
 
 public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveForm{
 	private static final CLogger log = CLogger.getCLogger(RowModel.class);
@@ -31,8 +33,11 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 
 	public void resetRow() {
 		for (CellModel cell : values()) {
-			cell.dirtyValue = null;//TODO: move to reset function of cell
-			cell.initDefaultValue(tableModel, this);
+			cell.reset(true);
+		}
+		
+		for (CellModel cell : values()) {
+			cell.initDefaultValue();
 		}
 	}
 	/**
@@ -68,7 +73,8 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		boolean isInputed = false;
 		for (CellModel cellModel : values()) {
 			ColumnModel colModel = cellModel.getColModel();
-			if(StringUtils.isBlank(colModel.getDaoPropertyName()))
+			// TODO condition should move to cellMode
+			if(colModel.isReadonly() || (cellModel.getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName())))
 				continue;
 
 			if (cellModel.notInputed() && colModel.isMandatory()) {
@@ -101,8 +107,16 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	 * @return
 	 */
 	public boolean isMatchingRow(Collection<ColumnModel> keyColumns, PO dao) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isMatching = true;
+		for (ColumnModel col : keyColumns) {
+			PresetTitleColumnModel<?> presetTitleCol = (PresetTitleColumnModel<?>) col;
+			isMatching = isMatching && presetTitleCol.getMatchingLoaded().apply(this, dao);
+			if (!isMatching) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	public void fillRowDataFromDao() {
@@ -165,7 +179,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		PO daoPerCol = null;
 		for (CellModel cellModel : values()) {
 			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
-				daoPerCol = getDao(cellModel);
+				daoPerCol = getDaoAllway(cellModel);
 				
 				//TODO:Move logic set ui value to dao to cellMode
 				Object value = convertDataType(daoPerCol, cellModel);
@@ -175,38 +189,47 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			
 	}
 	
-	private PO getDao(CellModel cellModel) {
-		PO daoPerCol = null;
+	private PO getDaoFromDaoManage(CellModel cellModel) {
 		if (tableModel.getDaoManage() != null)
-			daoPerCol =  tableModel.getDaoManage().getDaoForSave(cellModel.getColModel().getTableName());
+			return tableModel.getDaoManage().getDaoForSave(cellModel.getColModel().getTableName());
+		
+		return null;
+	}
+	
+	private PO getDaoAllway(CellModel cellModel) {
+		PO daoPerCol = null;
+		
+		daoPerCol =  getDaoFromDaoManage(cellModel);
 		
 		if (daoPerCol == null) {
-			daoPerCol = getDao();
+			daoPerCol = getDirectDao();
 		}
 		
 		return daoPerCol;
 	}
 	
-	private PO getDao() {
+	private PO getDirectDao() {
 		if (data == null && tableModel.getPoSupplier() == null) {
 			throw new AdempiereException("ZZTableModelMissingPO");
 		}
 		
 		if (data == null)
-			data = tableModel.getPoSupplier().apply(tableModel);
+			data = tableModel.getPoSupplier().apply(this);
 		
 		return data;
 	}
 	/**
-	 * @param applicationForm
+	 * @param for case use dao manage
 	 * @param trxName
 	 */
 	@Override
 	public void saveAttachment(String trxName) {
+		
 		for (CellModel cellModel : values()) {
 			if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
-				PO daoPerCol = getDao(cellModel);
-				((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
+				PO daoPerCol = getDaoFromDaoManage(cellModel);
+				if (daoPerCol != null)
+					((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
 			}
 		}
 	}
@@ -231,15 +254,23 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			}else {
 				throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
 			}
-		}else {// DisplayType.Integer
+		}else if (cellModel.getValue() instanceof BigDecimal){
+			// DisplayType.Integer
+			// on tab org information, field "Number of Employees" is Positive Number. when load from I_ZZ_Application_Form.COLUMNNAME_NumberEmployees or input by user it's integer
+			// but when sdl is change, value can be set from MBPartner_New.getZZ_Number_Of_Employees()
+			// in this case value become BigDecimal
+			return ((BigDecimal)cellModel.getValue()).intValueExact();
+		}else if (cellModel.getValue() instanceof Integer){
 			return cellModel.getValue();
+		}else {
+			throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
 		}
 		
 		
 	}
 	
 	@Override
-	public boolean validate() {
+	public boolean validate(Boolean isSubmit) {
 		boolean isValid = true;
 		for (CellModel validation : this.values()) {
 			if (!validation.validate()) {
@@ -258,7 +289,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	public void saveToDb(String trxName) {
 		
 		if (tableModel.getDaoManage() == null) {
-			PO daoToSave = getDao();
+			PO daoToSave = getDirectDao();
 			if (tableModel.getBeforeSave() != null) {
 				tableModel.getBeforeSave().apply(daoToSave);
 			}

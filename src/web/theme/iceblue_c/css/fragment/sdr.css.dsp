@@ -200,7 +200,8 @@
 	border-width:0px;
 }
 
-.mqaWebForm .grid-formview .cell-error .z-label{
+.mqaWebForm .grid-formview .cell-error .z-label
+, .mqaWebForm .grid-listView .cell-error .z-label{
 	color:red;
 }
 
@@ -358,10 +359,38 @@
 .mqaWebForm .sdrForm .grid-listView{
   display: grid;
   grid-auto-rows: min-content;
+  gap: 1px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+}
+
+.mqaWebForm .sdrForm .grid-listView .colHead{
+	background-color:var(--mqa-blue);
+	color:white;
+	position: sticky;
+	top: 0;
+}
+
+.mqaWebForm .sdrForm .grid-listView .colHead .z-label{
+	color: var(--header-text-color);
+}
+
+.mqaWebForm .sdrForm .grid-listView .cell{
+	padding: 5px;
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-2{
+	grid-template-columns: repeat(2, 1fr);
 }
 
 .mqaWebForm .sdrForm .grid-listView.grid-listView-7{
   grid-template-columns: repeat(7, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-8{
+  grid-template-columns: repeat(8, 1fr);
 }
 
 .mqaWebForm .sdrForm .grid-listView.grid-listView-3{
@@ -379,8 +408,7 @@
 }  
 
 .mqaWebForm .formContactCopy{
-	position:relative;
-	top:-45px;
+	margin-top: -45px;
 }
 
 .mqaWebForm .formContactCopy > :nth-child(1){
@@ -391,4 +419,20 @@
 .mqaWebForm .formContactCopy > :nth-child(1) .cell-content{
 	display:flex;
   	justify-content:flex-end;
+}
+
+.outter-view_form.outter-orgSize{
+	display: grid;
+  	grid-template-columns: max-content 1fr;
+}
+
+.outter-view_form.outter-orgSize .tableTitle{
+	align-content:center;
+}
+
+
+.mqaWebForm .grid-formview.orgSize{
+	grid-column: span 2;
+	width: 100%;
+	grid-template-columns: repeat(2, 1fr);
 }

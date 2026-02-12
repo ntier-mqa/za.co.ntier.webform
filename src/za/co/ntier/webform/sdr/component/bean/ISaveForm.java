@@ -3,7 +3,7 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.util.Collection;
 
 public interface ISaveForm {
-	public boolean validate();
+	public boolean validate(Boolean isSubmit);
 	
 	public void syncUIToDao(String trxName);
 	
@@ -29,10 +29,10 @@ public interface ISaveForm {
 		}
 	}
 
-	public static boolean validates(Collection<?> list) {
+	public static boolean validates(Collection<?> list, Boolean isSubmit) {
 		boolean isValid = true;
 		for (Object saveForm : list) {
-			if (saveForm instanceof ISaveForm && !((ISaveForm)saveForm).validate()) {
+			if (saveForm instanceof ISaveForm && !((ISaveForm)saveForm).validate(isSubmit)) {
 				isValid = false;
 			}
 		}

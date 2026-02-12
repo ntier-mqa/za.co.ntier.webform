@@ -99,7 +99,7 @@ public abstract class BaseAppVM implements ISaveApp{
 			daoManage.setTrxName(trxName);
 		}
 		
-		boolean isValidate = ISaveForm.validates(saveComponents);
+		boolean isValidate = ISaveForm.validates(saveComponents, isSubmit);
 		
 		if (!isValidate)
 			throw new ValidateException(Msg.getMsg(Env.getCtx(), "ZZValidateFormFail"));

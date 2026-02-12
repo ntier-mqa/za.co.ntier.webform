@@ -12,16 +12,20 @@ import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.validator.AbstractValidator;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.cell.SDLCellModel;
 
 @Init(superclass = true)
 public class RowRenderVM extends BaseComponentVM<RowModel>{
@@ -31,7 +35,7 @@ public class RowRenderVM extends BaseComponentVM<RowModel>{
 		Object value;
 		RowRenderVM vm;
 		List<String> msgs = new ArrayList<>();
-		
+		Component comp;
 		void doValidate(ValidationContext ctx) {
 			
 		}
@@ -42,7 +46,7 @@ public class RowRenderVM extends BaseComponentVM<RowModel>{
 			cellModel = (CellModel)ctx.getValidatorArg("cellModel");
 			value = ctx.getProperty().getValue();
 			vm = (RowRenderVM)ctx.getBindContext().getValidatorArg("vm");
-			
+			comp = ctx.getBindContext().getComponent();
 			doValidate(ctx);
 			if (msgs.size() > 0)
 				addInvalidMessages(ctx, cellModel.getValidateMsgKey(), msgs.toArray(new String[0]));
@@ -53,7 +57,14 @@ public class RowRenderVM extends BaseComponentVM<RowModel>{
 	
 	public static class CellValidator extends BaseValidator{
 		void doValidate(ValidationContext ctx) {
-			msgs.addAll(cellModel.validate(value));
+			List<String> cellValidateMsgs = cellModel.validate(value);
+			msgs.addAll(cellValidateMsgs);
+			if (cellValidateMsgs.size() > 1 && cellModel instanceof SDLCellModel) {//TODO cellValidateMsgs.size() > 1 hardcode to don't show require check only when clear wrong value
+				MasterUtil.showDialog("Required criteria", cellValidateMsgs, t -> {
+					((HtmlBasedComponent)comp).setFocus(true);
+				});
+			}
+			
 		}
 	}
 	

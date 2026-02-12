@@ -12,7 +12,7 @@ public class DataCardViewVM extends BaseComponentVM<TableModel>{
 	@Command
 	@SmartNotifyChange("indexInfo")
 	public void cmdNew() {
-		if (getComponent().getVirtualRow().validate())
+		if (getComponent().getVirtualRow().validate(null))
 			getComponent().newRow();
 	}
 	
@@ -20,20 +20,20 @@ public class DataCardViewVM extends BaseComponentVM<TableModel>{
 	@SmartNotifyChange("indexInfo")
 	public void cmdDelete() {
 		getComponent().deleteRow();
-		getComponent().getVirtualRow().validate();
+		getComponent().getVirtualRow().validate(null);
 	}
 	
 	@Command
 	@SmartNotifyChange("indexInfo")
 	public void cmdPrev() {
-		if (getComponent().getVirtualRow().validate())
+		if (getComponent().getVirtualRow().validate(null))
 			getComponent().navPrevRow();
 	}
 	
 	@Command
 	@SmartNotifyChange("indexInfo")
 	public void cmdNext() {
-		if (getComponent().getVirtualRow().validate())
+		if (getComponent().getVirtualRow().validate(null))
 			getComponent().navNextRow();
 	}
 

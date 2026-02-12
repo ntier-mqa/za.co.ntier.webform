@@ -13,6 +13,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class ListCellModel<T> extends CellModel implements ISelectable {
+
 	
 	@Override
 	public Object getValue() {
@@ -20,7 +21,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	@Override
-	public void initDefaultValue(TableModel tableModel, RowModel rowModel) {
+	public void initDefaultValue() {
 		ListColumnModel<T> colModel = getColModel();
 		if (colModel.getDefaultValue() != null) {
 			setValue(colModel.getDefaultValue(), colModel.getCompareFunction());
@@ -34,7 +35,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	public Function<T, Object> getValueConvert() {
-		return getColModel().getValueConvert();
+		return getColModel().getSelectedItemValueConvert();
 	}
 	
 	protected void setValue(Object value, Function<T, Boolean> compareFunction) {
@@ -86,7 +87,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	 * @return
 	 */
 	public String getDisplayText(T item) {
-		Function<T, String> displayConvert = getColModel().getDisplayConvert();
+		Function<T, String> displayConvert = getColModel().getSelectedItemDisplayConvert();
 		if (displayConvert != null) {
 			return displayConvert.apply(item);
 		}
@@ -170,15 +171,18 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	protected static  <T extends ListCellModel<L>, K extends ListColumnModel<L>, L> K
-	getListColumnModel(Class<K> coClass, Class<T> ceClass, String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert, Function<L, Object> valueConvert) {
+		getListColumnModel(Class<K> coClass, Class<T> ceClass, String title, String daoPropertyName, List<L> dataProvider, 
+				Function<L, String> displayConvert, 
+				Function<L, Object> valueConvert, int cellType) {
+		
 		K listColumnModel = CellModel.getColModelForCell(CellModelInfo.of(coClass, ceClass, null), 
-				CellModelParams.of(title, daoPropertyName, null)
+				CellModelParams.of(title, daoPropertyName, cellType)
 				);
 				
 		listColumnModel.setDataProvider(dataProvider);
 		
-		listColumnModel.setDisplayConvert(displayConvert);
-		listColumnModel.setValueConvert(valueConvert);
+		listColumnModel.setSelectedItemDisplayConvert(displayConvert);
+		listColumnModel.setSelectedItemValueConvert(valueConvert);
 		
 		return listColumnModel;
 	}
@@ -189,9 +193,20 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		return Objects.isNull(value);
 	}
 	
-	public static <L> ListColumnModel<L> getListColumnModel(String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert, Function<L, Object> valueConvert) {
+	public static <L> ListColumnModel<L> getListColumnModel(
+			String title, String daoPropertyName, List<L> dataProvider, 
+			Function<L, String> displayConvert, 
+			Function<L, Object> valueConvert) {
+		return getListColumnModel (title, daoPropertyName, dataProvider, displayConvert, valueConvert, CellModel.LIST_CELL);
+	}
+	
+	public static <L> ListColumnModel<L> getListColumnModel(
+			String title, String daoPropertyName, List<L> dataProvider, 
+			Function<L, String> displayConvert, 
+			Function<L, Object> valueConvert, 
+			int cellType) {
 		@SuppressWarnings("unchecked")
-		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert, valueConvert);
+		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert, valueConvert, cellType);
 		return listColumnModel;
 	}
 

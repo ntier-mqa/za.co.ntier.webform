@@ -411,5 +411,10 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Pending);
 		sdfOrgPo.saveEx(trxName);
 	}
+
+	@Override
+	public Object getMainApp() {
+		return sdfOrgPo;
+	}
 	
 }

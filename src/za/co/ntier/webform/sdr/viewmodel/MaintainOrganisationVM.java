@@ -73,7 +73,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		contactDetailTab.setTabTitle("CONTACT DETAILS");
 		// new component
 		TableModel contactTableModel = initContactDetailComp();
-		contactTableModel.setViewModel(TableModel.VIEW_CARD);
+		contactTableModel.setViewModel(TableModel.ViewType.VIEW_CARD);
 		contactDetailTab.getCompModel().add(contactTableModel);
 
 		// address tab
@@ -108,7 +108,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		ColumnModel lastNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname)
-				, I_AD_User.COLUMNNAME_Name
+				, I_AD_User.COLUMNNAME_ZZSurname
 				).required()
 				;
 		cols.add(lastNameCol);
@@ -437,5 +437,12 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	@Override
 	protected void showResult(boolean isSubmit) {
 		MasterUtil.showDialog("ZZOrgSavedSuccess", MasterUtil.fCloseActiveWindow);
+	}
+
+
+
+	@Override
+	public Object getMainApp() {
+		return orgPO;
 	}
 }

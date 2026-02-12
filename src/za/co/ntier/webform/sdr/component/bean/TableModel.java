@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -25,10 +26,13 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
+import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
 public class TableModel implements ISaveForm {
+	private ISaveApp saveApp;
+	
 	private RowModel activeRow;
 	private RowModel virtualRow;
 	public RowModel getVirtualRow() {
@@ -172,7 +176,7 @@ public class TableModel implements ISaveForm {
 	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
 	private String sclass = "";
 	
-	private int viewMode = VIEW_FORM;	
+	private ViewType viewMode = ViewType.VIEW_FORM;	
 	
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
@@ -214,7 +218,7 @@ public class TableModel implements ISaveForm {
 	}
 
 	private List<ColumnModel> columnModels;
-	private Function<TableModel, PO> poSupplier;
+	private Function<RowModel, PO> poSupplier;
 	
 	public static class DaoManage{
 		private String trxName;
@@ -361,11 +365,15 @@ public class TableModel implements ISaveForm {
 			row.put(columnInfo, cellModel);
 		}
 
+		row.forEach((colModel, cellModel) -> {
+			cellModel.initDefaultValue();
+		});
+		
 		if (rowTitle != null) {
-			/* TODO init for column with preset value
-			 * for (Entry<ColumnModel, Object> colTile : rowTitle.entrySet()) {
-			 * TableModel.setCellValue(row, colTile.getKey(), colTile.getValue()); }
-			 */
+			 for (Entry<ColumnModel, Object> presetTitleInfo : rowTitle.entrySet()) {
+				 row.get(presetTitleInfo.getKey()).setValue(presetTitleInfo.getValue()); 
+			 }
+			 
 		}
 
 		if (decoratorCell != null) {
@@ -745,14 +753,14 @@ public class TableModel implements ISaveForm {
 	/**
 	 * @return the poSupplier
 	 */
-	public Function<TableModel, PO> getPoSupplier() {
+	public Function<RowModel, PO> getPoSupplier() {
 		return poSupplier;
 	}
 
 	/**
 	 * @param poSupplier the poSupplier to set
 	 */
-	public void setPoSupplier(Function<TableModel, PO> poSupplier) {
+	public void setPoSupplier(Function<RowModel, PO> poSupplier) {
 		this.poSupplier = poSupplier;
 	}
 
@@ -820,43 +828,50 @@ public class TableModel implements ISaveForm {
 		this.daoManage = daoManage;
 	}
 
-	public final static int VIEW_FORM = 1;
-	public final static int VIEW_GRID = 2;
-	public final static int VIEW_CARD = 3;
+	 
+	public enum ViewType {
+	    VIEW_FORM,
+	    VIEW_GRID,
+	    VIEW_CARD;
+	}
 	/**
 	 * @return the formView
 	 */
 	public boolean isFormView() {
-		return viewMode == VIEW_FORM;
+		return viewMode == ViewType.VIEW_FORM;
 	}
 	
 	public boolean isGridView() {
-		return viewMode == VIEW_GRID;
+		return viewMode == ViewType.VIEW_GRID;
 	}
 	
 	public boolean isCardView() {
-		return viewMode == VIEW_CARD;
+		return viewMode == ViewType.VIEW_CARD;
 	}
 
 	/**
 	 * @param formView the formView to set
 	 */
-	public void setViewModel(int viewMode) {
+	public void setViewModel(ViewType viewMode) {
 		this.viewMode = viewMode;
+	}
+	
+	public ViewType getViewModel() {
+		return viewMode;
 	}
 
 
 	@Override
-	public boolean validate() {
+	public boolean validate(Boolean isSubmit) {
 		List<RowModel> validateRows = null;
 		if (virtualRow != null) {
-			validateRows = new ArrayList<>();
+			validateRows = new ArrayList<>(rows);
 			validateRows.remove(activeRow);
 			validateRows.add(virtualRow);
 		}else {
 			validateRows = rows;
 		}
-		return ISaveForm.validates(validateRows);
+		return ISaveForm.validates(validateRows, null);
 	}
 	@Override
 	public void saveToDb(String trxName) {
@@ -869,6 +884,21 @@ public class TableModel implements ISaveForm {
 	public void setBeforeSave(Function<PO, Boolean> beforeSave) {
 		this.beforeSave = beforeSave;
 	}
+	
+	public ISaveApp getSaveApp() {
+		return saveApp;
+	}
+	public void setSaveApp(ISaveApp saveApp) {
+		this.saveApp = saveApp;
+	}
 
+	public boolean isInputEmpty() {
+		for (RowModel row : getRows()) {
+			if (!row.checkState(RowModel.INPUT_STATE_EMPTY))
+				return false;
+		}
+		
+		return true;
+	}
 
 }
