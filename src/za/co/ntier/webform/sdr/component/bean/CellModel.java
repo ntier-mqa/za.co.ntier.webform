@@ -55,6 +55,12 @@ public class CellModel implements IValueChange {
 	 */
 	protected Object dirtyValue;
 	
+	public static record InputCheckResult (Boolean empty, Boolean emptyOrDefault) {
+		
+	}
+	InputCheckResult d = new InputCheckResult(null, null);
+	
+			
 	public boolean notInputed(boolean defaultAsNotInput) {
 		boolean isNotInput = Objects.isNull(value);
 		if (!isNotInput && getColModel().getDefaultValue() != null && defaultAsNotInput) {
@@ -62,6 +68,7 @@ public class CellModel implements IValueChange {
 				isNotInput = true;
 			}
 		}
+		
 		return isNotInput;
 	}
 	

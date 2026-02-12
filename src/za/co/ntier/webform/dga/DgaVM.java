@@ -53,7 +53,6 @@ import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.PresetTitleCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.RadioCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.SDLCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -567,19 +566,20 @@ public class DgaVM extends BaseAppVM{
 					.setTableName(I_ZZ_EDP_Application.Table_Name);
 		cols.add(nqfLevelCol);
 		
-		//if(!isEmployee) {
-			ListColumnModel<ValueNamePair> executiveStatus = RadioCellModel.getRadioColumnModel(
+		if(!isEmployee) {
+			ListColumnModel<ValueNamePair> executiveStatus = ListCellModel.getListColumnModel(
 					"Executive Status", 
 					I_ZZ_EDP_Application.COLUMNNAME_ZZExecutiveStatus,
 					MasterUtil.getExecutiveStatus(),
 					ref -> {return ref.getName();},
-					ref -> {return ref.getValue();}
+					ref -> {return ref.getValue();},
+					CellModel.RADIO_CELL
 					).setzClass(ValueNamePair.class);
 				executiveStatus.required();
 				executiveStatus.setTableName(I_ZZ_EDP_Application.Table_Name);
 				
 			cols.add(executiveStatus);
-		//}
+		}
 		
 		ColumnModel letterUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "Motivation Letter")
 				.required()

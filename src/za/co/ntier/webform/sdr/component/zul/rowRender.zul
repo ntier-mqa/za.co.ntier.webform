@@ -80,13 +80,7 @@
             
             <!-- radiogroup -->
             <radiogroup if="${vmRowRender.row[col].cellType eq CellModel.RADIO_CELL}"
-            	children="@load(vmRowRender.row[col].model)"
-            	selectedItem="@bind(vmRowRender.row[col].selectedItem)">
-            	<template name="children" var="item">
-            		<radio label="@load(vmRowRender.row[col].getDisplayText(item))" 
-            			value="@load(item)" />
-            	</template>
-            </radiogroup>
+            	model="@load(vmRowRender.row[col].model)"/>
             
             <!-- label -->
             <label if="${vmRowRender.row[col].cellType eq CellModel.LABEL_CELL}"
