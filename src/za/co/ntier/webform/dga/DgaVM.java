@@ -69,6 +69,11 @@ public class DgaVM extends BaseAppVM{
 	
 	DaoManage dgaDaoManage = new DaoManage();
 	
+	@Override
+	public boolean isShowSaveOnFirstTab() {
+		return false;
+	}
+	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);

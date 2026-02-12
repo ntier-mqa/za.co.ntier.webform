@@ -62,9 +62,9 @@ public class CellModel implements IValueChange {
 	
 			
 	public boolean notInputed(boolean defaultAsNotInput) {
-		boolean isNotInput = Objects.isNull(value);
+		boolean isNotInput = Objects.isNull(dirtyValue);
 		if (!isNotInput && getColModel().getDefaultValue() != null && defaultAsNotInput) {
-			if (Objects.equals(value, getColModel().getDefaultValue())) {
+			if (Objects.equals(dirtyValue, getColModel().getDefaultValue())) {
 				isNotInput = true;
 			}
 		}

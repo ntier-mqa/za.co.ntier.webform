@@ -13,7 +13,9 @@ public interface ISaveApp {
 	
 	abstract public Object getMainApp();
 	abstract public MenuContextInfo getMenuContextInfo();
-	
+	public default boolean isShowSaveOnFirstTab() {
+		return true;
+	}
 	public static class ValidateException extends AdempiereException{
 
 		private static final long serialVersionUID = -3877257428244735438L;

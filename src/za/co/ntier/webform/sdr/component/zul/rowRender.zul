@@ -84,7 +84,9 @@
             
             <!-- label -->
             <label if="${vmRowRender.row[col].cellType eq CellModel.LABEL_CELL}"
-              value="@load(vmRowRender.row[col].value)" />
+              value="@load(vmRowRender.row[col].value)
+              @converter(ConvertUtil.getConvertBoolText())
+              " />
               
             <!-- preset label -->
             <label if="${vmRowRender.row[col].cellType eq CellModel.PRESET_TITLE_CELL}"
