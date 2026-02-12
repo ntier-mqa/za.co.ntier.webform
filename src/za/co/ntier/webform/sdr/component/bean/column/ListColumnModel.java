@@ -11,6 +11,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 
 public class ListColumnModel<T> extends ColumnModel {
+	private Class<T> zClass;
 	private boolean isUseForID = false;
 	private List<T> dataProvider;
 	private String beanPropertyName;
@@ -47,7 +48,7 @@ public class ListColumnModel<T> extends ColumnModel {
 	private Function<T, Boolean> compareFunction;
 	
 	public ListColumnModel<T> setDefaultValue(Object defaultValue, Function<T, Boolean> compareFunction) {
-		super.setDefaultValue(defaultValue);
+		super.setDefaultValue(defaultValue); 
 		this.compareFunction = compareFunction;
 		return this;
 	}
@@ -132,5 +133,14 @@ public class ListColumnModel<T> extends ColumnModel {
 
 	public void setCompareFunction(Function<T, Boolean> compareFunction) {
 		this.compareFunction = compareFunction;
+	}
+
+	public Class<T> getzClass() {
+		return zClass;
+	}
+
+	public ListColumnModel<T> setzClass(Class<T> zClass) {
+		this.zClass = zClass;
+		return this;
 	}
 }

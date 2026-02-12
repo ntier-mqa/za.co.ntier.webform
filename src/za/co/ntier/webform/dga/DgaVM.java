@@ -34,6 +34,7 @@ import za.co.ntier.api.model.X_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_EDP_Application;
 import za.co.ntier.api.model.X_ZZ_FormContact;
+import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.webform.component.DeclarationPanel;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -544,9 +545,12 @@ public class DgaVM extends BaseAppVM{
 						, MasterUtil.getHighestEducations()
 						, highestEducation -> {return highestEducation.getName();}
 						, highestEducation -> {return highestEducation.getZZ_LI_HighestEducation_ID();}
-					).setUseForID(true)
+					)
+					.setzClass(X_ZZ_LI_HighestEducation.class)
+					.setUseForID(true)
 					.required()
-					.setTableName(I_ZZ_EDP_Application.Table_Name);
+					.setTableName(I_ZZ_EDP_Application.Table_Name)
+					;
 		
 		cols.add(highestQualityCol);
 		
@@ -557,24 +561,25 @@ public class DgaVM extends BaseAppVM{
 						, MasterUtil.getNQFLevel()
 						, nqfLevel -> {return nqfLevel.getName();}
 						, nqfLevel -> {return nqfLevel.getValue();}
-					).setUseForID(true)
+					).setzClass(ValueNamePair.class)
+				.setUseForID(true)
 					.required()
 					.setTableName(I_ZZ_EDP_Application.Table_Name);
 		cols.add(nqfLevelCol);
 		
-		if(!isEmployee) {
+		//if(!isEmployee) {
 			ListColumnModel<ValueNamePair> executiveStatus = RadioCellModel.getRadioColumnModel(
 					"Executive Status", 
 					I_ZZ_EDP_Application.COLUMNNAME_ZZExecutiveStatus,
 					MasterUtil.getExecutiveStatus(),
 					ref -> {return ref.getName();},
 					ref -> {return ref.getValue();}
-					);
+					).setzClass(ValueNamePair.class);
 				executiveStatus.required();
 				executiveStatus.setTableName(I_ZZ_EDP_Application.Table_Name);
 				
-			//cols.add(executiveStatus);
-		}
+			cols.add(executiveStatus);
+		//}
 		
 		ColumnModel letterUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "Motivation Letter")
 				.required()

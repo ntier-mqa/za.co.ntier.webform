@@ -2,8 +2,10 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.sdr.component.bean.CellModel;
@@ -13,7 +15,6 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class ListCellModel<T> extends CellModel implements ISelectable {
-
 	
 	@Override
 	public Object getValue() {
@@ -22,12 +23,34 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	
 	@Override
 	public void initDefaultValue() {
-		ListColumnModel<T> colModel = getColModel();
-		if (colModel.getDefaultValue() != null) {
-			setValue(colModel.getDefaultValue(), colModel.getCompareFunction());
-		}else {
+		T defaultValue = lookupItem(getColModel().getDefaultValue(), getColModel().getCompareFunction());
+		if (defaultValue == null)
 			setValue(null);
+		else {
+			setValue(defaultValue);
 		}
+	}
+	
+	public T lookupItem (Object value, Function<T, Boolean> compareFunction) {
+		if (value == null)
+			return null;
+		
+		//TODO when getColModel().getDefaultValue().class is T then return direct (or check it's exists on provider list)
+		if (value.getClass().equals(getColModel().getzClass())) {
+			return getColModel().getzClass().cast(value);
+		}
+		
+		if (compareFunction == null) {
+			return getColModel().getzClass().cast(value);
+		}
+		
+		for (T item : getDataProvider()) {
+			if (compareFunction.apply(item)) {
+				return item;
+			}
+		}
+		
+		return null;
 	}
 	
 	public List<T> getDataProvider(){
@@ -40,38 +63,41 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	
 	protected void setValue(Object value, Function<T, Boolean> compareFunction) {
 		getModel().clearSelection();
-		for (T item : getDataProvider()) {
-			Boolean isSelectedValue = null;
-
-			if (compareFunction != null) {
-				isSelectedValue = compareFunction.apply(item);
+		
+		Object lookupValue = null;
+		T lookupResult = lookupItem(value, compareFunction);
+		
+		if (lookupResult == null) {
+			lookupValue = null;
+		}else {
+			if (lookupResult != null && getValueConvert() != null) {
+				Object valueConver = getValueConvert().apply(lookupResult);
+				lookupValue = valueConver;
 			}else {
-				Object itemValue;
-				if (getValueConvert() != null) {
-					itemValue = getValueConvert().apply(item);
-				}else {
-					itemValue = item;
-				}
-				
-				isSelectedValue = Objects.equals(value, itemValue);
-			}
-				
-			if (isSelectedValue) {
-				if (!getModel().contains(item)) {
-					getModel().add(item);
-				}
-				
-				getModel().addToSelection(item);
-				//super.setValue(value);
-				return;
+				lookupValue = lookupResult;
 			}
 		}
+		
+		if (lookupResult != null && !getModel().contains(lookupResult)) {
+			getModel().add(lookupResult);
+		}
+		
+		if (lookupResult != null)
+			getModel().addToSelection(lookupResult);
+		
+		super.setValue(lookupValue);
 	}
-	
 	
 	@Override
 	public void setValue(Object value) {
-		setValue(value, null);
+		setValue(value, item -> {
+			if (getValueConvert() != null) {
+				Object converValue = getValueConvert().apply(item);
+				return Objects.equals(converValue, value);
+			}
+			
+			throw new AdempiereException("Wrong type");
+		});
 		dirtyValue = getValue();
 	}
 	
@@ -188,9 +214,31 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	@Override
-	public boolean notInputed() {
+	public boolean notInputed(boolean defaultAsNotInput) {
 		Object value = getValue();
-		return Objects.isNull(value);
+		boolean isNotInput = Objects.isNull(value);
+		if (isNotInput)
+			return isNotInput;
+		
+		if (getColModel().getDefaultValue() != null && defaultAsNotInput) {
+			T lookupResult = lookupItem(getColModel().getDefaultValue(), getColModel().getCompareFunction());
+			
+			Object lookupValue = null;
+			
+			if (lookupResult == null) {
+				lookupValue = null;
+			}else {
+				if (lookupResult != null && getValueConvert() != null) {
+					lookupValue = getValueConvert().apply(lookupResult);
+				}else {
+					lookupValue = lookupResult;
+				}
+			}
+			
+			isNotInput = Objects.equals(value, lookupValue);
+		}
+		
+		return isNotInput;
 	}
 	
 	public static <L> ListColumnModel<L> getListColumnModel(
@@ -209,6 +257,4 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert, valueConvert, cellType);
 		return listColumnModel;
 	}
-
-
 }

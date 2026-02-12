@@ -7,7 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
+import org.compiere.model.X_C_Bank;
 import org.compiere.util.Env;
+import org.compiere.util.ValueNamePair;
 
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
@@ -138,7 +140,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return sdfFunction.getName();
 				}, sdfFunction -> {
 					return sdfFunction.getValue();
-				});
+				}).setzClass(ValueNamePair.class);
 		cols.add(sdfFunctionCol);
 
 		ColumnModel appointmentProcedureCol = ListCellModel.getListColumnModel(
@@ -148,7 +150,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return appointment.getName();
 				}, appointment -> {
 					return appointment.getValue();
-				});
+				}).setzClass(ValueNamePair.class);
 		cols.add(appointmentProcedureCol);
 
 		ColumnModel appointmentOtherCol = CellModel.getColModelForText(
@@ -207,7 +209,8 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return bank.getName();
 				}, bank -> {
 					return bank.getC_Bank_ID();
-				}).required();
+				}).setzClass(X_C_Bank.class)
+				.required();
 		cols.add(bankNameCol);
 
 		ColumnModel branchCodeCol = CellModel
@@ -239,7 +242,8 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return lkpAccountType.getName();
 				}, lkpAccountType -> {
 					return lkpAccountType.getValue();
-				}).required();
+				}).setzClass(ValueNamePair.class)
+				.required();
 		cols.add(accountTypeCol);
 		
 		ColumnModel bankChangeConfirmCol = ListCellModel.getListColumnModel(
@@ -249,7 +253,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return lkpAccountType.getName();
 				}, lkpAccountType -> {
 					return lkpAccountType.getValue();
-				}).required();
+				}).setzClass(ValueNamePair.class).required();
 		cols.add(bankChangeConfirmCol);
 		
 		ColumnModel bankConfirmCol = ListCellModel.getListColumnModel(
@@ -259,7 +263,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return lkpAccountType.getName();
 				}, lkpAccountType -> {
 					return lkpAccountType.getValue();
-				}).required();
+				}).setzClass(ValueNamePair.class).required();
 		cols.add(bankConfirmCol);
 		
 		ColumnModel adminConfirmCol = ListCellModel.getListColumnModel(
@@ -269,7 +273,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 					return lkpAccountType.getName();
 				}, lkpAccountType -> {
 					return lkpAccountType.getValue();
-				}).required();
+				}).setzClass(ValueNamePair.class).required();
 		cols.add(adminConfirmCol);
 
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);

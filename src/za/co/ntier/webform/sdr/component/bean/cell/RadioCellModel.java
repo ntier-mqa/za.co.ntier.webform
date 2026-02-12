@@ -3,6 +3,8 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 import java.util.List;
 import java.util.function.Function;
 
+import org.zkoss.bind.BindUtils;
+
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
@@ -17,6 +19,12 @@ public class RadioCellModel<T> extends ListCellModel<T>{
 	
 	public void setSelectedItem(T selectedItem) {
 		setValue(selectedItem);
+	}
+	
+	@Override
+	protected void setValue(Object value, Function<T, Boolean> compareFunction) {
+		super.setValue(value, compareFunction);
+		BindUtils.postNotifyChange(this, "model");
 	}
 	
 	public static <L> ListColumnModel<L> getRadioColumnModel(

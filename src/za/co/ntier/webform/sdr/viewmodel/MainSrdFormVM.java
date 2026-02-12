@@ -6,6 +6,7 @@ import java.util.List;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -260,7 +261,7 @@ public class MainSrdFormVM extends BaseAppVM {
 				, MasterUtil.getLkpTitleLists()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(greettingCol);
 
@@ -291,7 +292,7 @@ public class MainSrdFormVM extends BaseAppVM {
 				, MasterUtil.getLkpGenders()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(genderCol);
 

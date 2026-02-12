@@ -55,8 +55,14 @@ public class CellModel implements IValueChange {
 	 */
 	protected Object dirtyValue;
 	
-	public boolean notInputed() {
-		return Objects.isNull(value);
+	public boolean notInputed(boolean defaultAsNotInput) {
+		boolean isNotInput = Objects.isNull(value);
+		if (!isNotInput && getColModel().getDefaultValue() != null && defaultAsNotInput) {
+			if (Objects.equals(value, getColModel().getDefaultValue())) {
+				isNotInput = true;
+			}
+		}
+		return isNotInput;
 	}
 	
 	public ColumnModel getColModel() {

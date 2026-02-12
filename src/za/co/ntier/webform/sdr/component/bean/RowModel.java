@@ -3,6 +3,8 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -77,18 +79,21 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			if(colModel.isReadonly() || (cellModel.getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName())))
 				continue;
 
-			if (cellModel.notInputed() && colModel.isMandatory()) {
+			if (cellModel.notInputed(false) && colModel.isMandatory()) {
 				log.warning("not input for mandatory field:" + colModel.getTitle());
 				missRequired = true;
 			}
 				
-			if (!cellModel.notInputed())
+			if (!cellModel.notInputed(true))
 				isInputed = true;
 		}
 		
 		if (state == INPUT_STATE_EMPTY) {
 			return !isInputed;
 		}else if (state == INPUT_STATE_FULL_REQUIRED) {
+			if(missRequired && log.isLoggable(Level.WARNING)) {
+				log.warning(String.format("Has mandatory field not yet input on table title %s, sclass %s, row index %s", this.tableModel.getTableTitle(), this.tableModel.getSclass(), this.tableModel.getRows().indexOf(this)));
+			}
 			return !missRequired;
 		}
 		
@@ -150,7 +155,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	public void syncUIToDao(String trxName) {
 		boolean isNothingInputed = checkState(RowModel.INPUT_STATE_EMPTY);
 		if (isNothingInputed && data != null) {
-			data.deleteEx(true);
+			data.deleteEx(true, trxName);
 			data = null;
 			return;
 		}

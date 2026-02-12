@@ -6,6 +6,7 @@ import java.util.function.Function;
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
 
+import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
@@ -85,7 +86,8 @@ public class AreaCellModel extends ListCellModel<MCity>{
 		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(
 				ListColumnModel.class, AreaCellModel.class, 
 				title, daoPropertyName, MasterUtil.getInitCities(), 
-				null, null, CellModel.LIST_CELL);
+				null, null, CellModel.LIST_CELL)
+			.setzClass(MCity.class);
 		listColumnModel.setUseForID(true);
 		return listColumnModel;
 	}

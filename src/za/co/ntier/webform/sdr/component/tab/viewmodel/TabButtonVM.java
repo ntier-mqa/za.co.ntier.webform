@@ -38,7 +38,8 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 	}
 	
 	public boolean isShowSaveApp() {
-		return getSaveApp() != null && getSaveApp().isSupportSave();
+		boolean showSave = getSaveApp() != null && getSaveApp().isSupportSave();
+		return showSave;
 	}
 	
 	public boolean isSupportSubmitApp() {

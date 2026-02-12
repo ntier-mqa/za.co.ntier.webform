@@ -9,6 +9,7 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_User;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -231,7 +232,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getLevyNumberType()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(sdlNumTypeCol);
 		
@@ -241,7 +242,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getOrganisationRegistrationNumberType()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(orgRegistrationNumTypeCol);
 		
@@ -278,7 +279,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getSicCode()
 				, title -> {return title.getValue() + " - " + title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(sicCodeCol);
 		
@@ -288,7 +289,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getSubSector()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(subSectorCol);
 		
@@ -298,7 +299,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getOrganisationType()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(orgTypeCol);
 		
@@ -308,7 +309,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getChamberCode()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(chamberCol);
 		
