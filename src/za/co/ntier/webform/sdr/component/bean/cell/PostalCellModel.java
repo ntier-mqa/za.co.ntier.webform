@@ -2,7 +2,6 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MCity;
 
 import za.co.ntier.webform.form.MasterUtil;

@@ -7,7 +7,6 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.CheckEvent;
 
 import za.co.ntier.webform.sdr.component.bean.CellModel;
-import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ICheckbox;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;

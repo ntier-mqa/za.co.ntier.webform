@@ -17,11 +17,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.util.Clients;
 
 import za.co.ntier.api.model.I_ZZDocumentUpload;
 import za.co.ntier.api.model.I_ZZSdf;

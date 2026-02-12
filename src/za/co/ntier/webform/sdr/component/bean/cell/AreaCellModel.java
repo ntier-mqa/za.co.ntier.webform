@@ -6,7 +6,6 @@ import java.util.function.Function;
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
 
-import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;

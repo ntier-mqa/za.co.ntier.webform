@@ -67,7 +67,6 @@ import za.co.ntier.api.model.X_ZZ_SETA_Master;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.bean.Dialog;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public class MasterUtil {

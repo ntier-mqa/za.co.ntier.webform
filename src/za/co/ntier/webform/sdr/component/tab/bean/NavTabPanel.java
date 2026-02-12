@@ -1,6 +1,5 @@
 package za.co.ntier.webform.sdr.component.tab.bean;
 
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;

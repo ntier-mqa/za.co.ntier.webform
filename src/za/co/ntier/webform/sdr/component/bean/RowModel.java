@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -17,7 +16,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.util.Log;
 
-import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;

@@ -2,7 +2,6 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
