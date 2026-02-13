@@ -178,7 +178,7 @@ public class UploadCellModel extends CellModel {
 	}
 	
 	@Override
-	public boolean notInputed(boolean defaultAsNotInput) {
+	public boolean isEmpty() {
 		return StringUtils.isEmpty(fileName);
 	}
 }

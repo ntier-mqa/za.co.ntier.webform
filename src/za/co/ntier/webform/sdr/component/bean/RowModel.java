@@ -17,6 +17,7 @@ import org.compiere.util.Msg;
 import org.jfree.util.Log;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
 
@@ -67,35 +68,34 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	public void setTableModel(TableModel tableModel) {
 		this.tableModel = tableModel;
 	}
-
-	public boolean checkState(int state) {
-		boolean missRequired = false;
-		boolean isInputed = false;
+	
+	public InputCheckResult parseInputState() {
+		InputCheckResult rowInputCheckResult = new InputCheckResult();
+		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
+		
 		for (CellModel cellModel : values()) {
 			ColumnModel colModel = cellModel.getColModel();
 			// TODO condition should move to cellMode
 			if(colModel.isReadonly() || (cellModel.getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName())))
 				continue;
-
-			if (cellModel.notInputed(false) && colModel.isMandatory()) {
+			
+			InputCheckResult cellInputCheckResult = cellModel.parseInputState();
+			
+			if (!cellInputCheckResult.getEmpty()) {// has at least once field have value
+				rowInputCheckResult.setEmpty(false);
+			}
+			
+			if (!cellInputCheckResult.getFillMandatory()) {
+				rowInputCheckResult.setFillMandatory(false);// has at least once field have value
 				log.warning("not input for mandatory field:" + colModel.getTitle());
-				missRequired = true;
 			}
-				
-			if (!cellModel.notInputed(true))
-				isInputed = true;
+			
+			if (!cellInputCheckResult.getNotChange()) {
+				rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
+			}
 		}
 		
-		if (state == INPUT_STATE_EMPTY) {
-			return !isInputed;
-		}else if (state == INPUT_STATE_FULL_REQUIRED) {
-			if(missRequired && log.isLoggable(Level.WARNING)) {
-				log.warning(String.format("Has mandatory field not yet input on table title %s, sclass %s, row index %s", this.tableModel.getTableTitle(), this.tableModel.getSclass(), this.tableModel.getRows().indexOf(this)));
-			}
-			return !missRequired;
-		}
-		
-		throw new IllegalStateException("check for wrong state");
+		return rowInputCheckResult;
 	}
 
 	public void saveUploadFiles(PO po, String trxName) {
@@ -151,7 +151,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 
 	@Override
 	public void syncUIToDao(String trxName) {
-		boolean isNothingInputed = checkState(RowModel.INPUT_STATE_EMPTY);
+		InputCheckResult rowInputCheckResult = checin
 		if (isNothingInputed && data != null) {
 			data.deleteEx(true, trxName);
 			data = null;

@@ -22,19 +22,29 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	
 	@Override
 	public void initDefaultValue() {
-		T defaultValue = lookupItem(getColModel().getDefaultValue(), getColModel().getCompareFunction());
+		setValue(getDefaultValue());
+	}
+	
+	@Override
+	public boolean isChangeValueFromDefault() {
+		return Objects.equals(getDefaultValue(), dirtyValue);
+		
+	}
+	
+	private T defaultValue = null;
+	
+	@Override
+	public T getDefaultValue() {
 		if (defaultValue == null)
-			setValue(null);
-		else {
-			setValue(defaultValue);
-		}
+			defaultValue = lookupItem(getColModel().getDefaultValue(), getColModel().getCompareFunction());
+		
+		return defaultValue;
 	}
 	
 	public T lookupItem (Object value, Function<T, Boolean> compareFunction) {
 		if (value == null)
 			return null;
 		
-		//TODO when getColModel().getDefaultValue().class is T then return direct (or check it's exists on provider list)
 		if (value.getClass().equals(getColModel().getzClass())) {
 			return getColModel().getzClass().cast(value);
 		}
@@ -97,7 +107,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 			
 			throw new AdempiereException("Wrong type");
 		});
-		dirtyValue = getValue();
+		dirtyValue = getSelectedItem();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -210,34 +220,6 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		listColumnModel.setSelectedItemValueConvert(valueConvert);
 		
 		return listColumnModel;
-	}
-	
-	@Override
-	public boolean notInputed(boolean defaultAsNotInput) {
-		Object value = getValue();
-		boolean isNotInput = Objects.isNull(value);
-		if (isNotInput)
-			return isNotInput;
-		
-		if (getColModel().getDefaultValue() != null && defaultAsNotInput) {
-			T lookupResult = lookupItem(getColModel().getDefaultValue(), getColModel().getCompareFunction());
-			
-			Object lookupValue = null;
-			
-			if (lookupResult == null) {
-				lookupValue = null;
-			}else {
-				if (lookupResult != null && getValueConvert() != null) {
-					lookupValue = getValueConvert().apply(lookupResult);
-				}else {
-					lookupValue = lookupResult;
-				}
-			}
-			
-			isNotInput = Objects.equals(value, lookupValue);
-		}
-		
-		return isNotInput;
 	}
 	
 	public static <L> ListColumnModel<L> getListColumnModel(

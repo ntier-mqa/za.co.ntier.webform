@@ -55,21 +55,66 @@ public class CellModel implements IValueChange {
 	 */
 	protected Object dirtyValue;
 	
-	public static record InputCheckResult (Boolean empty, Boolean emptyOrDefault) {
-		
-	}
-	InputCheckResult d = new InputCheckResult(null, null);
-	
-			
-	public boolean notInputed(boolean defaultAsNotInput) {
-		boolean isNotInput = Objects.isNull(dirtyValue);
-		if (!isNotInput && getColModel().getDefaultValue() != null && defaultAsNotInput) {
-			if (Objects.equals(dirtyValue, getColModel().getDefaultValue())) {
-				isNotInput = true;
-			}
+	public static class InputCheckResult {
+		public Boolean getNotChange() {
+			return notChange;
 		}
+		public InputCheckResult setNotChange(Boolean notChange) {
+			this.notChange = notChange;
+			return this;
+		}
+		public Boolean getEmpty() {
+			return empty;
+		}
+		public InputCheckResult setEmpty(Boolean empty) {
+			this.empty = empty;
+			return this;
+		}
+		public Boolean getFillMandatory() {
+			return fillMandatory;
+		}
+		public InputCheckResult setFillMandatory(Boolean fillMandatory) {
+			this.fillMandatory = fillMandatory;
+			return this;
+		}
+		/**
+		 * empty or not change default value
+		 */
+	    private Boolean notChange = null;
+	    /**
+	     * empty or has value (ever same as default)
+	     */
+	    private Boolean empty = null;
+	    /**
+	     * is mandatory field and already enter value
+	     * in case isn't mandatory field always true
+	     */
+	    private Boolean fillMandatory = null;
+	    
+	}
+	
+	public Object getDefaultValue() {
+		return getColModel().getDefaultValue();
+	}
+	
+	public boolean isChangeValueFromDefault() {
+		return Objects.isNull(dirtyValue);
+	}
+	
+	public boolean isEmpty() {
+		return Objects.isNull(dirtyValue);
+	}
+	
+	public InputCheckResult parseInputState() {
+		InputCheckResult inputCheckResult = new InputCheckResult();
 		
-		return isNotInput;
+		inputCheckResult.setEmpty(isEmpty());
+		
+		inputCheckResult.setNotChange(!isChangeValueFromDefault());
+		
+		inputCheckResult.setFillMandatory((isMandatory() && !inputCheckResult.empty) || (!isMandatory()));
+		
+		return inputCheckResult;
 	}
 	
 	public ColumnModel getColModel() {
@@ -108,8 +153,8 @@ public class CellModel implements IValueChange {
 	 * @param rowModel
 	 */
 	public void initDefaultValue () {
-		if (value == null)
-			setValue(colModel.getDefaultValue());
+		if (value == null || getDefaultValue() != null)
+			setValue(getDefaultValue());
 	}
 	
 	private boolean formValidate = false;
