@@ -5,6 +5,8 @@ import java.util.function.Function;
 
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.SelectEvent;
 
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
@@ -20,7 +22,9 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	}
 
 	@Override
-	public void cmdSelectedHandle(MCity selectedArea) {
+	public void cmdSelectedHandle(Event selectedEvent) {
+		MCity selectedArea = getSelectedObj(selectedEvent);
+		
 		if (getTableModel() != null && getRowModel() != null) {
 			PostalCellModel postalCellModel = getCellModelByType(PostalCellModel.class);
 			if (postalCellModel != null) {

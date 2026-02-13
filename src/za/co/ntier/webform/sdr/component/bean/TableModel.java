@@ -313,13 +313,10 @@ public class TableModel implements ISaveForm {
 	 */
 	public void cmdSelected (RowModel row,
 			ColumnModel col,
-			SelectEvent<?, ?> event){
+			Event event){
 
 		ISelectable selectable = (ISelectable)row.get(col);
-		if (event.getSelectedObjects().isEmpty())
-			selectable.cmdSelected(null);
-		else
-			selectable.cmdSelected(event.getSelectedObjects().iterator().next());
+		selectable.cmdSelected(event);
 	}
 	
 	public void cmdCheckeck (RowModel row,

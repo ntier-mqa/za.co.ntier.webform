@@ -105,7 +105,7 @@ public class RowRenderVM extends BaseComponentVM<RowModel>{
 			@BindingParam("tableModel") TableModel tableModel
 			, @BindingParam("row") RowModel rowModel
 			, @BindingParam("col") ColumnModel colModel
-			, @ContextParam(ContextType.TRIGGER_EVENT) SelectEvent<?, ?> event) throws IOException {
+			, @ContextParam(ContextType.TRIGGER_EVENT) Event event) throws IOException {
 		rowModel.get(colModel).resetValidate();// clear form validate for listbox
 		tableModel.cmdSelected(rowModel, colModel, event);
 	}

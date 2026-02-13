@@ -80,7 +80,8 @@
             
             <!-- radiogroup -->
             <radiogroup if="${vmRowRender.row[col].cellType eq CellModel.RADIO_CELL}"
-            	model="@load(vmRowRender.row[col].model)"/>
+            	model="@load(vmRowRender.row[col].model)"
+            	onCheck="@command('cmdSelected', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
             
             <!-- label -->
             <label if="${vmRowRender.row[col].cellType eq CellModel.LABEL_CELL}"

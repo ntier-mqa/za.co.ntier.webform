@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.sdr.component.bean.CellModel;
@@ -150,13 +152,21 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 
 	@Override
-	public void cmdSelected(Object selectedObj) {
-		@SuppressWarnings("unchecked")
-		T selected = (T)selectedObj;
-		cmdSelectedHandle(selected);
+	public void cmdSelected(Event selectedEvent) {
+		cmdSelectedHandle(selectedEvent);
 	}
 
-	public void cmdSelectedHandle(T selected) {
+	public void cmdSelectedHandle(Event selectedEvent) {
+		
+	}
+	
+	public T getSelectedObj(Event event) {
+		@SuppressWarnings("unchecked")
+		SelectEvent<?, T> selectedEvent = (SelectEvent<?, T>)event;
+		if (selectedEvent.getSelectedObjects().isEmpty())
+			return null;
+		else
+			return selectedEvent.getSelectedObjects().iterator().next();
 		
 	}
 

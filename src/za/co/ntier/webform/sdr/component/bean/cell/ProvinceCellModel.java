@@ -7,6 +7,7 @@ import java.util.function.Function;
 import org.compiere.model.MCity;
 import org.compiere.model.MRegion;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.zk.ui.event.Event;
 
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
@@ -21,7 +22,8 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 	}
 
 	@Override
-	public void cmdSelectedHandle(MRegion selectedProvince) {
+	public void cmdSelectedHandle(Event selectedEvent) {
+		MRegion selectedProvince = getSelectedObj(selectedEvent);
 		if (getTableModel() != null && getRowModel() != null) {
 			if (selectedProvince == null) {
 				return;
