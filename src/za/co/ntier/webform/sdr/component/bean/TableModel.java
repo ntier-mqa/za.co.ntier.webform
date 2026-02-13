@@ -26,6 +26,7 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
@@ -891,13 +892,27 @@ public class TableModel implements ISaveForm {
 		this.saveApp = saveApp;
 	}
 
-	public boolean isInputEmpty() {
-		for (RowModel row : getRows()) {
-			if (!row.checkState(RowModel.INPUT_STATE_EMPTY))
-				return false;
-		}
+	public InputCheckResult parseInputState() {
+		InputCheckResult rowInputCheckResult = new InputCheckResult();
+		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
 		
-		return true;
+		for (RowModel row : getRows()) {
+			InputCheckResult cellInputCheckResult = row.parseInputState();
+			if (!cellInputCheckResult.getEmpty()) {// has at least once field have value
+				rowInputCheckResult.setEmpty(false);
+			}
+			
+			if (!cellInputCheckResult.getFillMandatory()) {
+				rowInputCheckResult.setFillMandatory(false);// has at least once field have value
+				log.warning("not input mandatory field on row:" + getRows().indexOf(row));
+			}
+			
+			if (!cellInputCheckResult.getNotChange()) {
+				rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
+			}
+		}
+				
+		return rowInputCheckResult;
 	}
 
 }

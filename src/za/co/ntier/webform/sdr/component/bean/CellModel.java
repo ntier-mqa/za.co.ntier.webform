@@ -98,7 +98,7 @@ public class CellModel implements IValueChange {
 	}
 	
 	public boolean isChangeValueFromDefault() {
-		return Objects.isNull(dirtyValue);
+		return !Objects.equals(dirtyValue, getDefaultValue());
 	}
 	
 	public boolean isEmpty() {

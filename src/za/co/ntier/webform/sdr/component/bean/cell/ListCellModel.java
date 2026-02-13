@@ -25,12 +25,6 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		setValue(getDefaultValue());
 	}
 	
-	@Override
-	public boolean isChangeValueFromDefault() {
-		return Objects.equals(getDefaultValue(), dirtyValue);
-		
-	}
-	
 	private T defaultValue = null;
 	
 	@Override

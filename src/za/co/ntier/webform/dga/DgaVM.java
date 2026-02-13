@@ -680,7 +680,8 @@ public class DgaVM extends BaseAppVM{
 			MasterUtil.openForm("3b0c2d85-8f2e-44e9-b030-4b134159a052");
 		});	
 		
-		DiscretionaryGrantsApplicationProgramVM.sentEmail(applicationForm, menuContextInfo);
+		if (isSubmit)
+			DiscretionaryGrantsApplicationProgramVM.sentEmail(applicationForm, menuContextInfo);
 	}
 
 	

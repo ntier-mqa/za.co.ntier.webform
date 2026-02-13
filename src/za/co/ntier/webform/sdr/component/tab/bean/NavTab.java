@@ -6,6 +6,7 @@ import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.event.ListDataListener;
 
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 
 public class NavTab implements ListDataListener, ISaveForm{
 	private ListModelList<NavTabPanel> tabPanelModel;
@@ -42,7 +43,8 @@ public class NavTab implements ListDataListener, ISaveForm{
 	 */
 	protected boolean validateActiveTab(boolean emptyAsValid) {
 		NavTabPanel activeTabPanel = getTabPanelModel().get(activeTabIndex);
-		if (emptyAsValid && activeTabPanel.isInputEmpty())
+		InputCheckResult rowInputCheckResult = activeTabPanel.parseInputState();
+		if (emptyAsValid && rowInputCheckResult.getNotChange())
 			return true;
 		
 		return activeTabPanel.validate(null);

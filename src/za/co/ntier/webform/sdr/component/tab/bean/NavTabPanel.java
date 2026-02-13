@@ -1,9 +1,12 @@
 package za.co.ntier.webform.sdr.component.tab.bean;
 
+import org.compiere.util.CLogger;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 
 public class NavTabPanel implements ISaveForm {
 	private String sclass;
@@ -109,18 +112,35 @@ public class NavTabPanel implements ISaveForm {
 		ISaveForm.batchSaveToDb(compModel, trxName);
 		
 	}
-
-	public boolean isInputEmpty () {
+	protected static final CLogger log = CLogger.getCLogger(NavTabPanel.class);
+	public InputCheckResult parseInputState() {
+		InputCheckResult rowInputCheckResult = new InputCheckResult();
+		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
+		
 		for (Object comp : getCompModel()) {
-			if (comp instanceof TableModel) {
-				TableModel tbModel = (TableModel)comp;
-				if (!tbModel.isInputEmpty()) {
-					return false;
+			TableModel tbModel = null;
+			if (comp instanceof TableModel)
+				tbModel = (TableModel)comp;
+			
+			if (tbModel != null) {
+				InputCheckResult cellInputCheckResult = tbModel.parseInputState();
+				if (!cellInputCheckResult.getEmpty()) {// has at least once field have value
+					rowInputCheckResult.setEmpty(false);
+				}
+				
+				if (!cellInputCheckResult.getFillMandatory()) {
+					rowInputCheckResult.setFillMandatory(false);// has at least once field have value
+					log.warning("not input for mandatory field on table:" + tbModel.getTableTitle() + " sclass:" + tbModel.getSclass());
+				}
+				
+				if (!cellInputCheckResult.getNotChange()) {
+					rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
 				}
 			}
+			
 		}
 		
-		return true;
+		return rowInputCheckResult;
 	}
 
 }

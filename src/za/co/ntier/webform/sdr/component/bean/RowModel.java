@@ -151,34 +151,21 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 
 	@Override
 	public void syncUIToDao(String trxName) {
-		InputCheckResult rowInputCheckResult = checin
-		if (isNothingInputed && data != null) {
+		InputCheckResult rowInputCheckResult = parseInputState();
+		
+		if (rowInputCheckResult.getNotChange() && !rowInputCheckResult.getFillMandatory() && data != null) {
 			data.deleteEx(true, trxName);
 			data = null;
 			return;
 		}
 		
-		if (isNothingInputed && data == null) 
+		if (rowInputCheckResult.getNotChange() && !rowInputCheckResult.getFillMandatory() && data == null) 
 			return;
 		
-		if (!checkState(RowModel.INPUT_STATE_FULL_REQUIRED)) {
+		if (!rowInputCheckResult.getFillMandatory()) {
 			throw new AdempiereException("Madatory not yet full fill");
 		}
-		
-		/*
-		 * if (data == null) { if (tableModel.getDaoManage() != null) { if
-		 * (tableModel.getDaoManage().getDao() != null) { data =
-		 * tableModel.getDaoManage().getDao(); } }
-		 * 
-		 * 
-		 * if (data == null) { applicationForm.set_TrxName(trxName); // important data =
-		 * tableModel.getPoSupplier().apply(tableModel, applicationForm); if
-		 * (tableModel.getDaoManage() != null) { tableModel.getDaoManage().setDao(data);
-		 * } }
-		 * 
-		 * 
-		 * }
-		 */		
+				
 		PO daoPerCol = null;
 		for (CellModel cellModel : values()) {
 			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
