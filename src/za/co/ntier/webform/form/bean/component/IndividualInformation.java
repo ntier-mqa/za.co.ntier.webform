@@ -251,8 +251,8 @@ public class IndividualInformation implements ISaveForm
 	@Override
 	public boolean validateForm()
 	{
-		if (StringUtils.isNotBlank(idNumber) && !idNumber.trim().matches("\\d{13}"))
-			throw new AdempiereException("ID number must be 13 digits.");
+		//if (StringUtils.isNotBlank(idNumber) && !idNumber.trim().matches("\\d{13}"))
+		//	throw new AdempiereException("ID number must be 13 digits.");
 
 		if (StringUtils.isNotBlank(contactNumber) && !contactNumber.trim().matches("\\d{10}"))
 			throw new AdempiereException("Cell number must be 10 digits.");

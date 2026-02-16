@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
@@ -12,7 +13,7 @@ import org.compiere.util.Env;
 import za.co.ntier.api.model.I_ZZPersonAddress;
 import za.co.ntier.api.model.I_ZZ_FormContact;
 import za.co.ntier.api.model.X_ZZPersonAddress;
-import za.co.ntier.api.model.X_ZZSdf;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_FormContact;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.bean.AddressType;
@@ -26,9 +27,35 @@ import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 
 public class BuildFormUtil {
-	public static TableModel initAddress(ProgramType programType, AddressType addressType, X_ZZSdf applicationForm) {
+	public static TableModel buildFormContact(ProgramType programType, AddressType addressType, 
+			X_ZZ_Application_Form applicationForm,
+			Function<RowModel, PO> poSupplier, Function<PO, Boolean> beforeSave,
+			TableModel copyFrom) {
 		List<ColumnModel> cols = new ArrayList<>();
 
+		ColumnModel dupplicateCol = null;
+		if (copyFrom != null) {
+			dupplicateCol = CellModel.getColModelForGenericCell("Copy Address", null, CellModel.BUTTON_CELL);
+			dupplicateCol.setShowTitle(false);
+			
+			dupplicateCol.setEventHandle((inputEvent, cellModel) -> {
+				
+					RowModel postalRow = cellModel.getRowModel();
+					RowModel physicalRow = copyFrom.getRow();
+					
+					for (ColumnModel postalColModel : cellModel.getTableModel().getColumnInfos()) {
+						for (ColumnModel physicalColModel : copyFrom.getColumnInfos()) {
+							if (postalColModel.getDaoPropertyName() != null && StringUtils.equals(physicalColModel.getDaoPropertyName(), postalColModel.getDaoPropertyName())) {
+								postalRow.get(postalColModel).setValue(physicalRow.get(physicalColModel).getValue());
+								break;
+							}
+						}
+					}
+			});
+			
+			cols.add(dupplicateCol);
+		}
+		
 		if(showSiteName(programType, addressType)) {
 			ColumnModel siteNameCol = CellModel.getColModelForText("Site Name", I_ZZ_FormContact.COLUMNNAME_ZZ_SideName).required();
 			cols.add(siteNameCol);
@@ -46,18 +73,21 @@ public class BuildFormUtil {
 
 		if (showGeographicAddress(addressType)) {
 			ColumnModel postalCodeCol = PostalCellModel.getPostalColumnModel(
-					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_Postal)
+					//MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_Postal)
+					null
 					, I_ZZ_FormContact.COLUMNNAME_Postal
 					).required();
 			cols.add(postalCodeCol);
 
 			ColumnModel areaCol = AreaCellModel.getAreaColumnModel(
-					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_City_ID)
+					//MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_City_ID)
+					null
 					, I_ZZ_FormContact.COLUMNNAME_C_City_ID).required();
 			cols.add(areaCol);
 
 			ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(
-					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
+					//MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
+					null
 					, I_ZZ_FormContact.COLUMNNAME_C_Region_ID).required();
 			cols.add(provinceCol);
 		}
@@ -66,10 +96,16 @@ public class BuildFormUtil {
 			ColumnModel nameSurnameCol = CellModel.getColModelForText("Name and Surname", I_ZZ_FormContact.COLUMNNAME_ContactName).required();
 			cols.add(nameSurnameCol);
 
-			ColumnModel telNumberCol = CellModel.getColModelForText("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
+			ColumnModel designCol = CellModel.getColModelForText(
+					MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_ZZ_Designation)
+					, I_ZZ_FormContact.COLUMNNAME_ZZ_Designation
+					).required();
+			cols.add(designCol);
+			
+			ColumnModel telNumberCol = CellModel.getColModelForPhone("Tel Number", I_ZZ_FormContact.COLUMNNAME_Phone).required();
 			cols.add(telNumberCol);
 
-			ColumnModel alternativeNumberCol = CellModel.getColModelForText("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
+			ColumnModel alternativeNumberCol = CellModel.getColModelForPhone("Alternative Number", I_ZZ_FormContact.COLUMNNAME_Phone2).required();
 			cols.add(alternativeNumberCol);
 
 			ColumnModel emailCol = CellModel.getColModelForEmail("E-mail", I_ZZ_FormContact.COLUMNNAME_EMail).required();
@@ -77,16 +113,28 @@ public class BuildFormUtil {
 		}
 
 		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
-		addressFormBean.setSectionHeader(getAddressTitle(programType, addressType));
+		addressFormBean.setSubSectionHeader(getAddressTitle(programType, addressType));
 		addressFormBean.setDataType(addressType.toString());
-		addressFormBean.setPoSupplier((ann, appForm) -> {
-			X_ZZ_FormContact po = new X_ZZ_FormContact(appForm.getCtx(), 0, null);
-			//po.setZZ_Application_Form_ID(appForm.getZZ_Application_Form_ID());
-			po.setZZ_ContactType(ann.getDataType());
-			return po;
-		});
+		if (copyFrom != null) {
+			addressFormBean.setSclass("formContact formContactCopy");
+		}else{
+			addressFormBean.setSclass("formContact");
+		}
+		
+		
+		if (beforeSave != null)
+			addressFormBean.setBeforeSave(beforeSave);
+		if (poSupplier != null)
+			addressFormBean.setPoSupplier(poSupplier);
 
-
+		final ColumnModel dupplicateColF = dupplicateCol;
+		if (copyFrom != null) {
+			addressFormBean.setDecoratorCell(rowModel -> {
+				CellModel btDupplicate = rowModel.get(dupplicateColF);
+				btDupplicate.setIconSclass("z-icon-fw z-icon-clone z-icon-solid");
+			});
+		}
+		
 		List<PO> savedDaos = null;
 		if(applicationForm != null) {
 			String where = String.format("%s = ? AND %s = ?",
@@ -94,12 +142,15 @@ public class BuildFormUtil {
 					, I_ZZ_FormContact.COLUMNNAME_ZZ_ContactType);
 
 			Query querySavedDaos = MTable.get(Env.getCtx(), X_ZZ_FormContact.Table_Name).createQuery(where, null);
-			//savedDaos = querySavedDaos.setParameters(
-					//sdf.getZZ_Application_Form_ID()
-					//, addressFormBean.getDataType()).list();
+			PO savedDao = querySavedDaos.setParameters(
+					applicationForm.getZZ_Application_Form_ID()
+					, addressFormBean.getDataType()).first();
+			
+			if (savedDao != null)
+				savedDaos = List.of(savedDao);
 		}
 
-		addressFormBean.init(applicationForm, savedDaos);
+		addressFormBean.init(savedDaos);
 		return addressFormBean;
 	}
 
@@ -149,18 +200,18 @@ public class BuildFormUtil {
 		colsAddress.add(physicalAddress1Col);
 	
 		ColumnModel physicalCodeCol = PostalCellModel.getPostalColumnModel(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_Postal)
+				null
 				, I_ZZPersonAddress.COLUMNNAME_Postal
 				).required();
 		colsAddress.add(physicalCodeCol);
 	
 		ColumnModel physicalAreaCol = AreaCellModel.getAreaColumnModel(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_C_City_ID)
+				null
 				, I_ZZPersonAddress.COLUMNNAME_C_City_ID).required();
 		colsAddress.add(physicalAreaCol);
 		
 		ColumnModel physicalProvinceCol = ProvinceCellModel.getProvinceColumnModel(
-				prefixName + MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_C_Region_ID)
+				null
 				, I_ZZPersonAddress.COLUMNNAME_C_Region_ID).required();
 		colsAddress.add(physicalProvinceCol);
 	
@@ -188,7 +239,7 @@ public class BuildFormUtil {
 		
 		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false);
 		addressDetailBean.setSclass(addressType + " srd-address");
-		addressDetailBean.setPoSupplier((ann, appForm) -> {
+		addressDetailBean.setPoSupplier((ann) -> {
 			X_ZZPersonAddress po = new X_ZZPersonAddress(Env.getCtx(), 0, null);
 			po.setZZAddressType(addressType);
 			if(isSdfAddress) {
@@ -220,9 +271,9 @@ public class BuildFormUtil {
 		savedDataQuery.setOrderBy(X_ZZPersonAddress.COLUMNNAME_Created + " DESC");
 		PO po = savedDataQuery.first();
 		if (po == null) {
-			addressDetailBean.init(null, null);
+			addressDetailBean.init(null);
 		}else {
-			addressDetailBean.init(null, List.of(po));
+			addressDetailBean.init(List.of(po));
 		}
 		
 	

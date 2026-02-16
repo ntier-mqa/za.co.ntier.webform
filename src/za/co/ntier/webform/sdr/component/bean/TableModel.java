@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -26,19 +26,157 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
-import za.co.ntier.api.model.X_ZZSdf;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
-public class TableModel implements ISupportSave {
+public class TableModel implements ISaveForm {
+	private ISaveApp saveApp;
+	
+	private RowModel activeRow;
+	private RowModel virtualRow;
+	public RowModel getVirtualRow() {
+		if (virtualRow == null) {
+			virtualRow = doCreateDetailRow(null);
+			if (getRows().size() == 0) {
+				init();
+			}
+			
+			setActiveRow(rows.get(0));
+		}
+		
+		return virtualRow;
+	}
+	public int getCurrentIndex () {
+		return getRows().indexOf(activeRow);
+	}
+	public boolean navNextRow() {
+		// first
+		if (activeRow == null && getRows().size() > 0) {
+			setActiveRow(getRows().get(0));
+			return true;
+		}
+		
+		// not yet init
+		if (activeRow == null && getRows().size() == 0) {
+			return false;
+		}
+		
+		// already end
+		if (activeRow != null && getRows().indexOf(activeRow) == getRows().size() - 1) {
+			return false;
+		}
+		
+		// just next
+		if (activeRow != null && getRows().indexOf(activeRow) < getRows().size() - 1){
+			int newIndex = getRows().indexOf(activeRow) + 1;
+			setActiveRow(getRows().get(newIndex));
+			return true;
+		}
+		
+		
+		// not yet handle
+		throw new AdempiereException("wrong condition - rows size:" + getRows().size());
+
+	}
+	
+	public void deleteRow() {
+		int newIndex = getRows().indexOf(activeRow) - 1;
+		
+		if (activeRow != null)
+			removeRow(activeRow);
+		
+		if (newIndex < 0 && getRows().size() > 0) {
+			newIndex = 0;
+		}
+		
+		if (getRows().size() > 0)// always exists 1 record because latest record is reset not remove
+			setActiveRow(getRows().get(newIndex));
+		
+	}
+	
+	List<PO> removedRows = new ArrayList<>();
+	public void removeRow(RowModel row) {
+		if (row.getData() != null) {
+			removedRows.add(row.getData());
+			row.setData(null);
+		}
+		if (getRows().size() > 1)
+			getRows().remove(row);
+		else {
+			row.resetRow();
+		}
+		
+		updateTotalRow();
+		BindUtils.postNotifyChange(this, "rows");
+	}
+	
+	protected void setActiveRow(RowModel newActiveRow) {
+		// copy virtual row to active row
+		copyRow(virtualRow, activeRow);
+		// reset virtual row
+		virtualRow.resetRow();
+		// set new active
+		activeRow = newActiveRow;
+		// copy new row to virtual row
+		copyRow(activeRow, virtualRow);
+	}
+	
+	public boolean navPrevRow() {
+		// not yet init
+		if (activeRow == null) {
+			return false;
+		}
+		
+		int newIndex = getRows().indexOf(activeRow) - 1;
+
+		// not yet init or already first
+		if (activeRow != null && newIndex < 0) {
+			return false;
+		}
+		
+		// just prev
+		if (activeRow != null && newIndex >= 0){
+			setActiveRow(getRows().get(newIndex));
+			return true;
+		}
+		
+		// not yet handle
+		throw new AdempiereException("wrong condition - rows size:" + getRows().size());
+	}
+	
+	public void newRow() {
+		RowModel newRow = addNewRow(activeRow);
+		
+		setActiveRow(newRow);
+	}
+	
+	public RowModel addNewRow(RowModel currentRow) {
+		RowModel newRow = doCreateDetailRow(null);
+		
+		if (currentRow == null) {
+			getRows().add(newRow);
+		}else {
+			int index = getRows().indexOf(currentRow);
+			getRows().add(index + 1, newRow);
+		}
+		
+		BindUtils.postNotifyChange(this, "rows");
+		
+		return newRow;
+	}
+	
+	public void copyRow(RowModel rowSrc, RowModel rowDes) {
+		if (rowSrc != null && rowDes != null)
+			for (ColumnModel col : rowSrc.getTableModel().getColumnInfos()) {
+				rowSrc.get(col).copyTo(rowDes.get(col));
+			}
+	}
 	
 	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
-	public final static String AnnexureTypeExitStrategy = "EXIT STRATEGY";
-	public final static String AnnexureTypeTargetGroup = "TARGET GROUP";
-	public final static String AnnexureTypeBudgetOverview = "BUDGET OVERVIEW";
 	private String sclass = "";
 	
-	private boolean formView = true;	
+	private ViewType viewMode = ViewType.VIEW_FORM;	
 	
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
@@ -80,7 +218,7 @@ public class TableModel implements ISupportSave {
 	}
 
 	private List<ColumnModel> columnModels;
-	private BiFunction<TableModel, X_ZZSdf, PO> poSupplier;
+	private Function<RowModel, PO> poSupplier;
 	
 	public static class DaoManage{
 		private String trxName;
@@ -153,20 +291,13 @@ public class TableModel implements ISupportSave {
 
 	private boolean showColumnHeader = true;
 
-	private TableModel subAnnexure;
-
 	private String subSectionHeader;
 
 	private String tableTitle;
 
 	private Map<ColumnModel, Object> totalRow;
 
-	public void addRow() {
-		createDetailRow();
-		BindUtils.postNotifyChange(this, "rows");
-	}
-
-	public void cmdValueChanged (Map<ColumnModel, Object> row,
+	public void cmdValueChanged (RowModel row,
 			ColumnModel col,
 			InputEvent event){
 		IValueChange valueChange = (IValueChange)row.get(col);
@@ -182,13 +313,10 @@ public class TableModel implements ISupportSave {
 	 */
 	public void cmdSelected (RowModel row,
 			ColumnModel col,
-			SelectEvent<?, ?> event){
+			Event event){
 
 		ISelectable selectable = (ISelectable)row.get(col);
-		if (event.getSelectedObjects().isEmpty())
-			selectable.cmdSelected(null);
-		else
-			selectable.cmdSelected(event.getSelectedObjects().iterator().next());
+		selectable.cmdSelected(event);
 	}
 	
 	public void cmdCheckeck (RowModel row,
@@ -210,11 +338,22 @@ public class TableModel implements ISupportSave {
 		uploadCellModel.cmdUploadFile(event);
 	}
 	
+	public void cmdRemoveAttachment(RowModel row, ColumnModel col, Event event) {
+		UploadCellModel uploadCellModel = (UploadCellModel)row.get(col);
+		uploadCellModel.cmdRemoveAttachment();
+	}
+	
 	public RowModel createDetailRow() {
 		return createDetailRow(null);
 	}
 
 	public RowModel createDetailRow(Map<ColumnModel, Object> rowTitle) {
+		RowModel row = doCreateDetailRow(rowTitle);
+		getRows().add(row);
+		return row;
+	}
+	
+	public RowModel doCreateDetailRow(Map<ColumnModel, Object> rowTitle) {
 
 		RowModel row = new RowModel(this);
 
@@ -223,22 +362,26 @@ public class TableModel implements ISupportSave {
 			row.put(columnInfo, cellModel);
 		}
 
+		row.forEach((colModel, cellModel) -> {
+			cellModel.initDefaultValue();
+		});
+		
 		if (rowTitle != null) {
-			/* TODO init for column with preset value
-			 * for (Entry<ColumnModel, Object> colTile : rowTitle.entrySet()) {
-			 * TableModel.setCellValue(row, colTile.getKey(), colTile.getValue()); }
-			 */
+			 for (Entry<ColumnModel, Object> presetTitleInfo : rowTitle.entrySet()) {
+				 row.get(presetTitleInfo.getKey()).setValue(presetTitleInfo.getValue()); 
+			 }
+			 
 		}
 
 		if (decoratorCell != null) {
 			decoratorCell.accept(row);
 		}
 
-		getRows().add(row);
 		return row;
 	}
 
 	private Consumer<RowModel> decoratorCell;
+	private Function<PO, Boolean> beforeSave;
 
 	public Consumer<RowModel> getDecoratorCell() {
 		return decoratorCell;
@@ -312,12 +455,6 @@ public class TableModel implements ISupportSave {
 		return sectionHeader;
 	}
 
-	/**
-	 * @return the subAnnexure
-	 */
-	public TableModel getSubAnnexure() {
-		return subAnnexure;
-	}
 
 	/**
 	 * @return the subSectionHeader
@@ -440,13 +577,6 @@ public class TableModel implements ISupportSave {
 	}
 
 	/**
-	 * @param subAnnexure the subAnnexure to set
-	 */
-	public void setSubAnnexure(TableModel subAnnexure) {
-		this.subAnnexure = subAnnexure;
-	}
-
-	/**
 	 * @param subSectionHeader the subSectionHeader to set
 	 */
 	public void setSubSectionHeader(String subSectionHeader) {
@@ -528,11 +658,6 @@ public class TableModel implements ISupportSave {
 		this.dataType = dataType;
 	}
 
-	private int getGrandTotal() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public void setDaoValue(Object dao, String propertyName, Object value) {
 		try {
 			PropertyUtils.setSimpleProperty(dao, propertyName, value);
@@ -553,22 +678,22 @@ public class TableModel implements ISupportSave {
 	}
 
 
-	public void init(X_ZZSdf applicationForm) {
-		init(applicationForm, null);
+	public void init() {
+		init(null);
 	}
 
-	public void init(X_ZZSdf applicationForm, List<PO> savedDatas) {
-		init(applicationForm, savedDatas, null);
+	public void init(List<PO> savedDatas) {
+		init(savedDatas, null);
 	}
 
-	public void init(X_ZZSdf applicationForm, List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
+	public void init(List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
 		if(rowTitles == null || rowTitles.size() == 0)
-			init(applicationForm, savedDatas, null, null);
+			init(savedDatas, null, null);
 		else
-			init(applicationForm, savedDatas, rowTitles, rowTitles.get(0).keySet());
+			init(savedDatas, rowTitles, rowTitles.get(0).keySet());
 	}
 
-	public void init(X_ZZSdf applicationForm,
+	public void init(
 			List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)
@@ -625,14 +750,14 @@ public class TableModel implements ISupportSave {
 	/**
 	 * @return the poSupplier
 	 */
-	public BiFunction<TableModel, X_ZZSdf, PO> getPoSupplier() {
+	public Function<RowModel, PO> getPoSupplier() {
 		return poSupplier;
 	}
 
 	/**
 	 * @param poSupplier the poSupplier to set
 	 */
-	public void setPoSupplier(BiFunction<TableModel, X_ZZSdf, PO> poSupplier) {
+	public void setPoSupplier(Function<RowModel, PO> poSupplier) {
 		this.poSupplier = poSupplier;
 	}
 
@@ -664,14 +789,24 @@ public class TableModel implements ISupportSave {
 	}
 
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
-		ISupportSave.saveList(getRows(), applicationForm, trxName);
+	public void syncUIToDao(String trxName) {
+		for (PO removedRow : removedRows) {
+			removedRow.deleteEx(true, trxName);
+		}
+		
+		if (virtualRow != null) {
+			// sync value from virtual row to active to validate and save
+			copyRow(virtualRow, activeRow);
+		}
+			
+		
+		ISaveForm.batchSyncToDao(getRows(), trxName);
 	}
 	
 	@Override
-	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+	public void saveAttachment(String trxName) {
 		for(RowModel rowModel : getRows()) {
-			rowModel.saveAttachment(applicationForm, trxName);
+			rowModel.saveAttachment(trxName);
 		}
 		
 	}
@@ -690,27 +825,91 @@ public class TableModel implements ISupportSave {
 		this.daoManage = daoManage;
 	}
 
+	 
+	public enum ViewType {
+	    VIEW_FORM,
+	    VIEW_GRID,
+	    VIEW_CARD;
+	}
 	/**
 	 * @return the formView
 	 */
 	public boolean isFormView() {
-		return formView;
+		return viewMode == ViewType.VIEW_FORM;
+	}
+	
+	public boolean isGridView() {
+		return viewMode == ViewType.VIEW_GRID;
+	}
+	
+	public boolean isCardView() {
+		return viewMode == ViewType.VIEW_CARD;
 	}
 
 	/**
 	 * @param formView the formView to set
 	 */
-	public void setFormView(boolean formView) {
-		this.formView = formView;
+	public void setViewModel(ViewType viewMode) {
+		this.viewMode = viewMode;
+	}
+	
+	public ViewType getViewModel() {
+		return viewMode;
 	}
 
 
 	@Override
-	public boolean validate() {
-		return ISupportSave.validates(rows);
+	public boolean validate(Boolean isSubmit) {
+		List<RowModel> validateRows = null;
+		if (virtualRow != null) {
+			validateRows = new ArrayList<>(rows);
+			validateRows.remove(activeRow);
+			validateRows.add(virtualRow);
+		}else {
+			validateRows = rows;
+		}
+		return ISaveForm.validates(validateRows, null);
+	}
+	@Override
+	public void saveToDb(String trxName) {
+		ISaveForm.batchSaveToDb(getRows(), trxName);
+		
+	}
+	public Function<PO, Boolean> getBeforeSave() {
+		return beforeSave;
+	}
+	public void setBeforeSave(Function<PO, Boolean> beforeSave) {
+		this.beforeSave = beforeSave;
+	}
+	
+	public ISaveApp getSaveApp() {
+		return saveApp;
+	}
+	public void setSaveApp(ISaveApp saveApp) {
+		this.saveApp = saveApp;
 	}
 
-
-
+	public InputCheckResult parseInputState() {
+		InputCheckResult rowInputCheckResult = new InputCheckResult();
+		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
+		
+		for (RowModel row : getRows()) {
+			InputCheckResult cellInputCheckResult = row.parseInputState();
+			if (!cellInputCheckResult.getEmpty()) {// has at least once field have value
+				rowInputCheckResult.setEmpty(false);
+			}
+			
+			if (!cellInputCheckResult.getFillMandatory()) {
+				rowInputCheckResult.setFillMandatory(false);// has at least once field have value
+				log.warning("not input mandatory field on row:" + getRows().indexOf(row));
+			}
+			
+			if (!cellInputCheckResult.getNotChange()) {
+				rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
+			}
+		}
+				
+		return rowInputCheckResult;
+	}
 
 }

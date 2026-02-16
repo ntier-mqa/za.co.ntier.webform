@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><?import org.compiere.util.KeyNamePair?>
+
+<?import za.co.ntier.webform.sdr.component.bean.ConvertUtil ?>
+<?import org.adempiere.webui.AdempiereWebUI  ?>
+<?import za.co.ntier.webform.sdr.component.bean.CellModel ?>
+
+
+<nodom
+  viewModel="@id('vmDataCardView') @init('za.co.ntier.webform.sdr.component.viewmodel.DataCardViewVM')">
+
+  <div if="${vmDataCardView.component.sectionHeader ne null}"
+    sclass="sectionHeader">
+    <label sclass="sectionHeaderTitle"
+      value="@init(vmDataCardView.component.sectionHeader)" />
+  </div>
+
+  <div if="${vmDataCardView.component.subSectionHeader ne null}"
+    sclass="subSectionHeader">
+    <label sclass="subSectionHeaderTitle" style="width:100%"
+      value="@init(vmDataCardView.component.subSectionHeader)" />
+  </div>
+
+  <div if="${vmDataCardView.component.tableTitle ne null}">
+    <label value="@init(vmDataCardView.component.tableTitle)" />
+  </div>
+ 	
+ 	<div sclass="tbToolbar" style="display:flex;padding:10px 20px 10px 0">
+ 		<div sclass="cmToolbar" style="">
+ 			<a sclass="z-button"
+ 				iconSclass="z-icon-plus" 
+ 				onClick="@command('cmdNew')" />
+ 			<a sclass="z-button" 
+ 				iconSclass="z-icon-circle-minus"
+ 				onClick="@command('cmdDelete')" />
+ 		</div>
+ 		<div style="flex-grow:1"></div>
+ 		<div sclass="navToolbar" style="">
+ 			<a sclass="z-button" 
+ 				iconSclass="z-icon-arrow-left" 
+ 				onClick="@command('cmdPrev')" />
+ 			<label value="@load(vmDataCardView.indexInfo)" />
+ 			<a sclass="z-button" 
+ 				iconSclass="z-icon-arrow-right" 
+ 				onClick="@command('cmdNext')" />
+ 		</div>
+ 	</div>
+	<!-- detail -->
+	<include
+	        if="${vmDataCardView.component.row ne null}"
+	        sclass="@init(( 'grid-formview ' += vmDataCardView.component.sclass ))"
+	        component="@init(vmDataCardView.component.virtualRow)"
+	        src="@load(( WebForm.getBundleResourcePath('sdr/component/zul/rowRender.zul') ))" >
+	</include>
+            
+  
+</nodom>

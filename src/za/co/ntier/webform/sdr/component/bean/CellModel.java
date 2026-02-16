@@ -1,5 +1,7 @@
 package za.co.ntier.webform.sdr.component.bean;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,7 +18,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.util.Log;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.Converter;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -40,14 +41,82 @@ public class CellModel implements IValueChange {
 	
 	private Object value;
 	
+	private final PropertyChangeSupport valuePropertyChangeSupport = new PropertyChangeSupport(this);
+	
+	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        valuePropertyChangeSupport.addPropertyChangeListener(pcl);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        valuePropertyChangeSupport.removePropertyChangeListener(pcl);
+    }
+    
 	/**
 	 * 
 	 * when a field not pass validate by org.zkoss.bind.Validator value isn't save 
 	 */
 	protected Object dirtyValue;
 	
-	public boolean notInputed() {
-		return Objects.isNull(value);
+	public static class InputCheckResult {
+		public Boolean getNotChange() {
+			return notChange;
+		}
+		public InputCheckResult setNotChange(Boolean notChange) {
+			this.notChange = notChange;
+			return this;
+		}
+		public Boolean getEmpty() {
+			return empty;
+		}
+		public InputCheckResult setEmpty(Boolean empty) {
+			this.empty = empty;
+			return this;
+		}
+		public Boolean getFillMandatory() {
+			return fillMandatory;
+		}
+		public InputCheckResult setFillMandatory(Boolean fillMandatory) {
+			this.fillMandatory = fillMandatory;
+			return this;
+		}
+		/**
+		 * empty or not change default value
+		 */
+	    private Boolean notChange = null;
+	    /**
+	     * empty or has value (ever same as default)
+	     */
+	    private Boolean empty = null;
+	    /**
+	     * is mandatory field and already enter value
+	     * in case isn't mandatory field always true
+	     */
+	    private Boolean fillMandatory = null;
+	    
+	}
+	
+	public Object getDefaultValue() {
+		return getColModel().getDefaultValue();
+	}
+	
+	public boolean isChangeValueFromDefault() {
+		return !Objects.equals(dirtyValue, getDefaultValue());
+	}
+	
+	public boolean isEmpty() {
+		return Objects.isNull(dirtyValue);
+	}
+	
+	public InputCheckResult parseInputState() {
+		InputCheckResult inputCheckResult = new InputCheckResult();
+		
+		inputCheckResult.setEmpty(isEmpty());
+		
+		inputCheckResult.setNotChange(!isChangeValueFromDefault());
+		
+		inputCheckResult.setFillMandatory((isMandatory() && !inputCheckResult.empty) || (!isMandatory()));
+		
+		return inputCheckResult;
 	}
 	
 	public ColumnModel getColModel() {
@@ -70,8 +139,28 @@ public class CellModel implements IValueChange {
 		this.colModel = colModel;
 	}
 
-	public void initDefaultValue (TableModel tableModel, RowModel rowModel) {
-		setValue(colModel.getDefaultValue());
+	/**
+	 * consider this case
+	 * cell-1 is depend on (calculate) cell-2
+	 * in case we call this one after calculate, value of cell-1 is reseted
+	 * so this method should call by bellow way
+	 * example reset all value of row
+	 * 1. call reset to null for all cells
+	 * 2. call initDefaultValue for all cells
+	 * 
+	 * for only case reset one cell we call
+	 * 1. reset to null for this cell
+	 * 2. call initDefaultValue for this cell
+	 * @param tableModel
+	 * @param rowModel
+	 */
+	public void initDefaultValue () {
+		if (value == null || getDefaultValue() != null)
+			setValue(getDefaultValue());
+	}
+	
+	public boolean isMandatory () {
+		return getColModel().isMandatory();
 	}
 	
 	private boolean formValidate = false;
@@ -114,6 +203,7 @@ public class CellModel implements IValueChange {
 		}
 		return validateMsgs;
 	}
+	
 	/**
 	 * call from org.zkoss.bind.Validator for immediate validate a input
 	 * If validation fails, ViewModel's (or middle object's) properties will be unchanged
@@ -184,11 +274,11 @@ public class CellModel implements IValueChange {
 	public static int BTUPLOAD_CELL=6;
 	public static int DATE_CELL=7;
 	public static int POSITIVE_NUM_CELL=8;
-	public static int DOCUPLOAD_CELL=9;
 	public static int BUTTON_CELL=10;
 	public static int PHONE_CELL=11;
 	public static int EMAIL_CELL=12;
 	public static int ID_PASSPORTNO_CELL=13;
+	public static int PRESET_TITLE_CELL=14;
 
 	private int cellType;
 
@@ -231,6 +321,10 @@ public class CellModel implements IValueChange {
 			Constructor<CO> cons = main.colClass.getConstructor(String.class);
 			colModel = cons.newInstance(properties.title);
 			colModel.setDaoPropertyName(properties.daoPropertyName);
+			if (properties.colType != null && properties.colType == CellModel.LABEL_CELL) {
+				colModel.setReadonly(true);
+				colModel.setMandatory(false);
+			}
 		} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			e.printStackTrace();
@@ -262,6 +356,10 @@ public class CellModel implements IValueChange {
 	public static  ColumnModel getColModelForLabel(String title) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, null, LABEL_CELL));
 	}
+	
+	public static  ColumnModel getColModelForLabel(String title, String daoPropertyName) {
+		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, LABEL_CELL));
+	}
 
 	public static  ColumnModel getColModelForText(String title, String daoPropertyName) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, TEXT_CELL));
@@ -281,6 +379,10 @@ public class CellModel implements IValueChange {
 	
 	public static  ColumnModel getColModelForIDPASS(String title, String daoPropertyName) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, ID_PASSPORTNO_CELL));
+	}
+	
+	public static  ColumnModel getColModelForRadio(String title, String daoPropertyName) {
+		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, RADIO_CELL));
 	}
 	
 	public static ColumnModel getColModelForGenericCell(
@@ -303,8 +405,10 @@ public class CellModel implements IValueChange {
 	 * @param value the value to set
 	 */
 	public void setValue(Object value) {
+		Object oldValue = this.value;
 		this.value = value;
 		this.dirtyValue = value;
+		valuePropertyChangeSupport.firePropertyChange("value", oldValue, value);
 		BindUtils.postNotifyChange(this, "value");
 	}
 
@@ -359,7 +463,6 @@ public class CellModel implements IValueChange {
 		this.formValidate = formValidate;
 		BindUtils.postNotifyChange(this, "formValidate");
 		BindUtils.postNotifyChange(this, "fieldValidate");
-		
 	}
 
 	public List<String> getValidateMsgs() {
@@ -370,6 +473,17 @@ public class CellModel implements IValueChange {
 		this.validateMsgs = validateMsgs;
 		BindUtils.postNotifyChange(this, "validateMsgs");
 	}
+
+	public void copyTo(CellModel cellModel) {
+		cellModel.setValue(getValue());
+	}	
 	
+	public void reset(boolean perRow) {
+		dirtyValue = null;//TODO: move to reset function of cell
+		value = null;
+		if (!perRow) {
+			initDefaultValue();
+		}
+	}
 
 }

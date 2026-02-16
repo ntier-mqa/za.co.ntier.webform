@@ -5,8 +5,11 @@ import java.util.function.Function;
 
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.SelectEvent;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -19,7 +22,9 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	}
 
 	@Override
-	public void cmdSelectedHandle(MCity selectedArea) {
+	public void cmdSelectedHandle(Event selectedEvent) {
+		MCity selectedArea = getSelectedObj(selectedEvent);
+		
 		if (getTableModel() != null && getRowModel() != null) {
 			PostalCellModel postalCellModel = getCellModelByType(PostalCellModel.class);
 			if (postalCellModel != null) {
@@ -32,7 +37,7 @@ public class AreaCellModel extends ListCellModel<MCity>{
 				BindUtils.postNotifyChange(postalCellModel, "value");
 			}
 
-			updateProvinceSelected();
+			updateProvinceSelected(null);
 		}
 	}
 
@@ -47,30 +52,29 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	
 	@Override
 	public Function<MCity, Object> getValueConvert() {
-		if (getColModel().getValueConvert() == null) {
+		if (getColModel().getSelectedItemValueConvert() == null) {
 			return defaultValueConvert;
 		}else {
-			return getColModel().getValueConvert();
+			return getColModel().getSelectedItemValueConvert();
 		}
 	}
 
-	public void updateProvinceSelected() {
+	/**
+	 * linkCity != null called by change postal
+	 * @param linkCity
+	 */
+	public void updateProvinceSelected(MCity linkCity) {
 		ProvinceCellModel provinceCellModel = getCellModelByType(ProvinceCellModel.class);
 		if (provinceCellModel != null) {
-			if (getModel().isSelectionEmpty()) {
-				provinceCellModel.setValue(0);
+			if(linkCity == null && getModel().isSelectionEmpty()) {
+				provinceCellModel.setValue(null);
 			}else {
-				provinceCellModel.setValue(getSelectedItem().getC_Region_ID());
+				if (linkCity == null)
+					linkCity = getSelectedItem();
+				
+				provinceCellModel.setValue(linkCity.getC_Region_ID());
 			}
 		}
-	}
-
-	@Override
-	public Object getSelectedID() {
-		if (getSelectedItem() == null)
-			return 0;
-		else
-			return getSelectedItem().getC_City_ID();
 	}
 
 	@Override
@@ -79,9 +83,14 @@ public class AreaCellModel extends ListCellModel<MCity>{
 	}
 
 	public static ListColumnModel<MCity> getAreaColumnModel(String title, String daoPropertyName) {
-	
+		if (title == null)
+			title = "Area/Suburb";
 		@SuppressWarnings("unchecked")
-		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, AreaCellModel.class, title, daoPropertyName, MasterUtil.getInitCities(), null, null);
+		ListColumnModel<MCity> listColumnModel = ListCellModel.getListColumnModel(
+				ListColumnModel.class, AreaCellModel.class, 
+				title, daoPropertyName, MasterUtil.getInitCities(), 
+				null, null, CellModel.LIST_CELL)
+			.setzClass(MCity.class);
 		listColumnModel.setUseForID(true);
 		return listColumnModel;
 	}

@@ -10,7 +10,7 @@ import za.co.ntier.webform.sdr.component.tab.bean.OrglinkTabPanel;
 @Init(superclass = true)
 public class NavTabVM extends ComponentVMWrapper<NavTab> {
 	private int activeTabIndex = -1;
-
+			
 	/**
 	 * @return the activeTabIndex
 	 */
@@ -28,4 +28,5 @@ public class NavTabVM extends ComponentVMWrapper<NavTab> {
 	public boolean isOrglinkTabPanel(NavTabPanel tabModel) {
 		return tabModel instanceof OrglinkTabPanel;
 	}
+	
 }

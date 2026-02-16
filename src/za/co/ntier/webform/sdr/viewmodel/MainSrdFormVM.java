@@ -6,6 +6,7 @@ import java.util.List;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -20,7 +21,7 @@ import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
-import za.co.ntier.webform.sdr.component.bean.ISupportSave;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
@@ -31,7 +32,7 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
-public class MainSrdFormVM extends BaseVM {
+public class MainSrdFormVM extends BaseAppVM {
 	private MenuContextInfo menuContextInfo;
 	private FormInfo formInfo;
 	private NavTab mainTab;
@@ -260,7 +261,7 @@ public class MainSrdFormVM extends BaseVM {
 				, MasterUtil.getLkpTitleLists()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(greettingCol);
 
@@ -291,7 +292,7 @@ public class MainSrdFormVM extends BaseVM {
 				, MasterUtil.getLkpGenders()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(genderCol);
 
@@ -348,7 +349,7 @@ public class MainSrdFormVM extends BaseVM {
 			);
 		alternateIDTypeCol.setUseForID(true)
 			.setDefaultValue("RSA ID Number", item -> {
-				return alternateIDTypeCol.getDisplayConvert().apply(item).equals("RSA ID Number");
+				return alternateIDTypeCol.getSelectedItemDisplayConvert().apply(item).equals("RSA ID Number");
 			})
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
@@ -442,23 +443,23 @@ public class MainSrdFormVM extends BaseVM {
 	}
 	
 	@Override
-	public List<ISupportSave> getSaveComponents() {
+	public List<ISaveForm> getSaveComponents() {
 		return List.of(mainTab, names);
 	}
 	
 	@Override
-	protected boolean showResult(Exception exc) {
-		if (exc != null) {
-			showException(exc);
+	protected void showResult(boolean isSubmit) {
+		if(isNewSdf) {
+			MasterUtil.showDialog("ZZSDFCreatedSuccess", MasterUtil.fCloseActiveWindow);
 		}else {
-			if(isNewSdf) {
-				MasterUtil.showDialog("ZZSDFCreatedSuccess", MasterUtil.fCloseActiveWindow);
-			}else {
-				MasterUtil.showDialog("ZZSDFSavedSuccess", MasterUtil.fCloseActiveWindow);
-			}
+			MasterUtil.showDialog("ZZSDFSavedSuccess", MasterUtil.fCloseActiveWindow);
 		}
+	}
 
-		return false;
+
+	@Override
+	public Object getMainApp() {
+		return sdf;
 	}
 
 }

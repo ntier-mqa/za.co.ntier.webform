@@ -1,6 +1,9 @@
 package za.co.ntier.webform.sdr.component.bean;
 
 import java.beans.Introspector;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -12,10 +15,31 @@ import org.zkoss.zk.ui.event.Event;
  * do {@link #setCellModelSupplier(BiFunction)} or provide in constructor
  * otherwise override {@link #getCellModel(TableModel, RowModel)}
  */
-public class ColumnModel {
-	private boolean isCalTotlal = false;
+public class ColumnModel implements PropertyChangeListener{
+	//TODO create UploadColumnModel for this properties
+	private ColumnModel refDocUploadDefCol;
 	
+	
+	public ColumnModel getRefDocUploadDefCol() {
+		return refDocUploadDefCol;
+	}
+	public void setRefDocUploadDefCol(ColumnModel refDocUploadDefCol) {
+		this.refDocUploadDefCol = refDocUploadDefCol;
+	}
+	
+	private boolean isCalTotlal = false;
 	private Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> cellModelSupplier;
+	private Function<CellModel, Boolean> composeValidator;
+	
+	private final PropertyChangeSupport cellValuePropertyChangeSupport = new PropertyChangeSupport(this);
+	
+	public void addCellPropertyChangeListener(PropertyChangeListener pcl) {
+        cellValuePropertyChangeSupport.addPropertyChangeListener(pcl);
+    }
+
+    public void removeCellPropertyChangeListener(PropertyChangeListener pcl) {
+        cellValuePropertyChangeSupport.removePropertyChangeListener(pcl);
+    }
 
 	public CellModel initCellModel(TableModel tableModel, RowModel rowModel) {
 		if (getCellModelSupplier() == null) {
@@ -26,7 +50,7 @@ public class ColumnModel {
 	
 	public final CellModel getCellModel(TableModel tableModel, RowModel rowModel) {
 		CellModel cellModel = initCellModel(tableModel, rowModel);
-		cellModel.initDefaultValue(tableModel, rowModel);
+		cellModel.addPropertyChangeListener(this);
 		return cellModel;
 	}
 
@@ -164,8 +188,9 @@ public class ColumnModel {
 	/**
 	 * @param showTitle the showTitle to set
 	 */
-	public void setShowTitle(Boolean showTitle) {
+	public ColumnModel setShowTitle(Boolean showTitle) {
 		this.showTitle = showTitle;
+		return this;
 	}
 
 	/**
@@ -220,4 +245,20 @@ public class ColumnModel {
 	public void setEventHandle(BiConsumer<Event, CellModel> eventHandle) {
 		this.eventHandle = eventHandle;
 	}
+
+	public Function<CellModel, Boolean> getComposeValidator() {
+		return composeValidator;
+	}
+
+	public void setComposeValidator(Function<CellModel, Boolean> composeValidator) {
+		this.composeValidator = composeValidator;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		cellValuePropertyChangeSupport.firePropertyChange(evt);
+		
+	}
+
+	
 }

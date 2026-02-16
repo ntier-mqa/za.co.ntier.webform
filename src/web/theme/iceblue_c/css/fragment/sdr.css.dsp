@@ -181,9 +181,9 @@
 
 .mqaWebForm .grid-formview .cell-title {
     /* TITLE AREA FLEXBOX (CRUCIAL FIX) */
-    display: flex;
+    /*display: flex;
     flex-wrap: wrap; 
-    align-items: flex-end; 
+    align-items: flex-end; */
     flex-shrink: 0; 
     background:var(--mqa-blue);
 }
@@ -192,7 +192,16 @@
 	flex-grow:1;
 }
 
-.mqaWebForm .grid-formview .cell-error .z-label{
+.mqaWebForm .grid-formview .cell-error .z-grid-body .z-grid-emptybody td{
+	height:0px;
+}
+
+.mqaWebForm .cell-error .z-grid{
+	border-width:0px;
+}
+
+.mqaWebForm .grid-formview .cell-error .z-label
+, .mqaWebForm .grid-listView .cell-error .z-label{
 	color:red;
 }
 
@@ -231,6 +240,7 @@
 .mqaWebForm .container .grid-container .form-field select,
 .mqaWebForm .grid-formview .cell-content input[type="text"],
 .mqaWebForm .grid-formview .cell-content input[type="tel"],
+.mqaWebForm .grid-formview .cell-content .z-datebox-input,
 .mqaWebForm .grid-formview .cell-content select,
 .mqaWebForm .grid-formview .cell-content textarea,
 .mqaWebForm .sdrForm input[type="text"],
@@ -349,12 +359,80 @@
 .mqaWebForm .sdrForm .grid-listView{
   display: grid;
   grid-auto-rows: min-content;
+  gap: 1px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+}
+
+.mqaWebForm .sdrForm .grid-listView .colHead{
+	background-color:var(--mqa-blue);
+	color:white;
+	position: sticky;
+	top: 0;
+}
+
+.mqaWebForm .sdrForm .grid-listView .colHead .z-label{
+	color: var(--header-text-color);
+}
+
+.mqaWebForm .sdrForm .grid-listView .cell{
+	padding: 5px;
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-2{
+	grid-template-columns: repeat(2, 1fr);
 }
 
 .mqaWebForm .sdrForm .grid-listView.grid-listView-7{
   grid-template-columns: repeat(7, 1fr);
 }
 
+.mqaWebForm .sdrForm .grid-listView.grid-listView-8{
+  grid-template-columns: repeat(8, 1fr);
+}
+
 .mqaWebForm .sdrForm .grid-listView.grid-listView-3{
   grid-template-columns: repeat(3, 1fr);
+}
+
+.mqaWebForm .sdrForm a.z-button{
+	text-decoration:none;
+}
+
+.mqaWebForm .nav-tab-panel .dgaAppInfo .z-checkbox{
+	display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}  
+
+.mqaWebForm .formContactCopy{
+	margin-top: -45px;
+}
+
+.mqaWebForm .formContactCopy > :nth-child(1){
+	grid-column: span 3;
+	
+}
+
+.mqaWebForm .formContactCopy > :nth-child(1) .cell-content{
+	display:flex;
+  	justify-content:flex-end;
+}
+
+.outter-view_form.outter-orgSize{
+	display: grid;
+  	grid-template-columns: max-content 1fr;
+}
+
+.outter-view_form.outter-orgSize .tableTitle{
+	align-content:center;
+}
+
+
+.mqaWebForm .grid-formview.orgSize{
+	grid-column: span 2;
+	width: 100%;
+	grid-template-columns: repeat(2, 1fr);
 }

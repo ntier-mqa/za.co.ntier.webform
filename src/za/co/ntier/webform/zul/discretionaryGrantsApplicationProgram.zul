@@ -25,14 +25,13 @@
 			<tab label="Declaration" selected="true" disabled="true"/>
 			<tab label="@init(vm.organisationTabTile)" disabled="true" />
 			
-
 			<!-- INDIVIDUAL INFORMATION CHANGE: add tab only for EDP_APP_INDIVIDUAL and EDP_APP_EMPLOYER -->
 			<tab
 				if="${vm.programType == ProgramType.EDP_APP_INDIVIDUAL or vm.programType == ProgramType.EDP_APP_EMPLOYER}"
 				label="@load(vm.individualTabTitle)" disabled="true" />
+
 			<tab if = "${vm.showProgram}" label="Program" disabled="true"/>
 			
-
 			<tab 
         if = "${vm.showContact}"
         label="Program Contact" disabled="true"/>

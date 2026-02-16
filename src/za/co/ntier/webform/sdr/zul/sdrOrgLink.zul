@@ -12,23 +12,23 @@
       <html content="@init(( vm.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
     </div>
   </div>
+ 	
+  <include
+      component="@init(vm.orgSearchModel)"
+      menuContextInfo="@init(vm.menuContextInfo)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
   
-
-  <include sclass="flex-grow" style="overflow-y:auto"
-    component="@init(vm.orgLinkTab)"
-    menuContextInfo="@init(vm.menuContextInfo)"
-    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabPanelOrgLink.zul')))" />
-    
-  <div sclass="formBottomPanel">
-
-    <button     
-      label="Save &amp; Exit" sclass="icon-on-right"
-      iconSclass="z-icon-floppy-disk"
-      onClick="@command('saveClose')" />
-
-    <button 
-      label="Submit Request"
-      iconSclass="z-icon-gear" sclass="icon-on-right"
-      onClick="@command('submit')" />
-  </div>
+  <include
+      component="@init(vm.sdfOrgModel)"
+      menuContextInfo="@init(vm.menuContextInfo)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+      
+  <include
+      component="@init(vm.bankDetailModel)"
+      menuContextInfo="@init(vm.menuContextInfo)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+ 
+  <include
+  	saveApp="@init(vm)"
+    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
 </idspace>

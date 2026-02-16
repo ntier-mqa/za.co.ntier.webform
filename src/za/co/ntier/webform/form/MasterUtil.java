@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,12 +70,24 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public class MasterUtil {
+	public static DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 	public static final int limitItem = 600;
 	
 	public static final String SDRLinkedOrganisationsUU = "114344c0-6344-4d49-8dc9-3ba80e98e0b1";
 	public static final String SDRRegistryOrgLinkUU = "1b8f1243-dbbf-458a-89f6-cd89a95a9d4c";
 	public static final String SDRMaintainOrganisationUU = "d1c16a4b-9a05-41fc-a2f8-050f1f383431";
 	
+	public static String prefixSclass (String prefix, TableModel tbModel) {
+		
+		StringBuilder sclass = new StringBuilder();
+		sclass.append(prefix).append("-").append(tbModel.getViewModel().name().toLowerCase());
+		
+		if (tbModel.getSclass() != null) {
+			sclass.append(" ").append(tbModel.getSclass().replaceAll("(\\S+)", prefix + "-$1"));
+		}
+		
+		return sclass.toString();
+	}
 	
 	private static CCache<String, List<X_C_BPartner>> s_CetTvetCollege = new CCache<>(
 			I_C_BPartner.Table_Name + "_CetTvetCollege", 3);
@@ -261,11 +274,23 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpSicCode = new AbstractMap.SimpleEntry<>("cddc9d77-2c4f-4650-a8a5-58c87f72dbb4", null);
 	public static final Entry<String, Integer> LkpSubSector = new AbstractMap.SimpleEntry<>("bc9bef41-360e-4fbc-b4f1-93ec2892cef9", null);
 	public static final Entry<String, Integer> LkpChamberCode = new AbstractMap.SimpleEntry<>("15a4a826-3bcb-402b-9ff4-602beeec8c3f", null);
+	public static final Entry<String, Integer> LkpNQFLevel = new AbstractMap.SimpleEntry<>("2b47e027-cb5a-45d6-8fc6-2c9bc9c6c3ad", null);
+	
+	public static final Entry<String, Integer> ExecutiveStatus = new AbstractMap.SimpleEntry<>("de34e9e2-ce0d-4877-b912-d1e7a5615a02", null);
+	 
 	
 	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
 	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
+	
+	public static List<ValueNamePair> getExecutiveStatus () {
+		return getRefList(ExecutiveStatus);
+	}
+	
+	public static List<ValueNamePair> getNQFLevel () {
+		return getRefList(LkpNQFLevel);
+	}
 	
 	public static List<ValueNamePair> getChamberCode () {
 		return getRefList(LkpChamberCode);
@@ -489,10 +514,19 @@ public class MasterUtil {
 		return false;
 	}
 	
-	public static boolean isListViewTableModel(Object obj) {
+	public static boolean isGridViewTableModel(Object obj) {
 		if (obj instanceof TableModel) {
 			TableModel tableModel = (TableModel)obj;
-			return !tableModel.isFormView();
+			return tableModel.isGridView();
+		}
+		
+		return false;
+	}
+	
+	public static boolean isCardViewTableModel(Object obj) {
+		if (obj instanceof TableModel) {
+			TableModel tableModel = (TableModel)obj;
+			return tableModel.isCardView();
 		}
 		
 		return false;
@@ -535,16 +569,24 @@ public class MasterUtil {
 		
 	}
 
-	public static void showDialog(String msgKey, Consumer<Object> onCloseDialog) {
-		Dialog dialog = new Dialog(Msg.getMsg(Env.getCtx(), msgKey, false), 
-				new StringBuilder(Msg.getMsg(Env.getCtx(), msgKey, true)).toString());
-		dialog.setSclass(msgKey);
+	public static void showDialog(String msgTile, List<String> msgContent, Consumer<Object> onCloseDialog) {
+		MasterUtil.showDialog("dialog", msgTile, msgContent, onCloseDialog);
+	}
+	public static void showDialog(String sClass, String msgTile, List<String> msgContent, Consumer<Object> onCloseDialog) {
+		Dialog dialog = new Dialog(msgTile, msgContent);
+		dialog.setVisible(true);
+		dialog.setSclass(sClass);
 		dialog.setOnCloseDialog(onCloseDialog);
 		
 		Map<String, Object> args = new HashMap<>();
 		args.put(ComponentVMWrapper.ComponentKey, dialog);
 		String zulPathRelative = WebForm.getBundleResourcePath("sdr/component/zul/dialog.zul");	
 		Executions.createComponents(zulPathRelative, null, args);
+	}
+	
+	public static void showDialog(String msgKey, Consumer<Object> onCloseDialog) {
+		MasterUtil.showDialog(msgKey, Msg.getMsg(Env.getCtx(), msgKey, false), 
+				List.of(Msg.getMsg(Env.getCtx(), msgKey, true)), onCloseDialog);
 	}
 	
 	public static Consumer<Object> fCloseActiveWindow =  t -> {

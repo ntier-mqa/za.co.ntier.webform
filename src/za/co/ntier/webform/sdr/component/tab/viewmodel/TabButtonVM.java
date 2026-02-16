@@ -7,41 +7,91 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
-import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
+import za.co.ntier.webform.sdr.component.bean.ISaveApp;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public class TabButtonVM extends ComponentVMWrapper<Object> {
-
+	private ISaveApp saveApp;
+	
 	private NavTab navTab;
 
 	@Init(superclass = true)
 	public void init(
-			@ExecutionArgParam("navTab") NavTab navTab
+			@ExecutionArgParam("navTab") NavTab navTab,
+			@ExecutionArgParam("saveApp") ISaveApp saveApp
 			) {
 		this.navTab = navTab;
+		this.saveApp = saveApp;
+	}
+
+	public boolean isShowSubmitApp() {
+		if (getSaveApp() != null && getSaveApp().isSupportSubmit()) {
+			if (navTab != null) {
+				return navTab.isActiveEndTab();
+			}else {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isShowSaveApp() {
+		if (getSaveApp() != null && !getSaveApp().isShowSaveOnFirstTab() && navTab != null && navTab.isActiveFirstTab()) {
+			return false;
+		}
+		
+		return getSaveApp() != null && getSaveApp().isSupportSave();
+
+	}
+	
+	public boolean isSupportSubmitApp() {
+		return getSaveApp() != null && getSaveApp().isSupportSubmit();
+	}
+	
+	public boolean isSupportDeleteApp() {
+		return getSaveApp() != null && getSaveApp().isSupportDelete();
+	}
+	
+	@Command
+	public void saveApp() {
+		if (getSaveApp() != null && getSaveApp().isSupportSave())
+			getSaveApp().saveApp();
 	}
 
 	@Command
-	@NotifyChange({"activeFirstTab", "activeEndTab", "activeMidTab"})
+	public void deleteApp() {
+		if (getSaveApp() != null && getSaveApp().isSupportDelete())
+			getSaveApp().deleteApp();
+	}
+
+	@Command
+	public void submitApp() throws IOException {
+		if (getSaveApp() != null && getSaveApp().isSupportSubmit())
+			getSaveApp().submitApp();
+	}
+	
+	public boolean isSupportNextTab() {
+		return navTab == null;
+	}
+	
+	public boolean isSupportPrevTab() {
+		return navTab == null;
+	}
+	
+	@Command
+	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp", "showSaveApp"})
 	public void nextTab() {
-		navTab.doNextTab();
+		if (navTab != null) 
+			navTab.doNextTab();
 	}
 
 	@Command
-	@NotifyChange({"activeFirstTab", "activeEndTab", "activeMidTab"})
+	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp", "showSaveApp"})
 	public void prevTab() {
-		navTab.doPrevTab();
-	}
-
-	@Command
-	public void deleteAppForm() {
-		MasterUtil.closeActiveWindow();
-	}
-
-	@Command(value = "submitApplication")
-	public void submitApplication() throws IOException {
-
+		if (navTab != null)
+			navTab.doPrevTab();
 	}
 
 	/**
@@ -51,15 +101,27 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 		this.navTab = navTab;
 	}
 
-	public boolean isActiveFirstTab() {
-		return navTab.isActiveFirstTab();
+	public boolean isShowDel() {
+		return navTab != null && navTab.isActiveFirstTab();
+	}
+	
+	public boolean isShowPrev() {
+		return navTab != null && !navTab.isActiveFirstTab();
 	}
 
-	public boolean isActiveEndTab() {
-		return navTab.isActiveEndTab();
+	public boolean isShowNext() {
+		return navTab != null && !navTab.isActiveEndTab();
 	}
 
 	public boolean isActiveMidTab() {
-		return navTab.isActiveMidTab();
+		return navTab != null && navTab.isActiveMidTab();
+	}
+
+	public ISaveApp getSaveApp() {
+		return saveApp;
+	}
+
+	public void setSaveApp(ISaveApp saveApp) {
+		this.saveApp = saveApp;
 	}
 }

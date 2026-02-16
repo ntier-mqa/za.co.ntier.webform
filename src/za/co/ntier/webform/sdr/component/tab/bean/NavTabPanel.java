@@ -1,17 +1,25 @@
 package za.co.ntier.webform.sdr.component.tab.bean;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.compiere.util.CLogger;
 import org.zkoss.zul.ListModelList;
 
-import za.co.ntier.api.model.X_ZZSdf;
-import za.co.ntier.webform.sdr.component.bean.ISupportSave;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
+import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 
-public class NavTabPanel implements ISupportSave {
+public class NavTabPanel implements ISaveForm {
 	private String sclass;
 	private NavTab parent;
 
+	public boolean isDefaultTabPanel() {
+		return true;
+	}
+	
+	public String getZulPath() {
+		return null;
+	}
+	
 	public boolean isDisable() {
 		return !parent.getTabPanelModel().isSelected(this);
 	}
@@ -64,28 +72,17 @@ public class NavTabPanel implements ISupportSave {
 	}
 
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
+	public void syncUIToDao(String trxName) {
 		
-		ISupportSave.saveList(getList(), applicationForm, trxName);
+		ISaveForm.batchSyncToDao(compModel, trxName);
 		
-	}
-
-	private List<ISupportSave> getList() {
-		List<ISupportSave> listSave = new ArrayList<>();
-		for (Object objSupportSave : compModel) {
-			if (objSupportSave instanceof ISupportSave) {
-				listSave.add((ISupportSave)objSupportSave);
-			}
-		}
-		
-		return listSave;
 	}
 	
 	@Override
-	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+	public void saveAttachment(String trxName) {
 		for (Object objSupportSave : compModel) {
-			if (objSupportSave instanceof ISupportSave) {
-				((ISupportSave)objSupportSave).saveAttachment(applicationForm, trxName);
+			if (objSupportSave instanceof ISaveForm) {
+				((ISaveForm)objSupportSave).saveAttachment(trxName);
 			}
 		}
 		
@@ -106,10 +103,44 @@ public class NavTabPanel implements ISupportSave {
 	}
 
 	@Override
-	public boolean validate() {
-		return ISupportSave.validates(compModel);
+	public boolean validate(Boolean isSubmit) {
+		return ISaveForm.validates(compModel, isSubmit);
 	}
 
-
+	@Override
+	public void saveToDb(String trxName) {
+		ISaveForm.batchSaveToDb(compModel, trxName);
+		
+	}
+	protected static final CLogger log = CLogger.getCLogger(NavTabPanel.class);
+	public InputCheckResult parseInputState() {
+		InputCheckResult rowInputCheckResult = new InputCheckResult();
+		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
+		
+		for (Object comp : getCompModel()) {
+			TableModel tbModel = null;
+			if (comp instanceof TableModel)
+				tbModel = (TableModel)comp;
+			
+			if (tbModel != null) {
+				InputCheckResult cellInputCheckResult = tbModel.parseInputState();
+				if (!cellInputCheckResult.getEmpty()) {// has at least once field have value
+					rowInputCheckResult.setEmpty(false);
+				}
+				
+				if (!cellInputCheckResult.getFillMandatory()) {
+					rowInputCheckResult.setFillMandatory(false);// has at least once field have value
+					log.warning("not input for mandatory field on table:" + tbModel.getTableTitle() + " sclass:" + tbModel.getSclass());
+				}
+				
+				if (!cellInputCheckResult.getNotChange()) {
+					rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
+				}
+			}
+			
+		}
+		
+		return rowInputCheckResult;
+	}
 
 }

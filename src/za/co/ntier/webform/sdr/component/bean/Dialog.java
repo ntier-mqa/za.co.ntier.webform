@@ -1,5 +1,6 @@
 package za.co.ntier.webform.sdr.component.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -9,17 +10,19 @@ public class Dialog {
 	private boolean visible = false;
 	private Consumer<Object> onCloseDialog;
 	private String sclass = "sdrDialog";
-
+	
+	public Dialog(String title, List<String> msgs) {
+		this.title = title;
+		this.setMsgs(msgs);
+	}
+	
 	public Dialog(String title, String msg) {
 		this(title, msg, true);
 	}
 
 	private Dialog(String title, String msg, boolean visible) {
+		this(title, msg == null? new ArrayList<String>():List.of(msg.split("\\n")));
 		this.visible = visible;
-		this.title = title;
-		if (msg != null) {
-			msgs = List.of(msg.split("\\n"));
-		}
 	}
 
 	/**

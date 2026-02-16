@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -15,21 +16,31 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.util.Log;
 
-import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
 
-public class RowModel extends HashMap<ColumnModel, CellModel> implements ISupportSave{
+public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveForm{
 	private static final CLogger log = CLogger.getCLogger(RowModel.class);
 	private TableModel tableModel;
-	public RowModel(TableModel annexure) {
-		this.setAnnexure(annexure);
+	public RowModel(TableModel tableModel) {
+		this.setTableModel(tableModel);
 	}
 	private static final long serialVersionUID = 3444756682531476154L;
 	public static final int INPUT_STATE_EMPTY = 0;
 	public static final int INPUT_STATE_FULL_REQUIRED = 1;
 	private PO data;
 
+	public void resetRow() {
+		for (CellModel cell : values()) {
+			cell.reset(true);
+		}
+		
+		for (CellModel cell : values()) {
+			cell.initDefaultValue();
+		}
+	}
 	/**
 	 * @return the data
 	 */
@@ -47,41 +58,44 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 	/**
 	 * @return the tableModel
 	 */
-	public TableModel getAnnexure() {
+	public TableModel getTableModel() {
 		return tableModel;
 	}
 
 	/**
 	 * @param tableModel the tableModel to set
 	 */
-	public void setAnnexure(TableModel annexure) {
-		this.tableModel = annexure;
+	public void setTableModel(TableModel tableModel) {
+		this.tableModel = tableModel;
 	}
-
-	public boolean checkState(int state) {
-		boolean missRequired = false;
-		boolean isInputed = false;
+	
+	public InputCheckResult parseInputState() {
+		InputCheckResult rowInputCheckResult = new InputCheckResult();
+		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
+		
 		for (CellModel cellModel : values()) {
 			ColumnModel colModel = cellModel.getColModel();
-			if(StringUtils.isBlank(colModel.getDaoPropertyName()))
+			// TODO condition should move to cellMode
+			if(colModel.isReadonly() || (cellModel.getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName())))
 				continue;
-
-			if (cellModel.notInputed() && colModel.isMandatory()) {
-				log.warning("not input for mandatory field:" + colModel.getTitle());
-				missRequired = true;
+			
+			InputCheckResult cellInputCheckResult = cellModel.parseInputState();
+			
+			if (!cellInputCheckResult.getEmpty()) {// has at least once field have value
+				rowInputCheckResult.setEmpty(false);
 			}
-				
-			if (!cellModel.notInputed())
-				isInputed = true;
+			
+			if (!cellInputCheckResult.getFillMandatory()) {
+				rowInputCheckResult.setFillMandatory(false);// has at least once field have value
+				log.warning("not input for mandatory field:" + colModel.getTitle());
+			}
+			
+			if (!cellInputCheckResult.getNotChange()) {
+				rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
+			}
 		}
 		
-		if (state == INPUT_STATE_EMPTY) {
-			return !isInputed;
-		}else if (state == INPUT_STATE_FULL_REQUIRED) {
-			return !missRequired;
-		}
-		
-		throw new IllegalStateException("check for wrong state");
+		return rowInputCheckResult;
 	}
 
 	public void saveUploadFiles(PO po, String trxName) {
@@ -96,13 +110,26 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 	 * @return
 	 */
 	public boolean isMatchingRow(Collection<ColumnModel> keyColumns, PO dao) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isMatching = true;
+		for (ColumnModel col : keyColumns) {
+			PresetTitleColumnModel<?> presetTitleCol = (PresetTitleColumnModel<?>) col;
+			isMatching = isMatching && presetTitleCol.getMatchingLoaded().apply(this, dao);
+			if (!isMatching) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	public void fillRowDataFromDao() {
-		values().stream()
-			.forEach(cellModel -> {
+		for (CellModel cellModel : values()) {
+			boolean isDaoValue = false;
+			if (cellModel instanceof UploadCellModel || cellModel.getColModel().getDaoPropertyName() != null) {
+				isDaoValue = true;
+			}
+			
+			if (isDaoValue) {
 				PO daoPerCol = null;
 				if (tableModel.getDaoManage() != null) {
 					daoPerCol = tableModel.getDaoManage().getDao(cellModel.getColModel().getTableName());
@@ -117,88 +144,82 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 					if (Log.isInfoEnabled())
 						log.info(String.format("not yet dao for table %s to set to properties %s", cellModel.getColModel().getTableName(), cellModel.getColModel().getDaoPropertyName()));
 				}
-				
- 			});
-
+			}
+		}
+		
 	}
 
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
-		boolean isNothingInputed = checkState(RowModel.INPUT_STATE_EMPTY);
-		if (isNothingInputed && data != null) {
-			data.deleteEx(true);
+	public void syncUIToDao(String trxName) {
+		InputCheckResult rowInputCheckResult = parseInputState();
+		
+		if (rowInputCheckResult.getNotChange() && !rowInputCheckResult.getFillMandatory() && data != null) {
+			data.deleteEx(true, trxName);
 			data = null;
 			return;
 		}
 		
-		if (isNothingInputed && data == null) 
+		if (rowInputCheckResult.getNotChange() && !rowInputCheckResult.getFillMandatory() && data == null) 
 			return;
 		
-		if (!checkState(RowModel.INPUT_STATE_FULL_REQUIRED)) {
+		if (!rowInputCheckResult.getFillMandatory()) {
 			throw new AdempiereException("Madatory not yet full fill");
 		}
-		
-		/*
-		 * if (data == null) { if (tableModel.getDaoManage() != null) { if
-		 * (tableModel.getDaoManage().getDao() != null) { data =
-		 * tableModel.getDaoManage().getDao(); } }
-		 * 
-		 * 
-		 * if (data == null) { applicationForm.set_TrxName(trxName); // important data =
-		 * tableModel.getPoSupplier().apply(tableModel, applicationForm); if
-		 * (tableModel.getDaoManage() != null) { tableModel.getDaoManage().setDao(data);
-		 * } }
-		 * 
-		 * 
-		 * }
-		 */		
+				
 		PO daoPerCol = null;
 		for (CellModel cellModel : values()) {
 			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
-				daoPerCol = getDao(cellModel, applicationForm);
+				daoPerCol = getDaoAllway(cellModel);
 				
 				//TODO:Move logic set ui value to dao to cellMode
 				Object value = convertDataType(daoPerCol, cellModel);
 				MasterUtil.setObjectProperty(daoPerCol, cellModel.getColModel().getDaoPropertyName(), value);
 			}
 		}
-		
-		if (tableModel.getDaoManage() == null && daoPerCol != null) {
-			daoPerCol.saveEx(trxName);
-			
-			for (CellModel cellModel : values()) {
-				if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
-					((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
-				}
-			}
-		}
 			
 	}
 	
-	private PO getDao(CellModel cellModel, X_ZZSdf applicationForm) {
-		PO daoPerCol = null;
+	private PO getDaoFromDaoManage(CellModel cellModel) {
 		if (tableModel.getDaoManage() != null)
-			daoPerCol =  tableModel.getDaoManage().getDaoForSave(cellModel.getColModel().getTableName());
+			return tableModel.getDaoManage().getDaoForSave(cellModel.getColModel().getTableName());
 		
-		if (daoPerCol == null && data == null) {
-			data = tableModel.getPoSupplier().apply(tableModel, applicationForm);
+		return null;
+	}
+	
+	private PO getDaoAllway(CellModel cellModel) {
+		PO daoPerCol = null;
+		
+		daoPerCol =  getDaoFromDaoManage(cellModel);
+		
+		if (daoPerCol == null) {
+			daoPerCol = getDirectDao();
 		}
-		if (daoPerCol == null)
-			daoPerCol = data;
 		
 		return daoPerCol;
 	}
 	
+	private PO getDirectDao() {
+		if (data == null && tableModel.getPoSupplier() == null) {
+			throw new AdempiereException("ZZTableModelMissingPO");
+		}
+		
+		if (data == null)
+			data = tableModel.getPoSupplier().apply(this);
+		
+		return data;
+	}
 	/**
-	 * @param applicationForm
+	 * @param for case use dao manage
 	 * @param trxName
 	 */
 	@Override
-	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
+	public void saveAttachment(String trxName) {
+		
 		for (CellModel cellModel : values()) {
 			if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
-				PO daoPerCol = getDao(cellModel, applicationForm);
-				((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
+				PO daoPerCol = getDaoFromDaoManage(cellModel);
+				if (daoPerCol != null)
+					((UploadCellModel)cellModel).attachFile(daoPerCol, trxName);
 			}
 		}
 	}
@@ -223,21 +244,54 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISuppor
 			}else {
 				throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
 			}
-		}else {// DisplayType.Integer
+		}else if (cellModel.getValue() instanceof BigDecimal){
+			// DisplayType.Integer
+			// on tab org information, field "Number of Employees" is Positive Number. when load from I_ZZ_Application_Form.COLUMNNAME_NumberEmployees or input by user it's integer
+			// but when sdl is change, value can be set from MBPartner_New.getZZ_Number_Of_Employees()
+			// in this case value become BigDecimal
+			return ((BigDecimal)cellModel.getValue()).intValueExact();
+		}else if (cellModel.getValue() instanceof Integer){
 			return cellModel.getValue();
+		}else {
+			throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
 		}
 		
 		
 	}
 	
 	@Override
-	public boolean validate() {
+	public boolean validate(Boolean isSubmit) {
 		boolean isValid = true;
-		for (CellModel supportSave : this.values()) {
-			if (!supportSave.validate()) {
+		for (CellModel validation : this.values()) {
+			if (!validation.validate()) {
+				isValid = false;
+			}
+			
+			if (validation.getColModel().getComposeValidator() != null &&
+					!validation.getColModel().getComposeValidator().apply(validation)) {
 				isValid = false;
 			}
 		}
 		return isValid;
+	}
+	
+	@Override
+	public void saveToDb(String trxName) {
+		
+		if (tableModel.getDaoManage() == null) {
+			PO daoToSave = getDirectDao();
+			if (tableModel.getBeforeSave() != null) {
+				tableModel.getBeforeSave().apply(daoToSave);
+			}
+			
+			daoToSave.saveEx(trxName);
+			
+			for (CellModel cellModel : values()) {
+				if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
+					((UploadCellModel)cellModel).attachFile(daoToSave, trxName);
+				}
+			}
+		}
+		
 	}
 }

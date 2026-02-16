@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.ListModelList;
 
 import za.co.ntier.webform.sdr.component.bean.CellModel;
@@ -20,11 +23,39 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	@Override
-	public void initDefaultValue(TableModel tableModel, RowModel rowModel) {
-		ListColumnModel<T> colModel = getColModel();
-		if (colModel.getDefaultValue() != null) {
-			setValue(colModel.getDefaultValue(), colModel.getCompareFunction());
+	public void initDefaultValue() {
+		setValue(getDefaultValue());
+	}
+	
+	private T defaultValue = null;
+	
+	@Override
+	public T getDefaultValue() {
+		if (defaultValue == null)
+			defaultValue = lookupItem(getColModel().getDefaultValue(), getColModel().getCompareFunction());
+		
+		return defaultValue;
+	}
+	
+	public T lookupItem (Object value, Function<T, Boolean> compareFunction) {
+		if (value == null)
+			return null;
+		
+		if (value.getClass().equals(getColModel().getzClass())) {
+			return getColModel().getzClass().cast(value);
 		}
+		
+		if (compareFunction == null) {
+			return getColModel().getzClass().cast(value);
+		}
+		
+		for (T item : getDataProvider()) {
+			if (compareFunction.apply(item)) {
+				return item;
+			}
+		}
+		
+		return null;
 	}
 	
 	public List<T> getDataProvider(){
@@ -32,44 +63,48 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	public Function<T, Object> getValueConvert() {
-		return getColModel().getValueConvert();
+		return getColModel().getSelectedItemValueConvert();
 	}
 	
 	protected void setValue(Object value, Function<T, Boolean> compareFunction) {
 		getModel().clearSelection();
-		for (T item : getDataProvider()) {
-			Boolean isSelectedValue = null;
-
-			if (compareFunction != null) {
-				isSelectedValue = compareFunction.apply(item);
+		
+		Object lookupValue = null;
+		T lookupResult = lookupItem(value, compareFunction);
+		
+		if (lookupResult == null) {
+			lookupValue = null;
+		}else {
+			if (lookupResult != null && getValueConvert() != null) {
+				Object valueConver = getValueConvert().apply(lookupResult);
+				lookupValue = valueConver;
 			}else {
-				Object itemValue;
-				if (getValueConvert() != null) {
-					itemValue = getValueConvert().apply(item);
-				}else {
-					itemValue = item;
-				}
-				
-				isSelectedValue = Objects.equals(value, itemValue);
-			}
-				
-			if (isSelectedValue) {
-				if (!getModel().contains(item)) {
-					getModel().add(item);
-				}
-				
-				getModel().addToSelection(item);
-				//super.setValue(value);
-				return;
+				lookupValue = lookupResult;
 			}
 		}
+		
+		if (lookupResult != null && !getModel().contains(lookupResult)) {
+			getModel().add(lookupResult);
+		}
+		
+		if (lookupResult != null)
+			getModel().addToSelection(lookupResult);
+		
+		super.setValue(lookupValue);
 	}
 	
 	
 	@Override
 	public void setValue(Object value) {
-		setValue(value, null);
-		dirtyValue = getValue();
+		setValue(value, item -> {
+			if (getValueConvert() != null) {
+				Object converValue = getValueConvert().apply(item);
+				return Objects.equals(converValue, value);
+			}
+			
+			throw new AdempiereException("Wrong type");
+		});
+		dirtyValue = getSelectedItem();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -84,7 +119,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	 * @return
 	 */
 	public String getDisplayText(T item) {
-		Function<T, String> displayConvert = getColModel().getDisplayConvert();
+		Function<T, String> displayConvert = getColModel().getSelectedItemDisplayConvert();
 		if (displayConvert != null) {
 			return displayConvert.apply(item);
 		}
@@ -95,11 +130,11 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	
 	/**
 	 * need to init model on constructor of child class
-	 * @param annexure
-	 * @param row
+	 * @param tableModel
+	 * @param rowModel
 	 */
-	public ListCellModel(TableModel annexure, RowModel row, ListColumnModel<T> colModel) {
-		super(annexure, row, colModel);
+	public ListCellModel(TableModel tableModel, RowModel rowModel, ListColumnModel<T> colModel) {
+		super(tableModel, rowModel, colModel);
 		setCellType(LIST_CELL);
 	}
 
@@ -118,13 +153,21 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 
 	@Override
-	public void cmdSelected(Object selectedObj) {
-		@SuppressWarnings("unchecked")
-		T selected = (T)selectedObj;
-		cmdSelectedHandle(selected);
+	public void cmdSelected(Event selectedEvent) {
+		cmdSelectedHandle(selectedEvent);
 	}
 
-	public void cmdSelectedHandle(T selected) {
+	public void cmdSelectedHandle(Event selectedEvent) {
+		
+	}
+	
+	public T getSelectedObj(Event event) {
+		@SuppressWarnings("unchecked")
+		SelectEvent<?, T> selectedEvent = (SelectEvent<?, T>)event;
+		if (selectedEvent.getSelectedObjects().isEmpty())
+			return null;
+		else
+			return selectedEvent.getSelectedObjects().iterator().next();
 		
 	}
 
@@ -168,30 +211,36 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 	
 	protected static  <T extends ListCellModel<L>, K extends ListColumnModel<L>, L> K
-	getListColumnModel(Class<K> coClass, Class<T> ceClass, String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert, Function<L, Object> valueConvert) {
+		getListColumnModel(Class<K> coClass, Class<T> ceClass, String title, String daoPropertyName, List<L> dataProvider, 
+				Function<L, String> displayConvert, 
+				Function<L, Object> valueConvert, int cellType) {
+		
 		K listColumnModel = CellModel.getColModelForCell(CellModelInfo.of(coClass, ceClass, null), 
-				CellModelParams.of(title, daoPropertyName, null)
+				CellModelParams.of(title, daoPropertyName, cellType)
 				);
 				
 		listColumnModel.setDataProvider(dataProvider);
 		
-		listColumnModel.setDisplayConvert(displayConvert);
-		listColumnModel.setValueConvert(valueConvert);
+		listColumnModel.setSelectedItemDisplayConvert(displayConvert);
+		listColumnModel.setSelectedItemValueConvert(valueConvert);
 		
 		return listColumnModel;
 	}
 	
-	@Override
-	public boolean notInputed() {
-		Object value = getValue();
-		return Objects.isNull(value) || (getColModel().isUseForID() && (int)value == 0);
+	public static <L> ListColumnModel<L> getListColumnModel(
+			String title, String daoPropertyName, List<L> dataProvider, 
+			Function<L, String> displayConvert, 
+			Function<L, Object> valueConvert) {
+		return getListColumnModel (title, daoPropertyName, dataProvider, displayConvert, valueConvert, CellModel.LIST_CELL);
 	}
 	
-	public static <L> ListColumnModel<L> getListColumnModel(String title, String daoPropertyName, List<L> dataProvider, Function<L, String> displayConvert, Function<L, Object> valueConvert) {
+	public static <L> ListColumnModel<L> getListColumnModel(
+			String title, String daoPropertyName, List<L> dataProvider, 
+			Function<L, String> displayConvert, 
+			Function<L, Object> valueConvert, 
+			int cellType) {
 		@SuppressWarnings("unchecked")
-		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert, valueConvert);
+		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert, valueConvert, cellType);
 		return listColumnModel;
 	}
-
-
 }

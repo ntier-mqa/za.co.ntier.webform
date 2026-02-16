@@ -7,8 +7,10 @@ import java.util.function.Function;
 import org.compiere.model.MCity;
 import org.compiere.model.MRegion;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.zk.ui.event.Event;
 
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -20,7 +22,8 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 	}
 
 	@Override
-	public void cmdSelectedHandle(MRegion selectedProvince) {
+	public void cmdSelectedHandle(Event selectedEvent) {
+		MRegion selectedProvince = getSelectedObj(selectedEvent);
 		if (getTableModel() != null && getRowModel() != null) {
 			if (selectedProvince == null) {
 				return;
@@ -63,19 +66,11 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 	
 	@Override
 	public Function<MRegion, Object> getValueConvert() {
-		if (getColModel().getValueConvert() == null) {
+		if (getColModel().getSelectedItemValueConvert() == null) {
 			return defaultValueConvert;
 		}else {
-			return getColModel().getValueConvert();
+			return getColModel().getSelectedItemValueConvert();
 		}
-	}
-
-	
-	public Object getSelectedID() {
-		if (getSelectedItem() == null)
-			return 0;
-		else
-			return getSelectedItem().getC_Region_ID();
 	}
 
 	@Override
@@ -84,8 +79,16 @@ public class ProvinceCellModel extends ListCellModel<MRegion>{
 	}
 
 	public static ListColumnModel<MRegion> getProvinceColumnModel(String title, String daoPropertyName) {
+		if (title == null)
+			title = "Province";
 		@SuppressWarnings("unchecked")
-		ListColumnModel<MRegion> listColumnModel = ListCellModel.getListColumnModel(ListColumnModel.class, ProvinceCellModel.class, title, daoPropertyName, MasterUtil.getRegions(), null, null);
+		ListColumnModel<MRegion> listColumnModel = ListCellModel.getListColumnModel(
+				ListColumnModel.class, 
+				ProvinceCellModel.class, 
+				title, daoPropertyName, 
+				MasterUtil.getRegions(), null, null, 
+				CellModel.LIST_CELL)
+		.setzClass(MRegion.class);
 		listColumnModel.setUseForID(true);
 		return listColumnModel;
 	}

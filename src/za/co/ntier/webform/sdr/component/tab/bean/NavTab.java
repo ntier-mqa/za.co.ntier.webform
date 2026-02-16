@@ -5,12 +5,12 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.event.ListDataListener;
 
-import za.co.ntier.api.model.X_ZZSdf;
-import za.co.ntier.webform.sdr.component.bean.ISupportSave;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 
-public class NavTab implements ListDataListener, ISupportSave{
+public class NavTab implements ListDataListener, ISaveForm{
 	private ListModelList<NavTabPanel> tabPanelModel;
-
+	
 	public NavTab() {
 		tabPanelModel = new ListModelList<NavTabPanel>();
 		tabPanelModel.addListDataListener(this);
@@ -35,9 +35,19 @@ public class NavTab implements ListDataListener, ISupportSave{
 
 	private int activeTabIndex;
 
-	protected boolean validateActiveTab() {
+	/**
+	 * emptyAsValid = true mean return true if nothing input to active tab. use for prev tab
+	 * emptyAsValid = false mean validate active tab, use for next, save, submit
+	 * @param emptyAsValid
+	 * @return
+	 */
+	protected boolean validateActiveTab(boolean emptyAsValid) {
 		NavTabPanel activeTabPanel = getTabPanelModel().get(activeTabIndex);
-		return activeTabPanel.validate();
+		InputCheckResult rowInputCheckResult = activeTabPanel.parseInputState();
+		if (emptyAsValid && rowInputCheckResult.getNotChange())
+			return true;
+		
+		return activeTabPanel.validate(null);
 	}
 	
 	public void doNextTab() {
@@ -45,7 +55,7 @@ public class NavTab implements ListDataListener, ISupportSave{
 				|| getTabPanelModel().size() == 0) {
 			// end tab do nothing
 		}else {
-			if (validateActiveTab()) {
+			if (validateActiveTab(false)) {
 				setActiveTab(activeTabIndex + 1, activeTabIndex);
 			}else {
 				// do nothing
@@ -71,7 +81,7 @@ public class NavTab implements ListDataListener, ISupportSave{
 				|| getTabPanelModel().size() == 0) {
 			// begin tab do nothing
 		}else {
-			if (validateActiveTab()) {
+			if (validateActiveTab(true)) {
 				setActiveTab(activeTabIndex - 1, activeTabIndex);
 			}else {
 				// do nothing
@@ -105,16 +115,27 @@ public class NavTab implements ListDataListener, ISupportSave{
 		return 0 < activeTabIndex && activeTabIndex < getTabPanelModel().size() - 1;
 	}
 	@Override
-	public void save(X_ZZSdf applicationForm, String trxName) {
-		ISupportSave.saveList(tabPanelModel, applicationForm, trxName);
+	public void syncUIToDao(String trxName) {
+		ISaveForm.batchSyncToDao(tabPanelModel, trxName);
 	}
 	@Override
-	public void saveAttachment(X_ZZSdf applicationForm, String trxName) {
-		tabPanelModel.forEach(t -> t.saveAttachment(applicationForm, trxName));
+	public void saveAttachment(String trxName) {
+		tabPanelModel.forEach(t -> t.saveAttachment(trxName));
 		
 	}
 	@Override
-	public boolean validate() {
-		return ISupportSave.validates(tabPanelModel);
+	public boolean validate(Boolean isSubmit) {
+		if (isSubmit)
+			// validate all tab
+			return ISaveForm.validates(tabPanelModel, isSubmit);
+		else
+			// need validate only active tab
+			return validateActiveTab(false);
 	}
+	@Override
+	public void saveToDb(String trxName) {
+		ISaveForm.batchSaveToDb(tabPanelModel, trxName);
+		
+	}
+	
 }

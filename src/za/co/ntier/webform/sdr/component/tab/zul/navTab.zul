@@ -16,35 +16,44 @@
     <tabpanels children="@init(vmNavTab.component.tabPanelModel)" >
       <template name="children" var="tabPanelItem">
         <tabpanel sclass="@init(( 'nav-tab-panel ' += tabPanelItem.sclass ))" >
-          <nodom if = "${vmNavTab.isOrglinkTabPanel(tabPanelItem)}">
+          <nodom unless = "${ tabPanelItem.defaultTabPanel }">
             <include
                 component="@init(tabPanelItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
-                src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabPanelOrgLink.zul')))" />
+                src="@load( tabPanelItem.zulPath )" />
           </nodom>
             
         
-          <nodom unless = "${vmNavTab.isOrglinkTabPanel(tabPanelItem)}" 
+          <nodom if = "${ tabPanelItem.defaultTabPanel }" 
             children="@init(tabPanelItem.compModel)">
             <template name="children" var="compItem">
               
               <include
                 if = "${ MasterUtil.isFormViewTableModel(compItem) }"
+                sclass="@init(( MasterUtil.prefixSclass('outter', compItem) ))"
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
               
               <include
-                if = "${ MasterUtil.isListViewTableModel(compItem) }"
+                if = "${ MasterUtil.isGridViewTableModel(compItem) }"
+                sclass="@init(( MasterUtil.prefixSclass('outter', compItem) ))"
                 component="@init(compItem)"
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+                
+              <include
+                if = "${ MasterUtil.isCardViewTableModel(compItem) }"
+                sclass="@init(( MasterUtil.prefixSclass('outter', compItem) ))"
+                component="@init(compItem)"
+                menuContextInfo="@init(vmNavTab.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataCardView.zul')))" />
               
               <include 
                 if = "${ MasterUtil.isNavTab(compItem) }"
-                sclass="navTabOuter"
+                sclass="@init(( MasterUtil.prefixSclass('outter', compItem) ))"
                 component="@init(compItem)"
-                menuContextInfo="@init(vm.menuContextInfo)"
+                menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
                
 					  </template>
