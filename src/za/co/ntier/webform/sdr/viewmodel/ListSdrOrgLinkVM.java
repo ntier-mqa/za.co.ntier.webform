@@ -30,7 +30,8 @@ public class ListSdrOrgLinkVM {
 		ValueNamePair zzDocStatus = (ValueNamePair)row.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus);
 		boolean isUnlink = X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved.equals(zzDocStatus.getValue());
 		isUnlink = isUnlink || X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Pending.equals(zzDocStatus.getValue());
-		isUnlink = isUnlink && row.get(ListSdrOrgLinkVM.ROLE_key).equals(ListSdrOrgLinkVM.ROLE_Secondary);
+		isUnlink = isUnlink && (row.get(ListSdrOrgLinkVM.ROLE_key).equals(ListSdrOrgLinkVM.ROLE_Secondary)
+				|| row.get(ListSdrOrgLinkVM.ROLE_key).equals(ListSdrOrgLinkVM.ROLE_Primary));
 		
 		return isUnlink;
 	}

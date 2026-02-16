@@ -569,27 +569,29 @@ public class DgaVM extends BaseAppVM{
 					.setTableName(I_ZZ_EDP_Application.Table_Name);
 		cols.add(nqfLevelCol);
 		
+		
+		ListColumnModel<ValueNamePair> executiveStatus = ListCellModel.getListColumnModel(
+				"Executive Status", 
+				I_ZZ_EDP_Application.COLUMNNAME_ZZExecutiveStatus,
+				MasterUtil.getExecutiveStatus(),
+				ref -> {return ref.getName();},
+				ref -> {return ref.getValue();},
+				CellModel.RADIO_CELL
+				).setzClass(ValueNamePair.class);
+			executiveStatus.required();
+			executiveStatus.setTableName(I_ZZ_EDP_Application.Table_Name);
+			
+		cols.add(executiveStatus);
+		
 		if(!isEmployee) {
-			ListColumnModel<ValueNamePair> executiveStatus = ListCellModel.getListColumnModel(
-					"Executive Status", 
-					I_ZZ_EDP_Application.COLUMNNAME_ZZExecutiveStatus,
-					MasterUtil.getExecutiveStatus(),
-					ref -> {return ref.getName();},
-					ref -> {return ref.getValue();},
-					CellModel.RADIO_CELL
-					).setzClass(ValueNamePair.class);
-				executiveStatus.required();
-				executiveStatus.setTableName(I_ZZ_EDP_Application.Table_Name);
-				
-			cols.add(executiveStatus);
+			ColumnModel letterUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "Motivation Letter")
+					.required()
+					.setShowTitle(false)
+					.setTableName(I_ZZ_EDP_Application.Table_Name);
+			
+			cols.add(letterUploadCol);
 		}
 		
-		ColumnModel letterUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "Motivation Letter")
-				.required()
-				.setShowTitle(false)
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
-		
-		cols.add(letterUploadCol);
 		
 		MUser_New loginUser = MUser_New.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
 		if (!isEmployee) {
