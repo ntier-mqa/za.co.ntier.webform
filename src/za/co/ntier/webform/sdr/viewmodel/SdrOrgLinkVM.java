@@ -6,6 +6,7 @@ import java.util.List;
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_Bank;
@@ -64,14 +65,16 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		sdfPo = MasterUtil.querySdf(Env.getAD_User_ID(Env.getCtx()));
 		if (sdfPo == null)
-			MasterUtil.showDialog("ZZOrgLinksSDFNotFound", MasterUtil.fCloseActiveWindow);
+			MasterUtil.showInfoDialog("ZZOrgLinksSDFNotFound", MasterUtil.fCloseActiveWindow);
 		else {
 			initForm();
 		}
 	}
 
 	private void initForm() {
-		orgSearchModel = initOrgSearchModel();
+		if (menuContextInfo.getRecordID() == 0) {
+			orgSearchModel = initOrgSearchModel();
+		}
 		
 		sdfOrgModel = initSdfOrgModel();
 		
@@ -98,7 +101,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			X_C_BPartner sOrgPo = searchOrgQuery.first();
 			
 			if (sOrgPo == null) {
-				MasterUtil.showDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
+				MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
 			}else {
 				orgPo = sOrgPo;
 				orgSearchModel.getRow().setData(orgPo);
@@ -183,17 +186,19 @@ public class SdrOrgLinkVM extends BaseAppVM {
 
 		ColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
 				"UPLOAD LETTER OF APPOINTMENT")
-			.required();
+			.required()
+			.setShowTitle(false);
 		cols.add(btAppointmentLetterCol);
 		
 		ColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS")
-			.required();
+			.required()
+			.setShowTitle(false);
 		cols.add(btBankDetailCol);
 
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
-		namesBean.setSclass("orglink");
+		TableModel tmSdrOrgLink = TableModel.getTableBean(TableModel.class, cols, false);
+		tmSdrOrgLink.setSclass("orglink");
 
-		namesBean.setPoSupplier(t -> {
+		tmSdrOrgLink.setPoSupplier(t -> {
 			if (orgPo == null) {
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinkMissingOrg"));
 			}
@@ -211,10 +216,16 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				
 		});
 		
-		namesBean.init();
+		List<PO> savedSdrOrgLinks = null;
+		if (menuContextInfo.getRecordID() != 0) {
+			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
+			savedSdrOrgLinks = List.of(sdfOrgPo);
+		}
+		
+		tmSdrOrgLink.init(savedSdrOrgLinks);
 		
 
-		return namesBean;
+		return tmSdrOrgLink;
 	}
 	
 	private TableModel initBankDetailModel() {
@@ -304,10 +315,12 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				}).setzClass(ValueNamePair.class).required();
 		cols.add(adminConfirmCol);
 
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
-		namesBean.setSclass("bankDetails");
+		
+		
+		TableModel tmBank = TableModel.getTableBean(TableModel.class, cols, false);
+		tmBank.setSclass("bankDetails");
 
-		namesBean.setPoSupplier(t -> {
+		tmBank.setPoSupplier(t -> {
 			if (sdfOrgPo == null) {
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinkMissingOrg"));
 			}
@@ -319,9 +332,22 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			bankDetailPo.setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
 			return bankDetailPo;
 		});
-		namesBean.init();
+		
+		List<PO> savedBanks = null;
+		if (menuContextInfo.getRecordID() != 0) {
+			Query queryBankDetailQuery =
+				MTable.get(Env.getCtx(), I_ZZBankingDetails.Table_Name).createQuery(String.format("%s = ?",
+						I_ZZBankingDetails.COLUMNNAME_ZZSdfOrganisation_ID), null);
+				queryBankDetailQuery.setParameters(sdfOrgPo.getZZSdfOrganisation_ID());
+				
+				bankDetailPo = queryBankDetailQuery.firstOnly();
+				
+				savedBanks = List.of(bankDetailPo);
+		}
+		
+		tmBank.init(savedBanks);
 
-		return namesBean;
+		return tmBank;
 	}
 	
 	/**

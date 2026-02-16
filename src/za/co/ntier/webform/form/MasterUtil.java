@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.desktop.DefaultDesktop;
@@ -276,6 +277,8 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpChamberCode = new AbstractMap.SimpleEntry<>("15a4a826-3bcb-402b-9ff4-602beeec8c3f", null);
 	public static final Entry<String, Integer> LkpNQFLevel = new AbstractMap.SimpleEntry<>("2b47e027-cb5a-45d6-8fc6-2c9bc9c6c3ad", null);
 	
+	public static final Entry<String, Integer> ZZDocStatus = new AbstractMap.SimpleEntry<>("98479fb5-df5d-440d-86aa-92d77a320857", null);
+	
 	public static final Entry<String, Integer> ExecutiveStatus = new AbstractMap.SimpleEntry<>("de34e9e2-ce0d-4877-b912-d1e7a5615a02", null);
 	 
 	
@@ -283,6 +286,10 @@ public class MasterUtil {
 	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
+	
+	public static List<ValueNamePair> getZZDocStatus () {
+		return getRefList(ZZDocStatus);
+	}
 	
 	public static List<ValueNamePair> getExecutiveStatus () {
 		return getRefList(ExecutiveStatus);
@@ -569,14 +576,36 @@ public class MasterUtil {
 		
 	}
 
-	public static void showDialog(String msgTile, List<String> msgContent, Consumer<Object> onCloseDialog) {
-		MasterUtil.showDialog("dialog", msgTile, msgContent, onCloseDialog);
+	public static void showInfoDialog(String msgTile, List<String> msgContent, Consumer<Object> onOkDialog) {
+		MasterUtil.showInfoDialog("dialog", msgTile, msgContent, onOkDialog);
 	}
-	public static void showDialog(String sClass, String msgTile, List<String> msgContent, Consumer<Object> onCloseDialog) {
+	
+	public static void showConfirmDialog(String msgKey, Consumer<Object> onOkDialog) {
+		showConfirmDialog(msgKey, Msg.getMsg(Env.getCtx(), msgKey, false), 
+				List.of(Msg.getMsg(Env.getCtx(), msgKey, true)), onOkDialog);
+	}
+	
+	public static void showConfirmDialog(String sClass, String msgTile, List<String> msgContent, Consumer<Object> onOkDialog, 
+			Consumer<Object> onCancelDialog) {
+		showDialog(sClass, msgTile, msgContent, onOkDialog, onCancelDialog);
+	}
+	
+	public static void showConfirmDialog(String sClass, String msgTile, List<String> msgContent, Consumer<Object> onOkDialog) {
+		showDialog(sClass, msgTile, msgContent, onOkDialog, defaultCancelDialog);
+	}
+	
+	private static Consumer<Object> defaultCancelDialog = obj -> {};
+	
+	protected static void showDialog(String sClass, String msgTile, List<String> msgContent, Consumer<Object> onOkDialog, 
+			Consumer<Object> onCancelDialog) {
 		Dialog dialog = new Dialog(msgTile, msgContent);
 		dialog.setVisible(true);
 		dialog.setSclass(sClass);
-		dialog.setOnCloseDialog(onCloseDialog);
+		dialog.setOkHandle(onOkDialog);
+		dialog.setCancelHandle(onCancelDialog);
+		if (onCancelDialog != null) {
+			dialog.setShowCancel(true);
+		}
 		
 		Map<String, Object> args = new HashMap<>();
 		args.put(ComponentVMWrapper.ComponentKey, dialog);
@@ -584,9 +613,13 @@ public class MasterUtil {
 		Executions.createComponents(zulPathRelative, null, args);
 	}
 	
-	public static void showDialog(String msgKey, Consumer<Object> onCloseDialog) {
-		MasterUtil.showDialog(msgKey, Msg.getMsg(Env.getCtx(), msgKey, false), 
-				List.of(Msg.getMsg(Env.getCtx(), msgKey, true)), onCloseDialog);
+	public static void showInfoDialog(String sClass, String msgTile, List<String> msgContent, Consumer<Object> onOkDialog) {
+		showDialog(sClass, msgTile, msgContent, onOkDialog, null);
+	}
+	
+	public static void showInfoDialog(String msgKey, Consumer<Object> onOkDialog) {
+		MasterUtil.showInfoDialog(msgKey, Msg.getMsg(Env.getCtx(), msgKey, false), 
+				List.of(Msg.getMsg(Env.getCtx(), msgKey, true)), onOkDialog);
 	}
 	
 	public static Consumer<Object> fCloseActiveWindow =  t -> {

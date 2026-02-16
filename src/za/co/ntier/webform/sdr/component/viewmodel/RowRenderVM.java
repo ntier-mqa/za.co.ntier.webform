@@ -60,7 +60,7 @@ public class RowRenderVM extends BaseComponentVM<RowModel>{
 			List<String> cellValidateMsgs = cellModel.validate(value);
 			msgs.addAll(cellValidateMsgs);
 			if (cellValidateMsgs.size() > 1 && cellModel instanceof SDLCellModel) {//TODO cellValidateMsgs.size() > 1 hardcode to don't show require check only when clear wrong value
-				MasterUtil.showDialog("Required criteria", cellValidateMsgs, t -> {
+				MasterUtil.showInfoDialog("Required criteria", cellValidateMsgs, t -> {
 					((HtmlBasedComponent)comp).setFocus(true);
 				});
 			}

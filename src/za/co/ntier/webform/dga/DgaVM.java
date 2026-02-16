@@ -175,7 +175,7 @@ public class DgaVM extends BaseAppVM{
 		if (StringUtils.isNotBlank(menuContextInfo.getApplicationFormUU())) {
 			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), menuContextInfo.getApplicationFormUU(), null);
 			if (!applicationForm.isActive()) {
-				MasterUtil.showDialog("ZZDGADeletedApp", MasterUtil.fCloseActiveWindow);
+				MasterUtil.showInfoDialog("ZZDGADeletedApp", MasterUtil.fCloseActiveWindow);
 				
 			}
 			
@@ -675,7 +675,7 @@ public class DgaVM extends BaseAppVM{
 			msgs.add("Please note this for future queries");
 		}
 
-		MasterUtil.showDialog(title, msgs, t -> {
+		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
 			MasterUtil.openForm("3b0c2d85-8f2e-44e9-b030-4b134159a052");
 		});	
