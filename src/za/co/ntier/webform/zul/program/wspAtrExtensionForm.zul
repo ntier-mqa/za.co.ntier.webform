@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vm') @init('za.co.ntier.webform.form.viewmodel.WspAtrExtensionFormVM')">
+
+    <!-- Header -->
+    <div style="display:flex; padding:5px 0 40px 0; flex-direction: column; align-items: center;">
+        <label style="font-weight: bold;font-size: x-large;" 
+               value="@init(vm.formInfo.formHeader)" />
+        <div style="padding-bottom:10px;font-size:smaller">
+            <html content="@init((vm.menuContextInfo.programMasterData.getZZSupportInfo()))"/>
+        </div>
+    </div>
+
+    <include
+        component="@init(vm.sdfDetails)"
+        menuContextInfo="@init(vm.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+
+    <include
+        component="@init(vm.organisationDetails)"
+        menuContextInfo="@init(vm.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+        
+    <include
+        component="@init(vm.extensionRequest)"
+        menuContextInfo="@init(vm.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+
+    <include
+        component="@init(vm.seniorOrgRepresentative)"
+        menuContextInfo="@init(vm.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+		
+    <include
+        saveApp="@init(vm)"
+        navTab="@init(vm.mainTab)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
+</idspace>
