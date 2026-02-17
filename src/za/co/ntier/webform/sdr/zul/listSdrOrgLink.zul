@@ -28,15 +28,22 @@
         <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_OrgName])"/>
         <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No])"/>
         <label value="@init(item['role'])"/>
-        <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus])"/>
+        <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus].name)"/>
         <div sclass="formBottomPanel">
-          <button if = "${ vm.isEditable(item) }" 
-            label="Edit Request"
-            onClick="@command('editLinkedOrganisation', row=item)"/>
-            
-          <button if = "${ vm.isOrgEditable(item) }" 
-            label="Edit Organisation"
-            onClick="@command('editOrganisation', row=item)"/>
+       	
+       	<button
+       		if = "${ vm.isUnlink(item) }" 
+           	label="Remove Link"
+           	onClick="@command('unLinkedOrganisation', row=item)"/>
+        
+       	<button
+       		if = "${ vm.isEditRequest(item) }" 
+           	label="Edit Request"
+           	onClick="@command('editLinkedOrganisation', row=item)"/>
+        
+        <button if = "${ vm.isOrgEditable(item) }" 
+          	label="Edit Organisation"
+          	onClick="@command('editOrganisation', row=item)"/>
         </div>
         
       </row>

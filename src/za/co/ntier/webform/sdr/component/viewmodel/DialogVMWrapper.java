@@ -16,16 +16,27 @@ public class DialogVMWrapper extends BaseComponentVM<Dialog> {
 
 	private String moreInfo;
 	
-	@Command("closeDialog")
-    public void closeDialog() {
-        // Close the modal via the bound component's 'visible' property
-        if (getComponent() != null) {
-            getComponent().setVisible(false);
-            BindUtils.postNotifyChange(null, null, getComponent(), "visible");
-        }
+	@Command("cmdCancel")
+	public void cmdCancel() {
+		closeDialog();
         
-        if (getComponent().getOnCloseDialog() != null) {
-        	getComponent().getOnCloseDialog().accept(null);
+        if (getComponent().getCancelHandle() != null) {
+        	getComponent().getCancelHandle().accept(null);
+        }
+	}
+	
+	private void closeDialog() {
+        getComponent().setVisible(false);
+        BindUtils.postNotifyChange(null, null, getComponent(), "visible");
+	}
+	
+	@Command("cmdOk")
+    public void cmdOk() {
+        // Close the modal via the bound component's 'visible' property
+		closeDialog();
+        
+        if (getComponent().getOkHandle() != null) {
+        	getComponent().getOkHandle().accept(null);
         }
     }
 

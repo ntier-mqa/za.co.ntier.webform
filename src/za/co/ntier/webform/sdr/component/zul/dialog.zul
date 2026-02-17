@@ -24,8 +24,13 @@
       </div>
 
       <div sclass="modal-footer" style="flex-grow:0">  
-        <button sclass="btn btn-primary" label="OK"
-                onClick="@command('closeDialog')"/>
+        <button if = "${ vmDialog.component.showOk }"
+        	sclass="btn btn-primary" label="OK"
+            onClick="@command('cmdOk')"/>
+            
+        <button if = "${ vmDialog.component.showCancel }"
+        	sclass="btn btn-primary" label="Cancel"
+            onClick="@command('cmdCancel')"/>
       </div>
     </div>
   </window>

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_Bank;
@@ -21,13 +22,13 @@ import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
-import za.co.ntier.webform.sdr.component.bean.column.UploadColumnModel;
 
 public class OrglinkTabPanel extends NavTabPanel {
 
@@ -102,7 +103,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 			X_C_BPartner sOrgPo = searchOrgQuery.first();
 			
 			if (sOrgPo == null) {
-				MasterUtil.showDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
+				MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
 			}else {
 				orgPo = sOrgPo;
 				orgSearchModel.getRow().setData(orgPo);
@@ -172,17 +173,27 @@ public class OrglinkTabPanel extends NavTabPanel {
 						I_ZZSdfOrganisation.COLUMNNAME_ZZSecondarySdf);
 		cols.add(secondarySdfCol);
 
-		UploadColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
-				"UPLOAD LETTER OF APPOINTMENT");
+		ColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
+				"UPLOAD LETTER OF APPOINTMENT")
+				.setShowTitle(false);
 		cols.add(btAppointmentLetterCol);
 		
-		UploadColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS");
+		ColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS")
+				.setShowTitle(false);
 		cols.add(btBankDetailCol);
 
+		
+		String sSdfOrganisationID = menuContextInfo.getContextParam(WebForm.recordIDMenuContextKeyNonPlus);
+		List<PO> saveds = null;
+		if (sSdfOrganisationID != null) {
+			Integer sdfOrganisationID = Integer.parseInt(sSdfOrganisationID);
+			X_ZZSdfOrganisation sdfOrg = new X_ZZSdfOrganisation(Env.getCtx(), sdfOrganisationID.intValue(), null);
+			saveds = List.of(sdfOrg);
+		}
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setSclass("orglink");
 
-		namesBean.init(null, null, null);
+		namesBean.init(saveds);
 
 		return namesBean;
 	}

@@ -175,7 +175,7 @@ public class DgaVM extends BaseAppVM{
 		if (StringUtils.isNotBlank(menuContextInfo.getApplicationFormUU())) {
 			applicationForm = new X_ZZ_Application_Form(Env.getCtx(), menuContextInfo.getApplicationFormUU(), null);
 			if (!applicationForm.isActive()) {
-				MasterUtil.showDialog("ZZDGADeletedApp", MasterUtil.fCloseActiveWindow);
+				MasterUtil.showInfoDialog("ZZDGADeletedApp", MasterUtil.fCloseActiveWindow);
 				
 			}
 			
@@ -569,27 +569,29 @@ public class DgaVM extends BaseAppVM{
 					.setTableName(I_ZZ_EDP_Application.Table_Name);
 		cols.add(nqfLevelCol);
 		
+		
+		ListColumnModel<ValueNamePair> executiveStatus = ListCellModel.getListColumnModel(
+				"Executive Status", 
+				I_ZZ_EDP_Application.COLUMNNAME_ZZExecutiveStatus,
+				MasterUtil.getExecutiveStatus(),
+				ref -> {return ref.getName();},
+				ref -> {return ref.getValue();},
+				CellModel.RADIO_CELL
+				).setzClass(ValueNamePair.class);
+			executiveStatus.required();
+			executiveStatus.setTableName(I_ZZ_EDP_Application.Table_Name);
+			
+		cols.add(executiveStatus);
+		
 		if(!isEmployee) {
-			ListColumnModel<ValueNamePair> executiveStatus = ListCellModel.getListColumnModel(
-					"Executive Status", 
-					I_ZZ_EDP_Application.COLUMNNAME_ZZExecutiveStatus,
-					MasterUtil.getExecutiveStatus(),
-					ref -> {return ref.getName();},
-					ref -> {return ref.getValue();},
-					CellModel.RADIO_CELL
-					).setzClass(ValueNamePair.class);
-				executiveStatus.required();
-				executiveStatus.setTableName(I_ZZ_EDP_Application.Table_Name);
-				
-			cols.add(executiveStatus);
+			ColumnModel letterUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "Motivation Letter")
+					.required()
+					.setShowTitle(false)
+					.setTableName(I_ZZ_EDP_Application.Table_Name);
+			
+			cols.add(letterUploadCol);
 		}
 		
-		ColumnModel letterUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "Motivation Letter")
-				.required()
-				.setShowTitle(false)
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
-		
-		cols.add(letterUploadCol);
 		
 		MUser_New loginUser = MUser_New.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
 		if (!isEmployee) {
@@ -675,7 +677,7 @@ public class DgaVM extends BaseAppVM{
 			msgs.add("Please note this for future queries");
 		}
 
-		MasterUtil.showDialog(title, msgs, t -> {
+		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
 			MasterUtil.openForm("3b0c2d85-8f2e-44e9-b030-4b134159a052");
 		});	

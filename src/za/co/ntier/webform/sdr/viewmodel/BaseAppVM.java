@@ -126,12 +126,12 @@ public abstract class BaseAppVM implements ISaveApp{
 	}
 	
 	protected void showResult(boolean isSubmit) {
-		MasterUtil.showDialog("ZZSuccess", MasterUtil.fCloseActiveWindow);
+		MasterUtil.showInfoDialog("ZZSuccess", MasterUtil.fCloseActiveWindow);
 	}
 	
 	protected void showException(Exception exc) {
 		if (exc != null) {
-			MasterUtil.showDialog(exc.getMessage(), null);
+			MasterUtil.showInfoDialog(exc.getMessage(), null);
 		}
 	}
 	

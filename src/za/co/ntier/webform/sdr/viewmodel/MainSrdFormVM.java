@@ -450,9 +450,9 @@ public class MainSrdFormVM extends BaseAppVM {
 	@Override
 	protected void showResult(boolean isSubmit) {
 		if(isNewSdf) {
-			MasterUtil.showDialog("ZZSDFCreatedSuccess", MasterUtil.fCloseActiveWindow);
+			MasterUtil.showInfoDialog("ZZSDFCreatedSuccess", MasterUtil.fCloseActiveWindow);
 		}else {
-			MasterUtil.showDialog("ZZSDFSavedSuccess", MasterUtil.fCloseActiveWindow);
+			MasterUtil.showInfoDialog("ZZSDFSavedSuccess", MasterUtil.fCloseActiveWindow);
 		}
 	}
 
