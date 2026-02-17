@@ -336,7 +336,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 		msgs.add("Extension ID: " + extensionData.get_ID());
 
-		MasterUtil.showDialog(title, msgs, t -> {
+		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
 		});
 	}
