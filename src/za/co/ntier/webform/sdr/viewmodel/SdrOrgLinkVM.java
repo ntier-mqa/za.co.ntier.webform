@@ -20,6 +20,7 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
+import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
@@ -45,11 +46,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	
 	private TableModel sdfOrgModel;
 
-	private X_ZZSdfOrganisation sdfOrgPo;
-
 	private TableModel bankDetailModel;
-
-	private X_ZZBankingDetails bankDetailPo;
 
 	private X_C_BPartner orgPo;
 	
@@ -173,12 +170,18 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		secondarySdfCol.setComposeValidator(cellModel -> {
 				CheckboxCellModel replacingPrimaryCell = (CheckboxCellModel)cellModel.getRowModel().get(replacingPrimaryCol);
 				CheckboxCellModel secondarySdfCell = (CheckboxCellModel)cellModel;
+				
 				if ((secondarySdfCell.getValue() == null || !((Boolean)secondarySdfCell.getValue())) && 
 						(replacingPrimaryCell.getValue() == null || !((Boolean)replacingPrimaryCell.getValue()))) {
 					cellModel.getValidateMsgs().add(Msg.getMsg(Env.getCtx(), "ZZValidateOrgLinkRequiedSDFType"));
 					return Boolean.FALSE;
 				}
-					
+				
+				if ((secondarySdfCell.getValue() != null && (Boolean)secondarySdfCell.getValue()) && 
+						(replacingPrimaryCell.getValue() != null && (Boolean)replacingPrimaryCell.getValue())) {
+					cellModel.getValidateMsgs().add(Msg.getMsg(Env.getCtx(), "ZZValidateOrgLinkWrongSDFType"));
+					return Boolean.FALSE;
+				}
 				
 				return Boolean.TRUE;
 			});
@@ -203,23 +206,25 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinkMissingOrg"));
 			}
 			
-			if (sdfOrgPo == null) {
-				sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), 0, null);
-				sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Draft);
-			}
-			
-			
-			sdfOrgPo.setC_BPartner_ID(orgPo.getC_BPartner_ID());
-			sdfOrgPo.setZZSdf_ID(sdfPo.getZZSdf_ID());
+			X_ZZSdfOrganisation sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), 0, null);
+			sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Draft);
 			
 			return sdfOrgPo;
 				
 		});
 		
+		tmSdrOrgLink.setBeforeSave(po -> {
+			X_ZZSdfOrganisation sdfOrgPo = (X_ZZSdfOrganisation)po;
+			sdfOrgPo.setC_BPartner_ID(orgPo.getC_BPartner_ID());
+			sdfOrgPo.setZZSdf_ID(sdfPo.getZZSdf_ID());
+			return true;
+		});
+		
 		List<PO> savedSdrOrgLinks = null;
 		if (menuContextInfo.getRecordID() != 0) {
-			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
+			X_ZZSdfOrganisation sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
 			savedSdrOrgLinks = List.of(sdfOrgPo);
+			orgPo =  MBPartner_New.get(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
 		}
 		
 		tmSdrOrgLink.init(savedSdrOrgLinks);
@@ -320,17 +325,15 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		TableModel tmBank = TableModel.getTableBean(TableModel.class, cols, false);
 		tmBank.setSclass("bankDetails");
 
-		tmBank.setPoSupplier(t -> {
-			if (sdfOrgPo == null) {
-				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinkMissingOrg"));
-			}
-			
-			if (bankDetailPo == null) {
-				bankDetailPo = new X_ZZBankingDetails(Env.getCtx(), 0, null);
-			}
-			
-			bankDetailPo.setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
+		tmBank.setPoSupplier(t -> {			
+			X_ZZBankingDetails bankDetailPo = new X_ZZBankingDetails(Env.getCtx(), 0, null);
 			return bankDetailPo;
+		});
+		
+		tmBank.setBeforeSave(po -> {
+			X_ZZSdfOrganisation sdfOrgPo = (X_ZZSdfOrganisation)sdfOrgModel.getRow().getData();
+			((X_ZZBankingDetails)po).setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
+			return true;
 		});
 		
 		List<PO> savedBanks = null;
@@ -338,11 +341,13 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			Query queryBankDetailQuery =
 				MTable.get(Env.getCtx(), I_ZZBankingDetails.Table_Name).createQuery(String.format("%s = ?",
 						I_ZZBankingDetails.COLUMNNAME_ZZSdfOrganisation_ID), null);
-				queryBankDetailQuery.setParameters(sdfOrgPo.getZZSdfOrganisation_ID());
+			
+				queryBankDetailQuery.setParameters(menuContextInfo.getRecordID());
 				
-				bankDetailPo = queryBankDetailQuery.firstOnly();
+				X_ZZBankingDetails bankDetailPo = queryBankDetailQuery.first();
 				
-				savedBanks = List.of(bankDetailPo);
+				if (bankDetailPo != null)
+					savedBanks = List.of(bankDetailPo);
 		}
 		
 		tmBank.init(savedBanks);
@@ -376,13 +381,6 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	 */
 	public void setFormInfo(FormInfo formInfo) {
 		this.formInfo = formInfo;
-	}
-
-	/**
-	 * @param bankDetailPo the bankDetailPo to set
-	 */
-	public void setBankDetailPo(X_ZZBankingDetails bankDetailPo) {
-		this.bankDetailPo = bankDetailPo;
 	}
 
 	/**
@@ -436,13 +434,14 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	@Override
 	public void doSubmit(String trxName) {
 		super.doSubmit(trxName);
+		X_ZZSdfOrganisation sdfOrgPo = ((X_ZZSdfOrganisation)sdfOrgModel.getRow().getData());
 		sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Pending);
 		sdfOrgPo.saveEx(trxName);
 	}
 
 	@Override
 	public Object getMainApp() {
-		return sdfOrgPo;
+		return null;
 	}
 	
 }
