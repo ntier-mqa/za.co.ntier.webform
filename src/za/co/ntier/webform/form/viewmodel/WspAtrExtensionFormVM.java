@@ -233,7 +233,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 		cols.add(reasonCol);
 
-		return createTableModel(cols, formManage, WspAtrExtensionConstants.CSS_EXTENSION_SECTION);
+		return createTableModel(cols, formManage, "srd-person-detail");
 	}
 
 	private TableModel getSeniorOrgRepresentativeComp(DaoManage formManage)
@@ -332,8 +332,6 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	@Override
 	protected void showResult(boolean isSubmit)
 	{
-		isSubmit = true; // Force submit to true as per requirement
-
 		String title = Msg.getMsg(ctx, "ZZExtRequestSubmitSuccess", false);
 
 		List<String> msgs = new ArrayList<>();
@@ -436,6 +434,16 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 		super.doSave(trxName);
 
+	}
+	
+	@Override
+	public boolean isSupportSubmit() {
+		return true;
+	}
+	
+	@Override
+	public boolean isSupportSave() {
+		return false;
 	}
 
 }
