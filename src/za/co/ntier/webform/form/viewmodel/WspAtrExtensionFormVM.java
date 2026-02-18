@@ -1,21 +1,30 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION;
+import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION_BATCH;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZ_WSP_ATR_EXTENSION;
+import za.co.ntier.api.model.X_ZZ_WSP_ATR_EXTENSION_BATCH;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -33,12 +42,14 @@ import za.co.ntier.webform.sdr.viewmodel.BaseAppVM;
 
 /**
  * ViewModel for WSP-ATR Extension Request Form.
+ * 
  * @author niraj
  */
 public class WspAtrExtensionFormVM extends BaseAppVM
 {
 
 	private static final CLogger		log	= CLogger.getCLogger(WspAtrExtensionFormVM.class);
+	private final Properties			ctx	= Env.getCtx();
 
 	private MenuContextInfo				menuContextInfo;
 	private FormInfo					formInfo;
@@ -59,8 +70,8 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		this.menuContextInfo = menuContextInfo;
 		setFormInfo(new FormInfo(menuContextInfo));
 
-		int loginUserId = Env.getAD_User_ID(Env.getCtx());
-		loggedInUser = new MUser_New(Env.getCtx(), loginUserId, null);
+		int loginUserId = Env.getAD_User_ID(ctx);
+		loggedInUser = new MUser_New(ctx, loginUserId, null);
 
 		loadLinkedOrganisations();
 		initExtensionData();
@@ -70,13 +81,13 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 		sdfDetails = getSdfDetailsComp(formManage);
 		sdfDetails.setSectionHeader(WspAtrExtensionConstants.SECTION_SDF_DETAILS);
-		
+
 		organisationDetails = getOrganisationDetailsComp(formManage);
 		organisationDetails.setSectionHeader(WspAtrExtensionConstants.SECTION_ORG_DETAILS);
-		
+
 		extensionRequest = getExtensionRequestComp(formManage);
 		extensionRequest.setSectionHeader(WspAtrExtensionConstants.SECTION_EXTENSION_REQUEST);
-		
+
 		seniorOrgRepresentative = getSeniorOrgRepresentativeComp(formManage);
 		seniorOrgRepresentative.setSectionHeader(WspAtrExtensionConstants.SECTION_SENIOR_REP);
 
@@ -91,9 +102,9 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 	private void initExtensionData()
 	{
-		extensionData = new X_ZZ_WSP_ATR_EXTENSION(Env.getCtx(), 0, null);
+		extensionData = new X_ZZ_WSP_ATR_EXTENSION(ctx, 0, null);
 		extensionData.setZZ_SDF_FirstName(loggedInUser.getFirstName());
-		extensionData.setZZ_SDF_Surname(loggedInUser.getLastName());
+		extensionData.setZZ_SDF_Surname(loggedInUser.getZZSurname());
 		extensionData.setAD_Org_ID(menuContextInfo.getProgramMasterData().getAD_Org_ID());
 	}
 
@@ -102,7 +113,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		try
 		{
 			List<List<Object>> linkedOrganisationsPo = DB.getSQLArrayObjectsEx(null, buildOrganisationQuery(),
-					Env.getAD_User_ID(Env.getCtx()));
+					Env.getAD_User_ID(ctx));
 
 			if (linkedOrganisationsPo == null)
 			{
@@ -321,20 +332,18 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	@Override
 	protected void showResult(boolean isSubmit)
 	{
-		String title = isSubmit ? "Extension Request Submitted" : "Extension Request Saved";
+		isSubmit = true; // Force submit to true as per requirement
+
+		String title = Msg.getMsg(ctx, "ZZExtRequestSubmitSuccess", false);
 
 		List<String> msgs = new ArrayList<>();
 
 		if (isSubmit)
 		{
-			msgs.add("Your extension request has been submitted successfully.");
-		}
-		else
-		{
-			msgs.add("Your extension request has been saved.");
+			msgs.add(Msg.getMsg(ctx, "ZZExtRequestSubmitSuccess", true));
 		}
 
-		msgs.add("Extension ID: " + extensionData.get_ID());
+		msgs.add("Request ID: " + extensionData.get_ID());
 
 		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
@@ -392,4 +401,41 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	{
 		return extensionData;
 	}
+
+	@Override
+	public void doSave(String trxName)
+	{
+
+		X_ZZ_WSP_ATR_EXTENSION_BATCH batch = new Query(ctx, I_ZZ_WSP_ATR_EXTENSION_BATCH.Table_Name,
+				I_ZZ_WSP_ATR_EXTENSION_BATCH.COLUMNNAME_ZZ_DocStatus + "=?" + " AND "
+						+ I_ZZ_WSP_ATR_EXTENSION_BATCH.COLUMNNAME_IsActive + "='Y'" + " AND "
+						+ I_ZZ_WSP_ATR_EXTENSION_BATCH.COLUMNNAME_ZZ_WSP_ATR_Ext_Start_Date + " > TRUNC(SYSDATE)",
+				trxName).setParameters(X_ZZ_WSP_ATR_EXTENSION_BATCH.ZZ_DOCSTATUS_Draft)
+						.setOrderBy(I_ZZ_WSP_ATR_EXTENSION_BATCH.COLUMNNAME_ZZ_WSP_ATR_Ext_Start_Date + " ASC").first();
+
+		if (batch == null)
+		{
+			throw new AdempiereException(Msg.getMsg(ctx, "ZZExtReqNotAllowed", false));
+		}
+
+		Timestamp startTs = batch.getZZ_WSP_ATR_Ext_Start_Date();
+		if (startTs == null)
+		{
+			throw new AdempiereException(Msg.getMsg(ctx, "ZZExtReqNotAllowed", false));
+		}
+
+		LocalDate today = LocalDate.now(ZoneId.systemDefault());
+		LocalDate startDate = startTs.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+		if (!today.isBefore(startDate))
+		{
+			throw new AdempiereException(Msg.getMsg(ctx, "ZZExtReqNotAllowed", false));
+		}
+
+		extensionData.setZZ_WSP_ATR_EXTENSION_BATCH_ID(batch.getZZ_WSP_ATR_EXTENSION_BATCH_ID());
+
+		super.doSave(trxName);
+
+	}
+
 }
