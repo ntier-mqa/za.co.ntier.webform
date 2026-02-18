@@ -281,11 +281,19 @@ public class MasterUtil {
 	
 	public static final Entry<String, Integer> ExecutiveStatus = new AbstractMap.SimpleEntry<>("de34e9e2-ce0d-4877-b912-d1e7a5615a02", null);
 	 
+	public static final Entry<String, Integer> SDFOrgLinkOptions = new AbstractMap.SimpleEntry<>("31d55f13-e493-435f-b07d-d362477356b0", null);
 	
 	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
 	
 	
+	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
+	
+	
+	
+	public static List<ValueNamePair> getSDFOrgLinkOptions () {
+		return getRefList(SDFOrgLinkOptions);
+	}
 	
 	public static List<ValueNamePair> getZZDocStatus () {
 		return getRefList(ZZDocStatus);

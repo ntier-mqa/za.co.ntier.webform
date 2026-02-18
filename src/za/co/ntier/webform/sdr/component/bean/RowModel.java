@@ -173,7 +173,12 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 				
 				//TODO:Move logic set ui value to dao to cellMode
 				Object value = convertDataType(daoPerCol, cellModel);
-				MasterUtil.setObjectProperty(daoPerCol, cellModel.getColModel().getDaoPropertyName(), value);
+				if (value == null) {
+					daoPerCol.set_ValueOfColumn(cellModel.getColModel().getDaoPropertyName(), null);
+				}else {
+					MasterUtil.setObjectProperty(daoPerCol, cellModel.getColModel().getDaoPropertyName(), value);
+				}
+				
 			}
 		}
 			

@@ -42,7 +42,10 @@ public class ListSdrOrgLinkVM {
 	}
 	
 	public boolean isOrgEditable(Map<String, Object> row) {
-		return row.get(ListSdrOrgLinkVM.ROLE_key).equals(ListSdrOrgLinkVM.ROLE_Primary);
+		ValueNamePair zzDocStatus = (ValueNamePair)row.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus);
+		boolean isOrgEditable = X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved.equals(zzDocStatus.getValue());
+		isOrgEditable = isOrgEditable && row.get(ListSdrOrgLinkVM.ROLE_key).equals(ListSdrOrgLinkVM.ROLE_Primary);
+		return isOrgEditable;
 	}
 	
 	@Command
@@ -89,7 +92,7 @@ public class ListSdrOrgLinkVM {
 				    %s,
 				    %s
 			    FROM %s
-			    WHERE %s = ? AND %s <> ?
+			    WHERE %s = ? AND %s IN ('%s', '%s',  '%s')
 				""", 
 				I_ZZSdfOrganisation_v.COLUMNNAME_OrgName
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No
@@ -101,7 +104,10 @@ public class ListSdrOrgLinkVM {
 				, I_ZZSdfOrganisation_v.Table_Name
 				, I_ZZSdfOrganisation_v.COLUMNNAME_CreatedBy
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus
-				), Env.getAD_User_ID(Env.getCtx()), X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Delinked);
+				, X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Draft
+				, X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved
+				, X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Pending
+				), Env.getAD_User_ID(Env.getCtx()));
 		
 		if (linkedOrganisationsPo == null) {
 			linkedOrganisations.clear();
