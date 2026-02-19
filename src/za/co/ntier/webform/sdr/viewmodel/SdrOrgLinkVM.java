@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.event.Event;
 
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
@@ -55,10 +57,14 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		return List.of(sdfOrgModel, bankDetailModel);
 	}
 	
+	boolean isEditModel = false;
+	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);
 		setFormInfo(new FormInfo(menuContextInfo));
+		
+		isEditModel = menuContextInfo.getRecordID() != 0;
 		
 		sdfPo = MasterUtil.querySdf(Env.getAD_User_ID(Env.getCtx()));
 		if (sdfPo == null)
@@ -69,9 +75,8 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	}
 
 	private void initForm() {
-		if (menuContextInfo.getRecordID() == 0) {
-			orgSearchModel = initOrgSearchModel();
-		}
+		
+		orgSearchModel = initOrgSearchModel();
 		
 		sdfOrgModel = initSdfOrgModel();
 		
@@ -79,32 +84,37 @@ public class SdrOrgLinkVM extends BaseAppVM {
 
 	}
 	
+	BiConsumer<Event, CellModel> sdlnoChangeHandle = (event, cellModel) -> {
+		if (StringUtils.isBlank((String)cellModel.getValue())) {
+			return;
+		}
+		Query searchOrgQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
+				.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
+		searchOrgQuery.setParameters(cellModel.getValue());
+		
+		X_C_BPartner sOrgPo = searchOrgQuery.first();
+		
+		if (sOrgPo == null) {
+			MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
+		}else {
+			orgPo = sOrgPo;
+			orgSearchModel.getRow().setData(orgPo);
+			orgSearchModel.reloadDao();
+		}
+	};
+	
 	private TableModel initOrgSearchModel() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel sdlNoCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZ_SDL_No), 
 				I_C_BPartner.COLUMNNAME_Value);
+		sdlNoCol.setReadonly(isEditModel);
 		cols.add(sdlNoCol);
 		
-		sdlNoCol.setEventHandle((event, cellModel) -> {
-			if (StringUtils.isBlank((String)cellModel.getValue())) {
-				return;
-			}
-			Query searchOrgQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
-					.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
-			searchOrgQuery.setParameters(cellModel.getValue());
-			
-			X_C_BPartner sOrgPo = searchOrgQuery.first();
-			
-			if (sOrgPo == null) {
-				MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
-			}else {
-				orgPo = sOrgPo;
-				orgSearchModel.getRow().setData(orgPo);
-				orgSearchModel.reloadDao();
-			}
-		});
+		if (!isEditModel) {
+			sdlNoCol.setEventHandle(sdlnoChangeHandle);
+		}
 		
 		ColumnModel orgNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation_v.Table_Name,
@@ -221,10 +231,13 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		});
 		
 		List<PO> savedSdrOrgLinks = null;
-		if (menuContextInfo.getRecordID() != 0) {
+		if (isEditModel) {
 			X_ZZSdfOrganisation sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
 			savedSdrOrgLinks = List.of(sdfOrgPo);
 			orgPo =  MBPartner_New.get(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
+			
+			orgSearchModel.getRow().setData(orgPo);
+			orgSearchModel.reloadDao();
 		}
 		
 		tmSdrOrgLink.init(savedSdrOrgLinks);
@@ -337,7 +350,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		});
 		
 		List<PO> savedBanks = null;
-		if (menuContextInfo.getRecordID() != 0) {
+		if (isEditModel) {
 			Query queryBankDetailQuery =
 				MTable.get(Env.getCtx(), I_ZZBankingDetails.Table_Name).createQuery(String.format("%s = ?",
 						I_ZZBankingDetails.COLUMNNAME_ZZSdfOrganisation_ID), null);
