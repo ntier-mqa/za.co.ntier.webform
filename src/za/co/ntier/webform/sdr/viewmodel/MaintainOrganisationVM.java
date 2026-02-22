@@ -3,21 +3,32 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_User;
+import org.compiere.model.X_C_BPartner;
+import org.compiere.model.X_C_BPartner_Location;
+import org.compiere.model.X_C_Location;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zul.event.PagingListener;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BPartner;
+import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZSdf;
+import za.co.ntier.api.model.I_ZZ_FormContact;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
+import za.co.ntier.api.model.X_ZZOrganisationLinkage;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -26,9 +37,14 @@ import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
+import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
@@ -88,6 +104,13 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		addressDetailTab.getCompModel().add(physicalAddress);
 		//addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(physicalAddress, postalAddress));
 		addressDetailTab.getCompModel().add(postalAddress);
+		
+		initChildOrg();
+		
+		if (!"Parent".equals(orgPO.getZZOrganisationType())) {
+			mainTab.getTabPanelModel().remove(childTabPanel);
+		}
+		
 	}
 	
 	private TableModel initContactDetailComp() {
@@ -154,12 +177,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				.required()
 				.setTableName(I_C_Location.Table_Name);
 		cols.add(provinceCol);
-		*/
 		
-		TableModel orgContactDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
-		orgContactDetailBean.setSclass("srd-org-contact");
 		
-		/*X_C_Location location;
+		X_C_Location location;
 		orgPO.getLocations(true);
 		X_C_BPartner_Location bpLocation = orgPO.getPrimaryC_BPartner_Location();
 		if (bpLocation != null) {
@@ -167,9 +187,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				location = (X_C_Location)bpLocation.getC_Location();
 				orgDaoManage.setDao(location);
 			}
-		}*/
+		}
 		
-		/*orgDaoManage.setPoSupplier(I_C_Location.Table_Name, daoManage -> {
+		orgDaoManage.setPoSupplier(I_C_Location.Table_Name, daoManage -> {
 			X_C_BPartner_Location bpLocationx = orgPO.getPrimaryC_BPartner_Location();
 			if (bpLocationx == null) {
 				bpLocationx = new X_C_BPartner_Location(Env.getCtx(), 0, daoManage.getTrxName());
@@ -183,6 +203,8 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			
 			return locationx;
 		});*/
+		TableModel orgContactDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
+		orgContactDetailBean.setSclass("srd-org-contact");
 		
 		Query contactQuery = MTable.get(Env.getCtx(), org.compiere.model.I_AD_User.Table_Name)
 				.createQuery(
@@ -190,27 +212,14 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		contactQuery.setParameters(orgPO.getC_BPartner_ID());
 		List<PO> contacts = contactQuery.list();
 		
-		/*if (contact != null) {
-			orgDaoManage.setDao(contact);
-		}
-		
-		orgDaoManage.setPoSupplier(I_AD_User.Table_Name, daoManage -> {
-			MUser_New nContact = new MUser_New(Env.getCtx(), 0, daoManage.getTrxName());
-			nContact.setAD_Org_ID(0);
-			nContact.setC_BPartner_ID(orgPO.getC_BPartner_ID());
-			nContact.setNotificationType(X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice);
-			return nContact;
-		});
-		
-		orgContactDetailBean.setDaoManage(orgDaoManage);
-		*/
-		orgContactDetailBean.setPoSupplier(tableModel -> {
+		orgContactDetailBean.setPoSupplier(rowModel -> {
 			MUser_New nContact = new MUser_New(Env.getCtx(), 0, null);
 			nContact.setAD_Org_ID(0);
 			nContact.setC_BPartner_ID(orgPO.getC_BPartner_ID());
 			nContact.setNotificationType(X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice);
-			return nContact;
+			return nContact; 
 		});
+		
 		orgContactDetailBean.init(contacts);
 		
 		return orgContactDetailBean;
@@ -303,6 +312,18 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(orgTypeCol);
 		
+		orgTypeCol.setEventHandle((event, cellModel) -> {
+
+			if ("Parent".equals(cellModel.getValue()) &&
+					!mainTab.getTabPanelModel().contains(childTabPanel)){
+				mainTab.getTabPanelModel().add(childTabPanel);
+			}else if (!"Parent".equals(cellModel.getValue()) &&
+					mainTab.getTabPanelModel().contains(childTabPanel))
+ 				mainTab.getTabPanelModel().remove(childTabPanel);
+			
+			
+		});
+		
 		ColumnModel chamberCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZChamberCode)
 				, I_C_BPartner.COLUMNNAME_ZZChamberCode
@@ -318,11 +339,149 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		orgGeneralDetailBean.setDaoManage(orgDaoManage);
 		
-		orgGeneralDetailBean.init(null, null);
+		orgGeneralDetailBean.init();
 		
 		return orgGeneralDetailBean;
 	}
 
+	void initChildOrg() {
+		childTabPanel = new NavTabPanel(mainTab);
+		childTabPanel.setTabTitle("CHILD ORGANISATION");
+		
+		List<ColumnModel> cols = new ArrayList<ColumnModel>();
+		
+		ColumnModel startDateCol = CellModel.getColModelForPositiveNumber(
+				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkStartYear)
+				, I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkStartYear
+			).required()
+			.setTableName(I_ZZOrganisationLinkage.Table_Name);
+		
+		cols.add(startDateCol);
+		
+		ColumnModel endDateCol = CellModel.getColModelForPositiveNumber(
+				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkEndYear)
+				, I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkEndYear
+			)
+			.setTableName(I_ZZOrganisationLinkage.Table_Name);
+		
+		cols.add(endDateCol);
+		
+		ColumnModel sdlNoCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No)
+				, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No
+			).setMandatory(true)
+			.setTableName(I_ZZOrganisationLinkage.Table_Name);
+		
+		cols.add(sdlNoCol);
+		
+		ColumnModel legaNameCol = CellModel.getColModelForLabel(
+				Msg.getElement(Env.getCtx(), "ZZLegalName")
+			);
+		
+		cols.add(legaNameCol);
+		
+		ColumnModel tradeNameCol = CellModel.getColModelForLabel(
+				Msg.getElement(Env.getCtx(), "ZZTradeName")
+			);
+		
+		cols.add(tradeNameCol);
+		
+		ColumnModel numOfEmployeeCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZ_Number_Of_Employees)
+			);
+		
+		cols.add(numOfEmployeeCol);
+		
+		ColumnModel linkRequestCol = UploadCellModel.getUploadColumnModel("", null, null,
+				"Upload Link Request")
+			.required();
+			
+		cols.add(linkRequestCol);
+		
+		sdlNoCol.setEventHandle((event, cellModel) -> {
+			RowModel row = cellModel.getRowModel();
+			CellModel legaNameCell = row.get(legaNameCol);
+			CellModel tradeNameCell = row.get(tradeNameCol);
+			CellModel numOfEmployeeCell = row.get(numOfEmployeeCol);
+			
+			if (cellModel.getValue() == null) {
+				legaNameCell.setValue(null);
+				tradeNameCell.setValue(null);
+				numOfEmployeeCell.setValue(null);
+			}else {
+				MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), (String)cellModel.getValue());
+				legaNameCell.setValue(childOrg.getName());
+				tradeNameCell.setValue(childOrg.getName2());
+				numOfEmployeeCell.setValue(childOrg.getZZ_Number_Of_Employees());
+			}
+		});
+		
+		sdlNoCol.setValidateHandle((cellModel, messages) -> {
+			RowModel row = cellModel.getRowModel();
+			CellModel legaNameCell = row.get(legaNameCol);
+			CellModel tradeNameCell = row.get(tradeNameCol);
+			CellModel numOfEmployeeCell = row.get(numOfEmployeeCol);
+			
+			MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), (String)cellModel.getDirtyValue());
+			if (childOrg == null) {
+				messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgChildOrgNotFound"));
+				legaNameCell.setValue(null);
+				tradeNameCell.setValue(null);
+				numOfEmployeeCell.setValue(null);
+			}else {
+				Query childOrgQuery = MTable.get(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name)
+						.createQuery(String.format("%s = ? AND %s=?", I_ZZOrganisationLinkage.COLUMNNAME_C_BPartner_ID, I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID), null); 
+				childOrgQuery.setParameters(childOrg.getC_BPartner_ID(), orgPO.getC_BPartner_ID());
+				
+				if (childOrgQuery.first() != null) {
+					messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgChildLinked"));
+				}
+			}
+			
+		});
+		
+		TableModel tmChildOrgModel = TableModel.getTableBean(TableModel.class, cols, false);
+		tmChildOrgModel.setPoSupplier(rowModel -> {
+			X_ZZOrganisationLinkage childOrgLink = new X_ZZOrganisationLinkage(Env.getCtx(), 0, null);
+			
+			return childOrgLink;
+		});
+		
+		tmChildOrgModel.setBeforeSave(po -> {
+			X_ZZOrganisationLinkage childOrgLink = (X_ZZOrganisationLinkage)po;
+			childOrgLink.setBPartner_Parent_ID(orgPO.getC_BPartner_ID());
+			return true;
+		});
+		
+		tmChildOrgModel.setSclass("LinkOrgChild");
+		tmChildOrgModel.setViewModel(ViewType.VIEW_GRID);
+		
+		Query childOrgQuery = MTable.get(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name)
+				.createQuery(String.format("%s = ?", I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID), null); 
+		childOrgQuery.setParameters(orgPO.getC_BPartner_ID());
+		List<PO> saveds = childOrgQuery.list();
+		
+		tmChildOrgModel.init(saveds);
+		
+		childTabPanel.getCompModel().add(tmChildOrgModel);
+	}
+	
+	public static record DependencyFields(CellModel legaNameCell, CellModel tradeNameCell, CellModel numOfEmployeeCell) {}
+	
+	void setDependencyField(MBPartner_New childOrg, DependencyFields dependencyFields) {
+		if (childOrg == null) {
+			dependencyFields.legaNameCell.setValue(null);
+			dependencyFields.tradeNameCell.setValue(null);
+			dependencyFields.numOfEmployeeCell.setValue(null);
+		}else {
+			dependencyFields.legaNameCell.setValue(childOrg.getName());
+			dependencyFields.tradeNameCell.setValue(childOrg.getName2());
+			dependencyFields.numOfEmployeeCell.setValue(childOrg.getZZ_Number_Of_Employees());
+		}
+	}
+	
+	NavTabPanel childTabPanel;
+	
 	DaoManage orgDaoManage = new DaoManage();
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){

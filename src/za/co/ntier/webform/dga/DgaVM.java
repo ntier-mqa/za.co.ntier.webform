@@ -443,7 +443,7 @@ public class DgaVM extends BaseAppVM{
 				, I_ZZ_EDP_Application.COLUMNNAME_Name
 				).required()
 				.setTableName(I_ZZ_EDP_Application.Table_Name);
-				
+		
 		cols.add(firstNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
@@ -461,6 +461,28 @@ public class DgaVM extends BaseAppVM{
 				.setTableName(I_ZZ_EDP_Application.Table_Name);
 		
 		cols.add(idPasportCol);
+		
+		idPasportCol.setValidateHandle((cellModel, validateMsgs) -> {
+			PO currentDao = cellModel.getRowModel().getCurrentDao(cellModel);
+			String idValue = (String)cellModel.getValue();
+			Query dupIDQuery = MTable.get(Env.getCtx(), I_ZZ_EDP_Application.Table_Name)
+					.createQuery(
+							String.format("%s = ? AND (%s != ? OR 0 = ?)", 
+									X_ZZ_EDP_Application.COLUMNNAME_ZZ_ID_Passport_No, I_ZZ_EDP_Application.COLUMNNAME_ZZ_EDP_Application_ID)
+							, null);
+			
+			int edpApplicationID = 0;
+			if (currentDao != null) {
+				edpApplicationID = currentDao.get_ValueAsInt(I_ZZ_EDP_Application.COLUMNNAME_ZZ_EDP_Application_ID);
+			}
+			dupIDQuery.setParameters(idValue, edpApplicationID, edpApplicationID);
+			
+			if (dupIDQuery.first() != null) {
+				validateMsgs.add(Msg.getMsg(Env.getCtx(), "ZZDGAEdpDuplicateID"));
+			}
+		});
+		
+		
 		
 		ColumnModel genderCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZ_EDP_Application.Table_Name, I_ZZ_EDP_Application.COLUMNNAME_ZZGender)

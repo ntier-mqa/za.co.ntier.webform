@@ -157,7 +157,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	}
 
 	public void cmdSelectedHandle(Event selectedEvent) {
-		
+		callCollModelHandle(selectedEvent);
 	}
 	
 	public T getSelectedObj(Event event) {

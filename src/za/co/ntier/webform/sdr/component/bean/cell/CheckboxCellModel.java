@@ -62,4 +62,11 @@ public class CheckboxCellModel extends CellModel implements ICheckbox {
 		return msgs;
 	}
 
+	@Override
+	public Object getDefaultValue() {
+		if(super.getDefaultValue() == null)
+			return false;
+		else 
+			return super.getDefaultValue();
+	}
 }

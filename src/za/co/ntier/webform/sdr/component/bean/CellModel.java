@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import org.adempiere.webui.panel.RegistrationWindow;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,7 @@ import org.zkoss.zk.ui.event.InputEvent;
  * @author darren
  *
  */
-public class CellModel implements IValueChange {
+public class CellModel implements IValueChange , IInputState{
 	
 	protected static final CLogger log = CLogger.getCLogger(CellModel.class);
 	private String iconSclass;
@@ -54,13 +55,16 @@ public class CellModel implements IValueChange {
 	 * when a field not pass validate by org.zkoss.bind.Validator value isn't save 
 	 */
 	protected Object dirtyValue;
+	public Object getDirtyValue() {
+		return dirtyValue;
+	}
 	
 	public static class InputCheckResult {
 		public Boolean getNotChange() {
 			return notChange;
 		}
-		public InputCheckResult setNotChange(Boolean notChange) {
-			this.notChange = notChange;
+		public InputCheckResult setNotChange(Boolean isNotChange) {
+			this.notChange = isNotChange;
 			return this;
 		}
 		public Boolean getEmpty() {
@@ -107,10 +111,12 @@ public class CellModel implements IValueChange {
 	
 	public InputCheckResult parseInputState() {
 		InputCheckResult inputCheckResult = new InputCheckResult();
+		inputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
 		
 		inputCheckResult.setEmpty(isEmpty());
 		
-		inputCheckResult.setNotChange(!isChangeValueFromDefault());
+		boolean isNotChange = !isChangeValueFromDefault();
+		inputCheckResult.setNotChange(Boolean.valueOf(isNotChange));
 		
 		inputCheckResult.setFillMandatory((isMandatory() && !inputCheckResult.empty) || (!isMandatory()));
 		
@@ -169,6 +175,10 @@ public class CellModel implements IValueChange {
 		return validateMsgs.size() == 0;
 	}
 	
+	protected BiConsumer<CellModel, List<String>> getValidateHandle(){
+		return colModel.getValidateHandle();
+	}
+	
 	public void resetValidate() {
 		dirtyValue = getValue();
 		setFormValidate(false);
@@ -193,10 +203,13 @@ public class CellModel implements IValueChange {
 				}else if (getCellType() == CellModel.ID_PASSPORTNO_CELL) {
 					RegistrationWindow.validateIdNo(null, inputValue.toString());
 				}
-				
 			}catch (WrongValueException e) {
 				validateMsgs.add(e.getMessage());
 				
+			}
+			
+			if (getValidateHandle() != null) {
+				getValidateHandle().accept(this, validateMsgs);
 			}
 		}
 		return validateMsgs;
@@ -484,6 +497,11 @@ public class CellModel implements IValueChange {
 			initDefaultValue();
 		}
 		
+	}
+	
+	public boolean isIgnore(){
+		return colModel.isReadonly() || 
+				(getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName()));
 	}
 
 }
