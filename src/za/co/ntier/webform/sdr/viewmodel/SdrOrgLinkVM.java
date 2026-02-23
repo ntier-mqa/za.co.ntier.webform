@@ -496,7 +496,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		Object selectedRole = sdfOrgModel.getRow().get(sdrRoleTyleCol).getValue();
 		queryCheckOrg.setParameters(selectedRole, orgPo.getC_BPartner_ID());
 		if (queryCheckOrg.list().size() > 0) {
-			MasterUtil.showInfoDialog("ZZRequestOrgLinkTooMuchLink", null);
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZRequestOrgLinkTooMuchLink"));
 		}else {
 			super.doSave(trxName);
 		}
