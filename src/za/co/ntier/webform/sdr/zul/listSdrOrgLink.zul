@@ -8,13 +8,15 @@
     sclass="sdrForm"
     viewModel="@id('vm') @init('za.co.ntier.webform.sdr.viewmodel.ListSdrOrgLinkVM')">
       
-<hlayout sclass="sectionHeader">
+<div sclass="sectionHeader">
   <label sclass="sectionHeaderTitle" value="Linked Organisations"/>
-</hlayout>
+  <button label="Refresh List" 
+  onClick="@command('cmdRefreshList')" />
+</div>
 
 
 
-<grid model="@init(vm.linkedOrganisations)" sizedByContent="true" emptyMessage="No applications found">
+<grid model="@load(vm.linkedOrganisations)" sizedByContent="true" emptyMessage="No applications found">
   <columns>
     <column label="Organisation #" width="360px"/>
     <column label="SDL Number" width="150px"/>

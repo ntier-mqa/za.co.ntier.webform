@@ -71,6 +71,11 @@ public class ListSdrOrgLinkVM {
 		MasterUtil.openForm(MasterUtil.SDRMaintainOrganisationUU, Integer.valueOf(((BigDecimal)row.get("ZZSdfOrganisation_ID")).intValue()));
 	}
 	
+	@Command
+	public void cmdRefreshList() {
+		initList();
+	}
+	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);
