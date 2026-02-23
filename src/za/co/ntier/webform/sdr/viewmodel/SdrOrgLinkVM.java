@@ -132,6 +132,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		return namesBean;
 	}
 	
+	ListColumnModel<ValueNamePair> sdrRoleTyleCol = null;
 	private TableModel initSdfOrgModel() {
 		List<ColumnModel> cols = new ArrayList<>();
 
@@ -167,7 +168,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther);
 		cols.add(appointmentOtherCol);
 		
-		ListColumnModel<ValueNamePair> sdrRoleTyleCol = ListCellModel.getListColumnModel(
+		sdrRoleTyleCol = ListCellModel.getListColumnModel(
 				"SDF Role", 
 				I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType,
 				MasterUtil.getSdfRoleType(),
@@ -484,6 +485,21 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			
 		}
 		
+	}
+	
+	@Override
+	public void doSave(String trxName) {
+		Query queryCheckOrg = MTable.get(Env.getCtx(), I_ZZSdfOrganisation.Table_Name)
+				.createQuery(String.format("%s = ? AND %s = ?", 
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType, I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID)
+						, null);
+		Object selectedRole = sdfOrgModel.getRow().get(sdrRoleTyleCol).getValue();
+		queryCheckOrg.setParameters(selectedRole, orgPo.getC_BPartner_ID());
+		if (queryCheckOrg.list().size() > 0) {
+			MasterUtil.showInfoDialog("ZZRequestOrgLinkTooMuchLink", null);
+		}else {
+			super.doSave(trxName);
+		}
 	}
 	
 }
