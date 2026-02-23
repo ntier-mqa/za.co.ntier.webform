@@ -462,5 +462,10 @@ public class MainSrdFormVM extends BaseAppVM {
 	public Object getMainApp() {
 		return sdf;
 	}
+	
+	@Override
+	public boolean isSupportDelete() {
+		return false;
+	}
 
 }

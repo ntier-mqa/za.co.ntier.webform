@@ -7,7 +7,7 @@
 			
 		<button
 			visible="@load(vmTabButton.supportDeleteApp and vmTabButton.showDel)"
-			label="Cancel Application" iconSclass="z-icon-xmark"
+			label="@init(vmTabButton.deleteLabel)" iconSclass="z-icon-xmark"
 			onClick="@command('deleteApp')" />
 		
 		

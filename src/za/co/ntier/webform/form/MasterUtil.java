@@ -285,11 +285,14 @@ public class MasterUtil {
 	
 	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
 	
+	public static final Entry<String, Integer> SdfRoleType = new AbstractMap.SimpleEntry<>("b484436e-4fef-4c93-99f7-1c392e33969e", null);
 	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
 	
-	
+	public static List<ValueNamePair> getSdfRoleType () {
+		return getRefList(SdfRoleType);
+	}
 	
 	public static List<ValueNamePair> getSDFOrgLinkOptions () {
 		return getRefList(SDFOrgLinkOptions);

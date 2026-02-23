@@ -62,19 +62,24 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	
 	private void initOrg(MenuContextInfo menuContextInfo) {
 		int sdfOrganisationID = menuContextInfo.getRecordID();
-		Query orgPOQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
-				.createQuery(String.format("%s.%s = ?", X_ZZSdfOrganisation.Table_Name, X_ZZSdfOrganisation.COLUMNNAME_ZZSdfOrganisation_ID), null);
-				
-		orgPOQuery.addJoinClause(String.format("INNER JOIN %s ON (%s.%s = %s.%s)",
-				X_ZZSdfOrganisation.Table_Name,
-				X_ZZSdfOrganisation.Table_Name,
-				X_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID,
-				I_C_BPartner.Table_Name,
-				X_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID));
-		orgPOQuery.setParameters(sdfOrganisationID);
 		
-		orgPO = orgPOQuery.first();
-		
+		if (sdfOrganisationID > 0) {
+			Query orgPOQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
+					.createQuery(String.format("%s.%s = ?", X_ZZSdfOrganisation.Table_Name, X_ZZSdfOrganisation.COLUMNNAME_ZZSdfOrganisation_ID), null);
+					
+			orgPOQuery.addJoinClause(String.format("INNER JOIN %s ON (%s.%s = %s.%s)",
+					X_ZZSdfOrganisation.Table_Name,
+					X_ZZSdfOrganisation.Table_Name,
+					X_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID,
+					I_C_BPartner.Table_Name,
+					X_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID));
+			orgPOQuery.setParameters(sdfOrganisationID);
+			
+			orgPO = orgPOQuery.first();
+		}else {
+			MasterUtil.showInfoDialog("ZZMaintainOrgFromMenu", MasterUtil.fCloseActiveWindow);
+			
+		}
 	}
 
 	
@@ -498,11 +503,13 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		setFormInfo(new FormInfo(menuContextInfo));
 		
 		initOrg(menuContextInfo);
-		orgDaoManage = new DaoManage();
-		orgDaoManage.setDao(orgPO);
-		
-		names = initNames();
-		initMaintab();
+		if (orgPO != null) {
+			orgDaoManage = new DaoManage();
+			orgDaoManage.setDao(orgPO);
+			
+			names = initNames();
+			initMaintab();
+		}
 	}
 
 	private TableModel initNames() {
@@ -613,5 +620,10 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	@Override
 	public Object getMainApp() {
 		return orgPO;
+	}
+	
+	@Override
+	public String deleteLabel() {
+		return "Cancel";
 	}
 }

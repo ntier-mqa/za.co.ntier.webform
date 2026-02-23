@@ -22,6 +22,7 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
+import za.co.ntier.api.model.I_ZZ_EDP_Application;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZSdf;
@@ -37,6 +38,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class SdrOrgLinkVM extends BaseAppVM {
 	private MenuContextInfo menuContextInfo;
@@ -164,7 +166,21 @@ public class SdrOrgLinkVM extends BaseAppVM {
 						I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther),
 				I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther);
 		cols.add(appointmentOtherCol);
-
+		
+		ListColumnModel<ValueNamePair> sdrRoleTyleCol = ListCellModel.getListColumnModel(
+				"SDF Role", 
+				I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType,
+				MasterUtil.getSdfRoleType(),
+				ref -> {return ref.getName();},
+				ref -> {return ref.getValue();},
+				CellModel.RADIO_CELL
+				).setzClass(ValueNamePair.class);
+			sdrRoleTyleCol.required();
+			sdrRoleTyleCol.setTableName(I_ZZ_EDP_Application.Table_Name);
+			
+		cols.add(sdrRoleTyleCol);
+			
+/*
 		ColumnModel replacingPrimaryCol = CheckboxCellModel.getCheckboxColModel(
 				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
 						I_ZZSdfOrganisation.COLUMNNAME_ZZReplacingPrimarySDF),
@@ -196,7 +212,8 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				return Boolean.TRUE;
 			});
 		cols.add(secondarySdfCol);
-
+*/
+			
 		ColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
 				"UPLOAD LETTER OF APPOINTMENT")
 			.required()
