@@ -457,4 +457,16 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		return null;
 	}
 	
+	@Override
+	protected void showResult(boolean isSubmit) {
+		if (isSubmit) {
+			MasterUtil.showInfoDialog("ZZRequestOrgLinkSubmited", MasterUtil.fCloseActiveWindow);
+			
+		}else {
+			MasterUtil.showInfoDialog("ZZRequestOrgLinkSaved", MasterUtil.fCloseActiveWindow);
+			
+		}
+		
+	}
+	
 }

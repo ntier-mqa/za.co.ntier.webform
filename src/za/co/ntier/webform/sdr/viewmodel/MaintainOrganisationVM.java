@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -398,18 +399,19 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			
 		cols.add(linkRequestCol);
 		
-		sdlNoCol.setEventHandle((event, cellModel) -> {
-			RowModel row = cellModel.getRowModel();
+		sdlNoCol.addCellPropertyChangeListener(evt -> {
+			CellModel sdlNoCell = (CellModel)evt.getSource();
+			RowModel row = sdlNoCell.getRowModel();
 			CellModel legaNameCell = row.get(legaNameCol);
 			CellModel tradeNameCell = row.get(tradeNameCol);
 			CellModel numOfEmployeeCell = row.get(numOfEmployeeCol);
 			
-			if (cellModel.getValue() == null) {
+			if (sdlNoCell.getValue() == null) {
 				legaNameCell.setValue(null);
 				tradeNameCell.setValue(null);
 				numOfEmployeeCell.setValue(null);
 			}else {
-				MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), (String)cellModel.getValue());
+				MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), (String)sdlNoCell.getValue());
 				legaNameCell.setValue(childOrg.getName());
 				tradeNameCell.setValue(childOrg.getName2());
 				numOfEmployeeCell.setValue(childOrg.getZZ_Number_Of_Employees());
@@ -422,9 +424,16 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			CellModel tradeNameCell = row.get(tradeNameCol);
 			CellModel numOfEmployeeCell = row.get(numOfEmployeeCol);
 			
-			MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), (String)cellModel.getDirtyValue());
+			String dirtyValue = (String)cellModel.getDirtyValue();
+			MBPartner_New childOrg = null;
+			if (StringUtils.isNoneEmpty(dirtyValue)) {
+				childOrg = MBPartner_New.get(Env.getCtx(), dirtyValue);
+				if (childOrg == null) {
+					messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgChildOrgNotFound"));
+				}
+			}
+			
 			if (childOrg == null) {
-				messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgChildOrgNotFound"));
 				legaNameCell.setValue(null);
 				tradeNameCell.setValue(null);
 				numOfEmployeeCell.setValue(null);

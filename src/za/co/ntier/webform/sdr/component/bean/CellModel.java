@@ -207,10 +207,10 @@ public class CellModel implements IValueChange , IInputState{
 				validateMsgs.add(e.getMessage());
 				
 			}
-			
-			if (getValidateHandle() != null) {
-				getValidateHandle().accept(this, validateMsgs);
-			}
+		}
+		
+		if (getValidateHandle() != null) {
+			getValidateHandle().accept(this, validateMsgs);
 		}
 		return validateMsgs;
 	}

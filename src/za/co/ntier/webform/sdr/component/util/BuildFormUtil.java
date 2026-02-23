@@ -190,7 +190,7 @@ public class BuildFormUtil {
 		ColumnModel complexSectionFarmCol = CellModel.getColModelForText(
 				prefixName + MasterUtil.getDescOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_ZZComplexSectionFarm)
 				, I_ZZPersonAddress.COLUMNNAME_ZZComplexSectionFarm
-				).required();
+				);
 		colsAddress.add(complexSectionFarmCol);
 		
 		ColumnModel physicalAddress1Col = CellModel.getColModelForText(
