@@ -6,6 +6,8 @@ import java.util.function.BiConsumer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MRefList;
+import org.compiere.model.MReference;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -172,12 +174,15 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				"SDF Role", 
 				I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType,
 				MasterUtil.getSdfRoleType(),
-				ref -> {return ref.getName();},
+				ref -> {
+					MReference sdfRoleTypeRef = MReference.get(Env.getCtx(), MasterUtil.SdfRoleType.getKey());
+					return MRefList.getListDescription(Env.getCtx(), sdfRoleTypeRef.getName(), ref.getValue());
+				},
 				ref -> {return ref.getValue();},
 				CellModel.RADIO_CELL
 				).setzClass(ValueNamePair.class);
 			sdrRoleTyleCol.required();
-			sdrRoleTyleCol.setTableName(I_ZZ_EDP_Application.Table_Name);
+			sdrRoleTyleCol.setTableName(I_ZZSdfOrganisation.Table_Name);
 			
 		cols.add(sdrRoleTyleCol);
 			
