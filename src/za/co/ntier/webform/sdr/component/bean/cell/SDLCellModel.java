@@ -37,12 +37,6 @@ public class SDLCellModel extends CellModel {
 	}
 	
 	@Override
-	public void cmdValueChange(String value) {
-		// TODO Auto-generated method stub
-		super.cmdValueChange(value);
-	}
-	
-	@Override
 	protected List<String> doValidate(Object inputValue) {
 		List<String> validateMsgs = super.doValidate(inputValue);
 		String sdlNumber = (String)inputValue;

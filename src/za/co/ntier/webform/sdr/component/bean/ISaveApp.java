@@ -56,4 +56,8 @@ public interface ISaveApp {
 		MasterUtil.closeActiveWindow();
 	}
 	
+	public default String deleteLabel() {
+		return "Cancel Application";
+	}
+	
 }

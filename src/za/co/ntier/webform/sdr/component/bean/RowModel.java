@@ -73,10 +73,8 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		InputCheckResult rowInputCheckResult = new InputCheckResult();
 		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
 		
-		for (CellModel cellModel : values()) {
-			ColumnModel colModel = cellModel.getColModel();
-			// TODO condition should move to cellMode
-			if(colModel.isReadonly() || (cellModel.getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName())))
+		for (IInputState cellModel : values()) {
+			if(cellModel.isIgnore())
 				continue;
 			
 			InputCheckResult cellInputCheckResult = cellModel.parseInputState();
@@ -87,7 +85,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			
 			if (!cellInputCheckResult.getFillMandatory()) {
 				rowInputCheckResult.setFillMandatory(false);// has at least once field have value
-				log.warning("not input for mandatory field:" + colModel.getTitle());
+				log.warning("not input for mandatory field:" + cellModel.toString());
 			}
 			
 			if (!cellInputCheckResult.getNotChange()) {
@@ -182,6 +180,24 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			}
 		}
 			
+	}
+	
+	public PO getCurrentDao (CellModel cellModel) {
+		PO currentDao = null;
+		currentDao = data;
+		if (currentDao != null) {
+			return currentDao;
+		}
+		
+		if (tableModel.getDaoManage() != null) {
+			currentDao = tableModel.getDaoManage().getDao(cellModel.getColModel().getTableName());
+		}
+		
+		if (currentDao != null) {
+			return currentDao;
+		}
+		
+		return currentDao;
 	}
 	
 	private PO getDaoFromDaoManage(CellModel cellModel) {

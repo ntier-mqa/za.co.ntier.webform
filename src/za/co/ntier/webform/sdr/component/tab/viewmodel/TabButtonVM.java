@@ -124,4 +124,8 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 	public void setSaveApp(ISaveApp saveApp) {
 		this.saveApp = saveApp;
 	}
+	
+	public String getDeleteLabel() {
+		return getSaveApp() != null?getSaveApp().deleteLabel():"Default Cancel";
+	}
 }

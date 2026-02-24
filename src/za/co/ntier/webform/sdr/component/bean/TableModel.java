@@ -890,10 +890,13 @@ public class TableModel implements ISaveForm {
 	}
 
 	public InputCheckResult parseInputState() {
+		
 		InputCheckResult rowInputCheckResult = new InputCheckResult();
 		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
 		
-		for (RowModel row : getRows()) {
+		for (IInputState row : getRows()) {
+			if(row.isIgnore())
+				continue;
 			InputCheckResult cellInputCheckResult = row.parseInputState();
 			if (!cellInputCheckResult.getEmpty()) {// has at least once field have value
 				rowInputCheckResult.setEmpty(false);

@@ -201,7 +201,7 @@ public class MainSrdFormVM extends BaseAppVM {
 				CellModel.getColModelForText(
 						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZGeneralComments)
 						, I_ZZSdf.COLUMNNAME_ZZGeneralComments
-						).required()
+						)
 				.setTableName(I_ZZSdf.Table_Name);
 		cols.add(generalCommentsCol);
 
@@ -252,6 +252,7 @@ public class MainSrdFormVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel("ID Document Upload", null, null, "UPLOAD FILE")
+				.required()
 				.setTableName(I_ZZSdf.Table_Name);
 		cols.add(idDocUploadCol);
 
@@ -460,6 +461,11 @@ public class MainSrdFormVM extends BaseAppVM {
 	@Override
 	public Object getMainApp() {
 		return sdf;
+	}
+	
+	@Override
+	public boolean isSupportDelete() {
+		return false;
 	}
 
 }

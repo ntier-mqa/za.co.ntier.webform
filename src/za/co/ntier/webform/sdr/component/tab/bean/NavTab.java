@@ -1,5 +1,8 @@
 package za.co.ntier.webform.sdr.component.tab.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.event.ListDataEvent;
@@ -7,6 +10,7 @@ import org.zkoss.zul.event.ListDataListener;
 
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
+import za.co.ntier.webform.sdr.component.bean.IInputState;
 
 public class NavTab implements ListDataListener, ISaveForm{
 	private ListModelList<NavTabPanel> tabPanelModel;
@@ -134,8 +138,26 @@ public class NavTab implements ListDataListener, ISaveForm{
 	}
 	@Override
 	public void saveToDb(String trxName) {
-		ISaveForm.batchSaveToDb(tabPanelModel, trxName);
+		List<NavTabPanel> canSaves = new ArrayList<>();
+		for (NavTabPanel tabPanel : tabPanelModel) {
+			InputCheckResult inputCheckResult = tabPanel.parseInputState();
+			
+			if (inputCheckResult.getNotChange() && !inputCheckResult.getFillMandatory()) {
+				continue;
+			}
+			
+			canSaves.add(tabPanel);
+		}
+			
 		
+		ISaveForm.batchSaveToDb(canSaves, trxName);
+		
+	}
+	
+	@Override
+	public InputCheckResult parseInputState() {
+		IInputState.batchParseInputState(tabPanelModel);
+		return null;
 	}
 	
 }

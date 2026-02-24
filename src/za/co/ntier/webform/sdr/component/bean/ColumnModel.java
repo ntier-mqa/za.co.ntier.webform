@@ -4,6 +4,7 @@ import java.beans.Introspector;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -19,6 +20,7 @@ public class ColumnModel implements PropertyChangeListener{
 	//TODO create UploadColumnModel for this properties
 	private ColumnModel refDocUploadDefCol;
 	
+	private BiConsumer<CellModel, List<String>> validateHandle;
 	
 	public ColumnModel getRefDocUploadDefCol() {
 		return refDocUploadDefCol;
@@ -258,6 +260,12 @@ public class ColumnModel implements PropertyChangeListener{
 	public void propertyChange(PropertyChangeEvent evt) {
 		cellValuePropertyChangeSupport.firePropertyChange(evt);
 		
+	}
+	public BiConsumer<CellModel, List<String>> getValidateHandle() {
+		return validateHandle;
+	}
+	public void setValidateHandle(BiConsumer<CellModel, List<String>> validateHandle) {
+		this.validateHandle = validateHandle;
 	}
 
 	

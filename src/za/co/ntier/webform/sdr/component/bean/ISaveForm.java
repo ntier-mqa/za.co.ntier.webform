@@ -2,7 +2,9 @@ package za.co.ntier.webform.sdr.component.bean;
 
 import java.util.Collection;
 
-public interface ISaveForm {
+public interface ISaveForm extends IInputState{
+	
+	
 	public boolean validate(Boolean isSubmit);
 	
 	public void syncUIToDao(String trxName);
@@ -39,5 +41,7 @@ public interface ISaveForm {
 		
 		return isValid;
 	}
+	
+	
 
 }

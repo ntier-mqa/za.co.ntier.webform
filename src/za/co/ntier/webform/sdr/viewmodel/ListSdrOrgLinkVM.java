@@ -30,8 +30,8 @@ public class ListSdrOrgLinkVM {
 		ValueNamePair zzDocStatus = (ValueNamePair)row.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus);
 		boolean isUnlink = X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved.equals(zzDocStatus.getValue());
 		isUnlink = isUnlink || X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Pending.equals(zzDocStatus.getValue());
-		isUnlink = isUnlink && (row.get(ListSdrOrgLinkVM.ROLE_key).equals(ListSdrOrgLinkVM.ROLE_Secondary)
-				|| row.get(ListSdrOrgLinkVM.ROLE_key).equals(ListSdrOrgLinkVM.ROLE_Primary));
+		isUnlink = isUnlink && (row.get(ListSdrOrgLinkVM.ROLE_key).equals(X_ZZSdfOrganisation_v.ZZSDFROLETYPE_Secondary)
+				|| row.get(ListSdrOrgLinkVM.ROLE_key).equals(X_ZZSdfOrganisation_v.ZZSDFROLETYPE_Primary));
 		
 		return isUnlink;
 	}
@@ -44,7 +44,7 @@ public class ListSdrOrgLinkVM {
 	public boolean isOrgEditable(Map<String, Object> row) {
 		ValueNamePair zzDocStatus = (ValueNamePair)row.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus);
 		boolean isOrgEditable = X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved.equals(zzDocStatus.getValue());
-		isOrgEditable = isOrgEditable && row.get(ListSdrOrgLinkVM.ROLE_key).equals(ListSdrOrgLinkVM.ROLE_Primary);
+		isOrgEditable = isOrgEditable && row.get(ListSdrOrgLinkVM.ROLE_key).equals(X_ZZSdfOrganisation_v.ZZSDFROLETYPE_Primary);
 		return isOrgEditable;
 	}
 	
@@ -71,24 +71,24 @@ public class ListSdrOrgLinkVM {
 		MasterUtil.openForm(MasterUtil.SDRMaintainOrganisationUU, Integer.valueOf(((BigDecimal)row.get("ZZSdfOrganisation_ID")).intValue()));
 	}
 	
+	@Command
+	public void cmdRefreshList() {
+		initList();
+	}
+	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);
 		initList();
 	}
 	
-	public final static String ROLE_Primary = "Primary";
-	public final static String ROLE_Secondary = "Secondary";
 	public final static String ROLE_key = "role";
 	
 	private void initList () {
 		List<List<Object>> linkedOrganisationsPo = DB.getSQLArrayObjectsEx(null, String.format("""
 				SELECT %s, %s, 
-					    CASE
-					    WHEN ZZReplacingPrimarySDF = 'Y' THEN '%s'
-					    WHEN ZZSecondarySdf = 'Y' THEN '%s'
-					    ELSE '%s' END
-				    AS role,
+					   %s 
+				    AS %s,
 				    %s,
 				    %s
 			    FROM %s
@@ -96,9 +96,8 @@ public class ListSdrOrgLinkVM {
 				""", 
 				I_ZZSdfOrganisation_v.COLUMNNAME_OrgName
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No
-				, ListSdrOrgLinkVM.ROLE_Primary
-				, ListSdrOrgLinkVM.ROLE_Secondary
-				, ListSdrOrgLinkVM.ROLE_Primary
+				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfRoleType
+				, ROLE_key
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID
 				, I_ZZSdfOrganisation_v.Table_Name

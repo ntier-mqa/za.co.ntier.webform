@@ -80,8 +80,12 @@
             
             <!-- radiogroup -->
             <radiogroup if="${vmRowRender.row[col].cellType eq CellModel.RADIO_CELL}"
-            	model="@load(vmRowRender.row[col].model)"
-            	onCheck="@command('cmdSelected', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
+            	model="@load(vmRowRender.row[col].model)"  
+            	onCheck="@command('cmdSelected', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)">
+            	<template name="model" var="item">
+					<radio label="@init(( vmRowRender.row[col].getDisplayText(item) ))" value="@init(item)"/>
+				</template>
+            </radiogroup>
             
             <!-- label -->
             <label if="${vmRowRender.row[col].cellType eq CellModel.LABEL_CELL}"

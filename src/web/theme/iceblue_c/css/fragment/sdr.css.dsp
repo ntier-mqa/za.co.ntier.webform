@@ -397,6 +397,13 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
+.mqaWebForm .sdrForm .grid-listView.grid-listView-4{
+	grid-template-columns: repeat(4, 1fr);
+}
+
+ .mqaWebForm .sdrForm .grid-listView.grid-listView-4 .srd-org-general{
+ }
+
 .mqaWebForm .sdrForm a.z-button{
 	text-decoration:none;
 }
@@ -436,3 +443,5 @@
 	width: 100%;
 	grid-template-columns: repeat(2, 1fr);
 }
+
+

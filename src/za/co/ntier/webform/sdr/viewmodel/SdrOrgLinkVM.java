@@ -2,9 +2,12 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MRefList;
+import org.compiere.model.MReference;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -15,11 +18,13 @@ import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.event.Event;
 
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
+import za.co.ntier.api.model.I_ZZ_EDP_Application;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZSdf;
@@ -35,6 +40,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class SdrOrgLinkVM extends BaseAppVM {
 	private MenuContextInfo menuContextInfo;
@@ -55,10 +61,14 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		return List.of(sdfOrgModel, bankDetailModel);
 	}
 	
+	boolean isEditModel = false;
+	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);
 		setFormInfo(new FormInfo(menuContextInfo));
+		
+		isEditModel = menuContextInfo.getRecordID() != 0;
 		
 		sdfPo = MasterUtil.querySdf(Env.getAD_User_ID(Env.getCtx()));
 		if (sdfPo == null)
@@ -69,9 +79,8 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	}
 
 	private void initForm() {
-		if (menuContextInfo.getRecordID() == 0) {
-			orgSearchModel = initOrgSearchModel();
-		}
+		
+		orgSearchModel = initOrgSearchModel();
 		
 		sdfOrgModel = initSdfOrgModel();
 		
@@ -79,32 +88,37 @@ public class SdrOrgLinkVM extends BaseAppVM {
 
 	}
 	
+	BiConsumer<Event, CellModel> sdlnoChangeHandle = (event, cellModel) -> {
+		if (StringUtils.isBlank((String)cellModel.getValue())) {
+			return;
+		}
+		Query searchOrgQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
+				.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
+		searchOrgQuery.setParameters(cellModel.getValue());
+		
+		X_C_BPartner sOrgPo = searchOrgQuery.first();
+		
+		if (sOrgPo == null) {
+			MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
+		}else {
+			orgPo = sOrgPo;
+			orgSearchModel.getRow().setData(orgPo);
+			orgSearchModel.reloadDao();
+		}
+	};
+	
 	private TableModel initOrgSearchModel() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel sdlNoCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZ_SDL_No), 
 				I_C_BPartner.COLUMNNAME_Value);
+		sdlNoCol.setReadonly(isEditModel);
 		cols.add(sdlNoCol);
 		
-		sdlNoCol.setEventHandle((event, cellModel) -> {
-			if (StringUtils.isBlank((String)cellModel.getValue())) {
-				return;
-			}
-			Query searchOrgQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
-					.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
-			searchOrgQuery.setParameters(cellModel.getValue());
-			
-			X_C_BPartner sOrgPo = searchOrgQuery.first();
-			
-			if (sOrgPo == null) {
-				MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
-			}else {
-				orgPo = sOrgPo;
-				orgSearchModel.getRow().setData(orgPo);
-				orgSearchModel.reloadDao();
-			}
-		});
+		if (!isEditModel) {
+			sdlNoCol.setEventHandle(sdlnoChangeHandle);
+		}
 		
 		ColumnModel orgNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZSdfOrganisation_v.Table_Name,
@@ -120,6 +134,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		return namesBean;
 	}
 	
+	ListColumnModel<ValueNamePair> sdrRoleTyleCol = null;
 	private TableModel initSdfOrgModel() {
 		List<ColumnModel> cols = new ArrayList<>();
 
@@ -154,7 +169,24 @@ public class SdrOrgLinkVM extends BaseAppVM {
 						I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther),
 				I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther);
 		cols.add(appointmentOtherCol);
-
+		
+		sdrRoleTyleCol = ListCellModel.getListColumnModel(
+				"SDF Role", 
+				I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType,
+				MasterUtil.getSdfRoleType(),
+				ref -> {
+					MReference sdfRoleTypeRef = MReference.get(Env.getCtx(), MasterUtil.SdfRoleType.getKey());
+					return MRefList.getListDescription(Env.getCtx(), sdfRoleTypeRef.getName(), ref.getValue());
+				},
+				ref -> {return ref.getValue();},
+				CellModel.RADIO_CELL
+				).setzClass(ValueNamePair.class);
+			sdrRoleTyleCol.required();
+			sdrRoleTyleCol.setTableName(I_ZZSdfOrganisation.Table_Name);
+			
+		cols.add(sdrRoleTyleCol);
+			
+/*
 		ColumnModel replacingPrimaryCol = CheckboxCellModel.getCheckboxColModel(
 				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
 						I_ZZSdfOrganisation.COLUMNNAME_ZZReplacingPrimarySDF),
@@ -186,7 +218,8 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				return Boolean.TRUE;
 			});
 		cols.add(secondarySdfCol);
-
+*/
+			
 		ColumnModel btAppointmentLetterCol = UploadCellModel.getUploadColumnModel("", null, null,
 				"UPLOAD LETTER OF APPOINTMENT")
 			.required()
@@ -221,10 +254,13 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		});
 		
 		List<PO> savedSdrOrgLinks = null;
-		if (menuContextInfo.getRecordID() != 0) {
+		if (isEditModel) {
 			X_ZZSdfOrganisation sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
 			savedSdrOrgLinks = List.of(sdfOrgPo);
 			orgPo =  MBPartner_New.get(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
+			
+			orgSearchModel.getRow().setData(orgPo);
+			orgSearchModel.reloadDao();
 		}
 		
 		tmSdrOrgLink.init(savedSdrOrgLinks);
@@ -337,7 +373,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		});
 		
 		List<PO> savedBanks = null;
-		if (menuContextInfo.getRecordID() != 0) {
+		if (isEditModel) {
 			Query queryBankDetailQuery =
 				MTable.get(Env.getCtx(), I_ZZBankingDetails.Table_Name).createQuery(String.format("%s = ?",
 						I_ZZBankingDetails.COLUMNNAME_ZZSdfOrganisation_ID), null);
@@ -442,6 +478,33 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	@Override
 	public Object getMainApp() {
 		return null;
+	}
+	
+	@Override
+	protected void showResult(boolean isSubmit) {
+		if (isSubmit) {
+			MasterUtil.showInfoDialog("ZZRequestOrgLinkSubmited", MasterUtil.fCloseActiveWindow);
+			
+		}else {
+			MasterUtil.showInfoDialog("ZZRequestOrgLinkSaved", MasterUtil.fCloseActiveWindow);
+			
+		}
+		
+	}
+	
+	@Override
+	public void doSave(String trxName) {
+		Query queryCheckOrg = MTable.get(Env.getCtx(), I_ZZSdfOrganisation.Table_Name)
+				.createQuery(String.format("%s = ? AND %s = ?", 
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType, I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID)
+						, null);
+		Object selectedRole = sdfOrgModel.getRow().get(sdrRoleTyleCol).getValue();
+		queryCheckOrg.setParameters(selectedRole, orgPo.getC_BPartner_ID());
+		if (queryCheckOrg.list().size() > 0) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZRequestOrgLinkTooMuchLink"));
+		}else {
+			super.doSave(trxName);
+		}
 	}
 	
 }
