@@ -21,6 +21,8 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.InputEvent;
 
+import com.google.common.base.Objects;
+
 import za.co.ntier.api.model.I_ZZDocumentUpload;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
@@ -463,8 +465,10 @@ public class DgaVM extends BaseAppVM{
 		cols.add(idPasportCol);
 		
 		idPasportCol.setValidateHandle((cellModel, validateMsgs) -> {
+			// cellModel.getRowModel() is virtual row on case validate field
 			PO currentDao = cellModel.getRowModel().getCurrentDao(cellModel);
-			String idValue = (String)cellModel.getValue();
+			
+			String idValue = (String)cellModel.getDirtyValue();
 			Query dupIDQuery = MTable.get(Env.getCtx(), I_ZZ_EDP_Application.Table_Name)
 					.createQuery(
 							String.format("%s = ? AND (%s != ? OR 0 = ?)", 
@@ -479,6 +483,15 @@ public class DgaVM extends BaseAppVM{
 			
 			if (dupIDQuery.first() != null) {
 				validateMsgs.add(Msg.getMsg(Env.getCtx(), "ZZDGAEdpDuplicateID"));
+			}else {
+				for (RowModel row : cellModel.getTableModel().getValidateRows()) {
+					if (row != cellModel.getRowModel()) {
+						Object otherIdValue = row.get(cellModel.getColModel()).getValue();
+						if (StringUtils.isNotBlank(idValue) && Objects.equal(otherIdValue, idValue)) {
+							validateMsgs.add(Msg.getMsg(Env.getCtx(), "ZZDGAEdpDuplicateIDOtherRow"));
+						}
+					}
+				}
 			}
 		});
 		

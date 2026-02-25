@@ -34,6 +34,11 @@ public class TableModel implements ISaveForm {
 	private ISaveApp saveApp;
 	
 	private RowModel activeRow;
+	
+	public RowModel getActiveRow() {
+		return activeRow;
+	}
+	
 	private RowModel virtualRow;
 	public RowModel getVirtualRow() {
 		if (virtualRow == null) {
@@ -119,7 +124,7 @@ public class TableModel implements ISaveForm {
 		// set new active
 		activeRow = newActiveRow;
 		// copy new row to virtual row
-		copyRow(activeRow, virtualRow);
+		copyRow(activeRow, virtualRow, true);
 	}
 	
 	public boolean navPrevRow() {
@@ -167,10 +172,18 @@ public class TableModel implements ISaveForm {
 	}
 	
 	public void copyRow(RowModel rowSrc, RowModel rowDes) {
-		if (rowSrc != null && rowDes != null)
+		copyRow(rowSrc, rowDes, false);
+	}
+	public void copyRow(RowModel rowSrc, RowModel rowDes, boolean copyPo) {
+		if (rowSrc != null && rowDes != null) {
 			for (ColumnModel col : rowSrc.getTableModel().getColumnInfos()) {
 				rowSrc.get(col).copyTo(rowDes.get(col));
 			}
+			
+			if (copyPo)
+				rowDes.setData(rowSrc.getData());
+		}
+			
 	}
 	
 	protected static final CLogger log = CLogger.getCLogger(TableModel.class);
@@ -858,8 +871,7 @@ public class TableModel implements ISaveForm {
 	}
 
 
-	@Override
-	public boolean validate(Boolean isSubmit) {
+	public List<RowModel> getValidateRows (){
 		List<RowModel> validateRows = null;
 		if (virtualRow != null) {
 			validateRows = new ArrayList<>(rows);
@@ -868,7 +880,13 @@ public class TableModel implements ISaveForm {
 		}else {
 			validateRows = rows;
 		}
-		return ISaveForm.validates(validateRows, null);
+		
+		return validateRows;
+	}
+	
+	@Override
+	public boolean validate(Boolean isSubmit) {
+		return ISaveForm.validates(getValidateRows(), null);
 	}
 	@Override
 	public void saveToDb(String trxName) {
