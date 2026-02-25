@@ -494,12 +494,17 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	
 	@Override
 	public void doSave(String trxName) {
+		int sdfOrganisationID = isEditModel? menuContextInfo.getRecordID():0;
+				
 		Query queryCheckOrg = MTable.get(Env.getCtx(), I_ZZSdfOrganisation.Table_Name)
-				.createQuery(String.format("%s = ? AND %s = ?", 
-						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType, I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID)
+				.createQuery(String.format("%s <> ? AND %s = ? AND (%s = ? OR %s = ?)", 
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfOrganisation_ID,
+						I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID, 
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType,
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSdf_ID)
 						, null);
 		Object selectedRole = sdfOrgModel.getRow().get(sdrRoleTyleCol).getValue();
-		queryCheckOrg.setParameters(selectedRole, orgPo.getC_BPartner_ID());
+		queryCheckOrg.setParameters(sdfOrganisationID, orgPo.getC_BPartner_ID(), selectedRole, sdfPo.getZZSdf_ID());
 		if (queryCheckOrg.list().size() > 0) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZRequestOrgLinkTooMuchLink"));
 		}else {
