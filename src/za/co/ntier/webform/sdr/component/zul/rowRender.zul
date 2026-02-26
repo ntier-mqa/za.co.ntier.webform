@@ -112,10 +112,11 @@
 	              <label
 	              	sclass="break-text"
 	                value="@load(vmRowRender.row[col].fileName)" />
-	              
+	              <div>
 	              <button sclass="btn-circle removeAttachment"
 	                iconSclass="z-icon-xmark" label="" tooltiptext="Remove"
 	                onClick="@command('cmdRemoveAttachment', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)" />
+	                </div>
                </div>
                
               <fileupload

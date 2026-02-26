@@ -444,4 +444,12 @@
 	grid-template-columns: repeat(2, 1fr);
 }
 
+.mqaWebForm .sdrForm .uploadFileBox{
+  display:flex;
+  width:100%;
+  align-items: center;
+}
 
+.mqaWebForm .sdrForm .uploadFileBox > :last-child {
+	padding:0 10px 0 5px;
+}
