@@ -18,7 +18,8 @@
 
 <grid model="@load(vm.linkedOrganisations)" sizedByContent="true" emptyMessage="No applications found">
   <columns>
-    <column label="Organisation #" width="360px"/>
+  	<column label="Document No" width="100px"/>
+    <column label="Organisation #" width="300px"/>
     <column label="SDL Number" width="150px"/>
     <column label="Role" width="100px"/>
     <column label="Status"/>
@@ -27,6 +28,7 @@
   <rows>
     <template name="model" var="item">
       <row>
+      	<label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_DocumentNo])"/>
         <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_OrgName])"/>
         <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No])"/>
         <label value="@init(item['role'])"/>

@@ -86,15 +86,17 @@ public class ListSdrOrgLinkVM {
 	
 	private void initList () {
 		List<List<Object>> linkedOrganisationsPo = DB.getSQLArrayObjectsEx(null, String.format("""
-				SELECT %s, %s, 
-					   %s 
-				    AS %s,
-				    %s,
-				    %s
+				SELECT 	%s,
+						%s, 
+						%s, 
+					   	%s AS %s,
+				    	%s,
+				    	%s
 			    FROM %s
 			    WHERE %s = ? AND %s IN ('%s', '%s',  '%s')
 				""", 
-				I_ZZSdfOrganisation_v.COLUMNNAME_OrgName
+				I_ZZSdfOrganisation_v.COLUMNNAME_DocumentNo	
+				, I_ZZSdfOrganisation_v.COLUMNNAME_OrgName
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfRoleType
 				, ROLE_key
@@ -116,11 +118,12 @@ public class ListSdrOrgLinkVM {
 			
 			linkedOrganisationsPo.stream().forEach(row -> {
 				Map<String, Object> linkedOrganisation = new HashMap<>();
-				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_OrgName, row.get(0));
-				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No, row.get(1));
-				linkedOrganisation.put(ListSdrOrgLinkVM.ROLE_key, row.get(2));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_DocumentNo, row.get(0));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_OrgName, row.get(1));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No, row.get(2));
+				linkedOrganisation.put(ListSdrOrgLinkVM.ROLE_key, row.get(3));
 				
-				String docStatus = row.get(3) == null ? X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Draft : row.get(3).toString();
+				String docStatus = row.get(3) == null ? X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Draft : row.get(4).toString();
 				for (ValueNamePair docStatusRef : docStatusRefs) {
 					String docStatusRefValue = docStatusRef.getValue();
 					if (docStatusRefValue.equals(docStatus)) {
@@ -128,7 +131,7 @@ public class ListSdrOrgLinkVM {
 					}
 				}				
 				
-				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID, row.get(4));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID, row.get(5));
 				
 				linkedOrganisationsList.add(linkedOrganisation);
 			});

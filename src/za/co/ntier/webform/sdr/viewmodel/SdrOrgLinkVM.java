@@ -494,6 +494,10 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	
 	@Override
 	public void doSave(String trxName) {
+		if (orgPo == null) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinksMissingOrg"));
+		}
+		
 		int sdfOrganisationID = isEditModel? menuContextInfo.getRecordID():0;
 				
 		Query queryCheckOrg = MTable.get(Env.getCtx(), I_ZZSdfOrganisation.Table_Name)
