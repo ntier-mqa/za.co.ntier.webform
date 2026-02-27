@@ -100,6 +100,7 @@
             <!-- PositiveNumber -->
             <intbox if="${vmRowRender.row[col].cellType eq CellModel.POSITIVE_NUM_CELL}"
               value="@bind(vmRowRender.row[col].value)
+                   @validator(vmRowRender.cellValidator, cellModel=vmRowRender.row[col], vm=vmRowRender)
                    " />
             
             <!-- FileUpload -->
@@ -150,7 +151,21 @@
               onClick="@command('cmdBtClick', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
               
           </div>
+        
         </div>
+      
+      	<div
+          	if="${colStatus.last and vmRowRender.tableModel.gridView and vmRowRender.tableModel.showAddButton}" 
+          	sclass="cell cellType-command">
+          	
+          	<button sclass="btn-circle addrow"
+              iconSclass="z-icon-plus" label="" tooltiptext="New Line"
+              onClick="@command('addDetailLine', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)" />
+            
+            <button sclass="btn-circle delrow"
+              iconSclass="z-icon-circle-minus" label="" tooltiptext="Delete Line"
+              onClick="@command('removeDetailLine', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)" />
+          </div>
       </template>
     </nodom>
 </nodom>

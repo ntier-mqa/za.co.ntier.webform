@@ -182,6 +182,11 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			
 	}
 	
+	/**
+	 * get current dao, don't ask PoSupplier create new one when null
+	 * @param cellModel
+	 * @return
+	 */
 	public PO getCurrentDao (CellModel cellModel) {
 		PO currentDao = null;
 		currentDao = data;
@@ -302,7 +307,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		if (tableModel.getDaoManage() == null) {
 			PO daoToSave = getDirectDao();
 			if (tableModel.getBeforeSave() != null) {
-				tableModel.getBeforeSave().apply(daoToSave);
+				tableModel.getBeforeSave().apply(daoToSave, this);
 			}
 			
 			daoToSave.saveEx(trxName);

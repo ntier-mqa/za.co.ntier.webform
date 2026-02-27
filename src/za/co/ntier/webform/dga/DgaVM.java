@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -198,7 +199,7 @@ public class DgaVM extends BaseAppVM{
 
 	}
 	
-	Function<PO, Boolean> beforeSave = po -> {
+	BiFunction<PO, RowModel, Boolean> beforeSave = (po, rowModel) -> {
 		if (po.get_TableName().equals(X_ZZ_Application_Form.Table_Name) || 
 				po.get_ColumnIndex(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) < 0
 				){
@@ -466,27 +467,31 @@ public class DgaVM extends BaseAppVM{
 		
 		idPasportCol.setValidateHandle((cellModel, validateMsgs) -> {
 			// cellModel.getRowModel() is virtual row on case validate field
-			PO currentDao = cellModel.getRowModel().getCurrentDao(cellModel);
+			//PO currentDao = cellModel.getRowModel().getCurrentDao(cellModel);
 			
 			String idValue = (String)cellModel.getDirtyValue();
 			Query dupIDQuery = MTable.get(Env.getCtx(), I_ZZ_EDP_Application.Table_Name)
 					.createQuery(
-							String.format("%s = ? AND (%s != ? OR 0 = ?)", 
-									X_ZZ_EDP_Application.COLUMNNAME_ZZ_ID_Passport_No, I_ZZ_EDP_Application.COLUMNNAME_ZZ_EDP_Application_ID)
+							String.format("%s = ? AND %s NOT IN (SELECT %s FROM %s WHERE %s = ?)", 
+									I_ZZ_EDP_Application.COLUMNNAME_ZZ_ID_Passport_No, 
+									I_ZZ_EDP_Application.COLUMNNAME_ZZ_EDP_Application_ID, 
+									I_ZZ_EDP_Application.COLUMNNAME_ZZ_EDP_Application_ID,
+									I_ZZ_Application_Form.Table_Name,
+									I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID)
 							, null);
 			
-			int edpApplicationID = 0;
-			if (currentDao != null) {
-				edpApplicationID = currentDao.get_ValueAsInt(I_ZZ_EDP_Application.COLUMNNAME_ZZ_EDP_Application_ID);
+			int appFormID = 0;
+			if (applicationForm != null) {
+				appFormID = applicationForm.getZZ_Application_Form_ID();
 			}
-			dupIDQuery.setParameters(idValue, edpApplicationID, edpApplicationID);
+			dupIDQuery.setParameters(idValue, appFormID);
 			
 			if (dupIDQuery.first() != null) {
 				validateMsgs.add(Msg.getMsg(Env.getCtx(), "ZZDGAEdpDuplicateID"));
 			}else {
-				for (RowModel row : cellModel.getTableModel().getValidateRows()) {
-					if (row != cellModel.getRowModel()) {
-						Object otherIdValue = row.get(cellModel.getColModel()).getValue();
+				for (RowModel otherRow : cellModel.getTableModel().getValidateRows()) {
+					if (otherRow != cellModel.getRowModel()) {
+						Object otherIdValue = otherRow.get(cellModel.getColModel()).getDirtyValue();
 						if (StringUtils.isNotBlank(idValue) && Objects.equal(otherIdValue, idValue)) {
 							validateMsgs.add(Msg.getMsg(Env.getCtx(), "ZZDGAEdpDuplicateIDOtherRow"));
 						}

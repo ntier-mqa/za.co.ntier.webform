@@ -148,6 +148,22 @@ public class RowRenderVM extends BaseComponentVM<RowModel>{
 		
 	}
 	
+	@Command
+	public void addDetailLine(@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
+			, @ContextParam(ContextType.TRIGGER_EVENT) Event event) throws IOException{
+		tableModel.addNewRow(rowModel);
+	}
+	
+	@Command
+	public void removeDetailLine(@BindingParam("tableModel") TableModel tableModel
+			, @BindingParam("row") RowModel rowModel
+			, @BindingParam("col") ColumnModel colModel
+			, @ContextParam(ContextType.TRIGGER_EVENT) Event event) throws IOException{
+		tableModel.removeRow(rowModel);
+	}
+	
 	/**
 	 * @return the formView
 	 */

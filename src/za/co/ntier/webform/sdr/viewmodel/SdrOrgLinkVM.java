@@ -246,7 +246,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				
 		});
 		
-		tmSdrOrgLink.setBeforeSave(po -> {
+		tmSdrOrgLink.setBeforeSave((po, rowModel) -> {
 			X_ZZSdfOrganisation sdfOrgPo = (X_ZZSdfOrganisation)po;
 			sdfOrgPo.setC_BPartner_ID(orgPo.getC_BPartner_ID());
 			sdfOrgPo.setZZSdf_ID(sdfPo.getZZSdf_ID());
@@ -366,7 +366,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			return bankDetailPo;
 		});
 		
-		tmBank.setBeforeSave(po -> {
+		tmBank.setBeforeSave((po, rowModel) -> {
 			X_ZZSdfOrganisation sdfOrgPo = (X_ZZSdfOrganisation)sdfOrgModel.getRow().getData();
 			((X_ZZBankingDetails)po).setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
 			return true;
@@ -501,14 +501,19 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		int sdfOrganisationID = isEditModel? menuContextInfo.getRecordID():0;
 				
 		Query queryCheckOrg = MTable.get(Env.getCtx(), I_ZZSdfOrganisation.Table_Name)
-				.createQuery(String.format("%s <> ? AND %s = ? AND (%s = ? OR %s = ?)", 
+				.createQuery(String.format("%s <> ? AND %s = ? AND (%s = ? OR %s = ?) AND %s <> ?", 
 						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfOrganisation_ID,
 						I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID, 
 						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType,
-						I_ZZSdfOrganisation.COLUMNNAME_ZZSdf_ID)
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSdf_ID,
+						I_ZZSdfOrganisation.COLUMNNAME_ZZ_DocStatus)
 						, null);
 		Object selectedRole = sdfOrgModel.getRow().get(sdrRoleTyleCol).getValue();
-		queryCheckOrg.setParameters(sdfOrganisationID, orgPo.getC_BPartner_ID(), selectedRole, sdfPo.getZZSdf_ID());
+		queryCheckOrg.setParameters(sdfOrganisationID, 
+				orgPo.getC_BPartner_ID(), 
+				selectedRole, sdfPo.getZZSdf_ID(),
+				X_ZZSdfOrganisation.ZZ_DOCSTATUS_Delinked);
+		
 		if (queryCheckOrg.list().size() > 0) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZRequestOrgLinkTooMuchLink"));
 		}else {

@@ -351,6 +351,10 @@
   grid-template-columns: repeat(7, 1fr);
 }
 
+.mqaWebForm .sdrForm .grid-listView.grid-listView-7-command{
+	grid-template-columns: repeat(8, 1fr);
+}
+
 .mqaWebForm .sdrForm .grid-listView.grid-listView-3{
   grid-template-columns: repeat(3, 1fr);
 }
@@ -379,7 +383,18 @@
 
 .mqaWebForm .sdrForm .grid-listView .cell{
 	padding: 5px;
+	display: flex;
+  	flex-direction: column;
+  	justify-content: flex-end;
 }
+
+.mqaWebForm .sdrForm .grid-listView .cellType-command{
+	flex-direction: row;
+  	align-content: center;
+  	align-items: center;
+  	margin: auto;
+} 
+
 
 .mqaWebForm .sdrForm .grid-listView.grid-listView-2{
 	grid-template-columns: repeat(2, 1fr);

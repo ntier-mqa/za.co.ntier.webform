@@ -22,6 +22,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.event.PagingListener;
 
+import com.google.common.base.Objects;
+
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZOrganisationLinkage;
@@ -372,6 +374,18 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		cols.add(endDateCol);
 		
+		startDateCol.setValidateHandle((cellModel, validateMsgs) -> {
+			//Integer startYear = (Integer)cellModel.getDirtyValue();
+			
+			//Integer erndYear = (Integer)cellModel.getRowModel().get(endDateCol).getDirtyValue();
+		});
+		
+		endDateCol.setValidateHandle((cellModel, validateMsgs) -> {
+			//Integer endYear = (Integer)cellModel.getDirtyValue();
+			
+			//Integer startYear = (Integer)cellModel.getRowModel().get(startDateCol).getDirtyValue();
+		});
+		
 		ColumnModel sdlNoCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No)
 				, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No
@@ -444,11 +458,23 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				numOfEmployeeCell.setValue(null);
 			}else {
 				Query childOrgQuery = MTable.get(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name)
-						.createQuery(String.format("%s = ? AND %s=?", I_ZZOrganisationLinkage.COLUMNNAME_C_BPartner_ID, I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID), null); 
+						.createQuery(String.format("%s = ? AND %s <> ?", 
+								I_ZZOrganisationLinkage.COLUMNNAME_C_BPartner_ID, 
+								I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID
+								), null); 
 				childOrgQuery.setParameters(childOrg.getC_BPartner_ID(), orgPO.getC_BPartner_ID());
 				
 				if (childOrgQuery.first() != null) {
 					messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgChildLinked"));
+				}else {
+					for (RowModel otherRow : cellModel.getTableModel().getValidateRows()) {
+						if (otherRow != row) {
+							Object otherSdlNoValue = otherRow.get(cellModel.getColModel()).getDirtyValue();
+							if (StringUtils.isNotBlank(dirtyValue) && Objects.equal(otherSdlNoValue, dirtyValue)) {
+								messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgDuplicateSdlNoOtherRow"));
+							}
+						}
+					}
 				}
 			}
 			
@@ -461,14 +487,19 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			return childOrgLink;
 		});
 		
-		tmChildOrgModel.setBeforeSave(po -> {
+		tmChildOrgModel.setBeforeSave((po, rowModel) -> {
 			X_ZZOrganisationLinkage childOrgLink = (X_ZZOrganisationLinkage)po;
 			childOrgLink.setBPartner_Parent_ID(orgPO.getC_BPartner_ID());
+			
+			String sdlNo = (String)rowModel.get(sdlNoCol).getValue();
+			MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), sdlNo);
+			childOrgLink.setC_BPartner_ID(childOrg.getC_BPartner_ID());
 			return true;
 		});
 		
 		tmChildOrgModel.setSclass("LinkOrgChild");
 		tmChildOrgModel.setViewModel(ViewType.VIEW_GRID);
+		tmChildOrgModel.setShowAddButton(true);
 		
 		Query childOrgQuery = MTable.get(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name)
 				.createQuery(String.format("%s = ?", I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID), null); 

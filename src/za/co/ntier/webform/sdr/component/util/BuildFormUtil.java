@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 public class BuildFormUtil {
 	public static TableModel buildFormContact(ProgramType programType, AddressType addressType, 
 			X_ZZ_Application_Form applicationForm,
-			Function<RowModel, PO> poSupplier, Function<PO, Boolean> beforeSave,
+			Function<RowModel, PO> poSupplier, BiFunction<PO, RowModel, Boolean> beforeSave,
 			TableModel copyFrom) {
 		List<ColumnModel> cols = new ArrayList<>();
 

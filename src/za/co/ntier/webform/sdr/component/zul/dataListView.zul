@@ -25,7 +25,7 @@
   </div>
 
 <div
-  sclass="@init(( 'grid-listView ' += vmDataFormView.component.sclass += ' grid-listView-' += vmListView.component.columnInfos.size() ))"
+  sclass="@init( vmListView.sclass )"
   children="@bind(vmListView.component.rows)">
     
   <template name="children" var="row">
@@ -35,6 +35,12 @@
         <template name="children" var="titleCol">
           <div sclass="cell colHead">
             <label value="@init(titleCol.title)" />
+          </div>
+          
+          <div 
+          	if="${titleColStatus.last and vmListView.component.showAddButton}"
+          	sclass="cell colHead command" >
+          	<label value="" />
           </div>
         </template>
     </nodom>

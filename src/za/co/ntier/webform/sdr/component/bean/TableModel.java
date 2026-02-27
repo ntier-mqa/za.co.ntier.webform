@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -394,7 +395,7 @@ public class TableModel implements ISaveForm {
 	}
 
 	private Consumer<RowModel> decoratorCell;
-	private Function<PO, Boolean> beforeSave;
+	private BiFunction<PO, RowModel, Boolean> beforeSave;
 
 	public Consumer<RowModel> getDecoratorCell() {
 		return decoratorCell;
@@ -893,10 +894,10 @@ public class TableModel implements ISaveForm {
 		ISaveForm.batchSaveToDb(getRows(), trxName);
 		
 	}
-	public Function<PO, Boolean> getBeforeSave() {
+	public BiFunction<PO, RowModel, Boolean> getBeforeSave() {
 		return beforeSave;
 	}
-	public void setBeforeSave(Function<PO, Boolean> beforeSave) {
+	public void setBeforeSave(BiFunction<PO, RowModel, Boolean> beforeSave) {
 		this.beforeSave = beforeSave;
 	}
 	
