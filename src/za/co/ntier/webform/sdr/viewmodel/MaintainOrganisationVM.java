@@ -153,18 +153,18 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				;
 		cols.add(designationCol);
 		
-		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
-				, I_AD_User.COLUMNNAME_Phone2
-				);
-		cols.add(telephoneNumberCol);
-
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone)
 				, I_AD_User.COLUMNNAME_Phone
 				).required()
 				;
 		cols.add(cellPhoneNumberCol);
+		
+		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
+				, I_AD_User.COLUMNNAME_Phone2
+				);
+		cols.add(telephoneNumberCol);
 
 		ColumnModel orgFaxCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Fax)
@@ -175,8 +175,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
-				)
-				;
+				).required();
 		cols.add(emailCol);
 		
 		/*ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(

@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.model.GenericPO;
 import org.adempiere.webui.desktop.DefaultDesktop;
 import org.adempiere.webui.session.SessionManager;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -28,20 +30,25 @@ import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Bank;
 import org.compiere.model.I_C_Country;
 import org.compiere.model.I_C_Region;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MCity;
+import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MCountry;
+import org.compiere.model.MMailText;
 import org.compiere.model.MMenu;
 import org.compiere.model.MRefList;
 import org.compiere.model.MReference;
 import org.compiere.model.MRegion;
 import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BP_Group;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_Bank;
 import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -65,12 +72,15 @@ import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
 import za.co.ntier.api.model.X_ZZ_SETA_Master;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM.EmailPoInfo;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.bean.Dialog;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public class MasterUtil {
+	private static final CLogger log = CLogger.getCLogger(MasterUtil.class);
 	public static DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 	public static final int limitItem = 600;
 	
@@ -645,5 +655,39 @@ public class MasterUtil {
 	public static int getTableId(String tableName) {
 		return MTable.get(Env.getCtx(), tableName).get_Table_ID();
 		
+	}
+	
+	public static PO getEmailPoInfoForDG (X_ZZ_Application_Form applicationForm, MenuContextInfo menuContextInfo) {
+		GenericPO genericPO = new GenericPO(MUser.Table_Name, Env.getCtx(), 0) {
+			@SuppressWarnings("unused")
+			public String getAppFormDocno(){
+				return applicationForm.getDocumentNo();
+			}
+
+			@SuppressWarnings("unused")
+			public String getAppFormSubmitedDate() {
+				return applicationForm.getUpdated().toLocalDateTime().truncatedTo(ChronoUnit.SECONDS).format(dtf);
+			}
+
+			@SuppressWarnings("unused")
+			public String getAppFormTitle(){
+				return menuContextInfo.getProgramMasterData().getTitle();
+			}
+		};
+		return genericPO;
+	}
+	
+	public static void sentEmailSdf(String mailTextUU, PO emailPoInfo, MUser user) {
+		MMailText submitedEmail = new MMailText(Env.getCtx(), mailTextUU, null);
+		MClient client = MClient.get(Env.getCtx());
+		MUser from = MUser.get(Env.getCtx(), DiscretionaryGrantsApplicationProgramVM.FROM_EMAIL_USER_ID);
+		submitedEmail.setPO(emailPoInfo);
+
+		int loginId = Env.getAD_User_ID(Env.getCtx());
+		MUser receiver = MUser.get(loginId);
+		submitedEmail.setUser(receiver);
+		if (!client.sendEMail(from, receiver, submitedEmail.getMailHeader(), submitedEmail.getMailText(), null, submitedEmail.isHtml())) {
+			log.fine("Problem Sending Email.  Please contact Support");
+		}
 	}
 }

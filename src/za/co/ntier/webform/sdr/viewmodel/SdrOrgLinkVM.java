@@ -1,14 +1,19 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.model.GenericPO;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MRefList;
 import org.compiere.model.MReference;
 import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
@@ -472,6 +477,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		super.doSubmit(trxName);
 		X_ZZSdfOrganisation sdfOrgPo = ((X_ZZSdfOrganisation)sdfOrgModel.getRow().getData());
 		sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Pending);
+		sdfOrgPo.setZZ_Submission_Date(Timestamp.valueOf(LocalDateTime.now()));
 		sdfOrgPo.saveEx(trxName);
 	}
 
@@ -484,7 +490,10 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	protected void showResult(boolean isSubmit) {
 		if (isSubmit) {
 			MasterUtil.showInfoDialog("ZZRequestOrgLinkSubmited", MasterUtil.fCloseActiveWindow);
+			int loginId = Env.getAD_User_ID(Env.getCtx());
+			MUser receiver = MUser.get(loginId);
 			
+			MasterUtil.sentEmailSdf("96dc984d-af82-4dd3-9b10-a59386a5a03b", sdfOrgModel.getRow().getData(), receiver);
 		}else {
 			MasterUtil.showInfoDialog("ZZRequestOrgLinkSaved", MasterUtil.fCloseActiveWindow);
 			
