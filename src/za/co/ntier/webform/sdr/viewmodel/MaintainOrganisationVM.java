@@ -28,6 +28,7 @@ import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZSdf;
+import za.co.ntier.api.model.I_ZZ_EDP_Application;
 import za.co.ntier.api.model.I_ZZ_FormContact;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
@@ -48,6 +49,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
@@ -405,11 +407,19 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		cols.add(tradeNameCol);
 		
-		ColumnModel numOfEmployeeCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZ_Number_Of_Employees)
-			);
 		
-		cols.add(numOfEmployeeCol);
+		ListColumnModel<ValueNamePair> parentUploadCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads), 
+				I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads,
+				MasterUtil.getYesNoList(),
+				ref -> {return ref.getName();},
+				ref -> {return ref.getValue();},
+				CellModel.RADIO_CELL
+				).setzClass(ValueNamePair.class);
+		parentUploadCol.required();
+		parentUploadCol.setTableName(I_ZZOrganisationLinkage.Table_Name);
+		
+		cols.add(parentUploadCol);
 		
 		ColumnModel linkRequestCol = UploadCellModel.getUploadColumnModel("", null, null,
 				"Upload Link Request")
@@ -422,17 +432,17 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			RowModel row = sdlNoCell.getRowModel();
 			CellModel legaNameCell = row.get(legaNameCol);
 			CellModel tradeNameCell = row.get(tradeNameCol);
-			CellModel numOfEmployeeCell = row.get(numOfEmployeeCol);
+			
 			
 			if (sdlNoCell.getValue() == null) {
 				legaNameCell.setValue(null);
 				tradeNameCell.setValue(null);
-				numOfEmployeeCell.setValue(null);
+				
 			}else {
 				MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), (String)sdlNoCell.getValue());
 				legaNameCell.setValue(childOrg.getName());
 				tradeNameCell.setValue(childOrg.getName2());
-				numOfEmployeeCell.setValue(childOrg.getZZ_Number_Of_Employees());
+				
 			}
 		});
 		
@@ -440,7 +450,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			RowModel row = cellModel.getRowModel();
 			CellModel legaNameCell = row.get(legaNameCol);
 			CellModel tradeNameCell = row.get(tradeNameCol);
-			CellModel numOfEmployeeCell = row.get(numOfEmployeeCol);
+			
 			
 			String dirtyValue = (String)cellModel.getDirtyValue();
 			MBPartner_New childOrg = null;
@@ -454,7 +464,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			if (childOrg == null) {
 				legaNameCell.setValue(null);
 				tradeNameCell.setValue(null);
-				numOfEmployeeCell.setValue(null);
+				
 			}else {
 				Query childOrgQuery = MTable.get(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name)
 						.createQuery(String.format("%s = ? AND %s <> ?", 

@@ -388,6 +388,16 @@
   	justify-content: flex-end;
 }
 
+.mqaWebForm .sdrForm .grid-listView .cellHead{
+	padding: 5px;
+}
+
+.mqaWebForm .sdrForm .grid-listView .colHead .required {
+    margin-right: 5px; 
+    color: #cc0000;
+    font-weight: bold;
+}
+
 .mqaWebForm .sdrForm .grid-listView .cellType-command{
 	flex-direction: row;
   	align-content: center;

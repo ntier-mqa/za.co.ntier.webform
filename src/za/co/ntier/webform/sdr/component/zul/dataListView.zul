@@ -33,13 +33,17 @@
     <nodom if="${rowStatus.first}"
       children="@bind(vmListView.component.columnInfos)">
         <template name="children" var="titleCol">
-          <div sclass="cell colHead">
+          <div sclass="cellHead colHead">
             <label value="@init(titleCol.title)" />
+            
+            <label
+              sclass="required" value="*"
+              visible="@init( titleCol.mandatory )" />
           </div>
           
           <div 
           	if="${titleColStatus.last and vmListView.component.showAddButton}"
-          	sclass="cell colHead command" >
+          	sclass="cellHead colHead command" >
           	<label value="" />
           </div>
         </template>
