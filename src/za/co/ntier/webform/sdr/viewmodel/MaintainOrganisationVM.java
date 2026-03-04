@@ -4,23 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_User;
-import org.compiere.model.X_C_BPartner;
-import org.compiere.model.X_C_BPartner_Location;
-import org.compiere.model.X_C_Location;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zul.event.PagingListener;
 
 import com.google.common.base.Objects;
 
@@ -28,8 +20,6 @@ import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZSdf;
-import za.co.ntier.api.model.I_ZZ_EDP_Application;
-import za.co.ntier.api.model.I_ZZ_FormContact;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZOrganisationLinkage;
@@ -45,9 +35,7 @@ import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
-import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
@@ -665,5 +653,10 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	@Override
 	public String deleteLabel() {
 		return "Cancel";
+	}
+	
+	@Override
+	public void doSave(String trxName) {
+		super.doSave(trxName);
 	}
 }

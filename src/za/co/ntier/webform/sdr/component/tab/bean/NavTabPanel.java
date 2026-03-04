@@ -3,10 +3,9 @@ package za.co.ntier.webform.sdr.component.tab.bean;
 import org.compiere.util.CLogger;
 import org.zkoss.zul.ListModelList;
 
-import za.co.ntier.webform.sdr.component.bean.ISaveForm;
-import za.co.ntier.webform.sdr.component.bean.RowModel;
-import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.TableModel;
 
 public class NavTabPanel implements ISaveForm {
 	private String sclass;

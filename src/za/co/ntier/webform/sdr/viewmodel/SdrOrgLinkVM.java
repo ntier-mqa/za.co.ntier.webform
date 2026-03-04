@@ -2,13 +2,11 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.model.GenericPO;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MRefList;
 import org.compiere.model.MReference;
@@ -29,7 +27,6 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
-import za.co.ntier.api.model.I_ZZ_EDP_Application;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.X_ZZBankingDetails;
 import za.co.ntier.api.model.X_ZZSdf;

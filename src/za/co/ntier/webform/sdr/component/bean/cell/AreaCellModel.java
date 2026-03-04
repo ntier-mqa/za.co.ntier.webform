@@ -6,7 +6,6 @@ import java.util.function.Function;
 import org.compiere.model.MCity;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.SelectEvent;
 
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;

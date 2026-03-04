@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 import org.adempiere.webui.panel.RegistrationWindow;
 import org.apache.commons.lang3.StringUtils;
