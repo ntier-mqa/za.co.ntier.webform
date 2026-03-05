@@ -102,9 +102,11 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 	private void initExtensionData()
 	{
+		String surnameFromSDF = DB.getSQLValueString(null, "SELECT ZZSurname FROM ZZSDF WHERE AD_USER_ID = ", loggedInUser.getAD_User_ID());
+		
 		extensionData = new X_ZZ_WSP_ATR_EXTENSION(ctx, 0, null);
 		extensionData.setZZ_SDF_FirstName(loggedInUser.getFirstName());
-		extensionData.setZZ_SDF_Surname(loggedInUser.getZZSurname());
+		extensionData.setZZ_SDF_Surname(surnameFromSDF);
 		extensionData.setAD_Org_ID(menuContextInfo.getProgramMasterData().getAD_Org_ID());
 	}
 
@@ -140,22 +142,17 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 				SELECT
 				    sdo.%s,
 				    sdo.%s,
-				    CASE
-				        WHEN sdo.ZZReplacingPrimarySDF = 'Y' THEN '%s'
-				        WHEN sdo.ZZSecondarySdf = 'Y' THEN '%s'
-				        ELSE '%s'
-				    END AS %s,
+				    %s AS %s,
 				    sdo.%s,
 				    sdo.%s,
 				    sdo.%s,
 				    bp.Value AS %s,
 				    bp.ZZ_Number_Of_Employees AS %s
 				FROM %s sdo
-				LEFT JOIN C_BPartner bp ON sdo.C_BPartner_ID = bp.C_BPartner_ID
+				LEFT JOIN C_BPartner bp ON sdo.C_BPartner_ID = bp.C_BPartner_ID AND bp.IsActive='Y'
 				WHERE sdo.CreatedBy = ?
 				""", I_ZZSdfOrganisation_v.COLUMNNAME_OrgName, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No,
-				WspAtrExtensionConstants.SDF_ROLE_PRIMARY, WspAtrExtensionConstants.SDF_ROLE_SECONDARY,
-				WspAtrExtensionConstants.SDF_ROLE_PRIMARY, WspAtrExtensionConstants.SDF_ROLE,
+				I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfRoleType, WspAtrExtensionConstants.SDF_ROLE,
 				I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID,
 				WspAtrExtensionConstants.BP_ID, WspAtrExtensionConstants.BP_SEARCH_KEY,
 				WspAtrExtensionConstants.BP_NUMBER_OF_EMPLOYEES, I_ZZSdfOrganisation_v.Table_Name);
@@ -181,11 +178,12 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		List<Map<String, Object>> approvedOrgs = new ArrayList<>();
 		for (Map<String, Object> org : linkedOrganisationsList)
 		{
-			String docStatus = (String) org.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus);
+//			String docStatus = (String) org.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus);
 			String role = (String) org.get(WspAtrExtensionConstants.SDF_ROLE);
 
-			if (WspAtrExtensionConstants.DOC_STATUS_APPROVED.equalsIgnoreCase(docStatus)
-					&& WspAtrExtensionConstants.SDF_ROLE_PRIMARY.equalsIgnoreCase(role))
+			if (
+//					WspAtrExtensionConstants.DOC_STATUS_APPROVED.equalsIgnoreCase(docStatus) && 
+			WspAtrExtensionConstants.SDF_ROLE_PRIMARY.equalsIgnoreCase(role))
 			{
 				approvedOrgs.add(org);
 			}
@@ -216,7 +214,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		cols.add(organisationCol);
 
 		cols.add(createReadOnlyColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDL_No));
-		cols.add(createReadOnlyNumberColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Number_Of_Employees));
+		cols.add(createReadOnlyColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Number_Of_Employees));
 
 		return createTableModel(cols, formManage,
 				WspAtrExtensionConstants.CSS_TWO_COL + " " + WspAtrExtensionConstants.CSS_ORG_SECTION);
@@ -254,12 +252,6 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	private ColumnModel createReadOnlyColumn(String columnName)
 	{
 		return CellModel.getColModelForText(getTranslatedColumnName(columnName), columnName).setReadonly(true)
-				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
-	}
-
-	private ColumnModel createReadOnlyNumberColumn(String columnName)
-	{
-		return CellModel.getColModelForPositiveNumber(getTranslatedColumnName(columnName), columnName).setReadonly(true)
 				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
 	}
 
