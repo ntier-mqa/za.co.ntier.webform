@@ -33,6 +33,7 @@ import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
@@ -68,6 +69,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			orgPOQuery.setParameters(sdfOrganisationID);
 			
 			orgPO = orgPOQuery.first();
+			
 		}else {
 			MasterUtil.showInfoDialog("ZZMaintainOrgFromMenu", MasterUtil.fCloseActiveWindow);
 			
@@ -162,11 +164,11 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				);
 		cols.add(orgFaxCol);
 		
-		ColumnModel emailCol = CellModel.getColModelForEmail(
+		/*ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
 				).required();
-		cols.add(emailCol);
+		cols.add(emailCol);*/
 		
 		/*ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
@@ -658,5 +660,17 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	@Override
 	public void doSave(String trxName) {
 		super.doSave(trxName);
+		
+		String maintainOrgStatus = MBPartner_New.ZZMAINTAINSTATUS_Yes;
+		for (NavTabPanel tabPanel : mainTab.getTabPanelModel()) {
+			InputCheckResult inputCheckResult = tabPanel.parseInputState();
+			if (!inputCheckResult.getFillMandatory()) {
+				maintainOrgStatus = MBPartner_New.ZZMAINTAINSTATUS_No;
+				break;
+			}
+		}
+		orgPO.setZZMaintainStatus(maintainOrgStatus);
+		orgPO.saveEx(trxName);
+		
 	}
 }

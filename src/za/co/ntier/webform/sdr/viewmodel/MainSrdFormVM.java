@@ -12,6 +12,7 @@ import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZSdf;
+import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
@@ -23,6 +24,7 @@ import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
@@ -468,4 +470,20 @@ public class MainSrdFormVM extends BaseAppVM {
 		return false;
 	}
 
+	@Override
+	public void doSave(String trxName) {
+		super.doSave(trxName);
+		
+		String maintainSrdStatus = X_ZZSdf.ZZMAINTAINSTATUS_Yes;
+		for (NavTabPanel tabPanel : mainTab.getTabPanelModel()) {
+			InputCheckResult inputCheckResult = tabPanel.parseInputState();
+			if (!inputCheckResult.getFillMandatory()) {
+				maintainSrdStatus = X_ZZSdf.ZZMAINTAINSTATUS_No;
+				break;
+			}
+		}
+		sdf.setZZMaintainStatus(maintainSrdStatus);
+		sdf.saveEx(trxName);
+		
+	}
 }

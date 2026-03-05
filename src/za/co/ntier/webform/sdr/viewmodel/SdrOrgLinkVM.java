@@ -75,7 +75,9 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		sdfPo = MasterUtil.querySdf(Env.getAD_User_ID(Env.getCtx()));
 		if (sdfPo == null)
 			MasterUtil.showInfoDialog("ZZOrgLinksSDFNotFound", MasterUtil.fCloseActiveWindow);
-		else {
+		else if (sdfPo.getZZMaintainStatus() == null || X_ZZSdf.ZZMAINTAINSTATUS_No.equalsIgnoreCase(sdfPo.getZZMaintainStatus())){
+			MasterUtil.showInfoDialog("ZZOrgLinksSDFWrongStatus", MasterUtil.fCloseActiveWindow);
+		}else {
 			initForm();
 		}
 	}
@@ -98,10 +100,12 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
 		searchOrgQuery.setParameters(cellModel.getValue());
 		
-		X_C_BPartner sOrgPo = searchOrgQuery.first();
+		MBPartner_New sOrgPo = searchOrgQuery.first();
 		
 		if (sOrgPo == null) {
 			MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
+		}else if (sOrgPo.getZZMaintainStatus() == null || MBPartner_New.ZZMAINTAINSTATUS_No.equalsIgnoreCase(sOrgPo.getZZMaintainStatus())){
+			MasterUtil.showInfoDialog("ZZOrgLinksOrgWrongStatus", MasterUtil.fCloseActiveWindow);
 		}else {
 			orgPo = sOrgPo;
 			orgSearchModel.getRow().setData(orgPo);
