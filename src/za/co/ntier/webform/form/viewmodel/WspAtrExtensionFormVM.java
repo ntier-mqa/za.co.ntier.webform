@@ -214,7 +214,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		cols.add(organisationCol);
 
 		cols.add(createReadOnlyColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDL_No));
-		cols.add(createReadOnlyColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Number_Of_Employees));
+		cols.add(createReadOnlyNumberColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Number_Of_Employees));
 
 		return createTableModel(cols, formManage,
 				WspAtrExtensionConstants.CSS_TWO_COL + " " + WspAtrExtensionConstants.CSS_ORG_SECTION);
@@ -252,6 +252,12 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	private ColumnModel createReadOnlyColumn(String columnName)
 	{
 		return CellModel.getColModelForText(getTranslatedColumnName(columnName), columnName).setReadonly(true)
+				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
+	}
+	
+	private ColumnModel createReadOnlyNumberColumn(String columnName)
+	{
+		return CellModel.getColModelForPositiveNumber(getTranslatedColumnName(columnName), columnName).setReadonly(true)
 				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
 	}
 

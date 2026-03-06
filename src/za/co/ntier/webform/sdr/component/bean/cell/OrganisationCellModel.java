@@ -79,7 +79,7 @@ public class OrganisationCellModel extends ListCellModel<Map<String, Object>>
 			BigDecimal empCount = convertToEmployeeCount(employees);
 			if (empCount != null)
 			{
-				empCell.setValue(empCount.toString());
+				empCell.setValue(empCount);
 				BindUtils.postNotifyChange(empCell, "value");
 			}
 		}
