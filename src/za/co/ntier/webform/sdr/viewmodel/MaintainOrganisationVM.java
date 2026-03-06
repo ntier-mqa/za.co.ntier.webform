@@ -11,6 +11,7 @@ import org.compiere.model.X_AD_User;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -46,12 +47,26 @@ import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 public class MaintainOrganisationVM extends BaseAppVM {
 	private FormInfo formInfo;
 	private TableModel names;
-	TableModel physicalAddress;
-	TableModel postalAddress;
+	private TableModel physicalAddress;
+	private TableModel postalAddress;
+	private TableModel contactTableModel;
+	
 	private MenuContextInfo menuContextInfo;
 	MBPartner_New orgPO;
 	
 	private NavTab mainTab;
+	
+	@Init
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
+		this.setMenuContextInfo(menuContextInfo);
+		setFormInfo(new FormInfo(menuContextInfo));
+		
+		initMaintab();
+		
+		initOrg(menuContextInfo);
+		
+		loadDataFollowOrg(orgPO);
+	}
 	
 	private void initOrg(MenuContextInfo menuContextInfo) {
 		int sdfOrganisationID = menuContextInfo.getRecordID();
@@ -70,46 +85,92 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			
 			orgPO = orgPOQuery.first();
 			
-		}else {
-			MasterUtil.showInfoDialog("ZZMaintainOrgFromMenu", MasterUtil.fCloseActiveWindow);
-			
 		}
+	
+		
 	}
 
-	
+	TableModel tmGeneralDetail;
 	
 	private void initMaintab(){
+		names = initNames();
+		
 		mainTab = new NavTab();
 		
 		NavTabPanel generalDetailTab = new NavTabPanel(mainTab);
 		generalDetailTab.setTabTitle("GENERAL DETAILS");
 		// new component
-		generalDetailTab.getCompModel().add(initGeneralDetailComp());
+		tmGeneralDetail = initGeneralDetailComp();
+		generalDetailTab.getCompModel().add(tmGeneralDetail);
 		
 		NavTabPanel contactDetailTab = new NavTabPanel(mainTab);
 		contactDetailTab.setTabTitle("CONTACT DETAILS");
 		// new component
-		TableModel contactTableModel = initContactDetailComp();
+		contactTableModel = initContactDetailComp();
 		contactTableModel.setViewModel(TableModel.ViewType.VIEW_CARD);
 		contactDetailTab.getCompModel().add(contactTableModel);
-
+		
 		// address tab
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
 		addressDetailTab.setSclass("address");
 		addressDetailTab.setTabTitle("ADDRESS DETAILS");
 		
-		postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", false, orgPO.getC_BPartner_ID(), null);
-		physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", false, orgPO.getC_BPartner_ID(), postalAddress);
+		postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", null);
+		postalAddress.setPoSupplier(rowModel -> {
+			return BuildFormUtil.getNewAddress(orgPO.getC_BPartner_ID(), rowModel.getTableModel().getDataType(), false);
+		});
+		
+		physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", postalAddress);
+		physicalAddress.setPoSupplier(rowModel -> {
+			return BuildFormUtil.getNewAddress(orgPO.getC_BPartner_ID(), rowModel.getTableModel().getDataType(), false);
+		});
+		
 		
 		addressDetailTab.getCompModel().add(physicalAddress);
 		//addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(physicalAddress, postalAddress));
 		addressDetailTab.getCompModel().add(postalAddress);
 		
 		initChildOrg();
+	}
+	
+	private void loadDataFollowOrg(MBPartner_New orgPO) {
+		if (orgPO == null)
+			return;
 		
-		if (!"Parent".equals(orgPO.getZZOrganisationType())) {
-			mainTab.getTabPanelModel().remove(childTabPanel);
+		this.orgPO = orgPO;
+		
+		if (orgDaoManage == null) {
+			orgDaoManage = new DaoManage();
 		}
+		
+		orgDaoManage.setDao(orgPO);
+		
+		// show/hidden child tab follow org type
+		visiableChildOrg(orgPO.getZZOrganisationType());
+		
+		// load org contact 
+		Query contactQuery = MTable.get(Env.getCtx(), org.compiere.model.I_AD_User.Table_Name)
+				.createQuery(
+						String.format("%s = ?", I_AD_User.COLUMNNAME_C_BPartner_ID), null);
+		contactQuery.setParameters(orgPO.getC_BPartner_ID());
+		List<PO> contacts = contactQuery.list();
+		
+		contactTableModel.reset(contacts);
+		
+		// init name
+		names.reloadDao();
+		
+		// reload general detail
+		tmGeneralDetail.reloadDao();
+		
+		// reload address
+		PO savedPo = BuildFormUtil.getSavedAddress(orgPO.getC_BPartner_ID(), physicalAddress.getDataType(), false);
+		physicalAddress.getRow().setData(savedPo);
+		physicalAddress.reloadDao();
+		
+		savedPo = BuildFormUtil.getSavedAddress(orgPO.getC_BPartner_ID(), postalAddress.getDataType(), false);
+		postalAddress.getRow().setData(savedPo);
+		postalAddress.reloadDao();
 		
 	}
 	
@@ -158,17 +219,17 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				);
 		cols.add(telephoneNumberCol);
 
-		ColumnModel orgFaxCol = CellModel.getColModelForPhone(
+		/*ColumnModel orgFaxCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Fax)
 				, I_AD_User.COLUMNNAME_Fax
 				);
-		cols.add(orgFaxCol);
+		cols.add(orgFaxCol);*/
 		
-		/*ColumnModel emailCol = CellModel.getColModelForEmail(
+		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
 				).required();
-		cols.add(emailCol);*/
+		cols.add(emailCol);
 		
 		/*ColumnModel provinceCol = ProvinceCellModel.getProvinceColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZ_FormContact.Table_Name, I_ZZ_FormContact.COLUMNNAME_C_Region_ID)
@@ -205,12 +266,6 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		TableModel orgContactDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
 		orgContactDetailBean.setSclass("srd-org-contact");
 		
-		Query contactQuery = MTable.get(Env.getCtx(), org.compiere.model.I_AD_User.Table_Name)
-				.createQuery(
-						String.format("%s = ?", I_AD_User.COLUMNNAME_C_BPartner_ID), null);
-		contactQuery.setParameters(orgPO.getC_BPartner_ID());
-		List<PO> contacts = contactQuery.list();
-		
 		orgContactDetailBean.setPoSupplier(rowModel -> {
 			MUser_New nContact = new MUser_New(Env.getCtx(), 0, null);
 			nContact.setAD_Org_ID(0);
@@ -219,7 +274,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			return nContact; 
 		});
 		
-		orgContactDetailBean.init(contacts);
+		orgContactDetailBean.init(null);
 		
 		return orgContactDetailBean;
 	}
@@ -313,13 +368,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		orgTypeCol.setEventHandle((event, cellModel) -> {
 
-			if ("Parent".equals(cellModel.getValue()) &&
-					!mainTab.getTabPanelModel().contains(childTabPanel)){
-				mainTab.getTabPanelModel().add(childTabPanel);
-			}else if (!"Parent".equals(cellModel.getValue()) &&
-					mainTab.getTabPanelModel().contains(childTabPanel))
- 				mainTab.getTabPanelModel().remove(childTabPanel);
-			
+			visiableChildOrg((String)cellModel.getValue());
 			
 		});
 		
@@ -341,6 +390,26 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		orgGeneralDetailBean.init();
 		
 		return orgGeneralDetailBean;
+	}
+
+	private void visiableChildOrg(String orgType) {
+		if ("Parent".equals(orgType) &&
+				!mainTab.getTabPanelModel().contains(childTabPanel)){
+			mainTab.getTabPanelModel().add(childTabPanel);
+		}else if (!"Parent".equals(orgType) &&
+				mainTab.getTabPanelModel().contains(childTabPanel))
+				mainTab.getTabPanelModel().remove(childTabPanel);
+		
+		if (orgPO != null && "Parent".equals(orgType)){
+			Query childOrgQuery = MTable.get(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name)
+					.createQuery(String.format("%s = ?", I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID), null); 
+			childOrgQuery.setParameters(orgPO.getC_BPartner_ID());
+			List<PO> saveds = childOrgQuery.list();
+			
+			((TableModel)childTabPanel.getCompModel().get(0)).reset(saveds);
+		}
+		
+		
 	}
 
 	void initChildOrg() {
@@ -500,12 +569,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		tmChildOrgModel.setViewModel(ViewType.VIEW_GRID);
 		tmChildOrgModel.setShowAddButton(true);
 		
-		Query childOrgQuery = MTable.get(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name)
-				.createQuery(String.format("%s = ?", I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID), null); 
-		childOrgQuery.setParameters(orgPO.getC_BPartner_ID());
-		List<PO> saveds = childOrgQuery.list();
-		
-		tmChildOrgModel.init(saveds);
+		tmChildOrgModel.init();
 		
 		childTabPanel.getCompModel().add(tmChildOrgModel);
 	}
@@ -527,24 +591,35 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	NavTabPanel childTabPanel;
 	
 	DaoManage orgDaoManage = new DaoManage();
-	@Init
-	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
-		this.setMenuContextInfo(menuContextInfo);
-		setFormInfo(new FormInfo(menuContextInfo));
-		
-		initOrg(menuContextInfo);
-		if (orgPO != null) {
-			orgDaoManage = new DaoManage();
-			orgDaoManage.setDao(orgPO);
-			
-			names = initNames();
-			initMaintab();
-		}
-	}
+	
 
 	private TableModel initNames() {
 		List<ColumnModel> cols = new ArrayList<>();
 
+		ColumnModel surnameCol = CellModel.getColModelForText(
+				Msg.getElement(Env.getCtx(), "ZZ_SDL_No")
+				, null
+				);
+		cols.add(surnameCol);
+		
+		surnameCol.setEventHandle((event, cellModel) -> {
+			if (StringUtils.isBlank((String)cellModel.getValue())) {
+				return;
+			}
+			Query searchOrgQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
+					.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
+			searchOrgQuery.setParameters(cellModel.getValue());
+			
+			MBPartner_New sOrgPo = searchOrgQuery.first();
+			
+			if (sOrgPo == null) {
+				MasterUtil.showInfoDialog("ZZOrgMaintainNotFoundOrg", MasterUtil.fCloseActiveWindow);
+			}else {
+				orgPO = sOrgPo;
+				loadDataFollowOrg(orgPO);
+			}
+		});
+		
 		ColumnModel legalNameCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZLegalName")
 				, I_C_BPartner.COLUMNNAME_Name
@@ -559,18 +634,11 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				.setTableName(I_C_BPartner.Table_Name);
 				;
 		cols.add(tradeNameCol);
-		
-		ColumnModel surnameCol = CellModel.getColModelForText(
-				Msg.getElement(Env.getCtx(), "ZZ_SDL_No")
-				, I_C_BPartner.COLUMNNAME_Value
-				).required()
-				.setTableName(I_C_BPartner.Table_Name);
-		cols.add(surnameCol);
 
 		
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
 		namesBean.setDaoManage(orgDaoManage);
-		namesBean.init(null, null);
+		namesBean.init();
 		
 		return namesBean;
 	}

@@ -184,7 +184,33 @@ public class BuildFormUtil {
 		return addressType.getAddressTitle(programType, addressType == AddressType.MAIN_ALTER);
 	}
 
-	public static TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader, boolean isSdfAddress, int parentId, TableModel copyto) {
+	public static PO getSavedAddress(int parentId, String addressType, boolean isSdfAddress){
+		Query savedDataQuery = MTable.get(Env.getCtx(), X_ZZPersonAddress.Table_Name)
+				.createQuery(String.format("%s = ? AND %s = ?"
+						, isSdfAddress ? X_ZZPersonAddress.COLUMNNAME_AD_User_ID : X_ZZPersonAddress.COLUMNNAME_C_BPartner_ID
+						, I_ZZPersonAddress.COLUMNNAME_ZZAddressType), null);
+		
+		savedDataQuery.setParameters(parentId, addressType);
+
+		savedDataQuery.setOrderBy(X_ZZPersonAddress.COLUMNNAME_Created + " DESC");
+		
+		return savedDataQuery.first();
+		
+	}
+	
+	public static PO getNewAddress(int parentId, String addressType, boolean isSdfAddress) {
+		X_ZZPersonAddress po = new X_ZZPersonAddress(Env.getCtx(), 0, null);
+		po.setZZAddressType(addressType);
+		if(isSdfAddress) {
+			po.setAD_User_ID(parentId);
+		}else {//org address
+			po.setC_BPartner_ID(parentId);
+		}
+		
+		return po;
+	}
+	
+	public static TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader, TableModel copyto) {
 		prefixName = "";
 		List<ColumnModel> colsAddress = new ArrayList<>();
 		
@@ -240,20 +266,9 @@ public class BuildFormUtil {
 		
 		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false);
 		addressDetailBean.setSclass(addressType + " srd-address");
-		addressDetailBean.setPoSupplier((ann) -> {
-			X_ZZPersonAddress po = new X_ZZPersonAddress(Env.getCtx(), 0, null);
-			po.setZZAddressType(addressType);
-			if(isSdfAddress) {
-				po.setAD_User_ID(parentId);
-			}else {//org address
-				po.setC_BPartner_ID(parentId);
-			}
-			
-			return po;
-		});
 	
 		addressDetailBean.setSubSectionHeader(subHeader);
-		
+		addressDetailBean.setDataType(addressType);
 		final ColumnModel dupplicateColF = dupplicateCol;
 		if (copyto != null) {
 			addressDetailBean.setDecoratorCell(rowModel -> {
@@ -262,21 +277,8 @@ public class BuildFormUtil {
 			});
 		}
 		
-		Query savedDataQuery = MTable.get(Env.getCtx(), X_ZZPersonAddress.Table_Name)
-				.createQuery(String.format("%s = ? AND %s = ?"
-						, isSdfAddress ? X_ZZPersonAddress.COLUMNNAME_AD_User_ID : X_ZZPersonAddress.COLUMNNAME_C_BPartner_ID
-						, I_ZZPersonAddress.COLUMNNAME_ZZAddressType), null);
 		
-		savedDataQuery.setParameters(parentId, addressType);
-		
-		savedDataQuery.setOrderBy(X_ZZPersonAddress.COLUMNNAME_Created + " DESC");
-		PO po = savedDataQuery.first();
-		if (po == null) {
-			addressDetailBean.init(null);
-		}else {
-			addressDetailBean.init(List.of(po));
-		}
-		
+		addressDetailBean.init();
 	
 		return addressDetailBean;
 	}

@@ -127,6 +127,16 @@ public class TableModel implements ISaveForm {
 		copyRow(activeRow, virtualRow, true);
 	}
 	
+	protected void resetActiveRow() {
+		// reset virtual row
+		if (virtualRow == null) {
+			virtualRow = getVirtualRow();
+		}
+		virtualRow.resetRow();
+		activeRow = rows.get(0);
+		copyRow(activeRow, virtualRow, true);
+	}
+	
 	public boolean navPrevRow() {
 		// not yet init
 		if (activeRow == null) {
@@ -194,6 +204,8 @@ public class TableModel implements ISaveForm {
 	private String dataType;
 	private boolean createNewRowWhenEmpty = true;
 
+	private Consumer<TableModel> updateModelHandle;
+	
 	public static <T extends TableModel> T getTableBean(Class<T> clazz, List<ColumnModel> columnInfos,
 			boolean isShowTotal){
 
@@ -698,6 +710,18 @@ public class TableModel implements ISaveForm {
 	public void init(List<PO> savedDatas) {
 		init(savedDatas, null);
 	}
+	
+	public void reset(List<PO> savedDatas) {
+		getRows().clear();
+		init(savedDatas);
+		if (isCardView()) {
+			resetActiveRow();
+		}
+		if (updateModelHandle != null) {
+			updateModelHandle.accept(this);
+		}
+		BindUtils.postNotifyChange(this, "rows");
+	}
 
 	public void init(List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
 		if(rowTitles == null || rowTitles.size() == 0)
@@ -931,6 +955,12 @@ public class TableModel implements ISaveForm {
 		}
 				
 		return rowInputCheckResult;
+	}
+	public Consumer<TableModel> getUpdateModelHandle() {
+		return updateModelHandle;
+	}
+	public void setUpdateModelHandle(Consumer<TableModel> updateModelHandle) {
+		this.updateModelHandle = updateModelHandle;
 	}
 
 }

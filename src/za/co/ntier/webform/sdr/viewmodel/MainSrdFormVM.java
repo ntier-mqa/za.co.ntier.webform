@@ -94,8 +94,8 @@ public class MainSrdFormVM extends BaseAppVM {
 		addressDetailTab.setSclass("address");
 		addressDetailTab.setTabTitle("Address Details");
 		
-		TableModel postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", true, sdf.getAD_User_ID(), null);
-		TableModel physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", true, sdf.getAD_User_ID(), postalAddress);
+		TableModel postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", null);
+		TableModel physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", postalAddress);
 		
 		addressDetailTab.getCompModel().add(physicalAddress);
 		//addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(physicalAddress, postalAddress));

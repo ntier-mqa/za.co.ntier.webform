@@ -1,5 +1,6 @@
 package za.co.ntier.webform.sdr.component.viewmodel;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.SmartNotifyChange;
@@ -9,6 +10,14 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 @Init(superclass = true)
 public class DataCardViewVM extends BaseComponentVM<TableModel>{
 
+	@Override
+	public void afterParentInit() {
+		super.afterParentInit();
+		getComponent().setUpdateModelHandle(t -> {
+			BindUtils.postNotifyChange(this, "indexInfo");
+		});
+	}
+	
 	@Command
 	@SmartNotifyChange("indexInfo")
 	public void cmdNew() {
