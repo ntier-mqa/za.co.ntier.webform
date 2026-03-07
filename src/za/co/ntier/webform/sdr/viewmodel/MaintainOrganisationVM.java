@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -63,12 +64,15 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		initMaintab();
 		
-		initOrg(menuContextInfo);
+		MBPartner_New sOrgPO = initOrg(menuContextInfo);
 		
-		loadDataFollowOrg(orgPO);
+		if (sOrgPO != null)
+			names.getRow().get(sdlNoCol).setValue(sOrgPO.getValue());
+			
+		loadDataFollowOrg(sOrgPO);
 	}
 	
-	private void initOrg(MenuContextInfo menuContextInfo) {
+	private MBPartner_New initOrg(MenuContextInfo menuContextInfo) {
 		int sdfOrganisationID = menuContextInfo.getRecordID();
 		
 		if (sdfOrganisationID > 0) {
@@ -83,11 +87,11 @@ public class MaintainOrganisationVM extends BaseAppVM {
 					X_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID));
 			orgPOQuery.setParameters(sdfOrganisationID);
 			
-			orgPO = orgPOQuery.first();
+			return orgPOQuery.first();
 			
 		}
 	
-		
+		return null;
 	}
 
 	TableModel tmGeneralDetail;
@@ -269,6 +273,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		orgContactDetailBean.setPoSupplier(rowModel -> {
 			MUser_New nContact = new MUser_New(Env.getCtx(), 0, null);
 			nContact.setAD_Org_ID(0);
+			checkOrg();
 			nContact.setC_BPartner_ID(orgPO.getC_BPartner_ID());
 			nContact.setNotificationType(X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice);
 			return nContact; 
@@ -279,6 +284,11 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		return orgContactDetailBean;
 	}
 
+	private void checkOrg () {
+		if (orgPO == null)
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgMissingOrg"));
+	}
+	
 	private TableModel initGeneralDetailComp() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
@@ -446,13 +456,13 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			//Integer startYear = (Integer)cellModel.getRowModel().get(startDateCol).getDirtyValue();
 		});
 		
-		ColumnModel sdlNoCol = CellModel.getColModelForText(
+		ColumnModel childSdlNoCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No)
 				, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No
 			).setMandatory(true)
 			.setTableName(I_ZZOrganisationLinkage.Table_Name);
 		
-		cols.add(sdlNoCol);
+		cols.add(childSdlNoCol);
 		
 		ColumnModel legaNameCol = CellModel.getColModelForLabel(
 				Msg.getElement(Env.getCtx(), "ZZLegalName")
@@ -486,7 +496,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			
 		cols.add(linkRequestCol);
 		
-		sdlNoCol.addCellPropertyChangeListener(evt -> {
+		childSdlNoCol.addCellPropertyChangeListener(evt -> {
 			CellModel sdlNoCell = (CellModel)evt.getSource();
 			RowModel row = sdlNoCell.getRowModel();
 			CellModel legaNameCell = row.get(legaNameCol);
@@ -505,7 +515,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			}
 		});
 		
-		sdlNoCol.setValidateHandle((cellModel, messages) -> {
+		childSdlNoCol.setValidateHandle((cellModel, messages) -> {
 			RowModel row = cellModel.getRowModel();
 			CellModel legaNameCell = row.get(legaNameCol);
 			CellModel tradeNameCell = row.get(tradeNameCol);
@@ -525,11 +535,16 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				tradeNameCell.setValue(null);
 				
 			}else {
+				if (orgPO == null) {
+					messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgMissingOrg"));
+					return;
+				}
 				Query childOrgQuery = MTable.get(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name)
 						.createQuery(String.format("%s = ? AND %s <> ?", 
 								I_ZZOrganisationLinkage.COLUMNNAME_C_BPartner_ID, 
 								I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID
-								), null); 
+								), null);
+				
 				childOrgQuery.setParameters(childOrg.getC_BPartner_ID(), orgPO.getC_BPartner_ID());
 				
 				if (childOrgQuery.first() != null) {
@@ -559,7 +574,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			X_ZZOrganisationLinkage childOrgLink = (X_ZZOrganisationLinkage)po;
 			childOrgLink.setBPartner_Parent_ID(orgPO.getC_BPartner_ID());
 			
-			String sdlNo = (String)rowModel.get(sdlNoCol).getValue();
+			String sdlNo = (String)rowModel.get(childSdlNoCol).getValue();
 			MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), sdlNo);
 			childOrgLink.setC_BPartner_ID(childOrg.getC_BPartner_ID());
 			return true;
@@ -592,17 +607,18 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	
 	DaoManage orgDaoManage = new DaoManage();
 	
-
+	ColumnModel sdlNoCol;
+	
 	private TableModel initNames() {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ColumnModel surnameCol = CellModel.getColModelForText(
+		sdlNoCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZ_SDL_No")
 				, null
 				);
-		cols.add(surnameCol);
+		cols.add(sdlNoCol);
 		
-		surnameCol.setEventHandle((event, cellModel) -> {
+		sdlNoCol.setEventHandle((event, cellModel) -> {
 			if (StringUtils.isBlank((String)cellModel.getValue())) {
 				return;
 			}
@@ -727,6 +743,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	
 	@Override
 	public void doSave(String trxName) {
+		checkOrg();
 		super.doSave(trxName);
 		
 		String maintainOrgStatus = MBPartner_New.ZZMAINTAINSTATUS_Yes;
