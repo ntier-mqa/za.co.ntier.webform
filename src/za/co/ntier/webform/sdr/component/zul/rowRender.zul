@@ -68,7 +68,7 @@
             <listbox
               if="${ vmRowRender.row[col].cellType eq CellModel.LIST_CELL }"
               readonly="@init(col.readonly)"
-              
+
               mold="select"
               model="@bind(vmRowRender.row[col].model)"
               onSelect="@command('cmdSelected', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)">
@@ -80,6 +80,7 @@
             
             <!-- radiogroup -->
             <radiogroup if="${vmRowRender.row[col].cellType eq CellModel.RADIO_CELL}"
+            	disabled="@init(col.readonly)"
             	model="@load(vmRowRender.row[col].model)"  
             	onCheck="@command('cmdSelected', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)">
             	<template name="model" var="item">
@@ -99,7 +100,8 @@
 
             <!-- PositiveNumber -->
             <intbox if="${vmRowRender.row[col].cellType eq CellModel.POSITIVE_NUM_CELL}"
-              value="@bind(vmRowRender.row[col].value)
+            	disabled="@init(col.readonly)"
+              	value="@bind(vmRowRender.row[col].value)
                    @validator(vmRowRender.cellValidator, cellModel=vmRowRender.row[col], vm=vmRowRender)
                    " />
             
@@ -135,6 +137,7 @@
               sclass="checkboxContent">
               <checkbox
                 label="@init(vmRowRender.row[col].title)"
+                disabled="@init(col.readonly)"
                 onCheck="@command('cmdCheckeck', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"
                 checked="@bind(vmRowRender.row[col].value)" />
                 
@@ -143,6 +146,7 @@
             <!-- Date -->
             <datebox if="${vmRowRender.row[col].cellType eq CellModel.DATE_CELL}"
               format="yyyy/MM/dd" placeholder="yyyy/MM/dd"
+              readonly="@init(col.readonly)"
               valueInLocalDate="@bind(vmRowRender.row[col].localDate)" />
 
 			<button if="${vmRowRender.row[col].cellType eq CellModel.BUTTON_CELL}"
