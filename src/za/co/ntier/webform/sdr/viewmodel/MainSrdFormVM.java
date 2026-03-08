@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
@@ -96,6 +97,23 @@ public class MainSrdFormVM extends BaseAppVM {
 		
 		TableModel postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", null);
 		TableModel physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", postalAddress);
+		
+		postalAddress.setPoSupplier(rowModel -> {
+			return BuildFormUtil.getNewAddress(sdf.getAD_User_ID(), rowModel.getTableModel().getDataType(), true);
+		});
+		
+		physicalAddress.setPoSupplier(rowModel -> {
+			return BuildFormUtil.getNewAddress(sdf.getAD_User_ID(), rowModel.getTableModel().getDataType(), true);
+		});
+		
+		// reload address
+		PO savedPo = BuildFormUtil.getSavedAddress(sdf.getAD_User_ID(), physicalAddress.getDataType(), true);
+		physicalAddress.getRow().setData(savedPo);
+		physicalAddress.reloadDao();
+		
+		savedPo = BuildFormUtil.getSavedAddress(sdf.getAD_User_ID(), postalAddress.getDataType(), true);
+		postalAddress.getRow().setData(savedPo);
+		postalAddress.reloadDao();
 		
 		addressDetailTab.getCompModel().add(physicalAddress);
 		//addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(physicalAddress, postalAddress));
