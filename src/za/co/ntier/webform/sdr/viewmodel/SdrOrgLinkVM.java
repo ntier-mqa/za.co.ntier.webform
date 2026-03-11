@@ -104,8 +104,6 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		if (sOrgPo == null) {
 			MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
-		}else if (sOrgPo.getZZMaintainStatus() == null || MBPartner_New.ZZMAINTAINSTATUS_No.equalsIgnoreCase(sOrgPo.getZZMaintainStatus())){
-			MasterUtil.showInfoDialog("ZZOrgLinksOrgWrongStatus", MasterUtil.fCloseActiveWindow);
 		}else {
 			orgPo = sOrgPo;
 			orgSearchModel.getRow().setData(orgPo);

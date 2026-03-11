@@ -14,6 +14,8 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.ListModelList;
 
+import com.google.common.base.Objects;
+
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.api.model.X_ZZSdfOrganisation_v;
@@ -41,9 +43,15 @@ public class ListSdrOrgLinkVM {
 		return X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Draft.equals(zzDocStatus.getValue());
 	}
 	
+	public String getSclassOrgMaintain(Map<String, Object> row) {
+		Object maintainStatus = row.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZMaintainStatus);
+		return Objects.equal(maintainStatus, X_ZZSdfOrganisation_v.ZZMAINTAINSTATUS_Yes)?"maintained":"unmaintain";
+	}
+	
 	public boolean isOrgEditable(Map<String, Object> row) {
 		ValueNamePair zzDocStatus = (ValueNamePair)row.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus);
-		boolean isOrgEditable = X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved.equals(zzDocStatus.getValue());
+		boolean isOrgEditable = X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved.equals(zzDocStatus.getValue())
+				|| X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Pending.equals(zzDocStatus.getValue());
 		isOrgEditable = isOrgEditable && row.get(ListSdrOrgLinkVM.ROLE_key).equals(X_ZZSdfOrganisation_v.ZZSDFROLETYPE_Primary);
 		return isOrgEditable;
 	}
@@ -91,6 +99,7 @@ public class ListSdrOrgLinkVM {
 						%s, 
 					   	%s AS %s,
 				    	%s,
+				    	%s,
 				    	%s
 			    FROM %s
 			    WHERE %s = ? AND %s IN ('%s', '%s',  '%s')
@@ -102,6 +111,7 @@ public class ListSdrOrgLinkVM {
 				, ROLE_key
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID
+				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZMaintainStatus
 				, I_ZZSdfOrganisation_v.Table_Name
 				, I_ZZSdfOrganisation_v.COLUMNNAME_CreatedBy
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus
@@ -132,6 +142,7 @@ public class ListSdrOrgLinkVM {
 				}				
 				
 				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID, row.get(5));
+				linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZMaintainStatus, row.get(6));
 				
 				linkedOrganisationsList.add(linkedOrganisation);
 			});

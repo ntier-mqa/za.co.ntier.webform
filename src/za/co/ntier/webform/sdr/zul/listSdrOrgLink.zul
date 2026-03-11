@@ -45,7 +45,8 @@
            	label="Edit Request"
            	onClick="@command('editLinkedOrganisation', row=item)"/>
         
-        <button if = "${ vm.isOrgEditable(item) }" 
+        <button if = "${ vm.isOrgEditable(item) }"
+        	sclass="@load(( vm.getSclassOrgMaintain(item) ))" 
           	label="Edit Organisation"
           	onClick="@command('editOrganisation', row=item)"/>
         </div>

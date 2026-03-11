@@ -331,11 +331,6 @@
 	grid-template-columns: repeat(2, 1fr);
 }
 
-.mqaWebForm .grid-formview.srd-org-general > :nth-child(9){
-  grid-column: span 2;
-  width:50%;
-}
-
 /* org contact */
 .mqaWebForm .grid-formview.srd-org-contact{
 	grid-template-columns: repeat(2, 1fr);
@@ -477,4 +472,8 @@
 
 .mqaWebForm .sdrForm .uploadFileBox > :last-child {
 	padding:0 10px 0 5px;
+}
+
+.mqaWebForm .sdrForm  .unmaintain.z-button{
+	background-color:orange;
 }

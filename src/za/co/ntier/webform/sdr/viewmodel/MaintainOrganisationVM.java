@@ -66,9 +66,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		MBPartner_New sOrgPO = initOrg(menuContextInfo);
 		
-		if (sOrgPO != null)
+		/*if (sOrgPO != null)
 			names.getRow().get(sdlNoCol).setValue(sOrgPO.getValue());
-			
+			*/
 		loadDataFollowOrg(sOrgPO);
 	}
 	
@@ -293,7 +293,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel registrationNumCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ReferenceNo)
+				Msg.getElement(Env.getCtx(), "ZZOrgReferenceNo")
 				, I_C_BPartner.COLUMNNAME_ReferenceNo
 			).required()
 			.setTableName(I_C_BPartner.Table_Name);
@@ -320,7 +320,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		cols.add(orgRegistrationNumTypeCol);
 		
 		ColumnModel sarsNumCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZSarsNumber)
+				Msg.getElement(Env.getCtx(), "ZZPayeNumber")
 				, I_C_BPartner.COLUMNNAME_ZZSarsNumber
 			).required()
 			.setTableName(I_C_BPartner.Table_Name);
@@ -365,6 +365,23 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(subSectorCol);
+		
+		
+
+		
+		ListColumnModel<ValueNamePair> unionisedCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZUnionised), 
+				I_C_BPartner.COLUMNNAME_ZZUnionised,
+				MasterUtil.getYesNoList(),
+				ref -> {return ref.getName();},
+				ref -> {return ref.getValue();},
+				CellModel.RADIO_CELL
+				).setzClass(ValueNamePair.class);
+		unionisedCol.required();
+		unionisedCol.setTableName(I_C_BPartner.Table_Name);
+		
+		cols.add(unionisedCol);
+		
 		
 		ColumnModel orgTypeCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZOrganisationType)
@@ -614,39 +631,36 @@ public class MaintainOrganisationVM extends BaseAppVM {
 
 		sdlNoCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZ_SDL_No")
-				, null
-				);
+				, I_C_BPartner.COLUMNNAME_Value
+				).setReadonly(true);
 		cols.add(sdlNoCol);
 		
-		sdlNoCol.setEventHandle((event, cellModel) -> {
-			if (StringUtils.isBlank((String)cellModel.getValue())) {
-				return;
-			}
-			Query searchOrgQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
-					.createQuery(String.format("%s = ? AND %s = 'Y'", I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector), null);
-			searchOrgQuery.setParameters(cellModel.getValue());
-			
-			MBPartner_New sOrgPo = searchOrgQuery.first();
-			
-			if (sOrgPo == null) {
-				MasterUtil.showInfoDialog("ZZOrgMaintainNotFoundOrg", MasterUtil.fCloseActiveWindow);
-			}else {
-				orgPO = sOrgPo;
-				loadDataFollowOrg(orgPO);
-			}
-		});
+		/*
+		 * sdlNoCol.setEventHandle((event, cellModel) -> { if
+		 * (StringUtils.isBlank((String)cellModel.getValue())) { return; } Query
+		 * searchOrgQuery = MTable.get(Env.getCtx(), I_C_BPartner.Table_Name)
+		 * .createQuery(String.format("%s = ? AND %s = 'Y'",
+		 * I_C_BPartner.COLUMNNAME_Value, I_C_BPartner.COLUMNNAME_ZZ_Is_MQA_Sector),
+		 * null); searchOrgQuery.setParameters(cellModel.getValue());
+		 * 
+		 * MBPartner_New sOrgPo = searchOrgQuery.first();
+		 * 
+		 * if (sOrgPo == null) { MasterUtil.showInfoDialog("ZZOrgMaintainNotFoundOrg",
+		 * MasterUtil.fCloseActiveWindow); }else { orgPO = sOrgPo;
+		 * loadDataFollowOrg(orgPO); } });
+		 */
 		
 		ColumnModel legalNameCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZLegalName")
 				, I_C_BPartner.COLUMNNAME_Name
-				).required()
+				).setReadonly(true)
 				.setTableName(I_C_BPartner.Table_Name);
 		cols.add(legalNameCol);
 		
 		ColumnModel tradeNameCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZTradeName")
 				, I_C_BPartner.COLUMNNAME_Name2
-				).required()
+				).setReadonly(true)
 				.setTableName(I_C_BPartner.Table_Name);
 				;
 		cols.add(tradeNameCol);
