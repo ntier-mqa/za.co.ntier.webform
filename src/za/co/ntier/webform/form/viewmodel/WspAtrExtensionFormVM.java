@@ -103,17 +103,11 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 	private void initExtensionData()
 	{
-		String surnameFromSDF = DB.getSQLValueString(null, "SELECT ZZSurname FROM ZZSDF WHERE AD_USER_ID = ",
-				loggedInUser.getAD_User_ID());
-
 		extensionData = new X_ZZ_WSP_ATR_EXTENSION(ctx, 0, null);
-		extensionData.setZZ_SDF_FirstName(loggedInUser.getFirstName());
-		extensionData.setZZ_SDF_Surname(surnameFromSDF);
 		extensionData.setAD_Org_ID(menuContextInfo.getProgramMasterData().getAD_Org_ID());
 		extensionData.setZZ_SDF_Phone(loggedInUser.getPhone());
 		extensionData.setZZ_SDF_EMAIL(loggedInUser.getEMail());
 		extensionData.setZZ_Submission_Date(new Timestamp(System.currentTimeMillis()));
-
 	}
 
 	private void loadLinkedOrganisations()
@@ -361,7 +355,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 			msgs.add(Msg.getMsg(ctx, "ZZExtRequestSubmitSuccess", true));
 		}
 
-		msgs.add("Request ID: " + extensionData.get_ID());
+		msgs.add("Request ID: " + extensionData.getDocumentNo());
 
 		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
