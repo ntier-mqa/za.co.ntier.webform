@@ -19,6 +19,7 @@ import org.compiere.util.Msg;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
+import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION_BATCH;
@@ -198,10 +199,26 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 	private TableModel getSdfDetailsComp(DaoManage formManage)
 	{
+		List<Object> userInfos = DB.getSQLValueObjectsEx(null, """
+				SELECT
+					COALESCE(z.zzfirstname, au.name),  z.zzsurname
+				FROM 
+					ad_user au LEFT JOIN zzsdf z ON (au.ad_user_id = z.ad_user_id)
+				WHERE
+					au.ad_user_id = ?
+				""", Env.getAD_User_ID(Env.getCtx()));
+		
 		List<ColumnModel> cols = new ArrayList<>();
-
-		cols.add(createReadOnlyColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDF_FirstName));
-		cols.add(createReadOnlyColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDF_Surname));
+		
+		ColumnModel col = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName),
+				null).setReadonly(true).setDefaultValue(userInfos.get(0));
+		cols.add(col);
+		
+		col = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname),
+				null).setReadonly(true).setDefaultValue(userInfos.get(1));
+		cols.add(col);
 
 		return createTableModel(cols, formManage,
 				WspAtrExtensionConstants.CSS_TWO_COL + " " + WspAtrExtensionConstants.CSS_SDF_SECTION);
