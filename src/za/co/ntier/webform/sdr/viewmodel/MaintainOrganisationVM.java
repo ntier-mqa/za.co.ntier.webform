@@ -20,10 +20,12 @@ import com.google.common.base.Objects;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BPartner;
+import za.co.ntier.api.model.I_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
+import za.co.ntier.api.model.X_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.X_ZZOrganisationLinkage;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
@@ -135,8 +137,10 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		addressDetailTab.getCompModel().add(postalAddress);
 		
 		initChildOrg();
+		
+		initTrainingCommittee();
 	}
-	
+
 	private void loadDataFollowOrg(MBPartner_New orgPO) {
 		if (orgPO == null)
 			return;
@@ -175,6 +179,15 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		savedPo = BuildFormUtil.getSavedAddress(orgPO.getC_BPartner_ID(), postalAddress.getDataType(), false);
 		postalAddress.getRow().setData(savedPo);
 		postalAddress.reloadDao();
+		
+		// load TrainingCommittee
+		Query trainingCommitteeQuery = MTable.get(Env.getCtx(), I_ZZOrgTrainingCommittee.Table_Name)
+				.createQuery(
+						String.format("%s = ?", I_ZZOrgTrainingCommittee.COLUMNNAME_C_BPartner_ID), null);
+		trainingCommitteeQuery.setParameters(orgPO.getC_BPartner_ID());
+		List<PO> trainingCommittees = trainingCommitteeQuery.list();
+		
+		tmTrainingCommittee.reset(trainingCommittees);
 		
 	}
 	
@@ -606,6 +619,108 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		childTabPanel.getCompModel().add(tmChildOrgModel);
 	}
 	
+	TableModel tmTrainingCommittee;
+	private void initTrainingCommittee() {
+		NavTabPanel trainingCommitteeTabPanel = new NavTabPanel(mainTab);
+		trainingCommitteeTabPanel.setTabTitle("Training Committee");
+		
+		List<ColumnModel> cols = new ArrayList<ColumnModel>();
+		
+		ColumnModel greettingCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZLkpTitle)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZLkpTitle
+				, MasterUtil.getLkpTitleLists()
+				, title -> {return title.getName();}
+				, title -> {return title.getValue();}
+			).setzClass(ValueNamePair.class)
+			.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(greettingCol);
+		
+		ColumnModel firstNameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZFirstName)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZFirstName
+				).required()
+				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(firstNameCol);
+		
+		ColumnModel surnameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZSurname)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZSurname
+				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(surnameCol);
+		
+		ColumnModel idNoCol = CellModel.getColModelForIDPASS(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZ_ID_Passport_No)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZ_ID_Passport_No
+			).required()
+			.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(idNoCol);
+		
+		ColumnModel designationCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZ_Designation)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZ_Designation
+				, MasterUtil.getDesignation()
+				, title -> {return title.getName();}
+				, title -> {return title.getValue();}
+			).setzClass(ValueNamePair.class).
+			required().
+			setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(designationCol);
+		
+		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2
+				).setTableName(I_ZZOrgTrainingCommittee.Table_Name).
+				required();
+		cols.add(telephoneNumberCol);
+
+		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone
+				).required()
+				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(cellPhoneNumberCol);
+
+		ColumnModel emailCol = CellModel.getColModelForEmail(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_EMail)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_EMail
+				).required()
+				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(emailCol);
+		
+		ColumnModel nameOfUnionCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZNameOfUnion)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZNameOfUnion
+				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(nameOfUnionCol);
+		
+		ColumnModel positionInUnionCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZPositionInUnion)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZPositionInUnion
+				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		cols.add(positionInUnionCol);
+		
+		tmTrainingCommittee = TableModel.getTableBean(TableModel.class, cols, false);
+		tmTrainingCommittee.setPoSupplier(rowModel -> {
+			X_ZZOrgTrainingCommittee orgTrainingCommittee = new X_ZZOrgTrainingCommittee(Env.getCtx(), 0, null);
+			
+			return orgTrainingCommittee;
+		});
+		
+		tmTrainingCommittee.setBeforeSave((po, rowModel) -> {
+			X_ZZOrgTrainingCommittee orgTrainingCommittee = (X_ZZOrgTrainingCommittee)po;
+			orgTrainingCommittee.setC_BPartner_ID(orgPO.getC_BPartner_ID());
+			return true;
+		});
+		
+		tmTrainingCommittee.setSclass("orgTrainingCommittee");
+		tmTrainingCommittee.setViewModel(ViewType.VIEW_CARD);
+		
+		tmTrainingCommittee.init();
+		
+		trainingCommitteeTabPanel.getCompModel().add(tmTrainingCommittee);
+	}
+	
 	public static record DependencyFields(CellModel legaNameCell, CellModel tradeNameCell, CellModel numOfEmployeeCell) {}
 	
 	void setDependencyField(MBPartner_New childOrg, DependencyFields dependencyFields) {
@@ -762,6 +877,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		String maintainOrgStatus = MBPartner_New.ZZMAINTAINSTATUS_Yes;
 		for (NavTabPanel tabPanel : mainTab.getTabPanelModel()) {
+			if (tmTrainingCommittee == tabPanel.getCompModel().get(0)) {
+				continue;// don't check tmTrainingCommittee is option
+			}
 			InputCheckResult inputCheckResult = tabPanel.parseInputState();
 			if (!inputCheckResult.getFillMandatory()) {
 				maintainOrgStatus = MBPartner_New.ZZMAINTAINSTATUS_No;

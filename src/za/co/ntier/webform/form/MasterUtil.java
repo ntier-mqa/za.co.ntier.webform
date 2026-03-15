@@ -284,6 +284,9 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpChamberCode = new AbstractMap.SimpleEntry<>("15a4a826-3bcb-402b-9ff4-602beeec8c3f", null);
 	public static final Entry<String, Integer> LkpNQFLevel = new AbstractMap.SimpleEntry<>("2b47e027-cb5a-45d6-8fc6-2c9bc9c6c3ad", null);
 	
+	public static final Entry<String, Integer> LkpDesignation = new AbstractMap.SimpleEntry<>("49d9d43a-3d51-40e7-afea-31c821e38330", null);
+	
+	
 	public static final Entry<String, Integer> ZZDocStatus = new AbstractMap.SimpleEntry<>("98479fb5-df5d-440d-86aa-92d77a320857", null);
 	
 	public static final Entry<String, Integer> ExecutiveStatus = new AbstractMap.SimpleEntry<>("de34e9e2-ce0d-4877-b912-d1e7a5615a02", null);
@@ -331,6 +334,10 @@ public class MasterUtil {
 	
 	public static List<ValueNamePair> getLevyNumberType () {
 		return getRefList(LkpLevyNumberType);
+	}
+	
+	public static List<ValueNamePair> getDesignation () {
+		return getRefList(LkpDesignation);
 	}
 	
 	public static List<ValueNamePair> getOrganisationType () {
