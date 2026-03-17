@@ -341,6 +341,13 @@
   width:50%;
 }
 
+.mqaWebForm .sdrForm .grid-listView.grid-listView-5{
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-5-command{
+	grid-template-columns: repeat(6, 1fr);
+}
 
 .mqaWebForm .sdrForm .grid-listView.grid-listView-7{
   grid-template-columns: repeat(7, 1fr);

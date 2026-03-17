@@ -458,33 +458,35 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		List<ColumnModel> cols = new ArrayList<ColumnModel>();
 		
-		ColumnModel startDateCol = CellModel.getColModelForPositiveNumber(
-				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkStartYear)
-				, I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkStartYear
-			).required()
-			.setTableName(I_ZZOrganisationLinkage.Table_Name);
-		
-		cols.add(startDateCol);
-		
-		ColumnModel endDateCol = CellModel.getColModelForPositiveNumber(
-				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkEndYear)
-				, I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkEndYear
-			)
-			.setTableName(I_ZZOrganisationLinkage.Table_Name);
-		
-		cols.add(endDateCol);
-		
-		startDateCol.setValidateHandle((cellModel, validateMsgs) -> {
-			//Integer startYear = (Integer)cellModel.getDirtyValue();
-			
-			//Integer erndYear = (Integer)cellModel.getRowModel().get(endDateCol).getDirtyValue();
-		});
-		
-		endDateCol.setValidateHandle((cellModel, validateMsgs) -> {
-			//Integer endYear = (Integer)cellModel.getDirtyValue();
-			
-			//Integer startYear = (Integer)cellModel.getRowModel().get(startDateCol).getDirtyValue();
-		});
+		/*
+		 * ColumnModel startDateCol = CellModel.getColModelForPositiveNumber(
+		 * MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name,
+		 * I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkStartYear) ,
+		 * I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkStartYear ).required()
+		 * .setTableName(I_ZZOrganisationLinkage.Table_Name);
+		 * 
+		 * cols.add(startDateCol);
+		 * 
+		 * ColumnModel endDateCol = CellModel.getColModelForPositiveNumber(
+		 * MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name,
+		 * I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkEndYear) ,
+		 * I_ZZOrganisationLinkage.COLUMNNAME_ZZLinkEndYear )
+		 * .setTableName(I_ZZOrganisationLinkage.Table_Name);
+		 * 
+		 * cols.add(endDateCol);
+		 * 
+		 * startDateCol.setValidateHandle((cellModel, validateMsgs) -> { //Integer
+		 * startYear = (Integer)cellModel.getDirtyValue();
+		 * 
+		 * //Integer erndYear =
+		 * (Integer)cellModel.getRowModel().get(endDateCol).getDirtyValue(); });
+		 * 
+		 * endDateCol.setValidateHandle((cellModel, validateMsgs) -> { //Integer endYear
+		 * = (Integer)cellModel.getDirtyValue();
+		 * 
+		 * //Integer startYear =
+		 * (Integer)cellModel.getRowModel().get(startDateCol).getDirtyValue(); });
+		 */
 		
 		ColumnModel childSdlNoCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No)
