@@ -285,6 +285,7 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpNQFLevel = new AbstractMap.SimpleEntry<>("2b47e027-cb5a-45d6-8fc6-2c9bc9c6c3ad", null);
 	
 	public static final Entry<String, Integer> LkpDesignation = new AbstractMap.SimpleEntry<>("49d9d43a-3d51-40e7-afea-31c821e38330", null);
+	public static final Entry<String, Integer> HealthFunctions = new AbstractMap.SimpleEntry<>("d6c8f557-1787-43a4-b34d-47a826efc716", null);
 	
 	
 	public static final Entry<String, Integer> ZZDocStatus = new AbstractMap.SimpleEntry<>("98479fb5-df5d-440d-86aa-92d77a320857", null);
@@ -306,6 +307,10 @@ public class MasterUtil {
 	
 	public static List<ValueNamePair> getSDFOrgLinkOptions () {
 		return getRefList(SDFOrgLinkOptions);
+	}
+	
+	public static List<ValueNamePair> getHealthFunctions () {
+		return getRefList(HealthFunctions);
 	}
 	
 	public static List<ValueNamePair> getZZDocStatus () {

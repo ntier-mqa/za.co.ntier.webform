@@ -484,3 +484,7 @@
 .mqaWebForm .sdrForm  .unmaintain.z-button{
 	background-color:orange;
 }
+
+.mqaWebForm .sdrForm .srd-name-assessor{
+	grid-template-columns: repeat(4, 1fr);
+}

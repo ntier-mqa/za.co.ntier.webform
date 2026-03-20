@@ -27,6 +27,7 @@ import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.X_ZZOrganisationLinkage;
+import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -123,12 +124,16 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		postalAddress = BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", null);
 		postalAddress.setPoSupplier(rowModel -> {
-			return BuildFormUtil.getNewAddress(orgPO.getC_BPartner_ID(), rowModel.getTableModel().getDataType(), false);
+			X_ZZPersonAddress address = BuildFormUtil.getNewAddress(rowModel.getTableModel().getDataType());
+			address.setC_BPartner_ID(orgPO.getC_BPartner_ID());
+			return address;
 		});
 		
 		physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", postalAddress);
 		physicalAddress.setPoSupplier(rowModel -> {
-			return BuildFormUtil.getNewAddress(orgPO.getC_BPartner_ID(), rowModel.getTableModel().getDataType(), false);
+			X_ZZPersonAddress address = BuildFormUtil.getNewAddress(rowModel.getTableModel().getDataType());
+			address.setC_BPartner_ID(orgPO.getC_BPartner_ID());
+			return address;
 		});
 		
 		

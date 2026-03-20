@@ -15,6 +15,7 @@ import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
+import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.webform.form.MasterUtil;
@@ -99,11 +100,15 @@ public class MainSrdFormVM extends BaseAppVM {
 		TableModel physicalAddress = BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical", postalAddress);
 		
 		postalAddress.setPoSupplier(rowModel -> {
-			return BuildFormUtil.getNewAddress(sdf.getAD_User_ID(), rowModel.getTableModel().getDataType(), true);
+			X_ZZPersonAddress address = BuildFormUtil.getNewAddress(rowModel.getTableModel().getDataType());
+			address.setAD_User_ID(sdf.getAD_User_ID());
+			return address;
 		});
 		
 		physicalAddress.setPoSupplier(rowModel -> {
-			return BuildFormUtil.getNewAddress(sdf.getAD_User_ID(), rowModel.getTableModel().getDataType(), true);
+			X_ZZPersonAddress address = BuildFormUtil.getNewAddress(rowModel.getTableModel().getDataType());
+			address.setAD_User_ID(sdf.getAD_User_ID());
+			return address;
 		});
 		
 		// reload address

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.bean.AddressType ?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vmAssessor') @init('za.co.ntier.webform.sdr.viewmodel.AssessorRegistrationVM')">
+
+  <div style="display:flex; padding:5px 0 40px 0; flex-direction: column;  align-items: center;">
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vmAssessor.formInfo.formHeader)" />
+    <div style="padding-bottom:10px;font-size:smaller">
+      <html content="@init(( vmAssessor.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
+    </div>
+  </div>
+  
+  
+  <include
+    component="@init(vmAssessor.tmNames)"
+    menuContextInfo="@init(vmAssessor.menuContextInfo)"
+    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+  
+  
+  <include 
+    sclass="navTabOuter"
+    component="@init(vmAssessor.mainTab)"
+    menuContextInfo="@init(vmAssessor.menuContextInfo)"
+    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
+    
+  <include
+  	saveApp="@init(vmAssessor)"
+    navTab="@init(vmAssessor.mainTab)"
+    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
+</idspace>

@@ -198,14 +198,9 @@ public class BuildFormUtil {
 		
 	}
 	
-	public static PO getNewAddress(int parentId, String addressType, boolean isSdfAddress) {
+	public static X_ZZPersonAddress getNewAddress(String addressType) {
 		X_ZZPersonAddress po = new X_ZZPersonAddress(Env.getCtx(), 0, null);
 		po.setZZAddressType(addressType);
-		if(isSdfAddress) {
-			po.setAD_User_ID(parentId);
-		}else {//org address
-			po.setC_BPartner_ID(parentId);
-		}
 		
 		return po;
 	}

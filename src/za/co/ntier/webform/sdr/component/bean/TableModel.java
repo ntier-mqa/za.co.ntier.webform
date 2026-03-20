@@ -287,6 +287,11 @@ public class TableModel implements ISaveForm {
 			daos.put(dao.get_TableName(), dao);
 		}
 		
+		public void resetDao(String tableName) {
+			if (daos.get(tableName) != null)
+				daos.remove(tableName);
+		}
+		
 		public void saveDao(String trxName) {
 			daos.forEach(
 					(t, po) -> po.saveEx(trxName)
