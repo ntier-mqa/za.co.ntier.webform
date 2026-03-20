@@ -23,7 +23,8 @@ Import-Package: org.adempiere.base,
  org.zkoss.zk.ui;version="[10.0.0,11.0.0)",
  org.zkoss.zk.ui.metainfo;version="[10.0.0,11.0.0)",
  org.zkoss.zul;version="[10.0.0,11.0.0)",
- za.co.ntier.api.model
+ za.co.ntier.api.model,
+ za.co.ntier.api.util
 Require-Bundle: org.idempiere.zk.extra;bundle-version="12.0.0",
  zkbind;bundle-version="10.0.1",
  zcommon;bundle-version="10.0.1",
@@ -38,5 +39,6 @@ Automatic-Module-Name: za.co.ntier.webform
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Fragment-Host: org.adempiere.ui.zk;bundle-version="11.0.0"
 Service-Component: OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationFormFactory.xml,
- OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationModelFactory.xml
+ OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationModelFactory.xml,
+ OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationProcessFactory.xml
 Bundle-ActivationPolicy: lazy

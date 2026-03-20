@@ -35,11 +35,11 @@
         <label value="@init(item[I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus].name)"/>
         <div sclass="formBottomPanel">
        	
-       	<button
+       	<!-- <button
        		if = "${ vm.isUnlink(item) }" 
            	label="Remove Link"
            	onClick="@command('unLinkedOrganisation', row=item)"/>
-        
+         -->
        	<button
        		if = "${ vm.isEditRequest(item) }" 
            	label="Edit Request"
