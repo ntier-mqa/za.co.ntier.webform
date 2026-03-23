@@ -16,7 +16,7 @@
 
 
 
-<grid model="@load(vm.linkedOrganisations)" sizedByContent="true" emptyMessage="No applications found">
+<grid vflex="1" model="@load(vm.linkedOrganisations)" sizedByContent="true" emptyMessage="No applications found">
   <columns>
   	<column label="Document No" width="100px"/>
     <column label="Organisation #" width="300px"/>
