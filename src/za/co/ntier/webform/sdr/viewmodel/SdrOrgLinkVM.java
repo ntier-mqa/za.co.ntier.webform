@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -19,6 +20,8 @@ import org.compiere.model.X_C_Bank;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.AutoNotifyChange;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.Event;
@@ -55,12 +58,18 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	private TableModel sdfOrgModel;
 
 	private TableModel bankDetailModel;
-
+		
 	private X_C_BPartner orgPo;
 	
 	@Override
 	public List<ISaveForm> getSaveComponents() {
-		return List.of(sdfOrgModel, bankDetailModel);
+		if (bankDetailModel.isUsed()) {
+			return List.of(sdfOrgModel, bankDetailModel);
+		}else {
+			return List.of(sdfOrgModel);
+		}
+			
+		
 	}
 	
 	boolean isEditModel = false;
@@ -89,6 +98,12 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		sdfOrgModel = initSdfOrgModel();
 		
 		bankDetailModel = initBankDetailModel();
+		
+		if (isEditModel && sdfOrgModel.getRow().getData() != null) {
+			String sdfRoleType = ((X_ZZSdfOrganisation)sdfOrgModel.getRow().getData()).getZZSdfRoleType();
+			bankDetailModel.setUsed(!X_ZZSdfOrganisation.ZZSDFROLETYPE_SecondarySDF.equals(sdfRoleType));
+		}
+			
 
 	}
 	
@@ -179,16 +194,22 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType,
 				MasterUtil.getSdfRoleType(),
 				ref -> {
-					MReference sdfRoleTypeRef = MReference.get(Env.getCtx(), MasterUtil.SdfRoleType.getKey());
-					return MRefList.getListDescription(Env.getCtx(), sdfRoleTypeRef.getName(), ref.getValue());
+					return ref.getName();
 				},
 				ref -> {return ref.getValue();},
 				CellModel.RADIO_CELL
 				).setzClass(ValueNamePair.class);
 			sdrRoleTyleCol.required();
 			sdrRoleTyleCol.setTableName(I_ZZSdfOrganisation.Table_Name);
-			
+		
 		cols.add(sdrRoleTyleCol);
+		
+		sdrRoleTyleCol.setEventHandle((event, cellModel) -> {
+			Object roleTypeValue = cellModel.getValue();
+			
+			bankDetailModel.setUsed(!X_ZZSdfOrganisation.ZZSDFROLETYPE_SecondarySDF.equals(roleTypeValue));
+			
+		});
 			
 /*
 		ColumnModel replacingPrimaryCol = CheckboxCellModel.getCheckboxColModel(
@@ -261,6 +282,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		if (isEditModel) {
 			X_ZZSdfOrganisation sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
 			savedSdrOrgLinks = List.of(sdfOrgPo);
+			
 			orgPo =  MBPartner_New.get(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
 			
 			orgSearchModel.getRow().setData(orgPo);

@@ -31,6 +31,12 @@ import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
 public class TableModel implements ISaveForm {
+	/**
+	 * handle visible this component
+	 * when invisible then delete current PO when save
+	 */
+	private boolean used = true;
+	
 	private ISaveApp saveApp;
 	
 	private RowModel activeRow;
@@ -961,6 +967,13 @@ public class TableModel implements ISaveForm {
 	}
 	public void setUpdateModelHandle(Consumer<TableModel> updateModelHandle) {
 		this.updateModelHandle = updateModelHandle;
+	}
+	public boolean isUsed() {
+		return used;
+	}
+	public void setUsed(boolean used) {
+		this.used = used;
+		BindUtils.postNotifyChange(this, "used");
 	}
 
 }

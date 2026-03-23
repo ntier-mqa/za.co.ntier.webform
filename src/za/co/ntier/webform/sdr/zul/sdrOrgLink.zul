@@ -24,6 +24,7 @@
       src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
       
   <include
+  		visible="@load(vm.bankDetailModel.used)"
       component="@init(vm.bankDetailModel)"
       menuContextInfo="@init(vm.menuContextInfo)"
       src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />

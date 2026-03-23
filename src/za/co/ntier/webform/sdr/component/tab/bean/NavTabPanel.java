@@ -121,7 +121,7 @@ public class NavTabPanel implements ISaveForm {
 			if (comp instanceof TableModel)
 				tbModel = (TableModel)comp;
 			
-			if (tbModel != null) {
+			if (tbModel != null && tbModel.isUsed()) {
 				InputCheckResult cellInputCheckResult = tbModel.parseInputState();
 				if (!cellInputCheckResult.getEmpty()) {// has at least once field have value
 					rowInputCheckResult.setEmpty(false);

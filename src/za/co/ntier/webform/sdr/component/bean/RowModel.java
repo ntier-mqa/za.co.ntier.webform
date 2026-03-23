@@ -286,7 +286,12 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	
 	@Override
 	public boolean validate(Boolean isSubmit) {
+		// will delete so don't need to validate
+		if(!getTableModel().isUsed())
+			return true;
+		
 		boolean isValid = true;
+		
 		for (CellModel validation : this.values()) {
 			if (!validation.validate()) {
 				isValid = false;
@@ -305,6 +310,14 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		
 		if (tableModel.getDaoManage() == null) {
 			PO daoToSave = getDirectDao();
+			
+			if(daoToSave != null && !getTableModel().isUsed()) {
+				daoToSave.deleteEx(true);
+				setData(null);
+				resetRow();
+				return;
+			}
+			
 			if (tableModel.getBeforeSave() != null) {
 				tableModel.getBeforeSave().apply(daoToSave, this);
 			}

@@ -305,12 +305,15 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	private TableModel initGeneralDetailComp() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		ColumnModel registrationNumCol = CellModel.getColModelForText(
-				Msg.getElement(Env.getCtx(), "ZZOrgReferenceNo")
-				, I_C_BPartner.COLUMNNAME_ReferenceNo
-			).required()
+		ColumnModel orgRegistrationNumTypeCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZOrgRegistrationNumberType)
+				, I_C_BPartner.COLUMNNAME_ZZOrgRegistrationNumberType
+				, MasterUtil.getOrganisationRegistrationNumberType()
+				, title -> {return title.getName();}
+				, title -> {return title.getValue();}
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_C_BPartner.Table_Name);
-		cols.add(registrationNumCol);
+		cols.add(orgRegistrationNumTypeCol);
 
 		ColumnModel sdlNumTypeCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZLevyNumberType)
@@ -322,15 +325,12 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			.setTableName(I_C_BPartner.Table_Name);
 		cols.add(sdlNumTypeCol);
 		
-		ColumnModel orgRegistrationNumTypeCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZOrgRegistrationNumberType)
-				, I_C_BPartner.COLUMNNAME_ZZOrgRegistrationNumberType
-				, MasterUtil.getOrganisationRegistrationNumberType()
-				, title -> {return title.getName();}
-				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
+		ColumnModel registrationNumCol = CellModel.getColModelForText(
+				Msg.getElement(Env.getCtx(), "ZZOrgReferenceNo")
+				, I_C_BPartner.COLUMNNAME_ReferenceNo
+			).setReadonly(true)
 			.setTableName(I_C_BPartner.Table_Name);
-		cols.add(orgRegistrationNumTypeCol);
+		cols.add(registrationNumCol);
 		
 		ColumnModel sarsNumCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZPayeNumber")
@@ -624,7 +624,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	TableModel tmTrainingCommittee;
 	private void initTrainingCommittee() {
 		NavTabPanel trainingCommitteeTabPanel = new NavTabPanel(mainTab);
-		trainingCommitteeTabPanel.setTabTitle("Training Committee");
+		trainingCommitteeTabPanel.setTabTitle("TRAINING COMMITTEE");
 		
 		List<ColumnModel> cols = new ArrayList<ColumnModel>();
 		
