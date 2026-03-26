@@ -17,9 +17,9 @@ public class FormInfo {
 	private String revisionTitle;
 
 	public FormInfo(MenuContextInfo menuContextInfo) {
-		String formName = menuContextInfo.getProgramMasterData().getTitle();
+		String formName = menuContextInfo.getFormTitle();
 
-		if (menuContextInfo.getProgramMasterData().getC_Year_ID() != 0) {
+		if (menuContextInfo.getProgramMasterData() != null && menuContextInfo.getProgramMasterData().getC_Year_ID() != 0) {
 			MYear fiscalYear = new MYear(Env.getCtx(), menuContextInfo.getProgramMasterData().getC_Year_ID(), null);
 			this.formHeader = String.format("%s - %s", formName, fiscalYear.getDescription());
 		}else {

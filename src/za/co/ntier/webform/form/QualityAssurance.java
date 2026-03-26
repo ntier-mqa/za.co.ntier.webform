@@ -41,7 +41,7 @@ public class QualityAssurance extends ADForm{
 		Query query = MTable.get(Env.getCtx(), I_ZZ_Program_Master_Data.Table_Name).createQuery("AD_Form_ID = ?", null);
 		query.setClient_ID().setParameters(adFormId);
 		
-		X_ZZ_Program_Master_Data programMaster = query.firstOnly();
+		X_ZZ_Program_Master_Data programMaster = null;//query.firstOnly();
 		menuContextInfo.setProgramMasterData(programMaster);
 		
 		String title = null;
