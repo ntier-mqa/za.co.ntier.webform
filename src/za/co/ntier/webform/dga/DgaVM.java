@@ -52,6 +52,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.PresetTitleCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.SDLCellModel;
@@ -457,10 +458,8 @@ public class DgaVM extends BaseAppVM{
 		
 		cols.add(surnameCol);
 		
-		ColumnModel idPasportCol = CellModel.getColModelForIDPASS(
-				MasterUtil.getNameOfColTranslated(I_ZZ_EDP_Application.Table_Name, I_ZZ_EDP_Application.COLUMNNAME_ZZ_ID_Passport_No)
-				, I_ZZ_EDP_Application.COLUMNNAME_ZZ_ID_Passport_No
-				).required()
+		ColumnModel idPasportCol = IDCellModel.getIDColumnModel()
+				.required()
 				.setTableName(I_ZZ_EDP_Application.Table_Name);
 		
 		cols.add(idPasportCol);
@@ -636,7 +635,7 @@ public class DgaVM extends BaseAppVM{
 		MUser_New loginUser = MUser_New.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
 		if (!isEmployee) {
 			firstNameCol.setDefaultValue(loginUser.getName());
-			surnameCol.setDefaultValue(loginUser.getZZSurname());
+			//surnameCol.setDefaultValue(loginUser.getZZSurname());
 			idPasportCol.setDefaultValue(loginUser.getZZ_ID_Passport_No());
 			contactNumCol.setDefaultValue(loginUser.getPhone());
 			altContactNumCol.setDefaultValue(loginUser.getPhone2());

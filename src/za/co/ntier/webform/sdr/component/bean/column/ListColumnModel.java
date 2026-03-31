@@ -1,6 +1,7 @@
 package za.co.ntier.webform.sdr.component.bean.column;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Triple;
@@ -45,9 +46,9 @@ public class ListColumnModel<T> extends ColumnModel {
 		throw new IllegalArgumentException("call overload function setDefaultValue(Object defaultValue, Function<T, Boolean> compareFunction)");
 	}
 	
-	private Function<T, Boolean> compareFunction;
+	private BiFunction<ListCellModel<T>, T, Boolean> compareFunction;
 	
-	public ListColumnModel<T> setDefaultValue(Object defaultValue, Function<T, Boolean> compareFunction) {
+	public ListColumnModel<T> setDefaultValue(Object defaultValue, BiFunction<ListCellModel<T>, T, Boolean> compareFunction) {
 		super.setDefaultValue(defaultValue); 
 		this.compareFunction = compareFunction;
 		return this;
@@ -127,11 +128,11 @@ public class ListColumnModel<T> extends ColumnModel {
 		return this;
 	}
 
-	public Function<T, Boolean> getCompareFunction() {
+	public BiFunction<ListCellModel<T>, T, Boolean> getCompareFunction() {
 		return compareFunction;
 	}
 
-	public void setCompareFunction(Function<T, Boolean> compareFunction) {
+	public void setCompareFunction(BiFunction<ListCellModel<T>, T, Boolean> compareFunction) {
 		this.compareFunction = compareFunction;
 	}
 

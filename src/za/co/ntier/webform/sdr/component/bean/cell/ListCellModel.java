@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -29,6 +30,13 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	
 	private T defaultValue = null;
 	
+	/**
+	 * workaround, refine by refac to keep defaultValue per cell also keep defaultValue per col
+	 */
+	public void resetDefaultValue () {
+		defaultValue = null;
+	}
+	
 	@Override
 	public T getDefaultValue() {
 		if (defaultValue == null)
@@ -37,7 +45,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		return defaultValue;
 	}
 	
-	public T lookupItem (Object value, Function<T, Boolean> compareFunction) {
+	public T lookupItem (Object value, BiFunction<ListCellModel<T>, T, Boolean> compareFunction) {
 		if (value == null)
 			return null;
 		
@@ -50,7 +58,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		}
 		
 		for (T item : getDataProvider()) {
-			if (compareFunction.apply(item)) {
+			if (compareFunction.apply(this, item)) {
 				return item;
 			}
 		}
@@ -66,7 +74,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		return getColModel().getSelectedItemValueConvert();
 	}
 	
-	protected void setValue(Object value, Function<T, Boolean> compareFunction) {
+	protected void setValue(Object value, BiFunction<ListCellModel<T>, T, Boolean> compareFunction) {
 		getModel().clearSelection();
 		
 		Object lookupValue = null;
@@ -95,7 +103,7 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 	
 	@Override
 	public void setValue(Object value) {
-		setValue(value, item -> {
+		setValue(value, (cellModel, item) -> {
 			if (getValueConvert() != null) {
 				Object converValue = getValueConvert().apply(item);
 				return Objects.equals(converValue, value);

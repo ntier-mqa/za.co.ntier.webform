@@ -29,6 +29,7 @@ public class ColumnModel implements PropertyChangeListener{
 		this.refDocUploadDefCol = refDocUploadDefCol;
 	}
 	
+	
 	private boolean isCalTotlal = false;
 	private Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> cellModelSupplier;
 	private Function<CellModel, Boolean> composeValidator;
@@ -267,6 +268,7 @@ public class ColumnModel implements PropertyChangeListener{
 	public void setValidateHandle(BiConsumer<CellModel, List<String>> validateHandle) {
 		this.validateHandle = validateHandle;
 	}
+	
 
 	
 }

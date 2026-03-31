@@ -1,9 +1,30 @@
 -- id
 select ad_user.ZZ_ID_Passport_No from ad_user WHERE ad_user.ZZ_ID_Passport_No is not null
 
+update ad_user set ZZ_ID_Passport_No = '6412025156084' where ZZ_ID_Passport_No = '6412025156085'
+
+delete from zzsdf where AD_User_ID=1000007
+
+delete from ZZSdfOrganisation where zzsdf_id in (select zzsdf_id from zzsdf where AD_User_ID=1000007)
+
+delete from zzbankingdetails where 
+	ZZSdfOrganisation_id in (select ZZSdfOrganisation_id from ZZSdfOrganisation 
+									inner join zzsdf on zzsdf.zzsdf_id = ZZSdfOrganisation.zzsdf_id 
+									where  zzsdf.AD_User_ID=1000007)
+
+
+delete from zz_wsp_atr_submitted where 
+	ZZSdfOrganisation_id in (select ZZSdfOrganisation_id from ZZSdfOrganisation 
+									inner join zzsdf on zzsdf.zzsdf_id = ZZSdfOrganisation.zzsdf_id 
+									where  zzsdf.AD_User_ID=1000007)
+									
 -- password
 select password from ad_user where email = 'ynaidoo@ntier.co.za'
 select password from ad_user where email = 'hieplq@hasuvimex.vn'
+select password from ad_user where email = 'maugustine@ntier.co.za'
+
+select ZZ_AlternateIDType_ID from ad_user where email = 'hieplq@hasuvimex.vn'
+update ad_user set ZZ_ID_Passport_No = null where email = 'hieplq@hasuvimex.vn'
 
 -- SDL
 select value from C_BPartner where EXISTS (select * from ZZ_Levy_Paying where ZZ_Levy_Paying.C_BPartner_ID = C_BPartner.C_BPartner_ID)

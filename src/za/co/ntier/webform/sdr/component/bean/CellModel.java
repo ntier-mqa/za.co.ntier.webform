@@ -4,16 +4,20 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
+import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.panel.RegistrationWindow;
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.util.Log;
@@ -21,6 +25,8 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
+
+import za.co.ntier.webform.form.MasterUtil;
 
 /**
  * Represents a cell in a table, it hold data and related info
@@ -199,8 +205,6 @@ public class CellModel implements IValueChange , IInputState{
 					RegistrationWindow.validateCellNo(null, inputValue.toString());
 				}else if (getCellType() == CellModel.EMAIL_CELL) {
 					RegistrationWindow.validateEmail(null, inputValue.toString());
-				}else if (getCellType() == CellModel.ID_PASSPORTNO_CELL) {
-					RegistrationWindow.validateIdNo(null, inputValue.toString());
 				}
 			}catch (WrongValueException e) {
 				validateMsgs.add(e.getMessage());
@@ -386,10 +390,6 @@ public class CellModel implements IValueChange , IInputState{
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, EMAIL_CELL));
 	}
 	
-	public static  ColumnModel getColModelForIDPASS(String title, String daoPropertyName) {
-		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, ID_PASSPORTNO_CELL));
-	}
-	
 	public static  ColumnModel getColModelForRadio(String title, String daoPropertyName) {
 		return getColModelForCell(CellModelInfo.of(ColumnModel.class, CellModel.class, null), CellModelParams.of(title, daoPropertyName, RADIO_CELL));
 	}
@@ -503,4 +503,49 @@ public class CellModel implements IValueChange , IInputState{
 				(getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName()));
 	}
 
+	public void saveUIToDao(PO daoPerCol) {
+
+		Object value = CellModel.convertDataType(daoPerCol, this);//TODO maybe don't need to covert
+		if (value == null) {
+			daoPerCol.set_ValueOfColumn(getColModel().getDaoPropertyName(), null);
+		}else {
+			MasterUtil.setObjectProperty(daoPerCol, getColModel().getDaoPropertyName(), value);
+		}
+		
+	}
+	
+	public static Object convertDataType(PO daoPerCol, CellModel cellModel) {
+		if (cellModel.getValue() == null)
+			return null;
+		
+		if (cellModel.getCellType() != CellModel.POSITIVE_NUM_CELL) {
+			return cellModel.getValue();
+		}
+		
+		int colDataType = MTable.get(Env.getCtx(), daoPerCol.get_TableName())
+			.getColumn(cellModel.getColModel().getDaoPropertyName()).getAD_Reference_ID();
+		
+		if (colDataType == DisplayType.Amount || colDataType == DisplayType.Number || colDataType == DisplayType.CostPrice
+				|| colDataType == DisplayType.Quantity) {
+			if (cellModel.getValue() instanceof Integer) {
+				return BigDecimal.valueOf(((Integer)cellModel.getValue()).longValue());
+			}else if (cellModel.getValue() instanceof BigDecimal) {
+				return cellModel.getValue();
+			}else {
+				throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
+			}
+		}else if (cellModel.getValue() instanceof BigDecimal){
+			// DisplayType.Integer
+			// on tab org information, field "Number of Employees" is Positive Number. when load from I_ZZ_Application_Form.COLUMNNAME_NumberEmployees or input by user it's integer
+			// but when sdl is change, value can be set from MBPartner_New.getZZ_Number_Of_Employees()
+			// in this case value become BigDecimal
+			return ((BigDecimal)cellModel.getValue()).intValueExact();
+		}else if (cellModel.getValue() instanceof Integer){
+			return cellModel.getValue();
+		}else {
+			throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
+		}
+		
+		
+	}
 }

@@ -12,7 +12,6 @@ import org.compiere.model.X_AD_User;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
@@ -23,6 +22,7 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZSdf;
+import za.co.ntier.api.model.I_ZZ_EDP_Application;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZOrgTrainingCommittee;
@@ -34,13 +34,14 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
+import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -215,7 +216,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		ColumnModel lastNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname)
-				, I_AD_User.COLUMNNAME_ZZSurname
+				, I_ZZSdf.COLUMNNAME_ZZSurname
 				).required()
 				;
 		cols.add(lastNameCol);
@@ -656,11 +657,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(surnameCol);
 		
-		ColumnModel idNoCol = CellModel.getColModelForIDPASS(
-				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZ_ID_Passport_No)
-				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZ_ID_Passport_No
-			).required()
-			.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		ColumnModel idNoCol = IDCellModel.getIDColumnModel()
+				.required()
+				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(idNoCol);
 		
 		ColumnModel designationCol = ListCellModel.getListColumnModel(

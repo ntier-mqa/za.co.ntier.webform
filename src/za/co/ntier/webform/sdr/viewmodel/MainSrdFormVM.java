@@ -13,22 +13,28 @@ import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZSdf;
-import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
+import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
+import za.co.ntier.api.model.X_ZZ_LI_Disability;
+import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
+import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
+import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
+import za.co.ntier.api.model.X_ZZ_Nationality;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
+import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
-import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -44,25 +50,6 @@ public class MainSrdFormVM extends BaseAppVM {
 	X_ZZSdf sdf;
 	MUser_New person;
 	
-	private void initSDF() {
-		Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZSdf.Table_Name)
-					.createQuery(String.format("%s = ?", I_ZZSdf.COLUMNNAME_AD_User_ID), null);
-		savedDataQuery.setParameters(person.getAD_User_ID());
-		savedDataQuery.setOnlyActiveRecords(true);
-		sdf = savedDataQuery.firstOnly();
-		if (sdf == null) {
-			isNewSdf = true;
-			sdf = new X_ZZSdf(Env.getCtx(), 0, null);
-			sdf.setAD_User_ID(person.getAD_User_ID());
-			sdf.setZZFirstName(person.getName());
-			sdf.saveEx(null);
-		}else {
-			if(sdf.getZZFirstName() == null) {
-				sdf.setZZFirstName(person.getName());
-			}
-		}
-	}
-	
 	DaoManage personManage = new DaoManage();
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
@@ -72,10 +59,27 @@ public class MainSrdFormVM extends BaseAppVM {
 		
 		int loginUserId = Env.getAD_User_ID(Env.getCtx());
 		person = new MUser_New(Env.getCtx(), loginUserId, null);
-		initSDF();
 		
 		personManage.setDao(person);
-		personManage.setDao(sdf);
+		
+		Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZSdf.Table_Name)
+				.createQuery(String.format("%s = ?", I_ZZSdf.COLUMNNAME_AD_User_ID), null);
+		savedDataQuery.setParameters(person.getAD_User_ID());
+		savedDataQuery.setOnlyActiveRecords(true);
+		sdf = savedDataQuery.firstOnly();
+		if (sdf == null) {
+			isNewSdf = true;
+			personManage.setPoSupplier(I_ZZSdf.Table_Name, t -> {
+				sdf = new X_ZZSdf(Env.getCtx(), 0, null);
+				sdf.setAD_User_ID(person.getAD_User_ID());
+				return sdf;
+			});
+			
+
+		}else {
+			isNewSdf = false;
+			personManage.setDao(sdf);
+		}
 		
 		names = getNamesComp(personManage);
 		mainTab = new NavTab();
@@ -101,22 +105,22 @@ public class MainSrdFormVM extends BaseAppVM {
 		
 		postalAddress.setPoSupplier(rowModel -> {
 			X_ZZPersonAddress address = BuildFormUtil.getNewAddress(rowModel.getTableModel().getDataType());
-			address.setAD_User_ID(sdf.getAD_User_ID());
+			address.setAD_User_ID(person.getAD_User_ID());
 			return address;
 		});
 		
 		physicalAddress.setPoSupplier(rowModel -> {
 			X_ZZPersonAddress address = BuildFormUtil.getNewAddress(rowModel.getTableModel().getDataType());
-			address.setAD_User_ID(sdf.getAD_User_ID());
+			address.setAD_User_ID(person.getAD_User_ID());
 			return address;
 		});
 		
 		// reload address
-		PO savedPo = BuildFormUtil.getSavedAddress(sdf.getAD_User_ID(), physicalAddress.getDataType(), true);
+		PO savedPo = BuildFormUtil.getSavedAddress(person.getAD_User_ID(), physicalAddress.getDataType(), true);
 		physicalAddress.getRow().setData(savedPo);
 		physicalAddress.reloadDao();
 		
-		savedPo = BuildFormUtil.getSavedAddress(sdf.getAD_User_ID(), postalAddress.getDataType(), true);
+		savedPo = BuildFormUtil.getSavedAddress(person.getAD_User_ID(), postalAddress.getDataType(), true);
 		postalAddress.getRow().setData(savedPo);
 		postalAddress.reloadDao();
 		
@@ -142,6 +146,7 @@ public class MainSrdFormVM extends BaseAppVM {
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName)
 				, I_ZZSdf.COLUMNNAME_ZZFirstName
 				).required()
+				.setDefaultValue(person.getFirstName())
 				.setTableName(I_ZZSdf.Table_Name);
 		cols.add(firstNameCol);
 		
@@ -177,7 +182,9 @@ public class MainSrdFormVM extends BaseAppVM {
 						, MasterUtil.getHighestEducations()
 						, highestEducation -> {return highestEducation.getName();}
 						, highestEducation -> {return highestEducation.getZZ_LI_HighestEducation_ID();}
-					).setUseForID(true)
+					)
+					.setzClass(X_ZZ_LI_HighestEducation.class)
+					.setUseForID(true)
 					.required()
 					.setTableName(I_ZZSdf.Table_Name);
 		cols.add(highestEducationCol);
@@ -291,11 +298,8 @@ public class MainSrdFormVM extends BaseAppVM {
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(greettingCol);
 
-		ColumnModel idNoCol = CellModel.getColModelForIDPASS(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No)
-				, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No
-			).required()
-			.setTableName(I_AD_User.Table_Name);
+		ColumnModel idNoCol = IDCellModel.getIDColumnModel()
+					.required();
 		cols.add(idNoCol);
 
 		ColumnModel initialsCol = CellModel.getColModelForText(
@@ -328,7 +332,9 @@ public class MainSrdFormVM extends BaseAppVM {
 				, MasterUtil.getLkpEquity()
 				, title -> {return title.toString();}
 				, title -> {return title.getValue();}
-			).required()
+			)
+			.setzClass(ValueNamePair.class)
+			.required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(equityCol);
 
@@ -338,7 +344,9 @@ public class MainSrdFormVM extends BaseAppVM {
 				, MasterUtil.getDisability()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_Disability_ID();}
-			).setUseForID(true)
+			)
+			.setzClass(X_ZZ_LI_Disability.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(disabilityCol);
@@ -349,7 +357,9 @@ public class MainSrdFormVM extends BaseAppVM {
 				, MasterUtil.getHomeLanguage()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_HomeLanguage_ID();}
-			).setUseForID(true)
+			)
+			.setzClass(X_ZZ_LI_HomeLanguage.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(homeLanguageCol);
@@ -360,25 +370,26 @@ public class MainSrdFormVM extends BaseAppVM {
 				, MasterUtil.getCitizenResidentialStatus()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_CitizenResidentialStatus_ID();}
-			).setUseForID(true)
+			)
+			.setzClass(X_ZZ_LI_CitizenResidentialStatus.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(citizenResidentialStatusCol);
 
 		
 		ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_AlternateIDType_ID)
-				, I_ZZSdf.COLUMNNAME_ZZ_AlternateIDType_ID
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID)
+				, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID
 				, MasterUtil.getAlternateIDType()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_AlternateIDType_ID();}
-			);
+			).setzClass(X_ZZ_AlternateIDType.class);
+		
 		alternateIDTypeCol.setUseForID(true)
-			.setDefaultValue("RSA ID Number", item -> {
-				return alternateIDTypeCol.getSelectedItemDisplayConvert().apply(item).equals("RSA ID Number");
-			})
+			.setDefaultValue(IDCellModel.idTypeRSA_ID, MasterUtil.nameAlternateIdTypeCompare)
 			.required()
-			.setTableName(I_ZZSdf.Table_Name);
+			.setTableName(I_AD_User.Table_Name);
 		cols.add(alternateIDTypeCol);
 		
 		
@@ -388,7 +399,9 @@ public class MainSrdFormVM extends BaseAppVM {
 				, MasterUtil.getNationality()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_Nationality_ID();}
-			).setUseForID(true)
+			)
+			.setzClass(X_ZZ_Nationality.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(nationalityCol);
@@ -399,7 +412,8 @@ public class MainSrdFormVM extends BaseAppVM {
 				, MasterUtil.getSocioEconomicStatus()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_SocioEconomicStatus_ID();}
-			).setUseForID(true)
+			).setzClass(X_ZZ_LI_SocioEconomicStatus.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
 		cols.add(socioEconomicStatusCol);
@@ -461,7 +475,7 @@ public class MainSrdFormVM extends BaseAppVM {
 		this.names = names;
 	}
 	
-	private boolean isNewSdf = false;
+	private boolean isNewSdf = true;
 
 	@Override
 	public List<DaoManage> getDaoManages() {
@@ -480,12 +494,6 @@ public class MainSrdFormVM extends BaseAppVM {
 		}else {
 			MasterUtil.showInfoDialog("ZZSDFSavedSuccess", MasterUtil.fCloseActiveWindow);
 		}
-	}
-
-
-	@Override
-	public Object getMainApp() {
-		return sdf;
 	}
 	
 	@Override

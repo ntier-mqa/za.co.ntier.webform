@@ -11,7 +11,9 @@ import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 
 public interface ISaveApp {
 	
-	abstract public Object getMainApp();
+	public default Object getMainApp() {
+		return null;
+	}
 	abstract public MenuContextInfo getMenuContextInfo();
 	public default boolean isShowSaveOnFirstTab() {
 		return true;

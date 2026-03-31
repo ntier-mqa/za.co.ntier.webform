@@ -144,6 +144,9 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			}
 		}
 		
+		if (getTableModel().getAfterFillFromDaoHandle() != null)
+			getTableModel().getAfterFillFromDaoHandle().accept(this);
+		
 	}
 
 	@Override
@@ -167,15 +170,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		for (CellModel cellModel : values()) {
 			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
 				daoPerCol = getDaoAllway(cellModel);
-				
-				//TODO:Move logic set ui value to dao to cellMode
-				Object value = convertDataType(daoPerCol, cellModel);
-				if (value == null) {
-					daoPerCol.set_ValueOfColumn(cellModel.getColModel().getDaoPropertyName(), null);
-				}else {
-					MasterUtil.setObjectProperty(daoPerCol, cellModel.getColModel().getDaoPropertyName(), value);
-				}
-				
+				cellModel.saveUIToDao(daoPerCol);
 			}
 		}
 			
@@ -248,41 +243,6 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			}
 		}
 	}
-
-	private Object convertDataType(PO daoPerCol, CellModel cellModel) {
-		if (cellModel.getValue() == null)
-			return null;
-		
-		if (cellModel.getCellType() != CellModel.POSITIVE_NUM_CELL) {
-			return cellModel.getValue();
-		}
-		
-		int colDataType = MTable.get(Env.getCtx(), daoPerCol.get_TableName())
-			.getColumn(cellModel.getColModel().getDaoPropertyName()).getAD_Reference_ID();
-		
-		if (colDataType == DisplayType.Amount || colDataType == DisplayType.Number || colDataType == DisplayType.CostPrice
-				|| colDataType == DisplayType.Quantity) {
-			if (cellModel.getValue() instanceof Integer) {
-				return BigDecimal.valueOf(((Integer)cellModel.getValue()).longValue());
-			}else if (cellModel.getValue() instanceof BigDecimal) {
-				return cellModel.getValue();
-			}else {
-				throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
-			}
-		}else if (cellModel.getValue() instanceof BigDecimal){
-			// DisplayType.Integer
-			// on tab org information, field "Number of Employees" is Positive Number. when load from I_ZZ_Application_Form.COLUMNNAME_NumberEmployees or input by user it's integer
-			// but when sdl is change, value can be set from MBPartner_New.getZZ_Number_Of_Employees()
-			// in this case value become BigDecimal
-			return ((BigDecimal)cellModel.getValue()).intValueExact();
-		}else if (cellModel.getValue() instanceof Integer){
-			return cellModel.getValue();
-		}else {
-			throw new ApplicationException(Msg.getMsg(Env.getCtx(), "ZZCellDataWrongDataType"));
-		}
-		
-		
-	}
 	
 	@Override
 	public boolean validate(Boolean isSubmit) {
@@ -328,6 +288,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 				if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
 					((UploadCellModel)cellModel).attachFile(daoToSave, trxName);
 				}
+			}
+			
+			if (tableModel.getAfterSave() != null) {
+				tableModel.getAfterSave().apply(daoToSave, this);
 			}
 		}
 		

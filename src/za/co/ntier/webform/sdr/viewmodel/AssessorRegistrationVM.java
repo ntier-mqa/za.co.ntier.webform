@@ -2,22 +2,27 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import org.compiere.model.I_AD_User;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
+import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
-import za.co.ntier.api.model.I_ZZSdf;
+import za.co.ntier.api.model.I_ZZ_AlternateIDType;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
-import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
+import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
+import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
+import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
+import za.co.ntier.api.model.X_ZZ_Nationality;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -28,12 +33,11 @@ import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
-import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
 public class AssessorRegistrationVM extends BaseAppVM {
 
@@ -120,45 +124,85 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		initForm();
 		
 		idNoCol.setEventHandle((event, cellMode) -> {
+			if (!Objects.equals(cellMode.getDirtyValue(), cellMode.getValue())){
+				return;
+			}
+			
 			Object idValue = cellMode.getDirtyValue();
 			
-			if (idValue != null) {
-				Query userQuery = MTable.get(Env.getCtx(), I_AD_User.Table_Name)
-						.createQuery(String.format("%s = ?", I_AD_User.COLUMNNAME_ZZ_ID_Passport_No), null);
-				userQuery.setParameters(idValue);
-				userQuery.setOnlyActiveRecords(true);
-				person = userQuery.firstOnly();
-				
-				X_ZZAssessorPerson assessorPersonSaved = null;
-				
-				if (person != null) {
-					daoManage.setDao(person);
-					Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
-							.createQuery(String.format("%s = ?", I_ZZAssessorPerson.COLUMNNAME_AD_User_ID), null);
-					savedDataQuery.setParameters(person.getAD_User_ID());
-					savedDataQuery.setOnlyActiveRecords(true);
-					
-					assessorPersonSaved = savedDataQuery.firstOnly();
-					
-					firstNameCol.setDefaultValue(person.getName());
-				}else {
-					daoManage.resetDao(I_AD_User.Table_Name);
-					firstNameCol.setDefaultValue(null);
-				}
-				
-				if (assessorPersonSaved != null) {
-					daoManage.setDao(assessorPersonSaved);
-				}else {
-					daoManage.resetDao(I_ZZAssessorPerson.Table_Name);
-				}
-				
-				isNew = assessorPersonSaved == null;
-				assessorPerson = assessorPersonSaved;
-				loadData();
-			}
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode.getRowModel().get(alternateIDTypeCol);
+			
+			if (idValue != null)
+				cellMode.getColModel().setDefaultValue(idValue);//help it don't set to blank when reload data
+			
+			if (idValue != null && alternateIDCellMode.getSelectedItem() != null)
+				loadSaved((String)idValue, alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
+
+		});
+		
+		alternateIDTypeCol.setEventHandle((event, cellMode) -> {
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode;
+			
+			alternateIDCellMode.resetDefaultValue();
+			alternateIDCellMode.getColModel().setDefaultValue(alternateIDCellMode.getSelectedItem().getName(), MasterUtil.nameAlternateIdTypeCompare);//help it don't set back to rsa id when reload data
+			
+			IDCellModel idCellMode = (IDCellModel)cellMode.getRowModel().get(idNoCol);
+			
+			idCellMode.validate();
+			if (alternateIDCellMode.getSelectedItem() != null && idCellMode.getDirtyValue() != null)
+				loadSaved((String)idCellMode.getDirtyValue(), alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
 		});
 	}
 
+	private void loadSaved (String idValue, int idTypeId) {
+		Query userQuery = MTable.get(Env.getCtx(), I_AD_User.Table_Name)
+				.createQuery(String.format("(%s = ? AND %s.%s = ?) OR (%s = ? AND %s.%s = ?)", 
+												I_AD_User.COLUMNNAME_ZZ_ID_Passport_No
+												, I_ZZ_AlternateIDType.Table_Name
+												, I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID
+												, I_AD_User.COLUMNNAME_ZZOtherIDNo
+												, I_ZZ_AlternateIDType.Table_Name
+												, I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID), null);
+		
+		userQuery.addTableDirectJoin(I_ZZ_AlternateIDType.Table_Name);
+
+		userQuery.setParameters(idValue, idTypeId, idValue, idTypeId);
+		userQuery.setOnlyActiveRecords(true);
+		person = userQuery.firstOnly();
+		
+		X_ZZAssessorPerson assessorPersonSaved = null;
+		
+		if (person != null) {
+			daoManage.setDao(person);
+			Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
+					.createQuery(String.format("%s = ? AND %s IN (null, ?)"
+							, I_ZZAssessorPerson.COLUMNNAME_AD_User_ID
+							, I_ZZAssessorPerson.COLUMNNAME_ZZ_DocStatus), null);
+			savedDataQuery.setParameters(person.getAD_User_ID(), X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft);
+			savedDataQuery.setOnlyActiveRecords(true);
+			
+			assessorPersonSaved = savedDataQuery.firstOnly();
+			
+			firstNameCol.setDefaultValue(person.getName());
+		}else {
+			daoManage.resetDao(I_AD_User.Table_Name);
+			firstNameCol.setDefaultValue(null);
+		}
+		
+		if (assessorPersonSaved != null) {
+			daoManage.setDao(assessorPersonSaved);
+		}else {
+			daoManage.resetDao(I_ZZAssessorPerson.Table_Name);
+		}
+		
+		isNew = assessorPersonSaved == null;
+		assessorPerson = assessorPersonSaved;
+		
+		loadData();
+	}
+	
 	private void loadData() {
 		tmNames.reloadDao();
 		
@@ -178,38 +222,28 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	}
 
 	ColumnModel idNoCol;
+	ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
+	
 	
 	private void initGeneralDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
-
-		idNoCol = CellModel.getColModelForIDPASS(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No)
-				, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No
-			).required()
-			.setTableName(I_AD_User.Table_Name);
-		cols.add(idNoCol);
 		
-		ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZ_AlternateIDType_ID)
-				, I_ZZAssessorPerson.COLUMNNAME_ZZ_AlternateIDType_ID
+		alternateIDTypeCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID)
+				, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID
 				, MasterUtil.getAlternateIDType()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_AlternateIDType_ID();}
-			);
+			).setzClass(X_ZZ_AlternateIDType.class);
 		alternateIDTypeCol.setUseForID(true)
-			.setDefaultValue("RSA ID Number", item -> {
-				return alternateIDTypeCol.getSelectedItemDisplayConvert().apply(item).equals("RSA ID Number");
-			})
+			.setDefaultValue(IDCellModel.idTypeRSA_ID, MasterUtil.nameAlternateIdTypeCompare)
 			.required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			.setTableName(I_AD_User.Table_Name);
 		cols.add(alternateIDTypeCol);
-
-		ColumnModel initialsCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZInitials)
-				, I_ZZAssessorPerson.COLUMNNAME_ZZInitials
-			).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
-		cols.add(initialsCol);
+		
+		idNoCol = IDCellModel.getIDColumnModel()
+				.required();
+		cols.add(idNoCol);
 
 		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Birthday)
@@ -234,7 +268,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getLkpEquity()
 				, title -> {return title.toString();}
 				, title -> {return title.getValue();}
-			).required()
+			).setzClass(ValueNamePair.class).required()
 			.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(equityCol);
 
@@ -244,7 +278,8 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getHomeLanguage()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_HomeLanguage_ID();}
-			).setUseForID(true)
+			).setzClass(X_ZZ_LI_HomeLanguage.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(homeLanguageCol);
@@ -255,7 +290,8 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getNationality()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_Nationality_ID();}
-			).setUseForID(true)
+			).setzClass(X_ZZ_Nationality.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(nationalityCol);
@@ -266,7 +302,8 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getCitizenResidentialStatus()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_CitizenResidentialStatus_ID();}
-			).setUseForID(true)
+			).setzClass(X_ZZ_LI_CitizenResidentialStatus.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(citizenResidentialStatusCol);
@@ -277,7 +314,8 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getSocioEconomicStatus()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_SocioEconomicStatus_ID();}
-			).setUseForID(true)
+			).setzClass(X_ZZ_LI_SocioEconomicStatus.class)
+			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(socioEconomicStatusCol);
@@ -330,7 +368,8 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		ColumnModel surnameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZSurname)
 				, I_ZZAssessorPerson.COLUMNNAME_ZZSurname
-				).setTableName(I_ZZAssessorPerson.Table_Name);
+				).setTableName(I_ZZAssessorPerson.Table_Name)
+				.required();
 		cols.add(surnameCol);
 		
 		TableModel tmNames = TableModel.getTableBean(TableModel.class, cols, false);
@@ -375,6 +414,12 @@ public class AssessorRegistrationVM extends BaseAppVM {
 
 	}
 	
+	public static final String healthFunctionDefault = "No difficulty";
+	BiFunction<ListCellModel<ValueNamePair>, ValueNamePair, Boolean> healthFunctionNameCompare = (cellModel, item) -> {
+		String compareValue = cellModel.getColModel().getSelectedItemDisplayConvert().apply(item);
+		return cellModel.getColModel().getDefaultValue().equals(compareValue);
+	};
+	
 	private void initHealthFunction () {
 		List<ColumnModel> cols = new ArrayList<>();
 		
@@ -384,8 +429,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getHealthFunctions()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class)
+				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required()
+				.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(seeingCol);
 		
 		ColumnModel hearingCol = ListCellModel.getListColumnModel(
@@ -394,8 +441,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getHealthFunctions()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class)
+				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required()
+				.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(hearingCol);
 		
 		ColumnModel communicatingCol = ListCellModel.getListColumnModel(
@@ -404,8 +453,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getHealthFunctions()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class)
+				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required()
+				.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(communicatingCol);
 		
 		ColumnModel walkingCol = ListCellModel.getListColumnModel(
@@ -414,8 +465,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getHealthFunctions()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class)
+				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required()
+				.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(walkingCol);
 		
 		ColumnModel rememberingCol = ListCellModel.getListColumnModel(
@@ -424,8 +477,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getHealthFunctions()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class)
+				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required()
+				.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(rememberingCol);
 		
 		ColumnModel selfcareCol = ListCellModel.getListColumnModel(
@@ -434,8 +489,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getHealthFunctions()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class)
+				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required()
+				.setTableName(I_ZZAssessorPerson.Table_Name);
 		cols.add(selfcareCol);
 		
 		TableModel tmHealthFunctions = TableModel.getTableBean(TableModel.class, cols, false);
@@ -494,5 +551,17 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		super.doSave(trxName);
 		assessorPerson.setAD_User_ID(person.getAD_User_ID());
 		assessorPerson.save(trxName);
+	}
+	
+	@Override
+	public void doSubmit(String trxName) {
+		assessorPerson.setZZ_DocStatus(X_ZZAssessorPerson.ZZ_DOCSTATUS_Pending);
+		assessorPerson.saveEx(trxName);
+		super.doSubmit(trxName);
+	}
+	
+	@Override
+	public boolean isSupportSubmit() {
+		return true;
 	}
 }

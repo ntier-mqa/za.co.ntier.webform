@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -74,6 +75,7 @@ import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramV
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
 import za.co.ntier.webform.sdr.component.bean.Dialog;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public class MasterUtil {
@@ -699,4 +701,9 @@ public class MasterUtil {
 			log.fine("Problem Sending Email.  Please contact Support");
 		}
 	}
+	
+	public static BiFunction<ListCellModel<X_ZZ_AlternateIDType>, X_ZZ_AlternateIDType, Boolean> nameAlternateIdTypeCompare = (cellMode, item) -> {
+		String compareValue = cellMode.getColModel().getSelectedItemDisplayConvert().apply(item);
+		return cellMode.getColModel().getDefaultValue().equals(compareValue);
+	};
 }

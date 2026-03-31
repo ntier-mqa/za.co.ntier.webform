@@ -418,6 +418,8 @@ public class TableModel implements ISaveForm {
 
 	private Consumer<RowModel> decoratorCell;
 	private BiFunction<PO, RowModel, Boolean> beforeSave;
+	
+	private BiFunction<PO, RowModel, Boolean> afterSave;
 
 	public Consumer<RowModel> getDecoratorCell() {
 		return decoratorCell;
@@ -792,8 +794,11 @@ public class TableModel implements ISaveForm {
 	}
 
 	public void reloadDao() {
+		getRow().resetRow();
 		getRow().fillRowDataFromDao();
 	}
+	
+	private Consumer<RowModel> afterFillFromDaoHandle;
 	
 	/**
 	 * @return the poSupplier
@@ -979,6 +984,18 @@ public class TableModel implements ISaveForm {
 	public void setUsed(boolean used) {
 		this.used = used;
 		BindUtils.postNotifyChange(this, "used");
+	}
+	public BiFunction<PO, RowModel, Boolean> getAfterSave() {
+		return afterSave;
+	}
+	public void setAfterSave(BiFunction<PO, RowModel, Boolean> afterSave) {
+		this.afterSave = afterSave;
+	}
+	public Consumer<RowModel> getAfterFillFromDaoHandle() {
+		return afterFillFromDaoHandle;
+	}
+	public void setAfterFillFromDaoHandle(Consumer<RowModel> afterFillFromDaoHandle) {
+		this.afterFillFromDaoHandle = afterFillFromDaoHandle;
 	}
 
 }

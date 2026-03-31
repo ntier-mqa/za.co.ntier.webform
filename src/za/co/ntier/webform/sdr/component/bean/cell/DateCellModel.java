@@ -3,6 +3,8 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+import org.zkoss.bind.BindUtils;
+
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
@@ -48,7 +50,7 @@ public class DateCellModel extends CellModel {
 			Timestamp timeValue = Timestamp.class.cast(timestampObj);
 			this.localDate = timeValue.toLocalDateTime().toLocalDate();
 		}
-		
+		BindUtils.postNotifyChange(this, "localDate");
 		super.setValue(timestampObj);
 	}
 
