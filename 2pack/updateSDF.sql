@@ -10,7 +10,7 @@ DECLARE
  					'98eb82d8-79f4-4268-a003-21a727e0d2aa',    -- ZZAssessorPerson.phone
  					'0bfab1de-24db-4bca-bee7-25771bd5b6b1',    -- ZZAssessorPerson.phone 2
  					'5dd410c7-4f4e-4e60-a96d-4008ccbc3bb8',    -- ZZAssessorPerson.ZZ_ID_Passport_No
- 					'8690e0b0-bc9d-4421-b94e-90648e99f40c',    -- ad_user.ZZSurname
+ 					--'8690e0b0-bc9d-4421-b94e-90648e99f40c',    -- ad_user.ZZSurname
 					'0bf96ec9-62a3-4c5a-bc21-a35f56d1ee10',    -- ad_user.Surname
 					'20997b9e-afdc-48b9-a6f2-0ae6e6f381e5',    -- ad_user.ZZ_Passport_No
 					'e23d281d-9995-460a-ad78-c09b61c69b2d',     -- ZZSdf.ZZ_AlternateIDType_ID

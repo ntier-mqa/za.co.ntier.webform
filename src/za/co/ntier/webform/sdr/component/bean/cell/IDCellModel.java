@@ -54,10 +54,13 @@ public class IDCellModel extends CellModel {
 	
 	protected boolean isRsaId () {
 		for(ColumnModel col : getTableModel().getColumnInfos()) {
-			if (col.getDaoPropertyName().equals(I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID)) {
+			if (I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID.equals(col.getDaoPropertyName())) {
 				@SuppressWarnings("unchecked")
 				ListCellModel<X_ZZ_AlternateIDType> idTypeCell = (ListCellModel<X_ZZ_AlternateIDType>)getRowModel().get(col);
-				return idTypeRSA_ID.equals(idTypeCell.getSelectedItem().getName());
+				String selectedIDTypeName = null;
+				if (idTypeCell.getSelectedItem() != null)
+					selectedIDTypeName = idTypeCell.getSelectedItem().getName();
+				return idTypeRSA_ID.equals(selectedIDTypeName);
 			}
 		}
 		

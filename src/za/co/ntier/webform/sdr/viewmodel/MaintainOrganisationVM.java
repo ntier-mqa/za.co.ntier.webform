@@ -215,8 +215,8 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		cols.add(firstNameCol);
 		
 		ColumnModel lastNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname)
-				, I_ZZSdf.COLUMNNAME_ZZSurname
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZSurname)
+				, I_AD_User.COLUMNNAME_ZZSurname
 				).required()
 				;
 		cols.add(lastNameCol);
@@ -647,7 +647,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		ColumnModel firstNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZFirstName)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZFirstName
-				).required()
+				)
 				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(firstNameCol);
 		
@@ -658,7 +658,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		cols.add(surnameCol);
 		
 		ColumnModel idNoCol = IDCellModel.getIDColumnModel()
-				.required()
+				
 				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(idNoCol);
 		
@@ -669,28 +669,27 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class).
-			required().
+			
 			setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(designationCol);
 		
 		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2
-				).setTableName(I_ZZOrgTrainingCommittee.Table_Name).
-				required();
+				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(telephoneNumberCol);
 
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone
-				).required()
+				)
 				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(cellPhoneNumberCol);
 
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_EMail)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_EMail
-				).required()
+				)
 				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(emailCol);
 		
