@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
@@ -208,10 +209,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		if (person != null) {
 			daoManage.setDao(person);
 			Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
-					.createQuery(String.format("%s = ? AND %s IN (null, ?)"
-							, I_ZZAssessorPerson.COLUMNNAME_AD_User_ID
-							, I_ZZAssessorPerson.COLUMNNAME_ZZ_DocStatus), null);
-			savedDataQuery.setParameters(person.getAD_User_ID(), X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft);
+					.createQuery(String.format("%s = ?"
+							, I_ZZAssessorPerson.COLUMNNAME_AD_User_ID), null);
+			
+			savedDataQuery.setParameters(person.getAD_User_ID());
 			savedDataQuery.setOnlyActiveRecords(true);
 			
 			assessorPersonSaved = savedDataQuery.firstOnly();
@@ -223,6 +224,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		}
 		
 		if (assessorPersonSaved != null) {
+			boolean isDraft = assessorPersonSaved.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPersonSaved.getZZ_DocStatus());
+			if (!isDraft) {
+				MasterUtil.showInfoDialog("ZZAssessorWrongStatus", null);
+			}
 			daoManage.setDao(assessorPersonSaved);
 		}else {
 			daoManage.resetDao(I_ZZAssessorPerson.Table_Name);
@@ -766,6 +771,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	
 	@Override
 	public void doSave(String trxName) {
+		boolean isDraft = true;
+		if (assessorPerson != null) {
+			isDraft = assessorPerson.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPerson.getZZ_DocStatus());
+		}
+		
+		if (!isDraft) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZAssessorWrongStatus"));
+		}
+		
 		super.doSave(trxName);
 		assessorPerson.setAD_User_ID(person.getAD_User_ID());
 		assessorPerson.save(trxName);
