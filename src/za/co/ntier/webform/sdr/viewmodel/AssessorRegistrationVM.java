@@ -675,6 +675,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		tabPanelEducationDetail.getCompModel().add(tmEducationDetail);
 	}
 	
+	
+	private void initQualification() {
+		
+	}
 	/*
 	 * private void initAddresss() { TableModel tmPostalAddress =
 	 * BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", null);
