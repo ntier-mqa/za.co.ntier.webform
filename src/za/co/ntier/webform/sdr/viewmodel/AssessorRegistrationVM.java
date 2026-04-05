@@ -226,7 +226,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		if (assessorPersonSaved != null) {
 			boolean isDraft = assessorPersonSaved.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPersonSaved.getZZ_DocStatus());
 			if (!isDraft) {
-				MasterUtil.showInfoDialog("ZZAssessorWrongStatus", null);
+				MasterUtil.showInfoDialog("ZZAssessorWrongStatus", MasterUtil.fCloseActiveWindow);
 			}
 			daoManage.setDao(assessorPersonSaved);
 		}else {
