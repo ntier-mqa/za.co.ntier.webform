@@ -286,6 +286,9 @@ public class MasterUtil {
 	public static final Entry<String, Integer> LkpChamberCode = new AbstractMap.SimpleEntry<>("15a4a826-3bcb-402b-9ff4-602beeec8c3f", null);
 	public static final Entry<String, Integer> LkpNQFLevel = new AbstractMap.SimpleEntry<>("2b47e027-cb5a-45d6-8fc6-2c9bc9c6c3ad", null);
 	
+	public static final Entry<String, Integer> LkpPopiActStatus = new AbstractMap.SimpleEntry<>("afc9f22a-a893-4b7e-8bb7-daf6c9a851c5", null);
+	
+	
 	public static final Entry<String, Integer> LkpDesignation = new AbstractMap.SimpleEntry<>("49d9d43a-3d51-40e7-afea-31c821e38330", null);
 	public static final Entry<String, Integer> HealthFunctions = new AbstractMap.SimpleEntry<>("d6c8f557-1787-43a4-b34d-47a826efc716", null);
 	
@@ -302,6 +305,10 @@ public class MasterUtil {
 	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
+	
+	public static List<ValueNamePair> getPopiActStatus () {
+		return getRefList(LkpPopiActStatus);
+	}
 	
 	public static List<ValueNamePair> getSdfRoleType () {
 		return getRefList(SdfRoleType);

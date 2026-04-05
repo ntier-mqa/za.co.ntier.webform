@@ -292,6 +292,7 @@ public class CellModel implements IValueChange , IInputState{
 	public static int EMAIL_CELL=12;
 	public static int ID_PASSPORTNO_CELL=13;
 	public static int PRESET_TITLE_CELL=14;
+	public static int SEARCH_CELL=15;
 
 	private int cellType;
 

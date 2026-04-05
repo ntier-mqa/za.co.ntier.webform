@@ -51,7 +51,7 @@
 				
           </div>
           <!-- content part -->
-          <div sclass="cell-content">
+          <div sclass="@init(('cell-content cell-content' += CellModel.SEARCH_CELL))">
             
             <!-- textbox -->
             <textbox
@@ -63,6 +63,19 @@
               	@converter(ConvertUtil.getConvertBlankNull())
               	@validator(vmRowRender.cellValidator, cellModel=vmRowRender.row[col], vm=vmRowRender)" 
               onChange="@command('cmdValueChanged', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
+            
+            <!-- search cell -->
+           	<textbox if="${ vmRowRender.row[col].cellType eq CellModel.SEARCH_CELL }"
+              readonly="true"
+              value="
+              	@load(vmRowRender.row[col].displayValue)
+              	@converter(ConvertUtil.getConvertBlankNull())
+              	@validator(vmRowRender.cellValidator, cellModel=vmRowRender.row[col], vm=vmRowRender)" 
+              onChange="@command('cmdValueChanged', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
+            
+            <button if="${ vmRowRender.row[col].cellType eq CellModel.SEARCH_CELL }"
+			  iconSclass="z-icon-fw z-icon-magnifying-glass z-icon-solid"
+              onClick="@command('cmdBtClick', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
             
             <!-- list - Area - province -->
             <listbox

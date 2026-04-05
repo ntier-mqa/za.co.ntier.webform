@@ -1,23 +1,52 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.DefaultDesktop;
+import org.adempiere.webui.desktop.WindowRegistry;
+import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.factory.InfoManager;
+import org.adempiere.webui.panel.IHelpContext;
+import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.part.WindowContainer;
+import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 
 import za.co.ntier.api.model.I_AD_User;
+import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
+import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
+import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
+import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
+import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
@@ -35,7 +64,9 @@ import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ValueAdaptCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
+import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 
@@ -219,6 +250,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		initContactDetail();
 		initHealthFunction();
 		//initAddresss();
+		initEducationDetail();
 	}
 
 	ColumnModel idNoCol;
@@ -505,6 +537,139 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		tabPanelHealthFunctions.getCompModel().add(tmHealthFunctions);
 	}
 	
+	private void initEducationDetail() {
+		List<ColumnModel> cols = new ArrayList<>();
+		
+		ValueAdaptColumnModel lastSchoolEmisCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), 
+				I_ZZAssessorPerson.COLUMNNAME_ZZLkpSchoolEmis_ID, 
+				CellModel.SEARCH_CELL);
+		lastSchoolEmisCol
+			.setTableName(I_ZZAssessorPerson.Table_Name)
+			.required();
+		
+		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+			obj -> {
+				Object [] objs = (Object [])obj;
+				X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
+				cellModel.setValue(selected);
+			}
+			, I_ZZLkpSchoolEmis.Table_Name
+			, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID);
+		});
+		
+		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			
+			X_ZZLkpSchoolEmis schoolEmis = (X_ZZLkpSchoolEmis)value;
+			return schoolEmis.getName();
+		});
+		
+		lastSchoolEmisCol.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			
+			X_ZZLkpSchoolEmis schoolEmis = (X_ZZLkpSchoolEmis)value;
+			return schoolEmis.getZZLkpSchoolEmis_ID();
+		});
+		
+		lastSchoolEmisCol.setValueFromDaoAdaptHandle(obj -> {
+			if (obj == null)
+				return null;
+			
+			Integer id = Integer.class.cast(obj);
+			if (id == 0)
+				return null;
+			
+			return new X_ZZLkpSchoolEmis(Env.getCtx(), id, null);// TODO make a get function to cache
+		});
+		
+		cols.add(lastSchoolEmisCol);
+		
+		ColumnModel lastSchoolYearCol = CellModel.getColModelForPositiveNumber(
+				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZLastSchoolYear), 
+				I_ZZAssessorPerson.COLUMNNAME_ZZLastSchoolYear
+				).required()
+				.setTableName(I_ZZAssessorPerson.Table_Name);
+		cols.add(lastSchoolYearCol);
+		
+		ValueAdaptColumnModel areaCodeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID),
+				I_ZZAssessorPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID, 
+				CellModel.SEARCH_CELL);
+		areaCodeCol
+			.setTableName(I_ZZAssessorPerson.Table_Name)
+			.required();
+		
+		areaCodeCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+			obj -> {
+				Object [] objs = (Object [])obj;
+				X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
+				cellModel.setValue(selected);
+			}
+			, X_ZZLkpStatssaAreaCode.Table_Name
+			, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID);
+		});
+		
+		areaCodeCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			X_ZZLkpStatssaAreaCode schoolEmis = (X_ZZLkpStatssaAreaCode)value;
+			return schoolEmis.getName();
+		});
+		
+		areaCodeCol.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			
+			X_ZZLkpStatssaAreaCode statssaAreaCode = (X_ZZLkpStatssaAreaCode)value;
+			return statssaAreaCode.getZZLkpStatssaAreaCode_ID();
+		});
+		
+		areaCodeCol.setValueFromDaoAdaptHandle(obj -> {
+			if (obj == null)
+				return null;
+			
+			Integer id = Integer.class.cast(obj);
+			if (id == 0)
+				return null;
+			
+			return new X_ZZLkpStatssaAreaCode(Env.getCtx(), id, null);// TODO make a get function to cache
+		});
+		
+		cols.add(areaCodeCol);
+		
+		ColumnModel popiActStatusCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZPopiActStatus)
+				, I_ZZAssessorPerson.COLUMNNAME_ZZPopiActStatus
+				, MasterUtil.getPopiActStatus()
+				, title -> {return title.getName();}
+				, title -> {return title.getValue();}
+			).setzClass(ValueNamePair.class).required()
+			.setTableName(I_ZZAssessorPerson.Table_Name);
+		cols.add(popiActStatusCol);
+		
+		ColumnModel popiActStatusDateCol = DateCellModel.getDateColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZPopiActStatusDate)
+				, I_ZZAssessorPerson.COLUMNNAME_ZZPopiActStatusDate
+				).required()
+				.setTableName(I_ZZAssessorPerson.Table_Name);
+				//.setDefaultValue(Timestamp.valueOf(LocalDateTime.now()));
+		cols.add(popiActStatusDateCol);
+		
+		TableModel tmEducationDetail = TableModel.getTableBean(TableModel.class, cols, false);
+		tmEducationDetail.setSclass("srd-education-detail srd-education-detail-assessor");
+		tmEducationDetail.setDaoManage(daoManage);
+		tmEducationDetail.init();
+		
+		NavTabPanel tabPanelEducationDetail = new NavTabPanel(mainTab);
+		tabPanelEducationDetail.setTabTitle("Education Details");
+		tabPanelEducationDetail.getCompModel().add(tmEducationDetail);
+	}
+	
 	/*
 	 * private void initAddresss() { TableModel tmPostalAddress =
 	 * BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", null);
@@ -544,6 +709,59 @@ public class AssessorRegistrationVM extends BaseAppVM {
 
 	public void setMainTab(NavTab mainTab) {
 		this.mainTab = mainTab;
+	}
+	
+	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID){
+		// create info window
+		Component activeWin = SessionManager.getAppDesktop().getActiveWindow();
+		Integer winNo = WindowRegistry.getWindowNo(activeWin);
+		
+		InfoPanel ip = InfoManager.create(winNo, tableName, colID, null, false, null, true);
+		
+		// set layout for info window
+		ip.setVisible(true);
+		ip.setStyle("border: 2px");
+		ip.setClosable(true);
+		ip.addValueChangeListener(evt -> {
+			closeHandle.accept(evt.getNewValue());
+		});
+		
+		ip.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event event) throws Exception {
+				InfoPanel showedIp = (InfoPanel)event.getTarget();
+				if (!showedIp.isCancelled()) {
+					Object[] result = showedIp.getSelectedKeys();
+					if (result != null && result.length > 0) {
+						closeHandle.accept(result);
+					}
+					
+				}
+			}
+		});
+		ip.setId(ip.getTitle()+"_"+ip.getWindowNo());
+		
+		//ip.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+		ip.setBorder("normal");
+		ip.setClosable(true);
+		int height = ClientInfo.get().desktopHeight;
+		int width = ClientInfo.get().desktopWidth;
+		if (width <= ClientInfo.MEDIUM_WIDTH)
+		{
+			ZKUpdateUtil.setWidth(ip, "100%");
+			ZKUpdateUtil.setHeight(ip, "100%");
+		}
+		else
+		{
+			height = height * 85 / 100;
+    		width = width * 80 / 100;
+    		ZKUpdateUtil.setWidth(ip, width + "px");
+    		ZKUpdateUtil.setHeight(ip, height + "px");
+		}
+		ip.setContentStyle("overflow: auto");
+		
+		AEnv.showWindow(ip);
 	}
 	
 	@Override
