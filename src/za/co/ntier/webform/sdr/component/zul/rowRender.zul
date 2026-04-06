@@ -65,7 +65,7 @@
               onChange="@command('cmdValueChanged', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
             
             <!-- search cell -->
-           	<textbox if="${ vmRowRender.row[col].cellType eq CellModel.SEARCH_CELL }"
+           	<textbox if="${ vmRowRender.row[col].cellType eq CellModel.SEARCH_CELL and col.daoPropertyName ne null }"
               readonly="true"
               value="
               	@load(vmRowRender.row[col].displayValue)

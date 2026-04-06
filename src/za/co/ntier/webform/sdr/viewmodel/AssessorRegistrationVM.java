@@ -1,15 +1,18 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
@@ -26,8 +29,10 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_CtxHelp;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -42,6 +47,7 @@ import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
+import za.co.ntier.api.model.I_ZZQualification;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.MUser_New;
@@ -62,6 +68,7 @@ import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
@@ -256,6 +263,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		initHealthFunction();
 		//initAddresss();
 		initEducationDetail();
+		initQualification();
 	}
 
 	ColumnModel idNoCol;
@@ -677,6 +685,86 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	
 	
 	private void initQualification() {
+		List<ColumnModel> cols = new ArrayList<>();
+		
+		ValueAdaptColumnModel chooseQualificationCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), 
+				null, 
+				CellModel.SEARCH_CELL);
+		chooseQualificationCol.setShowTitle(false);
+		cols.add(chooseQualificationCol);
+		
+		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false);
+		tmQualificationComp.setSclass("srd-qualification-scope-comp srd-qualification-scope-comp-assessor");
+		tmQualificationComp.init();
+		
+		NavTabPanel tabPanelQualificationScope = new NavTabPanel(mainTab);
+		tabPanelQualificationScope.setTabTitle("Qualification Scope");
+		tabPanelQualificationScope.getCompModel().add(tmQualificationComp);
+		
+		cols = new ArrayList<>();
+		
+		ColumnModel qualificationCodeCol = CellModel.getColModelForLabel(
+					MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Value)
+					, I_ZZQualification.COLUMNNAME_Value)
+				.setReadonly(true);
+		cols.add(qualificationCodeCol);
+		
+		ColumnModel qualificationTitleCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Name)
+				, I_ZZQualification.COLUMNNAME_Name)
+			.setReadonly(true);
+		cols.add(qualificationTitleCol);
+		
+		ColumnModel qualificationCreditsCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_ZZCredits)
+				, I_ZZQualification.COLUMNNAME_ZZCredits)
+			.setReadonly(true);
+		cols.add(qualificationCreditsCol);
+		
+		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Registrationstartdate)
+				, I_ZZQualification.COLUMNNAME_ZZCredits)
+			.setReadonly(true);
+		cols.add(registrationStartDateCol);
+		
+		ColumnModel registrationEndDateCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Registrationenddate)
+				, I_ZZQualification.COLUMNNAME_Registrationenddate)
+			.setReadonly(true);
+		cols.add(registrationEndDateCol);
+					
+		TableModel tmQualificationLink = TableModel.getTableBean(TableModel.class, cols, false);
+		tmQualificationLink.setViewModel(ViewType.VIEW_GRID);
+		tmQualificationLink.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
+		
+		tmQualificationLink.init();
+		
+		tabPanelQualificationScope.getCompModel().add(tmQualificationLink);
+		
+		chooseQualificationCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+			obj -> {
+				Object [] objs = (Object [])obj;
+				
+				List<Object> ids = Arrays.asList(objs);
+				
+				String placeholders = ids.stream()
+					    .map(i -> "?")
+					    .collect(Collectors.joining(","));
+				
+				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQualification.Table_ID)
+						.createQuery(String.format("%s IN (%s)", I_ZZQualification.COLUMNNAME_ZZQualification_ID, placeholders), null);
+				
+				qualificationQuery.setParameters(ids);
+				
+				List<PO> selectedQualifications = qualificationQuery.list();
+				tmQualificationLink.reset(selectedQualifications);
+			}
+			, I_ZZQualification.Table_Name
+			, I_ZZQualification.COLUMNNAME_ZZQualification_ID
+			, true);
+		});
 		
 	}
 	/*
@@ -720,12 +808,16 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		this.mainTab = mainTab;
 	}
 	
-	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID){
+	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID) {
+		showInfoPanel(closeHandle, tableName, colID, false);
+	}
+	
+	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID, boolean isMultiChoose){
 		// create info window
 		Component activeWin = SessionManager.getAppDesktop().getActiveWindow();
 		Integer winNo = WindowRegistry.getWindowNo(activeWin);
 		
-		InfoPanel ip = InfoManager.create(winNo, tableName, colID, null, false, null, true);
+		InfoPanel ip = InfoManager.create(winNo, tableName, colID, null, isMultiChoose, null, true);
 		
 		// set layout for info window
 		ip.setVisible(true);
