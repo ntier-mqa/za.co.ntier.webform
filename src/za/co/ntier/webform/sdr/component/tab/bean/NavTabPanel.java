@@ -127,6 +127,9 @@ public class NavTabPanel implements ISaveForm {
 					rowInputCheckResult.setEmpty(false);
 				}
 				
+				if (cellInputCheckResult.getHasMandatory())
+					rowInputCheckResult.setHasMandatory(true);
+				
 				if (!cellInputCheckResult.getFillMandatory()) {
 					rowInputCheckResult.setFillMandatory(false);// has at least once field have value
 					log.warning("not input for mandatory field on table:" + tbModel.getTableTitle() + " sclass:" + tbModel.getSclass());

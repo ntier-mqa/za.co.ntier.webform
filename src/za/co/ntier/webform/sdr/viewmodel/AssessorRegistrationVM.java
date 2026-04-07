@@ -48,6 +48,7 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZQualification;
+import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.MUser_New;
@@ -264,6 +265,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		//initAddresss();
 		initEducationDetail();
 		initQualification();
+		initSkillsProgramme();
 	}
 
 	ColumnModel idNoCol;
@@ -688,7 +690,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ValueAdaptColumnModel chooseQualificationCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), 
+				null, 
 				null, 
 				CellModel.SEARCH_CELL);
 		chooseQualificationCol.setShowTitle(false);
@@ -767,6 +769,91 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		});
 		
 	}
+	
+	private void initSkillsProgramme() {
+		List<ColumnModel> cols = new ArrayList<>();
+		
+		ValueAdaptColumnModel chooseQualificationCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				null,
+				null, 
+				CellModel.SEARCH_CELL);
+		chooseQualificationCol.setShowTitle(false);
+		cols.add(chooseQualificationCol);
+		
+		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false);
+		tmQualificationComp.setSclass("srd-skillsprogramme-scope-comp srd-skillsprogramme-scope-comp-assessor");
+		tmQualificationComp.init();
+		
+		NavTabPanel tabPanelSkillsProgramme = new NavTabPanel(mainTab);
+		tabPanelSkillsProgramme.setTabTitle("Skills Programme Scope");
+		tabPanelSkillsProgramme.getCompModel().add(tmQualificationComp);
+		
+		cols = new ArrayList<>();
+		
+		ColumnModel skillsProgrammeCodeCol = CellModel.getColModelForLabel(
+					MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Value)
+					, I_ZZSkillsProgramme.COLUMNNAME_Value)
+				.setReadonly(true);
+		cols.add(skillsProgrammeCodeCol);
+		
+		ColumnModel skillsProgrammeTitleCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Name)
+				, I_ZZSkillsProgramme.COLUMNNAME_Name)
+			.setReadonly(true);
+		cols.add(skillsProgrammeTitleCol);
+		
+		ColumnModel skillsProgrammeCreditsCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
+				, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
+			.setReadonly(true);
+		cols.add(skillsProgrammeCreditsCol);
+		
+		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Registrationstartdate)
+				, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
+			.setReadonly(true);
+		cols.add(registrationStartDateCol);
+		
+		ColumnModel registrationEndDateCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Registrationenddate)
+				, I_ZZSkillsProgramme.COLUMNNAME_Registrationenddate)
+			.setReadonly(true);
+		cols.add(registrationEndDateCol);
+					
+		TableModel tmSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false);
+		tmSkillsProgramme.setViewModel(ViewType.VIEW_GRID);
+		tmSkillsProgramme.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
+		
+		tmSkillsProgramme.init();
+		
+		tabPanelSkillsProgramme.getCompModel().add(tmSkillsProgramme);
+		
+		chooseQualificationCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+			obj -> {
+				Object [] objs = (Object [])obj;
+				
+				List<Object> ids = Arrays.asList(objs);
+				
+				String placeholders = ids.stream()
+					    .map(i -> "?")
+					    .collect(Collectors.joining(","));
+				
+				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZSkillsProgramme.Table_ID)
+						.createQuery(String.format("%s IN (%s)", I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID, placeholders), null);
+				
+				skillsProgrammeQuery.setParameters(ids);
+				
+				List<PO> selectedSkillsProgramme = skillsProgrammeQuery.list();
+				tmSkillsProgramme.reset(selectedSkillsProgramme);
+			}
+			, I_ZZSkillsProgramme.Table_Name
+			, I_ZZSkillsProgramme.COLUMNNAME_ZZQualification_ID
+			, true);
+		});
+		
+	}
+	
 	/*
 	 * private void initAddresss() { TableModel tmPostalAddress =
 	 * BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", null);

@@ -70,7 +70,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	
 	public InputCheckResult parseInputState() {
 		InputCheckResult rowInputCheckResult = new InputCheckResult();
-		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
+		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true).setReadOnly(true);
 		
 		for (IInputState cellModel : values()) {
 			if(cellModel.isIgnore())
@@ -82,6 +82,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 				rowInputCheckResult.setEmpty(false);
 			}
 			
+			if (cellInputCheckResult.getHasMandatory()) {
+				rowInputCheckResult.setHasMandatory(true);
+			}
+			
 			if (!cellInputCheckResult.getFillMandatory()) {
 				rowInputCheckResult.setFillMandatory(false);// has at least once field have value
 				log.warning("not input for mandatory field:" + cellModel.toString());
@@ -89,6 +93,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			
 			if (!cellInputCheckResult.getNotChange()) {
 				rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
+			}
+			
+			if (!cellInputCheckResult.getReadOnly()) {
+				rowInputCheckResult.setReadOnly(false);
 			}
 		}
 		
@@ -149,20 +157,36 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		
 	}
 
+	InputCheckResult rowInputCheckResult;
+	
+	protected boolean ignoreInput() {
+		boolean ignore = (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && data != null);
+		
+		if (!ignore)
+			ignore = (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && data == null);
+		
+		return ignore;
+			
+	}
+	
 	@Override
 	public void syncUIToDao(String trxName) {
-		InputCheckResult rowInputCheckResult = parseInputState();
+		rowInputCheckResult = parseInputState();
 		
-		if (rowInputCheckResult.getNotChange() && !rowInputCheckResult.getFillMandatory() && data != null) {
+		// empty (or default) value, not full fill mandatory then delete current data
+		// improve to handle case po manage
+		if (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && data != null) {
 			data.deleteEx(true, trxName);
 			data = null;
 			return;
 		}
 		
-		if (rowInputCheckResult.getNotChange() && !rowInputCheckResult.getFillMandatory() && data == null) 
+		// empty (or default) value and not touch mandatory (data isn't saved
+		if (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && data == null) 
 			return;
 		
-		if (!rowInputCheckResult.getFillMandatory()) {
+		// touch mandatory and not yet full fill mandatory
+		if (rowInputCheckResult.haveMandatoryAndNotFullFill()) {
 			throw new AdempiereException("Madatory not yet full fill");
 		}
 				
@@ -220,7 +244,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	
 	private PO getDirectDao() {
 		if (data == null && tableModel.getPoSupplier() == null) {
-			throw new AdempiereException("ZZTableModelMissingPO");
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZTableModelMissingPO") + ":" + tableModel.getTableTitle() + ":" + tableModel.getSclass());
 		}
 		
 		if (data == null)
@@ -269,14 +293,17 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	public void saveToDb(String trxName) {
 		
 		if (tableModel.getDaoManage() == null) {
-			PO daoToSave = getDirectDao();
-			
-			if(daoToSave != null && !getTableModel().isUsed()) {
-				daoToSave.deleteEx(true);
+			if(data != null && !getTableModel().isUsed()) {
+				data.deleteEx(true);//TODO: seem it's done on syncUIToDao
 				setData(null);
 				resetRow();
 				return;
 			}
+			
+			if (ignoreInput())
+				return;
+			
+			PO daoToSave = getDirectDao();
 			
 			if (tableModel.getBeforeSave() != null) {
 				tableModel.getBeforeSave().apply(daoToSave, this);

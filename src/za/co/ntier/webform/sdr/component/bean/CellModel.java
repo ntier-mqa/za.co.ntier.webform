@@ -82,10 +82,40 @@ public class CellModel implements IValueChange , IInputState{
 		public Boolean getFillMandatory() {
 			return fillMandatory;
 		}
+		
+		
 		public InputCheckResult setFillMandatory(Boolean fillMandatory) {
 			this.fillMandatory = fillMandatory;
 			return this;
 		}
+		public Boolean getHasMandatory() {
+			return hasMandatory;
+		}
+		public InputCheckResult setHasMandatory(Boolean hasMandatory) {
+			this.hasMandatory = hasMandatory;
+			return this;
+		}
+		
+		public boolean haveMandatoryAndFullFill() {
+			return getHasMandatory() && getFillMandatory();
+		}
+		
+		public boolean haveMandatoryAndNotFullFill() {
+			return getHasMandatory() && !getFillMandatory();
+		}
+		
+		public boolean nonMandatoryOrNotFullFill() {
+			return !getHasMandatory() || !getFillMandatory();
+		}
+		
+		public Boolean getReadOnly() {
+			return readOnly;
+		}
+		public InputCheckResult setReadOnly(Boolean readOnly) {
+			this.readOnly = readOnly;
+			return this;
+		}
+
 		/**
 		 * empty or not change default value
 		 */
@@ -98,7 +128,11 @@ public class CellModel implements IValueChange , IInputState{
 	     * is mandatory field and already enter value
 	     * in case isn't mandatory field always true
 	     */
-	    private Boolean fillMandatory = null;
+	    private Boolean fillMandatory = false;
+	    
+	    private Boolean hasMandatory = false;
+	    
+	    private Boolean readOnly = true;
 	    
 	}
 	
@@ -123,7 +157,11 @@ public class CellModel implements IValueChange , IInputState{
 		boolean isNotChange = !isChangeValueFromDefault();
 		inputCheckResult.setNotChange(Boolean.valueOf(isNotChange));
 		
+		inputCheckResult.setHasMandatory(isMandatory());
+		
 		inputCheckResult.setFillMandatory((isMandatory() && !inputCheckResult.empty) || (!isMandatory()));
+		
+		inputCheckResult.setReadOnly(getColModel().isReadonly());
 		
 		return inputCheckResult;
 	}
@@ -499,6 +537,7 @@ public class CellModel implements IValueChange , IInputState{
 		
 	}
 	
+	@Override
 	public boolean isIgnore(){
 		return colModel.isReadonly() || 
 				(getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName()));

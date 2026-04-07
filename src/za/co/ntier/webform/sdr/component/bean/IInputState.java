@@ -16,6 +16,12 @@ public interface IInputState {
 	
 	public InputCheckResult parseInputState();
 	
+	/**
+	 * not yet implement complete
+	 * @param row
+	 * @param rowInputCheckResult
+	 * @param logInfo
+	 */
 	public static void parseInputState(IInputState row, InputCheckResult rowInputCheckResult, Function<IInputState, String> logInfo) {
 		if(row.isIgnore())
 			return;
@@ -40,7 +46,11 @@ public interface IInputState {
 			rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
 		}
 	}
-	
+	/**
+	 * not yet implement complete 
+	 * @param inputStates
+	 * @return
+	 */
 	public static InputCheckResult batchParseInputState(List<?> inputStates) {
 		
 		InputCheckResult rowInputCheckResult = new InputCheckResult();

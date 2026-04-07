@@ -960,6 +960,9 @@ public class TableModel implements ISaveForm {
 				rowInputCheckResult.setEmpty(false);
 			}
 			
+			if (cellInputCheckResult.getHasMandatory())
+				rowInputCheckResult.setHasMandatory(true);
+			
 			if (!cellInputCheckResult.getFillMandatory()) {
 				rowInputCheckResult.setFillMandatory(false);// has at least once field have value
 				log.warning("not input mandatory field on row:" + getRows().indexOf(row));
