@@ -441,6 +441,9 @@ public class MasterUtil {
 	public static List<X_ZZ_AlternateIDType> getAlternateIDType() {
 		if (alternateIDTypeCache.isEmpty()) {
 			List<X_ZZ_AlternateIDType> list = getMasterList(X_ZZ_AlternateIDType.Table_Name);
+			list = list.stream().filter(t -> {
+				return "1000011".equals(t.getValue()) || "1000009".equals(t.getValue()) || "1000000".equals(t.getValue());
+			}).toList();
 			alternateIDTypeCache.put(Integer.MAX_VALUE, list);
 			return list;
 		}

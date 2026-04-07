@@ -70,11 +70,17 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	
 	public InputCheckResult parseInputState() {
 		InputCheckResult rowInputCheckResult = new InputCheckResult();
-		rowInputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true).setReadOnly(true);
+		rowInputCheckResult.setEmpty(true)
+			.setFillMandatory(true)
+			.setNotChange(true)
+			.setHasMandatory(false)
+			.setIgnore(true);
 		
 		for (IInputState cellModel : values()) {
 			if(cellModel.isIgnore())
 				continue;
+			
+			rowInputCheckResult.setIgnore(false);
 			
 			InputCheckResult cellInputCheckResult = cellModel.parseInputState();
 			
@@ -93,10 +99,6 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			
 			if (!cellInputCheckResult.getNotChange()) {
 				rowInputCheckResult.setNotChange(false);// has at least once field has change when compare to default
-			}
-			
-			if (!cellInputCheckResult.getReadOnly()) {
-				rowInputCheckResult.setReadOnly(false);
 			}
 		}
 		
@@ -173,9 +175,12 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	public void syncUIToDao(String trxName) {
 		rowInputCheckResult = parseInputState();
 		
-		// empty (or default) value, not full fill mandatory then delete current data
+		if (rowInputCheckResult.getIgnore())
+			return;
+		
+		// empty value then delete current data
 		// improve to handle case po manage
-		if (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && data != null) {
+		if (rowInputCheckResult.getEmpty() && data != null) {
 			data.deleteEx(true, trxName);
 			data = null;
 			return;

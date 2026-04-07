@@ -285,7 +285,6 @@ public class MainSrdFormVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel("ID Document Upload", null, null, "UPLOAD FILE")
-				.required()
 				.setTableName(I_ZZSdf.Table_Name);
 		cols.add(idDocUploadCol);
 

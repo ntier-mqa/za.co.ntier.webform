@@ -107,12 +107,12 @@ public class CellModel implements IValueChange , IInputState{
 		public boolean nonMandatoryOrNotFullFill() {
 			return !getHasMandatory() || !getFillMandatory();
 		}
-		
-		public Boolean getReadOnly() {
-			return readOnly;
+
+		public Boolean getIgnore() {
+			return ignore;
 		}
-		public InputCheckResult setReadOnly(Boolean readOnly) {
-			this.readOnly = readOnly;
+		public InputCheckResult setIgnore(Boolean ignore) {
+			this.ignore = ignore;
 			return this;
 		}
 
@@ -132,8 +132,7 @@ public class CellModel implements IValueChange , IInputState{
 	    
 	    private Boolean hasMandatory = false;
 	    
-	    private Boolean readOnly = true;
-	    
+	    private Boolean ignore = true;
 	}
 	
 	public Object getDefaultValue() {
@@ -160,8 +159,6 @@ public class CellModel implements IValueChange , IInputState{
 		inputCheckResult.setHasMandatory(isMandatory());
 		
 		inputCheckResult.setFillMandatory((isMandatory() && !inputCheckResult.empty) || (!isMandatory()));
-		
-		inputCheckResult.setReadOnly(getColModel().isReadonly());
 		
 		return inputCheckResult;
 	}
