@@ -201,7 +201,17 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 				daoPerCol = getDaoAllway(cellModel);
 				cellModel.saveUIToDao(daoPerCol);
 			}
+			
+			if (CellModel.BTUPLOAD_CELL == cellModel.getCellType() && cellModel.isIgnore()) {
+				((UploadCellModel)cellModel).cmdRemoveAttachment();// mark remove attachment of this button
+			}
+			
+			if (CellModel.BTUPLOAD_CELL != cellModel.getCellType() && cellModel.isIgnore()) {
+				// TODO:reset cell to null
+			}
 		}
+		
+		
 			
 	}
 	

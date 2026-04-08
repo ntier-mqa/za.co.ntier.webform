@@ -58,13 +58,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	
 	@Override
 	public List<ISaveForm> getSaveComponents() {
-		if (bankDetailModel.isUsed()) {
-			return List.of(sdfOrgModel, bankDetailModel);
-		}else {
-			return List.of(sdfOrgModel);
-		}
-			
-		
+		return List.of(sdfOrgModel, bankDetailModel);
 	}
 	
 	boolean isEditModel = false;
@@ -96,6 +90,9 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		if (isEditModel && sdfOrgModel.getRow().getData() != null) {
 			String sdfRoleType = ((X_ZZSdfOrganisation)sdfOrgModel.getRow().getData()).getZZSdfRoleType();
+			
+			sdfOrgModel.getRow().get(btBankDetailCol).setVisible(!X_ZZSdfOrganisation.ZZSDFROLETYPE_SecondarySDF.equals(sdfRoleType));
+			
 			bankDetailModel.setUsed(!X_ZZSdfOrganisation.ZZSDFROLETYPE_SecondarySDF.equals(sdfRoleType));
 		}
 			
@@ -149,6 +146,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	}
 	
 	ListColumnModel<ValueNamePair> sdrRoleTyleCol = null;
+	ColumnModel btBankDetailCol;
 	private TableModel initSdfOrgModel() {
 		List<ColumnModel> cols = new ArrayList<>();
 
@@ -201,7 +199,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		sdrRoleTyleCol.setEventHandle((event, cellModel) -> {
 			Object roleTypeValue = cellModel.getValue();
-			
+			cellModel.getRowModel().get(btBankDetailCol).setVisible(!X_ZZSdfOrganisation.ZZSDFROLETYPE_SecondarySDF.equals(roleTypeValue));
 			bankDetailModel.setUsed(!X_ZZSdfOrganisation.ZZSDFROLETYPE_SecondarySDF.equals(roleTypeValue));
 			
 		});
@@ -246,7 +244,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			.setShowTitle(false);
 		cols.add(btAppointmentLetterCol);
 		
-		ColumnModel btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS")
+		btBankDetailCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD BANK DETAILS")
 			.required()
 			.setShowTitle(false);
 		cols.add(btBankDetailCol);
@@ -285,7 +283,6 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		}
 		
 		tmSdrOrgLink.init(savedSdrOrgLinks);
-		
 
 		return tmSdrOrgLink;
 	}

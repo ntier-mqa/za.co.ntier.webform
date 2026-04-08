@@ -230,6 +230,9 @@ public class CellModel implements IValueChange , IInputState{
 	
 	protected List<String> doValidate(Object inputValue) {
 		List<String> validateMsgs = new ArrayList<>();
+		if (isIgnore())
+			return validateMsgs;
+		
 		if (isMandatory() && inputValue == null) {
 			validateMsgs.add(Msg.getMsg(Env.getCtx(), "ZZValidateNotNull"));
 		}else if (inputValue == null) {
@@ -534,9 +537,14 @@ public class CellModel implements IValueChange , IInputState{
 		
 	}
 	
+	private boolean visible = true;
+	
+	/**
+	 * don't validate, don't save to dao, clean current value to null (remove in case attachment button)
+	 */
 	@Override
 	public boolean isIgnore(){
-		return colModel.isReadonly() || 
+		return !isVisible() || colModel.isReadonly() || 
 				(getCellType() != CellModel.BTUPLOAD_CELL && StringUtils.isBlank(colModel.getDaoPropertyName()));
 	}
 
@@ -584,5 +592,14 @@ public class CellModel implements IValueChange , IInputState{
 		}
 		
 		
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+		BindUtils.postNotifyChange(this, "visible");
 	}
 }

@@ -65,6 +65,9 @@ public class UploadCellModel extends CellModel {
 	
 	@Override
 	public List<String> doValidate(Object inputValue) {
+		if (!isVisible()) {
+			return List.of();
+		}
 		if (isMandatory() && StringUtils.isBlank(fileName) && bytes == null)
 			return List.of(Msg.getMsg(Env.getCtx(), "ZZValidateNotNull"));
 		
