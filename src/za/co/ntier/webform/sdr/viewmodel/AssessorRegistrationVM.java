@@ -707,13 +707,13 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		cols = new ArrayList<>();
 		
 		ColumnModel qualificationCodeCol = CellModel.getColModelForLabel(
-					MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Value)
+					Msg.getElement(Env.getCtx(), "ZZQualificationCode")
 					, I_ZZQualification.COLUMNNAME_Value)
 				.setReadonly(true);
 		cols.add(qualificationCodeCol);
 		
 		ColumnModel qualificationTitleCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Name)
+				Msg.getElement(Env.getCtx(), "ZZQualificationTitle")
 				, I_ZZQualification.COLUMNNAME_Name)
 			.setReadonly(true);
 		cols.add(qualificationTitleCol);
@@ -791,13 +791,13 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		cols = new ArrayList<>();
 		
 		ColumnModel skillsProgrammeCodeCol = CellModel.getColModelForLabel(
-					MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Value)
+					Msg.getElement(Env.getCtx(), "ZZSkillsProgrammeCode")
 					, I_ZZSkillsProgramme.COLUMNNAME_Value)
 				.setReadonly(true);
 		cols.add(skillsProgrammeCodeCol);
 		
 		ColumnModel skillsProgrammeTitleCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Name)
+				Msg.getElement(Env.getCtx(), "ZZSkillsProgrammeTitle")
 				, I_ZZSkillsProgramme.COLUMNNAME_Name)
 			.setReadonly(true);
 		cols.add(skillsProgrammeTitleCol);
