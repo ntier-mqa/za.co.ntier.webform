@@ -14,7 +14,8 @@ DECLARE
 					'0bf96ec9-62a3-4c5a-bc21-a35f56d1ee10',    -- ad_user.Surname
 					'20997b9e-afdc-48b9-a6f2-0ae6e6f381e5',    -- ad_user.ZZ_Passport_No
 					'e23d281d-9995-460a-ad78-c09b61c69b2d',     -- ZZSdf.ZZ_AlternateIDType_ID
-					'a613cbc2-fd7f-4f0b-ba82-4f646e3fa11b'     -- ZZAssessor.ZZ_AlternateIDType_ID
+					'a613cbc2-fd7f-4f0b-ba82-4f646e3fa11b',    -- ZZAssessor.ZZ_AlternateIDType_ID
+					'6fba0609-5c99-48fc-b69f-a3f6c6e1214e'     -- ZZSdf.ZZ_LI_Disability_ID
 
 				];
 	fields text[] := ARRAY[
@@ -65,6 +66,10 @@ BEGIN
 	--DELETE FROM AD_Menu WHERE AD_Menu_UU = ANY(menus);
 
 	DELETE FROM AD_Tab WHERE AD_Tab_UU = ANY(tabs);
-   
+
 END $$;
+
+-- run one time
+ALTER TABLE ZZSdf
+DROP COLUMN ZZ_LI_Disability_ID;
  

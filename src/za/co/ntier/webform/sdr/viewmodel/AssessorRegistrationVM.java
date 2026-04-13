@@ -726,7 +726,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Registrationstartdate)
-				, I_ZZQualification.COLUMNNAME_ZZCredits)
+				, I_ZZQualification.COLUMNNAME_Registrationstartdate)
 			.setReadonly(true);
 		cols.add(registrationStartDateCol);
 		
@@ -848,7 +848,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				tmSkillsProgramme.reset(selectedSkillsProgramme);
 			}
 			, I_ZZSkillsProgramme.Table_Name
-			, I_ZZSkillsProgramme.COLUMNNAME_ZZQualification_ID
+			, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID
 			, true);
 		});
 		

@@ -70,6 +70,7 @@ import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
+import za.co.ntier.api.model.X_ZZ_No_Yes_Ref;
 import za.co.ntier.api.model.X_ZZ_SETA_Master;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 import za.co.ntier.webform.form.viewmodel.component.ComponentVMWrapper;
@@ -472,6 +473,7 @@ public class MasterUtil {
 	}
 	
 	private static CCache<Integer, List<X_ZZ_LI_Disability>> disabilityCache = new CCache<>("master-X_ZZ_LI_Disability", 1);
+	private static CCache<Integer, List<X_ZZ_No_Yes_Ref>> zzNoYesCache = new CCache<>("master-X_ZZ_No_Yes_Ref", 1);
 	
 	public static List<X_ZZ_LI_Disability> getDisability(){
 		if (disabilityCache.isEmpty()) {
@@ -480,6 +482,15 @@ public class MasterUtil {
 			return list;
 		}
 		return disabilityCache.get(Integer.MAX_VALUE);
+	}
+	
+	public static List<X_ZZ_No_Yes_Ref> getZZNoYes(){
+		if (disabilityCache.isEmpty()) {
+			List<X_ZZ_No_Yes_Ref> list = getMasterList(X_ZZ_No_Yes_Ref.Table_Name);
+			zzNoYesCache.put(Integer.MAX_VALUE, list);
+			return list;
+		}
+		return zzNoYesCache.get(Integer.MAX_VALUE);
 	}
 	
 	private static CCache<Integer, List<X_ZZ_LI_CitizenResidentialStatus>> citizenResidentialStatusCache = new CCache<>("master-X_ZZ_LI_CitizenResidentialStatus", 1);

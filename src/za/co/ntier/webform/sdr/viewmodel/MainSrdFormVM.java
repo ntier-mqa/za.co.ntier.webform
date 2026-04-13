@@ -23,6 +23,7 @@ import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
+import za.co.ntier.api.model.X_ZZ_No_Yes_Ref;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -341,11 +342,11 @@ public class MainSrdFormVM extends BaseAppVM {
 		ColumnModel disabilityCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_LI_Disability_ID)
 				, I_ZZSdf.COLUMNNAME_ZZ_LI_Disability_ID
-				, MasterUtil.getDisability()
+				, MasterUtil.getZZNoYes()
 				, title -> {return title.getName();}
-				, title -> {return title.getZZ_LI_Disability_ID();}
+				, title -> {return title.getZZ_No_Yes_Ref_ID();}
 			)
-			.setzClass(X_ZZ_LI_Disability.class)
+			.setzClass(X_ZZ_No_Yes_Ref.class)
 			.setUseForID(true)
 			.required()
 			.setTableName(I_ZZSdf.Table_Name);
