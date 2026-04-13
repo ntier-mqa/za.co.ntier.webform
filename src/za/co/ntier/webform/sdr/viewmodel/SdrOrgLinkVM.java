@@ -521,26 +521,46 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		}
 		
 		int sdfOrganisationID = isEditModel? menuContextInfo.getRecordID():0;
-				
-		Query queryCheckOrg = MTable.get(Env.getCtx(), I_ZZSdfOrganisation.Table_Name)
-				.createQuery(String.format("%s <> ? AND %s = ? AND (%s = ? OR %s = ?) AND %s <> ?", 
+		
+		Object selectedRole = sdfOrgModel.getRow().get(sdrRoleTyleCol).getValue();
+		
+		// check org already link to other sdf with this role type
+		Query querySameRoleTypeOnOtherSdf = MTable.get(Env.getCtx(), I_ZZSdfOrganisation.Table_Name)
+				.createQuery(String.format("%s <> ? AND %s = ? AND %s = ? AND %s <> ?", 
 						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfOrganisation_ID,
 						I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID, 
 						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfRoleType,
+						I_ZZSdfOrganisation.COLUMNNAME_ZZ_DocStatus)
+						, null);
+		
+		querySameRoleTypeOnOtherSdf.setParameters(sdfOrganisationID, 
+				orgPo.getC_BPartner_ID(), 
+				selectedRole, 
+				X_ZZSdfOrganisation.ZZ_DOCSTATUS_Delinked);
+		
+		if (querySameRoleTypeOnOtherSdf.list().size() > 0) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZRequestOrgLinkRoleTypeUsed"));
+		}
+		
+		// check org already link to this sdf
+		Query queryAlreadyLinkToThisSdf = MTable.get(Env.getCtx(), I_ZZSdfOrganisation.Table_Name)
+				.createQuery(String.format("%s <> ? AND %s = ? AND %s = ? AND %s <> ?", 
+						I_ZZSdfOrganisation.COLUMNNAME_ZZSdfOrganisation_ID,
+						I_ZZSdfOrganisation.COLUMNNAME_C_BPartner_ID, 
 						I_ZZSdfOrganisation.COLUMNNAME_ZZSdf_ID,
 						I_ZZSdfOrganisation.COLUMNNAME_ZZ_DocStatus)
 						, null);
-		Object selectedRole = sdfOrgModel.getRow().get(sdrRoleTyleCol).getValue();
-		queryCheckOrg.setParameters(sdfOrganisationID, 
+		
+		queryAlreadyLinkToThisSdf.setParameters(sdfOrganisationID, 
 				orgPo.getC_BPartner_ID(), 
-				selectedRole, sdfPo.getZZSdf_ID(),
+				sdfPo.getZZSdf_ID(),
 				X_ZZSdfOrganisation.ZZ_DOCSTATUS_Delinked);
 		
-		if (queryCheckOrg.list().size() > 0) {
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZRequestOrgLinkTooMuchLink"));
-		}else {
-			super.doSave(trxName);
+		if (queryAlreadyLinkToThisSdf.list().size() > 0) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZRequestOrgLinkSdfUsed"));
 		}
+		
+		super.doSave(trxName);
 	}
 	
 }
