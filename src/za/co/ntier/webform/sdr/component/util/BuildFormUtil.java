@@ -114,6 +114,7 @@ public class BuildFormUtil {
 		}
 
 		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
+		addressFormBean.setTableName(I_ZZ_FormContact.Table_Name);
 		addressFormBean.setSubSectionHeader(getAddressTitle(programType, addressType));
 		addressFormBean.setDataType(addressType.toString());
 		if (copyFrom != null) {

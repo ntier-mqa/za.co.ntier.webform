@@ -360,8 +360,7 @@ public class DgaVM extends BaseAppVM{
 			// user can be change it and after that save to I_ZZ_Application_Form.COLUMNNAME_NumberEmployees
 			colNoOfEmp = CellModel.getColModelForPositiveNumber(
 					"Number of Employees", I_ZZ_Application_Form.COLUMNNAME_NumberEmployees
-					).required()
-					.setTableName(I_ZZ_Application_Form.Table_Name);
+					).required();
 			
 			otherOrgInfoCols.add(colNoOfEmp);
 			
@@ -374,6 +373,7 @@ public class DgaVM extends BaseAppVM{
 			otherOrgInfoCols.add(wspCol);
 			
 			tmSizeOrgInfo = TableModel.getTableBean(TableModel.class, otherOrgInfoCols, false);
+			tmSizeOrgInfo.setTableName(I_ZZ_Application_Form.Table_Name);
 			tmSizeOrgInfo.setSubSectionHeader("OTHER ORGANISATION INFO");
 			tmSizeOrgInfo.setTableTitle("(please select the correct option pertaining to the company size)");
 			tmSizeOrgInfo.setSclass("orgSize");

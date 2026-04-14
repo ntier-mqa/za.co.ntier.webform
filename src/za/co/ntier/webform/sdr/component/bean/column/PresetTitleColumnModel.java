@@ -1,5 +1,6 @@
 package za.co.ntier.webform.sdr.component.bean.column;
 
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -28,19 +29,19 @@ public class PresetTitleColumnModel<T> extends ColumnModel {
 
 	private Function<T, String> displayConvert;
 	
-	private BiFunction<RowModel, PO, Boolean> matchingLoaded;
+	private BiFunction<RowModel, List<PO>, Boolean> matchingLoaded;
 	
-	public boolean isMatching(RowModel row, PO savedPo) {
+	public boolean isMatching(RowModel row, List<PO> savedPo) {
 		if (getMatchingLoaded() != null) {
 			return getMatchingLoaded().apply(row, savedPo);
 		}else {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZMissingMatchingDelegate"));
 		}
 	}
-	public BiFunction<RowModel, PO, Boolean> getMatchingLoaded() {
+	public BiFunction<RowModel, List<PO>, Boolean> getMatchingLoaded() {
 		return matchingLoaded;
 	}
-	public void setMatchingLoaded(BiFunction<RowModel, PO, Boolean> matchingLoaded) {
+	public void setMatchingLoaded(BiFunction<RowModel, List<PO>, Boolean> matchingLoaded) {
 		this.matchingLoaded = matchingLoaded;
 	}
 

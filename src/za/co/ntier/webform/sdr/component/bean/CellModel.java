@@ -55,6 +55,13 @@ public class CellModel implements IValueChange , IInputState{
         valuePropertyChangeSupport.removePropertyChangeListener(pcl);
     }
     
+    protected String getTableName() {
+    	String tableName = getColModel().getTableName();
+		if (tableName == null)
+			tableName = getTableModel().getTableName();
+		
+		return tableName;
+	}
 	/**
 	 * 
 	 * when a field not pass validate by org.zkoss.bind.Validator value isn't save 
@@ -549,7 +556,9 @@ public class CellModel implements IValueChange , IInputState{
 	}
 
 	public void saveUIToDao(PO daoPerCol) {
-
+		if (daoPerCol == null) {
+			return;
+		}
 		Object value = CellModel.convertDataType(daoPerCol, this);//TODO maybe don't need to covert
 		if (value == null) {
 			daoPerCol.set_ValueOfColumn(getColModel().getDaoPropertyName(), null);

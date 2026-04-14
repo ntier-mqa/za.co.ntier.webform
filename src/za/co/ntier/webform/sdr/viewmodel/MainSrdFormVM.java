@@ -119,11 +119,11 @@ public class MainSrdFormVM extends BaseAppVM {
 		
 		// reload address
 		PO savedPo = BuildFormUtil.getSavedAddress(person.getAD_User_ID(), physicalAddress.getDataType(), true);
-		physicalAddress.getRow().setData(savedPo);
+		physicalAddress.getRow().setDataOneRow(savedPo);
 		physicalAddress.reloadDao();
 		
 		savedPo = BuildFormUtil.getSavedAddress(person.getAD_User_ID(), postalAddress.getDataType(), true);
-		postalAddress.getRow().setData(savedPo);
+		postalAddress.getRow().setDataOneRow(savedPo);
 		postalAddress.reloadDao();
 		
 		addressDetailTab.getCompModel().add(physicalAddress);

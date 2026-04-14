@@ -60,12 +60,12 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 		if (menuContextInfo.getRecordID() != 0) {
 			sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
-			sdfOrgModel.getRow().setData(sdfOrgPo);
+			sdfOrgModel.getRow().setDataOneRow(sdfOrgPo);
 			sdfOrgModel.reloadDao();
 
 			// init for org
 			orgPo = new X_C_BPartner(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
-			orgSearchModel.getRow().setData(orgPo);
+			orgSearchModel.getRow().setDataOneRow(orgPo);
 			orgSearchModel.reloadDao();
 			
 			// init for bank details
@@ -76,7 +76,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 			
 			bankDetailPo = queryBankDetailQuery.firstOnly();
 			if (bankDetailPo != null) {
-				bankDetailModel.getRow().setData(bankDetailPo);
+				bankDetailModel.getRow().setDataOneRow(bankDetailPo);
 				bankDetailModel.reloadDao();
 			}
 			
@@ -106,7 +106,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 				MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
 			}else {
 				orgPo = sOrgPo;
-				orgSearchModel.getRow().setData(orgPo);
+				orgSearchModel.getRow().setDataOneRow(orgPo);
 				orgSearchModel.reloadDao();
 			}
 		});
@@ -308,14 +308,14 @@ public class OrglinkTabPanel extends NavTabPanel {
 		if (getOrgPo() != null)
 			sdfOrgPo.setC_BPartner_ID(getOrgPo().getC_BPartner_ID());
 		sdfOrgPo.setZZSdf_ID(getSdfPo().getZZSdf_ID());
-		sdfOrgModel.getRow().setData(sdfOrgPo);
+		sdfOrgModel.getRow().setDataOneRow(sdfOrgPo);
 		sdfOrgModel.syncUIToDao(trxName);
 		
 		if (bankDetailPo == null) {
 			bankDetailPo = new X_ZZBankingDetails(Env.getCtx(), 0, null);
 			bankDetailPo.setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
 		}
-		getBankDetailModel().getRow().setData(bankDetailPo);
+		getBankDetailModel().getRow().setDataOneRow(bankDetailPo);
 		bankDetailModel.syncUIToDao(trxName);
 	}
 	@Override

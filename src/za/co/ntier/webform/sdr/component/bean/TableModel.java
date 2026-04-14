@@ -27,6 +27,7 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
+import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 
@@ -106,16 +107,15 @@ public class TableModel implements ISaveForm {
 		
 	}
 	
-	List<PO> removedRows = new ArrayList<>();
+	List<RowData> removedRows = new ArrayList<>();
 	public void removeRow(RowModel row) {
-		if (row.getData() != null) {
-			removedRows.add(row.getData());
-			row.setData(null);
-		}
+		removedRows.add(row.getRowData());
+		
 		if (getRows().size() > 1)
 			getRows().remove(row);
 		else {
 			row.resetRow();
+			row.setRowData(new RowData(row));
 		}
 		
 		updateTotalRow();
@@ -197,7 +197,7 @@ public class TableModel implements ISaveForm {
 			}
 			
 			if (copyPo)
-				rowDes.setData(rowSrc.getData());
+				rowDes.setRowData(rowSrc.getRowData());
 		}
 			
 	}
@@ -413,6 +413,8 @@ public class TableModel implements ISaveForm {
 			decoratorCell.accept(row);
 		}
 
+		row.setRowData(new RowData(row));
+		
 		return row;
 	}
 
@@ -742,9 +744,21 @@ public class TableModel implements ISaveForm {
 		else
 			init(savedDatas, rowTitles, rowTitles.get(0).keySet());
 	}
-
+	
 	public void init(
-			List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
+			List<PO> savedData, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
+		
+		List<List<PO>> savedDatas = null;
+		
+		if (savedData != null && savedData.size() > 0) {
+			savedDatas = List.of(savedData);
+		}
+		
+		initMultiPo(savedDatas, rowTitles, keyColumns);
+	}
+	
+	public void initMultiPo(
+			List<List<PO>> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
 		// init rows with rowTitles
 		if (rowTitles != null)
 			for (Map<ColumnModel, Object> rowTitle : rowTitles) {
@@ -755,17 +769,17 @@ public class TableModel implements ISaveForm {
 		if (savedDatas != null && savedDatas.size() > 0) {
 			List<RowModel> matchedRows = new ArrayList<>();
 
-			for (PO dao : savedDatas) {
+			for (List<PO> poInRow : savedDatas) {
 				boolean isMatching = false;
 				if (keyColumns != null && keyColumns.size() > 0) {
 					for (RowModel row : getRows()) {
 						if (matchedRows.contains(row))
 							continue;
 
-						isMatching = row.isMatchingRow(keyColumns, dao);
+						isMatching = row.isMatchingRow(keyColumns, poInRow);
 						if (isMatching) {
 							matchedRows.add(row);
-							row.setData(dao);
+							row.getRowData().setDatas(poInRow);
 							row.fillRowDataFromDao();
 							break;
 						}
@@ -774,7 +788,7 @@ public class TableModel implements ISaveForm {
 
 				if(!isMatching) {
 					RowModel row = createDetailRow();
-					row.setData(dao);
+					row.getRowData().setDatas(poInRow);
 					row.fillRowDataFromDao();
 				}
 			}
@@ -843,8 +857,8 @@ public class TableModel implements ISaveForm {
 
 	@Override
 	public void syncUIToDao(String trxName) {
-		for (PO removedRow : removedRows) {
-			removedRow.deleteEx(true, trxName);
+		for (RowData removedRow : removedRows) {
+			removedRow.deleteData(trxName);
 		}
 		
 		if (virtualRow != null) {
@@ -999,6 +1013,15 @@ public class TableModel implements ISaveForm {
 	}
 	public void setAfterFillFromDaoHandle(Consumer<RowModel> afterFillFromDaoHandle) {
 		this.afterFillFromDaoHandle = afterFillFromDaoHandle;
+	}
+	
+	private String tableName;
+	public String getTableName() {
+		return tableName;
+	}
+	
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 
 }

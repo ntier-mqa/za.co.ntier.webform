@@ -88,8 +88,10 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		bankDetailModel = initBankDetailModel();
 		
-		if (isEditModel && sdfOrgModel.getRow().getData() != null) {
-			String sdfRoleType = ((X_ZZSdfOrganisation)sdfOrgModel.getRow().getData()).getZZSdfRoleType();
+		X_ZZSdfOrganisation rowData = sdfOrgModel.getRow().getDataOneRow(X_ZZSdfOrganisation.class, I_ZZSdfOrganisation.Table_Name);
+		
+		if (isEditModel && rowData != null) {
+			String sdfRoleType = rowData.getZZSdfRoleType();
 			
 			sdfOrgModel.getRow().get(btBankDetailCol).setVisible(!X_ZZSdfOrganisation.ZZSDFROLETYPE_SecondarySDF.equals(sdfRoleType));
 			
@@ -113,7 +115,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
 		}else {
 			orgPo = sOrgPo;
-			orgSearchModel.getRow().setData(orgPo);
+			orgSearchModel.getRow().setDataOneRow(orgPo);
 			orgSearchModel.reloadDao();
 		}
 	};
@@ -278,7 +280,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			
 			orgPo =  MBPartner_New.get(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
 			
-			orgSearchModel.getRow().setData(orgPo);
+			orgSearchModel.getRow().setDataOneRow(orgPo);
 			orgSearchModel.reloadDao();
 		}
 		
@@ -385,7 +387,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		});
 		
 		tmBank.setBeforeSave((po, rowModel) -> {
-			X_ZZSdfOrganisation sdfOrgPo = (X_ZZSdfOrganisation)sdfOrgModel.getRow().getData();
+			X_ZZSdfOrganisation sdfOrgPo = sdfOrgModel.getRow().getDataOneRow(X_ZZSdfOrganisation.class, I_ZZSdfOrganisation.Table_Name);
 			((X_ZZBankingDetails)po).setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
 			return true;
 		});
@@ -488,7 +490,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	@Override
 	public void doSubmit(String trxName) {
 		super.doSubmit(trxName);
-		X_ZZSdfOrganisation sdfOrgPo = ((X_ZZSdfOrganisation)sdfOrgModel.getRow().getData());
+		X_ZZSdfOrganisation sdfOrgPo = sdfOrgModel.getRow().getDataOneRow(X_ZZSdfOrganisation.class, I_ZZSdfOrganisation.Table_Name);
 		sdfOrgPo.setZZ_DocStatus(X_ZZSdfOrganisation.ZZ_DOCSTATUS_Pending);
 		sdfOrgPo.setZZ_Submission_Date(Timestamp.valueOf(LocalDateTime.now()));
 		sdfOrgPo.saveEx(trxName);
@@ -506,7 +508,8 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			int loginId = Env.getAD_User_ID(Env.getCtx());
 			MUser receiver = MUser.get(loginId);
 			
-			MasterUtil.sentEmailSdf("96dc984d-af82-4dd3-9b10-a59386a5a03b", sdfOrgModel.getRow().getData(), receiver);
+			X_ZZSdfOrganisation sdfOrgPo = sdfOrgModel.getRow().getDataOneRow(X_ZZSdfOrganisation.class, I_ZZSdfOrganisation.Table_Name);
+			MasterUtil.sentEmailSdf("96dc984d-af82-4dd3-9b10-a59386a5a03b", sdfOrgPo, receiver);
 		}else {
 			MasterUtil.showInfoDialog("ZZRequestOrgLinkSaved", MasterUtil.fCloseActiveWindow);
 			

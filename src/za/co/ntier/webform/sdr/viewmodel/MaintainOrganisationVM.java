@@ -179,11 +179,11 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		// reload address
 		PO savedPo = BuildFormUtil.getSavedAddress(orgPO.getC_BPartner_ID(), physicalAddress.getDataType(), false);
-		physicalAddress.getRow().setData(savedPo);
+		physicalAddress.getRow().setDataOneRow(savedPo);
 		physicalAddress.reloadDao();
 		
 		savedPo = BuildFormUtil.getSavedAddress(orgPO.getC_BPartner_ID(), postalAddress.getDataType(), false);
-		postalAddress.getRow().setData(savedPo);
+		postalAddress.getRow().setDataOneRow(savedPo);
 		postalAddress.reloadDao();
 		
 		// load TrainingCommittee

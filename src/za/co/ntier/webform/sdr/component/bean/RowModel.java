@@ -3,6 +3,9 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -29,8 +32,130 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	private static final long serialVersionUID = 3444756682531476154L;
 	public static final int INPUT_STATE_EMPTY = 0;
 	public static final int INPUT_STATE_FULL_REQUIRED = 1;
-	private PO data;
+	
+	/**
+	 * not null, in case have daoManage take po from daoManage first and failback to rowData 
+	 */
+	private RowData rowData;
 
+	public static class RowData{
+		private RowModel rowModel;
+		public RowData(RowModel rowModel) {
+			this.rowModel = rowModel;
+		}
+		
+		private Map<String, PO> mData = new HashMap<>();
+		
+		public PO getDataNewWhenNull(String tableName) {
+			return getData(tableName, true);
+		}
+		
+		public PO getDataNullable(String tableName) {
+			return getData(tableName, false);
+		}
+		
+		public PO getDataNullable(CellModel cellModel) {
+			return getDataNullable(cellModel.getTableName());
+		}
+		
+		public PO getDataNewWhenNull(CellModel cellModel) {
+			return getDataNewWhenNull(cellModel.getTableName());
+		}
+		
+		
+		/**
+		 * @return the data
+		 */
+		private PO getData(String tableName, boolean isCreateNew) {
+			if (mData.get(tableName) == null && isCreateNew) {
+				synchronized (tableName) {
+					if (mData.get(tableName) == null) {
+						PO po = null;
+						if (rowModel.getTableModel().getPoSupplier() != null) {
+							po = rowModel.getTableModel().getPoSupplier().apply(rowModel);
+						}else {
+							po = MTable.get(Env.getCtx(), tableName).getPO(0, null);
+						}
+						
+						mData.put(tableName, po);
+					}
+				}
+			}
+			
+			return mData.get(tableName);
+		}
+		
+		/**
+		 * @param data the data to set
+		 */
+		protected void addData(PO data) {
+			mData.put(data.get_TableName(), data);
+		}
+		
+		/**
+		 * clear old record and add new one
+		 * @param datas
+		 */
+		protected void setDatas(List<PO> datas) {
+			mData.clear();
+			if (datas != null)
+				datas.forEach(po -> addData(po));
+		}
+		
+		public boolean isEmpty () {
+			return mData.isEmpty();
+		}
+		
+		public void deleteData(String trxName) {
+			Iterator<Map.Entry<String, PO>> iterator = mData.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, PO> entry = iterator.next();
+				if (entry.getValue() != null && rowModel.isIgnore(entry.getValue().get_TableName())) {
+					entry.getValue().delete(true, trxName);
+					iterator.remove();
+				}
+					
+			}
+		}
+		
+		public void saveDatas(String trxName) {
+			Iterator<Map.Entry<String, PO>> iterator = mData.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, PO> entry = iterator.next();
+				
+				if(rowModel.isIgnore(entry.getKey()))
+					continue;
+				
+				if (rowModel.getTableModel().getBeforeSave() != null) {
+					rowModel.getTableModel().getBeforeSave().apply(entry.getValue(), rowModel);
+				}
+				
+				entry.getValue().saveEx(trxName);
+				 
+				for (CellModel cellModel : rowModel.values()) {
+					if (cellModel.getTableName().equals(entry.getValue().get_TableName()) && 
+							CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
+						((UploadCellModel)cellModel).attachFile(entry.getValue(), trxName);
+					}
+				}
+				
+				if (rowModel.getTableModel().getAfterSave() != null) {
+					rowModel.getTableModel().getAfterSave().apply(entry.getValue(), rowModel);
+				}
+			}
+		}
+	}
+	
+	public boolean isIgnore (String tableName) {
+		for (ColumnModel colModel : getTableModel().getColumnInfos()) {
+			if (get(colModel).getTableName().equals(tableName) && !get(colModel).isIgnore()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public void resetRow() {
 		for (CellModel cell : values()) {
 			cell.reset(true);
@@ -39,19 +164,6 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		for (CellModel cell : values()) {
 			cell.initDefaultValue();
 		}
-	}
-	/**
-	 * @return the data
-	 */
-	public PO getData() {
-		return data;
-	}
-
-	/**
-	 * @param data the data to set
-	 */
-	public void setData(PO data) {
-		this.data = data;
 	}
 
 	/**
@@ -116,11 +228,11 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	 * @param dao
 	 * @return
 	 */
-	public boolean isMatchingRow(Collection<ColumnModel> keyColumns, PO dao) {
+	public boolean isMatchingRow(Collection<ColumnModel> keyColumns, List<PO> daos) {
 		boolean isMatching = true;
 		for (ColumnModel col : keyColumns) {
 			PresetTitleColumnModel<?> presetTitleCol = (PresetTitleColumnModel<?>) col;
-			isMatching = isMatching && presetTitleCol.getMatchingLoaded().apply(this, dao);
+			isMatching = isMatching && presetTitleCol.getMatchingLoaded().apply(this, daos);
 			if (!isMatching) {
 				return false;
 			}
@@ -139,17 +251,17 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			if (isDaoValue) {
 				PO daoPerCol = null;
 				if (tableModel.getDaoManage() != null) {
-					daoPerCol = tableModel.getDaoManage().getDao(cellModel.getColModel().getTableName());
+					daoPerCol = tableModel.getDaoManage().getDao(cellModel.getTableName());
 				}
 				
 				if (daoPerCol == null)
-					daoPerCol = getData();
+					daoPerCol = getRowData().getDataNullable(cellModel.getTableName());
 				
 				if (daoPerCol != null) {
 					cellModel.setValueFromDao(daoPerCol);
 				}else {
 					if (Log.isInfoEnabled())
-						log.info(String.format("not yet dao for table %s to set to properties %s", cellModel.getColModel().getTableName(), cellModel.getColModel().getDaoPropertyName()));
+						log.info(String.format("not yet dao for table %s to set to properties %s", cellModel.getTableName(), cellModel.getColModel().getDaoPropertyName()));
 				}
 			}
 		}
@@ -162,10 +274,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	InputCheckResult rowInputCheckResult;
 	
 	protected boolean ignoreInput() {
-		boolean ignore = (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && data != null);
+		boolean ignore = (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && getRowData().isEmpty());
 		
 		if (!ignore)
-			ignore = (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && data == null);
+			ignore = (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && getRowData().isEmpty());
 		
 		return ignore;
 			
@@ -180,29 +292,33 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		
 		// empty value then delete current data
 		// improve to handle case po manage
-		if (rowInputCheckResult.getEmpty() && data != null) {
-			data.deleteEx(true, trxName);
-			data = null;
+		if (rowInputCheckResult.getEmpty()) {
+			getRowData().deleteData(trxName);
 			return;
 		}
 		
 		// empty (or default) value and not touch mandatory (data isn't saved
-		if (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && data == null) 
+		if (rowInputCheckResult.getNotChange() && rowInputCheckResult.nonMandatoryOrNotFullFill() && getRowData().isEmpty()) 
 			return;
 		
 		// touch mandatory and not yet full fill mandatory
 		if (rowInputCheckResult.haveMandatoryAndNotFullFill()) {
-			throw new AdempiereException("Madatory not yet full fill");
+			throw new AdempiereException("Mandatory not yet full fill");
 		}
 				
 		PO daoPerCol = null;
 		for (CellModel cellModel : values()) {
+			if (StringUtils.isBlank(cellModel.getColModel().getDaoPropertyName()) 
+					|| StringUtils.isBlank(cellModel.getTableName()) 
+					|| isIgnore(cellModel.getTableName()))
+				continue;
+			
 			if (StringUtils.isNotBlank(cellModel.getColModel().getDaoPropertyName())) {
 				daoPerCol = getDaoAllway(cellModel);
 				cellModel.saveUIToDao(daoPerCol);
 			}
 			
-			if (CellModel.BTUPLOAD_CELL == cellModel.getCellType() && cellModel.isIgnore()) {
+			if (CellModel.BTUPLOAD_CELL == cellModel.getCellType() && cellModel.isIgnore()) {// remove data when button hidden
 				((UploadCellModel)cellModel).cmdRemoveAttachment();// mark remove attachment of this button
 			}
 			
@@ -222,15 +338,15 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	 */
 	public PO getCurrentDao (CellModel cellModel) {
 		PO currentDao = null;
-		currentDao = data;
+		if (tableModel.getDaoManage() != null) {
+			currentDao = tableModel.getDaoManage().getDao(cellModel.getTableName());
+		}
+		
 		if (currentDao != null) {
 			return currentDao;
 		}
 		
-		if (tableModel.getDaoManage() != null) {
-			currentDao = tableModel.getDaoManage().getDao(cellModel.getColModel().getTableName());
-		}
-		
+		currentDao = getRowData().getDataNullable(cellModel);
 		if (currentDao != null) {
 			return currentDao;
 		}
@@ -240,7 +356,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	
 	private PO getDaoFromDaoManage(CellModel cellModel) {
 		if (tableModel.getDaoManage() != null)
-			return tableModel.getDaoManage().getDaoForSave(cellModel.getColModel().getTableName());
+			return tableModel.getDaoManage().getDaoForSave(cellModel.getTableName());
 		
 		return null;
 	}
@@ -251,22 +367,12 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		daoPerCol =  getDaoFromDaoManage(cellModel);
 		
 		if (daoPerCol == null) {
-			daoPerCol = getDirectDao();
+			daoPerCol = getRowData().getDataNewWhenNull(cellModel);
 		}
 		
 		return daoPerCol;
 	}
 	
-	private PO getDirectDao() {
-		if (data == null && tableModel.getPoSupplier() == null) {
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZTableModelMissingPO") + ":" + tableModel.getTableTitle() + ":" + tableModel.getSclass());
-		}
-		
-		if (data == null)
-			data = tableModel.getPoSupplier().apply(this);
-		
-		return data;
-	}
 	/**
 	 * @param for case use dao manage
 	 * @param trxName
@@ -306,11 +412,9 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	
 	@Override
 	public void saveToDb(String trxName) {
-		
 		if (tableModel.getDaoManage() == null) {
-			if(data != null && !getTableModel().isUsed()) {
-				data.deleteEx(true);//TODO: seem it's done on syncUIToDao
-				setData(null);
+			if(!getRowData().isEmpty() && !getTableModel().isUsed()) {
+				getRowData().deleteData(trxName);
 				resetRow();
 				return;
 			}
@@ -318,24 +422,34 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			if (ignoreInput())
 				return;
 			
-			PO daoToSave = getDirectDao();
-			
-			if (tableModel.getBeforeSave() != null) {
-				tableModel.getBeforeSave().apply(daoToSave, this);
-			}
-			
-			daoToSave.saveEx(trxName);
-			
-			for (CellModel cellModel : values()) {
-				if (CellModel.BTUPLOAD_CELL == cellModel.getCellType()) {
-					((UploadCellModel)cellModel).attachFile(daoToSave, trxName);
-				}
-			}
-			
-			if (tableModel.getAfterSave() != null) {
-				tableModel.getAfterSave().apply(daoToSave, this);
-			}
+			getRowData().saveDatas(trxName);
 		}
 		
+	}
+
+	public RowData getRowData() {
+		return rowData;
+	}
+
+	public void setRowData(RowData rowData) {
+		this.rowData = rowData;
+	}
+
+	
+	public <T extends PO> T getDataOneRow(Class<T> zclass, String tableName) {
+		PO dao = null;
+		if (tableModel.getDaoManage() != null) {
+			dao = tableModel.getDaoManage().getDao(tableName);
+		}
+		
+		if (dao == null) {
+			dao = getRowData().getDataNullable(tableName);
+		}
+		
+		return zclass.cast(dao);
+	}
+	
+	public void setDataOneRow(PO dao) {
+		getRowData().addData(dao);
 	}
 }
