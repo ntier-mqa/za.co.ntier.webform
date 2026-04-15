@@ -69,7 +69,7 @@ BEGIN
 
 END $$;
 
+ 
 -- run one time
 ALTER TABLE ZZSdf
 DROP COLUMN ZZ_LI_Disability_ID;
- 

@@ -213,7 +213,7 @@ public class TableModel implements ISaveForm {
 	private Consumer<TableModel> updateModelHandle;
 	
 	public static <T extends TableModel> T getTableBean(Class<T> clazz, List<ColumnModel> columnInfos,
-			boolean isShowTotal){
+			boolean isShowTotal, String tableName){
 
 		T tableModel;
 		try {
@@ -245,6 +245,8 @@ public class TableModel implements ISaveForm {
 
 			tableModel.setTotalRow(totalRow);
 		}
+		
+		tableModel.setTableName(tableName);
 		return tableModel;
 	}
 
@@ -748,10 +750,12 @@ public class TableModel implements ISaveForm {
 	public void init(
 			List<PO> savedData, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
 		
-		List<List<PO>> savedDatas = null;
+		List<List<PO>> savedDatas = new ArrayList<>();
 		
 		if (savedData != null && savedData.size() > 0) {
-			savedDatas = List.of(savedData);
+			savedData.forEach(po -> {
+				savedDatas.add(List.of(po));
+			});
 		}
 		
 		initMultiPo(savedDatas, rowTitles, keyColumns);

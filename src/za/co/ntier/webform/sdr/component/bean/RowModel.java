@@ -110,7 +110,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			Iterator<Map.Entry<String, PO>> iterator = mData.entrySet().iterator();
 			while (iterator.hasNext()) {
 				Map.Entry<String, PO> entry = iterator.next();
-				if (entry.getValue() != null && rowModel.isIgnore(entry.getValue().get_TableName())) {
+				if (entry.getValue() != null && !rowModel.isIgnore(entry.getValue().get_TableName())) {
 					entry.getValue().delete(true, trxName);
 					iterator.remove();
 				}

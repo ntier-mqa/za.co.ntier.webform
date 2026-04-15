@@ -117,7 +117,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 				I_C_BPartner.COLUMNNAME_Name).setReadonly(true);
 		cols.add(orgNameCol);
 
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false, I_C_BPartner.Table_Name);
 		namesBean.setSclass("orgSearch");
 
 		namesBean.init(null, null, null);
@@ -190,7 +190,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 			X_ZZSdfOrganisation sdfOrg = new X_ZZSdfOrganisation(Env.getCtx(), sdfOrganisationID.intValue(), null);
 			saveds = List.of(sdfOrg);
 		}
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false, I_ZZSdfOrganisation.Table_Name);
 		namesBean.setSclass("orglink");
 
 		namesBean.init(saveds);
@@ -287,7 +287,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 				}).setzClass(ValueNamePair.class).required();
 		cols.add(adminConfirmCol);
 
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false, I_ZZBankingDetails.Table_Name);
 		namesBean.setSclass("bankDetails");
 
 		namesBean.init(null, null);

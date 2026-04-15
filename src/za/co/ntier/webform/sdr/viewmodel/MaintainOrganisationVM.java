@@ -286,7 +286,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			
 			return locationx;
 		});*/
-		TableModel orgContactDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel orgContactDetailBean = TableModel.getTableBean(TableModel.class, cols, false, I_AD_User.Table_Name);
 		orgContactDetailBean.setSclass("srd-org-contact");
 		
 		orgContactDetailBean.setPoSupplier(rowModel -> {
@@ -317,8 +317,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getOrganisationRegistrationNumberType()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(orgRegistrationNumTypeCol);
 
 		ColumnModel sdlNumTypeCol = ListCellModel.getListColumnModel(
@@ -327,42 +326,37 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getLevyNumberType()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(sdlNumTypeCol);
 		
 		ColumnModel registrationNumCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZOrgReferenceNo")
 				, I_C_BPartner.COLUMNNAME_ReferenceNo
-			).setReadonly(true)
-			.setTableName(I_C_BPartner.Table_Name);
+			).setReadonly(true);
 		cols.add(registrationNumCol);
 		
 		ColumnModel sarsNumCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZPayeNumber")
 				, I_C_BPartner.COLUMNNAME_ZZSarsNumber
-			).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).required();
 		cols.add(sarsNumCol);
 		
 		ColumnModel numOfEmpCol = CellModel.getColModelForPositiveNumber(
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZ_Number_Of_Employees)
 				, I_C_BPartner.COLUMNNAME_ZZ_Number_Of_Employees
-			).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).required();
 		cols.add(numOfEmpCol);
 		
 		ColumnModel numOfEmpProfileCol = CellModel.getColModelForPositiveNumber(
 				MasterUtil.getDescOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZNumberOfEmployeesProfile)
 				, I_C_BPartner.COLUMNNAME_ZZNumberOfEmployeesProfile
-			).setTableName(I_C_BPartner.Table_Name);
+			);
 		cols.add(numOfEmpProfileCol);
 				
 		ColumnModel terminatedEmpCol = CellModel.getColModelForPositiveNumber(
 				MasterUtil.getNameOfColTranslated(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_ZZTerminatedEmployees)
 				, I_C_BPartner.COLUMNNAME_ZZTerminatedEmployees
-			).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).required();
 		cols.add(terminatedEmpCol);
 		
 		ColumnModel sicCodeCol = ListCellModel.getListColumnModel(
@@ -371,8 +365,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getSicCode()
 				, title -> {return title.getValue() + " - " + title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(sicCodeCol);
 		
 		ColumnModel subSectorCol = ListCellModel.getListColumnModel(
@@ -381,8 +374,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getSubSector()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(subSectorCol);
 		
 		
@@ -397,7 +389,6 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				CellModel.RADIO_CELL
 				).setzClass(ValueNamePair.class);
 		unionisedCol.required();
-		unionisedCol.setTableName(I_C_BPartner.Table_Name);
 		
 		cols.add(unionisedCol);
 		
@@ -408,8 +399,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getOrganisationType()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(orgTypeCol);
 		
 		orgTypeCol.setEventHandle((event, cellModel) -> {
@@ -424,11 +414,10 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getChamberCode()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_C_BPartner.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(chamberCol);
 		
-		TableModel orgGeneralDetailBean = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel orgGeneralDetailBean = TableModel.getTableBean(TableModel.class, cols, false, I_C_BPartner.Table_Name);
 		orgGeneralDetailBean.setSclass("srd-org-general");
 		
 		orgGeneralDetailBean.setDaoManage(orgDaoManage);
@@ -497,8 +486,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		ColumnModel childSdlNoCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No)
 				, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_SDL_No
-			).setMandatory(true)
-			.setTableName(I_ZZOrganisationLinkage.Table_Name);
+			).setMandatory(true);
 		
 		cols.add(childSdlNoCol);
 		
@@ -524,7 +512,6 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				CellModel.RADIO_CELL
 				).setzClass(ValueNamePair.class);
 		parentUploadCol.required();
-		parentUploadCol.setTableName(I_ZZOrganisationLinkage.Table_Name);
 		
 		cols.add(parentUploadCol);
 		
@@ -601,7 +588,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			
 		});
 		
-		TableModel tmChildOrgModel = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmChildOrgModel = TableModel.getTableBean(TableModel.class, cols, false, I_ZZOrganisationLinkage.Table_Name);
 		tmChildOrgModel.setPoSupplier(rowModel -> {
 			X_ZZOrganisationLinkage childOrgLink = new X_ZZOrganisationLinkage(Env.getCtx(), 0, null);
 			
@@ -640,26 +627,22 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getLkpTitleLists()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class)
-			.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+			).setzClass(ValueNamePair.class);
 		cols.add(greettingCol);
 		
 		ColumnModel firstNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZFirstName)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZFirstName
-				)
-				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+				);
 		cols.add(firstNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZSurname)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZSurname
-				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+				);
 		cols.add(surnameCol);
 		
-		ColumnModel idNoCol = IDCellModel.getIDColumnModel()
-				
-				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+		ColumnModel idNoCol = IDCellModel.getIDColumnModel();
 		cols.add(idNoCol);
 		
 		ColumnModel designationCol = ListCellModel.getListColumnModel(
@@ -668,44 +651,40 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, MasterUtil.getDesignation()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).
-			
-			setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+			).setzClass(ValueNamePair.class);
 		cols.add(designationCol);
 		
 		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2
-				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+				);
 		cols.add(telephoneNumberCol);
 
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone
-				)
-				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+				);
 		cols.add(cellPhoneNumberCol);
 
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_EMail)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_EMail
-				)
-				.setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+				);
 		cols.add(emailCol);
 		
 		ColumnModel nameOfUnionCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZNameOfUnion)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZNameOfUnion
-				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+				);
 		cols.add(nameOfUnionCol);
 		
 		ColumnModel positionInUnionCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZPositionInUnion)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZPositionInUnion
-				).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
+				);
 		cols.add(positionInUnionCol);
 		
-		tmTrainingCommittee = TableModel.getTableBean(TableModel.class, cols, false);
+		tmTrainingCommittee = TableModel.getTableBean(TableModel.class, cols, false, I_ZZOrgTrainingCommittee.Table_Name);
 		tmTrainingCommittee.setPoSupplier(rowModel -> {
 			X_ZZOrgTrainingCommittee orgTrainingCommittee = new X_ZZOrgTrainingCommittee(Env.getCtx(), 0, null);
 			
@@ -773,20 +752,18 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		ColumnModel legalNameCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZLegalName")
 				, I_C_BPartner.COLUMNNAME_Name
-				).setReadonly(true)
-				.setTableName(I_C_BPartner.Table_Name);
+				).setReadonly(true);
 		cols.add(legalNameCol);
 		
 		ColumnModel tradeNameCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZTradeName")
 				, I_C_BPartner.COLUMNNAME_Name2
-				).setReadonly(true)
-				.setTableName(I_C_BPartner.Table_Name);
+				).setReadonly(true);
 				;
 		cols.add(tradeNameCol);
 
 		
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false, I_C_BPartner.Table_Name);
 		namesBean.setDaoManage(orgDaoManage);
 		namesBean.init();
 		

@@ -139,7 +139,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				I_C_BPartner.COLUMNNAME_Name).setReadonly(true);
 		cols.add(orgNameCol);
 
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false, null);
 		namesBean.setSclass("orgSearch");
 
 		namesBean.init();
@@ -251,7 +251,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			.setShowTitle(false);
 		cols.add(btBankDetailCol);
 
-		TableModel tmSdrOrgLink = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmSdrOrgLink = TableModel.getTableBean(TableModel.class, cols, false, I_ZZSdfOrganisation.Table_Name);
 		tmSdrOrgLink.setSclass("orglink");
 
 		tmSdrOrgLink.setPoSupplier(t -> {
@@ -378,7 +378,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 
 		
 		
-		TableModel tmBank = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmBank = TableModel.getTableBean(TableModel.class, cols, false, I_ZZBankingDetails.Table_Name);
 		tmBank.setSclass("bankDetails");
 
 		tmBank.setPoSupplier(t -> {			

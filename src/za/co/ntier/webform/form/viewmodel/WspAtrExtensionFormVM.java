@@ -267,32 +267,27 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	// Helper methods
 	private ColumnModel createReadOnlyColumn(String columnName)
 	{
-		return CellModel.getColModelForText(getTranslatedColumnName(columnName), columnName).setReadonly(true)
-				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
+		return CellModel.getColModelForText(getTranslatedColumnName(columnName), columnName).setReadonly(true);
 	}
 	
 	private ColumnModel createReadOnlyNumberColumn(String columnName)
 	{
-		return CellModel.getColModelForPositiveNumber(getTranslatedColumnName(columnName), columnName).setReadonly(true)
-				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
+		return CellModel.getColModelForPositiveNumber(getTranslatedColumnName(columnName), columnName).setReadonly(true);
 	}
 
 	private ColumnModel createRequiredColumn(String columnName)
 	{
-		return CellModel.getColModelForText(getTranslatedColumnName(columnName), columnName).required()
-				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
+		return CellModel.getColModelForText(getTranslatedColumnName(columnName), columnName).required();
 	}
 
 	private ColumnModel createRequiredPhoneColumn(String columnName)
 	{
-		return CellModel.getColModelForPhone(getTranslatedColumnName(columnName), columnName).required()
-				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
+		return CellModel.getColModelForPhone(getTranslatedColumnName(columnName), columnName).required();
 	}
 
 	private ColumnModel createRequiredEmailColumn(String columnName)
 	{
-		return CellModel.getColModelForEmail(getTranslatedColumnName(columnName), columnName).required()
-				.setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
+		return CellModel.getColModelForEmail(getTranslatedColumnName(columnName), columnName).required();
 	}
 
 	private String getTranslatedColumnName(String columnName)
@@ -302,7 +297,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 	private TableModel createTableModel(List<ColumnModel> cols, DaoManage formManage, String cssClass)
 	{
-		TableModel tableModel = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tableModel = TableModel.getTableBean(TableModel.class, cols, false, I_ZZ_WSP_ATR_EXTENSION.Table_Name);
 		tableModel.setSclass(cssClass);
 		tableModel.setDaoManage(formManage);
 		tableModel.init(null, null);

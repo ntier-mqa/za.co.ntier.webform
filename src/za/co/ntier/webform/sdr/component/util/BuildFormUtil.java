@@ -113,8 +113,7 @@ public class BuildFormUtil {
 			cols.add(emailCol);
 		}
 
-		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false);
-		addressFormBean.setTableName(I_ZZ_FormContact.Table_Name);
+		TableModel addressFormBean = TableModel.getTableBean(TableModel.class, cols, false, I_ZZ_FormContact.Table_Name);
 		addressFormBean.setSubSectionHeader(getAddressTitle(programType, addressType));
 		addressFormBean.setDataType(addressType.toString());
 		if (copyFrom != null) {
@@ -260,7 +259,7 @@ public class BuildFormUtil {
 			colsAddress.add(dupplicateCol);
 		}
 		
-		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false);
+		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false, I_ZZPersonAddress.Table_Name);
 		addressDetailBean.setSclass(addressType + " srd-address");
 	
 		addressDetailBean.setSubSectionHeader(subHeader);

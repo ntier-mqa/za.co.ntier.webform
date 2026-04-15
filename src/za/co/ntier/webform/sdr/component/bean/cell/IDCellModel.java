@@ -27,7 +27,6 @@ public class IDCellModel extends CellModel {
 	public static ColumnModel getIDColumnModel() {
 		String title = MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No);
 		ColumnModel col = CellModel.getColModelForCell(CellModelInfo.of(ColumnModel.class, IDCellModel.class, null), CellModelParams.of(title, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No, null));
-		col.setTableName(I_AD_User.Table_Name);
 		return col;
 	}
 	

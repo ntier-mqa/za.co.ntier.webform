@@ -46,6 +46,8 @@ import org.zkoss.zk.ui.event.Events;
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
+import za.co.ntier.api.model.I_ZZLinkAssessorQualification;
+import za.co.ntier.api.model.I_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZQualification;
 import za.co.ntier.api.model.I_ZZSkillsProgramme;
@@ -289,7 +291,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		cols.add(alternateIDTypeCol);
 		
 		idNoCol = IDCellModel.getIDColumnModel()
-				.required();
+				.required().setTableName(I_AD_User.Table_Name);
 		cols.add(idNoCol);
 
 		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel(
@@ -305,8 +307,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getLkpGenders()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(genderCol);
 
 		ColumnModel equityCol = ListCellModel.getListColumnModel(
@@ -315,8 +316,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getLkpEquity()
 				, title -> {return title.toString();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(equityCol);
 
 		ColumnModel homeLanguageCol = ListCellModel.getListColumnModel(
@@ -327,8 +327,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getZZ_LI_HomeLanguage_ID();}
 			).setzClass(X_ZZ_LI_HomeLanguage.class)
 			.setUseForID(true)
-			.required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			.required();
 		cols.add(homeLanguageCol);
 		
 		ColumnModel nationalityCol = ListCellModel.getListColumnModel(
@@ -339,8 +338,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getZZ_Nationality_ID();}
 			).setzClass(X_ZZ_Nationality.class)
 			.setUseForID(true)
-			.required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			.required();
 		cols.add(nationalityCol);
 
 		ColumnModel citizenResidentialStatusCol = ListCellModel.getListColumnModel(
@@ -351,8 +349,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getZZ_LI_CitizenResidentialStatus_ID();}
 			).setzClass(X_ZZ_LI_CitizenResidentialStatus.class)
 			.setUseForID(true)
-			.required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			.required();
 		cols.add(citizenResidentialStatusCol);
 
 		ColumnModel socioEconomicStatusCol = ListCellModel.getListColumnModel(
@@ -363,11 +360,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getZZ_LI_SocioEconomicStatus_ID();}
 			).setzClass(X_ZZ_LI_SocioEconomicStatus.class)
 			.setUseForID(true)
-			.required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			.required();
 		cols.add(socioEconomicStatusCol);
 
-		TableModel tmGeneralDetail = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmGeneralDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZAssessorPerson.Table_Name);
 		tmGeneralDetail.setSclass("srd-general srd-general-assessor");
 		
 		tmGeneralDetail.setDaoManage(daoManage);
@@ -392,34 +388,29 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getLkpTitleLists()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(greettingCol);
 		
 		firstNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZFirstName)
 				, I_ZZAssessorPerson.COLUMNNAME_ZZFirstName
-				).required()
-				.setTableName(I_ZZAssessorPerson.Table_Name)
-				;
+				).required();
 			
 		cols.add(firstNameCol);
 		
 		ColumnModel midNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZMiddleName)
 				, I_ZZAssessorPerson.COLUMNNAME_ZZMiddleName
-				).setTableName(I_ZZAssessorPerson.Table_Name);
-				;
+				);
 		cols.add(midNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZSurname)
 				, I_ZZAssessorPerson.COLUMNNAME_ZZSurname
-				).setTableName(I_ZZAssessorPerson.Table_Name)
-				.required();
+				).required();
 		cols.add(surnameCol);
 		
-		TableModel tmNames = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmNames = TableModel.getTableBean(TableModel.class, cols, false, I_ZZAssessorPerson.Table_Name);
 		tmNames.setSclass("srd-name srd-name-assessor");
 		tmNames.setDaoManage(daoManage);
 		tmNames.init();
@@ -433,24 +424,22 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone)
 				, I_AD_User.COLUMNNAME_Phone
-				).required()
-				.setTableName(I_AD_User.Table_Name);
+				).required();
 		cols.add(cellPhoneNumberCol);
 		
 		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
 				, I_AD_User.COLUMNNAME_Phone2
-				).setTableName(I_AD_User.Table_Name);
+				);
 		cols.add(telephoneNumberCol);
 
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
-				).required()
-				.setTableName(I_AD_User.Table_Name);
+				).required();
 		cols.add(emailCol);
 
-		TableModel tmContactDetail = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmContactDetail = TableModel.getTableBean(TableModel.class, cols, false, I_AD_User.Table_Name);
 		tmContactDetail.setSclass("srd-contact srd-contact-assessor");
 		tmContactDetail.setDaoManage(daoManage);
 		tmContactDetail.init();
@@ -478,8 +467,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class)
 				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-				.required()
-				.setTableName(I_ZZAssessorPerson.Table_Name);
+				.required();
 		cols.add(seeingCol);
 		
 		ColumnModel hearingCol = ListCellModel.getListColumnModel(
@@ -490,8 +478,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class)
 				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-				.required()
-				.setTableName(I_ZZAssessorPerson.Table_Name);
+				.required();
 		cols.add(hearingCol);
 		
 		ColumnModel communicatingCol = ListCellModel.getListColumnModel(
@@ -502,8 +489,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class)
 				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-				.required()
-				.setTableName(I_ZZAssessorPerson.Table_Name);
+				.required();
 		cols.add(communicatingCol);
 		
 		ColumnModel walkingCol = ListCellModel.getListColumnModel(
@@ -514,8 +500,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class)
 				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-				.required()
-				.setTableName(I_ZZAssessorPerson.Table_Name);
+				.required();
 		cols.add(walkingCol);
 		
 		ColumnModel rememberingCol = ListCellModel.getListColumnModel(
@@ -526,8 +511,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class)
 				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-				.required()
-				.setTableName(I_ZZAssessorPerson.Table_Name);
+				.required();
 		cols.add(rememberingCol);
 		
 		ColumnModel selfcareCol = ListCellModel.getListColumnModel(
@@ -538,11 +522,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class)
 				.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-				.required()
-				.setTableName(I_ZZAssessorPerson.Table_Name);
+				.required();
 		cols.add(selfcareCol);
 		
-		TableModel tmHealthFunctions = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmHealthFunctions = TableModel.getTableBean(TableModel.class, cols, false, I_ZZAssessorPerson.Table_Name);
 		tmHealthFunctions.setSclass("srd-health-function srd-health-function-assessor");
 		tmHealthFunctions.setDaoManage(daoManage);
 		tmHealthFunctions.init();
@@ -559,9 +542,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), 
 				I_ZZAssessorPerson.COLUMNNAME_ZZLkpSchoolEmis_ID, 
 				CellModel.SEARCH_CELL);
-		lastSchoolEmisCol
-			.setTableName(I_ZZAssessorPerson.Table_Name)
-			.required();
+		lastSchoolEmisCol.required();
 		
 		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
@@ -606,17 +587,14 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		ColumnModel lastSchoolYearCol = CellModel.getColModelForPositiveNumber(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZLastSchoolYear), 
 				I_ZZAssessorPerson.COLUMNNAME_ZZLastSchoolYear
-				).required()
-				.setTableName(I_ZZAssessorPerson.Table_Name);
+				).required();
 		cols.add(lastSchoolYearCol);
 		
 		ValueAdaptColumnModel areaCodeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID),
 				I_ZZAssessorPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID, 
 				CellModel.SEARCH_CELL);
-		areaCodeCol
-			.setTableName(I_ZZAssessorPerson.Table_Name)
-			.required();
+		areaCodeCol.required();
 		
 		areaCodeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
@@ -663,19 +641,18 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				, MasterUtil.getPopiActStatus()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required()
-			.setTableName(I_ZZAssessorPerson.Table_Name);
+			).setzClass(ValueNamePair.class).required();
 		cols.add(popiActStatusCol);
 		
 		ColumnModel popiActStatusDateCol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZPopiActStatusDate)
 				, I_ZZAssessorPerson.COLUMNNAME_ZZPopiActStatusDate
 				).required()
-				.setTableName(I_ZZAssessorPerson.Table_Name);
+				;
 				//.setDefaultValue(Timestamp.valueOf(LocalDateTime.now()));
 		cols.add(popiActStatusDateCol);
 		
-		TableModel tmEducationDetail = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmEducationDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZAssessorPerson.Table_Name);
 		tmEducationDetail.setSclass("srd-education-detail srd-education-detail-assessor");
 		tmEducationDetail.setDaoManage(daoManage);
 		tmEducationDetail.init();
@@ -696,7 +673,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		chooseQualificationCol.setShowTitle(false);
 		cols.add(chooseQualificationCol);
 		
-		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false, null);
 		tmQualificationComp.setSclass("srd-qualification-scope-comp srd-qualification-scope-comp-assessor");
 		tmQualificationComp.init();
 		
@@ -736,7 +713,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			.setReadonly(true);
 		cols.add(registrationEndDateCol);
 					
-		TableModel tmQualificationLink = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmQualificationLink = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorQualification.Table_Name);
 		tmQualificationLink.setViewModel(ViewType.VIEW_GRID);
 		tmQualificationLink.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
 		
@@ -780,7 +757,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		chooseQualificationCol.setShowTitle(false);
 		cols.add(chooseQualificationCol);
 		
-		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false, null);
 		tmQualificationComp.setSclass("srd-skillsprogramme-scope-comp srd-skillsprogramme-scope-comp-assessor");
 		tmQualificationComp.init();
 		
@@ -820,7 +797,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			.setReadonly(true);
 		cols.add(registrationEndDateCol);
 					
-		TableModel tmSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorSkillsProgramme.Table_Name);
 		tmSkillsProgramme.setViewModel(ViewType.VIEW_GRID);
 		tmSkillsProgramme.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
 		

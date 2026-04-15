@@ -25,6 +25,7 @@ import org.zkoss.zk.ui.event.InputEvent;
 import com.google.common.base.Objects;
 
 import za.co.ntier.api.model.I_ZZDocumentUpload;
+import za.co.ntier.api.model.I_ZZDocumentUploadFile;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.I_ZZ_EDP_Application;
@@ -133,9 +134,8 @@ public class DgaVM extends BaseAppVM{
 		NavTabPanel uploadDocInfoTab = new NavTabPanel(mainTab);
 		uploadDocInfoTab.setTabTitle("Upload Document");
 		
-		TableModel tmUploadDocInfo = TableModel.getTableBean(TableModel.class, cols, false);
+		TableModel tmUploadDocInfo = TableModel.getTableBean(TableModel.class, cols, false, I_ZZDocumentUploadFile.Table_Name);
 		tmUploadDocInfo.setViewModel(TableModel.ViewType.VIEW_GRID);
-		tmUploadDocInfo.setColumnInfos(cols);
 		tmUploadDocInfo.setSclass("uploadDocInfo");
 		tmUploadDocInfo.setPoSupplier(rowModel -> {
 			X_ZZDocumentUploadFile po = new X_ZZDocumentUploadFile(Env.getCtx(), 0, null);
@@ -230,7 +230,6 @@ public class DgaVM extends BaseAppVM{
 				"Name and Surname"
 				, I_ZZ_Application_Form.COLUMNNAME_UserName
 				).required()
-				.setTableName(I_ZZ_Application_Form.Table_Name)
 				.setDefaultValue(
 						MUser.getNameOfUser(Env.getAD_User_ID(Env.getCtx())));
 		cols.add(userNameCol);
@@ -240,7 +239,6 @@ public class DgaVM extends BaseAppVM{
 				"Date"
 				, I_ZZ_Application_Form.COLUMNNAME_DateDoc
 				).setReadonly(true)
-				.setTableName(I_ZZ_Application_Form.Table_Name)
 				.setDefaultValue(
 						Timestamp.valueOf(LocalDateTime.now()));
 		cols.add(docDateCol);
@@ -256,8 +254,7 @@ public class DgaVM extends BaseAppVM{
 		acknowledgeCol.setEventHandle((event, cellModel) -> {});;
 		cols.add(acknowledgeCol);
 
-		TableModel tmAppName = TableModel.getTableBean(TableModel.class, cols, false);
-		tmAppName.setColumnInfos(cols);
+		TableModel tmAppName = TableModel.getTableBean(TableModel.class, cols, false, I_ZZ_Application_Form.Table_Name);
 		tmAppName.setSclass("dgaAppInfo");
 		tmAppName.setDaoManage(dgaDaoManage);
 		tmAppName.init();
@@ -277,52 +274,45 @@ public class DgaVM extends BaseAppVM{
 				//"Skills Development Levy (SDL) Number (Paying or Exempted)"
 				null
 				, I_ZZ_Application_Form.COLUMNNAME_ZZ_SDL_No
-				).required()
-				.setTableName(I_ZZ_Application_Form.Table_Name);
+				).required();
 				
 		cols.add(sdlNumberCol);
 		
 		ColumnModel orgNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_OrgName)
 				, I_ZZ_Application_Form.COLUMNNAME_OrgName
-				).required()
-				.setTableName(I_ZZ_Application_Form.Table_Name);
+				).required();
 				
 		cols.add(orgNameCol);
 		
 		ColumnModel sideSdlNoCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_ZZ_Side_SDL_No) + " (if applicable)"
 				, I_ZZ_Application_Form.COLUMNNAME_ZZ_Side_SDL_No
-				).required()
-				.setTableName(I_ZZ_Application_Form.Table_Name);
+				).required();
 		
 		cols.add(sideSdlNoCol);
 		
 		ColumnModel registrationNoCol = CellModel.getColModelForText(
 				"Registration No"
 				, I_ZZ_Application_Form.COLUMNNAME_ReferenceNo
-				).required()
-				.setTableName(I_ZZ_Application_Form.Table_Name);
+				).required();
 		
 		cols.add(registrationNoCol);
 		
 		ColumnModel vatCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZ_Application_Form.Table_Name, I_ZZ_Application_Form.COLUMNNAME_ZZ_VAT)
 				, I_ZZ_Application_Form.COLUMNNAME_ZZ_VAT
-				).required()
-				.setTableName(I_ZZ_Application_Form.Table_Name);
+				).required();
 		
 		cols.add(vatCol);
 		
 		ColumnModel vatUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "VAT Exempt Cert.")
-				.setShowTitle(false)
-				.setTableName(I_ZZ_Application_Form.Table_Name);
+				.setShowTitle(false);
 		
 		cols.add(vatUploadCol);
 		
-		tmOrgInfo = TableModel.getTableBean(TableModel.class, cols, false);
+		tmOrgInfo = TableModel.getTableBean(TableModel.class, cols, false, I_ZZ_Application_Form.Table_Name);
 		tmOrgInfo.setSectionHeader("ORGANISATION INFORMATION");
-		tmOrgInfo.setColumnInfos(cols);
 		tmOrgInfo.setSclass("dgaOrgInfo");
 		tmOrgInfo.setDaoManage(dgaDaoManage);
 		tmOrgInfo.setSaveApp(this);
@@ -372,8 +362,7 @@ public class DgaVM extends BaseAppVM{
 			wspCol.setMandatory(true);
 			otherOrgInfoCols.add(wspCol);
 			
-			tmSizeOrgInfo = TableModel.getTableBean(TableModel.class, otherOrgInfoCols, false);
-			tmSizeOrgInfo.setTableName(I_ZZ_Application_Form.Table_Name);
+			tmSizeOrgInfo = TableModel.getTableBean(TableModel.class, otherOrgInfoCols, false, I_ZZ_Application_Form.Table_Name);
 			tmSizeOrgInfo.setSubSectionHeader("OTHER ORGANISATION INFO");
 			tmSizeOrgInfo.setTableTitle("(please select the correct option pertaining to the company size)");
 			tmSizeOrgInfo.setSclass("orgSize");
@@ -445,22 +434,19 @@ public class DgaVM extends BaseAppVM{
 		ColumnModel firstNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName)
 				, I_ZZ_EDP_Application.COLUMNNAME_Name
-				).required()
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
+				).required();
 		
 		cols.add(firstNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname)
 				, I_ZZ_EDP_Application.COLUMNNAME_Surname
-				).required()
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
+				).required();
 		
 		cols.add(surnameCol);
 		
 		ColumnModel idPasportCol = IDCellModel.getIDColumnModel()
-				.required()
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
+				.required();
 		
 		cols.add(idPasportCol);
 		
@@ -550,32 +536,28 @@ public class DgaVM extends BaseAppVM{
 		ColumnModel contactNumCol = CellModel.getColModelForPhone(
 				"Tel Number"
 				, I_ZZ_EDP_Application.COLUMNNAME_Cellphonenumber
-				).required()
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
+				).required();
 		
 		cols.add(contactNumCol);
 		
 		ColumnModel altContactNumCol = CellModel.getColModelForPhone(
 				"Alternative Number"
 				, I_ZZ_EDP_Application.COLUMNNAME_AltCellphonenumber
-				).required()
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
+				).required();
 		
 		cols.add(altContactNumCol);
 		
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_ZZ_EDP_Application.Table_Name, I_ZZ_EDP_Application.COLUMNNAME_EMail)
 				, I_ZZ_EDP_Application.COLUMNNAME_EMail
-				).required()
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
+				).required();
 		
 		cols.add(emailCol);
 		
 		ColumnModel positionCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZ_EDP_Application.Table_Name, I_ZZ_EDP_Application.COLUMNNAME_Position)
 				, I_ZZ_EDP_Application.COLUMNNAME_Position
-				).required()
-				.setTableName(I_ZZ_EDP_Application.Table_Name);
+				).required();
 		
 		cols.add(positionCol);
 		
@@ -589,9 +571,7 @@ public class DgaVM extends BaseAppVM{
 					)
 					.setzClass(X_ZZ_LI_HighestEducation.class)
 					.setUseForID(true)
-					.required()
-					.setTableName(I_ZZ_EDP_Application.Table_Name)
-					;
+					.required();
 		
 		cols.add(highestQualityCol);
 		
@@ -604,8 +584,7 @@ public class DgaVM extends BaseAppVM{
 						, nqfLevel -> {return nqfLevel.getValue();}
 					).setzClass(ValueNamePair.class)
 				.setUseForID(true)
-					.required()
-					.setTableName(I_ZZ_EDP_Application.Table_Name);
+					.required();
 		cols.add(nqfLevelCol);
 		
 		
@@ -618,15 +597,13 @@ public class DgaVM extends BaseAppVM{
 				CellModel.RADIO_CELL
 				).setzClass(ValueNamePair.class);
 			executiveStatus.required();
-			executiveStatus.setTableName(I_ZZ_EDP_Application.Table_Name);
 			
 		cols.add(executiveStatus);
 		
 		if(!isEmployee) {
 			ColumnModel letterUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "Motivation Letter")
 					.required()
-					.setShowTitle(false)
-					.setTableName(I_ZZ_EDP_Application.Table_Name);
+					.setShowTitle(false);
 			
 			cols.add(letterUploadCol);
 		}
@@ -651,13 +628,12 @@ public class DgaVM extends BaseAppVM{
 		}
 		
 		
-		tmEdpEmpInfo = TableModel.getTableBean(TableModel.class, cols, false);
+		tmEdpEmpInfo = TableModel.getTableBean(TableModel.class, cols, false, I_ZZ_EDP_Application.Table_Name);
 		if (isEmployee)
 			tmEdpEmpInfo.setViewModel(TableModel.ViewType.VIEW_CARD);
 		else
 			tmEdpEmpInfo.setViewModel(TableModel.ViewType.VIEW_FORM);
 		
-		tmEdpEmpInfo.setColumnInfos(cols);
 		tmEdpEmpInfo.setSclass("edpEmpInfo");
 		tmEdpEmpInfo.setBeforeSave(beforeSave);
 		
