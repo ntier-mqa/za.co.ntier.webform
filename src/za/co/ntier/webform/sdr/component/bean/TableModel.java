@@ -794,6 +794,7 @@ public class TableModel implements ISaveForm {
 	}
 	
 	public void initMultiPo(List<List<PO>> savedDatas, TitleInfo titleInfo) {
+		removedRows = new ArrayList<RowModel.RowData>();
 		// init rows with rowTitles
 		if (titleInfo.rowTitles != null)
 			for (Map<ColumnModel, Object> rowTitle : titleInfo.rowTitles) {

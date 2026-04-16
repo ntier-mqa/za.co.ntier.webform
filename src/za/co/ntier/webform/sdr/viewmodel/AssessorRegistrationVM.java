@@ -56,9 +56,11 @@ import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
 import za.co.ntier.api.model.X_ZZLinkAssessorQualification;
+import za.co.ntier.api.model.X_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZQualification;
+import za.co.ntier.api.model.X_ZZSkillsProgramme;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
@@ -743,16 +745,9 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			obj -> {
 				// build include selected ids
 				Object [] objs = (Object [])obj;
-				
 				List<Object> ids = new ArrayList<Object>();
-				ids.addAll(Arrays.asList(objs));
 				
-				if (ids.size() == 0)
-					ids.add(0);
-				
-				String placeholders = ids.stream()
-					    .map(i -> "?")
-					    .collect(Collectors.joining(","));
+				String placeholders = MasterUtil.createPlaceHoldForInClause(ids, objs);
 				
 				// build exclude selected ids
 				List<Object> excludeIds = new ArrayList<Object>();
@@ -763,12 +758,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 					}
 				});
 				
-				if (excludeIds.size() == 0)
-					excludeIds.add(0);
-				
-				String excludePlaceholde = excludeIds.stream()
-					    .map(i -> "?")
-					    .collect(Collectors.joining(","));
+				String excludePlaceholde = MasterUtil.createPlaceHoldForInClause(excludeIds);
 				
 				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQualification.Table_ID)
 						.createQuery(String.format("%s IN (%s) AND %s NOT IN (%s)", 
@@ -782,12 +772,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				
 				// convert to list of list
 				List<PO> selectedQualifications = qualificationQuery.list();
-				List<List<PO>> daos = new ArrayList<>();
-				selectedQualifications.forEach(dao -> {
-					List<PO> rowData = new ArrayList<>();
-					rowData.add(dao);
-					daos.add(rowData);
-				});
+				List<List<PO>> daos = RowData.standardToMultiPo(selectedQualifications);
 				tmQualificationLink.addNewRows(daos);
 			}
 			, I_ZZQualification.Table_Name
@@ -853,12 +838,12 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	private void initSkillsProgramme() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		ValueAdaptColumnModel chooseQualificationCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+		ValueAdaptColumnModel chooseSkillsProgrammeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				null,
 				null, 
 				CellModel.SEARCH_CELL);
-		chooseQualificationCol.setShowTitle(false);
-		cols.add(chooseQualificationCol);
+		chooseSkillsProgrammeCol.setShowTitle(false);
+		cols.add(chooseSkillsProgrammeCol);
 		
 		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false, null);
 		tmQualificationComp.setSclass("srd-skillsprogramme-scope-comp srd-skillsprogramme-scope-comp-assessor");
@@ -908,33 +893,101 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		TableModel tmSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorSkillsProgramme.Table_Name);
 		tmSkillsProgramme.setViewModel(ViewType.VIEW_GRID);
 		tmSkillsProgramme.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
-		
+		tmSkillsProgramme.setCommandSetting(CommandSetting.getNonAddButton());
+		tmSkillsProgramme.setCreateNewRowWhenEmpty(false);
 		tmSkillsProgramme.init();
 		
 		tabPanelSkillsProgramme.getCompModel().add(tmSkillsProgramme);
 		
-		chooseQualificationCol.setEventHandle((event, cellModel) -> {
+		chooseSkillsProgrammeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
 			obj -> {
 				Object [] objs = (Object [])obj;
+				List<Object> ids = new ArrayList<>();
 				
-				List<Object> ids = Arrays.asList(objs);
+				String placeholders = MasterUtil.createPlaceHoldForInClause(ids, objs);
 				
-				String placeholders = ids.stream()
-					    .map(i -> "?")
-					    .collect(Collectors.joining(","));
+				// build exclude selected ids
+				List<Object> excludeIds = new ArrayList<Object>();
+				tmSkillsProgramme.getRows().forEach(rowModel -> {
+					X_ZZSkillsProgramme skillsProgrammePo = (X_ZZSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZSkillsProgramme.Table_Name);
+					if (skillsProgrammePo != null) {
+						excludeIds.add(skillsProgrammePo.getZZSkillsProgramme_ID());
+					}
+				});
+				
+				String excludePlaceholde = MasterUtil.createPlaceHoldForInClause(excludeIds);
 				
 				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZSkillsProgramme.Table_ID)
-						.createQuery(String.format("%s IN (%s)", I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID, placeholders), null);
+						.createQuery(String.format("%s IN (%s) AND %s NOT IN (%s)", 
+								I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID, 
+								placeholders,
+								I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+								excludePlaceholde), null);
 				
+				ids.addAll(excludeIds);
 				skillsProgrammeQuery.setParameters(ids);
 				
 				List<PO> selectedSkillsProgramme = skillsProgrammeQuery.list();
-				tmSkillsProgramme.reset(selectedSkillsProgramme);
+				List<List<PO>> daos = RowData.standardToMultiPo(selectedSkillsProgramme);
+				tmSkillsProgramme.addNewRows(daos);
 			}
 			, I_ZZSkillsProgramme.Table_Name
 			, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID
 			, true);
+		});
+		
+		tmSkillsProgramme.setAfterSave((po, rowModel) -> {
+			if (po != null)
+				return true;
+			
+			po = rowModel.getRowData().getDataNewWhenNull(I_ZZLinkAssessorSkillsProgramme.Table_Name);
+			
+			X_ZZLinkAssessorSkillsProgramme linkPO = X_ZZLinkAssessorSkillsProgramme.class.cast(po);
+			linkPO.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
+			
+			X_ZZSkillsProgramme skillsProgramme = (X_ZZSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZSkillsProgramme.Table_Name);
+			linkPO.setZZSkillsProgramme_ID(skillsProgramme.getZZSkillsProgramme_ID());
+			
+			linkPO.saveEx(linkPO.get_TrxName());
+			
+			return true;
+		});
+		
+		tmSkillsProgramme.setLoadSavedDataHandle(tableModel -> {
+			if (assessorPerson != null) {
+				Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorSkillsProgramme.Table_Name)
+				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZAssessorPerson_ID), null);
+				linkAssessorQuery.setOrderBy(X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZLinkAssessorSkillsProgramme_ID);
+				linkAssessorQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
+				
+				List<PO> linkObjs = linkAssessorQuery.list();
+				
+				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZSkillsProgramme.Table_Name)
+				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZAssessorPerson_ID), null);
+				//qualificationQuery.addTableDirectJoin(I_ZZLinkAssessorQualification.Table_Name);
+				skillsProgrammeQuery.addJoinClause(String.format( " JOIN %s ON (%s.%s = %s.%s)", 
+						I_ZZLinkAssessorSkillsProgramme.Table_Name,
+						I_ZZLinkAssessorSkillsProgramme.Table_Name,
+						I_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+						I_ZZSkillsProgramme.Table_Name,
+						I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID));
+				
+				skillsProgrammeQuery.setOrderBy(I_ZZLinkAssessorSkillsProgramme.Table_Name + "." + X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZLinkAssessorSkillsProgramme_ID);
+				skillsProgrammeQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
+				
+				List<PO> skillsProgrammeObjs = skillsProgrammeQuery.list();
+				
+				List<List<PO>> savedObjs = RowData.mergedList(linkObjs, skillsProgrammeObjs);
+				
+				tmSkillsProgramme.resetMultiPo(savedObjs);
+			}
+			 
+		});
+		
+		tmSkillsProgramme.setAfterDelete((trxName, rowModel) -> {
+			rowModel.getRowData().getDataNullable(I_ZZLinkAssessorSkillsProgramme.Table_Name).deleteEx(true, trxName);
+			return true;
 		});
 		
 	}

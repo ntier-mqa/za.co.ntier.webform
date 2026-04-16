@@ -11,12 +11,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
@@ -727,4 +729,20 @@ public class MasterUtil {
 		String compareValue = cellMode.getColModel().getSelectedItemDisplayConvert().apply(item);
 		return cellMode.getColModel().getDefaultValue().equals(compareValue);
 	};
+	
+	public static String createPlaceHoldForInClause(List<Object> ids, Object [] objs) {
+		ids.addAll(Arrays.asList(objs));
+		return createPlaceHoldForInClause(ids);
+	}
+	
+	public static String createPlaceHoldForInClause(List<Object> ids) {
+		if (ids.size() == 0)
+			ids.add(0);
+		
+		String placeholders = ids.stream()
+			    .map(i -> "?")
+			    .collect(Collectors.joining(","));
+		
+		return placeholders;
+	}
 }
