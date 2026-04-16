@@ -69,8 +69,8 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		public static List<List<PO>> standardToMultiPo(List<PO> singlePOs) {
 			if (singlePOs != null) {
 				List<List<PO>> multiPOs = new ArrayList<>();
-				List<PO> multiPO = new ArrayList<>();
 				singlePOs.forEach(po -> {
+					List<PO> multiPO = new ArrayList<>();
 					multiPO.add(po);
 					multiPOs.add(multiPO);
 				});
