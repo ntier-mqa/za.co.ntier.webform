@@ -146,7 +146,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 					entry.getValue().delete(true, trxName);
 					iterator.remove();
 				}
-					
+			}
+			
+			if (rowModel.getTableModel().getAfterDelete() != null) {
+				rowModel.getTableModel().getAfterDelete().apply(trxName, rowModel);
 			}
 		}
 		

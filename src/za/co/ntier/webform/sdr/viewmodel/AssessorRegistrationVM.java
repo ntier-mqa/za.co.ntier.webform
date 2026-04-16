@@ -843,6 +843,11 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			 
 		});
 		
+		tmQualificationLink.setAfterDelete((trxName, rowModel) -> {
+			rowModel.getRowData().getDataNullable(I_ZZLinkAssessorQualification.Table_Name).deleteEx(true, trxName);
+			return true;
+		});
+		
 	}
 	
 	private void initSkillsProgramme() {

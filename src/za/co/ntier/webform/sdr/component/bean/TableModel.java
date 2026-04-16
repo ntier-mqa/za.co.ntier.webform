@@ -100,6 +100,7 @@ public class TableModel implements ISaveForm {
 
 	}
 	
+	@Deprecated(since = "plan to merge with removeRow")
 	public void deleteRow() {
 		int newIndex = getRows().indexOf(activeRow) - 1;
 		
@@ -119,7 +120,7 @@ public class TableModel implements ISaveForm {
 	public void removeRow(RowModel row) {
 		removedRows.add(row.getRowData());
 		
-		if (getRows().size() > 1)
+		if (getRows().size() > 1 || !isCreateNewRowWhenEmpty())
 			getRows().remove(row);
 		else {
 			row.resetRow();
@@ -443,6 +444,8 @@ public class TableModel implements ISaveForm {
 	private BiFunction<PO, RowModel, Boolean> beforeSave;
 	
 	private BiFunction<PO, RowModel, Boolean> afterSave;
+	
+	private BiFunction<String, RowModel, Boolean> afterDelete;
 
 	public Consumer<RowModel> getDecoratorCell() {
 		return decoratorCell;
@@ -1069,6 +1072,12 @@ public class TableModel implements ISaveForm {
 	}
 	public void setCommandSetting(CommandSetting commandSetting) {
 		this.commandSetting = commandSetting;
+	}
+	public BiFunction<String, RowModel, Boolean> getAfterDelete() {
+		return afterDelete;
+	}
+	public void setAfterDelete(BiFunction<String, RowModel, Boolean> afterDelete) {
+		this.afterDelete = afterDelete;
 	}
 
 }
