@@ -51,6 +51,7 @@ import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
@@ -158,7 +159,7 @@ public class DgaVM extends BaseAppVM{
 	            .list();
 		}
 		
-		tmUploadDocInfo.init(documentUploadFiles, DgaVM.getTitleMap(documentNameCol, docUploads));
+		tmUploadDocInfo.init(documentUploadFiles, TitleInfo.createTitleInfo(DgaVM.getTitleMap(documentNameCol, docUploads)));
 		
 		uploadDocInfoTab.getCompModel().add(tmUploadDocInfo);
 		
@@ -201,6 +202,9 @@ public class DgaVM extends BaseAppVM{
 	}
 	
 	BiFunction<PO, RowModel, Boolean> beforeSave = (po, rowModel) -> {
+		if (po == null)
+			return true;
+		
 		if (po.get_TableName().equals(X_ZZ_Application_Form.Table_Name) || 
 				po.get_ColumnIndex(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) < 0
 				){

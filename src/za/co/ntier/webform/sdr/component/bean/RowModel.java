@@ -1,6 +1,7 @@
 package za.co.ntier.webform.sdr.component.bean;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.util.Log;
 
+import za.co.ntier.api.model.X_ZZQualification;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
@@ -37,7 +39,9 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	 * not null, in case have daoManage take po from daoManage first and failback to rowData 
 	 */
 	private RowData rowData;
-
+	
+	
+	
 	public static class RowData{
 		private RowModel rowModel;
 		public RowData(RowModel rowModel) {
@@ -62,6 +66,34 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			return getDataNewWhenNull(cellModel.getTableName());
 		}
 		
+		public static List<List<PO>> standardToMultiPo(List<PO> singlePOs) {
+			if (singlePOs != null) {
+				List<List<PO>> multiPOs = new ArrayList<>();
+				List<PO> multiPO = new ArrayList<>();
+				singlePOs.forEach(po -> {
+					multiPO.add(po);
+					multiPOs.add(multiPO);
+				});
+				
+				return multiPOs;
+			}else {
+				return null;
+			}
+		}
+		
+		public static List<List<PO>> mergedList(List<PO> po1s, List<PO> po2s){
+			List<List<PO>> savedObjs = new ArrayList<>();
+			
+			for(int i = 0; i < po1s.size(); i++) {
+				List<PO> savedRowObjs = new ArrayList<>();
+				savedRowObjs.add(po1s.get(i));
+				savedRowObjs.add(po2s.get(i));
+				
+				savedObjs.add(savedRowObjs);
+			}
+			
+			return savedObjs;
+		}
 		
 		/**
 		 * @return the data
@@ -412,6 +444,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	
 	@Override
 	public void saveToDb(String trxName) {
+		if (getTableModel().getBeforeSave() != null) {
+			getTableModel().getBeforeSave().apply(null, this);
+		}
+		
 		if (tableModel.getDaoManage() == null) {
 			if(!getRowData().isEmpty() && !getTableModel().isUsed()) {
 				getRowData().deleteData(trxName);
@@ -419,10 +455,13 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 				return;
 			}
 			
-			if (ignoreInput())
-				return;
+			if (!ignoreInput())
+				getRowData().saveDatas(trxName);
 			
-			getRowData().saveDatas(trxName);
+		}
+		
+		if (getTableModel().getAfterSave() != null) {
+			getTableModel().getAfterSave().apply(null, this);
 		}
 		
 	}

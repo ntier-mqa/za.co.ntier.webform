@@ -55,8 +55,10 @@ import za.co.ntier.api.model.I_ZZ_AlternateIDType;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
+import za.co.ntier.api.model.X_ZZLinkAssessorQualification;
 import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
+import za.co.ntier.api.model.X_ZZQualification;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
@@ -69,7 +71,9 @@ import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
@@ -255,6 +259,12 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		mainTab.getTabPanelModel().forEach(tabModel -> {
 			tabModel.getCompModel().forEach(tableModel -> {
 				((TableModel)tableModel).reloadDao();
+			});
+		});
+		
+		mainTab.getTabPanelModel().forEach(tabModel -> {
+			tabModel.getCompModel().forEach(tableModel -> {
+				((TableModel)tableModel).loadSavedData();
 			});
 		});
 	}
@@ -686,63 +696,151 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		ColumnModel qualificationCodeCol = CellModel.getColModelForLabel(
 					Msg.getElement(Env.getCtx(), "ZZQualificationCode")
 					, I_ZZQualification.COLUMNNAME_Value)
-				.setReadonly(true);
+				.setReadonly(true)
+				.setTableName(I_ZZQualification.Table_Name);
 		cols.add(qualificationCodeCol);
 		
 		ColumnModel qualificationTitleCol = CellModel.getColModelForLabel(
 				Msg.getElement(Env.getCtx(), "ZZQualificationTitle")
 				, I_ZZQualification.COLUMNNAME_Name)
-			.setReadonly(true);
+			.setReadonly(true)
+			.setTableName(I_ZZQualification.Table_Name);
 		cols.add(qualificationTitleCol);
 		
 		ColumnModel qualificationCreditsCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_ZZCredits)
 				, I_ZZQualification.COLUMNNAME_ZZCredits)
-			.setReadonly(true);
+			.setReadonly(true)
+			.setTableName(I_ZZQualification.Table_Name);
 		cols.add(qualificationCreditsCol);
 		
 		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Registrationstartdate)
 				, I_ZZQualification.COLUMNNAME_Registrationstartdate)
-			.setReadonly(true);
+			.setReadonly(true)
+			.setTableName(I_ZZQualification.Table_Name);
 		cols.add(registrationStartDateCol);
 		
 		ColumnModel registrationEndDateCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Registrationenddate)
 				, I_ZZQualification.COLUMNNAME_Registrationenddate)
-			.setReadonly(true);
+			.setReadonly(true)
+			.setTableName(I_ZZQualification.Table_Name);
 		cols.add(registrationEndDateCol);
 					
 		TableModel tmQualificationLink = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorQualification.Table_Name);
 		tmQualificationLink.setViewModel(ViewType.VIEW_GRID);
 		tmQualificationLink.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
-		
+		tmQualificationLink.setCommandSetting(CommandSetting.getNonAddButton());
+		tmQualificationLink.setCreateNewRowWhenEmpty(false);
 		tmQualificationLink.init();
 		
 		tabPanelQualificationScope.getCompModel().add(tmQualificationLink);
 		
+		
 		chooseQualificationCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
 			obj -> {
+				// build include selected ids
 				Object [] objs = (Object [])obj;
 				
-				List<Object> ids = Arrays.asList(objs);
+				List<Object> ids = new ArrayList<Object>();
+				ids.addAll(Arrays.asList(objs));
+				
+				if (ids.size() == 0)
+					ids.add(0);
 				
 				String placeholders = ids.stream()
 					    .map(i -> "?")
 					    .collect(Collectors.joining(","));
 				
-				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQualification.Table_ID)
-						.createQuery(String.format("%s IN (%s)", I_ZZQualification.COLUMNNAME_ZZQualification_ID, placeholders), null);
+				// build exclude selected ids
+				List<Object> excludeIds = new ArrayList<Object>();
+				tmQualificationLink.getRows().forEach(rowModel -> {
+					X_ZZQualification qualificationPo = (X_ZZQualification)rowModel.getRowData().getDataNullable(I_ZZQualification.Table_Name);
+					if (qualificationPo != null) {
+						excludeIds.add(qualificationPo.getZZQualification_ID());
+					}
+				});
 				
+				if (excludeIds.size() == 0)
+					excludeIds.add(0);
+				
+				String excludePlaceholde = excludeIds.stream()
+					    .map(i -> "?")
+					    .collect(Collectors.joining(","));
+				
+				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQualification.Table_ID)
+						.createQuery(String.format("%s IN (%s) AND %s NOT IN (%s)", 
+								I_ZZQualification.COLUMNNAME_ZZQualification_ID, 
+								placeholders,
+								I_ZZQualification.COLUMNNAME_ZZQualification_ID,
+								excludePlaceholde), null);
+				
+				ids.addAll(excludeIds);
 				qualificationQuery.setParameters(ids);
 				
+				// convert to list of list
 				List<PO> selectedQualifications = qualificationQuery.list();
-				tmQualificationLink.reset(selectedQualifications);
+				List<List<PO>> daos = new ArrayList<>();
+				selectedQualifications.forEach(dao -> {
+					List<PO> rowData = new ArrayList<>();
+					rowData.add(dao);
+					daos.add(rowData);
+				});
+				tmQualificationLink.addNewRows(daos);
 			}
 			, I_ZZQualification.Table_Name
 			, I_ZZQualification.COLUMNNAME_ZZQualification_ID
 			, true);
+		});
+		
+		tmQualificationLink.setAfterSave((po, rowModel) -> {
+			if (po != null)
+				return true;
+			
+			po = rowModel.getRowData().getDataNewWhenNull(I_ZZLinkAssessorQualification.Table_Name);
+			
+			X_ZZLinkAssessorQualification linkPO = X_ZZLinkAssessorQualification.class.cast(po);
+			linkPO.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
+			
+			X_ZZQualification qualification = (X_ZZQualification)rowModel.getRowData().getDataNullable(I_ZZQualification.Table_Name);
+			linkPO.setZZQualification_ID(qualification.getZZQualification_ID());
+			
+			linkPO.saveEx(linkPO.get_TrxName());
+			
+			return true;
+		});
+		
+		tmQualificationLink.setLoadSavedDataHandle(tableModel -> {
+			if (assessorPerson != null) {
+				Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorQualification.Table_Name)
+				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorQualification.COLUMNNAME_ZZAssessorPerson_ID), null);
+				linkAssessorQuery.setOrderBy(X_ZZLinkAssessorQualification.COLUMNNAME_ZZLinkAssessorQualification_ID);
+				linkAssessorQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
+				
+				List<PO> linkObjs = linkAssessorQuery.list();
+				
+				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQualification.Table_Name)
+				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorQualification.COLUMNNAME_ZZAssessorPerson_ID), null);
+				//qualificationQuery.addTableDirectJoin(I_ZZLinkAssessorQualification.Table_Name);
+				qualificationQuery.addJoinClause(String.format( " JOIN %s ON (%s.%s = %s.%s)", 
+						I_ZZLinkAssessorQualification.Table_Name,
+						I_ZZLinkAssessorQualification.Table_Name,
+						I_ZZLinkAssessorQualification.COLUMNNAME_ZZQualification_ID,
+						I_ZZQualification.Table_Name,
+						I_ZZQualification.COLUMNNAME_ZZQualification_ID));
+				
+				qualificationQuery.setOrderBy(I_ZZLinkAssessorQualification.Table_Name + "." + X_ZZLinkAssessorQualification.COLUMNNAME_ZZLinkAssessorQualification_ID);
+				qualificationQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
+				
+				List<PO> qualificationObjs = qualificationQuery.list();
+				
+				List<List<PO>> savedObjs = RowData.mergedList(linkObjs, qualificationObjs);
+				
+				tmQualificationLink.resetMultiPo(savedObjs);
+			}
+			 
 		});
 		
 	}
@@ -770,31 +868,36 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		ColumnModel skillsProgrammeCodeCol = CellModel.getColModelForLabel(
 					Msg.getElement(Env.getCtx(), "ZZSkillsProgrammeCode")
 					, I_ZZSkillsProgramme.COLUMNNAME_Value)
-				.setReadonly(true);
+				.setReadonly(true)
+				.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(skillsProgrammeCodeCol);
 		
 		ColumnModel skillsProgrammeTitleCol = CellModel.getColModelForLabel(
 				Msg.getElement(Env.getCtx(), "ZZSkillsProgrammeTitle")
 				, I_ZZSkillsProgramme.COLUMNNAME_Name)
-			.setReadonly(true);
+			.setReadonly(true)
+			.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(skillsProgrammeTitleCol);
 		
 		ColumnModel skillsProgrammeCreditsCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
 				, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
-			.setReadonly(true);
+			.setReadonly(true)
+			.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(skillsProgrammeCreditsCol);
 		
 		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Registrationstartdate)
 				, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
-			.setReadonly(true);
+			.setReadonly(true)
+			.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(registrationStartDateCol);
 		
 		ColumnModel registrationEndDateCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Registrationenddate)
 				, I_ZZSkillsProgramme.COLUMNNAME_Registrationenddate)
-			.setReadonly(true);
+			.setReadonly(true)
+			.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(registrationEndDateCol);
 					
 		TableModel tmSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorSkillsProgramme.Table_Name);

@@ -46,6 +46,14 @@ public class TableModel implements ISaveForm {
 		return activeRow;
 	}
 	
+	private Consumer<TableModel> loadSavedDataHandle;
+	
+	public void loadSavedData() {
+		if (loadSavedDataHandle != null) {
+			loadSavedDataHandle.accept(this);
+		}
+	}
+	
 	private RowModel virtualRow;
 	public RowModel getVirtualRow() {
 		if (virtualRow == null) {
@@ -170,6 +178,17 @@ public class TableModel implements ISaveForm {
 		RowModel newRow = addNewRow(activeRow);
 		
 		setActiveRow(newRow);
+	}
+	
+	public void addNewRows(List<List<PO>> savedDatas) {
+		savedDatas.forEach(lDao -> {
+			RowModel newRow = doCreateDetailRow(null);
+			newRow.getRowData().setDatas(lDao);
+			getRows().add(newRow);
+			newRow.fillRowDataFromDao();
+		});
+		
+		BindUtils.postNotifyChange(this, "rows");
 	}
 	
 	public RowModel addNewRow(RowModel currentRow) {
@@ -323,7 +342,7 @@ public class TableModel implements ISaveForm {
 	private List<RowModel> rows;
 	private String sectionHeader;
 
-	private boolean showAddButton = false;
+	private boolean showCommandBt = false;
 
 	private boolean showTotal = false;
 
@@ -520,10 +539,10 @@ public class TableModel implements ISaveForm {
 	}
 
 	/**
-	 * @return the showAddButton
+	 * @return the showCommandBt
 	 */
-	public boolean isShowAddButton() {
-		return showAddButton;
+	public boolean isShowCommandBt() {
+		return commandSetting != null;
 	}
 
 	/**
@@ -582,7 +601,18 @@ public class TableModel implements ISaveForm {
 		}
 	}
 
+	public record CommandSetting(boolean isShowAdd, boolean isShowRemove) {
+		public static CommandSetting getFullButton() {
+			return new CommandSetting(true, true);
+		}
+		
+		public static CommandSetting getNonAddButton() {
+			return new CommandSetting(false, true);
+		}
+	}
 
+	private CommandSetting commandSetting = null;
+	
 	/**
 	 * @param columnModels the columnModels to set
 	 */
@@ -602,13 +632,6 @@ public class TableModel implements ISaveForm {
 	 */
 	public void setSectionHeader(String sectionHeader) {
 		this.sectionHeader = sectionHeader;
-	}
-
-	/**
-	 * @param showAddButton the showAddButton to set
-	 */
-	public void setShowAddButton(boolean showAddButton) {
-		this.showAddButton = showAddButton;
 	}
 
 	/**
@@ -718,19 +741,30 @@ public class TableModel implements ISaveForm {
 		}
 
 	}
-
-
-	public void init() {
-		init(null);
-	}
-
-	public void init(List<PO> savedDatas) {
-		init(savedDatas, null);
+	
+	public record TitleInfo(List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
+		public TitleInfo {
+			if (rowTitles != null && rowTitles.size() == 0)
+				rowTitles = null;
+			
+	        if (keyColumns == null && rowTitles != null)
+	        	keyColumns = rowTitles.get(0).keySet();
+	    }
+		
+		public static TitleInfo empty = new TitleInfo(null, null);
+		
+		public static TitleInfo createTitleInfo(List<Map<ColumnModel, Object>> rowTitles) {
+			return new TitleInfo(rowTitles, null);
+		}
 	}
 	
 	public void reset(List<PO> savedDatas) {
+		resetMultiPo(RowData.standardToMultiPo(savedDatas));
+	}
+	
+	public void resetMultiPo(List<List<PO>> savedDatas) {
 		getRows().clear();
-		init(savedDatas);
+		initMultiPo(savedDatas);
 		if (isCardView()) {
 			resetActiveRow();
 		}
@@ -740,32 +774,26 @@ public class TableModel implements ISaveForm {
 		BindUtils.postNotifyChange(this, "rows");
 	}
 
-	public void init(List<PO> savedDatas, List<Map<ColumnModel, Object>> rowTitles) {
-		if(rowTitles == null || rowTitles.size() == 0)
-			init(savedDatas, null, null);
-		else
-			init(savedDatas, rowTitles, rowTitles.get(0).keySet());
+	public void init() {
+		init(null);
+	}
+
+	public void init(List<PO> savedDatas) {
+		init(savedDatas, TitleInfo.empty);
 	}
 	
-	public void init(
-			List<PO> savedData, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
-		
-		List<List<PO>> savedDatas = new ArrayList<>();
-		
-		if (savedData != null && savedData.size() > 0) {
-			savedData.forEach(po -> {
-				savedDatas.add(List.of(po));
-			});
-		}
-		
-		initMultiPo(savedDatas, rowTitles, keyColumns);
+	public void init(List<PO> singlePOs, TitleInfo titleInfo) {
+		initMultiPo(RowData.standardToMultiPo(singlePOs), titleInfo);
 	}
 	
-	public void initMultiPo(
-			List<List<PO>> savedDatas, List<Map<ColumnModel, Object>> rowTitles, Collection<ColumnModel> keyColumns) {
+	public void initMultiPo(List<List<PO>> savedDatas) {
+		initMultiPo(savedDatas, TitleInfo.empty);
+	}
+	
+	public void initMultiPo(List<List<PO>> savedDatas, TitleInfo titleInfo) {
 		// init rows with rowTitles
-		if (rowTitles != null)
-			for (Map<ColumnModel, Object> rowTitle : rowTitles) {
+		if (titleInfo.rowTitles != null)
+			for (Map<ColumnModel, Object> rowTitle : titleInfo.rowTitles) {
 				createDetailRow(rowTitle);
 			}
 
@@ -775,12 +803,12 @@ public class TableModel implements ISaveForm {
 
 			for (List<PO> poInRow : savedDatas) {
 				boolean isMatching = false;
-				if (keyColumns != null && keyColumns.size() > 0) {
+				if (titleInfo.keyColumns != null && titleInfo.keyColumns.size() > 0) {
 					for (RowModel row : getRows()) {
 						if (matchedRows.contains(row))
 							continue;
 
-						isMatching = row.isMatchingRow(keyColumns, poInRow);
+						isMatching = row.isMatchingRow(titleInfo.keyColumns, poInRow);
 						if (isMatching) {
 							matchedRows.add(row);
 							row.getRowData().setDatas(poInRow);
@@ -812,8 +840,11 @@ public class TableModel implements ISaveForm {
 	}
 
 	public void reloadDao() {
-		getRow().resetRow();
-		getRow().fillRowDataFromDao();
+		if(getViewModel() == ViewType.VIEW_FORM) {
+			getRow().resetRow();
+			getRow().fillRowDataFromDao();
+		}
+		
 	}
 	
 	private Consumer<RowModel> afterFillFromDaoHandle;
@@ -1026,6 +1057,18 @@ public class TableModel implements ISaveForm {
 	
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+	public Consumer<TableModel> getLoadSavedDataHandle() {
+		return loadSavedDataHandle;
+	}
+	public void setLoadSavedDataHandle(Consumer<TableModel> loadSavedDataHandle) {
+		this.loadSavedDataHandle = loadSavedDataHandle;
+	}
+	public CommandSetting getCommandSetting() {
+		return commandSetting;
+	}
+	public void setCommandSetting(CommandSetting commandSetting) {
+		this.commandSetting = commandSetting;
 	}
 
 }

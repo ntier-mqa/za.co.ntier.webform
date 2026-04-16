@@ -120,7 +120,7 @@ public class OrglinkTabPanel extends NavTabPanel {
 		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false, I_C_BPartner.Table_Name);
 		namesBean.setSclass("orgSearch");
 
-		namesBean.init(null, null, null);
+		namesBean.init();
 
 		return namesBean;
 	}

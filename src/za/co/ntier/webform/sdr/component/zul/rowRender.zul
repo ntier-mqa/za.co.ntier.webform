@@ -173,14 +173,16 @@
         </div>
       
       	<div
-          	if="${colStatus.last and vmRowRender.tableModel.gridView and vmRowRender.tableModel.showAddButton}" 
+          	if="${colStatus.last and vmRowRender.tableModel.gridView and vmRowRender.tableModel.showCommandBt}" 
           	sclass="cell cellType-command">
           	
           	<button sclass="btn-circle addrow"
+          		if="${vmRowRender.tableModel.commandSetting.showAdd}"
               iconSclass="z-icon-plus" label="" tooltiptext="New Line"
               onClick="@command('addDetailLine', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)" />
             
             <button sclass="btn-circle delrow"
+            	if="${vmRowRender.tableModel.commandSetting.showRemove}"
               iconSclass="z-icon-circle-minus" label="" tooltiptext="Delete Line"
               onClick="@command('removeDetailLine', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)" />
           </div>

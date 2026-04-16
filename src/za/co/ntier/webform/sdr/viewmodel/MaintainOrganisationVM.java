@@ -39,6 +39,7 @@ import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
@@ -596,6 +597,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		});
 		
 		tmChildOrgModel.setBeforeSave((po, rowModel) -> {
+			if (po == null)
+				return true;
+			
 			X_ZZOrganisationLinkage childOrgLink = (X_ZZOrganisationLinkage)po;
 			childOrgLink.setBPartner_Parent_ID(orgPO.getC_BPartner_ID());
 			
@@ -607,7 +611,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		tmChildOrgModel.setSclass("LinkOrgChild");
 		tmChildOrgModel.setViewModel(ViewType.VIEW_GRID);
-		tmChildOrgModel.setShowAddButton(true);
+		tmChildOrgModel.setCommandSetting(CommandSetting.getFullButton());
 		
 		tmChildOrgModel.init();
 		
@@ -692,6 +696,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		});
 		
 		tmTrainingCommittee.setBeforeSave((po, rowModel) -> {
+			if (po == null)
+				return true;
+			
 			X_ZZOrgTrainingCommittee orgTrainingCommittee = (X_ZZOrgTrainingCommittee)po;
 			orgTrainingCommittee.setC_BPartner_ID(orgPO.getC_BPartner_ID());
 			return true;

@@ -42,7 +42,7 @@
           </div>
           
           <div 
-          	if="${titleColStatus.last and vmListView.component.showAddButton}"
+          	if="${titleColStatus.last and vmListView.component.showCommandBt}"
           	sclass="cellHead colHead command" >
           	<label value="" />
           </div>
