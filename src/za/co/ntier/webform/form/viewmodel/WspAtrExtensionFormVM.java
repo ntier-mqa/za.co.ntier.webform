@@ -36,6 +36,7 @@ import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
 import za.co.ntier.webform.sdr.component.bean.cell.OrganisationCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
@@ -300,7 +301,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		TableModel tableModel = TableModel.getTableBean(TableModel.class, cols, false, I_ZZ_WSP_ATR_EXTENSION.Table_Name);
 		tableModel.setSclass(cssClass);
 		tableModel.setDaoManage(formManage);
-		tableModel.init(null, null);
+		tableModel.init(null, TitleInfo.createTitleInfo(null));
 		return tableModel;
 	}
 
