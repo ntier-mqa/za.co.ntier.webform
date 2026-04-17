@@ -236,7 +236,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			firstNameCol.setDefaultValue(person.getName());
 		}else {
 			daoManage.resetDao(I_AD_User.Table_Name);
-			firstNameCol.setDefaultValue(null);
+			//firstNameCol.setDefaultValue(null);
 		}
 		
 		if (assessorPersonSaved != null) {
@@ -256,13 +256,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	}
 	
 	private void loadData() {
-		tmNames.reloadDao();
+		if(person != null)// don't reload when null to keep user input
+			tmNames.reloadDao();
 		
-		mainTab.getTabPanelModel().forEach(tabModel -> {
-			tabModel.getCompModel().forEach(tableModel -> {
-				((TableModel)tableModel).reloadDao();
+		if (assessorPerson != null)
+			mainTab.getTabPanelModel().forEach(tabModel -> {
+				tabModel.getCompModel().forEach(tableModel -> {
+					((TableModel)tableModel).reloadDao();
+				});
 			});
-		});
 		
 		mainTab.getTabPanelModel().forEach(tabModel -> {
 			tabModel.getCompModel().forEach(tableModel -> {

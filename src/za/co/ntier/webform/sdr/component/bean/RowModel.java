@@ -124,6 +124,15 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			mData.put(data.get_TableName(), data);
 		}
 		
+		protected void clearData(String tableName) {
+			if (StringUtils.isBlank(tableName)) {
+				mData.clear();
+			}else {
+				mData.remove(tableName);
+			}
+			
+		}
+		
 		/**
 		 * clear old record and add new one
 		 * @param datas
@@ -491,7 +500,17 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		return zclass.cast(dao);
 	}
 	
+	/**
+	 * {@link Deprecated}
+	 * 
+	 * @param dao
+	 */
 	public void setDataOneRow(PO dao) {
-		getRowData().addData(dao);
+		if (dao == null) {
+			getRowData().clearData(null);
+		}else {
+			getRowData().addData(dao);
+		}
+		
 	}
 }
