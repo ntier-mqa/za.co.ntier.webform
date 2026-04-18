@@ -133,7 +133,7 @@ public class UploadDocComponent implements ISaveForm {
 	        String name  = (uploadData != null) ? uploadData.getFileName() : null;
 
 	        // Only act when there is a new upload this round
-	        if (bytes == null || bytes.length == 0) {
+	        if (uploadData.isClear()) {
 	        	if (docUploadedFile != null) {
 	        		docUploadedFile.deleteEx(true, trxName);
 	        		//AttachmentUtil.removeAttachmentEntry(docUploadedFile, uploadFileCol.getBtText(), trxName);
