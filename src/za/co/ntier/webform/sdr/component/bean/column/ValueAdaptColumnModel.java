@@ -2,7 +2,6 @@ package za.co.ntier.webform.sdr.component.bean.column;
 
 import java.util.function.Function;
 
-
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 
 public class ValueAdaptColumnModel extends ColumnModel{

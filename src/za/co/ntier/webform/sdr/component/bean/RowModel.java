@@ -1,6 +1,5 @@
 package za.co.ntier.webform.sdr.component.bean;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,18 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.webui.exception.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.jfree.util.Log;
 
-import za.co.ntier.api.model.X_ZZQualification;
-import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;

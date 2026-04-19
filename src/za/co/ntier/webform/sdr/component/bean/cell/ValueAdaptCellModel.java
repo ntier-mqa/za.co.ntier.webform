@@ -3,7 +3,6 @@ package za.co.ntier.webform.sdr.component.bean.cell;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.model.PO;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.NotifyChange;
 
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;

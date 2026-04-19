@@ -22,7 +22,6 @@ import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZSdf;
-import za.co.ntier.api.model.I_ZZ_EDP_Application;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZOrgTrainingCommittee;

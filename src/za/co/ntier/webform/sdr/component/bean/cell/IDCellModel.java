@@ -1,6 +1,5 @@
 package za.co.ntier.webform.sdr.component.bean.cell;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.webui.panel.RegistrationWindow;

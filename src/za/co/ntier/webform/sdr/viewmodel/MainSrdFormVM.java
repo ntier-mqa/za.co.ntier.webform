@@ -18,7 +18,6 @@ import za.co.ntier.api.model.X_ZZPersonAddress;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
-import za.co.ntier.api.model.X_ZZ_LI_Disability;
 import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
