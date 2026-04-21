@@ -1,5 +1,8 @@
 package za.co.ntier.webform.sdr.component.tab.bean;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.compiere.util.CLogger;
 import org.zkoss.zul.ListModelList;
 
@@ -143,6 +146,13 @@ public class NavTabPanel implements ISaveForm {
 		}
 		
 		return rowInputCheckResult;
+	}
+
+	@Override
+	public List<ISaveForm> getChildren() {
+		return compModel.stream()
+	            .map(panel -> (ISaveForm) panel)
+	            .collect(Collectors.toList());
 	}
 
 }

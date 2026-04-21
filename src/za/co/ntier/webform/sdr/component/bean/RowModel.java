@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
@@ -480,7 +481,13 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		this.rowData = rowData;
 	}
 
-	
+	/**
+	 * 
+	 * @param <T>
+	 * @param zclass model class extends from PO so don't need to cast
+	 * @param tableName
+	 * @return
+	 */
 	public <T extends PO> T getDataOneRow(Class<T> zclass, String tableName) {
 		PO dao = null;
 		if (tableModel.getDaoManage() != null) {
@@ -506,5 +513,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			getRowData().addData(dao);
 		}
 		
+	}
+
+	@Override
+	public List<ISaveForm> getChildren() {
+		return List.of();
 	}
 }

@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.exception.ApplicationException;
@@ -444,6 +445,16 @@ public class TableModel implements ISaveForm {
 	private BiFunction<PO, RowModel, Boolean> beforeSave;
 	
 	private BiFunction<PO, RowModel, Boolean> afterSave;
+	
+	private BiFunction<ISaveForm, String, Boolean> afterAppSaveHandle;
+	public void setAfterAppSave(BiFunction<ISaveForm, String, Boolean> afterAppSaveHandle) {
+		this.afterAppSaveHandle = afterAppSaveHandle;
+	}
+	
+	@Override
+	public BiFunction<ISaveForm, String, Boolean> getAfterAppSave() {
+		return this.afterAppSaveHandle;
+	}
 	
 	private BiFunction<String, RowModel, Boolean> afterDelete;
 
@@ -1081,6 +1092,12 @@ public class TableModel implements ISaveForm {
 	}
 	public void setAfterDelete(BiFunction<String, RowModel, Boolean> afterDelete) {
 		this.afterDelete = afterDelete;
+	}
+	@Override
+	public List<ISaveForm> getChildren() {
+		return rows.stream()
+	            .map(panel -> (ISaveForm) panel)
+	            .collect(Collectors.toList());
 	}
 
 }

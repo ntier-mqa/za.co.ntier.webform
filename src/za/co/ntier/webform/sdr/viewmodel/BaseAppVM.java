@@ -1,5 +1,7 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -118,6 +120,26 @@ public abstract class BaseAppVM implements ISaveApp{
 		
 		for (ISaveForm saveComponent : saveComponents) {
 			saveComponent.saveToDb(trxName);
+		}
+		
+		// handle afterSave
+		Deque<ISaveForm> stack = new ArrayDeque<>(saveComponents);
+
+		while (!stack.isEmpty()) {
+		    ISaveForm current = stack.pop();
+
+		    // 1. Process the current item
+		    if (current.getAfterAppSave() != null) {
+		        current.getAfterAppSave().apply(current, trxName);
+		    }
+
+		    // 2. Add children to the stack to process them in the next iterations
+		    List<ISaveForm> children = current.getChildren();
+		    if (children != null) {
+		        for (ISaveForm child : children) {
+		            stack.push(child);
+		        }
+		    }
 		}
 		
 		for (ISaveForm saveComponent : saveComponents) {

@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
+import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -203,6 +204,106 @@ public class BuildFormUtil {
 		po.setZZAddressType(addressType);
 		
 		return po;
+	}
+	
+	public record SettingAddress (boolean isShowAddress, boolean isShowPostal, boolean isShowArea, boolean isShowProvince, TableModel copyto, String addressType) {
+		public static SettingAddress getSimple(String addressType) {
+			SettingAddress simpleSettingAddress = new SettingAddress(true, true, true, true, null, addressType);
+			return simpleSettingAddress;
+		}
+		
+		public static SettingAddress getSimple(String addressType, TableModel copyTo) {
+			SettingAddress simpleSettingAddress = new SettingAddress(true, true, true, true, copyTo, addressType);
+			return simpleSettingAddress;
+		}
+	}
+	
+	public record SettingTableMode (String header, String subHeader) {
+		public static SettingTableMode getSimple(String title) {
+			return new SettingTableMode(null, title);
+		}
+	}
+	
+	
+	public static TableModel getAddressDetailComp(SettingTableMode settingTableModel, SettingAddress settingAddress) {
+		List<ColumnModel> colsAddress = new ArrayList<>();
+		
+		ColumnModel complexSectionFarmCol = CellModel.getColModelForText(
+				MasterUtil.getDescOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_ZZComplexSectionFarm)
+				, I_C_Location.COLUMNNAME_Address2
+				);
+		colsAddress.add(complexSectionFarmCol);
+		
+		if (settingAddress.isShowAddress()) {
+			ColumnModel physicalAddress1Col = CellModel.getColModelForText(
+					MasterUtil.getNameOfColTranslated(I_ZZPersonAddress.Table_Name, I_ZZPersonAddress.COLUMNNAME_Address1)
+					, I_C_Location.COLUMNNAME_Address1
+					).required();
+			colsAddress.add(physicalAddress1Col);
+		}
+		
+		if (settingAddress.isShowPostal) {
+			ColumnModel physicalCodeCol = PostalCellModel.getPostalColumnModel(
+					null
+					, I_C_Location.COLUMNNAME_Postal
+					).required();
+			colsAddress.add(physicalCodeCol);
+		}
+		
+		if (settingAddress.isShowArea()) {
+			ColumnModel physicalAreaCol = AreaCellModel.getAreaColumnModel(
+					null
+					, I_C_Location.COLUMNNAME_C_City_ID).required();
+			colsAddress.add(physicalAreaCol);
+		}
+		
+		if (settingAddress.isShowProvince()) {
+			ColumnModel physicalProvinceCol = ProvinceCellModel.getProvinceColumnModel(
+					null
+					, I_C_Location.COLUMNNAME_C_Region_ID).required();
+			colsAddress.add(physicalProvinceCol);
+		}
+		
+		ColumnModel dupplicateCol = null;
+		if (settingAddress.copyto() != null) {
+			dupplicateCol = CellModel.getColModelForGenericCell("Use Physical Address For Postal Address?", null, CellModel.BUTTON_CELL);
+			dupplicateCol.setShowTitle(false);
+			
+			dupplicateCol.setEventHandle((inputEvent, cellModel) -> {
+					TableModel tmPostalAddress = settingAddress.copyto();
+					RowModel physicalRow = cellModel.getRowModel();
+					RowModel postalRow = tmPostalAddress.getRow();
+					for (ColumnModel physicalColModel : cellModel.getTableModel().getColumnInfos()) {
+						for (ColumnModel postalColModel : tmPostalAddress.getColumnInfos()) {
+							if (physicalColModel.getDaoPropertyName() != null && 
+									StringUtils.equals(postalColModel.getDaoPropertyName(), physicalColModel.getDaoPropertyName())) {
+								postalRow.get(postalColModel).setValue(physicalRow.get(physicalColModel).getValue());
+								break;
+							}
+						}
+					}
+			});
+			
+			colsAddress.add(dupplicateCol);
+		}
+		
+		TableModel addressDetailBean = TableModel.getTableBean(TableModel.class, colsAddress, false, I_C_Location.Table_Name);
+		addressDetailBean.setSclass(settingAddress.addressType() + " srd-address");
+	
+		addressDetailBean.setSubSectionHeader(settingTableModel.subHeader());
+		
+		final ColumnModel dupplicateColF = dupplicateCol;
+		if (settingAddress.copyto() != null) {
+			addressDetailBean.setDecoratorCell(rowModel -> {
+				CellModel btDupplicate = rowModel.get(dupplicateColF);
+				btDupplicate.setIconSclass("z-icon-fw z-icon-clone z-icon-solid");
+			});
+		}
+		
+		addressDetailBean.init();
+	
+		return addressDetailBean;
+		
 	}
 	
 	public static TableModel getAddressDetailComp(String prefixName, String addressType, String subHeader, TableModel copyto) {

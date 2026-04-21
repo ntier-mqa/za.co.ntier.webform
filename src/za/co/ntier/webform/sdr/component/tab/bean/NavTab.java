@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.tab.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zul.ListModelList;
@@ -160,4 +161,11 @@ public class NavTab implements ListDataListener, ISaveForm{
 		return null;
 	}
 	
+	@Override
+	public List<ISaveForm> getChildren() {
+		return tabPanelModel.stream()
+	            .map(panel -> (ISaveForm) panel)
+	            .collect(Collectors.toList());
+	}
+		
 }

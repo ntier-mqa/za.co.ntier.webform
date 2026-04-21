@@ -15,9 +15,12 @@ import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.I_C_Location;
+import org.compiere.model.MLocation;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_Location;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -68,6 +71,9 @@ import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
+import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
+import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
+import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
 
 public class AssessorRegistrationVM extends BaseAppVM {
 
@@ -260,7 +266,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		initGeneralDetail();
 		initContactDetail();
 		initHealthFunction();
-		//initAddresss();
+		initAddresss();
 		initEducationDetail();
 		initQualification();
 		initSkillsProgramme();
@@ -976,34 +982,61 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 	}
 	
-	/*
-	 * private void initAddresss() { TableModel tmPostalAddress =
-	 * BuildFormUtil.getAddressDetailComp("Postal ", "Postal", "Postal", null);
-	 * TableModel tmPhysicalAddress =
-	 * BuildFormUtil.getAddressDetailComp("Physical ", "Physical", "Physical",
-	 * tmPostalAddress);
-	 * 
-	 * tmPostalAddress.setPoSupplier(rowModel -> { X_ZZPersonAddress address =
-	 * BuildFormUtil.getNewAddress(rowModel.getTableModel().getDataType());
-	 * //address.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
-	 * return address;
-	 * 
-	 * });
-	 * 
-	 * tmPhysicalAddress.setPoSupplier(rowModel -> { X_ZZPersonAddress address =
-	 * BuildFormUtil.getNewAddress(rowModel.getTableModel().getDataType());
-	 * //address.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
-	 * return address; });
-	 * 
-	 * NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
-	 * addressDetailTab.setSclass("sdr-address sdr-address-assessor");
-	 * addressDetailTab.setTabTitle("Address Details");
-	 * 
-	 * addressDetailTab.getCompModel().add(tmPhysicalAddress);
-	 * //addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(
-	 * physicalAddress, postalAddress));
-	 * addressDetailTab.getCompModel().add(tmPostalAddress); }
-	 */
+	
+	  private void initAddresss() { 
+		  TableModel tmPostalAddress = BuildFormUtil.getAddressDetailComp(
+				  SettingTableMode.getSimple("Postal"), 
+				  SettingAddress.getSimple("Postal"));
+		  
+		  TableModel tmPhysicalAddress = BuildFormUtil.getAddressDetailComp(
+				  SettingTableMode.getSimple("Physical"), 
+				  SettingAddress.getSimple("Physical", tmPostalAddress));
+		  
+		  NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
+		  addressDetailTab.setSclass("sdr-address sdr-address-assessor");
+		  addressDetailTab.setTabTitle("Address Details");
+		  
+		  addressDetailTab.getCompModel().add(tmPhysicalAddress);
+		  addressDetailTab.getCompModel().add(tmPostalAddress);
+		  
+		  tmPhysicalAddress.setAfterAppSave((tableModel, trxName) -> {
+			  TableModel tmAddress = (TableModel)tableModel;
+			  X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
+			  assessorPerson.setZZPhysicalLocation_ID(location.getC_Location_ID());
+			  assessorPerson.saveEx(trxName);
+			  return true;
+		  });
+		  
+		  tmPostalAddress.setAfterAppSave((tableModel, trxName) -> {
+			  TableModel tmAddress = (TableModel)tableModel;
+			  X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
+			  assessorPerson.setZZPostalLocation_ID(location.getC_Location_ID());
+			  assessorPerson.saveEx(trxName);
+			  return true;
+		  });
+		  
+		  tmPhysicalAddress.setLoadSavedDataHandle(tm -> {
+			  if (assessorPerson != null && assessorPerson.getZZPhysicalLocation_ID() > 0) {
+				  X_C_Location physicalLocation = MLocation.get(assessorPerson.getZZPhysicalLocation_ID());
+				  tm.getRow().setDataOneRow(physicalLocation);
+				  
+			  }else {
+				  tm.getRow().setDataOneRow(null);
+			  }
+			  tm.reloadDao();
+		  });
+		  
+		  tmPostalAddress.setLoadSavedDataHandle(tm -> {
+			  if (assessorPerson != null && assessorPerson.getZZPostalLocation_ID() > 0) {
+				  X_C_Location postalLocation = MLocation.get(assessorPerson.getZZPostalLocation_ID());
+				  tm.getRow().setDataOneRow(postalLocation);
+			  }else {
+				  tm.getRow().setDataOneRow(null);
+			  }
+			  tm.reloadDao();
+		  });
+	  }
+	 
 	
 	public TableModel getTmNames() {
 		return tmNames;
