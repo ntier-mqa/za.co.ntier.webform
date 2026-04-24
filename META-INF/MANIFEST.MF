@@ -38,5 +38,6 @@ Automatic-Module-Name: za.co.ntier.webform
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Fragment-Host: org.adempiere.ui.zk;bundle-version="11.0.0"
 Service-Component: OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationFormFactory.xml,
- OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationModelFactory.xml
+ OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationModelFactory.xml,
+ OSGI-INF/za.co.ntier.webform.osgi.component.WebFormAnnotationProcessFactory.xml
 Bundle-ActivationPolicy: lazy

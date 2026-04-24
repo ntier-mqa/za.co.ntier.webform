@@ -9,9 +9,9 @@ import org.compiere.util.Env;
 public final class AttachmentUtil {
     private AttachmentUtil() {}
 
-    private record EntryNames(String normalizedPrefix, String newEntryName) {}
+    public record EntryNames(String normalizedPrefix, String newEntryName) {}
     
-    private static EntryNames normalizedEntryNames (String btText, String fileName) {
+    public static EntryNames normalizedEntryNames (String btText, String fileName) {
     	// sanitize btText: trim and remove '/'
     	String rawPrefix = btText == null ? "" : btText.trim().replace("/", "");
         String normalizedPrefix = rawPrefix.isEmpty() ? "" : (rawPrefix + ":");
