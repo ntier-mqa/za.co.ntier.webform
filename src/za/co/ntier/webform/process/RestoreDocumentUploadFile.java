@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MChangeLog;
@@ -38,7 +39,7 @@ import za.co.ntier.api.model.X_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.form.AttachmentUtil;
 
-@org.adempiere.base.annotation.Process(name="za.co.ntier.webform.process.SdfUnlinkOrg")
+@org.adempiere.base.annotation.Process(name="za.co.ntier.webform.process.RestoreDocumentUploadFile")
 public class RestoreDocumentUploadFile extends SvrProcess{
 	
 	private static CLogger	log = CLogger.getCLogger (RestoreDocumentUploadFile.class);
@@ -67,10 +68,10 @@ public class RestoreDocumentUploadFile extends SvrProcess{
 				, MChangeLog.COLUMNNAME_AD_Table_ID, MChangeLog.COLUMNNAME_EventChangeLog
 				, MChangeLog.COLUMNNAME_Record_ID);
 		
-		log.warning("sqlQueryDocUploadDetails:");
-		log.warning(sqlQueryDocUploadDetails);
-		log.warning("documentUploadFileTableID:");
-		log.warning(String.valueOf(documentUploadFileTableID));
+		log.info("sqlQueryDocUploadDetails:");
+		log.info(sqlQueryDocUploadDetails);
+		log.info("documentUploadFileTableID:");
+		log.info(String.valueOf(documentUploadFileTableID));
 	
 		return DB.getSQLArrayObjectsEx(null, sqlQueryDocUploadDetails, documentUploadFileTableID, MChangeLog.EVENTCHANGELOG_Delete);
 	}
@@ -101,7 +102,7 @@ public class RestoreDocumentUploadFile extends SvrProcess{
 				path.append(File.separator).append(fileName);
 				
 				docUploadFile.setZZOldAttachmentPath(path.toString());
-				log.warning("path:" + docUploadFile.getZZOldAttachmentPath());
+				log.info("path:" + docUploadFile.getZZOldAttachmentPath());
 			}
 			
 			if (currentRecordId == 0 || recordId != currentRecordId) {
@@ -128,9 +129,10 @@ public class RestoreDocumentUploadFile extends SvrProcess{
 			}else if (columnId == documentUploadFileTable.getColumn(I_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUpload_ID).getAD_Column_ID()) {
 				X_ZZDocumentUpload docUploadDef = (X_ZZDocumentUpload)MTable.get(getCtx(), I_ZZDocumentUpload.Table_Name).getPO(Integer.valueOf(value), null);
 				if (docUploadDef == null) {
-					log.warning(I_ZZDocumentUpload.Table_Name + " deleted for id:" + value);
-					addLog(I_ZZDocumentUpload.Table_Name + " deleted for id:" + value);
+					log.warning(I_ZZDocumentUpload.Table_Name + " deleted for id:" + value + " so don't re-create for:" + docUploadFile.getZZOldAttachmentPath());
+					addLog(I_ZZDocumentUpload.Table_Name + " deleted for id:" + value + " so don't re-create for:" + docUploadFile.getZZOldAttachmentPath());
 					isIgnoreCurrentId = true;
+					log.warning("");
 					docUploadFiles.remove(docUploadFile);
 				}else {
 					docUploadFile.setZZDocumentUpload_ID(Integer.valueOf(value));
@@ -177,6 +179,7 @@ public class RestoreDocumentUploadFile extends SvrProcess{
 			
 			X_ZZ_Application_Form appForm = (X_ZZ_Application_Form)appFormTable.getPO(docUploadFileTest.getZZ_Application_Form_ID(), null);
 			if (appForm == null) {// its appform is deleted also so don't need to recover
+				
 				continue;
 			}
 			
@@ -188,7 +191,8 @@ public class RestoreDocumentUploadFile extends SvrProcess{
 			queryCurrentAttach.setParameters(docUploadFileTest.getZZ_Application_Form_ID(), docUploadFileTest.getZZDocumentUpload_ID());
 			X_ZZDocumentUploadFile currentAttach = queryCurrentAttach.firstOnly();
 			if (currentAttach != null) {// app have new attach for ZZDocumentUpload_ID so don't need recover ZZDocumentUploadFile for same ZZDocumentUpload_ID
-				addBufferLog(0, null, null, "don't need to restore for", currentAttach.get_Table_ID(), currentAttach.getZZDocumentUploadFile_ID());					
+				log.warning("exists new attachment so don't need to restore for:" + docUploadFileTest.getZZOldAttachmentPath());
+				addBufferLog(0, null, null, "don't need to re-create for:" + docUploadFileTest.getZZOldAttachmentPath(), currentAttach.get_Table_ID(), currentAttach.getZZDocumentUploadFile_ID());					
 				continue;
 			}
 			
@@ -196,7 +200,10 @@ public class RestoreDocumentUploadFile extends SvrProcess{
 				X_ZZDocumentUploadFile nextDocUploadFiles = docUploadFiles.get(index + 1);
 				if (docUploadFileTest.getZZ_Application_Form_ID() == nextDocUploadFiles.getZZ_Application_Form_ID() 
 						&&  docUploadFileTest.getZZDocumentUpload_ID() == nextDocUploadFiles.getZZDocumentUpload_ID()) {
-					//next item is newer so don't restore this one 
+					if (nextDocUploadFiles.getT_DateTime().before(docUploadFileTest.getT_DateTime())) {
+						throw new AdempiereException("wrong order");
+					}
+					log.warning("exists deleted newer so don't need to re-create for:" + docUploadFileTest.getZZOldAttachmentPath());
 					continue;
 				}
 			}
