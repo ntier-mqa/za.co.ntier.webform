@@ -1017,7 +1017,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		  
 		  tmPhysicalAddress.setLoadSavedDataHandle(tm -> {
 			  if (assessorPerson != null && assessorPerson.getZZPhysicalLocation_ID() > 0) {
-				  X_C_Location physicalLocation = MLocation.get(assessorPerson.getZZPhysicalLocation_ID());
+				  X_C_Location physicalLocation = MLocation.getCopy(Env.getCtx(), assessorPerson.getZZPhysicalLocation_ID(), null);
 				  tm.getRow().setDataOneRow(physicalLocation);
 				  
 			  }else {
@@ -1028,7 +1028,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		  
 		  tmPostalAddress.setLoadSavedDataHandle(tm -> {
 			  if (assessorPerson != null && assessorPerson.getZZPostalLocation_ID() > 0) {
-				  X_C_Location postalLocation = MLocation.get(assessorPerson.getZZPostalLocation_ID());
+				  X_C_Location postalLocation = MLocation.getCopy(Env.getCtx(), assessorPerson.getZZPostalLocation_ID(), null);
 				  tm.getRow().setDataOneRow(postalLocation);
 			  }else {
 				  tm.getRow().setDataOneRow(null);
