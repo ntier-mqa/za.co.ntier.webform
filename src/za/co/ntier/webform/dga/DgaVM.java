@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -49,6 +50,7 @@ import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
+import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
@@ -105,63 +107,28 @@ public class DgaVM extends BaseAppVM{
 		List<X_ZZDocumentUpload> docUploads = MTable.get(Env.getCtx(), I_ZZDocumentUpload.Table_Name)
 				.createQuery(I_ZZDocumentUpload.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?", null)
 				.setParameters(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID()).list();
+		
+		TableModel tmUploadDocInfo = initUploadTab(mainTab, "Upload Document", docUploads);
+		
+		if (tmUploadDocInfo != null) {
+			tmUploadDocInfo.setBeforeSave(beforeSave);
+			tmUploadDocInfo.setLoadSavedDataHandle(tableModel -> {
+				if (applicationForm != null) {
+					Query uploadDocQuery = MTable.get(Env.getCtx(), X_ZZDocumentUploadFile.Table_Name).createQuery(
+				            String.format("%s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID), null
+				        );
 
-		if (docUploads.size() == 0)
-			return;
-		
-		List<ColumnModel> cols = new ArrayList<>();
-		
-		Function<X_ZZDocumentUpload, String> convertDisplay = docUploadDef -> {
-				//if (docUploadDef == null)
-					//return null;
-				return docUploadDef.getName();
-			};
-		
-		final PresetTitleColumnModel<X_ZZDocumentUpload> documentNameCol = PresetTitleCellModel.getPresetTitleColumnModel(
-				"Name"
-				, convertDisplay
-				);
-		documentNameCol.setMatchingLoaded((rowModel, poSaved) -> {
-			X_ZZDocumentUpload docDef = (X_ZZDocumentUpload)rowModel.get(documentNameCol).getValue();
-			return docDef.getZZDocumentUpload_ID() == ((X_ZZDocumentUploadFile)poSaved).getZZDocumentUpload_ID();
-		});
-				
-		cols.add(documentNameCol);
-		
-		UploadColumnModel uploadCol = UploadCellModel.getUploadColumnModel("", null, null, "doc");
-		uploadCol.setRefDocUploadDefCol(documentNameCol);
-		cols.add(uploadCol);
-		
-		NavTabPanel uploadDocInfoTab = new NavTabPanel(mainTab);
-		uploadDocInfoTab.setTabTitle("Upload Document");
-		
-		TableModel tmUploadDocInfo = TableModel.getTableBean(TableModel.class, cols, false, I_ZZDocumentUploadFile.Table_Name);
-		tmUploadDocInfo.setViewModel(TableModel.ViewType.VIEW_GRID);
-		tmUploadDocInfo.setSclass("uploadDocInfo");
-		tmUploadDocInfo.setPoSupplier(rowModel -> {
-			X_ZZDocumentUploadFile po = new X_ZZDocumentUploadFile(Env.getCtx(), 0, null);
-			X_ZZDocumentUpload docDef = (X_ZZDocumentUpload)rowModel.get(documentNameCol).getValue();
-			po.setName(docDef.getName());
-			po.setZZDocumentUpload_ID(docDef.getZZDocumentUpload_ID());
-			return po;
-		});
-		tmUploadDocInfo.setBeforeSave(beforeSave);
-		
-		List<PO> documentUploadFiles = null;
-		if (applicationForm != null) {
-			Query uploadDocQuery = MTable.get(Env.getCtx(), X_ZZDocumentUploadFile.Table_Name).createQuery(
-		            String.format("%s = ?", X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID), null
-		        );
-
-	        documentUploadFiles = uploadDocQuery
-	            .setOrderBy(X_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID)
-	            .setParameters(applicationForm.getZZ_Application_Form_ID())
-	            .list();
+					List<PO> documentUploadFiles = uploadDocQuery
+			            .setOrderBy(X_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID)
+			            .setParameters(applicationForm.getZZ_Application_Form_ID())
+			            .list();
+			        
+					tableModel.resetMultiPo(RowData.standardToMultiPo(documentUploadFiles), tableModel.getTitleInfo());
+				}
+			});
+			
+			tmUploadDocInfo.loadSavedData();
 		}
-		
-		tmUploadDocInfo.init(documentUploadFiles, TitleInfo.createTitleInfo(DgaVM.getTitleMap(documentNameCol, docUploads)));
-		
-		uploadDocInfoTab.getCompModel().add(tmUploadDocInfo);
 		
 	}
 	

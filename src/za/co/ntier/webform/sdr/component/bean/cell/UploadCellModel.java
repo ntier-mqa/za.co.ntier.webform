@@ -129,6 +129,11 @@ public class UploadCellModel extends CellModel {
 	}
 	
 	@Override
+	public void saveUIToDao(PO daoPerCol) {
+		daoPerCol.set_ValueOfColumn(getColModel().getDaoPropertyName(), fileName);
+	}
+	
+	@Override
 	public void setValueFromDao(PO daoPerCol) {
 		String fileName = AttachmentUtil.getFileNameFromAttachmentEntries(
 				daoPerCol,
@@ -183,5 +188,10 @@ public class UploadCellModel extends CellModel {
 	@Override
 	public boolean isEmpty() {
 		return StringUtils.isEmpty(fileName);
+	}
+	
+	@Override
+	public boolean isChangeValueFromDefault() {
+		return fileName != null;
 	}
 }

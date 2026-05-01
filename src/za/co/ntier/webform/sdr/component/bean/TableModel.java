@@ -442,8 +442,17 @@ public class TableModel implements ISaveForm {
 	}
 
 	private Consumer<RowModel> decoratorCell;
+	
+	/**
+	 * it happen before call saveEx on each po (of row)
+	 * in case call before save all po then PO = null
+	 */
 	private BiFunction<PO, RowModel, Boolean> beforeSave;
 	
+	/**
+	 * it happen after call saveEx on each po (of row)
+	 * in case call after save all po then PO = null
+	 */
 	private BiFunction<PO, RowModel, Boolean> afterSave;
 	
 	private BiFunction<ISaveForm, String, Boolean> afterAppSaveHandle;
@@ -777,8 +786,12 @@ public class TableModel implements ISaveForm {
 	}
 	
 	public void resetMultiPo(List<List<PO>> savedDatas) {
+		resetMultiPo(savedDatas, TitleInfo.empty);
+	}
+	
+	public void resetMultiPo(List<List<PO>> savedDatas, TitleInfo titleInfo) {
 		getRows().clear();
-		initMultiPo(savedDatas);
+		initMultiPo(savedDatas, titleInfo);
 		if (isCardView()) {
 			resetActiveRow();
 		}
@@ -796,6 +809,11 @@ public class TableModel implements ISaveForm {
 		init(savedDatas, TitleInfo.empty);
 	}
 	
+	private TitleInfo titleInfo;
+	public TitleInfo getTitleInfo() {
+		return titleInfo;
+	}
+	
 	public void init(List<PO> singlePOs, TitleInfo titleInfo) {
 		initMultiPo(RowData.standardToMultiPo(singlePOs), titleInfo);
 	}
@@ -807,6 +825,9 @@ public class TableModel implements ISaveForm {
 	public void initMultiPo(List<List<PO>> savedDatas, TitleInfo titleInfo) {
 		if(titleInfo == null)
 			titleInfo = TitleInfo.empty;
+		
+		this.titleInfo = titleInfo;
+		
 		removedRows = new ArrayList<RowModel.RowData>();
 		// init rows with rowTitles
 		if (titleInfo.rowTitles != null)

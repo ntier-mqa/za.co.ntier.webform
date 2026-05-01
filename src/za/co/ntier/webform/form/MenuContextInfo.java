@@ -16,6 +16,7 @@ public class MenuContextInfo {
 	private String recordUU;
 	private int recordID = 0;
 	private Map<String, String> moreContext = new HashMap<>();
+	private int formId;
 	
 	public String getContextParam(String paramKey) {
 		return moreContext.get(paramKey);
@@ -149,5 +150,13 @@ public class MenuContextInfo {
 	 */
 	public Map<String, String> getMoreContext() {
 		return moreContext;
+	}
+
+	public int getFormId() {
+		return formId;
+	}
+
+	public void setFormId(int formId) {
+		this.formId = formId;
 	}
 }

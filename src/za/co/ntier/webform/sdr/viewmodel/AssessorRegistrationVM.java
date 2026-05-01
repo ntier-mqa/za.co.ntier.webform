@@ -32,14 +32,18 @@ import org.zkoss.zk.ui.event.EventListener;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
+import za.co.ntier.api.model.I_ZZDocumentUpload;
 import za.co.ntier.api.model.I_ZZLinkAssessorQualification;
 import za.co.ntier.api.model.I_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZQualification;
 import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
+import za.co.ntier.api.model.X_ZZDocumentUpload;
+import za.co.ntier.api.model.X_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZLinkAssessorQualification;
 import za.co.ntier.api.model.X_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
@@ -47,6 +51,7 @@ import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZQualification;
 import za.co.ntier.api.model.X_ZZSkillsProgramme;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
+import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
@@ -270,6 +275,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		initEducationDetail();
 		initQualification();
 		initSkillsProgramme();
+		initUploadDocument();
 	}
 
 	ColumnModel idNoCol;
@@ -782,7 +788,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			X_ZZQualification qualification = (X_ZZQualification)rowModel.getRowData().getDataNullable(I_ZZQualification.Table_Name);
 			linkPO.setZZQualification_ID(qualification.getZZQualification_ID());
 			
-			linkPO.saveEx(linkPO.get_TrxName());
+			linkPO.saveEx(assessorPerson.get_TrxName());
 			
 			return true;
 		});
@@ -868,7 +874,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Registrationstartdate)
-				, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
+				, I_ZZSkillsProgramme.COLUMNNAME_Registrationstartdate)
 			.setReadonly(true)
 			.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(registrationStartDateCol);
@@ -939,7 +945,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			X_ZZSkillsProgramme skillsProgramme = (X_ZZSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZSkillsProgramme.Table_Name);
 			linkPO.setZZSkillsProgramme_ID(skillsProgramme.getZZSkillsProgramme_ID());
 			
-			linkPO.saveEx(linkPO.get_TrxName());
+			linkPO.saveEx(assessorPerson.get_TrxName());
 			
 			return true;
 		});
@@ -983,61 +989,104 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	}
 	
 	
-	  private void initAddresss() { 
-		  TableModel tmPostalAddress = BuildFormUtil.getAddressDetailComp(
-				  SettingTableMode.getSimple("Postal"), 
-				  SettingAddress.getSimple("Postal"));
-		  
-		  TableModel tmPhysicalAddress = BuildFormUtil.getAddressDetailComp(
-				  SettingTableMode.getSimple("Physical"), 
-				  SettingAddress.getSimple("Physical", tmPostalAddress));
-		  
-		  NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
-		  addressDetailTab.setSclass("sdr-address sdr-address-assessor");
-		  addressDetailTab.setTabTitle("Address Details");
-		  
-		  addressDetailTab.getCompModel().add(tmPhysicalAddress);
-		  addressDetailTab.getCompModel().add(tmPostalAddress);
-		  
-		  tmPhysicalAddress.setAfterAppSave((tableModel, trxName) -> {
-			  TableModel tmAddress = (TableModel)tableModel;
-			  X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
-			  assessorPerson.setZZPhysicalLocation_ID(location.getC_Location_ID());
-			  assessorPerson.saveEx(trxName);
-			  return true;
-		  });
-		  
-		  tmPostalAddress.setAfterAppSave((tableModel, trxName) -> {
-			  TableModel tmAddress = (TableModel)tableModel;
-			  X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
-			  assessorPerson.setZZPostalLocation_ID(location.getC_Location_ID());
-			  assessorPerson.saveEx(trxName);
-			  return true;
-		  });
-		  
-		  tmPhysicalAddress.setLoadSavedDataHandle(tm -> {
-			  if (assessorPerson != null && assessorPerson.getZZPhysicalLocation_ID() > 0) {
-				  X_C_Location physicalLocation = MLocation.getCopy(Env.getCtx(), assessorPerson.getZZPhysicalLocation_ID(), null);
-				  tm.getRow().setDataOneRow(physicalLocation);
-				  
-			  }else {
-				  tm.getRow().setDataOneRow(null);
-			  }
-			  tm.reloadDao();
-		  });
-		  
-		  tmPostalAddress.setLoadSavedDataHandle(tm -> {
-			  if (assessorPerson != null && assessorPerson.getZZPostalLocation_ID() > 0) {
-				  X_C_Location postalLocation = MLocation.getCopy(Env.getCtx(), assessorPerson.getZZPostalLocation_ID(), null);
-				  tm.getRow().setDataOneRow(postalLocation);
-			  }else {
-				  tm.getRow().setDataOneRow(null);
-			  }
-			  tm.reloadDao();
-		  });
-	  }
+	private void initAddresss() { 
+		TableModel tmPostalAddress = BuildFormUtil.getAddressDetailComp(
+			  SettingTableMode.getSimple("Postal"), 
+			  SettingAddress.getSimple("Postal"));
+  
+		TableModel tmPhysicalAddress = BuildFormUtil.getAddressDetailComp(
+				SettingTableMode.getSimple("Physical"), 
+				SettingAddress.getSimple("Physical", tmPostalAddress));
+  
+		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
+		addressDetailTab.setSclass("sdr-address sdr-address-assessor");
+		addressDetailTab.setTabTitle("Address Details");
+	  
+		addressDetailTab.getCompModel().add(tmPhysicalAddress);
+		addressDetailTab.getCompModel().add(tmPostalAddress);
+	  
+		tmPhysicalAddress.setAfterAppSave((tableModel, trxName) -> {
+			TableModel tmAddress = (TableModel)tableModel;
+			X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
+			if (location != null) {
+				assessorPerson.setZZPhysicalLocation_ID(location.getC_Location_ID());
+				assessorPerson.saveEx(trxName);
+			}
+			
+			return true;
+		});
+	  
+		tmPostalAddress.setAfterAppSave((tableModel, trxName) -> {
+			TableModel tmAddress = (TableModel)tableModel;
+			X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
+			if (location != null) {
+				assessorPerson.setZZPostalLocation_ID(location.getC_Location_ID());
+				assessorPerson.saveEx(trxName);
+			}
+			
+			return true;
+		});
+	  
+		tmPhysicalAddress.setLoadSavedDataHandle(tm -> {
+			if (assessorPerson != null && assessorPerson.getZZPhysicalLocation_ID() > 0) {
+				X_C_Location physicalLocation = MLocation.getCopy(Env.getCtx(), assessorPerson.getZZPhysicalLocation_ID(), null);
+				tm.getRow().setDataOneRow(physicalLocation);
+			  
+			}else {
+				tm.getRow().setDataOneRow(null);
+			}
+			tm.reloadDao();
+		});
+	  
+		tmPostalAddress.setLoadSavedDataHandle(tm -> {
+			if (assessorPerson != null && assessorPerson.getZZPostalLocation_ID() > 0) {
+				X_C_Location postalLocation = MLocation.getCopy(Env.getCtx(), assessorPerson.getZZPostalLocation_ID(), null);
+				tm.getRow().setDataOneRow(postalLocation);
+			}else {
+				tm.getRow().setDataOneRow(null);
+			}
+			tm.reloadDao();
+		});
+	}
 	 
 	
+	private void initUploadDocument() {
+		 Query docUpQuery = MTable.get(Env.getCtx(), I_ZZDocumentUpload.Table_Name)
+				.createQuery(String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_AD_Form_ID), null);
+		docUpQuery.addTableDirectJoin(I_ZZ_Program_Master_Data.Table_Name);
+		List<X_ZZDocumentUpload> docUploads	= docUpQuery.setParameters(menuContextInfo.getFormId()).list();
+		
+		TableModel tmUploadDocInfo = initUploadTab(mainTab, "Upload Document", docUploads);
+		
+		if (tmUploadDocInfo != null) {
+			tmUploadDocInfo.setBeforeSave((po, rowModel) -> {
+				if (po == null)
+					return true;
+				
+				X_ZZDocumentUploadFile documentUploadFile = (X_ZZDocumentUploadFile)po;
+				if (documentUploadFile.getZZAssessorPerson_ID() == 0)
+					documentUploadFile.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
+				
+				return true;
+			});
+			
+			tmUploadDocInfo.setLoadSavedDataHandle(tableModel -> {
+				if (assessorPerson != null) {
+					Query uploadDocQuery = MTable.get(Env.getCtx(), X_ZZDocumentUploadFile.Table_Name).createQuery(
+				            String.format("%s = ?", X_ZZAssessorPerson.COLUMNNAME_ZZAssessorPerson_ID), null
+				        );
+
+					List<PO> documentUploadFiles = uploadDocQuery
+			            .setOrderBy(X_ZZDocumentUploadFile.COLUMNNAME_ZZDocumentUploadFile_ID)
+			            .setParameters(assessorPerson.getZZAssessorPerson_ID())
+			            .list();
+			        
+					tableModel.resetMultiPo(RowData.standardToMultiPo(documentUploadFiles), tableModel.getTitleInfo());
+				}
+			});
+		}
+	}
+	  
 	public TableModel getTmNames() {
 		return tmNames;
 	}
@@ -1120,7 +1169,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		super.doSave(trxName);
 		assessorPerson.setAD_User_ID(person.getAD_User_ID());
-		assessorPerson.save(trxName);
+		assessorPerson.saveEx(trxName);
 	}
 	
 	@Override

@@ -25,7 +25,7 @@ public class QualityAssurance extends ADForm{
 	@Override
 	protected void init(int adFormId, String name) {
 		menuContextInfo = new MenuContextInfo(null, null, null, false, null, null);
-		
+		menuContextInfo.setFormId(adFormId);
 		MForm adForm = MForm.get(adFormId);
 		
 		String zulPathRelative = null;

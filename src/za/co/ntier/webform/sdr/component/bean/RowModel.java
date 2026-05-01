@@ -347,7 +347,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 				
 		PO daoPerCol = null;
 		for (CellModel cellModel : values()) {
-			if (StringUtils.isBlank(cellModel.getColModel().getDaoPropertyName()) 
+			if ((StringUtils.isBlank(cellModel.getColModel().getDaoPropertyName()) && CellModel.BTUPLOAD_CELL != cellModel.getCellType()) 
 					|| StringUtils.isBlank(cellModel.getTableName()) 
 					|| isIgnore(cellModel.getTableName()))
 				continue;

@@ -56,6 +56,7 @@ public class WebForm extends ADForm {
 	@Override
 	protected void init(int adFormId, String name) {
 		menuContextInfo = parseMenuContectInfo();
+		menuContextInfo.setFormId(adFormId);
 		super.init(adFormId, menuContextInfo.getFormTitle());
 	}
 
