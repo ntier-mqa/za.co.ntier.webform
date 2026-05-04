@@ -29,7 +29,7 @@ jobs:
           # This uses the Organization secret you set up
           GH_TOKEN: ${{ secrets.BUILD_TRIGGER_TOKEN }}
         run: |
-          gh workflow run "Central Build" \
+          gh workflow run "Build For MQA" \
             --repo "ntier-mqa/za.co.ntier.build" \
             --ref "${{ steps.branch-mapping.outputs.target_branch }}" \
             -f source_repo="${{ github.repository }}" \
