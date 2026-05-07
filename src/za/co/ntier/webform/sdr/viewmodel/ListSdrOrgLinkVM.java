@@ -58,7 +58,7 @@ public class ListSdrOrgLinkVM {
 	
 	@Command
 	public void editLinkedOrganisation(@BindingParam("row") Map<String, Object> row) {		
-		MasterUtil.openForm(MasterUtil.SDRRegistryOrgLinkUU, Integer.valueOf(((BigDecimal)row.get("ZZSdfOrganisation_ID")).intValue()));
+		MasterUtil.openFormByMenu(MasterUtil.SDRRegistryOrgLinkUU, Integer.valueOf(((BigDecimal)row.get("ZZSdfOrganisation_ID")).intValue()));
 	}
 	
 	@Command
@@ -76,7 +76,7 @@ public class ListSdrOrgLinkVM {
 	
 	@Command
 	public void editOrganisation(@BindingParam("row") Map<String, Object> row) {		
-		MasterUtil.openForm(MasterUtil.SDRMaintainOrganisationUU, Integer.valueOf(((BigDecimal)row.get("ZZSdfOrganisation_ID")).intValue()));
+		MasterUtil.openFormByMenu(MasterUtil.SDRMaintainOrganisationUU, Integer.valueOf(((BigDecimal)row.get("ZZSdfOrganisation_ID")).intValue()));
 	}
 	
 	@Command

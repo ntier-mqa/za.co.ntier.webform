@@ -665,7 +665,7 @@ public class DgaVM extends BaseAppVM{
 
 		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
-			MasterUtil.openForm("3b0c2d85-8f2e-44e9-b030-4b134159a052");
+			MasterUtil.openFormByMenu("3b0c2d85-8f2e-44e9-b030-4b134159a052");
 		});	
 		
 		if (isSubmit)

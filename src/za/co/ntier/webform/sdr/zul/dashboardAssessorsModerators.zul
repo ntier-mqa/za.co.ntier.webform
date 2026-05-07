@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import za.co.ntier.webform.form.WebForm ?>
+<?import za.co.ntier.api.model.I_ZZAssessorPerson_v ?>
+<?import za.co.ntier.webform.form.MasterUtil ?>
+
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vm') @init('za.co.ntier.webform.sdr.viewmodel.DashboardAssessorsModeratorsVM')">
+      
+<div sclass="sectionHeader">
+  <label sclass="sectionHeaderTitle" value="Dashboard Assessor-Moderator"/>
+  <button label="Refresh List" 
+  onClick="@command('cmdRefreshList')" />
+</div>
+
+
+
+<grid vflex="1" model="@load(vm.assessors)" sizedByContent="true" emptyMessage="No applications found">
+  <columns>
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZFirstName) ))" width="100px"/>
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZMiddleName) ))" width="100px"/>
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZSurname) ))" width="100px"/>
+  	
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_EMail) ))" width="100px"/>
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole) ))" width="100px"/>
+  	
+    <column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZ_DocStatus) ))" width="100px"/>
+    <column label="Action" align="center"/>
+    
+  </columns>
+  <rows>
+    <template name="model" var="item">
+      <row>
+      	<label value="@init(item.ZZFirstName)"/>
+        <label value="@init(item.ZZMiddleName)"/>
+        <label value="@init(item.ZZSurname)"/>
+        <label value="@init(item.EMail)"/>
+        <label value="@init(item.ZZAssessorRole)"/>
+        <label value="@init(item.ZZ_DocStatus)"/>
+        <div sclass="formBottomPanel">
+
+	       	<button
+	           	label="Edit"
+	           	onClick="@command('editAssessor', row=item)"/>
+        </div>
+        
+      </row>
+    </template>
+  </rows>
+</grid>
+
+</idspace>

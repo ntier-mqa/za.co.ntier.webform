@@ -81,7 +81,7 @@
             <!-- list - Area - province -->
             <listbox
               if="${ vmRowRender.row[col].cellType eq CellModel.LIST_CELL }"
-              readonly="@init(col.readonly)"
+              disabled="@init(col.readonly)"
 
               mold="select"
               model="@bind(vmRowRender.row[col].model)"

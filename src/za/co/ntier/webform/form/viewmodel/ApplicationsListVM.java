@@ -94,7 +94,7 @@ public class ApplicationsListVM {
 	    // 3) Open form once
 	    DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
 
-	    MasterUtil.openForm(
+	    MasterUtil.openFormByMenu(
 	        menu.getAD_Menu_UU(),
 	        I_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_UU,
 	        app.getZZ_Application_Form_UU()

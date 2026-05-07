@@ -36,6 +36,7 @@ import org.compiere.model.MCity;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MCountry;
+import org.compiere.model.MForm;
 import org.compiere.model.MMailText;
 import org.compiere.model.MMenu;
 import org.compiere.model.MRefList;
@@ -599,36 +600,51 @@ public class MasterUtil {
 
 	}
 
-	public static void openForm(String menuUU, String recordUU) {
-		openForm(menuUU, WebForm.recordUUMenuContextKeyNonPlus, recordUU);
+	public static void openFormByMenu(String menuUU, String recordUU) {
+		openFormByMenu(menuUU, WebForm.recordUUMenuContextKeyNonPlus, recordUU);
 	}
 	
-	public static void openForm(String menuUU, Integer recordID) {
+	public static void openFormByMenu(String menuUU, Integer recordID) {
 		if (recordID != null)
-			openForm(menuUU, WebForm.recordIDMenuContextKeyNonPlus, recordID.toString());
+			openFormByMenu(menuUU, WebForm.recordIDMenuContextKeyNonPlus, recordID.toString());
 	}
 	
-	public static void openForm(String menuUU) {
-		openForm(menuUU, null, null);
+	public static void openFormByMenu(String menuUU) {
+		openFormByMenu(menuUU, null, null);
 	}
 	
-	public static void openForm(String menuUU, String key, String value) {
+	public static void openFormByMenu(String menuUU, String key, String value) {
 		MMenu menu = new MMenu(Env.getCtx(), menuUU, null);
-		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
+		
 		
 		String contextVariables = menu.getPredefinedContextVariables();
 		if (contextVariables == null && (key != null && value != null)) {
 			contextVariables = "";
 		}
 		
+		contextVariables += buildContextVariables(key, value);
+		
+		openForm(menu.getAD_Form_ID(), contextVariables, menu.isSOTrx());
+	}
+	
+	private static String buildContextVariables(String key, String value) {
 		if (key != null && value != null) {
-			contextVariables += String.format("\n%s=%s", key, value);
+			return String.format("\n%s=%s", key, value);
 		}
 		
+		return "";
+	}
+	
+	private static void openForm (int formId, String contextVariables, boolean isSOTrx) {
+		DefaultDesktop desktop = (DefaultDesktop) SessionManager.getAppDesktop();
 		desktop.setPredefinedContextVariables(contextVariables);
-		desktop.setMenuIsSOTrx(menu.isSOTrx());
-        desktop.openForm(menu.getAD_Form_ID());  
-		
+		desktop.setMenuIsSOTrx(isSOTrx);
+        desktop.openForm(formId);
+	}
+	
+	public static void openFormByUU (String formUU, int value) {
+		MForm form = new MForm(Env.getCtx(), formUU, null);
+		openForm(form.getAD_Form_ID(), buildContextVariables(WebForm.recordIDMenuContextKeyNonPlus, Integer.toString(value)), false);
 	}
 
 	public static void showInfoDialog(String msgTile, List<String> msgContent, Consumer<Object> onOkDialog) {

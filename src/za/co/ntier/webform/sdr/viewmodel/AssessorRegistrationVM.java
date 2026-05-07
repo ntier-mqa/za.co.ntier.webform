@@ -20,6 +20,7 @@ import org.compiere.model.MLocation;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_User;
 import org.compiere.model.X_C_Location;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -164,37 +165,68 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		setMainTab(new NavTab());
 		initForm();
 		
-		idNoCol.setEventHandle((event, cellMode) -> {
-			if (!Objects.equals(cellMode.getDirtyValue(), cellMode.getValue())){
-				return;
-			}
-			
-			Object idValue = cellMode.getDirtyValue();
-			
-			@SuppressWarnings("unchecked")
-			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode.getRowModel().get(alternateIDTypeCol);
-			
-			if (idValue != null)
-				cellMode.getColModel().setDefaultValue(idValue);//help it don't set to blank when reload data
-			
-			if (idValue != null && alternateIDCellMode.getSelectedItem() != null)
-				loadSaved((String)idValue, alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
-
-		});
+		if (menuContextInfo.getRecordID() <= 0) {
 		
-		alternateIDTypeCol.setEventHandle((event, cellMode) -> {
-			@SuppressWarnings("unchecked")
-			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode;
+			idNoCol.setEventHandle((event, cellMode) -> {
+				if (!Objects.equals(cellMode.getDirtyValue(), cellMode.getValue())){
+					return;
+				}
+				
+				Object idValue = cellMode.getDirtyValue();
+				
+				@SuppressWarnings("unchecked")
+				ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode.getRowModel().get(alternateIDTypeCol);
+				
+				if (idValue != null)
+					cellMode.getColModel().setDefaultValue(idValue);//help it don't set to blank when reload data
+				
+				if (idValue != null && alternateIDCellMode.getSelectedItem() != null)
+					loadSaved((String)idValue, alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
+	
+			});
 			
-			alternateIDCellMode.resetDefaultValue();
-			alternateIDCellMode.getColModel().setDefaultValue(alternateIDCellMode.getSelectedItem().getName(), MasterUtil.nameAlternateIdTypeCompare);//help it don't set back to rsa id when reload data
-			
-			IDCellModel idCellMode = (IDCellModel)cellMode.getRowModel().get(idNoCol);
-			
-			idCellMode.validate();
-			if (alternateIDCellMode.getSelectedItem() != null && idCellMode.getDirtyValue() != null)
-				loadSaved((String)idCellMode.getDirtyValue(), alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
-		});
+			alternateIDTypeCol.setEventHandle((event, cellMode) -> {
+				@SuppressWarnings("unchecked")
+				ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode;
+				
+				alternateIDCellMode.resetDefaultValue();
+				alternateIDCellMode.getColModel().setDefaultValue(alternateIDCellMode.getSelectedItem().getName(), MasterUtil.nameAlternateIdTypeCompare);//help it don't set back to rsa id when reload data
+				
+				IDCellModel idCellMode = (IDCellModel)cellMode.getRowModel().get(idNoCol);
+				
+				idCellMode.validate();
+				if (alternateIDCellMode.getSelectedItem() != null && idCellMode.getDirtyValue() != null)
+					loadSaved((String)idCellMode.getDirtyValue(), alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
+			});
+		}
+		
+		if (menuContextInfo.getRecordID() > 0) {
+			loadForEdit();
+		}
+	}
+	
+	private void loadForEdit() {
+		alternateIDTypeCol.setReadonly(true);
+		idNoCol.setReadonly(true);
+		//Edit mode
+		assessorPerson = (X_ZZAssessorPerson)MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
+				.getPO(menuContextInfo.getRecordID(), null);
+		if (assessorPerson == null) {
+			MasterUtil.showInfoDialog("ZZAssessorNotFoundAssessor", MasterUtil.fCloseActiveWindow);
+		}else {
+			person = (MUser_New)MTable.get(Env.getCtx(), I_AD_User.Table_Name)
+					.getPO(assessorPerson.getAD_User_ID(), null);
+		}
+		
+		if (person == null) {
+			MasterUtil.showInfoDialog("ZZAssessorNotFoundUser", MasterUtil.fCloseActiveWindow);
+		}
+		
+		daoManage.setDao(assessorPerson);
+		daoManage.setDao(person);
+		
+		isNew = false;
+		loadData();
 	}
 
 	private void loadSaved (String idValue, int idTypeId) {
@@ -670,7 +702,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		tabPanelEducationDetail.getCompModel().add(tmEducationDetail);
 	}
 	
-	
+	TableModel tmQualificationComp;
 	private void initQualification() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
@@ -681,7 +713,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		chooseQualificationCol.setShowTitle(false);
 		cols.add(chooseQualificationCol);
 		
-		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false, null);
+		tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false, null);
 		tmQualificationComp.setSclass("srd-qualification-scope-comp srd-qualification-scope-comp-assessor");
 		tmQualificationComp.init();
 		

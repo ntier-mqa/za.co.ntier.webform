@@ -3,7 +3,6 @@ package za.co.ntier.webform.form;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.panel.ADForm;
 import org.compiere.model.MForm;
 import org.compiere.model.MTable;
@@ -16,8 +15,8 @@ import org.zkoss.zul.Div;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 
-@org.idempiere.ui.zk.annotation.Form(name = "za.co.ntier.webform.form.QualityAssurance")
-public class QualityAssurance extends ADForm{
+@org.idempiere.ui.zk.annotation.Form(name = "za.co.ntier.webform.form.sdr")
+public class SdrForm extends ADForm{
 
 	private static final long serialVersionUID = 3000374226779334282L;
 	MenuContextInfo menuContextInfo;
@@ -26,15 +25,18 @@ public class QualityAssurance extends ADForm{
 	protected void init(int adFormId, String name) {
 		menuContextInfo = new MenuContextInfo(null, null, null, false, null, null);
 		menuContextInfo.setFormId(adFormId);
+		
+		String recordUUValue = Env.getContext(Env.getCtx(), m_WindowNo, WebForm.recordUUMenuContextKey);
+		menuContextInfo.setRecordUU(recordUUValue);
+		
+		int recordIDValue = Env.getContextAsInt(Env.getCtx(), m_WindowNo, WebForm.recordIDMenuContextKey);
+		menuContextInfo.setRecordID(recordIDValue);
+		
 		MForm adForm = MForm.get(adFormId);
 		
 		String zulPathRelative = null;
-		if ("Assessor Registration".equalsIgnoreCase(adForm.getDescription())) {
-			zulPathRelative = WebForm.class.getResource("/za/co/ntier/webform/sdr/zul/assessorRegistration.zul").toString();
-			
-		}else {
-			throw new AdempiereException("Not Support Form");
-		}
+		
+		zulPathRelative = WebForm.class.getResource("/za/co/ntier/webform/sdr/zul/" + adForm.getDescription()).toString();
 		
 		menuContextInfo.setZulPath(zulPathRelative);
 		
@@ -44,12 +46,8 @@ public class QualityAssurance extends ADForm{
 		X_ZZ_Program_Master_Data programMaster = null;//query.firstOnly();
 		menuContextInfo.setProgramMasterData(programMaster);
 		
-		String title = null;
-		if (programMaster != null) {
-			title = programMaster.getTitle();
-		}else {
-			title = adForm.getName();
-		}
+		String title = adForm.getName();
+
 		menuContextInfo.setFormTitle(title);
 		super.init(adFormId, menuContextInfo.getFormTitle());
 	}
