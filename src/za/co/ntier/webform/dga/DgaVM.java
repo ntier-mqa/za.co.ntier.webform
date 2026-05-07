@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -26,7 +25,6 @@ import org.zkoss.zk.ui.event.InputEvent;
 import com.google.common.base.Objects;
 
 import za.co.ntier.api.model.I_ZZDocumentUpload;
-import za.co.ntier.api.model.I_ZZDocumentUploadFile;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.I_ZZ_EDP_Application;
@@ -44,7 +42,6 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.bean.AddressType;
 import za.co.ntier.webform.form.bean.ProgramType;
-import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
@@ -53,17 +50,13 @@ import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
-import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.PresetTitleCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.SDLCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
-import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
-import za.co.ntier.webform.sdr.component.bean.column.UploadColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
@@ -71,7 +64,7 @@ import za.co.ntier.webform.sdr.viewmodel.BaseAppVM;
 
 public class DgaVM extends BaseAppVM{
 	private MenuContextInfo menuContextInfo;
-	private FormInfo formInfo;
+
 	private NavTab mainTab;
 	private X_ZZ_Application_Form applicationForm; 
 	
@@ -82,10 +75,8 @@ public class DgaVM extends BaseAppVM{
 		return false;
 	}
 	
-	@Init
+	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
-		this.setMenuContextInfo(menuContextInfo);
-		setFormInfo(new FormInfo(menuContextInfo));
 		initApp();
 		
 		mainTab = new NavTab();
@@ -689,14 +680,6 @@ public class DgaVM extends BaseAppVM{
 
 	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
 		this.menuContextInfo = menuContextInfo;
-	}
-
-	public FormInfo getFormInfo() {
-		return formInfo;
-	}
-
-	public void setFormInfo(FormInfo formInfo) {
-		this.formInfo = formInfo;
 	}
 
 	public NavTab getMainTab() {

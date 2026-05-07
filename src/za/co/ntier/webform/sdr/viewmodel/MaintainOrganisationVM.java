@@ -31,7 +31,6 @@ import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
-import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
@@ -50,21 +49,17 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
 public class MaintainOrganisationVM extends BaseAppVM {
-	private FormInfo formInfo;
 	private TableModel names;
 	private TableModel physicalAddress;
 	private TableModel postalAddress;
 	private TableModel contactTableModel;
 	
-	private MenuContextInfo menuContextInfo;
 	MBPartner_New orgPO;
 	
 	private NavTab mainTab;
 	
-	@Init
+	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
-		this.setMenuContextInfo(menuContextInfo);
-		setFormInfo(new FormInfo(menuContextInfo));
 		
 		initMaintab();
 		
@@ -788,35 +783,6 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	public void setNames(TableModel names) {
 		this.names = names;
 	}
-
-	/**
-	 * @return the formInfo
-	 */
-	public FormInfo getFormInfo() {
-		return formInfo;
-	}
-
-	/**
-	 * @param formInfo the formInfo to set
-	 */
-	public void setFormInfo(FormInfo formInfo) {
-		this.formInfo = formInfo;
-	}
-
-	/**
-	 * @return the menuContextInfo
-	 */
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
-
-	/**
-	 * @param menuContextInfo the menuContextInfo to set
-	 */
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
-
 	/**
 	 * @return the mainTab
 	 */

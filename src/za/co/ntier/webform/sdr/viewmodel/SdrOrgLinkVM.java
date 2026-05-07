@@ -32,7 +32,6 @@ import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
-import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
@@ -43,9 +42,6 @@ import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class SdrOrgLinkVM extends BaseAppVM {
-	private MenuContextInfo menuContextInfo;
-	private FormInfo formInfo;
-
 	private X_ZZSdf sdfPo;
 	
 	private TableModel orgSearchModel;
@@ -63,10 +59,8 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	
 	boolean isEditModel = false;
 	
-	@Init
+	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
-		this.setMenuContextInfo(menuContextInfo);
-		setFormInfo(new FormInfo(menuContextInfo));
 		
 		isEditModel = menuContextInfo.getRecordID() != 0;
 		
@@ -278,7 +272,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		List<PO> savedSdrOrgLinks = null;
 		if (isEditModel) {
-			X_ZZSdfOrganisation sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), menuContextInfo.getRecordID(), null);
+			X_ZZSdfOrganisation sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), getMenuContextInfo().getRecordID(), null);
 			savedSdrOrgLinks = List.of(sdfOrgPo);
 			
 			orgPo =  MBPartner_New.get(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
@@ -404,7 +398,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				MTable.get(Env.getCtx(), I_ZZBankingDetails.Table_Name).createQuery(String.format("%s = ?",
 						I_ZZBankingDetails.COLUMNNAME_ZZSdfOrganisation_ID), null);
 			
-				queryBankDetailQuery.setParameters(menuContextInfo.getRecordID());
+				queryBankDetailQuery.setParameters(getMenuContextInfo().getRecordID());
 				
 				X_ZZBankingDetails bankDetailPo = queryBankDetailQuery.first();
 				
@@ -417,34 +411,6 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		return tmBank;
 	}
 	
-	/**
-	 * @return the menuContextInfo
-	 */
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
-
-	/**
-	 * @param menuContextInfo the menuContextInfo to set
-	 */
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
-
-	/**
-	 * @return the formInfo
-	 */
-	public FormInfo getFormInfo() {
-		return formInfo;
-	}
-
-	/**
-	 * @param formInfo the formInfo to set
-	 */
-	public void setFormInfo(FormInfo formInfo) {
-		this.formInfo = formInfo;
-	}
-
 	/**
 	 * @return the bankDetailModel
 	 */
@@ -529,7 +495,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinksMissingOrg"));
 		}
 		
-		int sdfOrganisationID = isEditModel? menuContextInfo.getRecordID():0;
+		int sdfOrganisationID = isEditModel? getMenuContextInfo().getRecordID():0;
 		
 		Object selectedRole = sdfOrgModel.getRow().get(sdrRoleTyleCol).getValue();
 		

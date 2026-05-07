@@ -3,9 +3,6 @@ package za.co.ntier.webform.sdr.component.bean;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import org.compiere.model.PO;
 
 public interface ISaveForm extends IInputState{
 	

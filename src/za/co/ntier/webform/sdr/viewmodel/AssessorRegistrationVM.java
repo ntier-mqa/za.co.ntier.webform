@@ -21,7 +21,6 @@ import org.compiere.model.MLocation;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
-import org.compiere.model.X_AD_User;
 import org.compiere.model.X_C_Location;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -53,7 +52,6 @@ import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZQualification;
 import za.co.ntier.api.model.X_ZZSkillsProgramme;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
@@ -85,8 +83,6 @@ import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
 public class AssessorRegistrationVM extends BaseAppVM {
 	public static String moderatorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
 	public static String assessorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
-	private MenuContextInfo menuContextInfo;
-	private FormInfo formInfo;
 	
 	private TableModel tmNames;
 	private NavTab mainTab;
@@ -97,11 +93,6 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	@Override
 	public Object getMainApp() {
 		return null;
-	}
-
-	@Override
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
 	}
 	
 	@Override
@@ -123,33 +114,11 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		}
 	}
 	
-	/**
-	 * @param menuContextInfo the menuContextInfo to set
-	 */
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
-	
-	/**
-	 * @param formInfo the formInfo to set
-	 */
-	public void setFormInfo(FormInfo formInfo) {
-		this.formInfo = formInfo;
-	}
-	
-	/**
-	 * @return the formInfo
-	 */
-	public FormInfo getFormInfo() {
-		return formInfo;
-	}
-	
 	private MUser_New person;
 	boolean isNew = true;
 	
-	@Init
+	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
-		this.setMenuContextInfo(menuContextInfo);
 			
 		daoManage.setPoSupplier(I_AD_User.Table_Name, daoManage -> {
 			person = new MUser_New(Env.getCtx(), 0, null);
@@ -218,7 +187,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		idNoCol.setReadonly(true);
 		//Edit mode
 		assessorPerson = (X_ZZAssessorPerson)MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
-				.getPO(menuContextInfo.getRecordID(), null);
+				.getPO(getMenuContextInfo().getRecordID(), null);
 		if (assessorPerson == null) {
 			MasterUtil.showInfoDialog("ZZAssessorNotFoundAssessor", MasterUtil.fCloseActiveWindow);
 		}else {
@@ -1094,7 +1063,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		 Query docUpQuery = MTable.get(Env.getCtx(), I_ZZDocumentUpload.Table_Name)
 				.createQuery(String.format("%s = ?", I_ZZ_Program_Master_Data.COLUMNNAME_AD_Form_ID), null);
 		docUpQuery.addTableDirectJoin(I_ZZ_Program_Master_Data.Table_Name);
-		List<X_ZZDocumentUpload> docUploads	= docUpQuery.setParameters(menuContextInfo.getFormId()).list();
+		List<X_ZZDocumentUpload> docUploads	= docUpQuery.setParameters(getMenuContextInfo().getFormId()).list();
 		
 		TableModel tmUploadDocInfo = initUploadTab(mainTab, "Upload Document", docUploads);
 		

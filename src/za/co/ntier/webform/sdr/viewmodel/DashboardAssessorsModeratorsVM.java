@@ -1,8 +1,5 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -12,8 +9,6 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.ListModelList;
 
-import za.co.ntier.api.model.I_AD_User;
-import za.co.ntier.api.model.I_ZZAssessorPerson_v;
 import za.co.ntier.api.model.X_ZZAssessorPerson_v;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;

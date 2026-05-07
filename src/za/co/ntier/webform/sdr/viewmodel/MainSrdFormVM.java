@@ -26,7 +26,6 @@ import za.co.ntier.api.model.X_ZZ_No_Yes_Ref;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
-import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
@@ -44,19 +43,15 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
 public class MainSrdFormVM extends BaseAppVM {
-	private MenuContextInfo menuContextInfo;
-	private FormInfo formInfo;
+	
 	private NavTab mainTab;
 	private TableModel names;
 	X_ZZSdf sdf;
 	MUser_New person;
 	
 	DaoManage personManage = new DaoManage();
-	@Init
+	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
-		this.menuContextInfo = menuContextInfo;
-		
-		setFormInfo(new FormInfo(menuContextInfo));
 		
 		int loginUserId = Env.getAD_User_ID(Env.getCtx());
 		person = new MUser_New(Env.getCtx(), loginUserId, null);
@@ -394,31 +389,6 @@ public class MainSrdFormVM extends BaseAppVM {
 		personDetailBean.init(null, null);
 		
 		return personDetailBean;
-	}
-
-	/**
-	 * @return the menuContextInfo
-	 */
-	public MenuContextInfo getMenuContextInfo() {
-		return menuContextInfo;
-	}
-	/**
-	 * @param menuContextInfo the menuContextInfo to set
-	 */
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
-		this.menuContextInfo = menuContextInfo;
-	}
-	/**
-	 * @return the formInfo
-	 */
-	public FormInfo getFormInfo() {
-		return formInfo;
-	}
-	/**
-	 * @param formInfo the formInfo to set
-	 */
-	public void setFormInfo(FormInfo formInfo) {
-		this.formInfo = formInfo;
 	}
 
 	public NavTab getMainTab() {

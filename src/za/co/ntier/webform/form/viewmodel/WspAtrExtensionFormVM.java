@@ -30,7 +30,6 @@ import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.form.WspAtrExtensionConstants;
-import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
@@ -53,8 +52,6 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	private static final CLogger		log	= CLogger.getCLogger(WspAtrExtensionFormVM.class);
 	private final Properties			ctx	= Env.getCtx();
 
-	private MenuContextInfo				menuContextInfo;
-	private FormInfo					formInfo;
 	private NavTab						mainTab;
 	private TableModel					sdfDetails;
 	private TableModel					organisationDetails;
@@ -65,13 +62,10 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	private X_ZZ_WSP_ATR_EXTENSION		extensionData;
 	private List<Map<String, Object>>	linkedOrganisationsList;
 
-	@Init
+	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey)
 	MenuContextInfo menuContextInfo)
 	{
-		this.menuContextInfo = menuContextInfo;
-		setFormInfo(new FormInfo(menuContextInfo));
-
 		int loginUserId = Env.getAD_User_ID(ctx);
 		loggedInUser = new MUser_New(ctx, loginUserId, null);
 
@@ -105,7 +99,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	private void initExtensionData()
 	{
 		extensionData = new X_ZZ_WSP_ATR_EXTENSION(ctx, 0, null);
-		extensionData.setAD_Org_ID(menuContextInfo.getProgramMasterData().getAD_Org_ID());
+		extensionData.setAD_Org_ID(getMenuContextInfo().getProgramMasterData().getAD_Org_ID());
 		extensionData.setZZ_SDF_Phone(loggedInUser.getPhone());
 		extensionData.setZZ_SDF_EMAIL(loggedInUser.getEMail());
 		extensionData.setZZ_Submission_Date(new Timestamp(System.currentTimeMillis()));
@@ -356,27 +350,6 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
 		});
-	}
-
-	// Getters
-	public MenuContextInfo getMenuContextInfo()
-	{
-		return menuContextInfo;
-	}
-
-	public void setMenuContextInfo(MenuContextInfo menuContextInfo)
-	{
-		this.menuContextInfo = menuContextInfo;
-	}
-
-	public FormInfo getFormInfo()
-	{
-		return formInfo;
-	}
-
-	public void setFormInfo(FormInfo formInfo)
-	{
-		this.formInfo = formInfo;
 	}
 
 	public TableModel getSdfDetails()

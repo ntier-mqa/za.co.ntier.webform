@@ -4,30 +4,30 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 
-import org.compiere.model.MTable;
 import org.compiere.model.PO;
-import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ExecutionArgParam;
+import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
 import za.co.ntier.api.model.X_ZZDocumentUploadFile;
-import za.co.ntier.api.model.X_ZZ_Application_Form;
 import za.co.ntier.webform.dga.DgaVM;
 import za.co.ntier.webform.form.MasterUtil;
+import za.co.ntier.webform.form.MenuContextInfo;
+import za.co.ntier.webform.form.WebForm;
+import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveApp;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
-import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
@@ -40,6 +40,16 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 
 public abstract class BaseAppVM implements ISaveApp{
 	protected CLogger log = CLogger.getCLogger (getClass());
+	
+	private FormInfo formInfo;
+	
+	private MenuContextInfo menuContextInfo;
+	
+	@Init
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
+		this.setMenuContextInfo(menuContextInfo);
+		setFormInfo(new FormInfo(menuContextInfo));
+	}
 	
 	@Command
 	@Override
@@ -231,6 +241,23 @@ public abstract class BaseAppVM implements ISaveApp{
 		uploadDocInfoTab.getCompModel().add(tmUploadDocInfo);
 		
 		return tmUploadDocInfo;
+	}
+
+	@Override
+	public MenuContextInfo getMenuContextInfo() {
+		return menuContextInfo;
+	}
+
+	public void setMenuContextInfo(MenuContextInfo menuContextInfo) {
+		this.menuContextInfo = menuContextInfo;
+	}
+
+	public final FormInfo getFormInfo() {
+		return formInfo;
+	}
+
+	public final void setFormInfo(FormInfo formInfo) {
+		this.formInfo = formInfo;
 	}
 	
 }
