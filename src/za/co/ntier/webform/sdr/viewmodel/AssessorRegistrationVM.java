@@ -16,6 +16,7 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.I_C_Location;
+import org.compiere.model.MForm;
 import org.compiere.model.MLocation;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -82,7 +83,8 @@ import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
 
 public class AssessorRegistrationVM extends BaseAppVM {
-
+	public static String moderatorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
+	public static String assessorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
 	private MenuContextInfo menuContextInfo;
 	private FormInfo formInfo;
 	
@@ -158,6 +160,12 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		daoManage.setPoSupplier(I_ZZAssessorPerson.Table_Name, daoManage -> {
 			assessorPerson = new X_ZZAssessorPerson(Env.getCtx(), 0, null);
+			MForm adForm = MForm.get(menuContextInfo.getFormId());
+			if (moderatorFormUU.equals(adForm.getAD_Form_UU())) {
+				assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Moderator);
+			}else {
+				assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Assessor);
+			}
 			return assessorPerson;
 		});
 		
@@ -862,7 +870,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		});
 		
 	}
-	
+	private TableModel tmSkillsProgramme;
 	private void initSkillsProgramme() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
@@ -918,7 +926,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(registrationEndDateCol);
 					
-		TableModel tmSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorSkillsProgramme.Table_Name);
+		tmSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorSkillsProgramme.Table_Name);
 		tmSkillsProgramme.setViewModel(ViewType.VIEW_GRID);
 		tmSkillsProgramme.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
 		tmSkillsProgramme.setCommandSetting(CommandSetting.getNonAddButton());
@@ -1206,6 +1214,11 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	
 	@Override
 	public void doSubmit(String trxName) {
+		if (tmQualificationComp.getRows().size() == 0
+				&& tmSkillsProgramme.getRows().size() == 0) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZAssessorMissingLinkQualificationSkillsProgramme"));
+		}
+		
 		assessorPerson.setZZ_DocStatus(X_ZZAssessorPerson.ZZ_DOCSTATUS_Pending);
 		assessorPerson.saveEx(trxName);
 		super.doSubmit(trxName);

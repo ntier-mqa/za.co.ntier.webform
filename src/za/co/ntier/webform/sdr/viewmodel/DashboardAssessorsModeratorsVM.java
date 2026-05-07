@@ -40,9 +40,9 @@ public class DashboardAssessorsModeratorsVM {
 		if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole())) {
 			MasterUtil.openFormByUU("53779b2b-eb44-4f13-8c03-a8407c3fceae", row.getZZAssessorPerson_ID());
 		}else if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator.equals(row.getZZAssessorRole())) {
-			MasterUtil.openFormByUU("dbdc4e66-6cef-403b-9fc6-8669b2458bf1", row.getZZAssessorPerson_ID());
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU, row.getZZAssessorPerson_ID());
 		}else {
-			MasterUtil.openFormByUU("dbdc4e66-6cef-403b-9fc6-8669b2458bf1", row.getZZAssessorPerson_ID());
+			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorFormUU, row.getZZAssessorPerson_ID());
 		}
 		
 	}
