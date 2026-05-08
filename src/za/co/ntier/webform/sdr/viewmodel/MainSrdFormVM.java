@@ -271,14 +271,7 @@ public class MainSrdFormVM extends BaseAppVM {
 		ColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel("ID Document Upload", null, null, "UPLOAD FILE");
 		cols.add(idDocUploadCol);
 
-		ColumnModel greettingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZLkpTitle)
-				, I_AD_User.COLUMNNAME_ZZLkpTitle
-				, MasterUtil.getLkpTitleLists()
-				, title -> {return title.getName();}
-				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required();
-		greettingCol.setTableName(I_AD_User.Table_Name);
+		ColumnModel greettingCol = ListCellModel.getLkpTitleColumnModel();
 		cols.add(greettingCol);
 
 		ColumnModel idNoCol = IDCellModel.getIDColumnModel()

@@ -619,13 +619,8 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 		List<ColumnModel> cols = new ArrayList<ColumnModel>();
 		
-		ColumnModel greettingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZLkpTitle)
-				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZLkpTitle
-				, MasterUtil.getLkpTitleLists()
-				, title -> {return title.getName();}
-				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class);
+		ColumnModel greettingCol = ListCellModel.getLkpTitleColumnModel();
+		greettingCol.setMandatory(false).setTableName(I_ZZOrgTrainingCommittee.Table_Name);
 		cols.add(greettingCol);
 		
 		ColumnModel firstNameCol = CellModel.getColModelForText(

@@ -31,6 +31,8 @@ import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
+import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel.ListColumnModelParam;
 import za.co.ntier.webform.sdr.component.bean.cell.PresetTitleCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;

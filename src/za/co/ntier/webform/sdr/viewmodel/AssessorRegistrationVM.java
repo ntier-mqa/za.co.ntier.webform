@@ -70,6 +70,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.IDTypeCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ValueAdaptCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
@@ -294,17 +295,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	private void initGeneralDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		alternateIDTypeCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID)
-				, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID
-				, MasterUtil.getAlternateIDType()
-				, title -> {return title.getName();}
-				, title -> {return title.getZZ_AlternateIDType_ID();}
-			).setzClass(X_ZZ_AlternateIDType.class);
-		alternateIDTypeCol.setUseForID(true)
-			.setDefaultValue(IDCellModel.idTypeRSA_ID, MasterUtil.nameAlternateIdTypeCompare)
-			.required()
-			.setTableName(I_AD_User.Table_Name);
+		alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
 		cols.add(alternateIDTypeCol);
 		
 		idNoCol = IDCellModel.getIDColumnModel()
@@ -399,13 +390,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	private TableModel initTbName() {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ColumnModel greettingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZLkpTitle)
-				, I_AD_User.COLUMNNAME_ZZLkpTitle
-				, MasterUtil.getLkpTitleLists()
-				, title -> {return title.getName();}
-				, title -> {return title.getValue();}
-			).setzClass(ValueNamePair.class).required();
+		ColumnModel greettingCol = ListCellModel.getLkpTitleColumnModel();
 		cols.add(greettingCol);
 		
 		firstNameCol = CellModel.getColModelForText(

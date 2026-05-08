@@ -6,10 +6,13 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.ListModelList;
 
+import za.co.ntier.api.model.I_AD_User;
+import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ISelectable;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
@@ -234,6 +237,30 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		return listColumnModel;
 	}
 	
+	public static record ListColumnModelParam<L>(String title, String daoPropertyName, List<L> dataProvider, 
+			Function<L, String> displayConvert, 
+			Function<L, Object> valueConvert) {};
+	
+	
+	public static <L> ListColumnModel<L> getListColumnModel(ListColumnModelParam<L> param){
+		return getListColumnModel(param, CellModel.LIST_CELL);
+	}
+	
+	public static <L> ListColumnModel<L> getListColumnModel(ListColumnModelParam<L> param, int cellType){
+		@SuppressWarnings("unchecked")
+		ListColumnModel<L> listColumnModel = getListColumnModel(
+				ListColumnModel.class, 
+				ListCellModel.class, 
+				param.title, 
+				param.daoPropertyName, 
+				param.dataProvider, 
+				param.displayConvert, 
+				param.valueConvert, 
+				cellType);
+		
+		return listColumnModel;
+	}
+			
 	public static <L> ListColumnModel<L> getListColumnModel(
 			String title, String daoPropertyName, List<L> dataProvider, 
 			Function<L, String> displayConvert, 
@@ -249,5 +276,21 @@ public class ListCellModel<T> extends CellModel implements ISelectable {
 		@SuppressWarnings("unchecked")
 		ListColumnModel<L> listColumnModel = getListColumnModel(ListColumnModel.class, ListCellModel.class, title, daoPropertyName, dataProvider, displayConvert, valueConvert, cellType);
 		return listColumnModel;
+	}
+	
+	public static ListColumnModel<ValueNamePair> getLkpTitleColumnModel() {
+		ListColumnModel<ValueNamePair> greettingCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZLkpTitle)
+				, I_AD_User.COLUMNNAME_ZZLkpTitle
+				, MasterUtil.getLkpTitleLists()
+				, title -> {return title.getName();}
+				, title -> {return title.getValue();}
+			);
+		
+		greettingCol
+			.setzClass(ValueNamePair.class)
+			.required()
+			.setTableName(I_AD_User.Table_Name);
+		return greettingCol;
 	}
 }

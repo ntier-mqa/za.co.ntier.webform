@@ -346,6 +346,14 @@
   width:50%;
 }
 
+.mqaWebForm .sdrForm .grid-listView.grid-listView-1-command{
+	grid-template-columns: repeat(2, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.sdpRoleAssign{
+	grid-template-columns: repeat(2, 1fr) max-content;
+}
+
 .mqaWebForm .sdrForm .grid-listView.grid-listView-5{
   grid-template-columns: repeat(5, 1fr);
 }
@@ -375,6 +383,10 @@
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   
+}
+
+.mqaWebForm .sdrForm .outter-view_grid{
+	padding: 20px 20px 20px 0;
 }
 
 .mqaWebForm .sdrForm .grid-listView .colHead{
