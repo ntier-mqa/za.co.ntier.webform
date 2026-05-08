@@ -139,26 +139,26 @@ public class MainSrdFormVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel firstNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName)
-				, I_ZZSdf.COLUMNNAME_ZZFirstName
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZFirstName)
+				, I_AD_User.COLUMNNAME_ZZFirstName
 				).required()
 				.setDefaultValue(person.getFirstName());
 		cols.add(firstNameCol);
 		
 		ColumnModel midNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZMiddleName)
-				, I_ZZSdf.COLUMNNAME_ZZMiddleName
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZMiddleName)
+				, I_AD_User.COLUMNNAME_ZZMiddleName
 				);
 		cols.add(midNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname)
-				, I_ZZSdf.COLUMNNAME_ZZSurname
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZSurname)
+				, I_AD_User.COLUMNNAME_ZZSurname
 				);
 		cols.add(surnameCol);
 
 		
-		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false, I_ZZSdf.Table_Name);
+		TableModel namesBean = TableModel.getTableBean(TableModel.class, cols, false, I_AD_User.Table_Name);
 
 		namesBean.setDaoManage(personManage);
 		namesBean.init(null, null);
@@ -272,12 +272,13 @@ public class MainSrdFormVM extends BaseAppVM {
 		cols.add(idDocUploadCol);
 
 		ColumnModel greettingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZLkpTitle)
-				, I_ZZSdf.COLUMNNAME_ZZLkpTitle
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZLkpTitle)
+				, I_AD_User.COLUMNNAME_ZZLkpTitle
 				, MasterUtil.getLkpTitleLists()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class).required();
+		greettingCol.setTableName(I_AD_User.Table_Name);
 		cols.add(greettingCol);
 
 		ColumnModel idNoCol = IDCellModel.getIDColumnModel()

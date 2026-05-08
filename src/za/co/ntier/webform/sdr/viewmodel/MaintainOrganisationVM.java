@@ -203,8 +203,8 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		cols.add(titleCol);
 		
 		ColumnModel firstNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName)
-				, I_AD_User.COLUMNNAME_Name
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZFirstName)
+				, I_AD_User.COLUMNNAME_ZZFirstName
 				).required()
 				;
 		cols.add(firstNameCol);

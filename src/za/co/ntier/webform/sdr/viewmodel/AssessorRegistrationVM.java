@@ -400,8 +400,8 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel greettingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZLkpTitle)
-				, I_ZZAssessorPerson.COLUMNNAME_ZZLkpTitle
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZLkpTitle)
+				, I_AD_User.COLUMNNAME_ZZLkpTitle
 				, MasterUtil.getLkpTitleLists()
 				, title -> {return title.getName();}
 				, title -> {return title.getValue();}
@@ -409,25 +409,25 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		cols.add(greettingCol);
 		
 		firstNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZFirstName)
-				, I_ZZAssessorPerson.COLUMNNAME_ZZFirstName
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZFirstName)
+				, I_AD_User.COLUMNNAME_ZZFirstName
 				).required();
 			
 		cols.add(firstNameCol);
 		
 		ColumnModel midNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZMiddleName)
-				, I_ZZAssessorPerson.COLUMNNAME_ZZMiddleName
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZMiddleName)
+				, I_AD_User.COLUMNNAME_ZZMiddleName
 				);
 		cols.add(midNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZSurname)
-				, I_ZZAssessorPerson.COLUMNNAME_ZZSurname
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZSurname)
+				, I_AD_User.COLUMNNAME_ZZSurname
 				).required();
 		cols.add(surnameCol);
 		
-		TableModel tmNames = TableModel.getTableBean(TableModel.class, cols, false, I_ZZAssessorPerson.Table_Name);
+		TableModel tmNames = TableModel.getTableBean(TableModel.class, cols, false, I_AD_User.Table_Name);
 		tmNames.setSclass("srd-name srd-name-assessor");
 		tmNames.setDaoManage(daoManage);
 		tmNames.init();

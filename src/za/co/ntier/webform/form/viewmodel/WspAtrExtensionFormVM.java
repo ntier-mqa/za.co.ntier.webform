@@ -19,6 +19,7 @@ import org.compiere.util.Msg;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
+import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION;
@@ -190,9 +191,9 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	{
 		List<Object> userInfos = DB.getSQLValueObjectsEx(null, """
 				SELECT
-					COALESCE(z.zzfirstname, au.name),  z.zzsurname
+					COALESCE(au.zzfirstname, au.name),  au.zzsurname
 				FROM 
-					ad_user au LEFT JOIN zzsdf z ON (au.ad_user_id = z.ad_user_id)
+					ad_user au
 				WHERE
 					au.ad_user_id = ?
 				""", Env.getAD_User_ID(Env.getCtx()));
@@ -200,12 +201,12 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel col = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName),
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZFirstName),
 				null).setReadonly(true).setDefaultValue(userInfos.get(0));
 		cols.add(col);
 		
 		col = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname),
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZSurname),
 				null).setReadonly(true).setDefaultValue(userInfos.get(1));
 		cols.add(col);
 

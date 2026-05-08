@@ -46,7 +46,7 @@ public abstract class BaseAppVM implements ISaveApp{
 	private MenuContextInfo menuContextInfo;
 	
 	@Init
-	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
+	public void initBaseApp(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);
 		setFormInfo(new FormInfo(menuContextInfo));
 	}

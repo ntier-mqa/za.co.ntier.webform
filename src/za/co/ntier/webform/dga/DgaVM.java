@@ -24,6 +24,7 @@ import org.zkoss.zk.ui.event.InputEvent;
 
 import com.google.common.base.Objects;
 
+import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZDocumentUpload;
 import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZ_Application_Form;
@@ -394,14 +395,14 @@ public class DgaVM extends BaseAppVM{
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel firstNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZFirstName)
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZFirstName)
 				, I_ZZ_EDP_Application.COLUMNNAME_Name
 				).required();
 		
 		cols.add(firstNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZSurname)
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZSurname)
 				, I_ZZ_EDP_Application.COLUMNNAME_Surname
 				).required();
 		
