@@ -25,7 +25,8 @@ DECLARE
 '9e899de1-4db8-4b62-bea5-5eeb04db55e8',  -- ZZSdf.ZZFirstName
 'd26b8088-d0b9-4c1d-a2fd-913b45302b90', -- ZZSdf.ZZLkpTitle
 '0205b43c-5c69-41bd-8c2f-d119f925236b', -- ZZSdf.ZZMiddleName
-'7621cb43-ecae-4012-a746-a4608062de61' -- ZZSdf.ZZSurname
+'7621cb43-ecae-4012-a746-a4608062de61', -- ZZSdf.ZZSurname
+'e7dccfe1-73bb-489e-acc1-557d60532293'  -- ZZSdf.ZZ_Passport_No
 
 				];
 	fields text[] := ARRAY[
