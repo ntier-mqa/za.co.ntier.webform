@@ -1,6 +1,7 @@
 package za.co.ntier.webform.sdr.component.bean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -245,6 +246,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			if (!cellInputCheckResult.getFillMandatory()) {
 				rowInputCheckResult.setFillMandatory(false);// has at least once field have value
 				log.warning("not input for mandatory field:" + cellModel.toString());
+				rowInputCheckResult.appendLog(cellInputCheckResult.getLog());
 			}
 			
 			if (!cellInputCheckResult.getNotChange()) {
@@ -279,14 +281,31 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		return true;
 	}
 
+	public void syncDaoToUI() {
+		resetRow();
+		fillRowDataFromDao();
+	}
+	
 	public void fillRowDataFromDao() {
+		fillRowDataFromDao((List<String>)null);
+	}
+	
+	public void fillRowDataFromDao(String [] tableNames) {
+		fillRowDataFromDao(Arrays.asList(tableNames));
+	}
+	
+	public void fillRowDataFromDao(List<String> tableNames) {
 		for (CellModel cellModel : values()) {
-			boolean isDaoValue = false;
+			boolean isDaoValueToSync = false;
 			if (cellModel instanceof UploadCellModel || cellModel.getColModel().getDaoPropertyName() != null) {
-				isDaoValue = true;
+				isDaoValueToSync = true;
 			}
 			
-			if (isDaoValue) {
+			if (tableNames != null && tableNames.size() > 0) {
+				isDaoValueToSync = tableNames.contains(cellModel.getTableName());
+			}
+			
+			if (isDaoValueToSync) {
 				PO daoPerCol = null;
 				if (tableModel.getDaoManage() != null) {
 					daoPerCol = tableModel.getDaoManage().getDao(cellModel.getTableName());
@@ -341,7 +360,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		
 		// touch mandatory and not yet full fill mandatory
 		if (rowInputCheckResult.haveMandatoryAndNotFullFill()) {
-			throw new AdempiereException("Mandatory not yet full fill");
+			throw new AdempiereException(rowInputCheckResult.getLog());
 		}
 				
 		PO daoPerCol = null;

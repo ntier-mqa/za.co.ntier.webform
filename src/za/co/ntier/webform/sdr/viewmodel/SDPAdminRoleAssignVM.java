@@ -6,9 +6,12 @@ import java.util.Objects;
 
 import org.compiere.model.I_AD_Role;
 import org.compiere.model.I_AD_User_Roles;
+import org.compiere.model.I_C_BPartner;
+import org.compiere.model.I_I_BPartner;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_User_Roles;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -18,15 +21,20 @@ import org.zkoss.bind.annotation.Init;
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
 import za.co.ntier.api.model.I_ZZLinkAssessorQualification;
+import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
+import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
+import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
@@ -99,7 +107,10 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		if (person != null) {
 			tmContactDetail.getRow().setDataOneRow(person);
 			tmContactDetail.reloadDao();
+			
+			//tmRoleAssign.load
 		}
+		
 		
 	}
 
@@ -113,9 +124,21 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		
 		initUser();
 		initRoleAssign();
+		
+		tmContactDetail.setAfterSave((po, rowModel) -> {
+			if (po != null && I_AD_User.Table_Name.equals(po.get_TableName())) {
+				MUser_New user = (MUser_New)po;
+				for(RowModel roleAssignRow:tmRoleAssign.getRows()) {
+					X_AD_User_Roles roleAssign = roleAssignRow.getDataOneRow(X_AD_User_Roles.class, X_AD_User_Roles.Table_Name);
+					roleAssign.setAD_User_ID(user.getAD_User_ID());
+				}
+			}
+			return true;
+		});
 	}
 
 	TableModel tmContactDetail;
+	ValueAdaptColumnModel bpartnerCol;
 	private void initUser() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
@@ -155,12 +178,8 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		
 		cols.add(emailCol);
 		
-		ValueAdaptColumnModel chooseBpartnerCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-				Msg.getElement(Env.getCtx(), "OrgName"), 
-				null, 
-				CellModel.SEARCH_CELL);
-		//chooseBpartnerCol.setShowTitle(false);
-		cols.add(chooseBpartnerCol);
+		bpartnerCol = settingBpartnerCol();
+		cols.add(bpartnerCol);
 		
 		tmContactDetail = TableModel.getTableBean(TableModel.class, cols, false, I_AD_User.Table_Name);
 		tmContactDetail.setSclass("SDPAdminRoleAssign");
@@ -170,16 +189,69 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		
 	}
 
+	private ValueAdaptColumnModel settingBpartnerCol() {
+		ValueAdaptColumnModel chooseBpartnerCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				Msg.getElement(Env.getCtx(), "OrgName"), 
+				I_AD_User.COLUMNNAME_C_BPartner_ID, 
+				CellModel.SEARCH_CELL);
+		chooseBpartnerCol.required();
+		
+		chooseBpartnerCol.setEventHandle((event, cellModel) -> {
+			AssessorRegistrationVM.showInfoPanel(
+			obj -> {
+				Object [] objs = (Object [])obj;
+				MBPartner_New selected = (MBPartner_New)MBPartner_New.get(Env.getCtx(), (int)objs[0]);
+				cellModel.setValue(selected);
+			}
+			, I_C_BPartner.Table_Name
+			, I_C_BPartner.COLUMNNAME_C_BPartner_ID);
+		});
+		
+		chooseBpartnerCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			
+			MBPartner_New schoolEmis = (MBPartner_New)value;
+			return schoolEmis.getName();
+		});
+		
+		chooseBpartnerCol.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			
+			MBPartner_New schoolEmis = (MBPartner_New)value;
+			return schoolEmis.getC_BPartner_ID();
+		});
+		
+		chooseBpartnerCol.setValueFromDaoAdaptHandle(obj -> {
+			if (obj == null)
+				return null;
+			
+			Integer id = Integer.class.cast(obj);
+			if (id == 0)
+				return null;
+			
+			return (MBPartner_New)MBPartner_New.get(Env.getCtx(), id);// TODO make a get function to cache
+		});
+		
+		return chooseBpartnerCol;
+	}
+	
 	private List<MRole> getRoles(){
 		return MTable.get(Env.getCtx(), MRole.Table_ID)
-			.createQuery(MRole.getWhereRoleType("E1, E2", null), null)
+			.createQuery(MRole.getWhereRoleType(SDPAdminRole + "," + NonSDPAdminRole, null), null)
 			.list();
 	}
 	
+	public final String SDPAdminRole = "E1";
+	public final String NonSDPAdminRole = "E2";
+	
+	TableModel tmRoleAssign;
+	ColumnModel roleCol;
 	private void initRoleAssign() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		ColumnModel roleCol = ListCellModel.getListColumnModel(
+		roleCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_AD_User_Roles.Table_Name, I_AD_User_Roles.COLUMNNAME_AD_Role_ID)
 				, I_AD_User_Roles.COLUMNNAME_AD_Role_ID
 				, getRoles()
@@ -192,15 +264,16 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 			@SuppressWarnings("unchecked")
 			ListCellModel<MRole> roleCell = (ListCellModel<MRole>) cellModel;
 			cellModel.getRowModel().setDataOneRow(roleCell.getSelectedItem());
-			cellModel.getTableModel().reloadDao();
+			cellModel.getRowModel().fillRowDataFromDao(List.of(I_AD_Role.Table_Name));
 		});
 		
 		ColumnModel roleTypeCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_AD_Role.Table_Name, I_AD_Role.COLUMNNAME_RoleType)
-				, I_AD_Role.COLUMNNAME_RoleType).setTableName(I_AD_Role.Table_Name);
+				, I_AD_Role.COLUMNNAME_RoleType).
+				setTableName(I_AD_Role.Table_Name);
 		cols.add(roleTypeCol);
 		
-		TableModel tmRoleAssign = TableModel.getTableBean(TableModel.class, cols, false, I_AD_User_Roles.Table_Name);
+		tmRoleAssign = TableModel.getTableBean(TableModel.class, cols, false, I_AD_User_Roles.Table_Name);
 		tmRoleAssign.setViewModel(ViewType.VIEW_GRID);
 		tmRoleAssign.setSclass("sdpRoleAssign");
 		tmRoleAssign.setCommandSetting(CommandSetting.getFullButton());
@@ -217,5 +290,33 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 	public void setMainTab(NavTab mainTab) {
 		this.mainTab = mainTab;
 	}
-
+	
+	@Override
+	public List<ISaveForm> getSaveComponents() {
+		return List.of(mainTab);
+	}
+	
+	@Override
+	public void doSave(String trxName) {
+		boolean hasSDPAdminRole = false;
+		for (RowModel row : tmRoleAssign.getRows()) {
+			@SuppressWarnings("unchecked")
+			ListCellModel<MRole> roleCell = (ListCellModel<MRole>)row.get(roleCol);
+			if (SDPAdminRole.equals(roleCell.getSelectedItem().getRoleType())) {
+				hasSDPAdminRole = true;
+			}
+		}
+		
+		if (hasSDPAdminRole) {
+			int userID = Env.getAD_User_ID(Env.getCtx());
+			MUser_New user = MUser_New.get(Env.getCtx(), userID);
+			
+			MBPartner_New selectedBp = (MBPartner_New)tmContactDetail.getRow().get(bpartnerCol).getValue();
+			if ((selectedBp == null || selectedBp.getC_BPartner_ID() != user.getC_BPartner_ID()) 
+					&& user.getC_BPartner_ID() > 0) {
+				tmContactDetail.getRow().get(bpartnerCol).setValue(MBPartner_New.get(Env.getCtx(), user.getC_BPartner_ID()));
+			}
+		}
+		super.doSave(trxName);
+	}
 }

@@ -72,6 +72,17 @@ public class CellModel implements IValueChange , IInputState{
 	}
 	
 	public static class InputCheckResult {
+		StringBuilder logs = new StringBuilder(); 
+		
+		public InputCheckResult appendLog(String log) {
+			logs.append(log);
+			return this;
+		}
+		
+		public String getLog() {
+			return logs.toString();
+		}
+		
 		public Boolean getNotChange() {
 			return notChange;
 		}
@@ -166,6 +177,10 @@ public class CellModel implements IValueChange , IInputState{
 		inputCheckResult.setHasMandatory(isMandatory());
 		
 		inputCheckResult.setFillMandatory((isMandatory() && !inputCheckResult.empty) || (!isMandatory()));
+		
+		if (!inputCheckResult.getFillMandatory()) {
+			inputCheckResult.appendLog(this.colModel.getTitle()).appendLog(" mandatory but not input");
+		}
 		
 		return inputCheckResult;
 	}

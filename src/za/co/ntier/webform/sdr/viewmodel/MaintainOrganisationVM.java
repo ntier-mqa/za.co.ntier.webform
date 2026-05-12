@@ -293,6 +293,17 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			return nContact; 
 		});
 		
+		orgContactDetailBean.setBeforeSave((po, rowModel) -> {
+			if (po != null && po.get_TableName().equals(I_AD_User.Table_Name)) {
+				MUser_New user = (MUser_New)po;
+				if (user.getName() == null) {
+					user.setName(user.getZZFirstName());
+				}
+			}
+			
+			return true;
+		});
+		
 		orgContactDetailBean.init(null);
 		
 		return orgContactDetailBean;
@@ -646,12 +657,6 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				, title -> {return title.getValue();}
 			).setzClass(ValueNamePair.class);
 		cols.add(designationCol);
-		
-		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
-				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2)
-				, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2
-				);
-		cols.add(telephoneNumberCol);
 
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone)
@@ -659,6 +664,12 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				);
 		cols.add(cellPhoneNumberCol);
 
+		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
+				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2)
+				, I_ZZOrgTrainingCommittee.COLUMNNAME_Phone2
+				);
+		cols.add(telephoneNumberCol);
+		
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_EMail)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_EMail
