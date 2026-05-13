@@ -20,7 +20,6 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_AD_User;
-import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION_BATCH;
@@ -34,6 +33,7 @@ import za.co.ntier.webform.form.WspAtrExtensionConstants;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
@@ -346,7 +346,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 			msgs.add(Msg.getMsg(ctx, "ZZExtRequestSubmitSuccess", true));
 		}
 
-		msgs.add("Request ID: " + extensionData.getDocumentNo());
+		msgs.add("Request ID: " + extensionData.getZZ_WSP_ATR_EXTENSION_BATCH().getDocumentNo());
 
 		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
@@ -388,6 +388,8 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	public void doSave(String trxName)
 	{
 
+		validateNoDuplicateExtensionRequest(trxName);
+
 		X_ZZ_WSP_ATR_EXTENSION_BATCH batch = new Query(ctx, I_ZZ_WSP_ATR_EXTENSION_BATCH.Table_Name,
 				I_ZZ_WSP_ATR_EXTENSION_BATCH.COLUMNNAME_ZZ_DocStatus + "=?" + " AND "
 						+ I_ZZ_WSP_ATR_EXTENSION_BATCH.COLUMNNAME_IsActive + "='Y'" + " AND "
@@ -418,6 +420,81 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 		super.doSave(trxName);
 
+	}
+
+	/**
+	 * Ensures that an organisation does not have multiple extension requests in progress.
+	 * Checks if a {@code ZZ_WSP_ATR_EXTENSION} line with the same SDL Number already exists
+	 * under a {@code ZZ_WSP_ATR_EXTENSION_BATCH} in any of the following statuses:
+	 * Draft, Submitted, Recommended By Senior Mgr SDR, Recommended By COO,
+	 * or Recommended By CEO.
+	 *
+	 * @param trxName transaction name
+	 * @throws AdempiereException if a duplicate active extension request is found
+	 */
+	private void validateNoDuplicateExtensionRequest(String trxName)
+	{
+		String sdlNo = resolveSDLNoFromSelectedOrganisation();
+		if (sdlNo == null || sdlNo.trim().isEmpty())
+		{
+			return;
+		}
+
+		String sql = """
+				SELECT COUNT(1) FROM %s ext
+				INNER JOIN %s batch ON ext.%s = batch.%s
+				WHERE ext.%s = ?
+				AND ext.IsActive = 'Y'
+				AND batch.IsActive = 'Y'
+				AND batch.%s IN (?, ?, ?, ?, ?)
+				""".formatted(
+				I_ZZ_WSP_ATR_EXTENSION.Table_Name,
+				I_ZZ_WSP_ATR_EXTENSION_BATCH.Table_Name,
+				I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_WSP_ATR_EXTENSION_BATCH_ID,
+				I_ZZ_WSP_ATR_EXTENSION_BATCH.COLUMNNAME_ZZ_WSP_ATR_EXTENSION_BATCH_ID,
+				I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDL_No,
+				I_ZZ_WSP_ATR_EXTENSION_BATCH.COLUMNNAME_ZZ_DocStatus);
+
+		int count = DB.getSQLValueEx(trxName, sql,
+				sdlNo,
+				X_ZZ_WSP_ATR_EXTENSION_BATCH.ZZ_DOCSTATUS_Draft,               // DR
+				X_ZZ_WSP_ATR_EXTENSION_BATCH.ZZ_DOCSTATUS_Submitted,            // SU
+				X_ZZ_WSP_ATR_EXTENSION_BATCH.ZZ_DOCSTATUS_RecommendedBySeniorMgrSDR, // RD
+				X_ZZ_WSP_ATR_EXTENSION_BATCH.ZZ_DOCSTATUS_RecommendedByCOO,     // R2
+				X_ZZ_WSP_ATR_EXTENSION_BATCH.ZZ_DOCSTATUS_RecommendedByCEO);    // R4
+
+		if (count > 0)
+		{
+			throw new AdempiereException(Msg.getMsg(ctx, "ZZExtReqDuplicate", false));
+		}
+	}
+
+	/**
+	 * Retrieves the SDL Number from the organisation details UI cell.
+	 *
+	 * @return the SDL Number of the selected organisation, or {@code null} if not selected
+	 */
+	private String resolveSDLNoFromSelectedOrganisation()
+	{
+		RowModel row = organisationDetails.getRow();
+		if (row == null)
+		{
+			return null;
+		}
+
+		for (ColumnModel col : organisationDetails.getColumnInfos())
+		{
+			if (I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDL_No.equals(col.getDaoPropertyName()))
+			{
+				CellModel cell = row.get(col);
+				if (cell != null && cell.getValue() != null)
+				{
+					return cell.getValue().toString();
+				}
+			}
+		}
+
+		return null;
 	}
 	
 	@Override
