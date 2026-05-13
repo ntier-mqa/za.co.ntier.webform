@@ -31,6 +31,10 @@ public class ValueAdaptCellModel extends CellModel{
 		return super.getValue();
 	}
 	
+	public Object getSelectedValue() {
+		return super.getValue();
+	}
+	
 	@Override
 	public ValueAdaptColumnModel getColModel() {
 		return (ValueAdaptColumnModel)super.getColModel();

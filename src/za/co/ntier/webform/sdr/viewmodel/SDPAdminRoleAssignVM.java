@@ -10,6 +10,7 @@ import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_I_BPartner;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_User_Roles;
 import org.compiere.util.Env;
@@ -35,6 +36,7 @@ import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
+import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
@@ -109,6 +111,22 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 			tmContactDetail.reloadDao();
 			
 			//tmRoleAssign.load
+			Query roleAssignQuery = MTable.get(Env.getCtx(), I_AD_User_Roles.Table_Name)
+					.createQuery(String.format("%s = ? AND %s", 
+							I_AD_User.COLUMNNAME_AD_User_ID,
+							MRole.getWhereRoleType(SDPAdminRole + "," + NonSDPAdminRole, I_AD_Role.Table_Name))
+							, null);
+			roleAssignQuery.addTableDirectJoin(I_AD_Role.Table_Name);
+			roleAssignQuery.setParameters(person.getAD_User_ID());
+			
+			List<PO> roleAssigns = roleAssignQuery.list();
+			List<List<PO>> savedDatas = RowData.standardToMultiPo(roleAssigns);
+			for (List<PO> savedData : savedDatas) {
+				X_AD_User_Roles roleAssign = (X_AD_User_Roles)savedData.get(0);
+				savedData.add(MRole.get(Env.getCtx(), roleAssign.getAD_Role_ID()));
+			}
+			tmRoleAssign.resetMultiPo(savedDatas);
+			
 		}
 		
 		
@@ -133,6 +151,21 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 					roleAssign.setAD_User_ID(user.getAD_User_ID());
 				}
 			}
+			return true;
+		});
+		
+		tmContactDetail.setBeforeSave((po, rowModel) -> {
+			if (po != null) {
+				MUser_New user = (MUser_New)po;
+				if (user.getName() == null)
+					user.setName(user.getZZFirstName());
+				
+				if (!MUser_New.NOTIFICATIONTYPE_EMailPlusNotice.equals(user.getNotificationType())) {
+					user.setNotificationType(MUser_New.NOTIFICATIONTYPE_EMailPlusNotice);
+				}
+			}
+			
+			
 			return true;
 		});
 	}
@@ -311,7 +344,8 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 			int userID = Env.getAD_User_ID(Env.getCtx());
 			MUser_New user = MUser_New.get(Env.getCtx(), userID);
 			
-			MBPartner_New selectedBp = (MBPartner_New)tmContactDetail.getRow().get(bpartnerCol).getValue();
+			ValueAdaptCellModel bpartnerCell = (ValueAdaptCellModel)tmContactDetail.getRow().get(bpartnerCol);
+			MBPartner_New selectedBp = (MBPartner_New)bpartnerCell.getSelectedValue();
 			if ((selectedBp == null || selectedBp.getC_BPartner_ID() != user.getC_BPartner_ID()) 
 					&& user.getC_BPartner_ID() > 0) {
 				tmContactDetail.getRow().get(bpartnerCol).setValue(MBPartner_New.get(Env.getCtx(), user.getC_BPartner_ID()));
