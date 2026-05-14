@@ -14,6 +14,13 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 public class TabButtonVM extends ComponentVMWrapper<Object> {
 	private ISaveApp saveApp;
 	
+	public String getBtSaveLabel() {
+		if (saveApp != null)
+			return saveApp.getBtSaveLabel();
+		
+		return "Save & Exit";
+	}
+	
 	private NavTab navTab;
 
 	@Init(superclass = true)

@@ -20,7 +20,7 @@
 
 		<button
 			visible="@load(vmTabButton.showSaveApp)"			
-		  	label="Save &amp; Exit" sclass="icon-on-right"
+		  	label="@load(vmTabButton.btSaveLabel)" sclass="icon-on-right"
 			iconSclass="z-icon-floppy-disk"
 			onClick="@command('saveApp')" />
 

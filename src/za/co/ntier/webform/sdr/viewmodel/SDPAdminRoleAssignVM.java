@@ -1,9 +1,12 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import org.adempiere.webui.panel.SDFRegistrationWindow;
 import org.compiere.model.I_AD_Role;
 import org.compiere.model.I_AD_User_Roles;
 import org.compiere.model.I_C_BPartner;
@@ -51,6 +54,12 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 
 public class SDPAdminRoleAssignVM extends BaseAppVM{
 	private NavTab mainTab;
+	
+	@Override
+	public String getBtSaveLabel() {
+		return "Assign Role";
+	}
+	
 	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 
@@ -335,7 +344,7 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		for (RowModel row : tmRoleAssign.getRows()) {
 			@SuppressWarnings("unchecked")
 			ListCellModel<MRole> roleCell = (ListCellModel<MRole>)row.get(roleCol);
-			if (SDPAdminRole.equals(roleCell.getSelectedItem().getRoleType())) {
+			if (roleCell.getSelectedItem() != null && SDPAdminRole.equals(roleCell.getSelectedItem().getRoleType())) {
 				hasSDPAdminRole = true;
 			}
 		}
@@ -352,5 +361,24 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 			}
 		}
 		super.doSave(trxName);
+	}
+	
+	@Override
+	protected void showResult(boolean isSubmit) {
+		super.showResult(isSubmit);
+		
+		MUser_New user = tmContactDetail.getRow().getDataOneRow(MUser_New.class, I_AD_User.Table_Name);
+		if (user.getPassword() == null) {
+			user.setPassword(SDFRegistrationWindow.generatePassword(8));
+			user.setIsExpired(true);
+			user.saveEx(null);
+			
+			Map<String,String> vars = new HashMap<>();
+	        vars.put("FullName", user.getName());
+	        vars.put("TempPassword", user.getPassword());
+	        vars.put("EMail", user.getEMail());
+			
+			SDFRegistrationWindow.sendWithTemplate(user.getEMail(), "SDP_ADMIN_ROLE_ASSIGN_WELCOME", vars, user);
+		}
 	}
 }

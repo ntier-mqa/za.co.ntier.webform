@@ -733,8 +733,14 @@ public class MasterUtil {
 		MUser from = MUser.get(Env.getCtx(), DiscretionaryGrantsApplicationProgramVM.FROM_EMAIL_USER_ID);
 		submitedEmail.setPO(emailPoInfo);
 
-		int loginId = Env.getAD_User_ID(Env.getCtx());
-		MUser receiver = MUser.get(loginId);
+		MUser receiver = null;
+		if (user == null) {
+			receiver = user;
+		}else {
+			int loginId = Env.getAD_User_ID(Env.getCtx());
+			receiver = MUser.get(loginId);
+		}
+		
 		submitedEmail.setUser(receiver);
 		if (!client.sendEMail(from, receiver, submitedEmail.getMailHeader(), submitedEmail.getMailText(), null, submitedEmail.isHtml())) {
 			log.fine("Problem Sending Email.  Please contact Support");

@@ -509,21 +509,21 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		cols.add(tradeNameCol);
 		
 		
-		ListColumnModel<ValueNamePair> parentUploadCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name, I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads), 
-				I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads,
-				MasterUtil.getYesNoList(),
-				ref -> {return ref.getName();},
-				ref -> {return ref.getValue();},
-				CellModel.RADIO_CELL
-				).setzClass(ValueNamePair.class);
-		parentUploadCol.required();
-		
-		cols.add(parentUploadCol);
+		/*
+		 * ListColumnModel<ValueNamePair> parentUploadCol =
+		 * ListCellModel.getListColumnModel(
+		 * MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name,
+		 * I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads),
+		 * I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads,
+		 * MasterUtil.getYesNoList(), ref -> {return ref.getName();}, ref -> {return
+		 * ref.getValue();}, CellModel.RADIO_CELL ).setzClass(ValueNamePair.class);
+		 * parentUploadCol.required();
+		 * 
+		 * cols.add(parentUploadCol);
+		 */
 		
 		ColumnModel linkRequestCol = UploadCellModel.getUploadColumnModel("", null, null,
-				"Upload Link Request")
-			.required();
+				"Upload Link Request");
 			
 		cols.add(linkRequestCol);
 		
@@ -592,6 +592,16 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				}
 			}
 			
+			if (messages.size() == 0 && childOrg != null){
+				if (orgPO != null && orgPO.getC_BPartner_ID() == childOrg.getC_BPartner_ID()) {
+					messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgSelfReference"));
+					//cellModel.setValue(null);
+				}else if ("Parent".equals(childOrg.getZZOrganisationType())) {
+					messages.add(Msg.getMsg(Env.getCtx(), "ZZMaintainOrgAcceptChildOrgOnly"));
+					//cellModel.setValue(null);
+				}
+			}
+			
 		});
 		
 		TableModel tmChildOrgModel = TableModel.getTableBean(TableModel.class, cols, false, I_ZZOrganisationLinkage.Table_Name);
@@ -614,7 +624,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			return true;
 		});
 		
-		tmChildOrgModel.setSclass("LinkOrgChild");
+		tmChildOrgModel.setSclass("linkOrgChild");
 		tmChildOrgModel.setViewModel(ViewType.VIEW_GRID);
 		tmChildOrgModel.setCommandSetting(CommandSetting.getFullButton());
 		

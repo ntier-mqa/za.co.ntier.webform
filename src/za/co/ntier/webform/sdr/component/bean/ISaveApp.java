@@ -62,4 +62,7 @@ public interface ISaveApp {
 		return "Cancel Application";
 	}
 	
+	public default String getBtSaveLabel() {
+		return "Save & Exit";
+	}
 }

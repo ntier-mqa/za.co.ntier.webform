@@ -346,34 +346,6 @@
   width:50%;
 }
 
-.mqaWebForm .sdrForm .grid-listView.grid-listView-1-command{
-	grid-template-columns: repeat(2, 1fr);
-}
-
-.mqaWebForm .sdrForm .grid-listView.sdpRoleAssign{
-	grid-template-columns: repeat(2, 1fr) max-content;
-}
-
-.mqaWebForm .sdrForm .grid-listView.grid-listView-5{
-  grid-template-columns: repeat(5, 1fr);
-}
-
-.mqaWebForm .sdrForm .grid-listView.grid-listView-5-command{
-	grid-template-columns: repeat(6, 1fr);
-}
-
-.mqaWebForm .sdrForm .grid-listView.grid-listView-7{
-  grid-template-columns: repeat(7, 1fr);
-}
-
-.mqaWebForm .sdrForm .grid-listView.grid-listView-7-command{
-	grid-template-columns: repeat(8, 1fr);
-}
-
-.mqaWebForm .sdrForm .grid-listView.grid-listView-3{
-  grid-template-columns: repeat(3, 1fr);
-}
-
 /******* list view **********/
 .mqaWebForm .sdrForm .grid-listView{
   display: grid;
@@ -424,7 +396,6 @@
   	margin: auto;
 } 
 
-
 .mqaWebForm .sdrForm .grid-listView.grid-listView-2{
 	grid-template-columns: repeat(2, 1fr);
 }
@@ -445,8 +416,34 @@
 	grid-template-columns: repeat(4, 1fr);
 }
 
- .mqaWebForm .sdrForm .grid-listView.grid-listView-4 .srd-org-general{
- }
+.mqaWebForm .sdrForm .grid-listView.grid-listView-5{
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-7{
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-1-command{
+	grid-template-columns: repeat(2, 1fr);
+}
+
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-5-command{
+	grid-template-columns: repeat(6, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.grid-listView-7-command{
+	grid-template-columns: repeat(8, 1fr);
+}
+
+.mqaWebForm .sdrForm .grid-listView.sdpRoleAssign{
+	grid-template-columns: repeat(2, 1fr) max-content;
+}
+
+.mqaWebForm .sdrForm .grid-listView.linkOrgChild{
+	grid-template-columns: repeat(4, 1fr) max-content;
+}
 
 .mqaWebForm .sdrForm a.z-button{
 	text-decoration:none;
