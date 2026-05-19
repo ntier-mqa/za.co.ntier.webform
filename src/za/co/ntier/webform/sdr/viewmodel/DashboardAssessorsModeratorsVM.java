@@ -9,6 +9,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.ListModelList;
 
+import za.co.ntier.api.model.MZZAssessorPersonV;
 import za.co.ntier.api.model.X_ZZAssessorPerson_v;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -16,7 +17,7 @@ import za.co.ntier.webform.form.WebForm;
 
 public class DashboardAssessorsModeratorsVM {
 	private MenuContextInfo menuContextInfo;
-	private ListModelList<X_ZZAssessorPerson_v> assessors = new ListModelList<X_ZZAssessorPerson_v>();
+	private ListModelList<MZZAssessorPersonV> assessors = new ListModelList<MZZAssessorPersonV>();
 	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
@@ -46,6 +47,7 @@ public class DashboardAssessorsModeratorsVM {
 		Query assessorPersonQuery = MTable.get(Env.getCtx(), X_ZZAssessorPerson_v.Table_Name).createQuery(null, null);
 		assessors.clear();
 		assessors.addAll(assessorPersonQuery.list());
+		
 	}
 
 	public MenuContextInfo getMenuContextInfo() {
@@ -56,11 +58,11 @@ public class DashboardAssessorsModeratorsVM {
 		this.menuContextInfo = menuContextInfo;
 	}
 
-	public ListModelList<X_ZZAssessorPerson_v> getAssessors() {
+	public ListModelList<MZZAssessorPersonV> getAssessors() {
 		return assessors;
 	}
 
-	public void setAssessors(ListModelList<X_ZZAssessorPerson_v> assessors) {
+	public void setAssessors(ListModelList<MZZAssessorPersonV> assessors) {
 		this.assessors = assessors;
 	}
 }
