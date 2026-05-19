@@ -1,30 +1,26 @@
+-- check ad
+
+SELECT ae."name" elemName, af."name" fieldName, ac."name" colName, at."name" tabName, aw."name" winName
+FROM 
+	AD_Column ac inner join ad_field af on ac.ad_column_id = af.ad_column_id 
+	inner join ad_tab at on at.ad_tab_id = af.ad_tab_id 
+	inner join ad_window aw on aw.ad_window_id = at.ad_window_id 
+	inner join ad_element ae on ac.ad_element_id = ae.ad_element_id 
+where
+    AD_Column_UU='09f68d41-87b3-4f95-8279-8dd8ad391027' 
+	AD_Column_UU IN ('cf996da7-b7d0-4d1f-9890-0314834b97ae', '6e3c46bb-1d09-4257-9750-433d41773570', '330d33f8-7428-42a3-bb48-b64aa945f531')
+
+
 -- id
 select ad_user.ZZ_ID_Passport_No from ad_user WHERE ad_user.ZZ_ID_Passport_No is not null
 
 update ad_user set ZZ_ID_Passport_No = '6412025156084' where ZZ_ID_Passport_No = '6412025156085'
-
-delete from zzsdf where AD_User_ID=1000007
-
-delete from ZZSdfOrganisation where zzsdf_id in (select zzsdf_id from zzsdf where AD_User_ID=1000007)
-
-delete from zzbankingdetails where 
-	ZZSdfOrganisation_id in (select ZZSdfOrganisation_id from ZZSdfOrganisation 
-									inner join zzsdf on zzsdf.zzsdf_id = ZZSdfOrganisation.zzsdf_id 
-									where  zzsdf.AD_User_ID=1000007)
-
-
-delete from zz_wsp_atr_submitted where 
-	ZZSdfOrganisation_id in (select ZZSdfOrganisation_id from ZZSdfOrganisation 
-									inner join zzsdf on zzsdf.zzsdf_id = ZZSdfOrganisation.zzsdf_id 
-									where  zzsdf.AD_User_ID=1000007)
-									
+			
 -- password
 select password from ad_user where email = 'ynaidoo@ntier.co.za'
 select password from ad_user where email = 'hieplq@hasuvimex.vn'
 select password from ad_user where email = 'maugustine@ntier.co.za'
 
-select ZZ_AlternateIDType_ID from ad_user where email = 'hieplq@hasuvimex.vn'
-update ad_user set ZZ_ID_Passport_No = null where email = 'hieplq@hasuvimex.vn'
 
 -- SDL
 select value from C_BPartner where EXISTS (select * from ZZ_Levy_Paying where ZZ_Levy_Paying.C_BPartner_ID = C_BPartner.C_BPartner_ID)
@@ -38,6 +34,4 @@ and exists (
     where ZZ_WSP_ATR_Approvals.C_BPartner_ID = C_BPartner.C_BPartner_ID and ZZ_Grant_Status = 'A'
     
     )
-
     
-    SELECT * FROM AD_Column WHERE AD_Column_UU='cf996da7-b7d0-4d1f-9890-0314834b97ae'
