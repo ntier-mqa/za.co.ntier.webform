@@ -23,9 +23,9 @@
   	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZSurname) ))" width="100px"/>
   	
   	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_EMail) ))" width="200px"/>
-  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole) ))" width="100px"/>
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole) ))" width="150px"/>
   	
-    <column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZ_DocStatus) ))" width="100px"/>
+    <column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson_v.Table_Name, I_ZZAssessorPerson_v.COLUMNNAME_ZZ_DocStatus) ))" width="120px"/>
     <column label="Action" align="center"/>
     
   </columns>
