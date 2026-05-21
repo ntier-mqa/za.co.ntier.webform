@@ -38,6 +38,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
 import za.co.ntier.webform.sdr.component.bean.cell.OrganisationCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.viewmodel.BaseAppVM;
@@ -104,6 +105,20 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		extensionData.setZZ_SDF_Phone(loggedInUser.getPhone());
 		extensionData.setZZ_SDF_EMAIL(loggedInUser.getEMail());
 		extensionData.setZZ_Submission_Date(new Timestamp(System.currentTimeMillis()));
+
+		List<Object> userInfos = DB.getSQLValueObjectsEx(null, """
+				SELECT
+					COALESCE(au.zzfirstname, au.name),  au.zzsurname
+				FROM 
+					ad_user au
+				WHERE
+					au.ad_user_id = ?
+				""", Env.getAD_User_ID(Env.getCtx()));
+				
+		if (userInfos != null && !userInfos.isEmpty()) {
+			extensionData.setZZ_SDF_FirstName(userInfos.get(0) != null ? userInfos.get(0).toString() : null);
+			extensionData.setZZ_SDF_Surname(userInfos.get(1) != null ? userInfos.get(1).toString() : null);
+		}
 	}
 
 	private void loadLinkedOrganisations()
@@ -189,25 +204,16 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 	private TableModel getSdfDetailsComp(DaoManage formManage)
 	{
-		List<Object> userInfos = DB.getSQLValueObjectsEx(null, """
-				SELECT
-					COALESCE(au.zzfirstname, au.name),  au.zzsurname
-				FROM 
-					ad_user au
-				WHERE
-					au.ad_user_id = ?
-				""", Env.getAD_User_ID(Env.getCtx()));
-		
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ColumnModel col = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZFirstName),
-				null).setReadonly(true).setDefaultValue(userInfos.get(0));
+				I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDF_FirstName).setReadonly(true).setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
 		cols.add(col);
 		
 		col = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_ZZSurname),
-				null).setReadonly(true).setDefaultValue(userInfos.get(1));
+				I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDF_Surname).setReadonly(true).setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
 		cols.add(col);
 
 		return createTableModel(cols, formManage,
@@ -243,7 +249,13 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 		cols.add(reasonCol);
 
-		return createTableModel(cols, formManage, "srd-person-detail");
+		ColumnModel uploadFormCol = UploadCellModel.getUploadColumnModel("", null, null,
+				"UPLOAD EXTENSION FORM")
+			.required()
+			.setShowTitle(false);
+		cols.add(uploadFormCol);
+
+		return createTableModel(cols, formManage, "orglink");
 	}
 
 	private TableModel getSeniorOrgRepresentativeComp(DaoManage formManage)
@@ -346,7 +358,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 			msgs.add(Msg.getMsg(ctx, "ZZExtRequestSubmitSuccess", true));
 		}
 
-		msgs.add("Request ID: " + extensionData.getZZ_WSP_ATR_EXTENSION_BATCH().getDocumentNo());
+		msgs.add("Request ID: " + extensionData.getDocumentNo());
 
 		MasterUtil.showInfoDialog(title, msgs, t -> {
 			MasterUtil.closeActiveWindow();
