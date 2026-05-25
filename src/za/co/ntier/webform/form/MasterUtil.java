@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
@@ -64,6 +65,7 @@ import za.co.ntier.api.model.I_ZZ_Application_Form;
 import za.co.ntier.api.model.I_ZZ_Nationality;
 import za.co.ntier.api.model.X_ZZAnnexure;
 import za.co.ntier.api.model.X_ZZSdf;
+import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.api.model.X_ZZSubAnnex;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_Application_Form;
@@ -731,7 +733,39 @@ public class MasterUtil {
 		MMailText submitedEmail = new MMailText(Env.getCtx(), mailTextUU, null);
 		MClient client = MClient.get(Env.getCtx());
 		MUser from = MUser.get(Env.getCtx(), DiscretionaryGrantsApplicationProgramVM.FROM_EMAIL_USER_ID);
-		submitedEmail.setPO(emailPoInfo);
+		// submitedEmail.setPO(emailPoInfo);
+
+		if (emailPoInfo instanceof X_ZZSdfOrganisation)
+		{
+			X_ZZSdfOrganisation sdfOrgPo = (X_ZZSdfOrganisation) emailPoInfo;
+			X_C_BPartner orgPo = new X_C_BPartner(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
+
+			String orgName = orgPo.getName();
+			String sdlNo = orgPo.getValue();
+			String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+			String documentNo = sdfOrgPo.getDocumentNo();
+
+			String mailText = submitedEmail.getMailText();
+			if (mailText != null)
+			{
+				mailText = mailText.replace("@OrgName@", orgName == null ? "" : orgName);
+				mailText = mailText.replace("@SDLNo@", sdlNo == null ? "" : sdlNo);
+				mailText = mailText.replace("@Date@", date);
+				submitedEmail.setMailText(mailText);
+			}
+
+			String mailHeader = submitedEmail.getMailHeader();
+			if (mailHeader != null)
+			{
+				mailHeader = mailHeader.replace("@DocumentNo@", documentNo == null ? "" : documentNo);
+				submitedEmail.setMailHeader(mailHeader);
+			}
+		}
+		else
+		{
+			// Fallback for any other usages of this method
+			submitedEmail.setPO(emailPoInfo);
+		}
 
 		MUser receiver = null;
 		if (user == null) {
