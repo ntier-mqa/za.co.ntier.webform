@@ -1,3 +1,10 @@
+-- run only one time before apply learner
+-- alter table zzsdf drop column zzperson_id
+-- drop table zzperson
+
+-- run only one time before apply MQA Learner
+-- update ZZLkpOfoOccupation set ZZMigrationCode = description::NUMERIC where description is not null
+
 DO $$ 
 DECLARE 
     -- Define your list of UUIDs here
@@ -28,7 +35,8 @@ DECLARE
 '7621cb43-ecae-4012-a746-a4608062de61', -- ZZSdf.ZZSurname
 'e7dccfe1-73bb-489e-acc1-557d60532293'  -- ZZSdf.ZZ_Passport_No
 
-				];
+					];	
+				
 	fields text[] := ARRAY[
 															-- Business Partner (MQA) > Organisation Linkage
 					'6ddce600-523a-451e-a991-9f9be04bdfd3', -- SDL Number
@@ -39,7 +47,16 @@ DECLARE
 
 	refers text [] := ARRAY[
 					'618c2cc6-011a-462b-89e4-6a7b7ef6e354'   -- don't use ZZSdfType replace by ZZSdfRoleType
+-- TODO remove element don't use
+--  Initials -       		AD_Element_UU=bb2b8b31-2c22-4b5d-9a1c-5b5b5c60d91f
+--  idNo              		AD_Element_UU=df8e80b8-ad87-408c-94c2-082e3bb673e1
+--  Alternateidtypeid 		AD_Element_UU=e071e618-8f35-40ae-a5ee-bcb8d271f345
+--  Equityid 				AD_Element_UU=64aded33-388a-4a08-8d9d-38dff6bca203
+-- DisabilityID    			AD_Element_UU=3f53fcdd-b4c9-4ac0-aea2-d5388ab8627c
                 ]; 
+
+-- TODO remove table don't use
+-- person AD_Table_UU=8abde81d-4fb7-472d-9d79-67d1129de56c
 
 	 --menus text [] := ARRAY[
 					--'d1c16a4b-9a05-41fc-a2f8-050f1f383431' -- menu MaintainOrg
@@ -209,4 +226,5 @@ IF EXISTS (
 	DELETE FROM AD_Tab WHERE AD_Tab_UU = ANY(tabs);
 
 END $$;
+
 

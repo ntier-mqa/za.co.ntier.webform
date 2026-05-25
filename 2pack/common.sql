@@ -35,3 +35,14 @@ and exists (
     
     )
     
+    select * from ZZQctoQualification
+SELECT 
+	tb.name 
+from 
+	ad_table tb inner join AD_Ref_Table reTb on tb.ad_table_id  = reTb.ad_table_id
+	inner join AD_Reference re on re.ad_reference_id = reTb.ad_reference_id 
+where re."name" = 'ZZ_Achievement_Status_Ref'
+
+SELECT zzApplyMigrateValues('ZZQctoQualification');
+
+Database error querying standard table: zzlkpofooccupation
