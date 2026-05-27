@@ -171,6 +171,7 @@ select count (*), count (distinct(code)), count (distinct(description)) from Lkp
 
 </details>
 
+<details>
 
 <summary>QCTOQualification Query</summary>
 
