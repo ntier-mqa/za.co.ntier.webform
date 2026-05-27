@@ -56,7 +56,7 @@ CREATE TABLE MQA.dbo.Learnership (
 
       3. column is simple and easy convert like IsDeleted
 
-      `CASE ls.IsDeleted WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS IsActive`
+      `CASE ls.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive`
 
       4. easy workaround to fix data
 
@@ -101,7 +101,7 @@ CREATE TABLE MQA.dbo.Learnership (
    		ls.Registrationstartdate as Registrationstartdate,
    		ls.Registrationenddate as Registrationenddate,
    		ls.MinimumElectiveCredits AS ZZMinimumElectiveCredits,
-   		CASE ls.IsDeleted WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS IsActive,
+   		CASE ls.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
    		ls.id as "ZZMigrationCode/K",
    		'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
 
@@ -157,34 +157,22 @@ CREATE TABLE MQA.dbo.Learnership (
 
 ## QCTOQualification
 
-    1. some columns is rename
+<details>
 
-    SAQAQualificationID => ZZSAQAQualificationCode
-	QCTOQualificationTypeId => ZZQctoQualificationType
-	OFOOccupationID => ZZLkpOfoOccupation_ID
-	ArtisanQualificationYesNoID => ZZArtisanQualification
-
-    2. on idempiere open window "QCTO Qualification", export csv import template ZZQctoQualification_importTemplate.csv
-
-    **this step do one time to build query on step 5 just do again when change table define**
-
-    3. check below is unique
+<summary>validate data</summary>
 
 ```sql
 
 select count (), count (distinct(SAQAQualificationID)) from Qualification
 select count (), count (distinct(description)) from lkpQCTOQualificationType
-
-```
-
-    4. columns need to remap after import (because code/title isn't unique so can't use lookup)
-      ZZLkpOfoOccupation
-
-```
 select count (*), count (distinct(code)), count (distinct(description)) from LkpOfoOccupation
+
 ```
 
-    5. export old data to csv
+</details>
+
+
+<summary>QCTOQualification Query</summary>
 
 ```sql
 
@@ -225,21 +213,19 @@ FROM
 	left join LkpOfoOccupation ooc on qq.OFOOccupationID = ooc.ID
 
 ```
+</details>    
 
-    => export result to csv QCTOQualification_[date].csv
-	6. open window "QCTO Qualification" and import QCTOQualification_[date].csv
-	7. to lookup reference id and update run bellow sql function
-		"SELECT zzApplyMigrateValues('ZZQctoQualification');"
+<details>
 
-    8. on window "QCTO Qualification" search column "Migrate Values" for "%err" to verify error
-	correct data when have error and run sql function again
-
-Q&A
+<summary>Q&A</summary>
 
 1. ArtisanQualificationYesNoID (current value 1,2 but expert it's 0,1)
    ```
    select distinct ArtisanQualificationYesNoID from QCTOQualification
    ```
+
+</details>
+
 
 ## QCTOLearnership
 
@@ -308,7 +294,7 @@ SELECT
 	qls.LastEnrolmentDate as	ZZLastEnrolmentDate,
 	qls.LastAchievementDate as ZZLastAchievementDate,
 	qls.MinimumElectiveCredits AS ZZMinimumElectiveCredits,
-	CASE qls.IsDeleted WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS IsActive,
+	CASE qls.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
 	CASE qls.ArtisanLearnershipYesNoID WHEN 1 THEN 'N' WHEN 2 THEN 'Y' END AS ZZArtisanLearnership,
 	qls.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
@@ -398,7 +384,7 @@ SELECT
 	qsp.Registrationenddate as Registrationenddate,
 	qsp.LastEnrolmentDate as	ZZLastEnrolmentDate,
 	qsp.MinimumElectiveCredits AS ZZMinimumElectiveCredits,
-	CASE qsp.IsDeleted WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS IsActive,
+	CASE qsp.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
 	CASE qsp.IsOHS WHEN 0 THEN 'N' END AS ZZIsOHS,
 	CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody,
 	qsp.id as "ZZMigrationCode/K",
@@ -492,7 +478,7 @@ SELECT
 	sp.MinimumElectiveCredits AS ZZMinimumElectiveCredits,
 	spgt.description as ZZSkillsProgrammeGrantType,
 	CASE sp.IsOHS WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsOHS,
-	CASE sp.IsDeleted WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS IsActive,
+	CASE sp.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
 	sp.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
 	
@@ -600,7 +586,7 @@ SELECT
 	CASE q.IsReplacement WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReplacement,
 	CASE q.IsReregistered WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReregistered,
 	q.MinimumElectiveCredits AS ZZMinimumElectiveCredits,
-	CASE q.IsDeleted WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS IsActive,
+	CASE q.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
 	q.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
 	
@@ -618,4 +604,233 @@ FROM
 	left join LkpOfoOccupation ooc on q.OFOOccupationID = ooc.ID
 
 ```
+</details>
+
+
+## QCTOModule
+
+<details>
+
+<summary>QCTOModule DDL</summary>
+
+```sql
+
+CREATE TABLE MQA.dbo.QCTOModule (
+	ID int IDENTITY(1,1) NOT NULL,
+	ModuleCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	ModuleTitle nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	QualityAssuranceBodyID int NULL,
+	Credits int NOT NULL,
+	RegistrationStartDate datetime NOT NULL,
+	RegistrationEndDate datetime NOT NULL,
+	LastEnrolmentDate datetime NOT NULL,
+	LastAchievementDate datetime NOT NULL,
+	NQFLevelID int NOT NULL,
+	LearningTypeID int NOT NULL,
+	ModuleTypeID int NOT NULL,
+	OFOOccupationID int NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_QCTOModule PRIMARY KEY (ID)
+);
+
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+
+
+</details>
+
+<details>
+
+<summary>QCTOModule Query</summary>
+
+```sql
+
+SELECT
+	'*' as "AD_Org_ID[Name]",
+	qm.ModuleCode as ZZModuleCode,
+	qm.ModuleTitle as ZZModuleTitle,
+	CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody,
+	qm.Credits as ZZCredits,
+	qm.Registrationstartdate as Registrationstartdate,
+	qm.Registrationenddate as Registrationenddate,
+	qm.LastEnrolmentDate AS ZZLastEnrolmentDate,
+	qm.LastAchievementDate as ZZLastAchievementDate,
+	lev.SAQACode as ZZNqfLevel,
+	lt.description as ZZLearningType,
+	mt.description as ZZModuleType,
+	CASE qm.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
+	qm.id as "ZZMigrationCode/K",
+	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
+	
+	--CONCAT_WS (';',
+	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12)), -- ooc.id is null then this line is null and get out from expression
+	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12))
+	--) as ZZMigrateValues
+	
+FROM 
+	QCTOModule qm 
+	left join lkpNQFLevel lev on qm.NQFLevelID = lev.id
+	left join lkpQualityAssuranceBody qab on qm.QualityAssuranceBodyID = qab.ID
+	left join LkpOfoOccupation ooc on qm.OFOOccupationID = ooc.ID
+	left join lkpLearningType lt on qm.LearningTypeID = lt.ID 
+	left join lkpModuleType mt ON qm.ModuleTypeID = mt.ID 
+
+```
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+## Module
+
+<details>
+
+<summary>Module DDL</summary>
+
+```sql
+
+CREATE TABLE MQA.dbo.Module (
+	ID int IDENTITY(1,1) NOT NULL,
+	ModuleCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	ModuleTitle nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	QualityAssuranceBodyID int NULL,
+	Credits int NOT NULL,
+	RegistrationStartDate datetime NOT NULL,
+	RegistrationEndDate datetime NOT NULL,
+	LastEnrolmentDate datetime NOT NULL,
+	LastAchievementDate datetime NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	MigrationRecordID int NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_Module PRIMARY KEY (ID)
+);
+
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+
+
+</details>
+
+<details>
+
+<summary>Module Query</summary>
+
+```sql
+
+SELECT
+	'*' as "AD_Org_ID[Name]",
+	m.ModuleCode as ZZModuleCode,
+	m.ModuleTitle as ZZModuleTitle,
+	CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody,
+	m.Credits as ZZCredits,
+	m.Registrationstartdate as Registrationstartdate,
+	m.Registrationenddate as Registrationenddate,
+	m.LastEnrolmentDate AS ZZLastEnrolmentDate,
+	m.LastAchievementDate as ZZLastAchievementDate,
+	CASE m.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
+	m.id as "ZZMigrationCode/K"
+FROM 
+	Module m 
+	left join lkpQualityAssuranceBody qab on m.QualityAssuranceBodyID = qab.ID
+
+```
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+
+## QCTOLearnership
+
+<details>
+
+<summary>QCTOLearnershipModule DDL</summary>
+
+```sql
+
+CREATE TABLE MQA.dbo.QCTOLearnershipModule (
+	ID int IDENTITY(1,1) NOT NULL,
+	QCTOLearnershipID int NOT NULL,
+	QCTOModuleID int NOT NULL,
+	ModuleTypeID int NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_QCTOLearnershipModule PRIMARY KEY (ID)
+);
+
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+select ModuleCode from QCTOModule where isDeleted = 0 group by ModuleCode having count (*) > 1
+	
+select ql.LearnershipCode from QCTOLearnership ql where isDeleted = 0 group by ql.LearnershipCode having COUNT (*) > 1
+
+</details>
+
+<details>
+
+<summary>QCTOLearnershipModule Query</summary>
+
+```sql
+
+SELECT
+	'*' as "AD_Org_ID[Name]",
+	ql.LearnershipCode as "ZZQctoLearnership_ID[ZZLearnershipCode]",
+	qm.ModuleCode as "ZZQCTOModule_ID[ZZModuleCode]",
+	mt.description as ZZModuleType,
+	
+	CASE qlm.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
+	qlm.id as "ZZMigrationCode/K"
+FROM 
+	QCTOLearnershipModule qlm 
+	left join QCTOLearnership ql on qlm.QCTOLearnershipID = ql.ID 
+	left join QCTOModule qm on qlm.QCTOModuleID = qm.ID 
+	left join lkpModuleType mt on qlm.ModuleTypeID = mt.ID 
+
+```
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
 </details>

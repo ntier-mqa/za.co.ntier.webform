@@ -43,6 +43,10 @@ from
 	inner join AD_Reference re on re.ad_reference_id = reTb.ad_reference_id 
 where re."name" = 'ZZ_Achievement_Status_Ref'
 
-SELECT zzApplyMigrateValues('ZZQctoQualification');
+SELECT zzApplyMigrateValues('ZZQctoLearnership');
+
+truncate ZZLearnership
 
 Database error querying standard table: zzlkpofooccupation
+
+select count (*) from ZZQualification
