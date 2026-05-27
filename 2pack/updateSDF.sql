@@ -13,7 +13,11 @@ delete from ZZSkillsProgramme where ZZSkillsProgramme_ID not in (select ZZSkills
 delete from zzlearnership
 delete from zzqctoqualification
 delete from zzqctolearnership
+delete from ZZQCTOSkillsProgramme
 delete from ZZQualification
+delete from ZZModule
+delete from ZZQCTOModule
+
 
 DO $$ 
 DECLARE 
