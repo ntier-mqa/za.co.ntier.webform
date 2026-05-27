@@ -10,10 +10,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MClient;
+import org.compiere.model.MMailText;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -53,6 +56,9 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 
 	private static final CLogger		log	= CLogger.getCLogger(WspAtrExtensionFormVM.class);
 	private final Properties			ctx	= Env.getCtx();
+
+	private static final String MAIL_TEMPLATE_EXTENSION_REQUEST_UU = "ef831f37-8cd4-497d-b989-cd4de35df525";
+	private static final String SYSCONFIG_DEFAULT_CC_UU = "84fc2f79-d8a6-4a7e-a167-8c1190d05bf3";
 
 	private NavTab						mainTab;
 	private TableModel					sdfDetails;
@@ -346,6 +352,105 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	{
 	}
 
+	private void sendSubmissionEmail()
+	{
+		String sdfEmail = extensionData.getZZ_SDF_EMAIL();
+		String sorEmail = extensionData.getZZ_SOR_EMAIL();
+
+		if ((sdfEmail == null || sdfEmail.isBlank()) && (sorEmail == null || sorEmail.isBlank()))
+		{
+			log.warning("No SDF or SOR email found for WSP ATR Extension Request " + extensionData.getDocumentNo());
+			return;
+		}
+
+		int mailTextID = DB.getSQLValueEx(null, """
+						SELECT r_mailtext_id
+						FROM adempiere.r_mailtext
+						WHERE r_mailtext_uu = ?
+						""", MAIL_TEMPLATE_EXTENSION_REQUEST_UU);
+
+		if (mailTextID <= 0)
+		{
+			log.warning("Extension Request MailText not found. UU=" + MAIL_TEMPLATE_EXTENSION_REQUEST_UU);
+			return;
+		}
+
+		MMailText mText = new MMailText(ctx, mailTextID, null);
+
+		String messageTemplate = mText.getMailText();
+		String subjectTemplate = mText.getMailHeader();
+
+		if (messageTemplate == null)
+			messageTemplate = "";
+		if (subjectTemplate == null)
+			subjectTemplate = "";
+
+		String orgName = extensionData.getZZ_Organisation_Name();
+		String sdlNo = extensionData.getZZ_SDL_No();
+		String documentNo = extensionData.getDocumentNo();
+
+		orgName = orgName != null ? orgName : "";
+		sdlNo = sdlNo != null ? sdlNo : "";
+		documentNo = documentNo != null ? documentNo : "";
+
+		String baseMessage = messageTemplate
+											.replace("@OrgName@", orgName)
+											.replace("@SDLNo@", sdlNo)
+											.replace("@DocumentNo@", documentNo);
+
+		String baseSubject = subjectTemplate
+											.replace("@OrgName@", orgName);
+
+		MClient client = MClient.get(ctx);
+
+		String defaultCcEmails = DB.getSQLValueStringEx(null, """
+						SELECT value
+						FROM ad_sysconfig
+						WHERE ad_sysconfig_uu = ?
+						""", SYSCONFIG_DEFAULT_CC_UU);
+
+		if (sdfEmail != null && !sdfEmail.isBlank())
+		{
+			String sdfName = (extensionData.getZZ_SDF_FirstName() != null ? extensionData.getZZ_SDF_FirstName() : "")	+ " " +
+								(extensionData.getZZ_SDF_Surname() != null ? extensionData.getZZ_SDF_Surname() : "");
+			String sdfMessage = baseMessage.replace("@Name@", sdfName.trim());
+			sendEmail(client, sdfEmail.trim(), baseSubject, sdfMessage, mText.isHtml(), defaultCcEmails);
+		}
+
+		if (sorEmail != null && !sorEmail.isBlank() && !sorEmail.trim().equals(sdfEmail != null ? sdfEmail.trim() : ""))
+		{
+			String sorName = (extensionData.getZZ_SOR_FirstName() != null ? extensionData.getZZ_SOR_FirstName() : "")	+ " " +
+								(extensionData.getZZ_SOR_Surname() != null ? extensionData.getZZ_SOR_Surname() : "");
+			String sorMessage = baseMessage.replace("@Name@", sorName.trim());
+			sendEmail(client, sorEmail.trim(), baseSubject, sorMessage, mText.isHtml(), defaultCcEmails);
+		}
+	}
+
+	private void sendEmail(MClient client, String toEmail, String subject, String message, boolean isHtml, String defaultCcEmails)
+	{
+		EMail email = client.createEMail(toEmail, subject, message, isHtml);
+		if (email != null)
+		{
+			if (defaultCcEmails != null && !defaultCcEmails.isBlank())
+			{
+				String[] emails = defaultCcEmails.split(",");
+				for (String cc : emails)
+				{
+					if (cc != null && !cc.isBlank())
+					{
+						email.addCc(cc.trim());
+					}
+				}
+			}
+			String msg = email.send();
+			boolean sent = EMail.SENT_OK.equals(msg);
+			if (!sent)
+				log.warning("Failed to send extension request email to " + toEmail + ": " + msg);
+			else
+				log.info("Extension request email sent to " + toEmail);
+		}
+	}
+
 	@Override
 	protected void showResult(boolean isSubmit)
 	{
@@ -356,6 +461,9 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		if (isSubmit)
 		{
 			msgs.add(Msg.getMsg(ctx, "ZZExtRequestSubmitSuccess", true));
+			
+			// Email is sent outside the database transaction so failures don't roll back the save
+			sendSubmissionEmail();
 		}
 
 		msgs.add("Request ID: " + extensionData.getDocumentNo());
