@@ -3,22 +3,14 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.desktop.WindowRegistry;
-import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.factory.InfoManager;
-import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.RegistrationWindow;
-import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_Location;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -27,10 +19,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 
 import za.co.ntier.api.model.I_ZZLearner;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
@@ -984,7 +973,7 @@ public class LearnerRegistrationVM extends BaseAppVM
 				if (idPassportNo != null && !idPassportNo.isBlank())
 				{
 					String sql = "SELECT COUNT(1) FROM ZZPerson WHERE ZZ_ID_Passport_No = ? AND ZZ_AlternateIDType_ID = ? AND ZZPerson_ID != ? AND IsActive='Y'";
-					int count = org.compiere.util.DB.getSQLValue(trxName, sql, idPassportNo, alternateIdTypeId, person.get_ID());
+					int count = DB.getSQLValue(trxName, sql, idPassportNo, alternateIdTypeId, person.get_ID());
 					if (count > 0)
 					{
 						throw new AdempiereException("A person with this ID Type and ID Number already exists in the system.");
@@ -997,7 +986,7 @@ public class LearnerRegistrationVM extends BaseAppVM
 				if (otherIdNo != null && !otherIdNo.isBlank())
 				{
 					String sql = "SELECT COUNT(1) FROM ZZPerson WHERE ZZOtherIDNo = ? AND ZZ_AlternateIDType_ID = ? AND ZZPerson_ID != ? AND IsActive='Y'";
-					int count = org.compiere.util.DB.getSQLValue(trxName, sql, otherIdNo, alternateIdTypeId, person.get_ID());
+					int count = DB.getSQLValue(trxName, sql, otherIdNo, alternateIdTypeId, person.get_ID());
 					if (count > 0)
 					{
 						throw new AdempiereException("A person with this ID Type and ID Number already exists in the system.");
