@@ -4,17 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.desktop.WindowRegistry;
-import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.factory.InfoManager;
-import org.adempiere.webui.panel.InfoPanel;
-import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MForm;
 import org.compiere.model.MLocation;
@@ -27,9 +18,6 @@ import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
@@ -1093,63 +1081,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		this.mainTab = mainTab;
 	}
 	
-	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID) {
-		showInfoPanel(closeHandle, tableName, colID, false);
-	}
-	
-	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID, boolean isMultiChoose){
-		// create info window
-		Component activeWin = SessionManager.getAppDesktop().getActiveWindow();
-		Integer winNo = WindowRegistry.getWindowNo(activeWin);
-		
-		InfoPanel ip = InfoManager.create(winNo, tableName, colID, null, isMultiChoose, null, true);
-		
-		// set layout for info window
-		ip.setVisible(true);
-		ip.setStyle("border: 2px");
-		ip.setClosable(true);
-		ip.addValueChangeListener(evt -> {
-			closeHandle.accept(evt.getNewValue());
-		});
-		
-		ip.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 
-			@Override
-			public void onEvent(Event event) throws Exception {
-				InfoPanel showedIp = (InfoPanel)event.getTarget();
-				if (!showedIp.isCancelled()) {
-					Object[] result = showedIp.getSelectedKeys();
-					if (result != null && result.length > 0) {
-						closeHandle.accept(result);
-					}
-					
-				}
-			}
-		});
-		ip.setId(ip.getTitle()+"_"+ip.getWindowNo());
-		
-		//ip.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		ip.setBorder("normal");
-		ip.setClosable(true);
-		int height = ClientInfo.get().desktopHeight;
-		int width = ClientInfo.get().desktopWidth;
-		if (width <= ClientInfo.MEDIUM_WIDTH)
-		{
-			ZKUpdateUtil.setWidth(ip, "100%");
-			ZKUpdateUtil.setHeight(ip, "100%");
-		}
-		else
-		{
-			height = height * 85 / 100;
-    		width = width * 80 / 100;
-    		ZKUpdateUtil.setWidth(ip, width + "px");
-    		ZKUpdateUtil.setHeight(ip, height + "px");
-		}
-		ip.setContentStyle("overflow: auto");
-		
-		AEnv.showWindow(ip);
-	}
-	
 	@Override
 	public void doSave(String trxName) {
 		boolean isDraft = true;

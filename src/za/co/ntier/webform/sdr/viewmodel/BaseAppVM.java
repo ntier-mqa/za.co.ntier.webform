@@ -8,6 +8,14 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.desktop.WindowRegistry;
+import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.factory.InfoManager;
+import org.adempiere.webui.panel.InfoPanel;
+import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -16,6 +24,9 @@ import org.compiere.util.Trx;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 import za.co.ntier.api.model.I_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
@@ -31,8 +42,6 @@ import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
-import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel.ListColumnModelParam;
 import za.co.ntier.webform.sdr.component.bean.cell.PresetTitleCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
@@ -262,4 +271,60 @@ public abstract class BaseAppVM implements ISaveApp{
 		this.formInfo = formInfo;
 	}
 	
+	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID) {
+		showInfoPanel(closeHandle, tableName, colID, false);
+	}
+	
+	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID, boolean isMultiChoose){
+		// create info window
+		Component activeWin = SessionManager.getAppDesktop().getActiveWindow();
+		Integer winNo = WindowRegistry.getWindowNo(activeWin);
+		
+		InfoPanel ip = InfoManager.create(winNo, tableName, colID, null, isMultiChoose, null, true);
+		
+		// set layout for info window
+		ip.setVisible(true);
+		ip.setStyle("border: 2px");
+		ip.setClosable(true);
+		ip.addValueChangeListener(evt -> {
+			closeHandle.accept(evt.getNewValue());
+		});
+		
+		ip.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event event) throws Exception {
+				InfoPanel showedIp = (InfoPanel)event.getTarget();
+				if (!showedIp.isCancelled()) {
+					Object[] result = showedIp.getSelectedKeys();
+					if (result != null && result.length > 0) {
+						closeHandle.accept(result);
+					}
+					
+				}
+			}
+		});
+		ip.setId(ip.getTitle()+"_"+ip.getWindowNo());
+		
+		ip.setBorder("normal");
+		ip.setClosable(true);
+		int height = ClientInfo.get().desktopHeight;
+		int width = ClientInfo.get().desktopWidth;
+		if (width <= ClientInfo.MEDIUM_WIDTH)
+		{
+			ZKUpdateUtil.setWidth(ip, "100%");
+			ZKUpdateUtil.setHeight(ip, "100%");
+		}
+		else
+		{
+			height = height * 85 / 100;
+    		width = width * 80 / 100;
+    		ZKUpdateUtil.setWidth(ip, width + "px");
+    		ZKUpdateUtil.setHeight(ip, height + "px");
+		}
+		ip.setContentStyle("overflow: auto");
+		
+		AEnv.showWindow(ip);
+	}
+
 }

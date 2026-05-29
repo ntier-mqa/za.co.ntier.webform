@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vmLearner') @init('za.co.ntier.webform.sdr.viewmodel.LearnerRegistrationVM')">
+
+  <div style="display:flex; padding:5px 0 20px 0; flex-direction: column; align-items: center;">
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLearner.formInfo.formHeader)" />
+    <div style="padding-bottom:10px;font-size:smaller">
+      <html content="@init(( vmLearner.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
+    </div>
+  </div>
+
+  <!-- Phase 1: Identity Details -->
+  <div sclass="sectionHeader" style="margin: 0 20px;">
+    <label sclass="sectionHeaderTitle" value="Identity Details" />
+  </div>
+  <div style="margin: 0 20px 20px 20px;">
+    <div sclass="grid-formview two-col" style="grid-template-columns: 1fr 1fr;">
+      <div sclass="cell cellType2">
+        <div sclass="cell-title">
+          <label sclass="label" value="ID Type" />
+          <label sclass="required" value="*" />
+        </div>
+        <div sclass="cell-content cell-content15">
+          <listbox mold="select"
+                   model="@load(vmLearner.alternateIdTypes)" 
+                   selectedItem="@bind(vmLearner.selectedIdType)"
+                   disabled="@load(vmLearner.identityValidated)">
+            <template name="model">
+              <listitem label="@load(each.name)" />
+            </template>
+          </listbox>
+        </div>
+      </div>
+      <div sclass="cell cellType1">
+        <div sclass="cell-title">
+          <label sclass="label" value="ID Number" />
+          <label sclass="required" value="*" />
+        </div>
+        <div sclass="cell-content cell-content15">
+          <textbox value="@bind(vmLearner.idNumber)"
+                   disabled="@load(vmLearner.identityValidated)" />
+        </div>
+      </div>
+    </div>
+    <div style="padding:10px 0;">
+      <button label="VALIDATE" onClick="@command('onValidateIdentity')" 
+              sclass="z-button"
+              visible="@load(!vmLearner.identityValidated)"
+              style="font-weight:bold;" />
+    </div>
+    <!-- Validation Message -->
+    <hlayout visible="@load(vmLearner.validationMessage ne '')" style="padding:10px 0;">
+      <label value="@load(vmLearner.validationMessage)" 
+             style="padding:8px 12px; border:1px solid #ccc; background:#f9f9f9; display:block; width:100%;" />
+    </hlayout>
+    <!-- CREATE NEW button -->
+    <hlayout visible="@load(vmLearner.showCreateNew)" style="padding:5px 0; justify-content:center;">
+      <button label="CREATE NEW" onClick="@command('onCreateNew')" 
+              sclass="z-button"
+              style="font-weight:bold; background:#1976D2; color:white;" />
+    </hlayout>
+  </div>
+  
+  <!-- Phase 2: Main Form (visible after identity validated) -->
+  <div visible="@load(vmLearner.identityValidated)">
+    <include
+      component="@init(vmLearner.tmNames)"
+      menuContextInfo="@init(vmLearner.menuContextInfo)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+    
+    <include 
+      sclass="navTabOuter"
+      component="@init(vmLearner.mainTab)"
+      menuContextInfo="@init(vmLearner.menuContextInfo)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
+      
+    <include
+      saveApp="@init(vmLearner)"
+      navTab="@init(vmLearner.mainTab)"
+      src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
+  </div>
+</idspace>

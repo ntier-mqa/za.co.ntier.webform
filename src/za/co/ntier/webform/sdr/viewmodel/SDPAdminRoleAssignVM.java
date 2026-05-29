@@ -10,7 +10,6 @@ import org.adempiere.webui.panel.SDFRegistrationWindow;
 import org.compiere.model.I_AD_Role;
 import org.compiere.model.I_AD_User_Roles;
 import org.compiere.model.I_C_BPartner;
-import org.compiere.model.I_I_BPartner;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -18,19 +17,14 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_User_Roles;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_AD_User;
-import za.co.ntier.api.model.I_ZZAssessorPerson;
-import za.co.ntier.api.model.I_ZZLinkAssessorQualification;
-import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
-import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -239,7 +233,7 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		chooseBpartnerCol.required();
 		
 		chooseBpartnerCol.setEventHandle((event, cellModel) -> {
-			AssessorRegistrationVM.showInfoPanel(
+			BaseAppVM.showInfoPanel(
 			obj -> {
 				Object [] objs = (Object [])obj;
 				MBPartner_New selected = (MBPartner_New)MBPartner_New.get(Env.getCtx(), (int)objs[0]);
