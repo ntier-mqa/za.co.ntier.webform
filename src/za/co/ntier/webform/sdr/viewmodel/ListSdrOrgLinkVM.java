@@ -53,7 +53,7 @@ public class ListSdrOrgLinkVM {
 		boolean isOrgEditable = X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved.equals(zzDocStatus.getValue())
 				|| X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Pending.equals(zzDocStatus.getValue());
 		isOrgEditable = isOrgEditable && row.get(ListSdrOrgLinkVM.ROLE_key).equals(X_ZZSdfOrganisation_v.ZZSDFROLETYPE_Primary);
-		return isOrgEditable;
+		return true;
 	}
 	
 	@Command

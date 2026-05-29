@@ -1,23 +1,3 @@
--- run only one time before apply learner
--- alter table zzsdf drop column zzperson_id
--- drop table zzperson
-
--- run only one time before apply MQA Learner
--- update ZZLkpOfoOccupation set ZZMigrationCode = description::NUMERIC where description is not null
-
--- run only one time before apply MQA Learner (client)
--- update ZZSkillsProgramme set (ZZSkillsProgrammeCode, zzSkillsProgrammeTitle) = (value, name)
--- update ZZQualification set (ZZSaqaQualificationCode, ZZSaqaQualificationTitle) = (value, name)
-
-delete from ZZSkillsProgramme where ZZSkillsProgramme_ID not in (select ZZSkillsProgramme_ID from c_bp_skillsprogramme)
-delete from zzlearnership
-delete from zzqctoqualification
-delete from zzqctolearnership
-delete from ZZQCTOSkillsProgramme
-delete from ZZQualification
-delete from ZZModule
-delete from ZZQCTOModule
-
 
 DO $$ 
 DECLARE 

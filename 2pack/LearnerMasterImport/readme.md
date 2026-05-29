@@ -200,11 +200,7 @@ SELECT
 	CASE qq.ArtisanQualificationYesNoID WHEN 1 THEN 'N' WHEN 2 THEN 'Y' END AS ZZArtisanQualification,
 	qq.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues
-	--CONCAT_WS (
-	--	CONCAT_WS(':', 'ZZLkpOfoOccupation', 'ZZLkpOfoOccupation_id', ooc.id),
-	--	CONCAT_WS(':', 'ZZLkpOfoOccupation', ooc.id),
-	--	CONCAT_WS(':', 'ref', 'ZZLkpNqfLevel', 'ZZNqfLevel', lev.id)
-	--) as ZZMigrateValues
+	
 FROM
 	QCTOQualification qq
 	left join lkpNQFLevel lev on qq.NQFLevelID = lev.id
@@ -300,11 +296,6 @@ SELECT
 	qls.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
 	
-	--CONCAT_WS (';',
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12)), -- ooc.id is null then this line is null and get out from expression
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12))
-	--) as ZZMigrateValues
-	
 FROM 
 	QCTOLearnership qls 
 	left join lkpNQFLevel lev on qls.NQFLevelID = lev.id
@@ -390,11 +381,6 @@ SELECT
 	CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody,
 	qsp.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
-	
-	--CONCAT_WS (';',
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12)), -- ooc.id is null then this line is null and get out from expression
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12))
-	--) as ZZMigrateValues
 	
 FROM 
 	QCTOSkillsProgramme qsp 
@@ -482,11 +468,6 @@ SELECT
 	CASE sp.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
 	sp.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
-	
-	--CONCAT_WS (';',
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12)), -- ooc.id is null then this line is null and get out from expression
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12))
-	--) as ZZMigrateValues
 	
 FROM 
 	SkillsProgramme sp 
@@ -591,11 +572,6 @@ SELECT
 	q.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
 	
-	--CONCAT_WS (';',
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12)), -- ooc.id is null then this line is null and get out from expression
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12))
-	--) as ZZMigrateValues
-	
 FROM 
 	Qualification q 
 	left join lkpNQFLevel lev on q.NQFLevelID = lev.id
@@ -674,11 +650,6 @@ SELECT
 	CASE qm.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
 	qm.id as "ZZMigrationCode/K",
 	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues -- ooc.id null then result is null
-	
-	--CONCAT_WS (';',
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12)), -- ooc.id is null then this line is null and get out from expression
-	--	'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id' + CAST(ooc.id as NVARCHAR(12))
-	--) as ZZMigrateValues
 	
 FROM 
 	QCTOModule qm 
@@ -892,6 +863,7 @@ FROM
 	left join lkpModuleType mt on qspm.ModuleTypeID = mt.ID 
 
 ```
+
 </details>
 
 <details>
@@ -975,13 +947,9 @@ SELECT
 	us.NewLastAchievementDate as ZZNewLastAchievementDate,
 	CASE us.IsReplacement WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReplacement,
 	CASE us.IsReregistered WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReregistered,
+	CASE us.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
 	us.MQAUnitStandardID as ZZMqaUnitStandardCode,
 	us.id as "ZZMigrationCode/K"
-	--CONCAT_WS (
-	--	CONCAT_WS(':', 'ZZLkpOfoOccupation', 'ZZLkpOfoOccupation_id', ooc.id),
-	--	CONCAT_WS(':', 'ZZLkpOfoOccupation', ooc.id),
-	--	CONCAT_WS(':', 'ref', 'ZZLkpNqfLevel', 'ZZNqfLevel', lev.id)
-	--) as ZZMigrateValues
 FROM
 	UnitStandard us
 	left join UnitStandard rus on us.ReplacementUnitStandardID = rus.id
@@ -996,3 +964,150 @@ FROM
 <summary>Q&A</summary>
 
 </details>
+
+
+## QCTOLearnership
+
+<details>
+
+<summary>LearnershipUnitStandard DDL</summary>
+
+```sql
+
+CREATE TABLE MQA.dbo.LearnershipUnitStandard (
+	ID int IDENTITY(1,1) NOT NULL,
+	LearnershipID int NOT NULL,
+	UnitStandardID int NOT NULL,
+	UnitStandardTypeID int NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_LearnershipUnitStandard PRIMARY KEY (ID)
+);
+
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+1. UnitStandard (moment not unique so use ZZMigrateValues)
+`select SAQAUnitStandardID from UnitStandard where IsDeleted = 0 group by SAQAUnitStandardID having count (*) > 1`
+
+2. Learnership (moment unique so can use idempiere lookup by query LearnershipCode)
+`select LearnershipCode from Learnership where IsDeleted = 0 group by LearnershipCode having count (*) > 1`
+
+3. lkpUnitStandardType (unique so can use idempiere lookup by query LearnershipCode)
+`select description from lkpUnitStandardType where IsDeleted = 0 group by description having count (*) > 1`
+
+</details>
+
+<details>
+
+<summary>LearnershipUnitStandard Query</summary>
+
+```sql
+
+select
+	'*' as "AD_Org_ID[Name]",
+	lsu.id as "ZZMigrationCode/K",
+	CASE us.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
+	ls.LearnershipCode as "ZZLearnership_ID[ZZLearnershipCode]",
+	lust.Description as ZZUnitStandardType,
+	'ZZUnitStandard:ZZUnitStandard_id:' + CAST(us.id as NVARCHAR(12)) as ZZMigrateValues
+from 
+	LearnershipUnitStandard lsu
+	left join UnitStandard us on lsu.UnitStandardID = us.id
+	left join Learnership ls on lsu.LearnershipID = ls.ID 
+	left join lkpUnitStandardType lust on lsu.UnitStandardTypeID = lsu.ID 
+
+```
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+
+## SkillsProgrammeUnitStandard
+
+<details>
+
+<summary>SkillsProgrammeUnitStandard DDL</summary>
+
+```sql
+
+CREATE TABLE MQA.dbo.SkillsProgrammeUnitStandard (
+	ID int IDENTITY(1,1) NOT NULL,
+	SkillsProgrammeID int NOT NULL,
+	UnitStandardID int NOT NULL,
+	UnitStandardTypeID int NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_SkillsProgrammeUnitStandard PRIMARY KEY (ID)
+);
+
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+1. SkillsProgramme (moment SkillsProgrammeCode isn't unique so use ZZMigrateValues to matching)
+`select SkillsProgrammeCode from SkillsProgramme where IsDeleted  = 0 group by SkillsProgrammeCode having count(*) > 0`
+
+2. UnitStandard (moment not unique so use ZZMigrateValues)
+`select SAQAUnitStandardID from UnitStandard where IsDeleted = 0 group by SAQAUnitStandardID having count (*) > 1`
+
+3. lkpUnitStandardType (unique so can use idempiere lookup by query LearnershipCode)
+`select description from lkpUnitStandardType where IsDeleted = 0 group by description having count (*) > 1`
+
+</details>
+
+<details>
+
+<summary>SkillsProgrammeUnitStandard Query</summary>
+
+```sql
+
+
+select
+	'*' as "AD_Org_ID[Name]",
+	spus.id as "ZZMigrationCode/K",
+	CASE spus.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
+	lust.Description as ZZUnitStandardType,
+	CONCAT_WS (';',
+         	'ZZSkillsProgramme:ZZSkillsProgramme_ID:' + CAST(sp.id as NVARCHAR(12)),
+         	'ZZUnitStandard:ZZUnitStandard_id:' + CAST(us.id as NVARCHAR(12))
+         ) as ZZMigrateValues
+from 
+	SkillsProgrammeUnitStandard spus
+	left join UnitStandard us on spus.UnitStandardID = us.id
+	left join SkillsProgramme sp on spus.SkillsProgrammeID = sp.ID 
+	left join lkpUnitStandardType lust on spus.UnitStandardTypeID = lust.ID 
+
+```
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+
