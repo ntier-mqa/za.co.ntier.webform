@@ -181,7 +181,17 @@ public class LearnerRegistrationVM extends BaseAppVM
 		});
 
 		setFormInfo(new FormInfo(menuContextInfo));
-		setMainTab(new NavTab());
+		setMainTab(new NavTab() {
+			@Override
+			protected boolean validateActiveTab(boolean emptyAsValid) {
+				boolean isHeaderValid = true;
+				if (tmNames != null) {
+					isHeaderValid = tmNames.validate(null);
+				}
+				boolean isTabValid = super.validateActiveTab(emptyAsValid);
+				return isHeaderValid && isTabValid;
+			}
+		});
 		initForm();
 
 		if (menuContextInfo.getRecordID() > 0)
