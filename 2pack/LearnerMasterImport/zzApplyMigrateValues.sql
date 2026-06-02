@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION zzApplyMigrateValues(p_table_name TEXT)
 RETURNS VOID AS $$
 DECLARE
-    r RECORD;
+    v_row RECORD; -- Renamed from 'r' to prevent variable/alias namespace collision
     v_tokens TEXT[];
     v_token TEXT;
     parts TEXT[];
@@ -53,7 +53,7 @@ BEGIN
     END IF;
 
     -- 3. Loop through records using dynamically verified identifiers
-    FOR r IN EXECUTE format(
+    FOR v_row IN EXECUTE format(
         'SELECT ctid AS row_id, %I AS migrate_values FROM %I WHERE %I IS NOT NULL AND %I <> %L AND %I NOT LIKE %L', 
         v_real_migrate_col, v_real_table_name, v_real_migrate_col, v_real_migrate_col, '', v_real_migrate_col, 'err:%'
     ) 
@@ -61,7 +61,7 @@ BEGIN
         v_has_error := FALSE;
         v_error_msg := NULL;
         
-        v_tokens := string_to_array(r.migrate_values, ';');
+        v_tokens := string_to_array(v_row.migrate_values, ';');
         
         FOREACH v_token IN ARRAY v_tokens LOOP
             v_token := trim(v_token);
@@ -109,8 +109,9 @@ BEGIN
                 IF v_validation_type = 'L' THEN
                     SELECT rl.value INTO v_resolved_id
                     FROM ad_ref_list rl 
-                    INNER JOIN ad_reference r ON r.ad_reference_id = rl.ad_reference_id 
-                    WHERE r.name = v_ref_name AND rl.description = v_value;
+                    -- Changed alias here from 'r' to 'ad_ref' to be safe
+                    INNER JOIN ad_reference ad_ref ON ad_ref.ad_reference_id = rl.ad_reference_id 
+                    WHERE ad_ref.name = v_ref_name AND rl.description = v_value;
                     
                     IF v_resolved_id IS NULL THEN
                         v_has_error := TRUE;
@@ -120,7 +121,7 @@ BEGIN
                     
                     -- Dynamic CAST added to UPDATE
                     EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
-                    USING v_resolved_id, r.row_id;
+                    USING v_resolved_id, v_row.row_id;
                     
                 -- Logic for Table type ('T')
                 ELSIF v_validation_type = 'T' THEN
@@ -172,7 +173,7 @@ BEGIN
                         
                         -- Dynamic CAST added to UPDATE
                         EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
-                        USING v_resolved_id, r.row_id;
+                        USING v_resolved_id, v_row.row_id;
                         
                     EXCEPTION WHEN OTHERS THEN
                         v_has_error := TRUE;
@@ -219,7 +220,7 @@ BEGIN
                 SELECT table_name INTO v_real_table_lookup
                 FROM information_schema.tables
                 WHERE lower(table_name) = lower(v_table_lookup)
-                  AND table_schema = current_schema()
+                      AND table_schema = current_schema()
                 LIMIT 1;
                 
                 IF v_real_table_lookup IS NULL THEN
@@ -251,7 +252,7 @@ BEGIN
                     
                     -- Dynamic CAST added to UPDATE
                     EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
-                    USING v_resolved_id, r.row_id;
+                    USING v_resolved_id, v_row.row_id;
                     
                 EXCEPTION WHEN OTHERS THEN
                     v_has_error := TRUE;
@@ -265,7 +266,7 @@ BEGIN
         -- Safe fallback error update using verified casing paths
         IF v_has_error THEN
             EXECUTE format('UPDATE %I SET %I = $1 WHERE ctid = $2', v_real_table_name, v_real_migrate_col)
-            USING 'err:' || r.migrate_values || ' - ' || v_error_msg, r.row_id;
+            USING 'err:' || v_row.migrate_values || ' - ' || v_error_msg, v_row.row_id;
         END IF;
         
     END LOOP;

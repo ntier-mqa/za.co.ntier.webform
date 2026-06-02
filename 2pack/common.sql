@@ -45,8 +45,24 @@ where re."name" = 'ZZ_Achievement_Status_Ref'
 
 SELECT zzApplyMigrateValues('ZZQctoLearnership');
 
+select * from ad_menu
+
 truncate ZZLearnership
 
 Database error querying standard table: zzlkpofooccupation
 
 select count (*) from ZZQualification
+
+
+SELECT t.ad_tree_id, treetype, node_id, parent_id, seqno
+FROM ad_tree t
+LEFt JOIN ad_treenode tn ON  tn.ad_tree_id=t.ad_tree_id
+WHERE TreeType = 'MM'
+order by t.ad_tree_id, node_id, parent_id, seqno
+
+
+SELECT tr.AD_Tree_ID 
+FROM 
+AD_Tree tr JOIN AD_Table t ON (tr.AD_Table_ID=t.AD_Table_ID) 
+WHERE tr.AD_Client_ID=? AND tr.TreeType=? AND tr.IsActive='Y' AND t.TableName = ? ORDER BY tr.AD_Tree_ID
+select * from ZZLkpOfoOccupationTree
