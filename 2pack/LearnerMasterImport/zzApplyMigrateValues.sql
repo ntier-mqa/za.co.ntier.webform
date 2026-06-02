@@ -65,8 +65,12 @@ BEGIN
         v_error_msg := NULL;
         
         v_tokens := string_to_array(v_row.migrate_values, ';');
-        
+
+        RAISE NOTICE 'process table: % - row ctid: % - migrate_values: %', p_table_name, v_row.row_id, v_row.migrate_values;
+
         FOREACH v_token IN ARRAY v_tokens LOOP
+			
+			RAISE NOTICE '    process v_token: %', v_token;
             v_token := trim(v_token);
             IF v_token = '' THEN CONTINUE; END IF;
             
@@ -77,6 +81,7 @@ BEGIN
             -------------------------------------------------------------------
             IF parts[1] = 'ref' THEN
                 IF array_length(parts, 1) < 4 THEN
+                    RAISE NOTICE 'Skipping token (insufficient parts for ref pattern) | Row ID: % | Token: "%"', v_row.row_id, v_token;
                     CONTINUE;
                 END IF;
                 
@@ -91,6 +96,7 @@ BEGIN
                 IF v_validation_type IS NULL OR v_validation_type NOT IN ('L', 'T') THEN
                     v_has_error := TRUE;
                     v_error_msg := 'ValidationType must be L or T (Found: ' || COALESCE(v_validation_type, 'NULL') || ')';
+                    RAISE NOTICE 'Validation failed | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                     EXIT; 
                 END IF;
                 
@@ -105,6 +111,7 @@ BEGIN
                 IF v_real_update_col IS NULL THEN
                     v_has_error := TRUE;
                     v_error_msg := 'Target update column ' || v_update_col || ' does not exist in table ' || v_real_table_name;
+                    RAISE NOTICE 'Validation failed | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                     EXIT;
                 END IF;
                 
@@ -119,6 +126,7 @@ BEGIN
                     IF v_resolved_id IS NULL THEN
                         v_has_error := TRUE;
                         v_error_msg := 'v_resolved_id is null for reference list description: ' || v_value;
+                        RAISE NOTICE 'Query returned nothing | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                         EXIT;
                     END IF;
                     
@@ -126,6 +134,7 @@ BEGIN
                     EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
                     USING v_resolved_id, v_row.row_id;
                     
+					RAISE NOTICE '    found i value: % for column: %', v_resolved_id, v_real_update_col;
                 -- Logic for Table type ('T')
                 ELSIF v_validation_type = 'T' THEN
                     SELECT tb.name INTO v_table_lookup
@@ -137,6 +146,7 @@ BEGIN
                     IF v_table_lookup IS NULL THEN
                         v_has_error := TRUE;
                         v_error_msg := 'v_table_lookup is null for reference: ' || v_ref_name;
+                        RAISE NOTICE 'Validation failed | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                         EXIT;
                     END IF;
                     
@@ -150,6 +160,7 @@ BEGIN
                     IF v_real_table_lookup IS NULL THEN
                         v_has_error := TRUE;
                         v_error_msg := 'Lookup table ' || v_table_lookup || ' does not exist in database';
+                        RAISE NOTICE 'Validation failed | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                         EXIT;
                     END IF;
                     
@@ -160,6 +171,7 @@ BEGIN
                     IF v_lookup_id_col IS NULL OR v_lookup_mig_col IS NULL THEN
                         v_has_error := TRUE;
                         v_error_msg := 'Missing ID/ZZMigrationCode columns in lookup table: ' || v_real_table_lookup;
+                        RAISE NOTICE 'Validation failed | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                         EXIT;
                     END IF;
                     
@@ -178,6 +190,7 @@ BEGIN
                         IF v_resolved_id IS NULL THEN
                             v_has_error := TRUE;
                             v_error_msg := 'v_resolved_id is null in table ' || v_real_table_lookup || ' for code: ' || v_value;
+                            RAISE NOTICE 'Query returned nothing | Row ID: % | Token: "%" | Lookup Table: % | Error: %', v_row.row_id, v_token, v_real_table_lookup, v_error_msg;
                             EXIT;
                         END IF;
                         
@@ -185,9 +198,11 @@ BEGIN
                         EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
                         USING v_resolved_id, v_row.row_id;
                         
+						RAISE NOTICE '    found i value: % for column: %', v_resolved_id, v_real_update_col;
                     EXCEPTION WHEN OTHERS THEN
                         v_has_error := TRUE;
                         v_error_msg := 'Database error querying lookup table ' || v_real_table_lookup || ': ' || SQLERRM;
+                        RAISE NOTICE 'Execution halted | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                         EXIT;
                     END;
                 END IF;
@@ -197,6 +212,7 @@ BEGIN
             -------------------------------------------------------------------
             ELSE
                 IF array_length(parts, 1) = 1 THEN
+                    RAISE NOTICE 'Skipping token (single element pattern variant) | Row ID: % | Token: "%"', v_row.row_id, v_token;
                     CONTINUE;
                 END IF;
                 
@@ -209,6 +225,7 @@ BEGIN
                     v_update_col := v_table_lookup || '_ID';
                     v_value      := parts[2];
                 ELSE
+                    RAISE NOTICE 'Skipping token (unsupported sequence split count) | Row ID: % | Token: "%"', v_row.row_id, v_token;
                     CONTINUE;
                 END IF;
                 
@@ -223,6 +240,7 @@ BEGIN
                 IF v_real_update_col IS NULL THEN
                     v_has_error := TRUE;
                     v_error_msg := 'Target update column ' || v_update_col || ' does not exist in table ' || v_real_table_name;
+                    RAISE NOTICE 'Validation failed | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                     EXIT;
                 END IF;
                 
@@ -231,11 +249,12 @@ BEGIN
                 FROM information_schema.tables
                 WHERE lower(table_name) = lower(v_table_lookup)
                       AND table_schema = current_schema()
-                LIMIT 1;
+                    LIMIT 1;
                 
                 IF v_real_table_lookup IS NULL THEN
                     v_has_error := TRUE;
                     v_error_msg := 'Lookup table ' || v_table_lookup || ' does not exist in database';
+                    RAISE NOTICE 'Validation failed | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                     EXIT;
                 END IF;
                 
@@ -246,6 +265,7 @@ BEGIN
                 IF v_lookup_id_col IS NULL OR v_lookup_mig_col IS NULL THEN
                     v_has_error := TRUE;
                     v_error_msg := 'Missing ID/ZZMigrationCode columns in lookup table: ' || v_real_table_lookup;
+                    RAISE NOTICE 'Validation failed | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                     EXIT;
                 END IF;
                 
@@ -264,6 +284,7 @@ BEGIN
                     IF v_resolved_id IS NULL THEN
                         v_has_error := TRUE;
                         v_error_msg := 'v_resolved_id is null in table ' || v_real_table_lookup || ' for code: ' || v_value;
+                        RAISE NOTICE 'Query returned nothing | Row ID: % | Token: "%" | Lookup Table: % | Error: %', v_row.row_id, v_token, v_real_table_lookup, v_error_msg;
                         EXIT;
                     END IF;
                     
@@ -271,9 +292,11 @@ BEGIN
                     EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
                     USING v_resolved_id, v_row.row_id;
                     
+					RAISE NOTICE '    found i value: % for column: %', v_resolved_id, v_real_update_col;
                 EXCEPTION WHEN OTHERS THEN
                     v_has_error := TRUE;
                     v_error_msg := 'Database error querying standard table ' || v_real_table_lookup || ': ' || SQLERRM;
+                    RAISE NOTICE 'Execution halted | Row ID: % | Token: "%" | Error: %', v_row.row_id, v_token, v_error_msg;
                     EXIT;
                 END;
                 
@@ -283,7 +306,7 @@ BEGIN
         -- Safe fallback error update using verified casing paths
         IF v_has_error THEN
             EXECUTE format('UPDATE %I SET %I = $1 WHERE ctid = $2', v_real_table_name, v_real_migrate_col)
-            USING 'err:' || v_row.migrate_values || ' - ' || v_error_msg, v_row.row_id;
+            USING v_row.migrate_values || ' - ERR:' || v_error_msg, v_row.row_id;
         END IF;
         
     END LOOP;

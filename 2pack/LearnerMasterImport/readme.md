@@ -1015,7 +1015,7 @@ SELECT
 	, qm.LastEnrolmentDate AS ZZLastEnrolmentDate
 	, qm.LastAchievementDate as ZZLastAchievementDate
 	, CONCAT_WS (';',
-         		'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
+         		'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
          		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))
          		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
          		, 'ref:ZZLkpLearningType:ZZLearningType:' + CAST(lt.id as NVARCHAR(12))
@@ -1265,11 +1265,11 @@ to make reference field writeable temp uncheck isParent
 
 ```sql
 select 
-"AD_Reference_ID[Name]\K"
+"AD_Reference_ID[Name]" AS "AD_Reference_ID[Name]/K"
 , CASE 
 	when value is null or value = 'N/A' THEN CAST(Description as nvarchar(250)) 
 	ELSE value END 
-AS value
+AS "value/K"
 , name
 , Description
 , EntityType
@@ -1278,7 +1278,7 @@ from
 (
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
-	'ZZLkpNqfLevel' as "AD_Reference_ID[Name]\K"
+	'ZZLkpNqfLevel' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1289,7 +1289,7 @@ from
 UNION 
 -- no code column so use description for both
 select 
-	'ZZLkpLearnershipType' as "AD_Reference_ID[Name]\K"
+	'ZZLkpLearnershipType' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1301,7 +1301,7 @@ UNION
 
 -- q&a saqaCode is empty on all record so use description for both
 select 
-	'ZZLkpAetLevel' as "AD_Reference_ID[Name]\K"
+	'ZZLkpAetLevel' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1313,7 +1313,7 @@ UNION
 
 -- q&a saqaCode isn't unique, description is unique, use id for case case is null and N/A
 select 
-	'ZZLkpQualityAssuranceBody' as "AD_Reference_ID[Name]\K"
+	'ZZLkpQualityAssuranceBody' as "AD_Reference_ID[Name]"
 	, saqaCode as value
 	, description as name
 	, id as Description
@@ -1324,7 +1324,7 @@ from
 UNION 
 -- no code column so use description for both
 select 
-	'ZZLkpQctoQualificationType' as "AD_Reference_ID[Name]\K"
+	'ZZLkpQctoQualificationType' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1335,7 +1335,7 @@ from
 UNION 
 -- no code column so use description for both
 select 
-	'ZZLkpQctoLearnershipType' as "AD_Reference_ID[Name]\K"
+	'ZZLkpQctoLearnershipType' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1347,7 +1347,7 @@ UNION
 
 -- no code column so use description for both
 select 
-	'ZZLkpSkillsProgrammeType' as "AD_Reference_ID[Name]\K"
+	'ZZLkpSkillsProgrammeType' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1358,7 +1358,7 @@ from
 UNION 
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
-	'ZZLkpLearningType' as "AD_Reference_ID[Name]\K"
+	'ZZLkpLearningType' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1370,7 +1370,7 @@ UNION
 
 -- LkpSkillsProgrammeGrantType moment empty
 select 
-	'ZZLkpSkillsProgrammeGrantType' as "AD_Reference_ID[Name]\K"
+	'ZZLkpSkillsProgrammeGrantType' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1382,7 +1382,7 @@ UNION
 
 -- no code column so use description for both
 select 
-	'ZZLkpQualificationType' as "AD_Reference_ID[Name]\K"
+	'ZZLkpQualificationType' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -1394,7 +1394,7 @@ UNION
 
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
-	'ZZLkpModuleType' as "AD_Reference_ID[Name]\K"
+	'ZZLkpModuleType' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
@@ -2064,26 +2064,28 @@ CREATE TABLE MQA.dbo.UnitStandard (
 
 ```sql
 SELECT
-	'*' as "AD_Org_ID[Name]",
-	us.SAQAUnitStandardID as ZZSaqaUnitStandardCode,
-	us.SAQAUnitStandardTitle as ZZSaqaUnitStandardTitle,
-	lev.SAQACode as ZZNqfLevel,
-	us.Credits as ZZCredits,
-	us.Registrationstartdate as Registrationstartdate,
-	us.Registrationenddate as Registrationenddate,
-	us.LastEnrolmentDate as	ZZLastEnrolmentDate,
-	us.LastAchievementDate as ZZLastAchievementDate,
-	rus.SAQAUnitStandardID AS "ZZReplacementUnitStandard_ID[ZZSaqaUnitStandardCode]",
-	CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody,
-	us.NewRegistrationStartDate as ZZNewRegistrationStartDate,
-	us.NewRegistrationEndDate as ZZNewRegistrationEndDate,
-	us.NewLastEnrolmentDate as ZZNewLastEnrolmentDate,
-	us.NewLastAchievementDate as ZZNewLastAchievementDate,
-	CASE us.IsReplacement WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReplacement,
-	CASE us.IsReregistered WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReregistered,
-	CASE us.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive,
-	us.MQAUnitStandardID as ZZMqaUnitStandardCode,
-	us.id as "ZZMigrationCode/K"
+	'*' as "AD_Org_ID[Name]"
+	, us.id as "ZZMigrationCode/K"
+	, CASE us.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, us.SAQAUnitStandardID as ZZSaqaUnitStandardCode
+	, us.SAQAUnitStandardTitle as ZZSaqaUnitStandardTitle
+	, us.Credits as ZZCredits
+	, us.Registrationstartdate as Registrationstartdate
+	, us.Registrationenddate as Registrationenddate
+	, us.LastEnrolmentDate as	ZZLastEnrolmentDate
+	, us.LastAchievementDate as ZZLastAchievementDate
+	, us.NewRegistrationStartDate as ZZNewRegistrationStartDate
+	, us.NewRegistrationEndDate as ZZNewRegistrationEndDate
+	, us.NewLastEnrolmentDate as ZZNewLastEnrolmentDate
+	, us.NewLastAchievementDate as ZZNewLastAchievementDate
+	, CASE us.IsReplacement WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReplacement
+	, CASE us.IsReregistered WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReregistered
+	, us.MQAUnitStandardID as ZZMqaUnitStandardCode
+	, CONCAT_WS (';'
+         		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))
+         		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
+         		, 'ZZUnitStandard:ZZReplacementUnitStandard_ID:' + CAST(rus.id as NVARCHAR(12))
+     ) as ZZMigrateValues
 FROM
 	UnitStandard us
 	left join UnitStandard rus on us.ReplacementUnitStandardID = rus.id

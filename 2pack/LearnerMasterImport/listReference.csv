@@ -1,4 +1,4 @@
-"AD_Reference_ID[Name]\K","value","name","Description","EntityType"
+AD_Reference_ID[Name]/K,value/K,name,Description,EntityType
 ZZLkpAetLevel,ABET Level 0,ABET Level 0,1,MQA Learner
 ZZLkpAetLevel,ABET Level 1,ABET Level 1,2,MQA Learner
 ZZLkpAetLevel,ABET Level 2,ABET Level 2,3,MQA Learner
@@ -11,6 +11,8 @@ ZZLkpLearnershipType,Standard Qualification,Standard Qualification,3,MQA Learner
 ZZLkpLearningType,Application,Application,1,MQA Learner
 ZZLkpLearningType,Knowledge,Knowledge,2,MQA Learner
 ZZLkpLearningType,Work experience,Work experience,3,MQA Learner
+ZZLkpModuleType,Core,Core,1,MQA Learner
+ZZLkpModuleType,Elective,Elective,2,MQA Learner
 ZZLkpNqfLevel,Below Level 01,Below Level 01,11,MQA Learner
 ZZLkpNqfLevel,Level 01,Level 01,1,MQA Learner
 ZZLkpNqfLevel,Level 02,Level 02,2,MQA Learner
@@ -29,48 +31,48 @@ ZZLkpQctoQualificationType,Part Qualification,Part Qualification,2,MQA Learner
 ZZLkpQctoQualificationType,Qualification,Qualification,1,MQA Learner
 ZZLkpQualificationType,Non Unit Standard Based,Non Unit Standard Based,2,MQA Learner
 ZZLkpQualificationType,Unit Standard Based,Unit Standard Based,1,MQA Learner
-ZZLkpQualityAssuranceBody,"48",DHET,48,MQA Learner
-ZZLkpQualityAssuranceBody,"49",DHET SETA-support,49,MQA Learner
-ZZLkpQualityAssuranceBody,"50",DIDTETA,50,MQA Learner
-ZZLkpQualityAssuranceBody,"53",EWSETA,53,MQA Learner
-ZZLkpQualityAssuranceBody,"54",Indlela NAMB,54,MQA Learner
-ZZLkpQualityAssuranceBody,"60",QCTO,60,MQA Learner
-ZZLkpQualityAssuranceBody,"541",UMALUSI,68,MQA Learner
-ZZLkpQualityAssuranceBody,"557",BANKSETA,2,MQA Learner
-ZZLkpQualityAssuranceBody,"559",CHIETA,6,MQA Learner
-ZZLkpQualityAssuranceBody,"561",CTFL,47,MQA Learner
-ZZLkpQualityAssuranceBody,"577",CETA,4,MQA Learner
-ZZLkpQualityAssuranceBody,"581",ETDP,7,MQA Learner
-ZZLkpQualityAssuranceBody,"583",ESETA,51,MQA Learner
-ZZLkpQualityAssuranceBody,"585",FASSET,8,MQA Learner
-ZZLkpQualityAssuranceBody,"587",FOODBEV,11,MQA Learner
-ZZLkpQualityAssuranceBody,"589",FIETA,10,MQA Learner
-ZZLkpQualityAssuranceBody,"591",HWSETA,13,MQA Learner
-ZZLkpQualityAssuranceBody,"593",ISETT,55,MQA Learner
-ZZLkpQualityAssuranceBody,"595",INSETA,15,MQA Learner
-ZZLkpQualityAssuranceBody,"597",LGSETA,17,MQA Learner
-ZZLkpQualityAssuranceBody,"599",MERSETA,18,MQA Learner
-ZZLkpQualityAssuranceBody,"601",MAPPP-SETA,56,MQA Learner
-ZZLkpQualityAssuranceBody,"607",PSETA,59,MQA Learner
-ZZLkpQualityAssuranceBody,"611",SERVICES SETA,65,MQA Learner
-ZZLkpQualityAssuranceBody,"613",THETA,67,MQA Learner
-ZZLkpQualityAssuranceBody,"615",TETA,66,MQA Learner
-ZZLkpQualityAssuranceBody,"617",W&RSETA,69,MQA Learner
-ZZLkpQualityAssuranceBody,"621",CHE,5,MQA Learner
-ZZLkpQualityAssuranceBody,"629",MQA,57,MQA Learner
-ZZLkpQualityAssuranceBody,"631",SAPC,63,MQA Learner
-ZZLkpQualityAssuranceBody,"637",PAB,58,MQA Learner
-ZZLkpQualityAssuranceBody,"639",SABPP,61,MQA Learner
-ZZLkpQualityAssuranceBody,"651",SAICA,20,MQA Learner
-ZZLkpQualityAssuranceBody,"657",SANC,62,MQA Learner
-ZZLkpQualityAssuranceBody,"692",HPCSA,16,MQA Learner
-ZZLkpQualityAssuranceBody,"694",AgriSETA,1,MQA Learner
-ZZLkpQualityAssuranceBody,"695",SASSETA,64,MQA Learner
-ZZLkpQualityAssuranceBody,"754",FPMSETA,12,MQA Learner
-ZZLkpQualityAssuranceBody,"755",CATHSSETA,3,MQA Learner
-ZZLkpQualityAssuranceBody,"756",MICT,19,MQA Learner
-ZZLkpQualityAssuranceBody,"9",FETMIS,9,MQA Learner
-ZZLkpQualityAssuranceBody,"14",IEB,14,MQA Learner
+ZZLkpQualityAssuranceBody,48,DHET,48,MQA Learner
+ZZLkpQualityAssuranceBody,49,DHET SETA-support,49,MQA Learner
+ZZLkpQualityAssuranceBody,50,DIDTETA,50,MQA Learner
+ZZLkpQualityAssuranceBody,53,EWSETA,53,MQA Learner
+ZZLkpQualityAssuranceBody,54,Indlela NAMB,54,MQA Learner
+ZZLkpQualityAssuranceBody,60,QCTO,60,MQA Learner
+ZZLkpQualityAssuranceBody,541,UMALUSI,68,MQA Learner
+ZZLkpQualityAssuranceBody,557,BANKSETA,2,MQA Learner
+ZZLkpQualityAssuranceBody,559,CHIETA,6,MQA Learner
+ZZLkpQualityAssuranceBody,561,CTFL,47,MQA Learner
+ZZLkpQualityAssuranceBody,577,CETA,4,MQA Learner
+ZZLkpQualityAssuranceBody,581,ETDP,7,MQA Learner
+ZZLkpQualityAssuranceBody,583,ESETA,51,MQA Learner
+ZZLkpQualityAssuranceBody,585,FASSET,8,MQA Learner
+ZZLkpQualityAssuranceBody,587,FOODBEV,11,MQA Learner
+ZZLkpQualityAssuranceBody,589,FIETA,10,MQA Learner
+ZZLkpQualityAssuranceBody,591,HWSETA,13,MQA Learner
+ZZLkpQualityAssuranceBody,593,ISETT,55,MQA Learner
+ZZLkpQualityAssuranceBody,595,INSETA,15,MQA Learner
+ZZLkpQualityAssuranceBody,597,LGSETA,17,MQA Learner
+ZZLkpQualityAssuranceBody,599,MERSETA,18,MQA Learner
+ZZLkpQualityAssuranceBody,601,MAPPP-SETA,56,MQA Learner
+ZZLkpQualityAssuranceBody,607,PSETA,59,MQA Learner
+ZZLkpQualityAssuranceBody,611,SERVICES SETA,65,MQA Learner
+ZZLkpQualityAssuranceBody,613,THETA,67,MQA Learner
+ZZLkpQualityAssuranceBody,615,TETA,66,MQA Learner
+ZZLkpQualityAssuranceBody,617,W&RSETA,69,MQA Learner
+ZZLkpQualityAssuranceBody,621,CHE,5,MQA Learner
+ZZLkpQualityAssuranceBody,629,MQA,57,MQA Learner
+ZZLkpQualityAssuranceBody,631,SAPC,63,MQA Learner
+ZZLkpQualityAssuranceBody,637,PAB,58,MQA Learner
+ZZLkpQualityAssuranceBody,639,SABPP,61,MQA Learner
+ZZLkpQualityAssuranceBody,651,SAICA,20,MQA Learner
+ZZLkpQualityAssuranceBody,657,SANC,62,MQA Learner
+ZZLkpQualityAssuranceBody,692,HPCSA,16,MQA Learner
+ZZLkpQualityAssuranceBody,694,AgriSETA,1,MQA Learner
+ZZLkpQualityAssuranceBody,695,SASSETA,64,MQA Learner
+ZZLkpQualityAssuranceBody,754,FPMSETA,12,MQA Learner
+ZZLkpQualityAssuranceBody,755,CATHSSETA,3,MQA Learner
+ZZLkpQualityAssuranceBody,756,MICT,19,MQA Learner
+ZZLkpQualityAssuranceBody,9,FETMIS,9,MQA Learner
+ZZLkpQualityAssuranceBody,14,IEB,14,MQA Learner
 ZZLkpSkillsProgrammeType,Leads to a Qualification,Leads to a Qualification,2,MQA Learner
 ZZLkpSkillsProgrammeType,Mine Community,Mine Community,3,MQA Learner
 ZZLkpSkillsProgrammeType,Small Scale Projects,Small Scale Projects,4,MQA Learner
