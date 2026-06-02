@@ -103,12 +103,9 @@ public class UploadCellModel extends CellModel {
 		
 	}
 	
-	private boolean removed = false;
-	
 	public void cmdRemoveAttachment() {
 		bytes = null;
 		fileName = null;
-		removed = true;
 		BindUtils.postNotifyChange(this, "fileName");
 	}
 	
@@ -116,14 +113,14 @@ public class UploadCellModel extends CellModel {
 		byte[] bytes = getBytes(); // <-- in-memory only
 		String fileName = getFileName();
 
-		if (removed) {
-			AttachmentUtil.removeAttachmentEntry(data, getBtText(), trxName);
-		}else if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
+		if (bytes != null && bytes.length > 0 && org.apache.commons.lang3.StringUtils.isNotBlank(fileName)) {
 			// one-entry semantics: delete-and-recreate
 			AttachmentUtil.addOrReplaceAttachmentEntry(data, fileName, bytes, getBtText() ,trxName);
 
 			// free memory for this row after persisting
 			setBytes(null);
+		}else {
+			AttachmentUtil.removeAttachmentEntry(data, getBtText(), trxName);
 		}
 		
 	}
@@ -151,12 +148,10 @@ public class UploadCellModel extends CellModel {
 		upCellModelTo.setValue(getValue());
 		upCellModelTo.setBytes(getBytes());
 		upCellModelTo.setFileName(getFileName());
-		upCellModelTo.removed = removed;
 	}
 	
 	@Override
 	public void reset(boolean perRow) {
-		removed = false;
 		bytes = null;
 		setFileName(null);
 		super.reset(perRow);
