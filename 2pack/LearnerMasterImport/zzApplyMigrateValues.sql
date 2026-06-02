@@ -31,6 +31,9 @@ DECLARE
     
     -- Dynamic query building string
     v_sql TEXT;
+
+    -- Tracking variable for rows affected by executed statements
+    v_rows_affected INT;
 BEGIN
     -- 1. Find the exact case-sensitive spelling of the target table name
     SELECT table_name INTO v_real_table_name
@@ -131,10 +134,12 @@ BEGIN
                     END IF;
                     
                     -- Dynamic CAST added to UPDATE
-                    EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
-                    USING v_resolved_id, v_row.row_id;
+                    EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2 RETURNING ctid', v_real_table_name, v_real_update_col, v_update_col_type) 
+                    USING v_resolved_id, v_row.row_id INTO v_row.row_id;
                     
-					RAISE NOTICE '    found i value: % for column: %', v_resolved_id, v_real_update_col;
+                    GET DIAGNOSTICS v_rows_affected = ROW_COUNT;
+                    
+					RAISE NOTICE '    found i value: % for column: % (Rows updated: %)', v_resolved_id, v_real_update_col, v_rows_affected;
                 -- Logic for Table type ('T')
                 ELSIF v_validation_type = 'T' THEN
                     SELECT tb.name INTO v_table_lookup
@@ -195,10 +200,12 @@ BEGIN
                         END IF;
                         
                         -- Dynamic CAST added to UPDATE
-                        EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
-                        USING v_resolved_id, v_row.row_id;
+                        EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2 RETURNING ctid', v_real_table_name, v_real_update_col, v_update_col_type) 
+                        USING v_resolved_id, v_row.row_id INTO v_row.row_id;
                         
-						RAISE NOTICE '    found i value: % for column: %', v_resolved_id, v_real_update_col;
+                        GET DIAGNOSTICS v_rows_affected = ROW_COUNT;
+                        
+						RAISE NOTICE '    found i value: % for column: % (Rows updated: %)', v_resolved_id, v_real_update_col, v_rows_affected;
                     EXCEPTION WHEN OTHERS THEN
                         v_has_error := TRUE;
                         v_error_msg := 'Database error querying lookup table ' || v_real_table_lookup || ': ' || SQLERRM;
@@ -289,10 +296,12 @@ BEGIN
                     END IF;
                     
                     -- Dynamic CAST added to UPDATE
-                    EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2', v_real_table_name, v_real_update_col, v_update_col_type) 
-                    USING v_resolved_id, v_row.row_id;
+                    EXECUTE format('UPDATE %I SET %I = CAST($1 AS %s) WHERE ctid = $2 RETURNING ctid', v_real_table_name, v_real_update_col, v_update_col_type) 
+                    USING v_resolved_id, v_row.row_id INTO v_row.row_id;
                     
-					RAISE NOTICE '    found i value: % for column: %', v_resolved_id, v_real_update_col;
+                    GET DIAGNOSTICS v_rows_affected = ROW_COUNT;
+                    
+					RAISE NOTICE '    found i value: % for column: % (Rows updated: %)', v_resolved_id, v_real_update_col, v_rows_affected;
                 EXCEPTION WHEN OTHERS THEN
                     v_has_error := TRUE;
                     v_error_msg := 'Database error querying standard table ' || v_real_table_lookup || ': ' || SQLERRM;
