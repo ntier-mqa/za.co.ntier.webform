@@ -28,6 +28,9 @@ DECLARE
     -- Error handling variables
     v_error_msg TEXT;
     v_has_error BOOLEAN;
+    
+    -- Dynamic query building string
+    v_sql TEXT;
 BEGIN
     -- 1. Find the exact case-sensitive spelling of the target table name
     SELECT table_name INTO v_real_table_name
@@ -161,9 +164,16 @@ BEGIN
                     END IF;
                     
                     BEGIN
-                        -- Dynamic CAST added to lookup query SELECT
-                        EXECUTE format('SELECT %I FROM %I WHERE %I = CAST($1 AS %s)', v_lookup_id_col, v_real_table_lookup, v_lookup_mig_col, v_lookup_mig_type)
-                        USING v_value INTO v_resolved_id;
+                        -- Construct base SELECT dynamic statement
+                        v_sql := format('SELECT %I FROM %I WHERE %I = CAST($1 AS %s)', v_lookup_id_col, v_real_table_lookup, v_lookup_mig_col, v_lookup_mig_type);
+                        
+                        -- Append conditional validation for the tree table
+                        IF lower(v_real_table_lookup) = lower('ZZLkpOfoOccupationTree') THEN
+                            v_sql := v_sql || ' AND ZZOfoLevelType IS NULL';
+                        END IF;
+
+                        -- Dynamic execution
+                        EXECUTE v_sql USING v_value INTO v_resolved_id;
                         
                         IF v_resolved_id IS NULL THEN
                             v_has_error := TRUE;
@@ -240,9 +250,16 @@ BEGIN
                 END IF;
                 
                 BEGIN
-                    -- Dynamic CAST added to lookup query SELECT
-                    EXECUTE format('SELECT %I FROM %I WHERE %I = CAST($1 AS %s)', v_lookup_id_col, v_real_table_lookup, v_lookup_mig_col, v_lookup_mig_type)
-                    USING v_value INTO v_resolved_id;
+                    -- Construct base SELECT dynamic statement
+                    v_sql := format('SELECT %I FROM %I WHERE %I = CAST($1 AS %s)', v_lookup_id_col, v_real_table_lookup, v_lookup_mig_col, v_lookup_mig_type);
+                    
+                    -- Append conditional validation for the tree table
+                    IF lower(v_real_table_lookup) = lower('ZZLkpOfoOccupationTree') THEN
+                        v_sql := v_sql || ' AND ZZOfoLevelType IS NULL';
+                    END IF;
+
+                    -- Dynamic execution
+                    EXECUTE v_sql USING v_value INTO v_resolved_id;
                     
                     IF v_resolved_id IS NULL THEN
                         v_has_error := TRUE;
