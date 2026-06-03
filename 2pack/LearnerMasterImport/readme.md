@@ -958,86 +958,7 @@ where
 </details>
 
 
-## QCTOModule
 
-<details>
-
-<summary>QCTOModule DDL</summary>
-
-```sql
-CREATE TABLE MQA.dbo.QCTOModule (
-	ID int IDENTITY(1,1) NOT NULL,
-	ModuleCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	ModuleTitle nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	QualityAssuranceBodyID int NULL,
-	Credits int NOT NULL,
-	RegistrationStartDate datetime NOT NULL,
-	RegistrationEndDate datetime NOT NULL,
-	LastEnrolmentDate datetime NOT NULL,
-	LastAchievementDate datetime NOT NULL,
-	NQFLevelID int NOT NULL,
-	LearningTypeID int NOT NULL,
-	ModuleTypeID int NOT NULL,
-	OFOOccupationID int NULL,
-	DateCreated datetime NOT NULL,
-	CreatedBy int NOT NULL,
-	DateUpdated datetime NOT NULL,
-	UpdatedBy int NOT NULL,
-	IsDeleted tinyint NOT NULL,
-	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
-	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
-	CONSTRAINT PK_QCTOModule PRIMARY KEY (ID)
-);
-```
-
-</details>
-
-<details>
-
-<summary>validate data</summary>
-
-</details>
-
-<details>
-
-<summary>QCTOModule Query</summary>
-
-```sql
-SELECT
-	'*' as "AD_Org_ID[Name]"
-	, qm.id as "ZZMigrationCode/K"
-	, CASE qm.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
-	, qm.ModuleCode as ZZModuleCode
-	, qm.ModuleTitle as ZZModuleTitle
-	, qm.Credits as ZZCredits
-	, qm.Registrationstartdate as Registrationstartdate
-	, qm.Registrationenddate as Registrationenddate
-	, qm.LastEnrolmentDate AS ZZLastEnrolmentDate
-	, qm.LastAchievementDate as ZZLastAchievementDate
-	, CONCAT_WS (';',
-         		'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
-         		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))
-         		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
-         		, 'ref:ZZLkpLearningType:ZZLearningType:' + CAST(lt.id as NVARCHAR(12))
-         		, 'ref:ZZLkpModuleType:ZZModuleType:' + CAST(mt.id as NVARCHAR(12))
-         	) as ZZMigrateValues
-
-FROM 
-	QCTOModule qm 
-	left join lkpNQFLevel lev on qm.NQFLevelID = lev.id
-	left join lkpQualityAssuranceBody qab on qm.QualityAssuranceBodyID = qab.ID
-	left join LkpOfoOccupation ooc on qm.OFOOccupationID = ooc.ID
-	left join lkpLearningType lt on qm.LearningTypeID = lt.ID 
-	left join lkpModuleType mt ON qm.ModuleTypeID = mt.ID 
-```
-
-</details>
-
-<details>
-
-<summary>Q&A</summary>
-
-</details>
 
 ### QCTOSkillsProgrammeModule
 <details>
@@ -1474,7 +1395,175 @@ FROM
 
 </details>
 
+## QCTOModule
 
+<details>
+
+<summary>QCTOModule DDL</summary>
+
+```sql
+CREATE TABLE MQA.dbo.QCTOModule (
+	ID int IDENTITY(1,1) NOT NULL,
+	ModuleCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	ModuleTitle nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	QualityAssuranceBodyID int NULL,
+	Credits int NOT NULL,
+	RegistrationStartDate datetime NOT NULL,
+	RegistrationEndDate datetime NOT NULL,
+	LastEnrolmentDate datetime NOT NULL,
+	LastAchievementDate datetime NOT NULL,
+	NQFLevelID int NOT NULL,
+	LearningTypeID int NOT NULL,
+	ModuleTypeID int NOT NULL,
+	OFOOccupationID int NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_QCTOModule PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>QCTOModule Query</summary>
+
+```sql
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, qm.id as "ZZMigrationCode/K"
+	, CASE qm.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, qm.ModuleCode as ZZModuleCode
+	, qm.ModuleTitle as ZZModuleTitle
+	, qm.Credits as ZZCredits
+	, qm.Registrationstartdate as Registrationstartdate
+	, qm.Registrationenddate as Registrationenddate
+	, qm.LastEnrolmentDate AS ZZLastEnrolmentDate
+	, qm.LastAchievementDate as ZZLastAchievementDate
+	, CONCAT_WS (';',
+         		'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
+         		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))
+         		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
+         		, 'ref:ZZLkpLearningType:ZZLearningType:' + CAST(lt.id as NVARCHAR(12))
+         		, 'ref:ZZLkpModuleType:ZZModuleType:' + CAST(mt.id as NVARCHAR(12))
+         	) as ZZMigrateValues
+
+FROM 
+	QCTOModule qm 
+	left join lkpNQFLevel lev on qm.NQFLevelID = lev.id
+	left join lkpQualityAssuranceBody qab on qm.QualityAssuranceBodyID = qab.ID
+	left join LkpOfoOccupation ooc on qm.OFOOccupationID = ooc.ID
+	left join lkpLearningType lt on qm.LearningTypeID = lt.ID 
+	left join lkpModuleType mt ON qm.ModuleTypeID = mt.ID 
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+## UnitStandard
+
+<details>
+
+<summary>UnitStandard DDL</summary>
+
+```sql
+CREATE TABLE MQA.dbo.UnitStandard (
+	ID int IDENTITY(1,1) NOT NULL,
+	SAQAUnitStandardID nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	SAQAUnitStandardTitle nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	NQFLevelID int NOT NULL,
+	Credits int NOT NULL,
+	RegistrationStartDate datetime NOT NULL,
+	RegistrationEndDate datetime NOT NULL,
+	LastEnrolmentDate datetime NOT NULL,
+	LastAchievementDate datetime NOT NULL,
+	ReplacementUnitStandardID int NULL,
+	NewRegistrationStartDate datetime NULL,
+	NewRegistrationEndDate datetime NULL,
+	NewLastEnrolmentDate datetime NULL,
+	NewLastAchievementDate datetime NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	MigrationRecordID int NULL,
+	QualityAssuranceBodyID int NULL,
+	IsReplacement tinyint NULL,
+	IsReregistered tinyint NULL,
+	MQAUnitStandardID nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_UnitStandard PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>UnitStandard Query</summary>
+
+```sql
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, us.id as "ZZMigrationCode/K"
+	, CASE us.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, us.SAQAUnitStandardID as ZZSaqaUnitStandardCode
+	, us.SAQAUnitStandardTitle as ZZSaqaUnitStandardTitle
+	, us.Credits as ZZCredits
+	, us.Registrationstartdate as Registrationstartdate
+	, us.Registrationenddate as Registrationenddate
+	, us.LastEnrolmentDate as	ZZLastEnrolmentDate
+	, us.LastAchievementDate as ZZLastAchievementDate
+	, us.NewRegistrationStartDate as ZZNewRegistrationStartDate
+	, us.NewRegistrationEndDate as ZZNewRegistrationEndDate
+	, us.NewLastEnrolmentDate as ZZNewLastEnrolmentDate
+	, us.NewLastAchievementDate as ZZNewLastAchievementDate
+	, CASE us.IsReplacement WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReplacement
+	, CASE us.IsReregistered WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReregistered
+	, us.MQAUnitStandardID as ZZMqaUnitStandardCode
+	, CONCAT_WS (';'
+         		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))
+         		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
+         		, 'ZZUnitStandard:ZZReplacementUnitStandard_ID:' + CAST(rus.id as NVARCHAR(12))
+     ) as ZZMigrateValues
+FROM
+	UnitStandard us
+	left join UnitStandard rus on us.ReplacementUnitStandardID = rus.id
+	left join lkpNQFLevel lev on us.NQFLevelID = lev.id
+	left join lkpQualityAssuranceBody qab on us.QualityAssuranceBodyID = qab.ID
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
 
 ## QCTOQualification
 <details>
@@ -2012,94 +2101,7 @@ FROM
 
 </details>
 
-## UnitStandard
 
-<details>
-
-<summary>UnitStandard DDL</summary>
-
-```sql
-CREATE TABLE MQA.dbo.UnitStandard (
-	ID int IDENTITY(1,1) NOT NULL,
-	SAQAUnitStandardID nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	SAQAUnitStandardTitle nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	NQFLevelID int NOT NULL,
-	Credits int NOT NULL,
-	RegistrationStartDate datetime NOT NULL,
-	RegistrationEndDate datetime NOT NULL,
-	LastEnrolmentDate datetime NOT NULL,
-	LastAchievementDate datetime NOT NULL,
-	ReplacementUnitStandardID int NULL,
-	NewRegistrationStartDate datetime NULL,
-	NewRegistrationEndDate datetime NULL,
-	NewLastEnrolmentDate datetime NULL,
-	NewLastAchievementDate datetime NULL,
-	DateCreated datetime NOT NULL,
-	CreatedBy int NOT NULL,
-	DateUpdated datetime NOT NULL,
-	UpdatedBy int NOT NULL,
-	IsDeleted tinyint NOT NULL,
-	MigrationRecordID int NULL,
-	QualityAssuranceBodyID int NULL,
-	IsReplacement tinyint NULL,
-	IsReregistered tinyint NULL,
-	MQAUnitStandardID nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
-	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
-	CONSTRAINT PK_UnitStandard PRIMARY KEY (ID)
-);
-```
-
-</details>
-
-<details>
-
-<summary>validate data</summary>
-
-</details>
-
-<details>
-
-<summary>UnitStandard Query</summary>
-
-```sql
-SELECT
-	'*' as "AD_Org_ID[Name]"
-	, us.id as "ZZMigrationCode/K"
-	, CASE us.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
-	, us.SAQAUnitStandardID as ZZSaqaUnitStandardCode
-	, us.SAQAUnitStandardTitle as ZZSaqaUnitStandardTitle
-	, us.Credits as ZZCredits
-	, us.Registrationstartdate as Registrationstartdate
-	, us.Registrationenddate as Registrationenddate
-	, us.LastEnrolmentDate as	ZZLastEnrolmentDate
-	, us.LastAchievementDate as ZZLastAchievementDate
-	, us.NewRegistrationStartDate as ZZNewRegistrationStartDate
-	, us.NewRegistrationEndDate as ZZNewRegistrationEndDate
-	, us.NewLastEnrolmentDate as ZZNewLastEnrolmentDate
-	, us.NewLastAchievementDate as ZZNewLastAchievementDate
-	, CASE us.IsReplacement WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReplacement
-	, CASE us.IsReregistered WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsReregistered
-	, us.MQAUnitStandardID as ZZMqaUnitStandardCode
-	, CONCAT_WS (';'
-         		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))
-         		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
-         		, 'ZZUnitStandard:ZZReplacementUnitStandard_ID:' + CAST(rus.id as NVARCHAR(12))
-     ) as ZZMigrateValues
-FROM
-	UnitStandard us
-	left join UnitStandard rus on us.ReplacementUnitStandardID = rus.id
-	left join lkpNQFLevel lev on us.NQFLevelID = lev.id
-	left join lkpQualityAssuranceBody qab on us.QualityAssuranceBodyID = qab.ID
-```
-
-</details>
-
-<details>
-
-<summary>Q&A</summary>
-
-</details>
 
 ## LearnershipUnitStandard
 
