@@ -1,6 +1,6 @@
-## Migrate stragtegy (Learnership as example)
+## Migration strategy (Learnership example)
 
-start with bussiness table like table Learnership
+Start with a business table; this guide uses the `Learnership` table as an example.
 
 <details>
 
@@ -36,49 +36,51 @@ CREATE TABLE MQA.dbo.Learnership (
 
 <details>
 
-<summary>Step to migrate data</summary>
+<summary>Steps to migrate data</summary>
 
-1. on idempiere create table ZZLearnership with standard column
-2. for each columns investigate it's reference or not
+1. Create the target table in iDempiere (example: `ZZLearnership`) with the standard columns used by imports.
 
-   1. in case reference table isn't much records and have only code/title column then create it on idempiere as a reference list store id to description column to use later
-   2. in case reference table have a lot record or more columns then make it as separate table add column ZZMigrationCode to store id
-3. import old data
+2. For each source column, determine whether it is a reference and how to handle it:
+	 - If the reference table is small and only contains a code/title, create an iDempiere reference list and store the original ID in the `description` column for later lookup.
+	 - If the reference table is large or has additional columns, create a dedicated `ZZ...` lookup table and add a `ZZMigrationCode` column to store the original ID.
 
-   1. open window of ZZLearnership input a record and export it to csv to get template (after that delete the record)
-   2. build a query data on old database with bellow note
-   3. direct value like LearnershipTitle, LearnershipCode just direct query it
+3. Import data from the legacy system:
+	 - Export a CSV template from the `ZZLearnership` window (add a record and export, then delete the sample record).
+	 - Build a query against the legacy database that produces the CSV template. Notes for the query:
+		 - Direct values (e.g. `LearnershipTitle`, `LearnershipCode`) are selected directly:
 
-      `ls.LearnershipTitle as ZZLearnershipTitle,`
-   4. value convert to YES/NO or a build in list of idempiere then use case/when
+			 `ls.LearnershipTitle as ZZLearnershipTitle,`
 
-   `CASE ls.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive`
+		 - Values that must be converted to iDempiere lists or flags should use `CASE`/`WHEN`:
 
-   3. easy workaround to fix data
+			 `CASE ls.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive`
 
-   `CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody`
+		 - Simple data cleanups can be handled with `CASE` expressions:
 
-   4. reference column that reference table migrate to ad_reference, so query code and idempiere can help on lookup id when import
+			 `CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody`
 
-   `lev.SAQACode as ZZNqfLevel,`
+		 - For columns mapped to `ad_reference`, select the reference code so iDempiere can resolve the ID during import:
 
-   5. reference table has column is unique value so idempiere can be help to lookup id when import
+			 `lev.SAQACode as ZZNqfLevel,`
 
-   `q.SAQAQualificationID as "ZZQualification_ID[ZZSaqaQualificationCode]",`
+		 - If the lookup value is unique, iDempiere can resolve the ID on import:
 
-   6. reference columns hasn't unique value so can't lookup like (5) and (4) then save id to ZZMigrateValues (for post process by sql function zzApplyMigrateValues)
+			 `q.SAQAQualificationID as "ZZQualification_ID[ZZSaqaQualificationCode]",`
 
-      1. case one column
+		 - If the lookup value is not unique, save the original ID(s) to `ZZMigrateValues` for post-processing with `zzApplyMigrateValues`:
 
-         `'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues`
-      2. case multi columns
+			 - Single value example:
 
-         ```sql
-			CONCAT_WS (';',
-				'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)),
-				'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12))
-			) as ZZMigrateValues
-         ```
+				 `'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues`
+
+			 - Multiple values example:
+
+				 ```sql
+				 CONCAT_WS (';',
+								'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)),
+								'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12))
+				 ) as ZZMigrateValues
+				 ```
 
 </details>
 
@@ -125,21 +127,22 @@ CREATE TABLE MQA.dbo.Learnership (
 
    `SELECT zzApplyMigrateValues('ZZLearnership');`
 
-## Some case need to attendent
+## Cases that require attention
 
-1. reference to a inactive record on reference table
+1. Reference points to an inactive record
 
-   ![1780199519930](image/readme/1780199519930.png)
+	![1780199519930](image/readme/1780199519930.png)
 
-   SkillsProgram reference to Qualification but some record Qualification is inactive so it not show also can't lookup when do import
+	Example: a SkillsProgramme references a Qualification that is inactive. The inactive record will not appear in lookups during import.
 
-   1. solution 1: use ZZMigrateValues
-   2. solution 2: define ad_reference with Table Validation and choose Show Inactive = yes
-2. reference to a inactive record on ad_reference table
+	- Option 1: use `ZZMigrateValues` and resolve the reference during post-processing.
+	- Option 2: configure the `ad_reference` with table validation and enable "Show Inactive" so inactive records are visible during import.
 
-solution: use ZZMigrateValues
+2. Reference stored in `ad_reference` is inactive
 
-## Global validate unique data
+	- Recommended solution: use `ZZMigrateValues` to capture and resolve the original ID during post-processing.
+
+## Global validation: unique data
 
 ### lkpAETLevel
 <details>

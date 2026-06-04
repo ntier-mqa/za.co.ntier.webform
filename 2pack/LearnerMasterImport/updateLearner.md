@@ -1,4 +1,10 @@
-## Delete old data
+# Update Learner — migration checklist
+
+This document lists cleanup and import steps for learner-related data. It assumes you have a database GUI (for example, DBeaver) and access to the iDempiere application.
+
+## Cleanup: remove old objects (one-time)
+
+Run the following SQL once before applying the LearnerAssessment import to remove obsolete columns and tables:
 
 ```
 SQL
@@ -7,7 +13,9 @@ alter table zzsdf drop column zzperson_id
 drop table zzperson
 ```
 
-## Delete old data
+## Cleanup: remove previous migration artifacts (one-time)
+
+Run these statements to clear previous migration data and dependent records prior to re-importing reference lists and business tables:
 
 ```SQL
 DELETE FROM ad_ref_list rl
@@ -51,55 +59,66 @@ delete from ZZQCTOModule;
 delete from ZZUnitStandard;
 ```
 
-## Login to system
+## System: import reference data
 
-### Import Reference
-1. UnChecked "Parent link column" on AD_Reference_ID on table AD_Ref_List save and reset cache
-![1780456488990](image/updateLearner/1780456488990.png)
+1. Uncheck the "Parent link column" setting for `AD_Reference_ID` on the `AD_Ref_List` table; save and reset the cache.
 
-2. Open window "Reference" use csv import file  reference.csv
-3. Open window "Reference List" use csv import file listReference.csv
+   ![1780456488990](image/updateLearner/1780456488990.png)
+2. Open the "Reference" window and import `reference.csv` via CSV import.
+3. Open the "Reference List" window and import `listReference.csv` via CSV import.
+4. Re-check the "Parent link column" setting for `AD_Reference_ID`, save and reset the cache.
 
-4. Checked "Parent link column" on AD_Reference_ID on table AD_Ref_List save and reset cache
-![1780456488990](image/updateLearner/1780456488990.png)
+## Client (MQA): import OFO occupation tree
 
-## Login to client (MQA)
-### Import LkpOfoOccupation
-1. Open Tree window to setup OFO Occupation tree and run verify tree
-![1780471953694](image/updateLearner/1780471953694.png)
+1. Open the Tree window, set up the OFO occupation tree and run the verify operation.
 
-2. Open "OFO Year" to import list of years
+   ![1780471953694](image/updateLearner/1780471953694.png)
+2. Import OFO years using the "OFO Year" window.
+3. Import the OFO occupation tree using the "OFO Occupation Tree" window and `LkpOfoOccupation.csv`.
 
-3. open windown "OFO Occupation Tree" to csv import file LkpOfoOccupation.csv
+## Business CSV imports
 
-### csv import bellow list
-1. Open window "Module" use csv import file module.csv
-2. Open window "QCTOModule" use csv import file QCTOModule.csv
-3. Open window "Unit Standard" use csv import file UnitStandard.csv
-4. Open window "Qualification" use csv import file Qualification.csv
-4. Open window "QCTO Qualification" use csv import file qctoQualification.csv
-4. Open window "Skills Programme" use csv import file SkillsProgramme.csv
-4. Open window "QCTO Skills Programme" use csv import file QCTOSkillsProgramme.csv
-4. Open window "Learnership" use csv import file learnership.csv
-4. Open window "QCTO learnership" use csv import file qctolearnership.csv
-4. Open window "QCTO Skills Programme Module" use csv import file QCTOSkillsProgrammeModule.csv
-4. Open window "QCTO Learnership Module" use csv import file QCTOLearnershipModule.csv
-4. Open window "Skills Programme UnitStandard" use csv import file SkillsProgrammeUnitStandard.csv
-4. Open window "Learnership UnitStandard" use csv import file LearnershipUnitStandard.csv
+Import these CSV files using their corresponding iDempiere windows (use exported templates from the `ZZ...` windows where available):
 
-## Open a database GUI like dbeaver
-### update sql function by run zzApplyMigrateValues.sql
-### resolve and update reference by do bellow step for each table
-1. run `SELECT zzApplyMigrateValues([tableName])`
-2. verify error by run `select ZZMigrateValues from [tableName] where ZZMigrateValues like '% - ERR:%'`
-3. incase found error then resolve error 
-4. clear error by run before script and run again from 1
-```sql
-UPDATE ZZQctoModule
-SET ZZMigrateValues = SPLIT_PART(ZZMigrateValues, ' - ERR:', 1)
-WHERE ZZMigrateValues LIKE '% - ERR:%';
-```
-5. list of table run update reference
+- `module.csv` → Module
+- `QCTOModule.csv` → QCTOModule
+- `UnitStandard.csv` → Unit Standard
+- `Qualification.csv` → Qualification
+- `qctoQualification.csv` → QCTO Qualification
+- `SkillsProgramme.csv` → Skills Programme
+- `QCTOSkillsProgramme.csv` → QCTO Skills Programme
+- `learnership.csv` → Learnership
+- `qctolearnership.csv` → QCTO Learnership
+- `QCTOSkillsProgrammeModule.csv` → QCTO Skills Programme Module
+- `QCTOLearnershipModule.csv` → QCTO Learnership Module
+- `SkillsProgrammeUnitStandard.csv` → Skills Programme UnitStandard
+- `LearnershipUnitStandard.csv` → Learnership UnitStandard
+
+## Database GUI: run resolver and resolve references
+
+1. Run the `zzApplyMigrateValues.sql` script to create/update the `zzApplyMigrateValues` function.
+2. For each target table, run the resolver and then verify and fix any errors.
+
+   - Run the resolver for a table:
+
+     ```sql
+     SELECT zzApplyMigrateValues('<tableName>');
+     ```
+   - Verify errors:
+
+     ```sql
+     select ZZMigrateValues from <tableName> where ZZMigrateValues like '% - ERR:%'
+     ```
+   - If errors exist, inspect and resolve the underlying data issues.
+   - To remove the appended error message while keeping the original payload, run:
+
+     ```sql
+     UPDATE ZZQctoModule
+     SET ZZMigrateValues = SPLIT_PART(ZZMigrateValues, ' - ERR:', 1)
+     WHERE ZZMigrateValues LIKE '% - ERR:%';
+     ```
+3. Example list of tables to process (run as needed):
+
 ```sql
 SELECT zzApplyMigrateValues('ZZModule');
 select ZZMigrateValues from ZZModule where ZZMigrateValues like '% - ERR:%'
@@ -138,5 +157,5 @@ SELECT zzApplyMigrateValues('ZZSkillsProgrammeUnitStandard');
 select ZZMigrateValues from ZZSkillsProgrammeUnitStandard where ZZMigrateValues like '% - ERR:%'
 
 SELECT zzApplyMigrateValues('ZZLearnershipUnitStandard');
-select ZZMigrateValues from ZZLearnershipUnitStandard where ZZMigrateValues like '% - ERR:%
+select ZZMigrateValues from ZZLearnershipUnitStandard where ZZMigrateValues like '% - ERR:%'
 ```
