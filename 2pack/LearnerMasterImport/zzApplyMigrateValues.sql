@@ -302,6 +302,8 @@ BEGIN
                     GET DIAGNOSTICS v_rows_affected = ROW_COUNT;
                     
 					RAISE NOTICE '    found i value: % for column: % (Rows updated: %)', v_resolved_id, v_real_update_col, v_rows_affected;
+
+
                 EXCEPTION WHEN OTHERS THEN
                     v_has_error := TRUE;
                     v_error_msg := 'Database error querying standard table ' || v_real_table_lookup || ': ' || SQLERRM;

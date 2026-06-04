@@ -27,8 +27,15 @@ DECLARE
 'd26b8088-d0b9-4c1d-a2fd-913b45302b90', -- ZZSdf.ZZLkpTitle
 '0205b43c-5c69-41bd-8c2f-d119f925236b', -- ZZSdf.ZZMiddleName
 '7621cb43-ecae-4012-a746-a4608062de61', -- ZZSdf.ZZSurname
-'e7dccfe1-73bb-489e-acc1-557d60532293'  -- ZZSdf.ZZ_Passport_No
+'e7dccfe1-73bb-489e-acc1-557d60532293',  -- ZZSdf.ZZ_Passport_No
 
+-- ZZLkpOfoOccupation_ID
+'f099ca28-b524-4073-8bc9-aa214b9d7e7e',  -- ZZSkillsProgramme.ZZLkpOfoOccupation_ID
+'6c422d09-b540-4da1-8bc8-f95fefcc011e',  -- ZZQualification.ZZLkpOfoOccupation_ID
+'39d972dc-aa31-47db-9cc7-90202363e1e5',  -- ZZQctoQualification.ZZLkpOfoOccupation_ID
+'5058105f-d1eb-438a-9614-60f44d784a05',  -- ZZLearnership.ZZLkpOfoOccupation_ID
+'865c5778-c023-42c9-bda5-388111f853ab',  -- ZZQctoSkillsProgramme.ZZLkpOfoOccupation_ID
+'2ba8e819-9c9f-4db9-b6f5-2fff5c2e229d'  -- ZZQctoLearnership.ZZLkpOfoOccupation_ID
 					];	
 				
 	fields text[] := ARRAY[
