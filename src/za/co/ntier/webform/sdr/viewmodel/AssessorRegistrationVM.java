@@ -10,6 +10,7 @@ import org.compiere.model.I_C_Location;
 import org.compiere.model.MForm;
 import org.compiere.model.MLocation;
 import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_Location;
@@ -96,7 +97,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 
 	@Override
 	protected void showResult(boolean isSubmit) {
-		
+		if (isSubmit) {
+			int loginId = Env.getAD_User_ID(Env.getCtx());
+			MUser receiver = MUser.get(loginId);
+			
+			MasterUtil.sentEmailSdf("c157e9e9-e05f-4286-b2b9-d9a95361d4cd", assessorPerson, receiver);
+			
+			
+			MasterUtil.sentEmailSdf("c157e9e9-e05f-4286-b2b9-d9a95361d4cd", assessorPerson, person);
+		}
 		if(isNew) {
 			MasterUtil.showInfoDialog("ZZAssessorCreatedSuccess", MasterUtil.fCloseActiveWindow);
 		}else {
