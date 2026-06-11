@@ -7,6 +7,14 @@
 -- update ZZSkillsProgramme set (ZZSkillsProgrammeCode, zzSkillsProgrammeTitle) = (value, name)
 -- update ZZQualification set (ZZSaqaQualificationCode, ZZSaqaQualificationTitle) = (value, name)
 
+-- change c_year to zzOfoYear
+UPDATE zzlkpofooccupationtree oo
+SET c_year_id = cy.c_year_id
+FROM zzofoyear oy 
+INNER JOIN c_year cy ON cy.fiscalyear = oy.zzofoyear
+WHERE oo.zzofoyear_id = oy.zzofoyear_id;
+
+
 DELETE FROM ad_ref_list rl
 USING ad_reference ar
 WHERE rl.ad_reference_id = ar.ad_reference_id

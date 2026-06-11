@@ -1,0 +1,529 @@
+"AD_Org_ID[Name]","ZZMigrationCode/K","IsActive","ZZGrantName","ZZGrantDescription","ZZGrantPercentage","ZZPayable","ZZMinimumAmount","ZZMigrateValues"
+*,1,Y,Learnerships Grant,Learnerships Grant,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:1
+*,2,Y,Mandatory grant,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:2
+*,3,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:2
+*,4,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:3
+*,5,Y,Mandatory Grant A,MANA,15.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:24;C_Year:C_Year_ID:3
+*,6,Y,Mandatory Grant B,MANB,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:25;C_Year:C_Year_ID:3
+*,7,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:4
+*,8,Y,Mandatory Grant A,MANA,15.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:24;C_Year:C_Year_ID:4
+*,9,Y,Mandatory Grant B,MANB,45.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:25;C_Year:C_Year_ID:4
+*,10,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:5
+*,11,Y,Mandatory Grant A,MANA,15.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:24;C_Year:C_Year_ID:5
+*,12,Y,Mandatory Grant B,MANB,45.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:25;C_Year:C_Year_ID:5
+*,13,Y,ABET,ABT,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:6
+*,14,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:6
+*,15,Y,Mandatory Grant A,MANA,15.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:24;C_Year:C_Year_ID:6
+*,16,Y,Mandatory Grant B,MANB,45.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:25;C_Year:C_Year_ID:6
+*,17,Y,Mandatory grant,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:7
+*,18,Y,ABET,ABT,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:7
+*,19,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:7
+*,20,Y,Mandatory grant,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:8
+*,21,Y,Learnership,LRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:8
+*,22,Y,ABET,ABT,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:8
+*,23,Y,ABET Learning Area,ABA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:12;C_Year:C_Year_ID:8
+*,24,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:8
+*,25,Y,Mandatory grant,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:9
+*,26,Y,LEARNERSHIPS,LRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:9
+*,27,Y,Discretionary grant,DIS,20.00,N,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:3;C_Year:C_Year_ID:9
+*,28,Y,ABET,ABT,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:9
+*,29,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:9
+*,30,Y,Mandatory grant,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:10
+*,31,Y,Learnership grant,LRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:10
+*,32,Y,Discretionary grant,DIS,20.00,N,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:3;C_Year:C_Year_ID:10
+*,33,Y,ABET Grant,ABT,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:10
+*,34,Y,Practical training 01,PTL1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:10
+*,35,Y,Moderator Grant,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:10
+*,36,Y,Assessor Grant,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:10
+*,37,Y,Artisan Grant,APP,100.00,N,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:10
+*,38,Y,Practical training 02,PTL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:10
+*,39,Y,GDP 2,GDP2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:10
+*,40,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:10
+*,41,Y,Mandatory grant,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:11
+*,42,Y,Learnerships Grant,LRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:11
+*,43,Y,ABET,ABET,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:11
+*,44,Y,GDP NSF,GDP NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:11
+*,45,Y,LEARNERSHIPS NSF,LEARNERSHIPS NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:11
+*,46,Y,Practical training 01,PTL1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:11
+*,47,Y,Moderator Grant,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:11
+*,48,Y,Assessor Grant,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:11
+*,49,Y,Practical training 02,PTL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:11
+*,50,Y,GDP 2,GDP2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:11
+*,51,Y,Learnership NSF 2 Grants,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:11
+*,52,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:11
+*,53,Y,MANDATORY GRANTS,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:12
+*,54,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:12
+*,55,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:12
+*,56,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:12
+*,57,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:12
+*,58,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:12
+*,59,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:12
+*,60,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:12
+*,61,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:12
+*,62,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:12
+*,63,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:12
+*,64,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:12
+*,65,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:12
+*,66,Y,MANDATORY GRANTS,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:13
+*,67,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:13
+*,68,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:13
+*,69,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:13
+*,70,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:13
+*,71,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:13
+*,72,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:13
+*,73,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:13
+*,74,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:13
+*,75,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:13
+*,76,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:13
+*,77,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:13
+*,78,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:13
+*,79,Y,DISABLITY LEARNERSHIPS,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:13
+*,80,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:13
+*,81,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:13
+*,82,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:13
+*,83,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:13
+*,84,Y,MANDATORY GRANTS,MAN,50.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:14
+*,85,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:14
+*,86,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:14
+*,87,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:14
+*,88,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:14
+*,89,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:14
+*,90,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:14
+*,91,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:14
+*,92,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:14
+*,93,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:14
+*,94,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:14
+*,95,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:14
+*,96,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:14
+*,97,Y,DISABLITY LEARNERSHIPS,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:14
+*,98,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:14
+*,99,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:14
+*,100,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:14
+*,101,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:14
+*,102,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:14
+*,103,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:14
+*,104,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:14
+*,105,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:15
+*,106,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:15
+*,107,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:15
+*,108,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:15
+*,109,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:15
+*,110,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:15
+*,111,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:15
+*,112,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:15
+*,113,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:15
+*,114,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:15
+*,115,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:15
+*,116,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:15
+*,117,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:15
+*,118,Y,DISABLITY LEARNERSHIPS,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:15
+*,119,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:15
+*,120,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:15
+*,121,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:15
+*,122,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:15
+*,123,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:15
+*,124,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:15
+*,125,Y,Mineral Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:15
+*,126,Y,Mineral Beneficiation Skills Agreement,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:15
+*,127,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:16
+*,128,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:16
+*,129,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:16
+*,130,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:16
+*,131,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:16
+*,132,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:16
+*,133,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:16
+*,134,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:16
+*,135,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:16
+*,136,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:16
+*,137,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:16
+*,138,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:16
+*,139,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:16
+*,140,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:16
+*,141,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:16
+*,142,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:16
+*,143,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:16
+*,144,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:16
+*,145,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:16
+*,146,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:16
+*,147,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:16
+*,148,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:16
+*,149,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:16
+*,150,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:16
+*,151,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:17
+*,152,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:17
+*,153,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:17
+*,154,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:17
+*,155,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:17
+*,156,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:17
+*,157,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:17
+*,158,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:17
+*,159,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:17
+*,160,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:17
+*,161,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:17
+*,162,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:17
+*,163,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:17
+*,164,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:17
+*,165,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:17
+*,166,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:17
+*,167,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:17
+*,168,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:17
+*,169,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:17
+*,170,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:17
+*,171,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:17
+*,172,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:17
+*,173,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:17
+*,174,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:17
+*,175,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:18
+*,176,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:18
+*,177,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:18
+*,178,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:18
+*,179,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:18
+*,180,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:18
+*,181,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:18
+*,182,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:18
+*,183,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:18
+*,184,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:18
+*,185,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:18
+*,186,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:18
+*,187,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:18
+*,188,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:18
+*,189,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:18
+*,190,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:18
+*,191,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:18
+*,192,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:18
+*,193,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:18
+*,194,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:18
+*,195,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:18
+*,196,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:18
+*,197,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:18
+*,198,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:18
+*,199,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:18
+*,200,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:18
+*,201,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:18
+*,202,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:18
+*,203,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:18
+*,204,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:18
+*,205,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:19
+*,206,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:19
+*,207,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:19
+*,208,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:19
+*,209,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:19
+*,210,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:19
+*,211,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:19
+*,212,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:19
+*,213,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:19
+*,214,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:19
+*,215,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:19
+*,216,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:19
+*,217,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:19
+*,218,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:19
+*,219,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:19
+*,220,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:19
+*,221,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:19
+*,222,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:19
+*,223,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:19
+*,224,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:19
+*,225,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:19
+*,226,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:19
+*,227,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:19
+*,228,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:19
+*,229,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:19
+*,230,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:19
+*,231,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:19
+*,232,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:19
+*,233,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:19
+*,234,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:19
+*,235,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:20
+*,236,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:20
+*,237,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:20
+*,238,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:20
+*,239,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:20
+*,240,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:20
+*,241,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:20
+*,242,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:20
+*,243,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:20
+*,244,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:20
+*,245,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:20
+*,246,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:20
+*,247,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:20
+*,248,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:20
+*,249,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:20
+*,250,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:20
+*,251,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:20
+*,252,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:20
+*,253,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:20
+*,254,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:20
+*,255,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:20
+*,256,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:20
+*,257,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:20
+*,258,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:20
+*,259,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:20
+*,260,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:20
+*,261,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:20
+*,262,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:20
+*,263,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:20
+*,264,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:20
+*,265,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:21
+*,266,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:21
+*,267,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:21
+*,268,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:21
+*,269,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:21
+*,270,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:21
+*,271,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:21
+*,272,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:21
+*,273,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:21
+*,274,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:21
+*,275,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:21
+*,276,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:21
+*,277,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:21
+*,278,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:21
+*,279,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:21
+*,280,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:21
+*,281,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:21
+*,282,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:21
+*,283,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:21
+*,284,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:21
+*,285,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:21
+*,286,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:21
+*,287,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:21
+*,288,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:21
+*,289,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:21
+*,290,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:21
+*,291,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:21
+*,292,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:21
+*,293,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:21
+*,294,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:21
+*,295,Y,TVET N6,TVET,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:37;C_Year:C_Year_ID:21
+*,296,Y,MANDATORY GRANTS,MAN,30.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:22
+*,297,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:22
+*,298,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:22
+*,299,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:22
+*,300,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:22
+*,301,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:22
+*,302,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:22
+*,303,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:22
+*,304,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:22
+*,305,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:22
+*,306,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:22
+*,307,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:22
+*,308,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:22
+*,309,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:22
+*,310,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:22
+*,311,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:22
+*,312,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:22
+*,313,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:22
+*,314,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:22
+*,315,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:22
+*,316,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:22
+*,317,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:22
+*,318,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:22
+*,319,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:22
+*,320,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:22
+*,321,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:22
+*,322,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:22
+*,323,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:22
+*,324,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:22
+*,325,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:22
+*,326,Y,TVET N6,TVET,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:37;C_Year:C_Year_ID:22
+*,327,Y,ARPL,ARPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:38;C_Year:C_Year_ID:22
+*,328,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:23
+*,329,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:23
+*,330,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:23
+*,331,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:23
+*,332,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:23
+*,333,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:23
+*,334,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:23
+*,335,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:23
+*,336,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:23
+*,337,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:23
+*,338,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:23
+*,339,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:23
+*,340,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:23
+*,341,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:23
+*,342,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:23
+*,343,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:23
+*,344,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:23
+*,345,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:23
+*,346,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:23
+*,347,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:23
+*,348,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:23
+*,349,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:23
+*,350,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:23
+*,351,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:23
+*,352,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:23
+*,353,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:23
+*,354,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:23
+*,355,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:23
+*,356,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:23
+*,357,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:23
+*,358,Y,TVET N6,TVET,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:37;C_Year:C_Year_ID:23
+*,359,Y,ARPL,ARPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:38;C_Year:C_Year_ID:23
+*,360,Y,Practical Training 4,PTL4,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:39;C_Year:C_Year_ID:23
+*,361,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:24
+*,362,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:24
+*,363,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:24
+*,364,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:24
+*,365,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:24
+*,366,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:24
+*,367,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:24
+*,368,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:24
+*,369,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:24
+*,370,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:24
+*,371,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:24
+*,372,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:24
+*,373,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:24
+*,374,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:24
+*,375,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:24
+*,376,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:24
+*,377,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:24
+*,378,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:24
+*,379,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:24
+*,380,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:24
+*,381,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:24
+*,382,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:24
+*,383,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:24
+*,384,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:24
+*,385,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:24
+*,386,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:24
+*,387,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:24
+*,388,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:24
+*,389,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:24
+*,390,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:24
+*,391,Y,TVET N6,TVET,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:37;C_Year:C_Year_ID:24
+*,392,Y,ARPL,ARPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:38;C_Year:C_Year_ID:24
+*,393,Y,Practical Training 4,PTL4,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:39;C_Year:C_Year_ID:24
+*,394,Y,"Work Experience (W1, W2 & W3)",PTL5,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:40;C_Year:C_Year_ID:24
+*,395,Y,NSF3,NSF3,0.00,N,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:30;C_Year:C_Year_ID:23
+*,396,Y,PTL5,"Work Experience (W1, W2 & W3)",0.00,N,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:40;C_Year:C_Year_ID:23
+*,397,Y,Candidacy,CAND,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:41;C_Year:C_Year_ID:24
+*,398,Y,Mine Community,MCOM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:42;C_Year:C_Year_ID:24
+*,399,Y,Small Scale,SSC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:43;C_Year:C_Year_ID:24
+*,400,Y,Unemployed Youth Development,UNEMYD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:44;C_Year:C_Year_ID:24
+*,410,Y,HET,HET Lecturer Support,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:45;C_Year:C_Year_ID:24
+*,411,Y,Management and Executive Development Programme,MEDP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:46;C_Year:C_Year_ID:24
+*,412,Y,Workplace Coaches,WORKPC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:47;C_Year:C_Year_ID:24
+*,413,Y,TVET NCV Support,TVETNCV,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:48;C_Year:C_Year_ID:24
+*,414,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:25
+*,415,Y,Bursary,Bursary,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:49;C_Year:C_Year_ID:24
+*,417,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:25
+*,418,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:25
+*,419,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:25
+*,420,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:25
+*,421,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:25
+*,422,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:25
+*,423,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:25
+*,424,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:25
+*,425,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:25
+*,426,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:25
+*,427,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:25
+*,428,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:25
+*,429,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:25
+*,430,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:25
+*,431,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:25
+*,432,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:25
+*,433,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:25
+*,434,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:25
+*,435,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:25
+*,436,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:25
+*,437,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:25
+*,438,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:25
+*,439,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:25
+*,440,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:25
+*,441,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:25
+*,442,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:25
+*,443,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:25
+*,444,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:25
+*,445,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:25
+*,446,Y,TVET N6,TVET,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:37;C_Year:C_Year_ID:25
+*,447,Y,ARPL,ARPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:38;C_Year:C_Year_ID:25
+*,448,Y,Practical Training 4,PTL4,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:39;C_Year:C_Year_ID:25
+*,449,Y,"Work Experience (W1, W2 & W3)",PTL5,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:40;C_Year:C_Year_ID:25
+*,450,Y,Candidacy,CAND,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:41;C_Year:C_Year_ID:25
+*,451,Y,Mine Community,MCOM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:42;C_Year:C_Year_ID:25
+*,452,Y,Small Scale,SSC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:43;C_Year:C_Year_ID:25
+*,453,Y,Unemployed Youth Development,UNEMYD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:44;C_Year:C_Year_ID:25
+*,454,Y,HET,HET Lecturer Support,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:45;C_Year:C_Year_ID:25
+*,455,Y,Management and Executive Development Programme,MEDP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:46;C_Year:C_Year_ID:25
+*,456,Y,Workplace Coaches,WORKPC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:47;C_Year:C_Year_ID:25
+*,457,Y,TVET NCV Support,TVETNCV,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:48;C_Year:C_Year_ID:25
+*,458,Y,Bursary,Bursary,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:49;C_Year:C_Year_ID:25
+*,459,Y,Short Courses Provided by Public Institution,SCPPI,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:52;C_Year:C_Year_ID:24
+*,460,Y,Short Courses Provided by Public Institution,SCPPI,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:52;C_Year:C_Year_ID:25
+*,461,Y,University Internship,UI,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:54;C_Year:C_Year_ID:24
+*,462,Y,University Internship,UI,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:54;C_Year:C_Year_ID:25
+*,463,Y,Inhouse/Industry/Based Training Course,IIBTC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:50;C_Year:C_Year_ID:25
+*,464,Y,Adult Matric,AM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:51;C_Year:C_Year_ID:25
+*,465,Y,Elementary Digital Skills,EDS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:53;C_Year:C_Year_ID:24
+*,466,Y,Elementary Digital Skills,EDS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:53;C_Year:C_Year_ID:25
+*,467,Y,QCTO - Jewellery Beneficiation Learnership,QMBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:55;C_Year:C_Year_ID:25
+*,468,Y,QCTO - Disablity,QDLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:56;C_Year:C_Year_ID:25
+*,469,Y,QCTO - RPL,QRPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:57;C_Year:C_Year_ID:25
+*,470,Y,QCTO - Artisan Grant,QAPP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:58;C_Year:C_Year_ID:25
+*,471,Y,QCTO - Employed Artisan,QART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:59;C_Year:C_Year_ID:25
+*,472,Y,QCTO - UnEmployed Artisan,QUART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:60;C_Year:C_Year_ID:25
+*,473,Y,QCTO - Artisan Aides,QARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:61;C_Year:C_Year_ID:25
+*,474,Y,QCTO - OHS Programme,QOHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:62;C_Year:C_Year_ID:25
+*,475,Y,QCTO - Artisan RPL Grant,QARPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:63;C_Year:C_Year_ID:25
+*,476,Y,QCTO - Learnership,QLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:64;C_Year:C_Year_ID:25
+*,477,Y,Non MQA Learnership,NMLS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:65;C_Year:C_Year_ID:25
+*,478,Y,Non MQA 4IR Learnership Grant,NM4IRLS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:66;C_Year:C_Year_ID:25
+*,479,Y,MANDATORY GRANTS,MAN,20.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:1;C_Year:C_Year_ID:26
+*,480,Y,LEARNERSHIPS,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:2;C_Year:C_Year_ID:26
+*,481,Y,ABET,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:4;C_Year:C_Year_ID:26
+*,482,Y,GDP NSF,NSF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:5;C_Year:C_Year_ID:26
+*,483,Y,GDP 1,GDP1,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:6;C_Year:C_Year_ID:26
+*,484,Y,PRACTICAL TRAINING,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:7;C_Year:C_Year_ID:26
+*,485,Y,MODERATOR ,MOD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:8;C_Year:C_Year_ID:26
+*,486,Y,ASSESSOR ,ASS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:9;C_Year:C_Year_ID:26
+*,487,Y,Artisan Grant,APP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:10;C_Year:C_Year_ID:26
+*,488,Y,PRACTICAL TRAINING 02,"",100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:11;C_Year:C_Year_ID:26
+*,489,Y,GDP 2,GDP 2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:13;C_Year:C_Year_ID:26
+*,490,Y,LEARNERSHIPS NSF 2,NSL2,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:15;C_Year:C_Year_ID:26
+*,491,Y,Skills Programme SLA Grant,PSLA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:16;C_Year:C_Year_ID:26
+*,492,Y,DISABLITY,DLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:17;C_Year:C_Year_ID:26
+*,493,Y,OHS PROGRAMME,OHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:18;C_Year:C_Year_ID:26
+*,494,Y,UIF LEARNERSHIPS,UIF,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:19;C_Year:C_Year_ID:26
+*,495,Y,EMPLOYED ARTISAN,ART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:20;C_Year:C_Year_ID:26
+*,496,Y,UNEMPLOYED ARTISAN,UART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:21;C_Year:C_Year_ID:26
+*,497,Y,ARTISAN AIDES,ARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:22;C_Year:C_Year_ID:26
+*,498,Y,ABET Module Based,ABTM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:23;C_Year:C_Year_ID:26
+*,499,Y,Jewellery Beneficiation Learnership,MBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:26;C_Year:C_Year_ID:26
+*,500,Y,Jewellery Beneficiation Skills Programs,MBSA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:27;C_Year:C_Year_ID:26
+*,501,Y,RPL Learnerships,RPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:28;C_Year:C_Year_ID:26
+*,502,Y,GETC NQF1 5827,ABTG,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:29;C_Year:C_Year_ID:26
+*,503,Y,FLC,FLC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:31;C_Year:C_Year_ID:26
+*,504,Y,NAC,NAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:32;C_Year:C_Year_ID:26
+*,505,Y,NOC,NOC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:33;C_Year:C_Year_ID:26
+*,506,Y,Vacation Work,VAC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:34;C_Year:C_Year_ID:26
+*,507,Y,Practical Training (1 & 2),PTL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:35;C_Year:C_Year_ID:26
+*,508,Y,Practical Training 3,PTL3,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:36;C_Year:C_Year_ID:26
+*,509,Y,TVET N6,TVET,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:37;C_Year:C_Year_ID:26
+*,510,Y,ARPL,ARPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:38;C_Year:C_Year_ID:26
+*,511,Y,Practical Training 4,PTL4,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:39;C_Year:C_Year_ID:26
+*,512,Y,"Work Experience (W1, W2 & W3)",PTL5,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:40;C_Year:C_Year_ID:26
+*,513,Y,Candidacy,CAND,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:41;C_Year:C_Year_ID:26
+*,514,Y,Mine Community,MCOM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:42;C_Year:C_Year_ID:26
+*,515,Y,Small Scale,SSC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:43;C_Year:C_Year_ID:26
+*,516,Y,Unemployed Youth Development,UNEMYD,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:44;C_Year:C_Year_ID:26
+*,517,Y,HET,HET Lecturer Support,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:45;C_Year:C_Year_ID:26
+*,518,Y,Management and Executive Development Programme,MEDP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:46;C_Year:C_Year_ID:26
+*,519,Y,Workplace Coaches,WORKPC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:47;C_Year:C_Year_ID:26
+*,520,Y,TVET NCV Support,TVETNCV,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:48;C_Year:C_Year_ID:26
+*,521,Y,Bursary,Bursary,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:49;C_Year:C_Year_ID:26
+*,522,Y,Short Courses Provided by Public Institution,SCPPI,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:52;C_Year:C_Year_ID:26
+*,523,Y,University Internship,UI,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:54;C_Year:C_Year_ID:26
+*,524,Y,Inhouse/Industry/Based Training Course,IIBTC,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:50;C_Year:C_Year_ID:26
+*,525,Y,Adult Matric,AM,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:51;C_Year:C_Year_ID:26
+*,526,Y,Elementary Digital Skills,EDS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:53;C_Year:C_Year_ID:26
+*,527,Y,QCTO - Jewellery Beneficiation Learnership,QMBL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:55;C_Year:C_Year_ID:26
+*,528,Y,QCTO - Disablity,QDLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:56;C_Year:C_Year_ID:26
+*,529,Y,QCTO - RPL,QRPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:57;C_Year:C_Year_ID:26
+*,530,Y,QCTO - Artisan Grant,QAPP,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:58;C_Year:C_Year_ID:26
+*,531,Y,QCTO - Employed Artisan,QART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:59;C_Year:C_Year_ID:26
+*,532,Y,QCTO - UnEmployed Artisan,QUART,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:60;C_Year:C_Year_ID:26
+*,533,Y,QCTO - Artisan Aides,QARTA,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:61;C_Year:C_Year_ID:26
+*,534,Y,QCTO - OHS Programme,QOHS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:62;C_Year:C_Year_ID:26
+*,535,Y,QCTO - Artisan RPL Grant,QARPL,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:63;C_Year:C_Year_ID:26
+*,536,Y,QCTO - Learnership,QLRN,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:64;C_Year:C_Year_ID:26
+*,537,Y,Non MQA Learnership,NMLS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:65;C_Year:C_Year_ID:26
+*,538,Y,Non MQA 4IR Learnership Grant,NM4IRLS,100.00,Y,0.00,ZZLkpGrantCode:ZZLkpGrantCode_ID:66;C_Year:C_Year_ID:26

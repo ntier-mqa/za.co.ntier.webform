@@ -1,3 +1,12 @@
+update AD_Column set ReadOnlyLogic = null where AD_Column_UU in ('d5fd7bd1-a5d9-445c-8865-f4c46e94ffd9', '40e8f623-c300-43be-9846-deb7ecd5b864', '5c6a80fa-9923-4549-b416-1302ad096d30')
+update AD_Field set ReadOnlyLogic = null where AD_Field_UU in ('e1a921be-d006-42ae-b252-3ce2a1d1881e')
+
+update ad_field set EntityType = 'MQA Learner' where AD_Tab_ID=1000292
+
+
+
+
+
 -- check ad
 
 SELECT ae."name" elemName, af."name" fieldName, ac."name" colName, at."name" tabName, aw."name" winName

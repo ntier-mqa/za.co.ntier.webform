@@ -1,12 +1,30 @@
-Name/K,Description,EntityType,ValidationType,ShowInactive
+"Name/K","Description","EntityType","ValidationType","ShowInactive"
 ZZLkpNqfLevel,ZZLkpNqfLevel,MQA Learner,L,Y
 ZZLkpLearnershipType,ZZLkpLearnershipType,MQA Learner,L,Y
 ZZLkpAetLevel,ZZLkpAetLevel,MQA Learner,L,Y
 ZZLkpQualityAssuranceBody,ZZLkpQualityAssuranceBody,MQA Learner,L,Y
-ZZLkpQCTOQualificationType,ZZLkpQctoQualificationType,MQA Learner,L,Y
-ZZLkpQCTOLearnershipType,ZZLkpQctoLearnershipType,MQA Learner,L,Y
+ZZLkpQCTOQualificationType,ZZLkpQCTOQualificationType,MQA Learner,L,Y
+ZZLkpQCTOLearnershipType,ZZLkpQCTOLearnershipType,MQA Learner,L,Y
 ZZLkpSkillsProgrammeType,ZZLkpSkillsProgrammeType,MQA Learner,L,Y
 ZZLkpLearningType,ZZLkpLearningType,MQA Learner,L,Y
 ZZLkpModuleType,ZZLkpModuleType,MQA Learner,L,Y
 ZZLkpSkillsProgrammeGrantType,ZZLkpSkillsProgrammeGrantType,MQA Learner,L,Y
 ZZLkpQualificationType,ZZLkpQualificationType,MQA Learner,L,Y
+ZZLkpUnitStandardType,ZZLkpUnitStandardType,MQA Learner,L,Y
+ZZLkpArtisanType,ZZLkpArtisanType,MQA Learner,L,Y
+ZZLkpSocioEconomicStatus,ZZLkpSocioEconomicStatus,MQA Learner,L,Y
+ZZLkpSponsorship,ZZLkpSponsorship,MQA Learner,L,Y
+ZZLkpProject,ZZLkpProject,MQA Learner,L,Y
+ZZLkpReasonForReprint,ZZLkpReasonForReprint,MQA Learner,L,Y
+ZZLkpTerminationReason,ZZLkpTerminationReason,MQA Learner,L,Y
+ZZLkpEnrolmentStatusReason,ZZLkpEnrolmentStatusReason,MQA Learner,L,Y
+ZZLkpArtisanProject,ZZLkpArtisanProject,MQA Learner,L,Y
+ZZLkpLearnerArtisanType,ZZLkpLearnerArtisanType,MQA Learner,L,Y
+ZZLkpProviderType,ZZLkpProviderType,MQA Learner,L,Y
+ZZLkpProviderClass,ZZLkpProviderClass,MQA Learner,L,Y
+ZZLkpProviderAccreditationStatus,ZZLkpProviderAccreditationStatus,MQA Learner,L,Y
+ZZLkpProviderApplication,ZZLkpProviderApplication,MQA Learner,L,Y
+ZZLkpAccreditationType,ZZLkpAccreditationType,MQA Learner,L,Y
+ZZLkpProviderInternalExternal,ZZLkpProviderInternalExternal,MQA Learner,L,Y
+ZZLkpSETA,ZZLkpSETA,MQA Learner,L,Y
+ZZLkpLearnerLearnershipType,ZZLkpLearnerLearnershipType,MQA Learner,L,Y

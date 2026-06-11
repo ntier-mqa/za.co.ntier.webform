@@ -1,0 +1,19 @@
+"AD_Org_ID[Name]","ZZMigrationCode/K","IsActive","ZZTitle","ZZSaqaCode","ZZCanAssociateGrants"
+*,1,N,Achieved,"2",N
+*,2,Y,Created,"3",N
+*,3,Y,Withdrawn,"27",N
+*,4,Y,Cancelled,"",N
+*,5,Y,Re registered,"",N
+*,6,Y,Registered,"",Y
+*,7,Y,Suspended,"",N
+*,8,Y,Transferred,"",N
+*,9,Y,Application Received,"",N
+*,10,Y,Completed,"",N
+*,11,Y,Not Approved,"",N
+*,12,Y,Referred,"",N
+*,13,Y,Submitted for Registration,"",N
+*,14,Y,Terminated,"",N
+*,15,Y,In Progress,"",N
+*,16,Y,Obsolete,"16",N
+*,17,Y,Expired,"",N
+*,18,Y,Completed assessments,"",N

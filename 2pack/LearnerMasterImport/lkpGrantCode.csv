@@ -1,0 +1,67 @@
+"AD_Org_ID[Name]","ZZMigrationCode/K","IsActive","Description","ZZGrantCodeDescription","ZZLevyBased"
+*,1,Y,MAN,MANDATORY GRANTS,Y
+*,2,Y,LRN,LEARNERSHIPS,N
+*,3,Y,DIS,,N
+*,4,Y,ABT,ABET,N
+*,5,Y,NSF,GDP NSF,N
+*,6,Y,GDP1,GDP 1,N
+*,7,Y,PTL1,PRACTICAL TRAINING,N
+*,8,Y,MOD,MODERATOR ,N
+*,9,Y,ASS,ASSESSOR ,N
+*,10,Y,APP,Artisan Grant,N
+*,11,Y,PTL2,PRACTICAL TRAINING 02,N
+*,12,Y,ABA,,N
+*,13,Y,GDP2,GDP 2,N
+*,14,Y,NSL,,N
+*,15,Y,NSL2,LEARNERSHIPS NSF 2,N
+*,16,Y,PSLA,Skills Programme SLA Grant,N
+*,17,Y,DLRN,DISABLITY,N
+*,18,Y,OHS,OHS PROGRAMME,N
+*,19,Y,UIF,UIF LEARNERSHIPS,N
+*,20,Y,ART,EMPLOYED ARTISAN,N
+*,21,Y,UART,UNEMPLOYED ARTISAN,N
+*,22,Y,ARTA,ARTISAN AIDES,N
+*,23,Y,ABTM,ABET Module Based,N
+*,24,Y,MANA,,Y
+*,25,Y,MANB,,Y
+*,26,Y,MBL,Jewellery Beneficiation Learnership,N
+*,27,Y,MBSA,Jewellery Beneficiation Skills Programs,N
+*,28,Y,RPL,RPL Learnerships,N
+*,29,Y,ABTG,GETC NQF1 5827,N
+*,30,Y,NSF3,,N
+*,31,Y,FLC,FLC,N
+*,32,Y,NAC,NAC,N
+*,33,Y,NOC,NOC,N
+*,34,Y,VAC,Vacation Work,N
+*,35,Y,PTL,Practical Training (1 & 2),N
+*,36,Y,PTL3,Practical Training 3,N
+*,37,Y,TVET,TVET N6,N
+*,38,Y,ARPL,ARPL,N
+*,39,Y,PTL4,Practical Training 4,N
+*,40,Y,PTL5,"Work Experience (W1, W2 & W3)",N
+*,41,Y,CAND,Candidacy,N
+*,42,Y,MCOM,Mine Community,N
+*,43,Y,SSC,Small Scale,N
+*,44,Y,UNEMYD,Unemployed Youth Development,N
+*,45,Y,HET,HET Lecturer Support,N
+*,46,Y,MEDP,Management and Executive Development Programme,N
+*,47,Y,WORKPC,Workplace Coaches,N
+*,48,Y,TVETNCV,TVET NCV Support,N
+*,49,Y,BUR,Bursary,N
+*,50,Y,IIBTC,Inhouse/Industry/Based Training Course,N
+*,51,Y,AM,Adult Matric,N
+*,52,Y,SCPPI,Short Courses Provided by Public Institution,N
+*,53,Y,EDS,Elementary Digital Skills,N
+*,54,Y,UI,University Internship,N
+*,55,Y,QMBL,QCTO - Jewellery Beneficiation Learnership,N
+*,56,Y,QDLRN,QCTO - Disablity,N
+*,57,Y,QRPL,QCTO - RPL,N
+*,58,Y,QAPP,QCTO - Artisan Grant,N
+*,59,N,QART,QCTO - Employed Artisan,N
+*,60,N,QUART,QCTO - UnEmployed Artisan,N
+*,61,Y,QARTA,QCTO - Artisan Aides,N
+*,62,Y,QOHS,QCTO - OHS Programme,N
+*,63,Y,QARPL,QCTO - Artisan RPL Grant,N
+*,64,Y,QLRN,QCTO - Learnership,N
+*,65,Y,NMLS,Non MQA Learnership,N
+*,66,Y,NM4IRLS,Non MQA 4IR Learnership Grant,N

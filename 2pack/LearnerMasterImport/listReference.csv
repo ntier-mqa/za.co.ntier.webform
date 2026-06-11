@@ -1,30 +1,116 @@
 "AD_Reference_ID[Name]/K","value/K","name","Description","EntityType"
-ZZLkpAetLevel,ABET Level 0,ABET Level 0,1,MQA Learner
-ZZLkpAetLevel,ABET Level 1,ABET Level 1,2,MQA Learner
-ZZLkpAetLevel,ABET Level 2,ABET Level 2,3,MQA Learner
-ZZLkpAetLevel,ABET Level 3,ABET Level 3,4,MQA Learner
-ZZLkpAetLevel,ABET Level 4,ABET Level 4,5,MQA Learner
+ZZLkpAccreditationType,"",Both,3,MQA Learner
+ZZLkpAccreditationType,"",Extension of Scope,4,MQA Learner
+ZZLkpAccreditationType,"",Learnership,1,MQA Learner
+ZZLkpAccreditationType,"",Qualification,5,MQA Learner
+ZZLkpAccreditationType,"",Skills Programme,2,MQA Learner
+ZZLkpAetLevel, ,ABET Level 0,1,MQA Learner
+ZZLkpAetLevel, ,ABET Level 1,2,MQA Learner
+ZZLkpAetLevel, ,ABET Level 2,3,MQA Learner
+ZZLkpAetLevel, ,ABET Level 3,4,MQA Learner
+ZZLkpAetLevel, ,ABET Level 4,5,MQA Learner
+ZZLkpArtisanProject,"",Artisan :Apprenticeship section 13,1,MQA Learner
+ZZLkpArtisanProject,"",Artisan :Apprenticeship section 28,2,MQA Learner
+ZZLkpArtisanType,"",Apprenticeship,1,MQA Learner
+ZZLkpArtisanType,"",Learnership Apprenticeship,2,MQA Learner
+ZZLkpEnrolmentStatusReason,"",Absconded,17,MQA Learner
+ZZLkpEnrolmentStatusReason,"",By Committee,16,MQA Learner
+ZZLkpEnrolmentStatusReason,"",Met Requirements,14,MQA Learner
+ZZLkpEnrolmentStatusReason,"",Withdrawal,15,MQA Learner
+ZZLkpEnrolmentStatusReason,"10",Financial reasons,7,MQA Learner
+ZZLkpEnrolmentStatusReason,"15",Medical reasons,8,MQA Learner
+ZZLkpEnrolmentStatusReason,"16",None given,9,MQA Learner
+ZZLkpEnrolmentStatusReason,"17",Other,10,MQA Learner
+ZZLkpEnrolmentStatusReason,"27",Social reasons,11,MQA Learner
+ZZLkpEnrolmentStatusReason,"28",Study permit not approved,12,MQA Learner
+ZZLkpEnrolmentStatusReason,"29",Suspension,13,MQA Learner
+ZZLkpEnrolmentStatusReason,"3",Changed priorities,1,MQA Learner
+ZZLkpEnrolmentStatusReason,"4",Deceased,2,MQA Learner
+ZZLkpEnrolmentStatusReason,"5",Dismissal,3,MQA Learner
+ZZLkpEnrolmentStatusReason,"7",Employment,4,MQA Learner
+ZZLkpEnrolmentStatusReason,"8",Exam enrolment rejected,5,MQA Learner
+ZZLkpEnrolmentStatusReason,"9",Exchange student,6,MQA Learner
+ZZLkpLearnerArtisanType,ARPL,ARPL,2,MQA Learner
+ZZLkpLearnerArtisanType,Artisan,Artisan,1,MQA Learner
+ZZLkpLearnerLearnershipType,Beneficiation Learnership,Beneficiation Learnership,3,MQA Learner
+ZZLkpLearnerLearnershipType,Learnership,Learnership,1,MQA Learner
+ZZLkpLearnerLearnershipType,Non MQA Learnership,Non MQA Learnership,4,MQA Learner
+ZZLkpLearnerLearnershipType,RPL,RPL,2,MQA Learner
 ZZLkpLearnershipType,Non MQA learnership,Non MQA learnership,4,MQA Learner
 ZZLkpLearnershipType,Qualification Compulsory Electives,Qualification Compulsory Electives,2,MQA Learner
 ZZLkpLearnershipType,Qualification Electives,Qualification Electives,1,MQA Learner
 ZZLkpLearnershipType,Standard Qualification,Standard Qualification,3,MQA Learner
-ZZLkpLearningType,Application,Application,1,MQA Learner
-ZZLkpLearningType,Knowledge,Knowledge,2,MQA Learner
-ZZLkpLearningType,Work experience,Work experience,3,MQA Learner
-ZZLkpModuleType,Core,Core,1,MQA Learner
-ZZLkpModuleType,Elective,Elective,2,MQA Learner
-ZZLkpNqfLevel,Below Level 01,Below Level 01,11,MQA Learner
-ZZLkpNqfLevel,Level 01,Level 01,1,MQA Learner
-ZZLkpNqfLevel,Level 02,Level 02,2,MQA Learner
-ZZLkpNqfLevel,Level 03,Level 03,3,MQA Learner
-ZZLkpNqfLevel,Level 04,Level 04,4,MQA Learner
-ZZLkpNqfLevel,Level 05,Level 05,5,MQA Learner
-ZZLkpNqfLevel,Level 06,Level 06,6,MQA Learner
-ZZLkpNqfLevel,Level 07,Level 07,7,MQA Learner
-ZZLkpNqfLevel,Level 08,Level 08,8,MQA Learner
-ZZLkpNqfLevel,Level 09,Level 09,9,MQA Learner
-ZZLkpNqfLevel,Level 10,Level 10,10,MQA Learner
-ZZLkpNqfLevel,Level 11,Level 11,12,MQA Learner
+ZZLkpLearningType,"",Application,1,MQA Learner
+ZZLkpLearningType,"",Knowledge,2,MQA Learner
+ZZLkpLearningType,"",Work experience,3,MQA Learner
+ZZLkpModuleType,"",Core,1,MQA Learner
+ZZLkpModuleType,"",Elective,2,MQA Learner
+ZZLkpNqfLevel,"0",Below Level 01,11,MQA Learner
+ZZLkpNqfLevel,"1",Level 01,1,MQA Learner
+ZZLkpNqfLevel,"10",Level 10,10,MQA Learner
+ZZLkpNqfLevel,"11",Level 11,12,MQA Learner
+ZZLkpNqfLevel,"2",Level 02,2,MQA Learner
+ZZLkpNqfLevel,"3",Level 03,3,MQA Learner
+ZZLkpNqfLevel,"4",Level 04,4,MQA Learner
+ZZLkpNqfLevel,"5",Level 05,5,MQA Learner
+ZZLkpNqfLevel,"6",Level 06,6,MQA Learner
+ZZLkpNqfLevel,"7",Level 07,7,MQA Learner
+ZZLkpNqfLevel,"8",Level 08,8,MQA Learner
+ZZLkpNqfLevel,"9",Level 09,9,MQA Learner
+ZZLkpProviderAccreditationStatus,"",Accredited by Another ETQA,17,MQA Learner
+ZZLkpProviderAccreditationStatus,"",Not Submitted,21,MQA Learner
+ZZLkpProviderAccreditationStatus,"",Provisional Accreditation,22,MQA Learner
+ZZLkpProviderAccreditationStatus,"",Rejected,23,MQA Learner
+ZZLkpProviderAccreditationStatus,"0",Approved,11,MQA Learner
+ZZLkpProviderAccreditationStatus,"0",Pending,13,MQA Learner
+ZZLkpProviderAccreditationStatus,"0",Reaccredited,14,MQA Learner
+ZZLkpProviderAccreditationStatus,"1",Non MQA Provider,30,MQA Learner
+ZZLkpProviderAccreditationStatus,"1",Unknown,24,MQA Learner
+ZZLkpProviderAccreditationStatus,"2",Letter of intent received,28,MQA Learner
+ZZLkpProviderAccreditationStatus,"3",Applied,18,MQA Learner
+ZZLkpProviderAccreditationStatus,"501",Programme Approval Extension,29,MQA Learner
+ZZLkpProviderAccreditationStatus,"501",Registered: Programme Approval,8,MQA Learner
+ZZLkpProviderAccreditationStatus,"503",Deregistered,12,MQA Learner
+ZZLkpProviderAccreditationStatus,"505",Reregistered,15,MQA Learner
+ZZLkpProviderAccreditationStatus,"506",Proposed,6,MQA Learner
+ZZLkpProviderAccreditationStatus,"507",Appointed: Other SETA L/Ship,25,MQA Learner
+ZZLkpProviderAccreditationStatus,"508",Reappointed,27,MQA Learner
+ZZLkpProviderAccreditationStatus,"509",De-appointed,26,MQA Learner
+ZZLkpProviderAccreditationStatus,"510",Accreditation Extension,19,MQA Learner
+ZZLkpProviderAccreditationStatus,"510",Accredited,1,MQA Learner
+ZZLkpProviderAccreditationStatus,"510",Full Accreditation,20,MQA Learner
+ZZLkpProviderAccreditationStatus,"511",Re-Accredited,3,MQA Learner
+ZZLkpProviderAccreditationStatus,"512",De-Accredited,7,MQA Learner
+ZZLkpProviderAccreditationStatus,"513",Accredited – Provisional,2,MQA Learner
+ZZLkpProviderAccreditationStatus,"514",Withdrawn,9,MQA Learner
+ZZLkpProviderAccreditationStatus,"515",Unsuccessful,10,MQA Learner
+ZZLkpProviderAccreditationStatus,"700",Whole Firm Accreditation,16,MQA Learner
+ZZLkpProviderApplication,"1",Assessment Site,1,MQA Learner
+ZZLkpProviderApplication,"2",Delivery Site,2,MQA Learner
+ZZLkpProviderApplication,"3",Delivery and Assessment,3,MQA Learner
+ZZLkpProviderClass,"",Financial,8,MQA Learner
+ZZLkpProviderClass,"1",Unknown,6,MQA Learner
+ZZLkpProviderClass,"1",Unknown,9,MQA Learner
+ZZLkpProviderClass,"3",Foreign,1,MQA Learner
+ZZLkpProviderClass,"4",Public,2,MQA Learner
+ZZLkpProviderClass,"5",Private,3,MQA Learner
+ZZLkpProviderClass,"6",Interim,7,MQA Learner
+ZZLkpProviderClass,"7",NGO/CBO,4,MQA Learner
+ZZLkpProviderClass,"8",Mixed: Public and Private,5,MQA Learner
+ZZLkpProviderInternalExternal,"",External,2,MQA Learner
+ZZLkpProviderInternalExternal,"",Internal,1,MQA Learner
+ZZLkpProviderType,"1",Assessment,1,MQA Learner
+ZZLkpProviderType,"1",Unknown,7,MQA Learner
+ZZLkpProviderType,"2",Delivery,2,MQA Learner
+ZZLkpProviderType,"2",Development Enterprise NGO,8,MQA Learner
+ZZLkpProviderType,"3",Delivery and Assessment,3,MQA Learner
+ZZLkpProviderType,"3",Education,9,MQA Learner
+ZZLkpProviderType,"4",Approved,4,MQA Learner
+ZZLkpProviderType,"4",Employer,10,MQA Learner
+ZZLkpProviderType,"5",Internship,5,MQA Learner
+ZZLkpProviderType,"5",Training,11,MQA Learner
+ZZLkpProviderType,"500",Education and Training,12,MQA Learner
+ZZLkpProviderType,"500",Leading Provider,6,MQA Learner
 ZZLkpQCTOLearnershipType,Part Qualification,Part Qualification,2,MQA Learner
 ZZLkpQCTOLearnershipType,Qualification,Qualification,1,MQA Learner
 ZZLkpQCTOQualificationType,Part Qualification,Part Qualification,2,MQA Learner
@@ -73,11 +159,64 @@ ZZLkpQualityAssuranceBody,"755",CATHSSETA,3,MQA Learner
 ZZLkpQualityAssuranceBody,"756",MICT,19,MQA Learner
 ZZLkpQualityAssuranceBody,"9",FETMIS,9,MQA Learner
 ZZLkpQualityAssuranceBody,"14",IEB,14,MQA Learner
+ZZLkpSETA,"40",DHET,40,MQA Learner
+ZZLkpSETA,"38",DHET SETA-support,38,MQA Learner
+ZZLkpSETA,"42",DIDTETA,42,MQA Learner
+ZZLkpSETA,"30",EWSETA,30,MQA Learner
+ZZLkpSETA,"41",Indlela NAMB,41,MQA Learner
+ZZLkpSETA,"39",QCTO,39,MQA Learner
+ZZLkpSETA,"541",UMALUSI,37,MQA Learner
+ZZLkpSETA,"557",BANKSETA,2,MQA Learner
+ZZLkpSETA,"559",CHIETA,18,MQA Learner
+ZZLkpSETA,"561",CTFL,19,MQA Learner
+ZZLkpSETA,"577",CETA,4,MQA Learner
+ZZLkpSETA,"581",ETDP SETA,20,MQA Learner
+ZZLkpSETA,"581",ETDPSETA,5,MQA Learner
+ZZLkpSETA,"583",ESETA,28,MQA Learner
+ZZLkpSETA,"585",FASSET,6,MQA Learner
+ZZLkpSETA,"587",FOODBEV,22,MQA Learner
+ZZLkpSETA,"589",FIETA,21,MQA Learner
+ZZLkpSETA,"591",HWSETA,8,MQA Learner
+ZZLkpSETA,"593",ISETT,23,MQA Learner
+ZZLkpSETA,"595",INSETA,9,MQA Learner
+ZZLkpSETA,"597",LGSETA,24,MQA Learner
+ZZLkpSETA,"599",MERSETA,10,MQA Learner
+ZZLkpSETA,"601",MAPPP-SETA,25,MQA Learner
+ZZLkpSETA,"607",PSETA,13,MQA Learner
+ZZLkpSETA,"611",SERVICES SETA,15,MQA Learner
+ZZLkpSETA,"613",THETA,27,MQA Learner
+ZZLkpSETA,"615",TETA,16,MQA Learner
+ZZLkpSETA,"617",W&RSETA,17,MQA Learner
+ZZLkpSETA,"621",CHE,29,MQA Learner
+ZZLkpSETA,"629",MQA,12,MQA Learner
+ZZLkpSETA,"631",SAPC,36,MQA Learner
+ZZLkpSETA,"637",PAB,32,MQA Learner
+ZZLkpSETA,"639",SABPP,33,MQA Learner
+ZZLkpSETA,"651",SAICA,34,MQA Learner
+ZZLkpSETA,"657",SANC,35,MQA Learner
+ZZLkpSETA,"692",HPCSA,31,MQA Learner
+ZZLkpSETA,"694",AGRISETA,1,MQA Learner
+ZZLkpSETA,"695",SASSETA,14,MQA Learner
+ZZLkpSETA,"754",FPMSETA,7,MQA Learner
+ZZLkpSETA,"755",CATHSETA,3,MQA Learner
+ZZLkpSETA,"756",MICT,11,MQA Learner
 ZZLkpSkillsProgrammeType,Leads to a Qualification,Leads to a Qualification,2,MQA Learner
 ZZLkpSkillsProgrammeType,Mine Community,Mine Community,3,MQA Learner
 ZZLkpSkillsProgrammeType,Small Scale Projects,Small Scale Projects,4,MQA Learner
 ZZLkpSkillsProgrammeType,Standalone,Standalone,1,MQA Learner
 ZZLkpSkillsProgrammeType,Unemployed Youth Development,Unemployed Youth Development,5,MQA Learner
+ZZLkpSocioEconomicStatus,"01",Employed,1,MQA Learner
+ZZLkpSocioEconomicStatus,"02",Unemployed,2,MQA Learner
+ZZLkpSponsorship,"1",SETA Funded,1,MQA Learner
+ZZLkpSponsorship,"2",Industry Funded,2,MQA Learner
+ZZLkpTerminationReason,"",Learner absconded,1,MQA Learner
+ZZLkpTerminationReason,"",Learner got permanent employment somewhere else,6,MQA Learner
+ZZLkpTerminationReason,"",Learner no longer working for the company,5,MQA Learner
+ZZLkpTerminationReason,"",Learner passed away,4,MQA Learner
+ZZLkpTerminationReason,"",Learner resigned,3,MQA Learner
+ZZLkpTerminationReason,"",Learner to continue with full time studies/went back to school,7,MQA Learner
+ZZLkpTerminationReason,"",Learner went AWOL,2,MQA Learner
+ZZLkpTerminationReason,"",Other,8,MQA Learner
 ZZLkpUnitStandardType,Compulsory Elective,Compulsory Elective,4,MQA Learner
 ZZLkpUnitStandardType,Core,Core,1,MQA Learner
 ZZLkpUnitStandardType,Elective,Elective,3,MQA Learner

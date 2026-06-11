@@ -39,48 +39,42 @@ CREATE TABLE MQA.dbo.Learnership (
 <summary>Steps to migrate data</summary>
 
 1. Create the target table in iDempiere (example: `ZZLearnership`) with the standard columns used by imports.
-
 2. For each source column, determine whether it is a reference and how to handle it:
-	 - If the reference table is small and only contains a code/title, create an iDempiere reference list and store the original ID in the `description` column for later lookup.
-	 - If the reference table is large or has additional columns, create a dedicated `ZZ...` lookup table and add a `ZZMigrationCode` column to store the original ID.
 
+   - If the reference table is small and only contains a code/title, create an iDempiere reference list and store the original ID in the `description` column for later lookup.
+   - If the reference table is large or has additional columns, create a dedicated `ZZ...` lookup table and add a `ZZMigrationCode` column to store the original ID.
 3. Import data from the legacy system:
-	 - Export a CSV template from the `ZZLearnership` window (add a record and export, then delete the sample record).
-	 - Build a query against the legacy database that produces the CSV template. Notes for the query:
-		 - Direct values (e.g. `LearnershipTitle`, `LearnershipCode`) are selected directly:
 
-			 `ls.LearnershipTitle as ZZLearnershipTitle,`
+   - Export a CSV template from the `ZZLearnership` window (add a record and export, then delete the sample record).
+   - Build a query against the legacy database that produces the CSV template. Notes for the query:
+     - Direct values (e.g. `LearnershipTitle`, `LearnershipCode`) are selected directly:
 
-		 - Values that must be converted to iDempiere lists or flags should use `CASE`/`WHEN`:
+       `ls.LearnershipTitle as ZZLearnershipTitle,`
+     - Values that must be converted to iDempiere lists or flags should use `CASE`/`WHEN`:
 
-			 `CASE ls.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive`
+       `CASE ls.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive`
+     - Simple data cleanups can be handled with `CASE` expressions:
 
-		 - Simple data cleanups can be handled with `CASE` expressions:
+       `CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody`
+     - For columns mapped to `ad_reference`, select the reference code so iDempiere can resolve the ID during import:
 
-			 `CASE when qab.saqacode is null or qab.saqacode = 'N/A' THEN CAST(qab.id as nvarchar(250)) ELSE qab.saqacode END AS ZZQualityAssuranceBody`
+       `lev.SAQACode as ZZNqfLevel,`
+     - If the lookup value is unique, iDempiere can resolve the ID on import:
 
-		 - For columns mapped to `ad_reference`, select the reference code so iDempiere can resolve the ID during import:
+       `q.SAQAQualificationID as "ZZQualification_ID[ZZSaqaQualificationCode]",`
+     - If the lookup value is not unique, save the original ID(s) to `ZZMigrateValues` for post-processing with `zzApplyMigrateValues`:
 
-			 `lev.SAQACode as ZZNqfLevel,`
+       - Single value example:
 
-		 - If the lookup value is unique, iDempiere can resolve the ID on import:
+         `'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues`
+       - Multiple values example:
 
-			 `q.SAQAQualificationID as "ZZQualification_ID[ZZSaqaQualificationCode]",`
-
-		 - If the lookup value is not unique, save the original ID(s) to `ZZMigrateValues` for post-processing with `zzApplyMigrateValues`:
-
-			 - Single value example:
-
-				 `'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)) as ZZMigrateValues`
-
-			 - Multiple values example:
-
-				 ```sql
-				 CONCAT_WS (';',
-								'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)),
-								'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12))
-				 ) as ZZMigrateValues
-				 ```
+         ```sql
+         CONCAT_WS (';',
+            			'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12)),
+            			'ZZLkpOfoOccupation:ZZLkpOfoOccupation_id:' + CAST(ooc.id as NVARCHAR(12))
+         ) as ZZMigrateValues
+         ```
 
 </details>
 
@@ -131,20 +125,20 @@ CREATE TABLE MQA.dbo.Learnership (
 
 1. Reference points to an inactive record
 
-	![1780199519930](image/readme/1780199519930.png)
+   ![1780199519930](image/readme/1780199519930.png)
 
-	Example: a SkillsProgramme references a Qualification that is inactive. The inactive record will not appear in lookups during import.
+   Example: a SkillsProgramme references a Qualification that is inactive. The inactive record will not appear in lookups during import.
 
-	- Option 1: use `ZZMigrateValues` and resolve the reference during post-processing.
-	- Option 2: configure the `ad_reference` with table validation and enable "Show Inactive" so inactive records are visible during import.
-
+   - Option 1: use `ZZMigrateValues` and resolve the reference during post-processing.
+   - Option 2: configure the `ad_reference` with table validation and enable "Show Inactive" so inactive records are visible during import.
 2. Reference stored in `ad_reference` is inactive
 
-	- Recommended solution: use `ZZMigrateValues` to capture and resolve the original ID during post-processing.
+   - Recommended solution: use `ZZMigrateValues` to capture and resolve the original ID during post-processing.
 
 ## Global validation: unique data
 
 ### lkpAETLevel
+
 <details>
 
 <summary>lkpAETLevel validate</summary>
@@ -184,8 +178,8 @@ select DISTINCT saqaCode from lkpNQFLevel;
 
 </details>
 
-
 ### lkpLearnershipType
+
 <details>
 
 <summary>lkpLearnershipType validate</summary>
@@ -205,8 +199,8 @@ select description from lkpLearnershipType where IsDeleted = 0 group by descript
 
 </details>
 
-
 ### LkpOfoOccupation
+
 <details>
 
 <summary>LkpOfoOccupation validate</summary>
@@ -220,7 +214,7 @@ select count(*) as total
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
 	, count(DISTINCT(code)) as totalCodeDistinct
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN code END) AS Code
-	
+
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(code, '_', UnitGroupID) END) AS CodeUnitGroupID
 	, COUNT(DISTINCT CONCAT(code, '_', UnitGroupID)) AS totalCodeUnitGroupIDDistinct
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(description, '_', UnitGroupID) END) AS DescUnitGroupID
@@ -255,8 +249,8 @@ where ug.id is null
 
 </details>
 
-
 ### lkpOFOUnitGroup
+
 <details>
 
 <summary>lkpOFOUnitGroup validate</summary>
@@ -270,7 +264,7 @@ select count(*) as total
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
 	, count(DISTINCT(code)) as totalCodeDistinct
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN code END) AS Code
-	
+
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(code, '_', subMajorGroupId) END) AS CodeSubMajorGroupId
 	, COUNT(DISTINCT CONCAT(code, '_', SubMajorGroupId)) AS totalCodeSubMajorGroupIdDistinct
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(description, '_', SubMajorGroupId) END) AS DescSubMajorGroupId
@@ -303,8 +297,8 @@ where sg.id is null
 
 </details>
 
-
 ### lkpOFOSubMajorGroup
+
 <details>
 
 <summary>lkpOFOSubMajorGroup validate</summary>
@@ -318,7 +312,7 @@ select count(*) as total
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
 	, count(DISTINCT(code)) as totalCodeDistinct
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN code END) AS Code
-	
+
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(code, '_', MajorGroupId) END) AS CodeMajorGroupId
 	, COUNT(DISTINCT CONCAT(code, '_', MajorGroupId)) AS totalCodeSubMajorGroupIdDistinct
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(description, '_', MajorGroupId) END) AS DescMajorGroupId
@@ -351,8 +345,8 @@ where mg.id is null
 
 </details>
 
-
 ### lkpOFOMajorGroup
+
 <details>
 
 <summary>lkpOFOMajorGroup validate</summary>
@@ -366,7 +360,7 @@ select count(*) as total
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
 	, count(DISTINCT(code)) as totalCodeDistinct
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN code END) AS Code
-	
+
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(code, '_', OFOYear) END) AS CodeOFOYear
 	, COUNT(DISTINCT CONCAT(code, '_', OFOYear)) AS totalCodeOFOYearDistinct
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(description, '_', OFOYear) END) AS DescOFOYear
@@ -413,8 +407,8 @@ select DISTINCT saqaCode from lkpQualityAssuranceBody;
 
 </details>
 
-
 ### lkpQCTOQualificationType
+
 <details>
 
 <summary>lkpQCTOQualificationType validate</summary>
@@ -437,8 +431,8 @@ select DISTINCT description from lkpQCTOQualificationType;
 
 </details>
 
-
 ### lkpQCTOLearnershipType
+
 <details>
 
 <summary>lkpQCTOLearnershipType validate</summary>
@@ -461,8 +455,8 @@ select DISTINCT description from lkpQCTOLearnershipType;
 
 </details>
 
-
 ### lkpSkillsProgrammeType
+
 <details>
 
 <summary>lkpSkillsProgrammeType validate</summary>
@@ -486,6 +480,7 @@ select DISTINCT description from lkpSkillsProgrammeType;
 </details>
 
 ### lkpNQFLevel
+
 <details>
 
 <summary>lkpNQFLevel validate</summary>
@@ -513,8 +508,8 @@ select DISTINCT saqaCode from lkpAETLevel;
 
 </details>
 
-
 ### lkpLearningType
+
 <details>
 
 <summary>lkpLearningType validate</summary>
@@ -542,8 +537,8 @@ select DISTINCT saqaCode from lkpLearningType;
 
 </details>
 
-
 ### lkpModuleType
+
 <details>
 
 <summary>lkpModuleType validate</summary>
@@ -571,8 +566,8 @@ select DISTINCT saqaCode from lkpModuleType;
 
 </details>
 
-
 ### lkpSkillsProgrammeGrantType
+
 <details>
 
 <summary>lkpSkillsProgrammeGrantType validate</summary>
@@ -595,8 +590,8 @@ select DISTINCT description from lkpSkillsProgrammeGrantType;
 
 </details>
 
-
 ### lkpQualificationType
+
 <details>
 
 <summary>lkpQualificationType validate</summary>
@@ -619,8 +614,8 @@ select DISTINCT description from lkpQualificationType;
 
 </details>
 
-
 ### Qualification
+
 <details>
 
 <summary>Qualification validate</summary>
@@ -668,8 +663,8 @@ where q.IsDeleted = '0'
 
 </details>
 
-
 ### QCTOQualification
+
 <details>
 
 <summary>QCTOQualification validate</summary>
@@ -680,7 +675,7 @@ where q.IsDeleted = '0'
 select count(*) as total
 	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount 
 	, count(DISTINCT(SAQAQualificationID)) as totalSAQAQualificationIDDistinct
-	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQAQualificationID END) AS activeSAQAQualificationID	
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQAQualificationID END) AS activeSAQAQualificationID
 	, count(DISTINCT(SAQAQualificationTitle)) as totalSAQAQualificationTitle
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQAQualificationTitle END) AS activeSAQAQualificationTitle
 from QCTOQualification
@@ -728,8 +723,8 @@ where qq.IsDeleted = '0'
 
 </details>
 
-
 ### QCTOLearnership
+
 <details>
 
 <summary>QCTOLearnership validate</summary>
@@ -767,6 +762,7 @@ where qls.IsDeleted = '0'
 </details>
 
 ### QCTOSkillsProgramme
+
 <details>
 
 <summary>QCTOSkillsProgramme validate</summary>
@@ -810,6 +806,7 @@ where
 </details>
 
 ### SkillsProgramme
+
 <details>
 
 <summary>SkillsProgramme validate</summary>
@@ -853,8 +850,8 @@ WHERE
 
 </details>
 
-
 ### QCTOLearnershipModule
+
 <details>
 
 <summary>QCTOLearnershipModule validate</summary>
@@ -887,6 +884,7 @@ where
 </details>
 
 ### QCTOModule
+
 <details>
 
 <summary>QCTOModule validate</summary>
@@ -913,7 +911,7 @@ SELECT
 	, COUNT(CASE WHEN ooc.IsDeleted = 1 THEN 1 END) as LearningTypeRef
 	, COUNT(CASE WHEN lt.IsDeleted = 1 THEN 1 END) as OfoOccupationRef
 	, COUNT(CASE WHEN mt.IsDeleted = 1 THEN 1 END) as ModuleTypeRef
-	
+
 FROM 
 	QCTOModule qm 
 	left join lkpNQFLevel lev on qm.NQFLevelID = lev.id
@@ -928,6 +926,7 @@ where
 </details>
 
 ### Module
+
 <details>
 
 <summary>Module validate</summary>
@@ -950,7 +949,7 @@ select ModuleTitle from Module where IsDeleted = 0 group by ModuleTitle having C
 -- check deleted reference
 SELECT
 	COUNT(CASE WHEN qab.IsDeleted = 1 THEN 1 END) as QualityAssuranceBodyRef
-	
+
 FROM 
 	Module m 
 	left join lkpQualityAssuranceBody qab on m.QualityAssuranceBodyID = qab.ID
@@ -960,10 +959,8 @@ where
 
 </details>
 
-
-
-
 ### QCTOSkillsProgrammeModule
+
 <details>
 
 <summary>QCTOSkillsProgrammeModule validate</summary>
@@ -996,6 +993,7 @@ WHERE
 </details>
 
 ### UnitStandard
+
 <details>
 
 <summary>UnitStandard validate</summary>
@@ -1011,7 +1009,7 @@ select count(*) as total
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQAUnitStandardTitle END) AS activeSAQAUnitStandardTitle
 	, count(DISTINCT(MQAUnitStandardID)) as totalMQAUnitStandardID
 	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN MQAUnitStandardID END) AS activeMQAUnitStandardID
-	
+
 from UnitStandard;
 -- q&a SAQAUnitStandardID, SAQAUnitStandardTitle, MQAUnitStandardID all isn't unque
 
@@ -1036,24 +1034,18 @@ WHERE
 
 </details>
 
-
-
 ## LkpOfoOccupation
 
 1. LkpOfoOccupation is special it's tree struct from 5 part
-[Explain about ofo](https://www.teta.org.za/index.php/maritime/item/download/80_ae5dcb7dfe8f366c65685b6df7d5d517)
+   [Explain about ofo](https://www.teta.org.za/index.php/maritime/item/download/80_ae5dcb7dfe8f366c65685b6df7d5d517)
 
-	1. OfoYear like fiscal year (data in same year is unique but on diference years can be duplicate)
-	
-	2. lkpOFOMajorGroup
-	
-	3. lkpOFOSubMajorGroup
-	
-	4. lkpOFOUnitGroup
-	
-	5. LkpOfoOccupation
-
+   1. OfoYear like fiscal year (data in same year is unique but on diference years can be duplicate)
+   2. lkpOFOMajorGroup
+   3. lkpOFOSubMajorGroup
+   4. lkpOFOUnitGroup
+   5. LkpOfoOccupation
 2. OFOYear is migrate to ZZOfoYear by bellow query and import to  window "OFO Year"
+
 <details>
 
 <summary>OFOYear query</summary>
@@ -1067,6 +1059,7 @@ from lkpOFOMajorGroup mg
 </details>
 
 3. LkpOfoOccupation is migrate to ZZLkpOfoOccupationTree be bellow query, to improve import speed use window "OFO Occupation Tree"
+
 <details>
 
 <summary>LkpOfoOccupation query</summary>
@@ -1095,7 +1088,7 @@ from
 	left join lkpOFOMajorGroup mg on smg.MajorGroupID = mg.ID
 
 UNION
-	
+
 select 
 	mg.ofoyear as "ZZOfoYear_ID[ZZOfoYear]"
 	, ug.code AS "Value"
@@ -1129,17 +1122,17 @@ inner join lkpOFOMajorGroup mg on smg.MajorGroupID = mg.ID
 
 <summary>Note</summary>
 
-	1. window OFO Year have 2 tab
+    1. window OFO Year have 2 tab
 		1. OFO Year
 		2. OFO Occupation Tree => set have tree = true
-	2. on mqa client open tree window and define a "OFO Occupation Tree"
-![1780282825000](image/readme/1780282825000.png)
+	2. on mqa client open tree window and define a "OFO Occupation Tree"![1780282825000](image/readme/1780282825000.png)
 	3. after import remember to run "verify tree"
 
 </details>
 
 ## Import other lkp table to ad_reference
-'ZZLkpNqfLevel', 'ZZLkpLearnershipType', 'ZZLkpAetLevel', 'ZZLkpQualityAssuranceBody', 'ZZLkpQctoQualificationType', 'ZZLkpQctoLearnershipType', 'ZZLkpSkillsProgrammeType', 'ZZLkpLearningType', 'ZZLkpModuleType', 'ZZLkpSkillsProgrammeGrantType', 'ZZLkpQualificationType', 'ZZLkpUnitStandardType'
+
+'ZZLkpNqfLevel', 'ZZLkpLearnershipType', 'ZZLkpAetLevel', 'ZZLkpQualityAssuranceBody', 'ZZLkpQctoQualificationType', 'ZZLkpQctoLearnershipType', 'ZZLkpSkillsProgrammeType', 'ZZLkpLearningType', 'ZZLkpModuleType', 'ZZLkpSkillsProgrammeGrantType', 'ZZLkpQualificationType', 'ZZLkpUnitStandardType', 'ZZLkpArtisanType'
 
 <details>
 
@@ -1159,8 +1152,24 @@ WITH NamesCTE AS (
         ('ZZLkpModuleType'),
         ('ZZLkpSkillsProgrammeGrantType'),
         ('ZZLkpQualificationType'),
-		  ('ZZLkpUnitStandardType')
-		  
+		  ('ZZLkpUnitStandardType'),
+		  ('ZZLkpArtisanType'),
+		  ('ZZLkpSocioEconomicStatus'),
+		  ('ZZLkpSponsorship'),
+		  ('ZZLkpProject'),
+		  ('ZZLkpReasonForReprint'),
+		  ('ZZLkpTerminationReason'),
+		  ('ZZLkpEnrolmentStatusReason'),
+		  ('ZZLkpArtisanProject'),
+		  ('ZZLkpLearnerArtisanType'),
+		  ('ZZLkpProviderType'),
+		  ('ZZLkpProviderClass'),
+		  ('ZZLkpProviderAccreditationStatus'),
+		  ('ZZLkpProviderApplication'),
+		  ('ZZLkpAccreditationType'),
+		  ('ZZLkpProviderInternalExternal'),
+		  ('ZZLkpSETA'),
+		  ('ZZLkpLearnerLearnershipType')
     ) AS t(Name)
 ),
 DetailsCTE AS (
@@ -1204,7 +1213,7 @@ from
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
 	'ZZLkpNqfLevel' as "AD_Reference_ID[Name]"
-	, description as value
+	, saqaCode as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
@@ -1215,7 +1224,7 @@ UNION
 -- no code column so use description for both
 select 
 	'ZZLkpLearnershipType' as "AD_Reference_ID[Name]"
-	, description as value
+	, description as value -- no code column 
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
@@ -1227,13 +1236,13 @@ UNION
 -- q&a saqaCode is empty on all record so use description for both
 select 
 	'ZZLkpAetLevel' as "AD_Reference_ID[Name]"
-	, description as value
+	, saqaCode as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
 from
 	LkpAetLevel
-	
+
 UNION 
 
 -- q&a saqaCode isn't unique, description is unique, use id for case case is null and N/A
@@ -1245,12 +1254,12 @@ select
 	, 'MQA Learner' as EntityType
 from
 	lkpQualityAssuranceBody
-	
+
 UNION 
 -- no code column so use description for both
 select 
 	'ZZLkpQCTOQualificationType' as "AD_Reference_ID[Name]"
-	, description as value
+	, description as value -- no code column 
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
@@ -1261,7 +1270,7 @@ UNION
 -- no code column so use description for both
 select 
 	'ZZLkpQCTOLearnershipType' as "AD_Reference_ID[Name]"
-	, description as value
+	, description as value -- no code column 
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
@@ -1273,42 +1282,42 @@ UNION
 -- no code column so use description for both
 select 
 	'ZZLkpSkillsProgrammeType' as "AD_Reference_ID[Name]"
-	, description as value
+	, description as value -- no code column
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
 from
 	LkpSkillsProgrammeType
-	
+
 UNION 
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
 	'ZZLkpLearningType' as "AD_Reference_ID[Name]"
-	, description as value
+	, SAQACode as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
 from
 	LkpLearningType
-	
+
 UNION 
 
 -- LkpSkillsProgrammeGrantType moment empty
 select 
 	'ZZLkpSkillsProgrammeGrantType' as "AD_Reference_ID[Name]"
-	, description as value
+	, description as value -- no code columns
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
 from
 	LkpSkillsProgrammeGrantType
-	
+
 UNION 
 
 -- no code column so use description for both
 select 
 	'ZZLkpQualificationType' as "AD_Reference_ID[Name]"
-	, description as value
+	, description as value -- no code columns
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
@@ -1320,7 +1329,7 @@ UNION
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
 	'ZZLkpModuleType' as "AD_Reference_ID[Name]"
-	, description as value
+	, SAQACode as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
@@ -1331,14 +1340,202 @@ UNION
 
 select 
 	'ZZLkpUnitStandardType' as "AD_Reference_ID[Name]"
-	, description as value
+	, description as value -- no SAQACode column
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
 from
 	LkpUnitStandardType
 
+
+UNION
+
+select 
+	'ZZLkpArtisanType' as "AD_Reference_ID[Name]"
+	, SAQACode as value
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	LkpArtisanType
+
+UNION
+
+select 
+	'ZZLkpSocioEconomicStatus' as "AD_Reference_ID[Name]"
+	, SAQACode as value
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpSocioEconomicStatus
 	
+UNION
+
+select 
+	'ZZLkpSponsorship' as "AD_Reference_ID[Name]"
+	, SAQACode as value
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpSponsorship
+	
+UNION
+
+select 
+	'ZZLkpProject' as "AD_Reference_ID[Name]"
+	, description as value
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpProject
+
+UNION
+
+select 
+	'ZZLkpReasonForReprint' as "AD_Reference_ID[Name]"
+	, SAQACode as value
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpReasonForReprint
+	
+UNION
+
+select 
+	'ZZLkpTerminationReason' as "AD_Reference_ID[Name]"
+	, SAQACode as value
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpTerminationReason
+	
+UNION
+
+select 
+	'ZZLkpEnrolmentStatusReason' as "AD_Reference_ID[Name]"
+	, SAQACode as value
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpEnrolmentStatusReason
+
+UNION
+
+select 
+	'ZZLkpArtisanProject' as "AD_Reference_ID[Name]"
+	, SAQACode as value
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpArtisanProject
+
+	Union
+	
+select 
+	'ZZLkpLearnerArtisanType' as "AD_Reference_ID[Name]"
+	, description as value -- no code column
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpLearnerArtisanType
+	
+UNION
+
+select 
+	'ZZLkpProviderType' as "AD_Reference_ID[Name]"
+	, SAQACode as value 
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpProviderType
+	
+UNION
+
+select 
+	'ZZLkpProviderClass' as "AD_Reference_ID[Name]"
+	, SAQACode as value 
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpProviderClass
+
+UNION
+
+select 
+	'ZZLkpProviderAccreditationStatus' as "AD_Reference_ID[Name]"
+	, SAQACode as value 
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpProviderAccreditationStatus
+
+	
+UNION
+
+select 
+	'ZZLkpProviderApplication' as "AD_Reference_ID[Name]"
+	, SAQACode as value 
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpProviderApplication
+
+	UNION
+
+select 
+	'ZZLkpAccreditationType' as "AD_Reference_ID[Name]"
+	, SAQACode as value 
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpAccreditationType
+	
+UNION
+
+select 
+	'ZZLkpProviderInternalExternal' as "AD_Reference_ID[Name]"
+	, SAQACode as value 
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpProviderInternalExternal
+
+	UNION
+
+select 
+	'ZZLkpSETA' as "AD_Reference_ID[Name]"
+	, SAQACode as value 
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpSETA
+	
+	UNION
+
+select 
+	'ZZLkpLearnerLearnershipType' as "AD_Reference_ID[Name]"
+	, description as value -- no code column
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+from
+	lkpLearnerLearnershipType
+
 ) as allLkp
 ```
 
@@ -1672,40 +1869,6 @@ FROM
 
 </details>
 
-## LearnerLearnership
-
-<details>
-
-<summary>LearnerLearnership DDL</summary>
-
-```sql
-
-```
-
-</details>
-
-<details>
-
-<summary>validate data</summary>
-
-</details>
-
-<details>
-
-<summary>LearnerLearnership Query</summary>
-
-```sql
-
-```
-
-</details>
-
-<details>
-
-<summary>Q&A</summary>
-
-</details>
-
 
 ## QCTOQualification
 
@@ -1879,7 +2042,7 @@ SELECT
 	, ls.Registrationenddate as Registrationenddate
 	, ls.MinimumElectiveCredits AS ZZMinimumElectiveCredits
 	, CONCAT_WS (';'
-		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         		
+		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         	
 		, 'ZZQualification:ZZQualification_ID:' + CAST(q.id as NVARCHAR(12))
 		, 'ref:ZZLkpLearnershipType:ZZLearnershipType:' + CAST(lst.id as NVARCHAR(12))
 		, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
@@ -1963,7 +2126,7 @@ SELECT
 	, qls.MinimumElectiveCredits AS ZZMinimumElectiveCredits
 	, CASE qls.ArtisanLearnershipYesNoID WHEN 1 THEN 'N' WHEN 2 THEN 'Y' END AS ZZArtisanLearnership
 	, CONCAT_WS (';'
-		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         	
+		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))       
 		, 'ZZQualification:ZZQualification_ID:' + CAST(q.id as NVARCHAR(12))
 		, 'ref:ZZLkpQCTOLearnershipType:ZZQCTOLearnershipType:' + CAST(qlst.id as NVARCHAR(12))
 		, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
@@ -1978,8 +2141,6 @@ FROM
 ```
 
 </details>
-
-
 
 ## SkillsProgramme
 
@@ -2040,15 +2201,15 @@ SELECT
 	, sp.Registrationenddate as Registrationenddate
 	, sp.MinimumElectiveCredits AS ZZMinimumElectiveCredits
 	, CASE sp.IsOHS WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsOHS
-	
+
 	, CONCAT_WS (';'
-		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))       
+		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))     
 		, 'ZZQualification:ZZQualification_ID:' + CAST(q.id as NVARCHAR(12))
-		, 'ref:ZZLkpAETLevel:ZZAETLevel:' + CAST(al.id as NVARCHAR(12))      
+		, 'ref:ZZLkpAETLevel:ZZAETLevel:' + CAST(al.id as NVARCHAR(12))    
 		, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
-		, 'ref:ZZLkpSkillsProgrammeGrantType:ZZSkillsProgrammeGrantType:' + CAST(spgt.id as NVARCHAR(12))         		
-		, 'ref:ZZLkpSkillsProgrammeType:ZZSkillsProgrammeType:' + CAST(lspt.id as NVARCHAR(12))         	
-		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))	
+		, 'ref:ZZLkpSkillsProgrammeGrantType:ZZSkillsProgrammeGrantType:' + CAST(spgt.id as NVARCHAR(12))         	
+		, 'ref:ZZLkpSkillsProgrammeType:ZZSkillsProgrammeType:' + CAST(lspt.id as NVARCHAR(12))       
+		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
 	) as ZZMigrateValues
 
 FROM 
@@ -2139,13 +2300,13 @@ SELECT
 	, qsp.MinimumElectiveCredits AS ZZMinimumElectiveCredits
 	, CASE qsp.IsOHS WHEN 0 THEN 'N' END AS ZZIsOHS
 	, CONCAT_WS (';'
-		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         	
+		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))       
 		, 'ZZQualification:ZZQualification_ID:' + CAST(q.id as NVARCHAR(12))
 		, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
-		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))	
-		, 'ref:ZZLkpSkillsProgrammeType:ZZSkillsProgrammeType:' + CAST(lspt.id as NVARCHAR(12))    
+		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
+		, 'ref:ZZLkpSkillsProgrammeType:ZZSkillsProgrammeType:' + CAST(lspt.id as NVARCHAR(12))  
 		, 'ref:ZZLkpAETLevel:ZZAETLevel:' + CAST(al.id as NVARCHAR(12))
-		, 'ref:ZZLkpSkillsProgrammeGrantType:ZZSkillsProgrammeGrantType:' + CAST(spgt.id as NVARCHAR(12))         		
+		, 'ref:ZZLkpSkillsProgrammeGrantType:ZZSkillsProgrammeGrantType:' + CAST(spgt.id as NVARCHAR(12))         	
 	) as ZZMigrateValues
 
 FROM 
@@ -2160,7 +2321,6 @@ FROM
 ```
 
 </details>
-
 
 ## QCTOLearnershipModule
 
@@ -2212,8 +2372,8 @@ SELECT
 	, CASE qlm.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 	, mt.description as ZZModuleType
 	, CONCAT_WS (';'
-		, 'ZZQCTOLearnership:ZZQCTOLearnership_ID:' + CAST(ql.id as NVARCHAR(12))     		
-		, 'ZZQCTOModule:ZZQCTOModule_ID:' + CAST(qm.id as NVARCHAR(12))     	
+		, 'ZZQCTOLearnership:ZZQCTOLearnership_ID:' + CAST(ql.id as NVARCHAR(12))     	
+		, 'ZZQCTOModule:ZZQCTOModule_ID:' + CAST(qm.id as NVARCHAR(12))   
 		, 'ref:ZZLkpModuleType:ZZModuleType:' + CAST(mt.id as NVARCHAR(12))
 	) as ZZMigrateValues
 FROM 
@@ -2272,8 +2432,8 @@ SELECT
 	, qspm.id as "ZZMigrationCode/K"
 	, CASE qspm.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 	, CONCAT_WS (';'
-		, 'ZZQCTOSkillsProgramme:ZZQCTOSkillsProgramme_ID:' + CAST(qsp.id as NVARCHAR(12))     	
-		, 'ZZQCTOModule:ZZQCTOModule_ID:' + CAST(qm.id as NVARCHAR(12))     	
+		, 'ZZQCTOSkillsProgramme:ZZQCTOSkillsProgramme_ID:' + CAST(qsp.id as NVARCHAR(12))   
+		, 'ZZQCTOModule:ZZQCTOModule_ID:' + CAST(qm.id as NVARCHAR(12))   
 		, 'ref:ZZLkpModuleType:ZZModuleType:' + CAST(mt.id as NVARCHAR(12))
 	) as ZZMigrateValues
 FROM 
@@ -2290,8 +2450,6 @@ FROM
 <summary>Q&A</summary>
 
 </details>
-
-
 
 ## LearnershipUnitStandard
 
@@ -2408,7 +2566,7 @@ select
 	'*' as "AD_Org_ID[Name]"
 	, spus.id as "ZZMigrationCode/K"
 	, CASE spus.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
-	
+
 	, CONCAT_WS (';'
      	, 'ZZSkillsProgramme:ZZSkillsProgramme_ID:' + CAST(sp.id as NVARCHAR(12))
      	, 'ZZUnitStandard:ZZUnitStandard_id:' + CAST(us.id as NVARCHAR(12))
@@ -2428,3 +2586,1232 @@ from
 <summary>Q&A</summary>
 
 </details>
+
+## Artisans
+
+<details>
+
+<summary>Artisans DDL</summary>
+
+```sql
+CREATE TABLE MQA.dbo.Artisans (
+	ID int IDENTITY(1,1) NOT NULL,
+	ArtisanCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	ArtisanTitle nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	ArtisanTypeID int NULL,
+	NQFLevelID int NULL,
+	Credits int NULL,
+	QualityAssuranceBodyID int NOT NULL,
+	OFOOccupationID int NOT NULL,
+	RegistrationStartDate datetime NOT NULL,
+	RegistrationEndDate datetime NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	TradeQualificationID int NULL,
+	CanCompleteBefore18 tinyint DEFAULT 0 NULL,
+	ExtractRecordID int NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	IsTVETNCV tinyint NULL,
+	CONSTRAINT PK_Artisans PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+-- find unique column select * from Artisans
+```sql
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount 
+	, count(DISTINCT(ArtisanCode)) as totalArtisanCode
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN ArtisanCode END) AS totalArtisanCodeActive
+	, count(DISTINCT(ArtisanTitle)) as totalArtisanTitle
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN ArtisanTitle END) AS totalArtisanTitleActive
+from Artisans;
+--Q&A ArtisanCode and ArtisanTitle both isn't unique
+-- list duplicate values
+select ArtisanCode from Artisans where IsDeleted = 0 group by ArtisanCode having COUNT (*) > 1;
+select ArtisanTitle from Artisans where IsDeleted = 0 group by ArtisanTitle having COUNT (*) > 1;
+```
+-- check exist deleted reference
+```sql
+SELECT
+	COUNT(CASE WHEN lev.IsDeleted = 1 THEN 1 END) as NQFLevelRef
+	, COUNT(CASE WHEN qab.IsDeleted = 1 THEN 1 END) as QualityAssuranceBodyRef
+	, COUNT(CASE WHEN tq.IsDeleted = 1 THEN 1 END) as TradeQualificationRef
+	, COUNT(CASE WHEN ooc.IsDeleted = 1 THEN 1 END) as OfoOccupationRef
+FROM 
+	Artisans a
+	left join lkpNQFLevel lev on a.NQFLevelID = lev.id
+	left join lkpQualityAssuranceBody qab on a.QualityAssuranceBodyID = qab.ID
+	left join TradeQualification tq on a.TradeQualificationID = tq.ID 
+	left join LkpOfoOccupation ooc on a.OFOOccupationID = ooc.ID
+where a.IsDeleted = '0';
+```
+-- q&a exist reference to deleted TradeQualification
+
+-- get Y/N list
+```sql
+SELECT DISTINCT a.CanCompleteBefore18 from Artisans a ;
+-- 0, 1
+SELECT DISTINCT a.IsTVETNCV from Artisans a ;
+-- 0, 1
+```
+
+</details>
+
+<details>
+
+<summary>Artisans Query</summary>
+
+```sql
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, a.id as "ZZMigrationCode/K"
+	, CASE a.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, a.ArtisanCode AS ZZArtisanCode
+	, a.ArtisanTitle AS ZZArtisanTitle
+	, a.Credits AS ZZCredits
+	, a.RegistrationStartDate AS RegistrationStartDate
+	, a.RegistrationEndDate AS RegistrationEndDate
+	, CASE a.CanCompleteBefore18 WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZCanCompleteBefore18
+	, CASE a.IsTVETNCV WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsTvetncv
+-- ExtractRecordID
+	, CONCAT_WS (';'
+			, 'ref:ZZLkpArtisanType:ZZArtisanType:' + CAST(at.id as NVARCHAR(12))		
+			, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         		
+			, 'ZZTradeQualification:ZZTradeQualification_ID:' + CAST(tq.id as NVARCHAR(12))
+			, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
+         	, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
+         ) as ZZMigrateValues
+FROM
+	Artisans a
+	left join lkpArtisanType at on a.ArtisanTypeID = at.ID  
+	left join lkpNQFLevel lev on a.NQFLevelID = lev.id
+	left join TradeQualification tq on a.TradeQualificationID = tq.ID 
+	left join LkpOfoOccupation ooc on a.OFOOccupationID = ooc.ID
+	left join lkpQualityAssuranceBody qab on a.QualityAssuranceBodyID = qab.ID
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+1. ExtractRecordID => no info about this one
+</details>
+
+## LearnerSkillsProgramme
+
+<details>
+
+<summary>LearnerSkillsProgramme DDL</summary>
+
+```sql
+-- MQA.dbo.LearnerSkillsProgramme definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.LearnerSkillsProgramme;
+
+CREATE TABLE MQA.dbo.LearnerSkillsProgramme (
+	ID int IDENTITY(1,1) NOT NULL,
+	LearnerID int NOT NULL,
+	SkillsProgrammeID int NOT NULL,
+	SkillsProgrammeReferenceNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CommencementDate datetime NULL,
+	CompletionDate datetime NULL,
+	ContractNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ProgrammeStatusID int NULL,
+	SocioEconomicStatusID int NULL,
+	SponsorshipID int NULL,
+	ProjectID int NULL,
+	FinancialYearID int NULL,
+	ProviderID int NULL,
+	EmployerID int NULL,
+	IsApproved tinyint NULL,
+	ApprovedBy int NULL,
+	DateApproved datetime NULL,
+	CertificateNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CertificateCreatedBy int NULL,
+	DateCertificateCreated datetime NULL,
+	CertificateReasonForReprintID int NULL,
+	CertificatePrintingErrorReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	StatusEffectiveDate datetime NULL,
+	StudentNumber nvarchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	EndorsementNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	EndorsementCreatedBy int NULL,
+	DateEndorsementCreated datetime NULL,
+	EndorsementReasonForReprintID int NULL,
+	EndorsementPrintingErrorReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	MigrationRecordID int NULL,
+	ExtensionDate datetime NULL,
+	ExtensionReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationDate datetime NULL,
+	TerminationReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationReasonID int NULL,
+	TerminatedCapturedBy int NULL,
+	DateTerminationCaptured datetime NULL,
+	ExtensionCapturedBy int NULL,
+	DateExtensionCaptured datetime NULL,
+	RegistrationDate datetime NULL,
+	RegisteredBy int NULL,
+	EnrolmentStatusReasonID int NULL,
+	MostRecentRegistrationDate datetime NULL,
+	IsEndorsed tinyint NULL,
+	EndorsedBy int NULL,
+	DateEndorsed datetime NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	RegistrationNumber nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	AccountNumber uniqueidentifier DEFAULT newid() NOT NULL,
+	EstimateCompletionDate datetime NULL,
+	GrantTypeID int NULL,
+	IsLearnerLP tinyint NULL,
+	JobID_0 int NULL,
+	JobID_1 int NULL,
+	JobID_2 int NULL,
+	CONSTRAINT PK_LearnerSkillsProgramme PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>LearnerSkillsProgramme Query</summary>
+
+```sql
+
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+## LearnerLearnership
+
+<details>
+
+<summary>LearnerLearnership DDL</summary>
+
+```sql
+-- MQA.dbo.LearnerLearnership definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.LearnerLearnership;
+
+CREATE TABLE MQA.dbo.LearnerLearnership (
+	ID int IDENTITY(1,1) NOT NULL,
+	LearnerID int NOT NULL,
+	LearnershipID int NOT NULL,
+	AgreementReferenceNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CommencementDate datetime NULL,
+AccountNumber uniqueidentifier DEFAULT newid() NOT NULL,
+	CompletionDate datetime NULL,
+	ContractNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ProgrammeStatusID int NULL,
+	SocioEconomicStatusID int NULL,
+	SponsorshipID int NULL,
+	ProjectID int NULL,
+	FinancialYearID int NULL,
+	IsApproved tinyint NULL,
+	ApprovedBy int NULL,
+	DateApproved datetime NULL,
+	CertificateNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CertificateCreatedBy int NULL,
+	DateCertificateCreated datetime NULL,
+	CertificateReasonForReprintID int NULL,
+	CertificatePrintingErrorReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	StatusEffectiveDate datetime NULL,
+	BelongToFasset tinyint NULL,
+	OtherSetaID int NULL,
+	StudentNumber nvarchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	MigrationRecordID int NULL,
+	RPL int NULL,
+	BI_RegistrationDate datetime NULL,
+	BI_ApprovalDate datetime NULL,
+	ExtensionDate datetime NULL,
+	ExtensionReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationDate datetime NULL,
+	TerminationReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationReasonID int NULL,
+	TerminatedCapturedBy int NULL,
+	DateTerminationCaptured datetime NULL,
+	ExtensionCapturedBy int NULL,
+	DateExtensionCaptured datetime NULL,
+	RegistrationNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	RegistrationDate datetime NULL,
+	RegisteredBy int NULL,
+	EnrolmentStatusReasonID int NULL,
+	MostRecentRegistrationDate datetime NULL,
+	AmountSpend nvarchar(150) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	IsEndorsed tinyint NULL,
+	EndorsedBy int NULL,
+	DateEndorsed datetime NULL,
+	SETAID int NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	PhysicalAddress1 varchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PhysicalAddress2 varchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PhysicalAddress3 varchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PhysicalCode varchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PhysicalMunicipalityID int NULL,
+	PhysicalUrbanRuralID int NULL,
+	PhysicalProvinceID int NULL,
+	PhysicalSuburbID int NULL,
+	PhysicalCityID int NULL,
+	EmploymentStartDate datetime NULL,
+
+	EstimateCompletionDate datetime NULL,
+	StatusComments nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	LearnerLearnershipTypeID int NULL,
+	PreviousLearnership int NULL,
+	PreviousLearnershipCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PreviousLearnershipTitle nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PreviousEmployed int NULL,
+	LearnerEmployed nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+WPAgreement int NULL,
+	DurationLearneremployed nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	IsTermsEmployment int NULL,
+	TermsEmployment nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	EmpContract int NULL,
+	EmpContractCopy int NULL,
+	ResponsibleSETA nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	AssPartner nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	RegSAQA nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CurRegNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	QCTO nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	Occupation nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ApprovalDate datetime NULL,
+	ApprovalBy int NULL,
+	GrantTypeID int NULL,
+	SETALearnershipTypeID int NULL,
+	AgentID int NULL,
+	NonFundedReason nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	JobID int NULL,
+	CONSTRAINT PK_LearnerLearnership PRIMARY KEY (ID)
+);
+ CREATE NONCLUSTERED INDEX Indexing_LearnerLearnership_1 ON MQA.dbo.LearnerLearnership (  LearnerID ASC  , IsDeleted ASC  )  
+	 INCLUDE ( ID ) 
+	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 90   ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
+	 ON [PRIMARY ] ;
+ CREATE NONCLUSTERED INDEX Indexing_LearnerLearnership_2 ON MQA.dbo.LearnerLearnership (  IsDeleted ASC  )  
+	 INCLUDE ( AccountNumber ) 
+	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 100  ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
+	 ON [PRIMARY ] ;
+ CREATE NONCLUSTERED INDEX Indexing_LearnerLearnership_3 ON MQA.dbo.LearnerLearnership (  IsDeleted ASC  , AccountNumber ASC  )  
+	 WITH (  PAD_INDEX = OFF ,FILLFACTOR = 90   ,SORT_IN_TEMPDB = OFF , IGNORE_DUP_KEY = OFF , STATISTICS_NORECOMPUTE = OFF , ONLINE = OFF , ALLOW_ROW_LOCKS = ON , ALLOW_PAGE_LOCKS = ON  )
+	 ON [PRIMARY ] ;
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>LearnerLearnership Query</summary>
+
+```sql
+
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+## lkpGrantCode
+
+<details>
+
+<summary>lkpGrantCode DDL</summary>
+
+```sql
+-- MQA.dbo.lkpGrantCode definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.lkpGrantCode;
+
+CREATE TABLE MQA.dbo.lkpGrantCode (
+	ID int IDENTITY(1,1) NOT NULL,
+	Description nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	GrantCodeDescription nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CentralOutputReportID int NOT NULL,
+	IsLevyBased bit NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_GrantCode PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+-- find unique column select * from lkpGrantCode
+```SQL
+SELECT 
+	count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount 
+	, count(DISTINCT(Description)) as totalDescription
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN Description END) AS totalDescriptionActive
+	, count(DISTINCT(GrantCodeDescription)) as totalGrantCodeDescription
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN GrantCodeDescription END) AS totalGrantCodeDescriptionActive
+FROM 
+	lkpGrantCode
+
+--Q&A GrantCodeDescription isn't unique (have 2 row with null value)
+
+-- list duplicate values
+select Description from lkpGrantCode where IsDeleted = 0 group by Description having COUNT (*) > 1;
+select GrantCodeDescription from lkpGrantCode where IsDeleted = 0 group by GrantCodeDescription having COUNT (*) > 1;
+
+-- get Y/N list (0, 1)
+SELECT DISTINCT IsLevyBased from lkpGrantCode;
+```
+</details>
+
+<details>
+
+<summary>lkpGrantCode Query</summary>
+
+```sql
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, gc.id as "ZZMigrationCode/K"
+	, CASE gc.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, gc.Description AS Description
+	, gc.GrantCodeDescription AS ZZGrantCodeDescription
+-- CentralOutputReportID => not found table
+	, CASE gc.IsLevyBased WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZLevyBased 
+FROM
+	lkpGrantCode gc
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+
+## GrantType
+
+<details>
+
+<summary>GrantType DDL</summary>
+
+```sql
+-- MQA.dbo.GrantType definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.GrantType;
+
+CREATE TABLE MQA.dbo.GrantType (
+	ID int IDENTITY(1,1) NOT NULL,
+	FinancialYearID int NOT NULL,
+	GrantCodeID int NOT NULL,
+	GrantName nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	GrantDescription nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	GrantPercentage decimal(5,2) NOT NULL,
+	IsPayable bit NOT NULL,
+	MinimumAmount decimal(18,2) DEFAULT 0 NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_GrantType PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+```SQL
+-- find unique column select * from GrantType
+SELECT 
+	count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount 
+	, count(DISTINCT(GrantName)) as totalGrantName
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN GrantName END) AS totalGrantNameActive
+	, count(DISTINCT(GrantDescription)) as totalGrantDescription
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN GrantDescription END) AS totalGrantDescriptionActive
+	, count(DISTINCT CONCAT(GrantCodeID, '-', GrantName)) as "totalGrantCode-GrantName"
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(GrantCodeID, '-', GrantName) END) AS "totalGrantCode-GrantNameActive"
+	, count(DISTINCT CONCAT(FinancialYearID + '-' + GrantCodeID, '-', GrantName)) as "totalFinancialYear-GrantCode-GrantName"
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN CONCAT(FinancialYearID + '-' + GrantCodeID, '-', GrantName) END) AS "totalFinancialYear-GrantCode-GrantNameActive"
+FROM 
+	GrantType
+
+-- count (GrantName) same count (GrantCodeID, '-', GrantName) mean GrantName is unique across GrantCodeID
+-- FinancialYearID + GrantName  make unique (until GrantName still unique across GrantCodeID)
+
+-- no GrantPercentage out of range
+SELECT 
+	GrantPercentage
+FROM 
+	GrantType	
+where 0 > GrantPercentage  or 100 < GrantPercentage 
+
+
+-- get Y/N list (0, 1)
+SELECT DISTINCT IsPayable from GrantType;
+```
+
+</details>
+
+<details>
+
+<summary>GrantType Query</summary>
+
+```sql
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, gt.id as "ZZMigrationCode/K"
+	, CASE gt.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, gt.GrantName AS ZZGrantName
+	, gt.GrantDescription AS ZZGrantDescription
+	, gt.GrantPercentage AS ZZGrantPercentage
+	, CASE gt.IsPayable WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZPayable
+	, gt.MinimumAmount AS ZZMinimumAmount
+	, CONCAT_WS (';'
+			, 'ZZLkpGrantCode:ZZLkpGrantCode_ID:' + CAST(gc.id as NVARCHAR(12))
+         	, 'C_Year:C_Year_ID:' + CAST(fy.id as NVARCHAR(12))
+         ) as ZZMigrateValues
+FROM
+	GrantType gt
+	left join lkpGrantCode gc on gt.GrantCodeID = gc.id
+	left join lkpFinancialYear fy on gt.FinancialYearID = fy.id
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+
+## LearnerArtisans
+
+<details>
+
+<summary>LearnerArtisans DDL</summary>
+
+```sql
+-- MQA.dbo.LearnerArtisans definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.LearnerArtisans;
+
+CREATE TABLE MQA.dbo.LearnerArtisans (
+	ID int IDENTITY(1,1) NOT NULL,
+	LearnerID int NOT NULL,
+	ArtisansID int NOT NULL,
+	ArtisanAgreementReferenceNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CommencementDate datetime NULL,
+	CompletionDate datetime NULL,
+	ContractNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ProgrammeStatusID int NOT NULL,
+	SocioEconomicStatusID int NULL,
+	SponsorshipID int NULL,
+	ProjectID int NULL,
+	FinancialYearID int NULL,
+	LeadProviderID int NULL,
+	SecondaryProviderID int NULL,
+	EmployerID int NULL,
+	EnrolledBy int NULL,
+	EnrolmentDate datetime NULL,
+	IsApproved tinyint NULL,
+	ApprovedBy int NULL,
+	DateApproved datetime NULL,
+	CertificateNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CertificateCreatedBy int NULL,
+	DateCertificateCreated datetime NULL,
+	StatusEffectiveDate datetime NULL,
+	StudentNumber nvarchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	ExtensionDate datetime NULL,
+	ExtensionReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationDate datetime NULL,
+	TerminationReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationReasonID int NULL,
+	ExtractRecordID int NULL,
+	ArtisanProjectID int NULL,
+	TerminatedCapturedBy int NULL,
+	DateTerminationCaptured datetime NULL,
+	ExtensionCapturedBy int NULL,
+	DateExtensionCaptured datetime NULL,
+	RegistrationDate datetime NULL,
+	RegisteredBy int NULL,
+	EnrolmentStatusReasonID int NULL,
+	MostRecentRegistrationDate datetime NULL,
+	ActualTerminatedDate datetime NULL,
+	QualificationID int NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CompletionProcessedDate datetime NULL,
+	AccountNumber uniqueidentifier DEFAULT newid() NOT NULL,
+	PreviousLearnership int NULL,
+	PreviousLearnershipCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PreviousLearnershipTitle nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PreviousEmployed int NULL,
+	LearnerEmployed nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	WPAgreement int NULL,
+	DurationLearneremployed nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	IsTermsEmployment int NULL,
+	TermsEmployment nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	EmpContract int NULL,
+	EmpContractCopy int NULL,
+	ResponsibleSETA nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	AssPartner nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	RegSAQA nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CurRegNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	QCTO nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	Occupation nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	GrantTypeID int NULL,
+	LeadProviderLevyYesNoID int NULL,
+	LeadProviderContactID int NULL,
+	EmployerLevyYesNoID int NULL,
+	EmployerContactID int NULL,
+	TradeTestSerialNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	NAMBConfirmation tinyint NULL,
+	NAMBConfirmationDate datetime NULL,
+	NAMBConfirmationUser int NULL,
+	SecondaryEmployerID int NULL,
+	SecondaryProviderLevyYesNoID int NULL,
+	SecondaryProviderContactID int NULL,
+	SecondaryEmployerLevyYesNoID int NULL,
+	SecondaryEmployerContactID int NULL,
+	IsLearnershipApprenticeship tinyint NULL,
+	IsCentresOfSpecialisations tinyint NULL,
+	LearnerArtisanTypeID int NULL,
+	JobID int NULL,
+	CONSTRAINT PK_LearnerArtisans PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>LearnerArtisans Query</summary>
+
+```sql
+
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+
+## lkpFinancialYear
+
+<details>
+
+<summary>lkpFinancialYear DDL</summary>
+
+```sql
+-- MQA.dbo.lkpFinancialYear definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.lkpFinancialYear;
+
+CREATE TABLE MQA.dbo.lkpFinancialYear (
+	ID int IDENTITY(1,1) NOT NULL,
+	Description nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	SAQACode nvarchar(10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	StartDate datetime NULL,
+	EndDate datetime NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_lkpFinancialYear PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+lkpFinancialYear is convert to c_year
+
+add ZZMigrationCode to c_year to store old id
+</details>
+
+<details>
+
+<summary>lkpFinancialYear Query</summary>
+
+```sql
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, CASE fy.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, 'MQA Calendar' AS "C_Calendar_ID[Name]"
+	, fy.id as "ZZMigrationCode"
+	, saqaCode as "FiscalYear/K"
+	, saqaCode + '-' + CAST(CAST(saqaCode AS INT) + 1 AS VARCHAR(50)) as Description 
+FROM 
+	lkpFinancialYear fy
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+## TradeQualification
+
+<details>
+
+<summary>TradeQualification DDL</summary>
+
+```sql
+-- MQA.dbo.TradeQualification definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.TradeQualification;
+
+CREATE TABLE MQA.dbo.TradeQualification (
+	ID int IDENTITY(1,1) NOT NULL,
+	Code nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Title nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	NQFLevelID int NOT NULL,
+	Credits int NOT NULL,
+	RegistrationStartDate datetime NOT NULL,
+	RegistrationEndDate datetime NOT NULL,
+	LastEnrolmentDate datetime NOT NULL,
+	LastAchievementDate datetime NOT NULL,
+	QualityAssuranceBodyID int NOT NULL,
+	OFOOccupationID int NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	MigrationRecordID int NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_TradeQualification PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+-- find unique column select * from TradeQualification
+```SQl
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount 
+	, count(DISTINCT(Code)) as totalCode
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN Code END) AS totalCodeActive
+	, count(DISTINCT(Title)) as totalTitle
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN Title END) AS totalTitleActive
+from TradeQualification;
+--Q&A Title isn't unique
+-- list duplicate values
+select Code from TradeQualification where IsDeleted = 0 group by Code having COUNT (*) > 1;
+select Title from TradeQualification where IsDeleted = 0 group by Title having COUNT (*) > 1;
+```
+-- check exist deleted reference
+```sql
+SELECT
+	COUNT(CASE WHEN lev.IsDeleted = 1 THEN 1 END) as NQFLevelRef
+	, COUNT(CASE WHEN qab.IsDeleted = 1 THEN 1 END) as QualityAssuranceBodyRef
+	, COUNT(CASE WHEN tq.IsDeleted = 1 THEN 1 END) as TradeQualificationRef
+	, COUNT(CASE WHEN ooc.IsDeleted = 1 THEN 1 END) as OfoOccupationRef
+FROM 
+	TradeQualification tq
+	left join lkpNQFLevel lev on tq.NQFLevelID = lev.id
+	left join lkpQualityAssuranceBody qab on tq.QualityAssuranceBodyID = qab.ID
+	left join LkpOfoOccupation ooc on tq.OFOOccupationID = ooc.ID
+where tq.IsDeleted = '0';
+```
+
+</details>
+
+<details>
+
+<summary>TradeQualification Query</summary>
+
+```sql
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, tq.id as "ZZMigrationCode/K"
+	, CASE tq.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, tq.Code AS ZZCode
+	, tq.Title AS ZZTitle
+	, tq.Credits AS ZZCredits
+	, tq.RegistrationStartDate AS RegistrationStartDate
+	, tq.RegistrationEndDate AS RegistrationEndDate
+	, tq.LastEnrolmentDate AS ZZLastEnrolmentDate
+	, tq.LastAchievementDate AS ZZLastAchievementDate
+	, CONCAT_WS (';'
+			, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         		
+			, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
+         	, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
+         ) as ZZMigrateValues
+FROM
+	TradeQualification tq
+	left join lkpNQFLevel lev on tq.NQFLevelID = lev.id
+	left join LkpOfoOccupation ooc on tq.OFOOccupationID = ooc.ID
+	left join lkpQualityAssuranceBody qab on tq.QualityAssuranceBodyID = qab.ID
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+
+## LearnerQCTOArtisans
+
+<details>
+
+<summary>LearnerQCTOArtisans DDL</summary>
+
+```sql
+-- MQA.dbo.LearnerQCTOArtisans definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.LearnerQCTOArtisans;
+
+CREATE TABLE MQA.dbo.LearnerQCTOArtisans (
+	ID int IDENTITY(1,1) NOT NULL,
+	LearnerID int NOT NULL,
+	QCTOLearnershipID int NOT NULL,
+	AgreementReferenceNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CommencementDate datetime NULL,
+	CompletionDate datetime NULL,
+	ContractNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	QCTOProgrammeStatusID int NOT NULL,
+	SocioEconomicStatusID int NULL,
+	SponsorshipID int NULL,
+	ProjectID int NULL,
+	FinancialYearID int NULL,
+	LeadSDProviderID int NULL,
+	SecondarySDProviderID int NULL,
+	WAID int NULL, 
+	EnrolledBy int NULL,
+	EnrolmentDate datetime NULL,
+	IsApproved tinyint NULL,
+	ApprovedBy int NULL,
+	DateApproved datetime NULL,
+	CertificateNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CertificateCreatedBy int NULL,
+	DateCertificateCreated datetime NULL,
+	StatusEffectiveDate datetime NULL,
+	StudentNumber nvarchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ExtensionDate datetime NULL,
+	ExtensionReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationDate datetime NULL,
+	TerminationReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationReasonID int NULL,
+	-- ExtractRecordID int NULL, => not found
+	ArtisanProjectID int NULL,
+	TerminatedCapturedBy int NULL,
+	DateTerminationCaptured datetime NULL,
+	ExtensionCapturedBy int NULL,
+	DateExtensionCaptured datetime NULL,
+	RegistrationDate datetime NULL,
+	RegisteredBy int NULL,
+	EnrolmentStatusReasonID int NULL,
+	MostRecentRegistrationDate datetime NULL,
+	ActualTerminatedDate datetime NULL,
+	QualificationID int NULL,
+	CompletionProcessedDate datetime NULL,
+	-- AccountNumber uniqueidentifier DEFAULT newid() NOT NULL, => uuid
+	PreviousLearnership int NULL,
+	PreviousLearnershipCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PreviousLearnershipTitle nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- PreviousEmployed int NULL, => not sure
+	-- LearnerEmployed nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- WPAgreement int NULL,
+	DurationLearneremployed nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- => now it's text like 4 years, 7 months
+	-- should be change to number and unit?
+	IsTermsEmployment int NULL,
+	TermsEmployment nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	--=> should be convert TermsEmployment to list of value, now it's free text
+	EmpContract int NULL,
+	EmpContractCopy int NULL,
+	-- EmpContract and EmpContractCopy have value is 1, 2 convert to YesNo?
+	ResponsibleSETA nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- should be convert ResponsibleSETA to list?moment it's free text
+	AssPartner nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- should be convert AssPartner to list?moment it's free text
+	RegSAQA nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- should be convert RegSAQA to list?moment it's free text
+	CurRegNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	QCTO nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- should be convert RegSAQA to list?moment it's free text
+	Occupation nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- should be convert Occupation to list?moment it's free text
+	GrantTypeID int NULL,
+	LeadSDProviderLevyYesNoID int NULL,
+	LeadSDProviderContactID int NULL,
+	WALevyYesNoID int NULL,
+	WAContactID int NULL,
+	-- not sure it's a kind of contact or not
+	TradeTestSerialNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	NAMBConfirmation tinyint NULL,
+	NAMBConfirmationDate datetime NULL,
+	NAMBConfirmationUser int NULL,
+	-- what's NAMB?
+	SecondaryWAID int NULL,
+	SecondarySDProviderLevyYesNoID int NULL,
+	SecondarySDProviderContactID int NULL,
+	SecondaryWALevyYesNoID int NULL,
+	SecondaryWAContactID int NULL,
+	QualificationRequirementsID int NULL,
+	-- seem it's lkpQualificationEntryRequirements
+	ACID int NULL,
+	-- do it's AssessmentCentre
+	ACLevyYesNoID int NULL,
+	ACContactID int NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	QCTOArtisanTypeID int NULL,
+	EmployerID int NULL,
+	-- what's
+	CONSTRAINT PK_LearnerQCTOArtisans PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>LearnerQCTOArtisans Query</summary>
+
+```sql
+
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+## LearnerQCTOLearnership
+
+<details>
+
+<summary>LearnerQCTOLearnership DDL</summary>
+
+```sql
+
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>LearnerQCTOLearnership Query</summary>
+
+```sql
+CREATE TABLE MQA.dbo.LearnerQCTOLearnership (
+	ID int IDENTITY(1,1) NOT NULL,
+	LearnerID int NOT NULL,
+	QCTOLearnershipID int NOT NULL,
+	AgreementReferenceNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CommencementDate datetime NULL,
+	CompletionDate datetime NULL,
+	ContractNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	QCTOProgrammeStatusID int NULL,
+	SocioEconomicStatusID int NULL,
+	SponsorshipID int NULL,
+	ProjectID int NULL,
+	FinancialYearID int NULL,
+	IsApproved tinyint NULL,
+	ApprovedBy int NULL,
+	DateApproved datetime NULL,
+	CertificateNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CertificateCreatedBy int NULL,
+	DateCertificateCreated datetime NULL,
+	CertificateReasonForReprintID int NULL,
+	CertificatePrintingErrorReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	StatusEffectiveDate datetime NULL,
+	BelongToFasset tinyint NULL,
+	OtherSetaID int NULL,
+	-- is reference to lkpSeta?
+	StudentNumber nvarchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	MigrationRecordID int NULL,
+	RPL int NULL,
+	BI_RegistrationDate datetime NULL,
+	BI_ApprovalDate datetime NULL,
+	-- what's mean of BI
+	ExtensionDate datetime NULL,
+	ExtensionReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationDate datetime NULL,
+	TerminationReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationReasonID int NULL,
+	TerminatedCapturedBy int NULL,
+	DateTerminationCaptured datetime NULL,
+	ExtensionCapturedBy int NULL,
+	DateExtensionCaptured datetime NULL,
+	RegistrationNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	RegistrationDate datetime NULL,
+	RegisteredBy int NULL,
+	EnrolmentStatusReasonID int NULL,
+	MostRecentRegistrationDate datetime NULL,
+	AmountSpend nvarchar(150) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	IsEndorsed tinyint NULL,
+	EndorsedBy int NULL,
+	DateEndorsed datetime NULL,
+	SETAID int NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	PhysicalAddress1 varchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PhysicalAddress2 varchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PhysicalAddress3 varchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PhysicalCode varchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PhysicalMunicipalityID int NULL,
+	PhysicalUrbanRuralID int NULL,
+	PhysicalProvinceID int NULL,
+	PhysicalSuburbID int NULL,
+	PhysicalCityID int NULL,
+	EmploymentStartDate datetime NULL,
+	AccountNumber uniqueidentifier DEFAULT newid() NOT NULL,
+	-- same as _UU
+	EstimateCompletionDate datetime NULL,
+	StatusComments nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	LearnerQCTOLearnershipTypeID int NULL,
+	PreviousQCTOLearnership int NULL,
+	PreviousQCTOLearnershipCode nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PreviousQCTOLearnershipTitle nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	PreviousEmployed int NULL,
+	-- don't know
+	LearnerEmployed nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- don't know
+	WPAgreement int NULL,
+	-- don't know
+	DurationLearneremployed nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	IsTermsEmployment int NULL,
+	TermsEmployment nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	EmpContract int NULL,
+	EmpContractCopy int NULL,
+	-- abvoe columns nees q&a
+	ResponsibleSETA nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	AssPartner nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	RegSAQA nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CurRegNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	QCTO nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	Occupation nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ApprovalDate datetime NULL,
+	ApprovalBy int NULL,
+	GrantTypeID int NULL,
+	QualificationEntryRequirementsID int NULL,
+	NAMBConfirmation tinyint NULL,
+	NAMBConfirmationDate datetime NULL,
+	NAMBConfirmationUser int NULL,
+	EmployerID int NULL,
+	CONSTRAINT PK_LearnerQCTOLearnership PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
+
+## lkpQCTOProgrammeStatus
+
+<details>
+
+<summary>lkpQCTOProgrammeStatus DDL</summary>
+
+```sql
+-- MQA.dbo.lkpQCTOProgrammeStatus definition
+
+-- Drop table
+
+-- DROP TABLE MQA.dbo.lkpQCTOProgrammeStatus;
+
+CREATE TABLE MQA.dbo.lkpQCTOProgrammeStatus (
+	ID int IDENTITY(1,1) NOT NULL,
+	Description nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	SAQACode nvarchar(10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	CanAssociateGrants int DEFAULT 0 NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	CONSTRAINT PK_lkpQCTOProgrammeStatus PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+```SQL
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount 
+	, count(DISTINCT(Description)) as totalDescription
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN Description END) AS totalDescriptionActive
+	, count(DISTINCT(SAQACode)) as totalSAQACode
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS totalSAQACodeActive
+from lkpQCTOProgrammeStatus;
+
+-- Q&A SAQACode isn't unique
+-- list duplicate values
+select Description from lkpQCTOProgrammeStatus where IsDeleted = 0 group by Description having COUNT (*) > 1;
+select SAQACode from lkpQCTOProgrammeStatus where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+```
+</details>
+
+<details>
+
+<summary>lkpQCTOProgrammeStatus Query</summary>
+
+```sql
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, qps.id as "ZZMigrationCode/K"
+	, CASE qps.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, qps.Description AS ZZTitle
+	, qps.SAQACode AS ZZSaqaCode
+	, CASE qps.CanAssociateGrants WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZCanAssociateGrants
+FROM
+	lkpQCTOProgrammeStatus qps
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+## Note
+
+1. **ZZQctoSkillsProgrammeModule** and **ZZQctoModule has ZZModuleType**
+2. 
+
+```
+ZZQctoSkillsProgrammeModule
+```
