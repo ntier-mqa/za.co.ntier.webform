@@ -96,6 +96,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 
 	@Override
 	protected void showResult(boolean isSubmit) {
+		
 		if(isNew) {
 			MasterUtil.showInfoDialog("ZZAssessorCreatedSuccess", MasterUtil.fCloseActiveWindow);
 		}else {
@@ -674,15 +675,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		cols = new ArrayList<>();
 		
 		ColumnModel qualificationCodeCol = CellModel.getColModelForLabel(
-					Msg.getElement(Env.getCtx(), "ZZQualificationCode")
-					, I_ZZQualification.COLUMNNAME_Value)
+					Msg.getElement(Env.getCtx(), I_ZZQualification.COLUMNNAME_ZZSaqaQualificationCode)
+					, I_ZZQualification.COLUMNNAME_ZZSaqaQualificationCode)
 				.setReadonly(true)
 				.setTableName(I_ZZQualification.Table_Name);
 		cols.add(qualificationCodeCol);
 		
 		ColumnModel qualificationTitleCol = CellModel.getColModelForLabel(
-				Msg.getElement(Env.getCtx(), "ZZQualificationTitle")
-				, I_ZZQualification.COLUMNNAME_Name)
+				Msg.getElement(Env.getCtx(), I_ZZQualification.COLUMNNAME_ZZSaqaQualificationTitle)
+				, I_ZZQualification.COLUMNNAME_ZZSaqaQualificationTitle)
 			.setReadonly(true)
 			.setTableName(I_ZZQualification.Table_Name);
 		cols.add(qualificationTitleCol);
@@ -834,15 +835,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		cols = new ArrayList<>();
 		
 		ColumnModel skillsProgrammeCodeCol = CellModel.getColModelForLabel(
-					Msg.getElement(Env.getCtx(), "ZZSkillsProgrammeCode")
-					, I_ZZSkillsProgramme.COLUMNNAME_Value)
+					Msg.getElement(Env.getCtx(), I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode)
+					, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode)
 				.setReadonly(true)
 				.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(skillsProgrammeCodeCol);
 		
 		ColumnModel skillsProgrammeTitleCol = CellModel.getColModelForLabel(
-				Msg.getElement(Env.getCtx(), "ZZSkillsProgrammeTitle")
-				, I_ZZSkillsProgramme.COLUMNNAME_Name)
+				Msg.getElement(Env.getCtx(), I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle)
+				, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle)
 			.setReadonly(true)
 			.setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(skillsProgrammeTitleCol);
