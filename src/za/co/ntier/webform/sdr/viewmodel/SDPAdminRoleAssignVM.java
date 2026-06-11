@@ -10,6 +10,7 @@ import org.adempiere.webui.panel.SDFRegistrationWindow;
 import org.compiere.model.I_AD_Role;
 import org.compiere.model.I_AD_User_Roles;
 import org.compiere.model.I_C_BPartner;
+import org.compiere.model.MPasswordRule;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -363,7 +364,7 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		
 		MUser_New user = tmContactDetail.getRow().getDataOneRow(MUser_New.class, I_AD_User.Table_Name);
 		if (user.getPassword() == null) {
-			user.setPassword(SDFRegistrationWindow.generatePassword(8));
+			user.setPassword(MPasswordRule.getRules(Env.getCtx(), null).generate());
 			user.setIsExpired(true);
 			user.saveEx(null);
 			
