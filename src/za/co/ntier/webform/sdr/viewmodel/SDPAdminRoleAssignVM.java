@@ -356,17 +356,12 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 			}
 		}
 		super.doSave(trxName);
-	}
-	
-	@Override
-	protected void showResult(boolean isSubmit) {
-		super.showResult(isSubmit);
 		
 		MUser_New user = tmContactDetail.getRow().getDataOneRow(MUser_New.class, I_AD_User.Table_Name);
 		if (user.getPassword() == null) {
 			user.setPassword(MPasswordRule.getRules(Env.getCtx(), null).generate());
 			user.setIsExpired(true);
-			user.saveEx(null);
+			user.saveEx(trxName);
 			
 			Map<String,String> vars = new HashMap<>();
 	        vars.put("FullName", user.getName());
