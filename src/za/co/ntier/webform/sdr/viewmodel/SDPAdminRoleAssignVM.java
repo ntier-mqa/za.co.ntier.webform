@@ -187,31 +187,31 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		cols.add(idNoCol);
 		
 		ColumnModel greettingCol = ListCellModel.getLkpTitleColumnModel();
-		greettingCol.setMandatory(false);
+		greettingCol.required();
 		cols.add(greettingCol);
 		
 		ColumnModel firstNameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZFirstName)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZFirstName
-				);
+				).required();
 		cols.add(firstNameCol);
 		
 		ColumnModel surnameCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZOrgTrainingCommittee.Table_Name, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZSurname)
 				, I_ZZOrgTrainingCommittee.COLUMNNAME_ZZSurname
-				);
+				).required();
 		cols.add(surnameCol);
 		
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone)
 				, I_AD_User.COLUMNNAME_Phone
-				);
+				).required();
 		cols.add(cellPhoneNumberCol);
 		
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
 				, I_AD_User.COLUMNNAME_EMail
-				);
+				).required();
 		
 		cols.add(emailCol);
 		
@@ -304,12 +304,12 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 			cellModel.getRowModel().fillRowDataFromDao(List.of(I_AD_Role.Table_Name));
 		});
 		
-		ColumnModel roleTypeCol = CellModel.getColModelForLabel(
+		/*ColumnModel roleTypeCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_AD_Role.Table_Name, I_AD_Role.COLUMNNAME_RoleType)
 				, I_AD_Role.COLUMNNAME_RoleType).
 				setTableName(I_AD_Role.Table_Name);
 		cols.add(roleTypeCol);
-		
+		*/
 		tmRoleAssign = TableModel.getTableBean(TableModel.class, cols, false, I_AD_User_Roles.Table_Name);
 		tmRoleAssign.setViewModel(ViewType.VIEW_GRID);
 		tmRoleAssign.setSclass("sdpRoleAssign");

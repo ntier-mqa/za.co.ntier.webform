@@ -438,7 +438,7 @@
 }
 
 .mqaWebForm .sdrForm .grid-listView.sdpRoleAssign{
-	grid-template-columns: repeat(2, 1fr) max-content;
+	grid-template-columns: repeat(1, 1fr) max-content;
 }
 
 .mqaWebForm .sdrForm .grid-listView.linkOrgChild{
