@@ -646,7 +646,12 @@ public class LearnerRegistrationVM extends BaseAppVM
 								Object[] objs = (Object[]) obj;
 								X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int) objs[0], null);
 								cellModel.setValue(selected);
-							}, I_ZZLkpSchoolEmis.Table_Name, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID);
+							}
+							, new ShowInfoPanelArg(
+									I_ZZLkpSchoolEmis.Table_Name
+									, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID
+									, false, null)
+							);
 		});
 
 		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
@@ -697,7 +702,10 @@ public class LearnerRegistrationVM extends BaseAppVM
 								Object[] objs = (Object[]) obj;
 								X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int) objs[0], null);
 								cellModel.setValue(selected);
-							}, X_ZZLkpStatssaAreaCode.Table_Name, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID);
+							}, new ShowInfoPanelArg(X_ZZLkpStatssaAreaCode.Table_Name
+									, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID
+									, false, null)
+							);
 		});
 
 		areaCodeCol.setDisplayAdaptHandle(value -> {

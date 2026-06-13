@@ -271,16 +271,23 @@ public abstract class BaseAppVM implements ISaveApp{
 		this.formInfo = formInfo;
 	}
 	
-	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID) {
-		showInfoPanel(closeHandle, tableName, colID, false);
+	public record ShowInfoPanelArg( 
+			String tableName 
+			, String colID 
+			, boolean isMultiChoose
+			, String preDefineVariable) {
+		
 	}
 	
-	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID, boolean isMultiChoose){
+	public static void showInfoPanel(Consumer<Object> closeHandle, ShowInfoPanelArg showInfoPanelArg){
 		// create info window
 		Component activeWin = SessionManager.getAppDesktop().getActiveWindow();
 		Integer winNo = WindowRegistry.getWindowNo(activeWin);
 		
-		InfoPanel ip = InfoManager.create(winNo, tableName, colID, null, isMultiChoose, null, true);
+		if(showInfoPanelArg.preDefineVariable != null) {
+			Env.setPredefinedVariables(Env.getCtx(), winNo,	showInfoPanelArg.preDefineVariable);
+		}
+		InfoPanel ip = InfoManager.create(winNo, showInfoPanelArg.tableName, showInfoPanelArg.colID, null, showInfoPanelArg.isMultiChoose, null, true);
 		
 		// set layout for info window
 		ip.setVisible(true);

@@ -234,14 +234,15 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		chooseBpartnerCol.required();
 		
 		chooseBpartnerCol.setEventHandle((event, cellModel) -> {
-			BaseAppVM.showInfoPanel(
-			obj -> {
+			BaseAppVM.showInfoPanel(obj -> {
 				Object [] objs = (Object [])obj;
 				MBPartner_New selected = (MBPartner_New)MBPartner_New.get(Env.getCtx(), (int)objs[0]);
 				cellModel.setValue(selected);
 			}
-			, I_C_BPartner.Table_Name
-			, I_C_BPartner.COLUMNNAME_C_BPartner_ID);
+			, new ShowInfoPanelArg(I_C_BPartner.Table_Name
+					, I_C_BPartner.COLUMNNAME_C_BPartner_ID
+					, false
+					, null));
 		});
 		
 		chooseBpartnerCol.setDisplayAdaptHandle(value -> {

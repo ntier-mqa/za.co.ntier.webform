@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MForm;
 import org.compiere.model.MLocation;
@@ -69,6 +70,7 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
+import za.co.ntier.webform.sdr.viewmodel.BaseAppVM.ShowInfoPanelArg;
 
 public class AssessorRegistrationVM extends BaseAppVM {
 	public static String moderatorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
@@ -551,8 +553,11 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
 				cellModel.setValue(selected);
 			}
-			, I_ZZLkpSchoolEmis.Table_Name
-			, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID);
+			, new ShowInfoPanelArg(I_ZZLkpSchoolEmis.Table_Name
+					, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID
+					, false
+					, null)
+			);
 		});
 		
 		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
@@ -603,8 +608,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
 				cellModel.setValue(selected);
 			}
-			, X_ZZLkpStatssaAreaCode.Table_Name
-			, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID);
+			, new ShowInfoPanelArg(X_ZZLkpStatssaAreaCode.Table_Name
+					, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID
+					, false, null)
+			);
 		});
 		
 		areaCodeCol.setDisplayAdaptHandle(value -> {
@@ -763,9 +770,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				List<List<PO>> daos = RowData.standardToMultiPo(selectedQualifications);
 				tmQualificationLink.addNewRows(daos);
 			}
-			, I_ZZQualification.Table_Name
-			, I_ZZQualification.COLUMNNAME_ZZQualification_ID
-			, true);
+			, new ShowInfoPanelArg(I_ZZQualification.Table_Name
+					, I_ZZQualification.COLUMNNAME_ZZQualification_ID
+					, true, null)
+			);
 		});
 		
 		tmQualificationLink.setAfterSave((po, rowModel) -> {
@@ -920,9 +928,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				List<List<PO>> daos = RowData.standardToMultiPo(selectedSkillsProgramme);
 				tmSkillsProgramme.addNewRows(daos);
 			}
-			, I_ZZSkillsProgramme.Table_Name
-			, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID
-			, true);
+			, new ShowInfoPanelArg(I_ZZSkillsProgramme.Table_Name
+					, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID
+					, true, null)
+			);
 		});
 		
 		tmSkillsProgramme.setAfterSave((po, rowModel) -> {
