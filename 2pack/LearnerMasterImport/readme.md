@@ -614,6 +614,575 @@ select DISTINCT description from lkpQualificationType;
 
 </details>
 
+### LkpUnitStandardType
+
+<details>
+
+<summary>LkpUnitStandardType validate</summary>
+
+```sql
+-- #### LkpUnitStandardType
+-- find unique column select * from LkpUnitStandardType
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from LkpUnitStandardType;
+
+-- list duplicate values
+select description from LkpUnitStandardType where IsDeleted = 0 group by description having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from LkpUnitStandardType;
+```
+
+</details>
+
+### LkpArtisanType
+
+<details>
+
+<summary>LkpArtisanType validate</summary>
+
+```sql
+-- #### LkpArtisanType
+-- find unique column select * from LkpArtisanType
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from LkpArtisanType;
+-- q&a all SAQACode is null
+-- list duplicate values
+select description from LkpArtisanType where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from LkpArtisanType where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from LkpArtisanType;
+select DISTINCT SAQACode from LkpArtisanType;
+```
+
+</details>
+
+### lkpSocioEconomicStatus
+
+<details>
+
+<summary>lkpSocioEconomicStatus validate</summary>
+
+```sql
+-- #### LkpArtisanType
+-- find unique column select * from lkpSocioEconomicStatus
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpSocioEconomicStatus;
+
+-- list duplicate values
+select description from lkpSocioEconomicStatus where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpSocioEconomicStatus where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpSocioEconomicStatus;
+select DISTINCT SAQACode from lkpSocioEconomicStatus;
+```
+
+</details>
+
+### lkpSponsorship
+
+<details>
+
+<summary>lkpSponsorship validate</summary>
+
+```sql
+-- #### lkpSponsorship
+-- find unique column select * from lkpSponsorship
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpSponsorship;
+
+-- list duplicate values
+select description from lkpSponsorship where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpSponsorship where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpSponsorship;
+select DISTINCT SAQACode from lkpSponsorship;
+```
+
+</details>
+
+
+### lkpProject
+
+<details>
+
+<summary>lkpProject validate</summary>
+
+```sql
+-- #### lkpProject
+-- find unique column select * from lkpProject
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpProject;
+
+-- list duplicate values
+select description from lkpProject where IsDeleted = 0 group by description having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpProject;
+```
+
+</details>
+
+### lkpReasonForReprint
+
+<details>
+
+<summary>lkpReasonForReprint validate</summary>
+
+```sql
+-- #### lkpReasonForReprint
+-- find unique column select * from lkpReasonForReprint
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpReasonForReprint;
+
+-- list duplicate values
+select description from lkpReasonForReprint where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpReasonForReprint where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpReasonForReprint;
+select DISTINCT SAQACode from lkpReasonForReprint;
+```
+
+</details>
+
+
+
+### lkpTerminationReason
+
+<details>
+
+<summary>lkpTerminationReason validate</summary>
+
+```sql
+-- #### lkpTerminationReason
+-- find unique column select * from lkpTerminationReason
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpTerminationReason;
+-- q&a SAQACode contain only null value
+-- list duplicate values
+select description from lkpTerminationReason where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpTerminationReason where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpTerminationReason;
+select DISTINCT SAQACode from lkpTerminationReason;
+```
+
+</details>
+
+### lkpEnrolmentStatusReason
+
+<details>
+
+<summary>lkpEnrolmentStatusReason validate</summary>
+
+```sql
+-- #### lkpEnrolmentStatusReason
+-- find unique column select * from lkpEnrolmentStatusReason
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpEnrolmentStatusReason;
+-- q&a SAQACode contain null or empty on some record, use description for that
+-- list duplicate values
+select description from lkpEnrolmentStatusReason where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpEnrolmentStatusReason where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpEnrolmentStatusReason;
+select DISTINCT SAQACode from lkpEnrolmentStatusReason;
+```
+
+</details>
+
+### lkpArtisanProject
+
+<details>
+
+<summary>lkpArtisanProject validate</summary>
+
+```sql
+-- #### lkpArtisanProject
+-- find unique column select * from lkpArtisanProject
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpArtisanProject;
+-- q&a SAQACode contain some null record, use description for that
+-- list duplicate values
+select description from lkpArtisanProject where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpArtisanProject where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpArtisanProject;
+select DISTINCT SAQACode from lkpArtisanProject;
+```
+
+</details>
+
+
+
+### lkpLearnerArtisanType
+
+<details>
+
+<summary>lkpLearnerArtisanType validate</summary>
+
+```sql
+-- #### lkpLearnerArtisanType
+-- find unique column select * from lkpLearnerArtisanType
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpLearnerArtisanType;
+
+-- list duplicate values
+select description from lkpLearnerArtisanType where IsDeleted = 0 group by description having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpLearnerArtisanType;
+```
+
+</details>
+
+
+### lkpProviderType
+
+<details>
+
+<summary>lkpProviderType validate</summary>
+
+```sql
+-- #### lkpProviderType
+-- find unique column select * from lkpProviderType
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpProviderType;
+-- q&a SAQACode contain 500 on some records, SAQACode + id for that
+-- list duplicate values
+select description from lkpProviderType where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpProviderType where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpProviderType;
+select DISTINCT SAQACode from lkpProviderType;
+```
+
+</details>
+
+
+### lkpProviderClass
+
+<details>
+
+<summary>lkpProviderClass validate</summary>
+
+```sql
+-- #### lkpProviderType
+-- find unique column select * from lkpProviderClass
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpProviderClass;
+
+-- list duplicate values
+select description from lkpProviderClass where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpProviderClass where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpProviderClass;
+select DISTINCT SAQACode from lkpProviderClass;
+```
+
+</details>
+
+
+### lkpProviderAccreditationStatus
+
+<details>
+
+<summary>lkpProviderAccreditationStatus validate</summary>
+
+```sql
+-- #### lkpProviderType
+-- find unique column select * from lkpProviderAccreditationStatus
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpProviderAccreditationStatus;
+-- q&a a lot SAQACode have duplicate value so use SAQACode + ' - ' + description for make it unique  
+-- list duplicate values
+select description from lkpProviderAccreditationStatus where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpProviderAccreditationStatus where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpProviderAccreditationStatus;
+select DISTINCT SAQACode from lkpProviderAccreditationStatus;
+```
+
+</details>
+
+
+### lkpProviderApplication
+
+<details>
+
+<summary>lkpProviderApplication validate</summary>
+
+```sql
+-- #### lkpProviderApplication
+-- find unique column select * from lkpProviderApplication
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpProviderApplication;
+  
+-- list duplicate values
+select description from lkpProviderApplication where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpProviderApplication where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpProviderApplication;
+select DISTINCT SAQACode from lkpProviderApplication;
+```
+
+</details>
+
+### lkpAccreditationType
+
+<details>
+
+<summary>lkpAccreditationType validate</summary>
+
+```sql
+-- #### lkpAccreditationType
+-- find unique column select * from lkpAccreditationType
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpAccreditationType;
+-- q&a all SAQACode is null or empty
+-- list duplicate values
+select description from lkpAccreditationType where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpAccreditationType where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpAccreditationType;
+select DISTINCT SAQACode from lkpAccreditationType;
+```
+
+</details>
+
+### lkpProviderInternalExternal
+
+<details>
+
+<summary>lkpProviderInternalExternal validate</summary>
+
+```sql
+-- #### lkpProviderInternalExternal
+-- find unique column select * from lkpProviderInternalExternal
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpProviderInternalExternal;
+-- q&a all SAQACode is null or empty
+-- list duplicate values
+select description from lkpProviderInternalExternal where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpProviderInternalExternal where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpProviderInternalExternal;
+select DISTINCT SAQACode from lkpProviderInternalExternal;
+```
+
+</details>
+
+### lkpSETA
+
+<details>
+
+<summary>lkpSETA validate</summary>
+
+```sql
+-- #### lkpSETA
+-- find unique column select * from lkpSETA
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(SAQACode)) as totalSAQACodeDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN SAQACode END) AS "SAQACode"
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpSETA;
+-- q&a some SAQACode is null
+-- list duplicate values
+select description from lkpSETA where IsDeleted = 0 group by description having COUNT (*) > 1;
+select SAQACode from lkpSETA where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpSETA;
+select DISTINCT SAQACode from lkpSETA;
+```
+
+</details>
+
+### lkpLearnerLearnershipType
+
+<details>
+
+<summary>lkpLearnerLearnershipType validate</summary>
+
+```sql
+-- #### lkpLearnerLearnershipType
+-- find unique column select * from lkpLearnerLearnershipType
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpLearnerLearnershipType;
+
+-- list duplicate values
+select description from lkpLearnerLearnershipType where IsDeleted = 0 group by description having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpLearnerLearnershipType;
+```
+
+</details>
+
+### lkpQualificationEntryRequirements
+
+<details>
+
+<summary>lkpQualificationEntryRequirements validate</summary>
+
+```sql
+-- #### lkpQualificationEntryRequirements
+-- find unique column select * from lkpQualificationEntryRequirements
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpQualificationEntryRequirements;
+
+-- list duplicate values
+select description from lkpQualificationEntryRequirements where IsDeleted = 0 group by description having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpQualificationEntryRequirements;
+```
+
+</details>
+
+### lkpQCTOArtisanType
+
+<details>
+
+<summary>lkpQCTOArtisanType validate</summary>
+
+```sql
+-- #### lkpQCTOArtisanType
+-- find unique column select * from lkpQCTOArtisanType
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpQCTOArtisanType;
+
+-- list duplicate values
+select description from lkpQCTOArtisanType where IsDeleted = 0 group by description having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpQCTOArtisanType;
+```
+
+</details>
+
+### lkpLearnerQCTOLearnershipType
+
+<details>
+
+<summary>lkpLearnerQCTOLearnershipType validate</summary>
+
+```sql
+-- #### lkpLearnerQCTOLearnershipType
+-- find unique column select * from lkpLearnerQCTOLearnershipType
+select count(*) as total
+	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount
+	, count(DISTINCT(description)) as totalDescDistinct
+	, COUNT(DISTINCT CASE WHEN IsDeleted = 0 THEN description END) AS "Desc"
+from lkpLearnerQCTOLearnershipType;
+
+-- list duplicate values
+select description from lkpLearnerQCTOLearnershipType where IsDeleted = 0 group by description having COUNT (*) > 1;
+
+-- list all values
+select DISTINCT description from lkpLearnerQCTOLearnershipType;
+```
+
+</details>
+
 ### Qualification
 
 <details>
@@ -1169,7 +1738,11 @@ WITH NamesCTE AS (
 		  ('ZZLkpAccreditationType'),
 		  ('ZZLkpProviderInternalExternal'),
 		  ('ZZLkpSETA'),
-		  ('ZZLkpLearnerLearnershipType')
+		  ('ZZLkpLearnerLearnershipType'),
+		  ('ZZLkpQCTOArtisanType'),
+		  ('ZZLkpLearnerQCTOLearnershipType'),
+		  
+		  ('ZZLkpQualificationEntryRequirements')
     ) AS t(Name)
 ),
 DetailsCTE AS (
@@ -1200,23 +1773,22 @@ to make reference field writeable temp uncheck isParent
 ```sql
 select 
 "AD_Reference_ID[Name]" AS "AD_Reference_ID[Name]/K"
-, CASE 
-	when value is null or value = 'N/A' THEN CAST(Description as nvarchar(250)) 
-	ELSE value END 
-AS "value/K"
-, name
-, Description
+-- some inactive record make not unique, so append id to make it unique to active record
+, CASE WHEN IsActive = 'N' THEN CONCAT(value, ' - ', Description) else value END AS value
+, CASE WHEN IsActive = 'N' THEN CONCAT(name, ' - ', Description) else name END AS name
+, Description AS "Description/K"
 , EntityType
-
+, IsActive
 from
 (
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
 	'ZZLkpNqfLevel' as "AD_Reference_ID[Name]"
-	, saqaCode as value
+	, description as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpNQFLevel
 
@@ -1228,6 +1800,7 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpLearnershipType
 
@@ -1236,22 +1809,25 @@ UNION
 -- q&a saqaCode is empty on all record so use description for both
 select 
 	'ZZLkpAetLevel' as "AD_Reference_ID[Name]"
-	, saqaCode as value
+	, description as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
-	LkpAetLevel
+	lkpAetLevel
 
 UNION 
 
--- q&a saqaCode isn't unique, description is unique, use id for case case is null and N/A
+-- q&a saqaCode isn't unique by null and N/A so use description for that row, description is unique
 select 
 	'ZZLkpQualityAssuranceBody' as "AD_Reference_ID[Name]"
-	, saqaCode as value
+	, CASE when saqaCode is null or saqaCode = 'N/A' THEN CAST(description as nvarchar(250)) 
+	ELSE saqaCode END as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpQualityAssuranceBody
 
@@ -1263,6 +1839,7 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpQctoQualificationType
 
@@ -1274,6 +1851,7 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpQctoLearnershipType
 
@@ -1286,6 +1864,7 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpSkillsProgrammeType
 
@@ -1293,10 +1872,11 @@ UNION
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
 	'ZZLkpLearningType' as "AD_Reference_ID[Name]"
-	, SAQACode as value
+	, description as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpLearningType
 
@@ -1309,6 +1889,7 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpSkillsProgrammeGrantType
 
@@ -1321,6 +1902,7 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpQualificationType
 
@@ -1329,10 +1911,11 @@ UNION
 -- q&a saqaCode is null on all record so use descrition as saqaCode
 select 
 	'ZZLkpModuleType' as "AD_Reference_ID[Name]"
-	, SAQACode as value
+	, description as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpModuleType
 
@@ -1344,18 +1927,21 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpUnitStandardType
 
 
 UNION
 
+--q&a all SAQACode is null so use description
 select 
 	'ZZLkpArtisanType' as "AD_Reference_ID[Name]"
-	, SAQACode as value
+	, description as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	LkpArtisanType
 
@@ -1367,6 +1953,7 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpSocioEconomicStatus
 	
@@ -1378,17 +1965,20 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpSponsorship
 	
 UNION
 
+-- no code column so use description as code
 select 
 	'ZZLkpProject' as "AD_Reference_ID[Name]"
 	, description as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpProject
 
@@ -1400,61 +1990,75 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpReasonForReprint
 	
 UNION
 
+-- q&a SAQACode contain only null value so use description
 select 
 	'ZZLkpTerminationReason' as "AD_Reference_ID[Name]"
-	, SAQACode as value
+	, description as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpTerminationReason
 	
 UNION
 
+-- q&a SAQACode contain null or empty on some record, use description for that
 select 
 	'ZZLkpEnrolmentStatusReason' as "AD_Reference_ID[Name]"
-	, SAQACode as value
+	, CASE when saqaCode is null OR saqaCode = '' THEN CAST(description as nvarchar(250)) 
+	ELSE saqaCode END as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpEnrolmentStatusReason
 
 UNION
 
+-- q&a SAQACode contain null or empty on some record, use description for that
 select 
 	'ZZLkpArtisanProject' as "AD_Reference_ID[Name]"
-	, SAQACode as value
+	, CASE when saqaCode is null OR saqaCode = '' THEN CAST(description as nvarchar(250)) 
+	ELSE saqaCode END as value
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpArtisanProject
 
 	Union
 	
+-- no code column
 select 
 	'ZZLkpLearnerArtisanType' as "AD_Reference_ID[Name]"
 	, description as value -- no code column
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpLearnerArtisanType
 	
 UNION
 
+-- q&a SAQACode contain 500 on some records, SAQACode + id for that
 select 
 	'ZZLkpProviderType' as "AD_Reference_ID[Name]"
-	, SAQACode as value 
+	, CASE when saqaCode = 500 THEN CONCAT(saqaCode, '-', id) 
+	ELSE saqaCode END as value 
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpProviderType
 	
@@ -1466,17 +2070,20 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpProviderClass
 
 UNION
 
+-- q&a a lot SAQACode have duplicate value so use SAQACode + ' - ' + description for make it unique
 select 
 	'ZZLkpProviderAccreditationStatus' as "AD_Reference_ID[Name]"
-	, SAQACode as value 
+	, SAQACode + '-' + description as value 
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpProviderAccreditationStatus
 
@@ -1489,39 +2096,47 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpProviderApplication
 
 	UNION
 
+	-- q&a all SAQACode is null or empty so use description as code
 select 
 	'ZZLkpAccreditationType' as "AD_Reference_ID[Name]"
-	, SAQACode as value 
+	, description as value 
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpAccreditationType
 	
 UNION
 
+-- q&a all SAQACode is null or empty
 select 
 	'ZZLkpProviderInternalExternal' as "AD_Reference_ID[Name]"
-	, SAQACode as value 
+	, description as value 
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpProviderInternalExternal
 
 	UNION
 
+-- q&a some SAQACode is null
 select 
 	'ZZLkpSETA' as "AD_Reference_ID[Name]"
-	, SAQACode as value 
+	, CASE when saqaCode is null THEN CAST(description as nvarchar(250)) 
+	ELSE saqaCode END as value 
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpSETA
 	
@@ -1533,10 +2148,49 @@ select
 	, description as name
 	, id as Description
 	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpLearnerLearnershipType
 
+
+UNION
+
+select 
+	'ZZLkpQualificationEntryRequirements' as "AD_Reference_ID[Name]"
+	, description as value -- no code column
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+from
+	lkpQualificationEntryRequirements
+
+	union
+select 
+	'ZZLkpQCTOArtisanType' as "AD_Reference_ID[Name]"
+	, description as value -- no code column
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+from
+	lkpQCTOArtisanType
+
+UNION
+
+select 
+	'ZZLkpLearnerQCTOLearnershipType' as "AD_Reference_ID[Name]"
+	, description as value -- no code column
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+from
+	lkpLearnerQCTOLearnershipType
+	
 ) as allLkp
+
+order by "AD_Reference_ID[Name]/K", IsActive
 ```
 
 </details>
@@ -2784,6 +3438,7 @@ CREATE TABLE MQA.dbo.LearnerSkillsProgramme (
 	JobID_0 int NULL,
 	JobID_1 int NULL,
 	JobID_2 int NULL,
+	-- not foud job table
 	CONSTRAINT PK_LearnerSkillsProgramme PRIMARY KEY (ID)
 );
 ```
@@ -3537,7 +4192,7 @@ CREATE TABLE MQA.dbo.LearnerQCTOArtisans (
 	Occupation nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	-- should be convert Occupation to list?moment it's free text
 	GrantTypeID int NULL,
-	LeadSDProviderLevyYesNoID int NULL,
+	LeadSDProviderLevyYesNoID int NULL,5
 	LeadSDProviderContactID int NULL,
 	WALevyYesNoID int NULL,
 	WAContactID int NULL,
@@ -3578,7 +4233,7 @@ CREATE TABLE MQA.dbo.LearnerQCTOArtisans (
 
 <summary>validate data</summary>
 
-</details>
+</details>5
 
 <details>
 
@@ -3601,22 +4256,6 @@ CREATE TABLE MQA.dbo.LearnerQCTOArtisans (
 <details>
 
 <summary>LearnerQCTOLearnership DDL</summary>
-
-```sql
-
-```
-
-</details>
-
-<details>
-
-<summary>validate data</summary>
-
-</details>
-
-<details>
-
-<summary>LearnerQCTOLearnership Query</summary>
 
 ```sql
 CREATE TABLE MQA.dbo.LearnerQCTOLearnership (
@@ -3705,13 +4344,13 @@ CREATE TABLE MQA.dbo.LearnerQCTOLearnership (
 	TermsEmployment nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	EmpContract int NULL,
 	EmpContractCopy int NULL,
-	-- abvoe columns nees q&a
 	ResponsibleSETA nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	AssPartner nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	RegSAQA nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	CurRegNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	QCTO nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	Occupation nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	-- abvoe columns nees q&a
 	ApprovalDate datetime NULL,
 	ApprovalBy int NULL,
 	GrantTypeID int NULL,
@@ -3728,10 +4367,119 @@ CREATE TABLE MQA.dbo.LearnerQCTOLearnership (
 
 <details>
 
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>LearnerQCTOLearnership Query</summary>
+
+
+
+</details>
+
+<details>
+
 <summary>Q&A</summary>
 
 </details>
 
+## LearnerQCTOSkillsProgramme
+
+<details>
+
+<summary>LearnerQCTOSkillsProgramme DDL</summary>
+
+```sql
+
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>LearnerQCTOSkillsProgramme Query</summary>
+
+```sql
+CREATE TABLE MQA.dbo.LearnerQCTOSkillsProgramme (
+	ID int IDENTITY(1,1) NOT NULL,
+	LearnerID int NOT NULL,
+	QCTOSkillsProgrammeID int NOT NULL,
+	QCTOSkillsProgrammeReferenceNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CommencementDate datetime NULL,
+	CompletionDate datetime NULL,
+	ContractNumber nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	QCTOProgrammeStatusID int NULL,
+	SocioEconomicStatusID int NULL,
+	SponsorshipID int NULL,
+	ProjectID int NULL,
+	FinancialYearID int NULL,
+	SDProviderID int NULL,
+	-- not sure about it, temp reference as ProviderID
+	WAID int NULL,
+	ACID int NULL,
+	IsApproved tinyint NULL,
+	ApprovedBy int NULL,
+	DateApproved datetime NULL,
+	CertificateNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CertificateCreatedBy int NULL,
+	DateCertificateCreated datetime NULL,
+	CertificateReasonForReprintID int NULL,
+	CertificatePrintingErrorReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	StatusEffectiveDate datetime NULL,
+	StudentNumber nvarchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	EndorsementNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	EndorsementCreatedBy int NULL,
+	DateEndorsementCreated datetime NULL,
+	EndorsementReasonForReprintID int NULL,
+	EndorsementPrintingErrorReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	MigrationRecordID int NULL,
+	ExtensionDate datetime NULL,
+	ExtensionReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationDate datetime NULL,
+	TerminationReason nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	TerminationReasonID int NULL,
+	TerminatedCapturedBy int NULL,
+	DateTerminationCaptured datetime NULL,
+	ExtensionCapturedBy int NULL,
+	DateExtensionCaptured datetime NULL,
+	RegistrationDate datetime NULL,
+	RegisteredBy int NULL,
+	EnrolmentStatusReasonID int NULL,
+	MostRecentRegistrationDate datetime NULL,
+	IsEndorsed tinyint NULL,
+	EndorsedBy int NULL,
+	DateEndorsed datetime NULL,
+	RegistrationNumber nvarchar(255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	AccountNumber uniqueidentifier DEFAULT newid() NOT NULL,
+	EstimateCompletionDate datetime NULL,
+	GrantTypeID int NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	EmployerID int NULL,
+	CONSTRAINT PK_LearnerQCTOSkillsProgramme PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
 
 ## lkpQCTOProgrammeStatus
 
