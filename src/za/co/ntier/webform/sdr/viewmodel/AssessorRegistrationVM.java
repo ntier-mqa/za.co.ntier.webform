@@ -1,5 +1,8 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -845,7 +848,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				if (linkQua == null)
 					return false;
 				
-				if (isExtensionScope() && assessorPerson.getUpdated().after(linkQua.getCreated())){
+				if (isExtensionScope() && assessorPerson.getZZSubmittedDate().after(linkQua.getCreated())){
 					return true;
 				}
 				
@@ -1023,7 +1026,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				if (linkQua == null)
 					return false;
 				
-				if (isExtensionScope() && assessorPerson.getUpdated().after(linkQua.getCreated())){
+				if (isExtensionScope() && assessorPerson.getZZSubmittedDate().after(linkQua.getCreated())){
 					return true;
 				}
 				
@@ -1168,6 +1171,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		}
 		
 		assessorPerson.setZZ_DocStatus(X_ZZAssessorPerson.ZZ_DOCSTATUS_Pending);
+		assessorPerson.setZZSubmittedDate(Timestamp.from(Instant.now()));
 		assessorPerson.saveEx(trxName);
 		super.doSubmit(trxName);
 	}
