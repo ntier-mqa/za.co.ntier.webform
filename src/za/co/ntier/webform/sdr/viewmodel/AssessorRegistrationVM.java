@@ -1160,6 +1160,11 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		super.doSave(trxName);
 		assessorPerson.setAD_User_ID(person.getAD_User_ID());
+		String scopeExtension = X_ZZAssessorPerson.ZZSCOPEEXTENSION_No;
+		if (isExtensionScope()) {
+			scopeExtension = X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes;
+		}
+		assessorPerson.setZZScopeExtension(scopeExtension);
 		assessorPerson.saveEx(trxName);
 	}
 	
