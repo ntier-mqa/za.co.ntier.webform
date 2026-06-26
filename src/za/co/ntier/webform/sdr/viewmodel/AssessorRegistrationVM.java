@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_C_Location;
@@ -52,6 +53,7 @@ import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
@@ -72,7 +74,9 @@ import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
 
 public class AssessorRegistrationVM extends BaseAppVM {
 	public static String moderatorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
-	public static String assessorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
+	public static String assessorFormUU = "53779b2b-eb44-4f13-8c03-a8407c3fceae";
+	public static String moderatorScopeFormUU = "ebf7630f-6c99-44a0-a047-b5bbfba05b57";
+	public static String assessorScopeFormUU = "b9a07c16-b8dc-4afd-a1b4-1bc7cfd5a950";
 	
 	private TableModel tmNames;
 	private NavTab mainTab;
@@ -115,10 +119,16 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	
 	private MUser_New person;
 	boolean isNew = true;
+	MForm adForm;
+	
+	private boolean isExtensionScope() {
+		return moderatorScopeFormUU.equals(adForm.getAD_Form_UU()) || assessorScopeFormUU.equals(adForm.getAD_Form_UU());
+	}
 	
 	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
-			
+		adForm = MForm.get(menuContextInfo.getFormId());
+		
 		daoManage.setPoSupplier(I_AD_User.Table_Name, daoManage -> {
 			person = new MUser_New(Env.getCtx(), 0, null);
 			String name = (String)tmNames.getRow().get(firstNameCol).getValue();
@@ -128,7 +138,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		daoManage.setPoSupplier(I_ZZAssessorPerson.Table_Name, daoManage -> {
 			assessorPerson = new X_ZZAssessorPerson(Env.getCtx(), 0, null);
-			MForm adForm = MForm.get(menuContextInfo.getFormId());
+			
 			if (moderatorFormUU.equals(adForm.getAD_Form_UU())) {
 				assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Moderator);
 			}else {
@@ -277,10 +287,12 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	private void initForm() {
 		tmNames = initTbName();
 		initGeneralDetail();
-		initContactDetail();
-		initHealthFunction();
-		initAddresss();
-		initEducationDetail();
+		if (!isExtensionScope()) {
+			initContactDetail();
+			initHealthFunction();
+			initAddresss();
+			initEducationDetail();
+		}
 		initQualification();
 		initSkillsProgramme();
 		initUploadDocument();
@@ -821,6 +833,26 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			return true;
 		});
 		
+		tmQualificationLink.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
+			
+			@Override
+			public Boolean apply(RowModel rowModel) {
+				if (assessorPerson == null) {
+					return false;
+				}
+				
+				PO linkQua = rowModel.getRowData().getDataNullable(I_ZZLinkAssessorQualification.Table_Name);
+				if (linkQua == null)
+					return false;
+				
+				if (isExtensionScope() && assessorPerson.getUpdated().after(linkQua.getCreated())){
+					return true;
+				}
+				
+				return false;
+			}
+		});
+		
 	}
 	private TableModel tmSkillsProgramme;
 	private void initSkillsProgramme() {
@@ -978,6 +1010,26 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			return true;
 		});
 		
+		
+		tmSkillsProgramme.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
+			
+			@Override
+			public Boolean apply(RowModel rowModel) {
+				if (assessorPerson == null) {
+					return false;
+				}
+				
+				PO linkQua = rowModel.getRowData().getDataNullable(I_ZZLinkAssessorSkillsProgramme.Table_Name);
+				if (linkQua == null)
+					return false;
+				
+				if (isExtensionScope() && assessorPerson.getUpdated().after(linkQua.getCreated())){
+					return true;
+				}
+				
+				return false;
+			}
+		});
 	}
 	
 	
@@ -1099,7 +1151,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			isDraft = assessorPerson.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPerson.getZZ_DocStatus());
 		}
 		
-		if (!isDraft) {
+		if (!isDraft && !isExtensionScope()) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZAssessorWrongStatus"));
 		}
 		

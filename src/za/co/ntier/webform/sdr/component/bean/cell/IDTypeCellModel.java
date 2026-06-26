@@ -1,5 +1,7 @@
 package za.co.ntier.webform.sdr.component.bean.cell;
 
+import org.compiere.model.PO;
+
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.webform.form.MasterUtil;
@@ -9,7 +11,11 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 
 public class IDTypeCellModel extends ListCellModel<X_ZZ_AlternateIDType>{
-
+	@Override
+	public void setValueFromDao(PO daoPerCol) {
+		// TODO Auto-generated method stub
+		super.setValueFromDao(daoPerCol);
+	}
 	public IDTypeCellModel(TableModel tableModel, RowModel rowModel, ListColumnModel<X_ZZ_AlternateIDType> colModel) {
 		super(tableModel, rowModel, colModel);
 	}

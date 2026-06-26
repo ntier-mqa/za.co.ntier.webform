@@ -33,12 +33,20 @@ public class DashboardAssessorsModeratorsVM {
 	
 	@Command
 	public void editAssessor(@BindingParam("row") X_ZZAssessorPerson_v row) {
-		if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole())) {
-			MasterUtil.openFormByUU("53779b2b-eb44-4f13-8c03-a8407c3fceae", row.getZZAssessorPerson_ID());
-		}else if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator.equals(row.getZZAssessorRole())) {
-			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU, row.getZZAssessorPerson_ID());
-		}else {
+		if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole())
+				&& X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Draft.equals(row.getZZ_DocStatus())) {
 			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorFormUU, row.getZZAssessorPerson_ID());
+		}else if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator.equals(row.getZZAssessorRole())
+				&& X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Draft.equals(row.getZZ_DocStatus())) {
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU, row.getZZAssessorPerson_ID());
+		}else if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator.equals(row.getZZAssessorRole())
+				&& (X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
+						X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus()))) {
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorScopeFormUU, row.getZZAssessorPerson_ID());
+		}else if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole())
+				&& (X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
+						X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus()))) {
+			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorScopeFormUU, row.getZZAssessorPerson_ID());
 		}
 		
 	}

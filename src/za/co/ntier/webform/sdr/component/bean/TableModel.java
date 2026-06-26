@@ -55,6 +55,8 @@ public class TableModel implements ISaveForm {
 		}
 	}
 	
+	private Function<RowModel, Boolean> rowReadonlyLogic;
+	
 	private RowModel virtualRow;
 	public RowModel getVirtualRow() {
 		if (virtualRow == null) {
@@ -343,8 +345,6 @@ public class TableModel implements ISaveForm {
 	
 	private List<RowModel> rows;
 	private String sectionHeader;
-
-	private boolean showCommandBt = false;
 
 	private boolean showTotal = false;
 
@@ -1119,6 +1119,12 @@ public class TableModel implements ISaveForm {
 		return rows.stream()
 	            .map(panel -> (ISaveForm) panel)
 	            .collect(Collectors.toList());
+	}
+	public Function<RowModel, Boolean> getRowReadonlyLogic() {
+		return rowReadonlyLogic;
+	}
+	public void setRowReadonlyLogic(Function<RowModel, Boolean> rowReadonlyLogic) {
+		this.rowReadonlyLogic = rowReadonlyLogic;
 	}
 
 }

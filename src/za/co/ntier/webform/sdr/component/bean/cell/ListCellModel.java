@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.PO;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.SelectEvent;

@@ -16,6 +16,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.jfree.util.Log;
 
+import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
@@ -35,7 +36,12 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	 */
 	private RowData rowData;
 	
-	
+	public boolean isEditable() {
+		if (getTableModel().getRowReadonlyLogic() == null)
+			return true;
+		
+		return !getTableModel().getRowReadonlyLogic().apply(this);
+	}
 	
 	public static class RowData{
 		private RowModel rowModel;
@@ -295,7 +301,8 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	}
 	
 	public void fillRowDataFromDao(List<String> tableNames) {
-		for (CellModel cellModel : values()) {
+		for (ColumnModel colModel : getTableModel().getColumnInfos()) {
+			CellModel cellModel = get(colModel);
 			boolean isDaoValueToSync = false;
 			if (cellModel instanceof UploadCellModel || cellModel.getColModel().getDaoPropertyName() != null) {
 				isDaoValueToSync = true;
