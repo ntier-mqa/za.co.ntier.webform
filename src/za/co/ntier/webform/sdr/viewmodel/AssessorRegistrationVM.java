@@ -2,7 +2,6 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +9,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.model.GenericPO;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MForm;
 import org.compiere.model.MLocation;
@@ -102,16 +102,71 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		return List.of(mainTab, tmNames);
 	}
 
+	private static String EmailTemplateAssessorRegistrationConfirmation_UU = "c157e9e9-e05f-4286-b2b9-d9a95361d4cd";
+	
+	public static class EmailPoAssessorInfo extends GenericPO {
+		MUser sdpAdmin;
+		MUser_New assessorUser;
+		X_ZZAssessorPerson assessorPerson;
+		
+		MenuContextInfo menuContextInfo;
+		private static final long serialVersionUID = -433026634223871908L;
+
+		public EmailPoAssessorInfo(MUser sdpAdmin, X_ZZAssessorPerson assessorPerson) {
+			super(MUser.Table_Name, Env.getCtx(), 0);
+			this.sdpAdmin = sdpAdmin;
+			this.assessorPerson = assessorPerson;
+			this.assessorUser = MUser_New.get(getCtx(), assessorPerson.getAD_User_ID());
+		}
+		
+		public String getSubjectName() {
+			
+			if (X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole())
+					&& X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes.equals(assessorPerson.getZZScopeExtension())) {
+				return "Assessor Scope Extension";
+			}else if (!X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole())
+					&& X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes.equals(assessorPerson.getZZScopeExtension())) {
+				return "Moderator Scope Extension";
+			}else if (X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole())
+					&& !X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes.equals(assessorPerson.getZZScopeExtension())) {
+				return "Assessor Registration";
+			}else if (!X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole())
+					&& !X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes.equals(assessorPerson.getZZScopeExtension())) {
+				return "Moderator Registration";
+			}else {
+				throw new AdempiereException("Case Not Handle");
+			}
+		}
+		
+		public String getAssessorFirstName() {
+			return assessorUser.getZZFirstName();
+		}
+		
+		public String getAssessorSurname() {
+			return assessorUser.getZZSurname();
+		}
+		
+		public String getReceiverName() {
+			return sdpAdmin.getName();
+		}
+		
+		public Timestamp getSubmittedDate() {
+			return assessorPerson.getZZSubmittedDate();
+		}
+		
+	}
+	
 	@Override
 	protected void showResult(boolean isSubmit) {
 		if (isSubmit) {
+			
+			
 			int loginId = Env.getAD_User_ID(Env.getCtx());
 			MUser receiver = MUser.get(loginId);
 			
-			MasterUtil.sentEmailSdf("c157e9e9-e05f-4286-b2b9-d9a95361d4cd", assessorPerson, receiver);
+			MasterUtil.sentEmailSdf(EmailTemplateAssessorRegistrationConfirmation_UU, new EmailPoAssessorInfo(receiver, assessorPerson), receiver);
 			
-			
-			MasterUtil.sentEmailSdf("c157e9e9-e05f-4286-b2b9-d9a95361d4cd", assessorPerson, person);
+			// MasterUtil.sentEmailSdf(EmailTemplateAssessorRegistrationConfirmation_UU, assessorPerson, person);
 		}
 		if(isNew) {
 			MasterUtil.showInfoDialog("ZZAssessorCreatedSuccess", MasterUtil.fCloseActiveWindow);
