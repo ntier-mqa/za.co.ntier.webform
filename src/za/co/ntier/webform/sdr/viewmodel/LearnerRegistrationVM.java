@@ -57,116 +57,94 @@ import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
 
-public class LearnerRegistrationVM extends BaseAppVM
-{
+public class LearnerRegistrationVM extends BaseAppVM {
 
-	private TableModel													tmNames;
-	private TableModel													tmGeneralDetail;
-	private NavTab														mainTab;
-	X_ZZLearner															learner;
+	private TableModel tmNames;
+	private TableModel tmGeneralDetail;
+	private NavTab mainTab;
+	X_ZZLearner learner;
 
-	DaoManage															daoManage					= new DaoManage();
+	DaoManage daoManage = new DaoManage();
 
-	public static final String											healthFunctionDefault		= "No difficulty";
-	BiFunction<ListCellModel<ValueNamePair>, ValueNamePair, Boolean>	healthFunctionNameCompare	= (cellModel, item) -> {
-																										String compareValue = cellModel	.getColModel()
-																																		.getSelectedItemDisplayConvert()
-																																		.apply(item);
-																										return cellModel.getColModel().getDefaultValue().equals(
-																																								compareValue);
-																									};
+	public static final String healthFunctionDefault = "No difficulty";
+	BiFunction<ListCellModel<ValueNamePair>, ValueNamePair, Boolean> healthFunctionNameCompare = (cellModel, item) -> {
+		String compareValue = cellModel.getColModel().getSelectedItemDisplayConvert().apply(item);
+		return cellModel.getColModel().getDefaultValue().equals(compareValue);
+	};
 
 	// Identity validation state
-	private String														idNumber;
-	private X_ZZ_AlternateIDType										selectedIdType;
-	private List<X_ZZ_AlternateIDType>									alternateIdTypes;
-	private String														validationMessage			= "";
-	private boolean														showCreateNew				= false;
-	private boolean														identityValidated			= false;
+	private String idNumber;
+	private X_ZZ_AlternateIDType selectedIdType;
+	private List<X_ZZ_AlternateIDType> alternateIdTypes;
+	private String validationMessage = "";
+	private boolean showCreateNew = false;
+	private boolean identityValidated = false;
 
 	@Override
-	public Object getMainApp()
-	{
+	public Object getMainApp() {
 		return null;
 	}
 
 	@Override
-	public List<DaoManage> getDaoManages()
-	{
+	public List<DaoManage> getDaoManages() {
 		return List.of(daoManage);
 	}
 
 	@Override
-	public List<ISaveForm> getSaveComponents()
-	{
+	public List<ISaveForm> getSaveComponents() {
 		return List.of(mainTab, tmNames);
 	}
 
 	@Override
-	protected void showResult(boolean isSubmit)
-	{
-		if (isNew)
-		{
+	protected void showResult(boolean isSubmit) {
+		if (isNew) {
 			MasterUtil.showInfoDialog("ZZLearnerCreatedSuccess", MasterUtil.fCloseActiveWindow);
-		}
-		else
-		{
+		} else {
 			MasterUtil.showInfoDialog("ZZLearnerSavedSuccess", MasterUtil.fCloseActiveWindow);
 		}
 	}
 
-	private X_ZZPerson	person;
-	boolean				isNew	= true;
+	private X_ZZPerson person;
+	boolean isNew = true;
 
-	public String getIdNumber()
-	{
+	public String getIdNumber() {
 		return idNumber;
 	}
 
-	public void setIdNumber(String idNumber)
-	{
+	public void setIdNumber(String idNumber) {
 		this.idNumber = idNumber;
 	}
 
-	public X_ZZ_AlternateIDType getSelectedIdType()
-	{
+	public X_ZZ_AlternateIDType getSelectedIdType() {
 		return selectedIdType;
 	}
 
-	public void setSelectedIdType(X_ZZ_AlternateIDType selectedIdType)
-	{
+	public void setSelectedIdType(X_ZZ_AlternateIDType selectedIdType) {
 		this.selectedIdType = selectedIdType;
 	}
 
-	public List<X_ZZ_AlternateIDType> getAlternateIdTypes()
-	{
+	public List<X_ZZ_AlternateIDType> getAlternateIdTypes() {
 		return alternateIdTypes;
 	}
 
-	public String getValidationMessage()
-	{
+	public String getValidationMessage() {
 		return validationMessage;
 	}
 
-	public boolean isShowCreateNew()
-	{
+	public boolean isShowCreateNew() {
 		return showCreateNew;
 	}
 
-	public boolean isIdentityValidated()
-	{
+	public boolean isIdentityValidated() {
 		return identityValidated;
 	}
 
 	@Init(superclass = true)
-	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey)
-	MenuContextInfo menuContextInfo)
-	{
+	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo) {
 
 		alternateIdTypes = MasterUtil.getAlternateIDType();
-		selectedIdType = alternateIdTypes	.stream()
-											.filter(t -> IDCellModel.idTypeRSA_ID.equals(t.getName()))
-											.findFirst().orElse(null);
+		selectedIdType = alternateIdTypes.stream().filter(t -> IDCellModel.idTypeRSA_ID.equals(t.getName())).findFirst()
+				.orElse(null);
 
 		daoManage.setPoSupplier(I_ZZPerson.Table_Name, daoManage -> {
 			person = new X_ZZPerson(Env.getCtx(), 0, null);
@@ -194,37 +172,29 @@ public class LearnerRegistrationVM extends BaseAppVM
 		});
 		initForm();
 
-		if (menuContextInfo.getRecordID() > 0)
-		{
+		if (menuContextInfo.getRecordID() > 0) {
 			loadForEdit();
 		}
 	}
 
 	@Command
 	@NotifyChange({ "validationMessage", "showCreateNew", "identityValidated" })
-	public void onValidateIdentity()
-	{
-		if (idNumber == null || idNumber.isBlank())
-		{
+	public void onValidateIdentity() {
+		if (idNumber == null || idNumber.isBlank()) {
 			validationMessage = "Please enter an ID Number.";
 			showCreateNew = false;
 			return;
 		}
-		if (selectedIdType == null)
-		{
+		if (selectedIdType == null) {
 			validationMessage = "Please select an ID Type.";
 			showCreateNew = false;
 			return;
 		}
 
-		if (IDCellModel.idTypeRSA_ID.equals(selectedIdType.getName()))
-		{
-			try
-			{
+		if (IDCellModel.idTypeRSA_ID.equals(selectedIdType.getName())) {
+			try {
 				RegistrationWindow.validateIdNo(null, idNumber);
-			}
-			catch (WrongValueException e)
-			{
+			} catch (WrongValueException e) {
 				validationMessage = e.getMessage();
 				showCreateNew = false;
 				return;
@@ -237,34 +207,30 @@ public class LearnerRegistrationVM extends BaseAppVM
 		// Lookup ZZPerson by ID No
 		loadSaved(idNumber, selectedIdType.getZZ_AlternateIDType_ID());
 
-		if (person != null)
-		{
+		if (person != null) {
 			// Person found - check learner status
-			if (learner != null)
-			{
-				boolean isDraft = learner.getZZ_DocStatus() == null || X_ZZLearner.ZZ_DOCSTATUS_Draft.equals(learner.getZZ_DocStatus());
-				if (!isDraft)
-				{
-					validationMessage = "A learner with " + selectedIdType.getName() + " " + idNumber + " already exists and is not in Draft status.";
+			if (learner != null) {
+				boolean isDraft = learner.getZZ_DocStatus() == null
+						|| X_ZZLearner.ZZ_DOCSTATUS_Draft.equals(learner.getZZ_DocStatus());
+				if (!isDraft) {
+					validationMessage = "A learner with " + selectedIdType.getName() + " " + idNumber
+							+ " already exists and is not in Draft status.";
 					showCreateNew = false;
 					identityValidated = false;
 					return;
 				}
 				validationMessage = "Person and learner record found. You may edit the details below.";
-			}
-			else
-			{
+			} else {
 				validationMessage = "Person found. A new learner record will be created upon save.";
 			}
 			showCreateNew = false;
 			identityValidated = true;
 			alternateIDTypeCol.setReadonly(true);
 			idNoCol.setReadonly(true);
-		}
-		else
-		{
+		} else {
 			// Person NOT found
-			validationMessage = "A person with " + selectedIdType.getName() + " " + idNumber + " does not exist in the system.";
+			validationMessage = "A person with " + selectedIdType.getName() + " " + idNumber
+					+ " does not exist in the system.";
 			showCreateNew = true;
 			identityValidated = false;
 		}
@@ -272,8 +238,7 @@ public class LearnerRegistrationVM extends BaseAppVM
 
 	@Command
 	@NotifyChange({ "identityValidated", "showCreateNew", "validationMessage" })
-	public void onCreateNew()
-	{
+	public void onCreateNew() {
 		identityValidated = true;
 		showCreateNew = false;
 		validationMessage = "Creating new learner record. Please fill in all required fields.";
@@ -283,26 +248,23 @@ public class LearnerRegistrationVM extends BaseAppVM
 		daoManage.resetDao(I_ZZLearner.Table_Name);
 
 		idNoCol.setDefaultValue(idNumber);
-		if (selectedIdType != null)
-		{
+		if (selectedIdType != null) {
 			alternateIDTypeCol.setDefaultValue(selectedIdType.getName(), MasterUtil.nameAlternateIdTypeCompare);
 		}
 		alternateIDTypeCol.setReadonly(true);
 		idNoCol.setReadonly(true);
 
-		if (tmGeneralDetail != null && tmGeneralDetail.getRow() != null)
-		{
+		if (tmGeneralDetail != null && tmGeneralDetail.getRow() != null) {
 			CellModel idCell = tmGeneralDetail.getRow().get(idNoCol);
-			if (idCell != null)
-			{
+			if (idCell != null) {
 				idCell.setValue(idNumber);
 				BindUtils.postNotifyChange(null, null, idCell, "value");
 			}
 
 			@SuppressWarnings("unchecked")
-			ListCellModel<X_ZZ_AlternateIDType> altIdCell = (ListCellModel<X_ZZ_AlternateIDType>) tmGeneralDetail.getRow().get(alternateIDTypeCol);
-			if (altIdCell != null && selectedIdType != null)
-			{
+			ListCellModel<X_ZZ_AlternateIDType> altIdCell = (ListCellModel<X_ZZ_AlternateIDType>) tmGeneralDetail
+					.getRow().get(alternateIDTypeCol);
+			if (altIdCell != null && selectedIdType != null) {
 				altIdCell.getModel().clearSelection();
 				altIdCell.getModel().addToSelection(selectedIdType);
 				BindUtils.postNotifyChange(null, null, altIdCell, "selectedItem");
@@ -313,24 +275,18 @@ public class LearnerRegistrationVM extends BaseAppVM
 		isNew = true;
 	}
 
-	private void loadForEdit()
-	{
+	private void loadForEdit() {
 		alternateIDTypeCol.setReadonly(true);
 		idNoCol.setReadonly(true);
-		learner = (X_ZZLearner) MTable	.get(Env.getCtx(), I_ZZLearner.Table_Name)
-										.getPO(getMenuContextInfo().getRecordID(), null);
-		if (learner == null)
-		{
+		learner = (X_ZZLearner) MTable.get(Env.getCtx(), I_ZZLearner.Table_Name)
+				.getPO(getMenuContextInfo().getRecordID(), null);
+		if (learner == null) {
 			MasterUtil.showInfoDialog("ZZLearnerNotFoundLearner", MasterUtil.fCloseActiveWindow);
-		}
-		else
-		{
-			person = (X_ZZPerson) MTable.get(Env.getCtx(), I_ZZPerson.Table_Name)
-										.getPO(learner.getZZPerson_ID(), null);
+		} else {
+			person = (X_ZZPerson) MTable.get(Env.getCtx(), I_ZZPerson.Table_Name).getPO(learner.getZZPerson_ID(), null);
 		}
 
-		if (person == null)
-		{
+		if (person == null) {
 			MasterUtil.showInfoDialog("ZZLearnerNotFoundUser", MasterUtil.fCloseActiveWindow);
 		}
 
@@ -338,14 +294,10 @@ public class LearnerRegistrationVM extends BaseAppVM
 		daoManage.setDao(person);
 
 		identityValidated = true;
-		if (person != null)
-		{
-			if (person.getZZ_ID_Passport_No() != null && !person.getZZ_ID_Passport_No().isBlank())
-			{
+		if (person != null) {
+			if (person.getZZ_ID_Passport_No() != null && !person.getZZ_ID_Passport_No().isBlank()) {
 				idNumber = person.getZZ_ID_Passport_No();
-			}
-			else
-			{
+			} else {
 				idNumber = person.getZZOtherIDNo();
 			}
 		}
@@ -356,22 +308,18 @@ public class LearnerRegistrationVM extends BaseAppVM
 		loadData();
 	}
 
-	private void loadSaved(String idValue, int idTypeId)
-	{
+	private void loadSaved(String idValue, int idTypeId) {
 		Query userQuery;
-		if (IDCellModel.idTypeRSA_ID.equals(selectedIdType.getName()))
-		{
-			userQuery = MTable	.get(Env.getCtx(), I_ZZPerson.Table_Name)
-								.createQuery(String.format(	"%s = ? AND %s.%s = ?",
-															I_ZZPerson.COLUMNNAME_ZZ_ID_Passport_No, I_ZZ_AlternateIDType.Table_Name,
-															I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID), null);
-		}
-		else
-		{
-			userQuery = MTable	.get(Env.getCtx(), I_ZZPerson.Table_Name)
-								.createQuery(String.format(	"%s = ? AND %s.%s = ?",
-															I_ZZPerson.COLUMNNAME_ZZOtherIDNo, I_ZZ_AlternateIDType.Table_Name,
-															I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID), null);
+		if (IDCellModel.idTypeRSA_ID.equals(selectedIdType.getName())) {
+			userQuery = MTable.get(Env.getCtx(), I_ZZPerson.Table_Name)
+					.createQuery(String.format("%s = ? AND %s.%s = ?", I_ZZPerson.COLUMNNAME_ZZ_ID_Passport_No,
+							I_ZZ_AlternateIDType.Table_Name, I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID),
+							null);
+		} else {
+			userQuery = MTable.get(Env.getCtx(), I_ZZPerson.Table_Name)
+					.createQuery(String.format("%s = ? AND %s.%s = ?", I_ZZPerson.COLUMNNAME_ZZOtherIDNo,
+							I_ZZ_AlternateIDType.Table_Name, I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID),
+							null);
 		}
 
 		userQuery.addTableDirectJoin(I_ZZ_AlternateIDType.Table_Name);
@@ -382,11 +330,10 @@ public class LearnerRegistrationVM extends BaseAppVM
 
 		X_ZZLearner learnerSaved = null;
 
-		if (person != null)
-		{
+		if (person != null) {
 			daoManage.setDao(person);
-			Query savedDataQuery = MTable	.get(Env.getCtx(), I_ZZLearner.Table_Name)
-											.createQuery(String.format("%s = ?", I_ZZLearner.COLUMNNAME_ZZPerson_ID), null);
+			Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZLearner.Table_Name)
+					.createQuery(String.format("%s = ?", I_ZZLearner.COLUMNNAME_ZZPerson_ID), null);
 
 			savedDataQuery.setParameters(person.getZZPerson_ID());
 			savedDataQuery.setOnlyActiveRecords(true);
@@ -394,23 +341,18 @@ public class LearnerRegistrationVM extends BaseAppVM
 			learnerSaved = savedDataQuery.firstOnly();
 
 			firstNameCol.setDefaultValue(person.getZZFirstName());
-		}
-		else
-		{
+		} else {
 			daoManage.resetDao(I_ZZPerson.Table_Name);
 		}
 
-		if (learnerSaved != null)
-		{
-			boolean isDraft = learnerSaved.getZZ_DocStatus() == null || X_ZZLearner.ZZ_DOCSTATUS_Draft.equals(learnerSaved.getZZ_DocStatus());
-			if (!isDraft)
-			{
+		if (learnerSaved != null) {
+			boolean isDraft = learnerSaved.getZZ_DocStatus() == null
+					|| X_ZZLearner.ZZ_DOCSTATUS_Draft.equals(learnerSaved.getZZ_DocStatus());
+			if (!isDraft) {
 				MasterUtil.showInfoDialog("ZZLearnerWrongStatus", MasterUtil.fCloseActiveWindow);
 			}
 			daoManage.setDao(learnerSaved);
-		}
-		else
-		{
+		} else {
 			daoManage.resetDao(I_ZZLearner.Table_Name);
 		}
 
@@ -420,8 +362,7 @@ public class LearnerRegistrationVM extends BaseAppVM
 		loadData();
 	}
 
-	private void loadData()
-	{
+	private void loadData() {
 		if (person != null)// don't reload when null to keep user input
 			tmNames.reloadDao();
 
@@ -439,8 +380,7 @@ public class LearnerRegistrationVM extends BaseAppVM
 		});
 	}
 
-	private void initForm()
-	{
+	private void initForm() {
 		tmNames = initTbName();
 		initGeneralDetail();
 		initContactDetail();
@@ -450,11 +390,10 @@ public class LearnerRegistrationVM extends BaseAppVM
 		initUploadDocument();
 	}
 
-	ColumnModel								idNoCol;
-	ListColumnModel<X_ZZ_AlternateIDType>	alternateIDTypeCol;
+	ColumnModel idNoCol;
+	ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
 
-	private void initGeneralDetail()
-	{
+	private void initGeneralDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
@@ -463,7 +402,8 @@ public class LearnerRegistrationVM extends BaseAppVM
 			@SuppressWarnings("unchecked")
 			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>) cellMode;
 			alternateIDCellMode.resetDefaultValue();
-			alternateIDCellMode.getColModel().setDefaultValue(alternateIDCellMode.getSelectedItem().getName(), MasterUtil.nameAlternateIdTypeCompare);
+			alternateIDCellMode.getColModel().setDefaultValue(alternateIDCellMode.getSelectedItem().getName(),
+					MasterUtil.nameAlternateIdTypeCompare);
 			IDCellModel idCellMode = (IDCellModel) cellMode.getRowModel().get(idNoCol);
 			idCellMode.validate();
 		});
@@ -477,81 +417,66 @@ public class LearnerRegistrationVM extends BaseAppVM
 		});
 		cols.add(idNoCol);
 
-		ColumnModel dateOfBirthCol = DateCellModel	.getDateColumnModel(
-																		MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																											I_ZZPerson.COLUMNNAME_Birthday),
-																		I_ZZPerson.COLUMNNAME_Birthday).required()
-													.setTableName(I_ZZPerson.Table_Name);
+		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Birthday),
+				I_ZZPerson.COLUMNNAME_Birthday).required().setTableName(I_ZZPerson.Table_Name);
 		cols.add(dateOfBirthCol);
 
 		ColumnModel genderCol = ListCellModel.getListColumnModel(
-																	MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZGender),
-																	I_ZZPerson.COLUMNNAME_ZZGender, MasterUtil.getLkpGenders(), title -> {
-																		return title.getName();
-																	}, title -> {
-																		return title.getValue();
-																	}).setzClass(ValueNamePair.class).required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZGender),
+				I_ZZPerson.COLUMNNAME_ZZGender, MasterUtil.getLkpGenders(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).required();
 		cols.add(genderCol);
 
 		ColumnModel equityCol = ListCellModel.getListColumnModel(
-																	MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZEquity),
-																	I_ZZPerson.COLUMNNAME_ZZEquity, MasterUtil.getLkpEquity(), title -> {
-																		return title.toString();
-																	}, title -> {
-																		return title.getValue();
-																	}).setzClass(ValueNamePair.class).required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZEquity),
+				I_ZZPerson.COLUMNNAME_ZZEquity, MasterUtil.getLkpEquity(), title -> {
+					return title.toString();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).required();
 		cols.add(equityCol);
 
-		ColumnModel homeLanguageCol = ListCellModel	.getListColumnModel(
-																		MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																											I_ZZPerson.COLUMNNAME_ZZ_LI_HomeLanguage_ID),
-																		I_ZZPerson.COLUMNNAME_ZZ_LI_HomeLanguage_ID, MasterUtil.getHomeLanguage(), title -> {
-																			return title.getName();
-																		}, title -> {
-																			return title.getZZ_LI_HomeLanguage_ID();
-																		}).setzClass(X_ZZ_LI_HomeLanguage.class)
-													.setUseForID(true)
-													.required();
+		ColumnModel homeLanguageCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZ_LI_HomeLanguage_ID),
+				I_ZZPerson.COLUMNNAME_ZZ_LI_HomeLanguage_ID, MasterUtil.getHomeLanguage(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getZZ_LI_HomeLanguage_ID();
+				}).setzClass(X_ZZ_LI_HomeLanguage.class).setUseForID(true).required();
 		cols.add(homeLanguageCol);
 
-		ColumnModel nationalityCol = ListCellModel	.getListColumnModel(
-																		MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																											I_ZZPerson.COLUMNNAME_ZZ_Nationality_ID),
-																		I_ZZPerson.COLUMNNAME_ZZ_Nationality_ID, MasterUtil.getNationality(), title -> {
-																			return title.getName();
-																		}, title -> {
-																			return title.getZZ_Nationality_ID();
-																		}).setzClass(X_ZZ_Nationality.class)
-													.setUseForID(true)
-													.required();
+		ColumnModel nationalityCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZ_Nationality_ID),
+				I_ZZPerson.COLUMNNAME_ZZ_Nationality_ID, MasterUtil.getNationality(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getZZ_Nationality_ID();
+				}).setzClass(X_ZZ_Nationality.class).setUseForID(true).required();
 		cols.add(nationalityCol);
 
-		ColumnModel citizenResidentialStatusCol = ListCellModel	.getListColumnModel(
-																					MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																														I_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID),
-																					I_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID, MasterUtil
-																																						.getCitizenResidentialStatus(),
-																					title -> {
-																						return title.getName();
-																					}, title -> {
-																						return title.getZZ_LI_CitizenResidentialStatus_ID();
-																					}).setzClass(X_ZZ_LI_CitizenResidentialStatus.class)
-																.setUseForID(true)
-																.required();
+		ColumnModel citizenResidentialStatusCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name,
+						I_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID),
+				I_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID, MasterUtil.getCitizenResidentialStatus(),
+				title -> {
+					return title.getName();
+				}, title -> {
+					return title.getZZ_LI_CitizenResidentialStatus_ID();
+				}).setzClass(X_ZZ_LI_CitizenResidentialStatus.class).setUseForID(true).required();
 		cols.add(citizenResidentialStatusCol);
 
-		ColumnModel socioEconomicStatusCol = ListCellModel	.getListColumnModel(
-																				MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																													I_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID),
-																				I_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID, MasterUtil
-																																				.getSocioEconomicStatus(),
-																				title -> {
-																					return title.getName();
-																				}, title -> {
-																					return title.getZZ_LI_SocioEconomicStatus_ID();
-																				}).setzClass(X_ZZ_LI_SocioEconomicStatus.class)
-															.setUseForID(true)
-															.required();
+		ColumnModel socioEconomicStatusCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name,
+						I_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID),
+				I_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID, MasterUtil.getSocioEconomicStatus(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getZZ_LI_SocioEconomicStatus_ID();
+				}).setzClass(X_ZZ_LI_SocioEconomicStatus.class).setUseForID(true).required();
 		cols.add(socioEconomicStatusCol);
 
 		tmGeneralDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
@@ -568,8 +493,7 @@ public class LearnerRegistrationVM extends BaseAppVM
 
 	ColumnModel firstNameCol;
 
-	private TableModel initTbName()
-	{
+	private TableModel initTbName() {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel greettingCol = ListCellModel.getLkpTitleColumnModel();
@@ -577,19 +501,19 @@ public class LearnerRegistrationVM extends BaseAppVM
 		cols.add(greettingCol);
 
 		firstNameCol = CellModel.getColModelForText(
-													MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZFirstName),
-													I_ZZPerson.COLUMNNAME_ZZFirstName).required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZFirstName),
+				I_ZZPerson.COLUMNNAME_ZZFirstName).required();
 
 		cols.add(firstNameCol);
 
 		ColumnModel midNameCol = CellModel.getColModelForText(
-																MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZMiddleName),
-																I_ZZPerson.COLUMNNAME_ZZMiddleName);
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZMiddleName),
+				I_ZZPerson.COLUMNNAME_ZZMiddleName);
 		cols.add(midNameCol);
 
 		ColumnModel surnameCol = CellModel.getColModelForText(
-																MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Surname),
-																I_ZZPerson.COLUMNNAME_Surname).required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Surname),
+				I_ZZPerson.COLUMNNAME_Surname).required();
 		cols.add(surnameCol);
 
 		TableModel tmNames = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
@@ -600,23 +524,22 @@ public class LearnerRegistrationVM extends BaseAppVM
 		return tmNames;
 	}
 
-	private void initContactDetail()
-	{
+	private void initContactDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
-																		MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Phone),
-																		I_ZZPerson.COLUMNNAME_Phone).required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Phone),
+				I_ZZPerson.COLUMNNAME_Phone).required();
 		cols.add(cellPhoneNumberCol);
 
 		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
-																		MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Phone2),
-																		I_ZZPerson.COLUMNNAME_Phone2);
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Phone2),
+				I_ZZPerson.COLUMNNAME_Phone2);
 		cols.add(telephoneNumberCol);
 
 		ColumnModel emailCol = CellModel.getColModelForEmail(
-																MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_EMail),
-																I_ZZPerson.COLUMNNAME_EMail).required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_EMail),
+				I_ZZPerson.COLUMNNAME_EMail).required();
 		cols.add(emailCol);
 
 		TableModel tmContactDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
@@ -630,23 +553,20 @@ public class LearnerRegistrationVM extends BaseAppVM
 
 	}
 
-	private void initEducationDetail()
-	{
+	private void initEducationDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ValueAdaptColumnModel lastSchoolEmisCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-																								Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"),
-																								I_ZZPerson.COLUMNNAME_ZZLkpSchoolEmis_ID,
-																								CellModel.SEARCH_CELL);
+				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), I_ZZPerson.COLUMNNAME_ZZLkpSchoolEmis_ID,
+				CellModel.SEARCH_CELL);
 		lastSchoolEmisCol.required();
 
 		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-							obj -> {
-								Object[] objs = (Object[]) obj;
-								X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int) objs[0], null);
-								cellModel.setValue(selected);
-							}, I_ZZLkpSchoolEmis.Table_Name, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID);
+			showInfoPanel(obj -> {
+				Object[] objs = (Object[]) obj;
+				X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int) objs[0], null);
+				cellModel.setValue(selected);
+			}, I_ZZLkpSchoolEmis.Table_Name, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID);
 		});
 
 		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
@@ -679,25 +599,21 @@ public class LearnerRegistrationVM extends BaseAppVM
 		cols.add(lastSchoolEmisCol);
 
 		ColumnModel lastSchoolYearCol = CellModel.getColModelForPositiveNumber(
-																				MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																													I_ZZPerson.COLUMNNAME_ZZLastSchoolYear),
-																				I_ZZPerson.COLUMNNAME_ZZLastSchoolYear).required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZLastSchoolYear),
+				I_ZZPerson.COLUMNNAME_ZZLastSchoolYear).required();
 		cols.add(lastSchoolYearCol);
 
 		ValueAdaptColumnModel areaCodeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-																							MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																																I_ZZPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID),
-																							I_ZZPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID,
-																							CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID),
+				I_ZZPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID, CellModel.SEARCH_CELL);
 		areaCodeCol.required();
 
 		areaCodeCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-							obj -> {
-								Object[] objs = (Object[]) obj;
-								X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int) objs[0], null);
-								cellModel.setValue(selected);
-							}, X_ZZLkpStatssaAreaCode.Table_Name, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID);
+			showInfoPanel(obj -> {
+				Object[] objs = (Object[]) obj;
+				X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int) objs[0], null);
+				cellModel.setValue(selected);
+			}, X_ZZLkpStatssaAreaCode.Table_Name, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID);
 		});
 
 		areaCodeCol.setDisplayAdaptHandle(value -> {
@@ -729,19 +645,18 @@ public class LearnerRegistrationVM extends BaseAppVM
 		cols.add(areaCodeCol);
 
 		ColumnModel popiActStatusCol = ListCellModel.getListColumnModel(
-																		MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																											I_ZZPerson.COLUMNNAME_ZZPopiActStatus),
-																		I_ZZPerson.COLUMNNAME_ZZPopiActStatus, MasterUtil.getPopiActStatus(), title -> {
-																			return title.getName();
-																		}, title -> {
-																			return title.getValue();
-																		}).setzClass(ValueNamePair.class).required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZPopiActStatus),
+				I_ZZPerson.COLUMNNAME_ZZPopiActStatus, MasterUtil.getPopiActStatus(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).required();
 		cols.add(popiActStatusCol);
 
-		ColumnModel popiActStatusDateCol = DateCellModel.getDateColumnModel(
-																			MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																												I_ZZPerson.COLUMNNAME_ZZPopiActStatusDate),
-																			I_ZZPerson.COLUMNNAME_ZZPopiActStatusDate).required();
+		ColumnModel popiActStatusDateCol = DateCellModel
+				.getDateColumnModel(MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name,
+						I_ZZPerson.COLUMNNAME_ZZPopiActStatusDate), I_ZZPerson.COLUMNNAME_ZZPopiActStatusDate)
+				.required();
 		cols.add(popiActStatusDateCol);
 
 		TableModel tmEducationDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
@@ -754,80 +669,67 @@ public class LearnerRegistrationVM extends BaseAppVM
 		tabPanelEducationDetail.getCompModel().add(tmEducationDetail);
 	}
 
-	private void initHealthFunction()
-	{
+	private void initHealthFunction() {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ColumnModel seeingCol = ListCellModel	.getListColumnModel(
-																	MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																										I_ZZPerson.COLUMNNAME_ZZHealthSeeing),
-																	I_ZZPerson.COLUMNNAME_ZZHealthSeeing, MasterUtil.getHealthFunctions(), title -> {
-																		return title.getName();
-																	}, title -> {
-																		return title.getValue();
-																	}).setzClass(ValueNamePair.class)
-												.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-												.required();
+		ColumnModel seeingCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthSeeing),
+				I_ZZPerson.COLUMNNAME_ZZHealthSeeing, MasterUtil.getHealthFunctions(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required();
 		cols.add(seeingCol);
 
-		ColumnModel hearingCol = ListCellModel	.getListColumnModel(
-																	MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																										I_ZZPerson.COLUMNNAME_ZZHealthHearing),
-																	I_ZZPerson.COLUMNNAME_ZZHealthHearing, MasterUtil.getHealthFunctions(), title -> {
-																		return title.getName();
-																	}, title -> {
-																		return title.getValue();
-																	}).setzClass(ValueNamePair.class)
-												.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-												.required();
+		ColumnModel hearingCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthHearing),
+				I_ZZPerson.COLUMNNAME_ZZHealthHearing, MasterUtil.getHealthFunctions(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required();
 		cols.add(hearingCol);
 
 		ColumnModel communicatingCol = ListCellModel.getListColumnModel(
-																		MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																											I_ZZPerson.COLUMNNAME_ZZHealthCommunicating),
-																		I_ZZPerson.COLUMNNAME_ZZHealthCommunicating, MasterUtil.getHealthFunctions(), title -> {
-																			return title.getName();
-																		}, title -> {
-																			return title.getValue();
-																		}).setzClass(ValueNamePair.class)
-													.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-													.required();
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthCommunicating),
+				I_ZZPerson.COLUMNNAME_ZZHealthCommunicating, MasterUtil.getHealthFunctions(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required();
 		cols.add(communicatingCol);
 
-		ColumnModel walkingCol = ListCellModel	.getListColumnModel(
-																	MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																										I_ZZPerson.COLUMNNAME_ZZHealthWalking),
-																	I_ZZPerson.COLUMNNAME_ZZHealthWalking, MasterUtil.getHealthFunctions(), title -> {
-																		return title.getName();
-																	}, title -> {
-																		return title.getValue();
-																	}).setzClass(ValueNamePair.class)
-												.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-												.required();
+		ColumnModel walkingCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthWalking),
+				I_ZZPerson.COLUMNNAME_ZZHealthWalking, MasterUtil.getHealthFunctions(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required();
 		cols.add(walkingCol);
 
-		ColumnModel rememberingCol = ListCellModel	.getListColumnModel(
-																		MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																											I_ZZPerson.COLUMNNAME_ZZHealthRemembering),
-																		I_ZZPerson.COLUMNNAME_ZZHealthRemembering, MasterUtil.getHealthFunctions(), title -> {
-																			return title.getName();
-																		}, title -> {
-																			return title.getValue();
-																		}).setzClass(ValueNamePair.class)
-													.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-													.required();
+		ColumnModel rememberingCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthRemembering),
+				I_ZZPerson.COLUMNNAME_ZZHealthRemembering, MasterUtil.getHealthFunctions(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required();
 		cols.add(rememberingCol);
 
-		ColumnModel selfcareCol = ListCellModel	.getListColumnModel(
-																	MasterUtil.getNameOfColTranslated(	I_ZZPerson.Table_Name,
-																										I_ZZPerson.COLUMNNAME_ZZHealthSelfcare),
-																	I_ZZPerson.COLUMNNAME_ZZHealthSelfcare, MasterUtil.getHealthFunctions(), title -> {
-																		return title.getName();
-																	}, title -> {
-																		return title.getValue();
-																	}).setzClass(ValueNamePair.class)
-												.setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
-												.required();
+		ColumnModel selfcareCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthSelfcare),
+				I_ZZPerson.COLUMNNAME_ZZHealthSelfcare, MasterUtil.getHealthFunctions(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).setDefaultValue(healthFunctionDefault, healthFunctionNameCompare)
+				.required();
 		cols.add(selfcareCol);
 
 		TableModel tmHealthFunctions = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
@@ -840,15 +742,12 @@ public class LearnerRegistrationVM extends BaseAppVM
 		tabPanelHealthFunctions.getCompModel().add(tmHealthFunctions);
 	}
 
-	private void initAddresss()
-	{
-		TableModel tmPostalAddress = BuildFormUtil.getAddressDetailComp(
-																		SettingTableMode.getSimple("Postal"),
-																		SettingAddress.getSimple("Postal"));
+	private void initAddresss() {
+		TableModel tmPostalAddress = BuildFormUtil.getAddressDetailComp(SettingTableMode.getSimple("Postal"),
+				SettingAddress.getSimple("Postal"));
 
-		TableModel tmPhysicalAddress = BuildFormUtil.getAddressDetailComp(
-																			SettingTableMode.getSimple("Physical"),
-																			SettingAddress.getSimple("Physical", tmPostalAddress));
+		TableModel tmPhysicalAddress = BuildFormUtil.getAddressDetailComp(SettingTableMode.getSimple("Physical"),
+				SettingAddress.getSimple("Physical", tmPostalAddress));
 
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
 		addressDetailTab.setSclass("sdr-address sdr-address-learner");
@@ -859,8 +758,7 @@ public class LearnerRegistrationVM extends BaseAppVM
 		tmPhysicalAddress.setAfterAppSave((tableModel, trxName) -> {
 			TableModel tmAddress = (TableModel) tableModel;
 			X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
-			if (location != null)
-			{
+			if (location != null) {
 				person.setZZPhysicalLocation_ID(location.getC_Location_ID());
 				person.saveEx(trxName);
 			}
@@ -870,8 +768,7 @@ public class LearnerRegistrationVM extends BaseAppVM
 		tmPostalAddress.setAfterAppSave((tableModel, trxName) -> {
 			TableModel tmAddress = (TableModel) tableModel;
 			X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
-			if (location != null)
-			{
+			if (location != null) {
 				person.setZZPostalLocation_ID(location.getC_Location_ID());
 				person.saveEx(trxName);
 			}
@@ -879,26 +776,22 @@ public class LearnerRegistrationVM extends BaseAppVM
 		});
 
 		tmPhysicalAddress.setLoadSavedDataHandle(tm -> {
-			if (person != null && person.getZZPhysicalLocation_ID() > 0)
-			{
-				X_C_Location physicalLocation = org.compiere.model.MLocation.getCopy(Env.getCtx(), person.getZZPhysicalLocation_ID(), null);
+			if (person != null && person.getZZPhysicalLocation_ID() > 0) {
+				X_C_Location physicalLocation = org.compiere.model.MLocation.getCopy(Env.getCtx(),
+						person.getZZPhysicalLocation_ID(), null);
 				tm.getRow().setDataOneRow(physicalLocation);
-			}
-			else
-			{
+			} else {
 				tm.getRow().setDataOneRow(null);
 			}
 			tm.reloadDao();
 		});
 
 		tmPostalAddress.setLoadSavedDataHandle(tm -> {
-			if (person != null && person.getZZPostalLocation_ID() > 0)
-			{
-				X_C_Location postalLocation = org.compiere.model.MLocation.getCopy(Env.getCtx(), person.getZZPostalLocation_ID(), null);
+			if (person != null && person.getZZPostalLocation_ID() > 0) {
+				X_C_Location postalLocation = org.compiere.model.MLocation.getCopy(Env.getCtx(),
+						person.getZZPostalLocation_ID(), null);
 				tm.getRow().setDataOneRow(postalLocation);
-			}
-			else
-			{
+			} else {
 				tm.getRow().setDataOneRow(null);
 			}
 			tm.reloadDao();
@@ -907,19 +800,16 @@ public class LearnerRegistrationVM extends BaseAppVM
 
 	private TableModel tmDocumentUpload;
 
-	private void initUploadDocument()
-	{
+	private void initUploadDocument() {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ColumnModel photoUploadCol = UploadCellModel.getUploadColumnModel(
-																			"Photograph", I_ZZPerson.COLUMNNAME_ZZPhotographFileName,
-																			I_ZZPerson.COLUMNNAME_ZZPhotographFileName, "Photograph");
+		ColumnModel photoUploadCol = UploadCellModel.getUploadColumnModel("Photograph",
+				I_ZZPerson.COLUMNNAME_ZZPhotographFileName, I_ZZPerson.COLUMNNAME_ZZPhotographFileName, "Photograph");
 		photoUploadCol.setMandatory(true);
 		cols.add(photoUploadCol);
 
-		ColumnModel cvUploadCol = UploadCellModel.getUploadColumnModel(
-																		"Curriculum Vitae (CV)", I_ZZPerson.COLUMNNAME_ZZCVFileName,
-																		I_ZZPerson.COLUMNNAME_ZZCVFileName, "CV");
+		ColumnModel cvUploadCol = UploadCellModel.getUploadColumnModel("Curriculum Vitae (CV)",
+				I_ZZPerson.COLUMNNAME_ZZCVFileName, I_ZZPerson.COLUMNNAME_ZZCVFileName, "CV");
 		cvUploadCol.setMandatory(true);
 		cols.add(cvUploadCol);
 
@@ -932,74 +822,60 @@ public class LearnerRegistrationVM extends BaseAppVM
 		uploadDetailTab.getCompModel().add(tmDocumentUpload);
 	}
 
-	public TableModel getTmNames()
-	{
+	public TableModel getTmNames() {
 		return tmNames;
 	}
 
-	public NavTab getMainTab()
-	{
+	public NavTab getMainTab() {
 		return mainTab;
 	}
 
-	public void setMainTab(NavTab mainTab)
-	{
+	public void setMainTab(NavTab mainTab) {
 		this.mainTab = mainTab;
 	}
 
-
 	@Override
-	public void doSave(String trxName)
-	{
-		if (learner == null)
-		{
+	public void doSave(String trxName) {
+		if (learner == null) {
 			learner = (X_ZZLearner) daoManage.getDaoForSave(I_ZZLearner.Table_Name);
 		}
-		if (person == null)
-		{
+		if (person == null) {
 			person = (X_ZZPerson) daoManage.getDaoForSave(I_ZZPerson.Table_Name);
 		}
 
 		boolean isDraft = true;
-		if (learner != null)
-		{
-			isDraft = learner.getZZ_DocStatus() == null || X_ZZLearner.ZZ_DOCSTATUS_Draft.equals(learner.getZZ_DocStatus());
+		if (learner != null) {
+			isDraft = learner.getZZ_DocStatus() == null
+					|| X_ZZLearner.ZZ_DOCSTATUS_Draft.equals(learner.getZZ_DocStatus());
 		}
 
-		if (!isDraft)
-		{
+		if (!isDraft) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZLearnerWrongStatus"));
 		}
 
 		super.doSave(trxName);
 
 		int alternateIdTypeId = person.getZZ_AlternateIDType_ID();
-		if (alternateIdTypeId > 0)
-		{
+		if (alternateIdTypeId > 0) {
 			X_ZZ_AlternateIDType altType = new X_ZZ_AlternateIDType(Env.getCtx(), alternateIdTypeId, null);
-			if (IDCellModel.idTypeRSA_ID.equals(altType.getName()))
-			{
+			if (IDCellModel.idTypeRSA_ID.equals(altType.getName())) {
 				String idPassportNo = person.getZZ_ID_Passport_No();
-				if (idPassportNo != null && !idPassportNo.isBlank())
-				{
+				if (idPassportNo != null && !idPassportNo.isBlank()) {
 					String sql = "SELECT COUNT(1) FROM ZZPerson WHERE ZZ_ID_Passport_No = ? AND ZZ_AlternateIDType_ID = ? AND ZZPerson_ID != ? AND IsActive='Y'";
 					int count = DB.getSQLValue(trxName, sql, idPassportNo, alternateIdTypeId, person.get_ID());
-					if (count > 0)
-					{
-						throw new AdempiereException("A person with this ID Type and ID Number already exists in the system.");
+					if (count > 0) {
+						throw new AdempiereException(
+								"A person with this ID Type and ID Number already exists in the system.");
 					}
 				}
-			}
-			else
-			{
+			} else {
 				String otherIdNo = person.getZZOtherIDNo();
-				if (otherIdNo != null && !otherIdNo.isBlank())
-				{
+				if (otherIdNo != null && !otherIdNo.isBlank()) {
 					String sql = "SELECT COUNT(1) FROM ZZPerson WHERE ZZOtherIDNo = ? AND ZZ_AlternateIDType_ID = ? AND ZZPerson_ID != ? AND IsActive='Y'";
 					int count = DB.getSQLValue(trxName, sql, otherIdNo, alternateIdTypeId, person.get_ID());
-					if (count > 0)
-					{
-						throw new AdempiereException("A person with this ID Type and ID Number already exists in the system.");
+					if (count > 0) {
+						throw new AdempiereException(
+								"A person with this ID Type and ID Number already exists in the system.");
 					}
 				}
 			}
@@ -1010,14 +886,12 @@ public class LearnerRegistrationVM extends BaseAppVM
 	}
 
 	@Override
-	public void doSubmit(String trxName)
-	{
+	public void doSubmit(String trxName) {
 		super.doSubmit(trxName);
 	}
 
 	@Override
-	public boolean isSupportSubmit()
-	{
+	public boolean isSupportSubmit() {
 		return true;
 	}
 }
