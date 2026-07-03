@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vmLrAss') @init('za.co.ntier.webform.sdr.viewmodel.LearnerAssessmentVM')">
+
+  <!-- Always Visible Form Header -->
+  <div style="display:flex; padding:5px 0 20px 0; flex-direction: column; align-items: center;">
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLrAss.formInfo.formHeader)" />
+    <div style="padding-bottom:10px;font-size:smaller">
+      <html content="@init(( vmLrAss.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
+    </div>
+  </div>
+  
+    <nodom children="@load(vmLrAss.steps) @template(each)">
+        <template name="selectAssessment">
+            <include
+			    component="@init(vmLrAss.tmLearnerSelection)"
+			    menuContextInfo="@init(vmLrAss.menuContextInfo)"
+			    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+			    
+		   <include
+                component="@init(vmLrAss.tmLearnerSelectionInfo)"
+                menuContextInfo="@init(vmLrAss.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+        </template>
+        
+        <template name="assessment">
+           <include style="height:unset !important"
+                component="@init(vmLrAss.tmLearnerProgram)"
+                menuContextInfo="@init(vmLrAss.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+           <include
+                component="@init(vmLrAss.tmAssessmentParam)"
+                menuContextInfo="@init(vmLrAss.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+            <include
+                component="@init(vmLrAss.tmLearnerAssessments)"
+                menuContextInfo="@init(vmLrAss.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+        </template>
+    </nodom>
+</idspace>

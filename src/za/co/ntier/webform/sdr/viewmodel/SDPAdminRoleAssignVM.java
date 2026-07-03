@@ -22,6 +22,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_AD_User;
+import za.co.ntier.api.model.I_ZZLearnerQCTOSkillsProgramme;
 import za.co.ntier.api.model.I_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
 import za.co.ntier.api.model.MBPartner_New;
@@ -46,6 +47,7 @@ import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
+import za.co.ntier.webform.sdr.viewmodel.BaseAppVM.InfoPanelPara;
 
 public class SDPAdminRoleAssignVM extends BaseAppVM{
 	private NavTab mainTab;
@@ -235,13 +237,12 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		
 		chooseBpartnerCol.setEventHandle((event, cellModel) -> {
 			BaseAppVM.showInfoPanel(
-			obj -> {
-				Object [] objs = (Object [])obj;
-				MBPartner_New selected = (MBPartner_New)MBPartner_New.get(Env.getCtx(), (int)objs[0]);
-				cellModel.setValue(selected);
-			}
-			, I_C_BPartner.Table_Name
-			, I_C_BPartner.COLUMNNAME_C_BPartner_ID);
+				InfoPanelPara.getInstance(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_C_BPartner_ID)
+				,obj -> {
+					Object [] objs = (Object [])obj;
+					MBPartner_New selected = (MBPartner_New)MBPartner_New.get(Env.getCtx(), (int)objs[0]);
+					cellModel.setValue(selected);
+				});
 		});
 		
 		chooseBpartnerCol.setDisplayAdaptHandle(value -> {

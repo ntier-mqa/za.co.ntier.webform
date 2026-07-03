@@ -76,6 +76,7 @@
             
             <button if="${ vmRowRender.row[col].cellType eq CellModel.SEARCH_CELL }"
 			  iconSclass="z-icon-fw z-icon-magnifying-glass z-icon-solid"
+			  label="@bind(col.title)"
               onClick="@command('cmdBtClick', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
             
             <!-- list - Area - province -->

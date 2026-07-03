@@ -296,6 +296,9 @@ public class MasterUtil {
 	
 	
 	public static final Entry<String, Integer> LkpDesignation = new AbstractMap.SimpleEntry<>("49d9d43a-3d51-40e7-afea-31c821e38330", null);
+	public static final Entry<String, Integer> LkpInterventionList = new AbstractMap.SimpleEntry<>("0d9ec22a-2d55-4f20-97b8-5e6ba9406e1d", null);
+	
+	
 	public static final Entry<String, Integer> HealthFunctions = new AbstractMap.SimpleEntry<>("d6c8f557-1787-43a4-b34d-47a826efc716", null);
 	
 	
@@ -308,6 +311,7 @@ public class MasterUtil {
 	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
 	
 	public static final Entry<String, Integer> SdfRoleType = new AbstractMap.SimpleEntry<>("b484436e-4fef-4c93-99f7-1c392e33969e", null);
+	
 	
 	
 	private static CCache<Entry<String, Integer>, List<ValueNamePair>> lkpCache = new CCache<>("lkpCache", 10);	
@@ -387,6 +391,12 @@ public class MasterUtil {
 	public static List<ValueNamePair> getLkpFunctionLists () {
 		return getRefList(LkpFunctionListIdentify);
 	}
+	
+	public static List<ValueNamePair> getLkpInterventionList () {
+		return getRefList(LkpInterventionList);
+	}
+	
+	
 	
 	public static List<ValueNamePair> getLkpTitleLists () {
 		return getRefList(LkpTitleListIdentify);

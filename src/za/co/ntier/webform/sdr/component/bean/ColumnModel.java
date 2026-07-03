@@ -10,6 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.event.Event;
 
 /**
@@ -113,6 +114,7 @@ public class ColumnModel implements PropertyChangeListener{
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+		BindUtils.postNotifyChange(this, "title");
 	}
 
 	/**

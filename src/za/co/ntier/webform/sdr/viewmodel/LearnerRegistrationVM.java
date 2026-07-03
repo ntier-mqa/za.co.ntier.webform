@@ -22,6 +22,7 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.WrongValueException;
 
 import za.co.ntier.api.model.I_ZZLearner;
+import za.co.ntier.api.model.I_ZZLearnerQCTOSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZPerson;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
@@ -56,6 +57,7 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
+import za.co.ntier.webform.sdr.viewmodel.BaseAppVM.InfoPanelPara;
 
 public class LearnerRegistrationVM extends BaseAppVM {
 
@@ -562,11 +564,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		lastSchoolEmisCol.required();
 
 		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(obj -> {
-				Object[] objs = (Object[]) obj;
-				X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int) objs[0], null);
-				cellModel.setValue(selected);
-			}, I_ZZLkpSchoolEmis.Table_Name, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID);
+			showInfoPanel(
+				InfoPanelPara.getInstance(I_ZZLkpSchoolEmis.Table_Name, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID)
+				, obj -> {
+					Object[] objs = (Object[]) obj;
+					X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int) objs[0], null);
+					cellModel.setValue(selected);
+				});
 		});
 
 		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
@@ -609,11 +613,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		areaCodeCol.required();
 
 		areaCodeCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(obj -> {
-				Object[] objs = (Object[]) obj;
-				X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int) objs[0], null);
-				cellModel.setValue(selected);
-			}, X_ZZLkpStatssaAreaCode.Table_Name, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID);
+			showInfoPanel(
+				InfoPanelPara.getInstance(X_ZZLkpStatssaAreaCode.Table_Name, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID)
+				, obj -> {
+					Object[] objs = (Object[]) obj;
+					X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int) objs[0], null);
+					cellModel.setValue(selected);
+				});
 		});
 
 		areaCodeCol.setDisplayAdaptHandle(value -> {

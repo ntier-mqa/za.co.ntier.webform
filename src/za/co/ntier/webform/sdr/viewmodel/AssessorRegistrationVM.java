@@ -27,6 +27,7 @@ import org.zkoss.bind.annotation.Init;
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
 import za.co.ntier.api.model.I_ZZDocumentUpload;
+import za.co.ntier.api.model.I_ZZLearnerQCTOSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLinkAssessorQualification;
 import za.co.ntier.api.model.I_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
@@ -74,6 +75,7 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
+import za.co.ntier.webform.sdr.viewmodel.BaseAppVM.InfoPanelPara;
 
 public class AssessorRegistrationVM extends BaseAppVM {
 	public static String moderatorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
@@ -616,13 +618,13 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-			obj -> {
+			InfoPanelPara.getInstance(I_ZZLkpSchoolEmis.Table_Name
+					, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID)
+			, obj -> {
 				Object [] objs = (Object [])obj;
 				X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
 				cellModel.setValue(selected);
-			}
-			, I_ZZLkpSchoolEmis.Table_Name
-			, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID);
+			});
 		});
 		
 		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
@@ -668,13 +670,13 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		areaCodeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-			obj -> {
+			InfoPanelPara.getInstance(X_ZZLkpStatssaAreaCode.Table_Name
+					, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID)
+			, obj -> {
 				Object [] objs = (Object [])obj;
 				X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
 				cellModel.setValue(selected);
-			}
-			, X_ZZLkpStatssaAreaCode.Table_Name
-			, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID);
+			});
 		});
 		
 		areaCodeCol.setDisplayAdaptHandle(value -> {
@@ -800,7 +802,9 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		chooseQualificationCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-			obj -> {
+			InfoPanelPara.getInstance(I_ZZQualification.Table_Name
+					, I_ZZQualification.COLUMNNAME_ZZQualification_ID).setMultiChoose(true)
+			, obj -> {
 				// build include selected ids
 				Object [] objs = (Object [])obj;
 				List<Object> ids = new ArrayList<Object>();
@@ -832,10 +836,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				List<PO> selectedQualifications = qualificationQuery.list();
 				List<List<PO>> daos = RowData.standardToMultiPo(selectedQualifications);
 				tmQualificationLink.addNewRows(daos);
-			}
-			, I_ZZQualification.Table_Name
-			, I_ZZQualification.COLUMNNAME_ZZQualification_ID
-			, true);
+			});
 		});
 		
 		tmQualificationLink.setAfterSave((po, rowModel) -> {
@@ -979,7 +980,9 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		chooseSkillsProgrammeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-			obj -> {
+			InfoPanelPara.getInstance(I_ZZSkillsProgramme.Table_Name
+					, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID).setMultiChoose(true)
+			,obj -> {
 				Object [] objs = (Object [])obj;
 				List<Object> ids = new ArrayList<>();
 				
@@ -1009,10 +1012,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				List<PO> selectedSkillsProgramme = skillsProgrammeQuery.list();
 				List<List<PO>> daos = RowData.standardToMultiPo(selectedSkillsProgramme);
 				tmSkillsProgramme.addNewRows(daos);
-			}
-			, I_ZZSkillsProgramme.Table_Name
-			, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID
-			, true);
+			});
 		});
 		
 		tmSkillsProgramme.setAfterSave((po, rowModel) -> {

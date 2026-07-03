@@ -30,6 +30,30 @@ ZZLkpEnrolmentStatusReason,Absconded,Absconded,17,MQA Learner,Y
 ZZLkpEnrolmentStatusReason,By Committee,By Committee,16,MQA Learner,Y
 ZZLkpEnrolmentStatusReason,Met Requirements,Met Requirements,14,MQA Learner,Y
 ZZLkpEnrolmentStatusReason,Withdrawal,Withdrawal,15,MQA Learner,Y
+ZZLkpGender,F,Female,2,MQA Learner,Y
+ZZLkpGender,M,Male,1,MQA Learner,Y
+ZZLkpGender,O,Other,3,MQA Learner,Y
+ZZLkpInterventionList,AET,AET,8,MQA Learner,Y
+ZZLkpInterventionList,Artisans,Artisans,5,MQA Learner,Y
+ZZLkpInterventionList,Bursary,Bursary,7,MQA Learner,Y
+ZZLkpInterventionList,Candidacy Programme,Candidacy Programme,10,MQA Learner,Y
+ZZLkpInterventionList,HET Lecturer Support,HET Lecturer Support,14,MQA Learner,Y
+ZZLkpInterventionList,Internships,Internships,6,MQA Learner,Y
+ZZLkpInterventionList,Learnerships,Learnerships,1,MQA Learner,Y
+ZZLkpInterventionList,Management and Executive Development Programme,Management and Executive Development Programme,15,MQA Learner,Y
+ZZLkpInterventionList,Mine Community,Mine Community,11,MQA Learner,Y
+ZZLkpInterventionList,QCTO Artisans,QCTO Artisans,19,MQA Learner,Y
+ZZLkpInterventionList,QCTO Learnerships,QCTO Learnerships,18,MQA Learner,Y
+ZZLkpInterventionList,QCTO Skills Programmes,QCTO Skills Programmes,20,MQA Learner,Y
+ZZLkpInterventionList,Qualification,Qualification,4,MQA Learner,Y
+ZZLkpInterventionList,Short Courses Provided by Public Institution Programme,Short Courses Provided by Public Institution Programme,21,MQA Learner,Y
+ZZLkpInterventionList,Skills Programmes,Skills Programmes,2,MQA Learner,Y
+ZZLkpInterventionList,Small Scale,Small Scale,12,MQA Learner,Y
+ZZLkpInterventionList,TVET NCV Support,TVET NCV Support,17,MQA Learner,Y
+ZZLkpInterventionList,Unemployed Youth Development,Unemployed Youth Development,13,MQA Learner,Y
+ZZLkpInterventionList,Unit Standards,Unit Standards,3,MQA Learner,Y
+ZZLkpInterventionList,Work Experience,Work Experience,9,MQA Learner,Y
+ZZLkpInterventionList,Workplace Coaches,Workplace Coaches,16,MQA Learner,Y
 ZZLkpLearnerArtisanType,ARPL,ARPL,2,MQA Learner,Y
 ZZLkpLearnerArtisanType,Artisan,Artisan,1,MQA Learner,Y
 ZZLkpLearnerLearnershipType,Beneficiation Learnership,Beneficiation Learnership,3,MQA Learner,Y
@@ -227,6 +251,15 @@ ZZLkpTerminationReason,Learner resigned,Learner resigned,3,MQA Learner,Y
 ZZLkpTerminationReason,Learner to continue with full time studies/went back to school,Learner to continue with full time studies/went back to school,7,MQA Learner,Y
 ZZLkpTerminationReason,Learner went AWOL,Learner went AWOL,2,MQA Learner,Y
 ZZLkpTerminationReason,Other,Other,8,MQA Learner,Y
+ZZLkpTitle,Adv,Adv,6,MQA Learner,Y
+ZZLkpTitle,Dr,Dr,5,MQA Learner,Y
+ZZLkpTitle,Me,Me,9,MQA Learner,Y
+ZZLkpTitle,Miss,Miss,4,MQA Learner,Y
+ZZLkpTitle,Mr,Mr,1,MQA Learner,Y
+ZZLkpTitle,Mrs,Mrs,2,MQA Learner,Y
+ZZLkpTitle,Ms,Ms,3,MQA Learner,Y
+ZZLkpTitle,Other,Other,8,MQA Learner,Y
+ZZLkpTitle,Prof,Prof,7,MQA Learner,Y
 ZZLkpUnitStandardType,Compulsory Elective,Compulsory Elective,4,MQA Learner,Y
 ZZLkpUnitStandardType,Core,Core,1,MQA Learner,Y
 ZZLkpUnitStandardType,Elective,Elective,3,MQA Learner,Y

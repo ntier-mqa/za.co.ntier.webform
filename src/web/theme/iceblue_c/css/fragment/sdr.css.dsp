@@ -346,6 +346,10 @@
   width:50%;
 }
 
+.mqaWebForm .grid-formview.srd-LearnerAssessment-assessmentParam{
+    grid-template-columns: repeat(4, 1fr);
+}
+
 /******* list view **********/
 .mqaWebForm .sdrForm .grid-listView{
   display: grid;
@@ -443,6 +447,10 @@
 
 .mqaWebForm .sdrForm .grid-listView.linkOrgChild{
 	grid-template-columns: repeat(4, 1fr) max-content;
+}
+
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoLearnershipAssessments{
+    grid-template-columns: repeat(10, 1fr);
 }
 
 .mqaWebForm .sdrForm a.z-button{

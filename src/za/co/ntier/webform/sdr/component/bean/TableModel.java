@@ -781,6 +781,12 @@ public class TableModel implements ISaveForm {
 		}
 	}
 	
+	public void reset(PO savedData) {
+		List<PO> savedPos = new ArrayList<PO>();
+		savedPos.add(savedData);
+		resetMultiPo(RowData.standardToMultiPo(savedPos));
+	}
+	
 	public void reset(List<PO> savedDatas) {
 		resetMultiPo(RowData.standardToMultiPo(savedDatas));
 	}

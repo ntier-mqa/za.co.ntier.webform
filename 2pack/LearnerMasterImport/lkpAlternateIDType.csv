@@ -1,0 +1,15 @@
+AD_Org_ID[Name],ZZMigrationCode,IsActive,name/K,value
+*,2,Y,Passport Number,1000000
+*,3,Y,Birth Certificate Number,1000001
+*,4,Y,Student Number,1000002
+*,5,Y,Employee Number,1000003
+*,6,Y,Drivers Licence,1000004
+*,7,N,SA Residence Permitt,1000005
+*,8,Y,Work Permit No,1000006
+*,9,Y,Temporary ID No,1000007
+*,10,Y,QA Record Number,1000008
+*,11,Y,RSA ID Number,1000009
+*,12,N,Unknown,1000010
+*,13,Y,Refugee No,1000011
+*,14,Y,SAQA Member ID,1000012
+*,15,Y,HRSC Register No,1000013

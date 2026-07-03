@@ -1,0 +1,5 @@
+AD_Reference_ID[Name],Value,Name,Description,IsActive,EntityType
+ZZLkpEquity,Afr,African,1,Y,MQA Learner
+ZZLkpEquity,Col,Coloured,2,Y,MQA Learner
+ZZLkpEquity,Ind,Indian,3,Y,MQA Learner
+ZZLkpEquity,Wh,White,4,Y,MQA Learner

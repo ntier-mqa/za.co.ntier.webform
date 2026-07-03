@@ -271,16 +271,78 @@ public abstract class BaseAppVM implements ISaveApp{
 		this.formInfo = formInfo;
 	}
 	
-	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID) {
-		showInfoPanel(closeHandle, tableName, colID, false);
+	public static class InfoPanelPara {
+		private String tableName;
+		private String colID;
+		private String whereClause = null;
+		private boolean isMultiChoose = false;
+		private boolean lookup = true;
+		
+		public InfoPanelPara (String tableName, String colID, String whereClause) {
+			this.setTableName(tableName);
+			this.setColID(colID);
+			this.setWhereClause(whereClause);
+		}
+		
+		public static InfoPanelPara getInstance(String tableName, String colID) {
+			return new InfoPanelPara(tableName, colID, null);
+		}
+
+		public String getTableName() {
+			return tableName;
+		}
+
+		public InfoPanelPara setTableName(String tableName) {
+			this.tableName = tableName;
+			return this;
+		}
+
+		public String getWhereClause() {
+			return whereClause;
+		}
+
+		public InfoPanelPara setWhereClause(String whereClause) {
+			this.whereClause = whereClause;
+			return this;
+		}
+
+		public boolean isMultiChoose() {
+			return isMultiChoose;
+		}
+
+		public InfoPanelPara setMultiChoose(boolean isMultiChoose) {
+			this.isMultiChoose = isMultiChoose;
+			return this;
+		}
+
+		public String getColID() {
+			return colID;
+		}
+
+		public InfoPanelPara setColID(String colID) {
+			this.colID = colID;
+			return this;
+		}
+
+		public boolean isLookup() {
+			return lookup;
+		}
+
+		public InfoPanelPara setLookup(boolean lookup) {
+			this.lookup = lookup;
+			return this;
+		}
+		
 	}
 	
-	public static void showInfoPanel(Consumer<Object> closeHandle, String tableName, String colID, boolean isMultiChoose){
+	
+	public static void showInfoPanel(InfoPanelPara infoPanelPara, Consumer<Object> closeHandle){
 		// create info window
 		Component activeWin = SessionManager.getAppDesktop().getActiveWindow();
 		Integer winNo = WindowRegistry.getWindowNo(activeWin);
 		
-		InfoPanel ip = InfoManager.create(winNo, tableName, colID, null, isMultiChoose, null, true);
+		
+		InfoPanel ip = InfoManager.create(winNo, infoPanelPara.tableName, infoPanelPara.colID, null, infoPanelPara.isMultiChoose, infoPanelPara.whereClause, infoPanelPara.lookup);
 		
 		// set layout for info window
 		ip.setVisible(true);

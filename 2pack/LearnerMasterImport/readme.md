@@ -722,7 +722,6 @@ select DISTINCT SAQACode from lkpSponsorship;
 
 </details>
 
-
 ### lkpProject
 
 <details>
@@ -774,8 +773,6 @@ select DISTINCT SAQACode from lkpReasonForReprint;
 ```
 
 </details>
-
-
 
 ### lkpTerminationReason
 
@@ -861,8 +858,6 @@ select DISTINCT SAQACode from lkpArtisanProject;
 
 </details>
 
-
-
 ### lkpLearnerArtisanType
 
 <details>
@@ -886,7 +881,6 @@ select DISTINCT description from lkpLearnerArtisanType;
 ```
 
 </details>
-
 
 ### lkpProviderType
 
@@ -916,7 +910,6 @@ select DISTINCT SAQACode from lkpProviderType;
 
 </details>
 
-
 ### lkpProviderClass
 
 <details>
@@ -945,7 +938,6 @@ select DISTINCT SAQACode from lkpProviderClass;
 
 </details>
 
-
 ### lkpProviderAccreditationStatus
 
 <details>
@@ -973,7 +965,6 @@ select DISTINCT SAQACode from lkpProviderAccreditationStatus;
 ```
 
 </details>
-
 
 ### lkpProviderApplication
 
@@ -1741,7 +1732,9 @@ WITH NamesCTE AS (
 		  ('ZZLkpLearnerLearnershipType'),
 		  ('ZZLkpQCTOArtisanType'),
 		  ('ZZLkpLearnerQCTOLearnershipType'),
-		  
+		  ('ZZLkpTitle'),
+		  ('ZZLkpGender'),
+
 		  ('ZZLkpQualificationEntryRequirements')
     ) AS t(Name)
 ),
@@ -1765,10 +1758,10 @@ CROSS JOIN DetailsCTE d;
 <details>
 
 <summary>query for reference list and import to window Reference List</summary>
-to make reference field writeable temp uncheck isParent
-![1780301537149](image/readme/1780301537149.png)
 
-![1780301499071](image/readme/1780301499071.png)
+1. to make reference field writeable temp uncheck isParent
+   ![1780301537149](image/readme/1780301537149.png) ![1780301499071](image/readme/1780301499071.png)
+2. Change lengh of AD_Ref_List.value to 4000 => synd column => reset cache
 
 ```sql
 select 
@@ -1956,7 +1949,7 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpSocioEconomicStatus
-	
+
 UNION
 
 select 
@@ -1968,7 +1961,7 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpSponsorship
-	
+
 UNION
 
 -- no code column so use description as code
@@ -1993,7 +1986,7 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpReasonForReprint
-	
+
 UNION
 
 -- q&a SAQACode contain only null value so use description
@@ -2006,7 +1999,7 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpTerminationReason
-	
+
 UNION
 
 -- q&a SAQACode contain null or empty on some record, use description for that
@@ -2036,7 +2029,7 @@ from
 	lkpArtisanProject
 
 	Union
-	
+
 -- no code column
 select 
 	'ZZLkpLearnerArtisanType' as "AD_Reference_ID[Name]"
@@ -2047,7 +2040,7 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpLearnerArtisanType
-	
+
 UNION
 
 -- q&a SAQACode contain 500 on some records, SAQACode + id for that
@@ -2061,7 +2054,7 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpProviderType
-	
+
 UNION
 
 select 
@@ -2087,7 +2080,7 @@ select
 from
 	lkpProviderAccreditationStatus
 
-	
+
 UNION
 
 select 
@@ -2112,7 +2105,7 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpAccreditationType
-	
+
 UNION
 
 -- q&a all SAQACode is null or empty
@@ -2139,7 +2132,7 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpSETA
-	
+
 	UNION
 
 select 
@@ -2187,11 +2180,76 @@ select
 	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 from
 	lkpLearnerQCTOLearnershipType
-	
+
+UNION
+
+-- q&a all SAQACode is null or empty
+select 
+	'ZZLkpTitle' as "AD_Reference_ID[Name]"
+	, description as value 
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+from
+	lkpTitle
+
+Union
+
+select 
+	'ZZLkpGender' as "AD_Reference_ID[Name]"
+	, SAQACode as "value"
+	, description as name
+	, id as Description
+	, 'MQA Learner' as EntityType
+	, CASE IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+from
+	LkpGender
 ) as allLkp
 
 order by "AD_Reference_ID[Name]/K", IsActive
 ```
+
+</details>
+
+## lkpAlternateIDType (update ZZMigrationCode for reference because created from long time ago - also update value for same as old data)
+
+<details>
+
+<summary>lkpAlternateIDType DDL</summary>
+
+```sql
+
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>lkpAlternateIDType Query</summary>
+
+```sql
+select 
+	'*' as "AD_Org_ID[Name]"
+	, alt.id as "ZZMigrationCode"
+	, CASE alt.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, alt.Description as "name/K"
+	, alt.SAQACode as value
+from 
+	lkpAlternateIDType alt
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
 
 </details>
 
@@ -2523,7 +2581,6 @@ FROM
 
 </details>
 
-
 ## QCTOQualification
 
 <details>
@@ -2696,7 +2753,7 @@ SELECT
 	, ls.Registrationenddate as Registrationenddate
 	, ls.MinimumElectiveCredits AS ZZMinimumElectiveCredits
 	, CONCAT_WS (';'
-		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         	
+		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))     
 		, 'ZZQualification:ZZQualification_ID:' + CAST(q.id as NVARCHAR(12))
 		, 'ref:ZZLkpLearnershipType:ZZLearnershipType:' + CAST(lst.id as NVARCHAR(12))
 		, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
@@ -2780,7 +2837,7 @@ SELECT
 	, qls.MinimumElectiveCredits AS ZZMinimumElectiveCredits
 	, CASE qls.ArtisanLearnershipYesNoID WHEN 1 THEN 'N' WHEN 2 THEN 'Y' END AS ZZArtisanLearnership
 	, CONCAT_WS (';'
-		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))       
+		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))   
 		, 'ZZQualification:ZZQualification_ID:' + CAST(q.id as NVARCHAR(12))
 		, 'ref:ZZLkpQCTOLearnershipType:ZZQCTOLearnershipType:' + CAST(qlst.id as NVARCHAR(12))
 		, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
@@ -2857,12 +2914,12 @@ SELECT
 	, CASE sp.IsOHS WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsOHS
 
 	, CONCAT_WS (';'
-		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))     
+		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))   
 		, 'ZZQualification:ZZQualification_ID:' + CAST(q.id as NVARCHAR(12))
-		, 'ref:ZZLkpAETLevel:ZZAETLevel:' + CAST(al.id as NVARCHAR(12))    
+		, 'ref:ZZLkpAETLevel:ZZAETLevel:' + CAST(al.id as NVARCHAR(12))  
 		, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
-		, 'ref:ZZLkpSkillsProgrammeGrantType:ZZSkillsProgrammeGrantType:' + CAST(spgt.id as NVARCHAR(12))         	
-		, 'ref:ZZLkpSkillsProgrammeType:ZZSkillsProgrammeType:' + CAST(lspt.id as NVARCHAR(12))       
+		, 'ref:ZZLkpSkillsProgrammeGrantType:ZZSkillsProgrammeGrantType:' + CAST(spgt.id as NVARCHAR(12))     
+		, 'ref:ZZLkpSkillsProgrammeType:ZZSkillsProgrammeType:' + CAST(lspt.id as NVARCHAR(12))   
 		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
 	) as ZZMigrateValues
 
@@ -2954,13 +3011,13 @@ SELECT
 	, qsp.MinimumElectiveCredits AS ZZMinimumElectiveCredits
 	, CASE qsp.IsOHS WHEN 0 THEN 'N' END AS ZZIsOHS
 	, CONCAT_WS (';'
-		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))       
+		, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))   
 		, 'ZZQualification:ZZQualification_ID:' + CAST(q.id as NVARCHAR(12))
 		, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
 		, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
 		, 'ref:ZZLkpSkillsProgrammeType:ZZSkillsProgrammeType:' + CAST(lspt.id as NVARCHAR(12))  
 		, 'ref:ZZLkpAETLevel:ZZAETLevel:' + CAST(al.id as NVARCHAR(12))
-		, 'ref:ZZLkpSkillsProgrammeGrantType:ZZSkillsProgrammeGrantType:' + CAST(spgt.id as NVARCHAR(12))         	
+		, 'ref:ZZLkpSkillsProgrammeGrantType:ZZSkillsProgrammeGrantType:' + CAST(spgt.id as NVARCHAR(12))     
 	) as ZZMigrateValues
 
 FROM 
@@ -3026,7 +3083,7 @@ SELECT
 	, CASE qlm.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
 	, mt.description as ZZModuleType
 	, CONCAT_WS (';'
-		, 'ZZQCTOLearnership:ZZQCTOLearnership_ID:' + CAST(ql.id as NVARCHAR(12))     	
+		, 'ZZQCTOLearnership:ZZQCTOLearnership_ID:' + CAST(ql.id as NVARCHAR(12))   
 		, 'ZZQCTOModule:ZZQCTOModule_ID:' + CAST(qm.id as NVARCHAR(12))   
 		, 'ref:ZZLkpModuleType:ZZModuleType:' + CAST(mt.id as NVARCHAR(12))
 	) as ZZMigrateValues
@@ -3281,6 +3338,7 @@ CREATE TABLE MQA.dbo.Artisans (
 <summary>validate data</summary>
 
 -- find unique column select * from Artisans
+
 ```sql
 select count(*) as total
 	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount 
@@ -3294,7 +3352,9 @@ from Artisans;
 select ArtisanCode from Artisans where IsDeleted = 0 group by ArtisanCode having COUNT (*) > 1;
 select ArtisanTitle from Artisans where IsDeleted = 0 group by ArtisanTitle having COUNT (*) > 1;
 ```
+
 -- check exist deleted reference
+
 ```sql
 SELECT
 	COUNT(CASE WHEN lev.IsDeleted = 1 THEN 1 END) as NQFLevelRef
@@ -3309,9 +3369,11 @@ FROM
 	left join LkpOfoOccupation ooc on a.OFOOccupationID = ooc.ID
 where a.IsDeleted = '0';
 ```
+
 -- q&a exist reference to deleted TradeQualification
 
 -- get Y/N list
+
 ```sql
 SELECT DISTINCT a.CanCompleteBefore18 from Artisans a ;
 -- 0, 1
@@ -3339,8 +3401,8 @@ SELECT
 	, CASE a.IsTVETNCV WHEN 0 THEN 'N' WHEN 1 THEN 'Y' END AS ZZIsTvetncv
 -- ExtractRecordID
 	, CONCAT_WS (';'
-			, 'ref:ZZLkpArtisanType:ZZArtisanType:' + CAST(at.id as NVARCHAR(12))		
-			, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         		
+			, 'ref:ZZLkpArtisanType:ZZArtisanType:' + CAST(at.id as NVARCHAR(12))
+			, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))       
 			, 'ZZTradeQualification:ZZTradeQualification_ID:' + CAST(tq.id as NVARCHAR(12))
 			, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
          	, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
@@ -3361,6 +3423,7 @@ FROM
 <summary>Q&A</summary>
 
 1. ExtractRecordID => no info about this one
+
 </details>
 
 ## LearnerSkillsProgramme
@@ -3650,6 +3713,7 @@ CREATE TABLE MQA.dbo.lkpGrantCode (
 <summary>validate data</summary>
 
 -- find unique column select * from lkpGrantCode
+
 ```SQL
 SELECT 
 	count(*) as total
@@ -3670,6 +3734,7 @@ select GrantCodeDescription from lkpGrantCode where IsDeleted = 0 group by Grant
 -- get Y/N list (0, 1)
 SELECT DISTINCT IsLevyBased from lkpGrantCode;
 ```
+
 </details>
 
 <details>
@@ -3696,7 +3761,6 @@ FROM
 <summary>Q&A</summary>
 
 </details>
-
 
 ## GrantType
 
@@ -3760,7 +3824,7 @@ FROM
 SELECT 
 	GrantPercentage
 FROM 
-	GrantType	
+	GrantType
 where 0 > GrantPercentage  or 100 < GrantPercentage 
 
 
@@ -3801,7 +3865,6 @@ FROM
 <summary>Q&A</summary>
 
 </details>
-
 
 ## LearnerArtisans
 
@@ -3931,7 +3994,6 @@ CREATE TABLE MQA.dbo.LearnerArtisans (
 
 </details>
 
-
 ## lkpFinancialYear
 
 <details>
@@ -3970,6 +4032,7 @@ CREATE TABLE MQA.dbo.lkpFinancialYear (
 lkpFinancialYear is convert to c_year
 
 add ZZMigrationCode to c_year to store old id
+
 </details>
 
 <details>
@@ -4040,6 +4103,7 @@ CREATE TABLE MQA.dbo.TradeQualification (
 <summary>validate data</summary>
 
 -- find unique column select * from TradeQualification
+
 ```SQl
 select count(*) as total
 	, COUNT(CASE WHEN IsDeleted = 0 THEN 1 END) as ActiveCount 
@@ -4053,7 +4117,9 @@ from TradeQualification;
 select Code from TradeQualification where IsDeleted = 0 group by Code having COUNT (*) > 1;
 select Title from TradeQualification where IsDeleted = 0 group by Title having COUNT (*) > 1;
 ```
+
 -- check exist deleted reference
+
 ```sql
 SELECT
 	COUNT(CASE WHEN lev.IsDeleted = 1 THEN 1 END) as NQFLevelRef
@@ -4087,7 +4153,7 @@ SELECT
 	, tq.LastEnrolmentDate AS ZZLastEnrolmentDate
 	, tq.LastAchievementDate AS ZZLastAchievementDate
 	, CONCAT_WS (';'
-			, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))         		
+			, 'ref:ZZLkpNqfLevel:ZZNqfLevel:' + CAST(lev.id as NVARCHAR(12))       
 			, 'ZZLkpOfoOccupationTree:ZZLkpOfoOccupationTree_ID:' + CAST(ooc.id as NVARCHAR(12))
          	, 'ref:ZZLkpQualityAssuranceBody:ZZQualityAssuranceBody:' + CAST(qab.id as NVARCHAR(12))
          ) as ZZMigrateValues
@@ -4105,7 +4171,6 @@ FROM
 <summary>Q&A</summary>
 
 </details>
-
 
 ## LearnerQCTOArtisans
 
@@ -4375,8 +4440,6 @@ CREATE TABLE MQA.dbo.LearnerQCTOLearnership (
 
 <summary>LearnerQCTOLearnership Query</summary>
 
-
-
 </details>
 
 <details>
@@ -4530,6 +4593,7 @@ from lkpQCTOProgrammeStatus;
 select Description from lkpQCTOProgrammeStatus where IsDeleted = 0 group by Description having COUNT (*) > 1;
 select SAQACode from lkpQCTOProgrammeStatus where IsDeleted = 0 group by SAQACode having COUNT (*) > 1;
 ```
+
 </details>
 
 <details>
@@ -4555,10 +4619,150 @@ FROM
 <summary>Q&A</summary>
 
 </details>
+
+## Person
+
+<details>
+
+<summary>Person DDL</summary>
+
+```sql
+CREATE TABLE MQA.dbo.Person (
+	ID int IDENTITY(1,1) NOT NULL,
+	TitleID int NOT NULL,
+	FirstName nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	MiddleName nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	Surname nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	Initials nvarchar(10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	IDNo nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	AlternateIDTypeID int NOT NULL,
+	DateofBirth datetime NOT NULL,
+	GenderID int NOT NULL,
+	EquityID int NOT NULL,
+	DisabilityID int NULL,
+	HomeLanguageID int NOT NULL,
+	NationalityID int NOT NULL,
+	CitizenResidentialStatusID int NOT NULL,
+	SocioEconomicStatusID int NULL,
+	TelephoneNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CellPhoneNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	FaxNumber nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	EMail nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	DateCreated datetime NOT NULL,
+	CreatedBy int NOT NULL,
+	DateUpdated datetime NOT NULL,
+	UpdatedBy int NOT NULL,
+	IsDeleted tinyint NOT NULL,
+	MigrationRecordID int NULL,
+	SchoolEMISID int NULL,
+	LastSchoolYearID int NULL,
+	STATSSAAreaCodeID int NULL,
+	POPIActStatusID int NULL,
+	POPIActStatusDate datetime NULL,
+	HasSouthAfricanID int NULL,
+	VerifiedID int NULL,
+	HighestEducation nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CurrentOccupation nvarchar(500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	YearsInOccupation decimal(10,2) NULL,
+	Experience nvarchar(2000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	ParentPersonID int DEFAULT 0 NULL,
+	SysStartTime datetime2 DEFAULT sysutcdatetime() NOT NULL,
+	SysEndTime datetime2 DEFAULT CONVERT([datetime2],'9999-12-31 23:59:59.9999999') NOT NULL,
+	ImmigrantStatusID int NULL,
+	MiddleName2 nvarchar(250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	CONSTRAINT PK_Person PRIMARY KEY (ID)
+);
+```
+
+</details>
+
+<details>
+
+<summary>validate data</summary>
+
+</details>
+
+<details>
+
+<summary>Person Query</summary>
+
+```sql
+
+SELECT
+	'*' as "AD_Org_ID[Name]"
+	, p.id as "ZZMigrationCode/K"
+	, CASE p.IsDeleted WHEN 0 THEN 'Y' WHEN 1 THEN 'N' END AS IsActive
+	, p.FirstName AS ZZFirstName
+	, p.MiddleName AS ZZMiddleName
+	, p.Surname AS Surname
+	, p.Initials AS ZZInitials
+	, p.IDNo AS ZZ_ID_Passport_No
+	, p.DateofBirth AS Birthday
+	, p.TelephoneNumber AS Phone
+	, p.CellPhoneNumber AS Phone2
+	, p.FaxNumber AS Fax
+	, p.EMail AS EMail
+	, p.POPIActStatusDate AS ZZPopiActStatusDate
+	, p.CurrentOccupation AS ZZCurrentOccupation
+	, p.YearsInOccupation AS ZZYearsInOccupation
+	, p.Experience AS ZZExperience
+	, p.MiddleName2 AS ZZMiddleName2
+	, CONCAT_WS (';'
+			, 'ref:ZZLkpTitle:ZZLkpTitle:' + CAST(p.TitleID as NVARCHAR(12))         		
+			, 'ref:ZZLkpGender:ZZGender:' + CAST(p.GenderID as NVARCHAR(12))         		
+			, 'ZZ_AlternateIDType:ZZ_AlternateIDType_ID:' + CAST(p.AlternateIDTypeID as NVARCHAR(12))
+			, 'ref:ZZHealthFunctionValues:ZZHealthSeeing:' + CAST(phSeeing.healthFunctioningRatingID as NVARCHAR(12))
+			, 'ref:ZZHealthFunctionValues:ZZHealthHearing:' + CAST(phHearing.healthFunctioningRatingID as NVARCHAR(12))
+			, 'ref:ZZHealthFunctionValues:ZZHealthCommunicating:' + CAST(phCommu.healthFunctioningRatingID as NVARCHAR(12))
+			, 'ref:ZZHealthFunctionValues:ZZHealthWalking:' + CAST(phWalk.healthFunctioningRatingID as NVARCHAR(12))
+			, 'ref:ZZHealthFunctionValues:ZZHealthRemembering:' + CAST(phRem.healthFunctioningRatingID as NVARCHAR(12))
+			, 'ref:ZZHealthFunctionValues:ZZHealthSelfcare:' + CAST(phCare.healthFunctioningRatingID as NVARCHAR(12))
+			, 'ZZPerson:ZZPerson_ID:' + CAST(p.ParentPersonID as NVARCHAR(12))
+			
+         	
+         ) as ZZMigrateValues
+FROM
+	Person p
+	OUTER APPLY (SELECT TOP 1 *
+    	FROM PersonHealthFunctioningStatusRating ph
+    	WHERE ph.PersonID = p.ID AND ph.healthFunctioningStatusID = 1
+	) phSeeing
+	OUTER APPLY (SELECT TOP 1 *
+    	FROM PersonHealthFunctioningStatusRating ph
+    	WHERE ph.PersonID = p.ID AND ph.healthFunctioningStatusID = 2
+	) phHearing
+	OUTER APPLY (SELECT TOP 1 *
+    	FROM PersonHealthFunctioningStatusRating ph
+    	WHERE ph.PersonID = p.ID AND ph.healthFunctioningStatusID = 3
+	) phCommu
+	OUTER APPLY (SELECT TOP 1 *
+    	FROM PersonHealthFunctioningStatusRating ph
+    	WHERE ph.PersonID = p.ID AND ph.healthFunctioningStatusID = 4
+	) phWalk
+	OUTER APPLY (SELECT TOP 1 *
+    	FROM PersonHealthFunctioningStatusRating ph
+    	WHERE ph.PersonID = p.ID AND ph.healthFunctioningStatusID = 5
+	) phRem
+	OUTER APPLY (SELECT TOP 1 *
+    	FROM PersonHealthFunctioningStatusRating ph
+    	WHERE ph.PersonID = p.ID AND ph.healthFunctioningStatusID = 6
+	) phCare
+
+```
+
+</details>
+
+<details>
+
+<summary>Q&A</summary>
+
+</details>
+
 ## Note
 
 1. **ZZQctoSkillsProgrammeModule** and **ZZQctoModule has ZZModuleType**
-2. 
+2. ZZLkpEquity input by team has name/valule a bit differene from LkpEquity on old database
+   add key from old database to description column for same meaning item and export to 2pack/LearnerMasterImport/updateReference/LkpEquity(byTeam).csv
 
 ```
 ZZQctoSkillsProgrammeModule
