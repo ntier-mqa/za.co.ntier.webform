@@ -31,24 +31,40 @@ public class DashboardAssessorsModeratorsVM {
 		initList();
 	}
 	
+	public String getBtLabel(X_ZZAssessorPerson_v row) {
+		boolean isApprove = X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
+							X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus());
+		
+		if (isApprove) {
+			return "Scope Extension";
+		}else {
+			return "Edit";
+		}
+	}
+	
 	@Command
 	public void editAssessor(@BindingParam("row") X_ZZAssessorPerson_v row) {
-		if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole())
-				&& X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Draft.equals(row.getZZ_DocStatus())) {
-			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorFormUU, row.getZZAssessorPerson_ID());
-		}else if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator.equals(row.getZZAssessorRole())
-				&& X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Draft.equals(row.getZZ_DocStatus())) {
-			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU, row.getZZAssessorPerson_ID());
-		}else if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator.equals(row.getZZAssessorRole())
-				&& (X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
-						X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus()))) {
-			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorScopeFormUU, row.getZZAssessorPerson_ID());
-		}else if (X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole())
-				&& (X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
-						X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus()))) {
-			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorScopeFormUU, row.getZZAssessorPerson_ID());
-		}
+		boolean isAssessor = X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole());
+		boolean isDraft =  X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Draft.equals(row.getZZ_DocStatus());
+		boolean isScopeExtension = row.getParent_ID() > 0;
+		boolean isApprove = X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
+							X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus());
 		
+		if ((isAssessor && isScopeExtension && isDraft) 
+				|| (isApprove && isAssessor)){
+			
+			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorScopeFormUU, row.getZZAssessorPerson_ID());
+		}else if ((!isAssessor && isScopeExtension && isDraft) 
+				|| (isApprove && !isAssessor)){
+			
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorScopeFormUU, row.getZZAssessorPerson_ID());
+		}else if (isAssessor && !isScopeExtension && isDraft) {
+			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorFormUU, row.getZZAssessorPerson_ID());
+		}else if (!isAssessor && !isScopeExtension && isDraft) {
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU, row.getZZAssessorPerson_ID());
+		}else {
+			
+		}
 	}
 	
 	private void initList() {

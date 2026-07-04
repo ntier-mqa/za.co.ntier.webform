@@ -27,7 +27,6 @@ import org.zkoss.bind.annotation.Init;
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
 import za.co.ntier.api.model.I_ZZDocumentUpload;
-import za.co.ntier.api.model.I_ZZLearnerQCTOSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLinkAssessorQualification;
 import za.co.ntier.api.model.I_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
@@ -75,7 +74,6 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
-import za.co.ntier.webform.sdr.viewmodel.BaseAppVM.InfoPanelPara;
 
 public class AssessorRegistrationVM extends BaseAppVM {
 	public static String moderatorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
@@ -86,6 +84,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	private TableModel tmNames;
 	private NavTab mainTab;
 	X_ZZAssessorPerson assessorPerson;
+	X_ZZAssessorPerson assessorPersonParent;
 	
 	DaoManage daoManage = new DaoManage();
 	
@@ -185,6 +184,10 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		return moderatorScopeFormUU.equals(adForm.getAD_Form_UU()) || assessorScopeFormUU.equals(adForm.getAD_Form_UU());
 	}
 	
+	private boolean isModerator() {
+		return moderatorFormUU.equals(adForm.getAD_Form_UU()) || moderatorScopeFormUU.equals(adForm.getAD_Form_UU());
+	}
+	
 	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		adForm = MForm.get(menuContextInfo.getFormId());
@@ -211,82 +214,106 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		setMainTab(new NavTab());
 		initForm();
 		
-		if (menuContextInfo.getRecordID() <= 0) {
-		
-			idNoCol.setEventHandle((event, cellMode) -> {
-				if (!Objects.equals(cellMode.getDirtyValue(), cellMode.getValue())){
-					return;
-				}
-				
-				Object idValue = cellMode.getDirtyValue();
-				
-				@SuppressWarnings("unchecked")
-				ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode.getRowModel().get(alternateIDTypeCol);
-				
-				if (idValue != null)
-					cellMode.getColModel().setDefaultValue(idValue);//help it don't set to blank when reload data
-				
-				if (idValue != null && alternateIDCellMode.getSelectedItem() != null)
-					loadSaved((String)idValue, alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
-	
-			});
-			
-			alternateIDTypeCol.setEventHandle((event, cellMode) -> {
-				@SuppressWarnings("unchecked")
-				ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode;
-				
-				alternateIDCellMode.resetDefaultValue();
-				alternateIDCellMode.getColModel().setDefaultValue(alternateIDCellMode.getSelectedItem().getName(), MasterUtil.nameAlternateIdTypeCompare);//help it don't set back to rsa id when reload data
-				
-				IDCellModel idCellMode = (IDCellModel)cellMode.getRowModel().get(idNoCol);
-				
-				idCellMode.validate();
-				if (alternateIDCellMode.getSelectedItem() != null && idCellMode.getDirtyValue() != null)
-					loadSaved((String)idCellMode.getDirtyValue(), alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
-			});
-		}
-		
 		if (menuContextInfo.getRecordID() > 0) {
 			loadForEdit();
 		}
+		
+		if (isNew) {
+			registryHandleEvent();
+		}
+	}
+	
+	private void registryHandleEvent() {
+		idNoCol.setEventHandle((event, cellMode) -> {
+			if (!Objects.equals(cellMode.getDirtyValue(), cellMode.getValue())){
+				return;
+			}
+			
+			Object idValue = cellMode.getDirtyValue();
+			
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode.getRowModel().get(alternateIDTypeCol);
+			
+			if (idValue != null)
+				cellMode.getColModel().setDefaultValue(idValue);//help it don't set to blank when reload data
+			
+			if (idValue != null && alternateIDCellMode.getSelectedItem() != null)
+				loadSaved((String)idValue, alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
+
+		});
+		
+		alternateIDTypeCol.setEventHandle((event, cellMode) -> {
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode;
+			
+			alternateIDCellMode.resetDefaultValue();
+			alternateIDCellMode.getColModel().setDefaultValue(alternateIDCellMode.getSelectedItem().getName(), MasterUtil.nameAlternateIdTypeCompare);//help it don't set back to rsa id when reload data
+			
+			IDCellModel idCellMode = (IDCellModel)cellMode.getRowModel().get(idNoCol);
+			
+			idCellMode.validate();
+			if (alternateIDCellMode.getSelectedItem() != null && idCellMode.getDirtyValue() != null)
+				loadSaved((String)idCellMode.getDirtyValue(), alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
+		});
 	}
 	
 	private void loadForEdit() {
-		alternateIDTypeCol.setReadonly(true);
-		idNoCol.setReadonly(true);
-		//Edit mode
-		assessorPerson = (X_ZZAssessorPerson)MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
+		X_ZZAssessorPerson assessorPersonCtx = (X_ZZAssessorPerson)MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
 				.getPO(getMenuContextInfo().getRecordID(), null);
-		if (assessorPerson == null) {
+		
+		if (assessorPersonCtx == null) {
 			MasterUtil.showInfoDialog("ZZAssessorNotFoundAssessor", MasterUtil.fCloseActiveWindow);
 		}else {
 			person = (MUser_New)MTable.get(Env.getCtx(), I_AD_User.Table_Name)
-					.getPO(assessorPerson.getAD_User_ID(), null);
+					.getPO(assessorPersonCtx.getAD_User_ID(), null);
 		}
 		
 		if (person == null) {
 			MasterUtil.showInfoDialog("ZZAssessorNotFoundUser", MasterUtil.fCloseActiveWindow);
 		}
 		
-		daoManage.setDao(assessorPerson);
-		daoManage.setDao(person);
+		boolean isEditCase = false;
+		if(assessorPersonCtx.getParent_ID() == 0 && isExtensionScope()) {
+			assessorPersonParent = assessorPersonCtx;
+			isEditCase = false;
+		}else if(assessorPersonCtx.getParent_ID() == 0 && !isExtensionScope()) {
+			// edit assessor
+			isEditCase = true;
+		}else if(assessorPersonCtx.getParent_ID() > 0 && isExtensionScope()) {
+			//edit scope extension
+			isEditCase = true;
+		}else if(assessorPersonCtx.getParent_ID() > 0 && !isExtensionScope()) {
+			// wrong state
+			MasterUtil.showInfoDialog("ZZAssessorOpenWrongForm", MasterUtil.fCloseActiveWindow);
+		}else {
+			// out of case
+			MasterUtil.showInfoDialog("ZZAssessorNotHandle", MasterUtil.fCloseActiveWindow);
+		}
 		
-		isNew = false;
+		daoManage.setDao(person);
+		if (isEditCase) {
+			if (!X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPersonCtx.getZZ_DocStatus())) {
+				MasterUtil.showInfoDialog("ZZAssessorWrongStatus", MasterUtil.fCloseActiveWindow);
+			}
+			alternateIDTypeCol.setReadonly(true);
+			idNoCol.setReadonly(true);
+			daoManage.setDao(assessorPersonCtx);
+			assessorPerson = assessorPersonCtx;
+		
+			isNew = false;
+		}
+		
 		loadData();
 	}
 
 	private void loadSaved (String idValue, int idTypeId) {
 		Query userQuery = MTable.get(Env.getCtx(), I_AD_User.Table_Name)
-				.createQuery(String.format("(%s = ? AND %s.%s = ?) OR (%s = ? AND %s.%s = ?)", 
+				.createQuery(String.format("(%s = ? AND %s = ?) OR (%s = ? AND %s = ?)", 
 												I_AD_User.COLUMNNAME_ZZ_ID_Passport_No
-												, I_ZZ_AlternateIDType.Table_Name
-												, I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID
+												, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID
 												, I_AD_User.COLUMNNAME_ZZOtherIDNo
-												, I_ZZ_AlternateIDType.Table_Name
-												, I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID), null);
+												, I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID), null);
 		
-		userQuery.addTableDirectJoin(I_ZZ_AlternateIDType.Table_Name);
-
 		userQuery.setParameters(idValue, idTypeId, idValue, idTypeId);
 		userQuery.setOnlyActiveRecords(true);
 		person = userQuery.firstOnly();
@@ -295,13 +322,45 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		if (person != null) {
 			daoManage.setDao(person);
+			// load draft assessor
 			Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
-					.createQuery(String.format("%s = ?"
-							, I_ZZAssessorPerson.COLUMNNAME_AD_User_ID), null);
+					.createQuery(String.format("""
+							%s.%s = ? 
+							AND (CASE WHEN %s.%s IS NULL THEN 'N' ELSE 'Y' END) = ?
+							AND (CASE WHEN %s.%s IS NULL THEN %s.%s ELSE parent.%s END) = ?
+							"""
+							// scope extension condition
+							// role condition
+							, I_ZZAssessorPerson.Table_Name
+							, I_ZZAssessorPerson.COLUMNNAME_AD_User_ID
+							, I_ZZAssessorPerson.Table_Name
+							, I_ZZAssessorPerson.COLUMNNAME_Parent_ID
+							, I_ZZAssessorPerson.Table_Name
+							, I_ZZAssessorPerson.COLUMNNAME_Parent_ID
+							, I_ZZAssessorPerson.Table_Name
+							, I_ZZAssessorPerson.COLUMNNAME_ZZAssessorRole
+							, I_ZZAssessorPerson.COLUMNNAME_ZZAssessorRole), null);
 			
-			savedDataQuery.setParameters(person.getAD_User_ID());
+			
+			savedDataQuery.addJoinClause(String.format("LEFT JOIN %s parent ON (%s.%s = parent.%s)"
+					, I_ZZAssessorPerson.Table_Name
+					, I_ZZAssessorPerson.Table_Name
+					, I_ZZAssessorPerson.COLUMNNAME_Parent_ID
+					, I_ZZAssessorPerson.COLUMNNAME_ZZAssessorPerson_ID));
+
+			savedDataQuery.setOrderBy(String.format("(%s.%s = '%s') DESC, %s.%s DESC" // sort to get draft and latest scope extension when multi exists 
+					, I_ZZAssessorPerson.Table_Name
+					, X_ZZAssessorPerson.COLUMNNAME_ZZ_DocStatus
+					, X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft
+					, I_ZZAssessorPerson.Table_Name
+					, I_ZZAssessorPerson.COLUMNNAME_Created));
+			
+			String role = X_ZZAssessorPerson.ZZASSESSORROLE_Assessor;
+			if (isModerator()) {
+				role = X_ZZAssessorPerson.ZZASSESSORROLE_Moderator;
+			}
+			savedDataQuery.setParameters(person.getAD_User_ID(), isExtensionScope(), role);
 			savedDataQuery.setOnlyActiveRecords(true);
-			
 			assessorPersonSaved = savedDataQuery.firstOnly();
 			
 			firstNameCol.setDefaultValue(person.getName());
@@ -317,8 +376,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			}
 			daoManage.setDao(assessorPersonSaved);
 		}else {
+			if (isExtensionScope()) {
+				//TODO:open scope extension form but isn't exists scope extension on draft state 
+				// => try to load main assessor in case not exists main show error and create new scope extension and load main
+				// => in case exists main it become create new scope extension for that main
+				MasterUtil.showInfoDialog("ZZAssessorNotExistsMain", MasterUtil.fCloseActiveWindow);
+			}
 			daoManage.resetDao(I_ZZAssessorPerson.Table_Name);
 		}
+		
 		
 		isNew = assessorPersonSaved == null;
 		assessorPerson = assessorPersonSaved;
@@ -330,7 +396,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		if(person != null)// don't reload when null to keep user input
 			tmNames.reloadDao();
 		
-		if (assessorPerson != null)
+		//if (assessorPerson != null)
 			mainTab.getTabPanelModel().forEach(tabModel -> {
 				tabModel.getCompModel().forEach(tableModel -> {
 					((TableModel)tableModel).reloadDao();
@@ -1209,17 +1275,16 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			isDraft = assessorPerson.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPerson.getZZ_DocStatus());
 		}
 		
-		if (!isDraft && !isExtensionScope()) {
+		if (!isDraft) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZAssessorWrongStatus"));
 		}
 		
 		super.doSave(trxName);
 		assessorPerson.setAD_User_ID(person.getAD_User_ID());
-		String scopeExtension = X_ZZAssessorPerson.ZZSCOPEEXTENSION_No;
-		if (isExtensionScope()) {
-			scopeExtension = X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes;
+		
+		if (isExtensionScope() && isNew) {
+			assessorPerson.setParent_ID(assessorPersonParent.getZZAssessorPerson_ID());
 		}
-		assessorPerson.setZZScopeExtension(scopeExtension);
 		assessorPerson.saveEx(trxName);
 	}
 	
