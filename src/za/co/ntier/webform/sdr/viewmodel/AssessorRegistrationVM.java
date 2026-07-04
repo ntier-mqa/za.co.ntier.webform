@@ -121,18 +121,16 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		}
 		
 		public String getSubjectName() {
+			boolean isAssessor = X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole());
+			boolean isScopeExtension = assessorPerson.getParent_ID() > 0;
 			
-			if (X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole())
-					&& X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes.equals(assessorPerson.getZZScopeExtension())) {
+			if (isAssessor && isScopeExtension){
 				return "Assessor Scope Extension";
-			}else if (!X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole())
-					&& X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes.equals(assessorPerson.getZZScopeExtension())) {
+			}else if (!isAssessor && isScopeExtension) {
 				return "Moderator Scope Extension";
-			}else if (X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole())
-					&& !X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes.equals(assessorPerson.getZZScopeExtension())) {
+			}else if (isAssessor && !isScopeExtension) {
 				return "Assessor Registration";
-			}else if (!X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole())
-					&& !X_ZZAssessorPerson.ZZSCOPEEXTENSION_Yes.equals(assessorPerson.getZZScopeExtension())) {
+			}else if (!isAssessor && !isScopeExtension) {
 				return "Moderator Registration";
 			}else {
 				throw new AdempiereException("Case Not Handle");
