@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -810,5 +812,45 @@ public class MasterUtil {
 			    .collect(Collectors.joining(","));
 		
 		return placeholders;
+	}
+	
+	public static Timestamp getDobFromId(String idNumber)
+	{
+		if (idNumber == null || !idNumber.trim().matches("\\d{13}"))
+			return null;
+
+		try
+		{
+			String idString = idNumber.trim();
+			int yy = Integer.parseInt(idString.substring(0, 2));
+			int mm = Integer.parseInt(idString.substring(2, 4));
+			int dd = Integer.parseInt(idString.substring(4, 6));
+
+			LocalDate today = LocalDate.now();
+			int currentYY = today.getYear() % 100;
+			int year = (yy <= currentYY ? 2000 + yy : 1900 + yy);
+
+			return Timestamp.valueOf(LocalDateTime.of(year, mm, dd, 0, 0));
+		}
+		catch (Exception ex)
+		{
+			return null;
+		}
+	}
+
+	public static String getGenderFromId(String idNumber)
+	{
+		if (idNumber == null || !idNumber.trim().matches("\\d{13}"))
+			return null;
+
+		try
+		{
+			int g = Character.getNumericValue(idNumber.trim().charAt(6)); // 7th digit
+			return (g < 5) ? "F" : "M";
+		}
+		catch (Exception ex)
+		{
+			return null;
+		}
 	}
 }

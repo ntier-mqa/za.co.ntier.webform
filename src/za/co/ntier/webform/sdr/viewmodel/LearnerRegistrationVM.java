@@ -1,5 +1,6 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -22,7 +23,6 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.WrongValueException;
 
 import za.co.ntier.api.model.I_ZZLearner;
-import za.co.ntier.api.model.I_ZZLearnerQCTOSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZPerson;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
@@ -42,6 +42,7 @@ import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
@@ -57,7 +58,6 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
-import za.co.ntier.webform.sdr.viewmodel.BaseAppVM.InfoPanelPara;
 
 public class LearnerRegistrationVM extends BaseAppVM {
 
@@ -272,6 +272,11 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				BindUtils.postNotifyChange(null, null, altIdCell, "selectedItem");
 				BindUtils.postNotifyChange(null, null, altIdCell, "value");
 			}
+			
+			if (idNumber != null && idNumber.trim().matches("\\d{13}"))
+			{
+				autoPopulateDobAndGender(idNumber, tmGeneralDetail.getRow());
+			}
 		}
 
 		isNew = true;
@@ -394,6 +399,36 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	ColumnModel idNoCol;
 	ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
+	ColumnModel								dateOfBirthCol;
+	ColumnModel								genderCol;
+
+	private void autoPopulateDobAndGender(String idNumber, RowModel rowModel)
+	{
+		String idString = idNumber.trim();
+		Timestamp dob = MasterUtil.getDobFromId(idString);
+		if (dob != null)
+		{
+			CellModel dobCell = rowModel.get(dateOfBirthCol);
+			if (dobCell != null)
+			{
+				dobCell.setValue(dob);
+				BindUtils.postNotifyChange(null, null, dobCell, "value");
+			}
+		}
+		String genderCode = MasterUtil.getGenderFromId(idString);
+		if (genderCode != null)
+		{
+			ValueNamePair genderVal = MasterUtil.getLkpGenders().stream()
+												.filter(v -> v.getValue().equals(genderCode))
+												.findFirst().orElse(null);
+			CellModel genderCell = rowModel.get(genderCol);
+			if (genderCell != null && genderVal != null)
+			{
+				genderCell.setValue(genderVal);
+				BindUtils.postNotifyChange(null, null, genderCell, "value");
+			}
+		}
+	}
 
 	private void initGeneralDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
@@ -414,17 +449,22 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		idNoCol = IDCellModel.getIDColumnModel().required().setTableName(I_ZZPerson.Table_Name);
 		idNoCol.setEventHandle((event, cellMode) -> {
 			Object idValue = cellMode.getDirtyValue();
-			if (idValue != null)
+			if (idValue != null) {
 				cellMode.getColModel().setDefaultValue(idValue);
+				String idString = idValue.toString().trim();
+				if (idString.matches("\\d{13}")) {
+					autoPopulateDobAndGender(idString, cellMode.getRowModel());
+				}
+			}
 		});
 		cols.add(idNoCol);
 
-		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel(
+		dateOfBirthCol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Birthday),
 				I_ZZPerson.COLUMNNAME_Birthday).required().setTableName(I_ZZPerson.Table_Name);
 		cols.add(dateOfBirthCol);
 
-		ColumnModel genderCol = ListCellModel.getListColumnModel(
+		genderCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZGender),
 				I_ZZPerson.COLUMNNAME_ZZGender, MasterUtil.getLkpGenders(), title -> {
 					return title.getName();
