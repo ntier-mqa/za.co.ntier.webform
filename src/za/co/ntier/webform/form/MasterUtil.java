@@ -55,7 +55,9 @@ import org.compiere.model.X_C_Bank;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
@@ -627,26 +629,30 @@ public class MasterUtil {
 		openFormByMenu(menuUU, null, null);
 	}
 	
-	public static void openFormByMenu(String menuUU, String key, String value) {
+	public static void openFormByMenu(String menuUU, String name, String value) {
 		MMenu menu = new MMenu(Env.getCtx(), menuUU, null);
 		
 		
 		String contextVariables = menu.getPredefinedContextVariables();
-		if (contextVariables == null && (key != null && value != null)) {
+		if (contextVariables == null && (name != null && value != null)) {
 			contextVariables = "";
 		}
 		
-		contextVariables += buildContextVariables(key, value);
+		contextVariables += buildContextVariables(new ValueNamePair(value, name));
 		
 		openForm(menu.getAD_Form_ID(), contextVariables, menu.isSOTrx());
 	}
 	
-	private static String buildContextVariables(String key, String value) {
-		if (key != null && value != null) {
-			return String.format("\n%s=%s", key, value);
+	private static String buildContextVariables(NamePair...contextVariables) {
+		StringBuilder context = new StringBuilder();
+		for (NamePair contextVariable:contextVariables) {
+			if (context.length() > 0) {
+				context.append("\n"); 
+			}
+			context.append(contextVariable.getName()).append("=").append(contextVariable.getID());
 		}
 		
-		return "";
+		return context.toString();
 	}
 	
 	private static void openForm (int formId, String contextVariables, boolean isSOTrx) {
@@ -656,9 +662,11 @@ public class MasterUtil {
         desktop.openForm(formId);
 	}
 	
-	public static void openFormByUU (String formUU, int value) {
+	//
+	public static void openFormByUU (String formUU, NamePair...contextVariables) {
 		MForm form = new MForm(Env.getCtx(), formUU, null);
-		openForm(form.getAD_Form_ID(), buildContextVariables(WebForm.recordIDMenuContextKeyNonPlus, Integer.toString(value)), false);
+		
+		openForm(form.getAD_Form_ID(), buildContextVariables(contextVariables), false);
 	}
 
 	public static void showInfoDialog(String msgTile, List<String> msgContent, Consumer<Object> onOkDialog) {

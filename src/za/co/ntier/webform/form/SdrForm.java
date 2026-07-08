@@ -24,6 +24,7 @@ public class SdrForm extends ADForm{
 	@Override
 	protected void init(int adFormId, String name) {
 		menuContextInfo = new MenuContextInfo(null, null, null, false, null, null);
+		menuContextInfo.setWinNo(m_WindowNo);
 		menuContextInfo.setFormId(adFormId);
 		
 		String recordUUValue = Env.getContext(Env.getCtx(), m_WindowNo, WebForm.recordUUMenuContextKey);

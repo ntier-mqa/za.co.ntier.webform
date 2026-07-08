@@ -14,20 +14,38 @@
   </div>
   
   
-  <include
-    component="@init(vmAssessor.tmNames)"
-    menuContextInfo="@init(vmAssessor.menuContextInfo)"
-    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+  <nodom children="@load(vmAssessor.steps) @template(each)">
+        <template name="identity">
+            <include
+			    component="@init(vmAssessor.tmIdentity)"
+			    menuContextInfo="@init(vmAssessor.menuContextInfo)"
+			    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataGridView.zul')))" />
+        </template>
+        
+        <template name="registryAssessor">
+          <include
+		    component="@init(vmAssessor.tmLinkedBpartner)"
+		    menuContextInfo="@init(vmAssessor.menuContextInfo)"
+		    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+		    
+           <include
+		    component="@init(vmAssessor.tmNames)"
+		    menuContextInfo="@init(vmAssessor.menuContextInfo)"
+		    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+		  
+		  <include 
+		    sclass="navTabOuter"
+		    component="@init(vmAssessor.mainTab)"
+		    menuContextInfo="@init(vmAssessor.menuContextInfo)"
+		    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
+		    
+		  <include
+		  	saveApp="@init(vmAssessor)"
+		    navTab="@init(vmAssessor.mainTab)"
+		    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
+        </template>
+    </nodom>
   
   
-  <include 
-    sclass="navTabOuter"
-    component="@init(vmAssessor.mainTab)"
-    menuContextInfo="@init(vmAssessor.menuContextInfo)"
-    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
-    
-  <include
-  	saveApp="@init(vmAssessor)"
-    navTab="@init(vmAssessor.mainTab)"
-    src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
+  
 </idspace>

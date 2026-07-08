@@ -15,7 +15,11 @@ public class MenuContextInfo {
 	private String zulPath;
 	private String recordUU;
 	private int recordID = 0;
+	private int winNo = -1; 
 	private Map<String, String> moreContext = new HashMap<>();
+	public static final String OpenFormModelEdit = "edit";
+	public static final String OpenFormModelNew = "new";
+	public static final String OpenFormModelKey = "OpenModel";
 	private int formId;
 	
 	public String getContextParam(String paramKey) {
@@ -158,5 +162,13 @@ public class MenuContextInfo {
 
 	public void setFormId(int formId) {
 		this.formId = formId;
+	}
+
+	public int getWinNo() {
+		return winNo;
+	}
+
+	public void setWinNo(int winNo) {
+		this.winNo = winNo;
 	}
 }

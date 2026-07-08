@@ -3,6 +3,9 @@ package za.co.ntier.webform.sdr.viewmodel;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
+import org.compiere.util.NamePair;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -50,18 +53,31 @@ public class DashboardAssessorsModeratorsVM {
 		boolean isApprove = X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
 							X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus());
 		
+
+		String openFormModelValue = isDraft?MenuContextInfo.OpenFormModelEdit:MenuContextInfo.OpenFormModelNew;
+		
+		NamePair contextOpenFormModel = new ValueNamePair(openFormModelValue, MenuContextInfo.OpenFormModelKey);
+		NamePair contectAssessorPersonID = new KeyNamePair(row.getZZAssessorPerson_ID(), WebForm.recordIDMenuContextKeyNonPlus); 
 		if ((isAssessor && isScopeExtension && isDraft) 
 				|| (isApprove && isAssessor)){
 			
-			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorScopeFormUU, row.getZZAssessorPerson_ID());
+			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorScopeFormUU
+					, contextOpenFormModel
+					, contectAssessorPersonID);
 		}else if ((!isAssessor && isScopeExtension && isDraft) 
 				|| (isApprove && !isAssessor)){
 			
-			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorScopeFormUU, row.getZZAssessorPerson_ID());
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorScopeFormUU
+					, contextOpenFormModel
+					, contectAssessorPersonID);
 		}else if (isAssessor && !isScopeExtension && isDraft) {
-			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorFormUU, row.getZZAssessorPerson_ID());
+			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorFormUU
+					, contectAssessorPersonID
+					, contextOpenFormModel);
 		}else if (!isAssessor && !isScopeExtension && isDraft) {
-			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU, row.getZZAssessorPerson_ID());
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU
+					, contectAssessorPersonID
+					, contextOpenFormModel);
 		}else {
 			
 		}

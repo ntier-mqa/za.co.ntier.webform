@@ -50,6 +50,7 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 
 public abstract class BaseAppVM implements ISaveApp{
+	
 	protected CLogger log = CLogger.getCLogger (getClass());
 	
 	private FormInfo formInfo;

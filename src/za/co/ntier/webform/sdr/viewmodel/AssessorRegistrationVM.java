@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
+import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MForm;
 import org.compiere.model.MLocation;
@@ -25,16 +26,23 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_AD_User;
+import za.co.ntier.api.model.I_C_BP_OC;
+import za.co.ntier.api.model.I_C_BP_SkillsProgramme;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
 import za.co.ntier.api.model.I_ZZDocumentUpload;
 import za.co.ntier.api.model.I_ZZLinkAssessorQualification;
+import za.co.ntier.api.model.I_ZZLinkAssessorQualification_v;
 import za.co.ntier.api.model.I_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
+import za.co.ntier.api.model.I_ZZOrganisationLinkage;
+import za.co.ntier.api.model.I_ZZQctoQualification;
+import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.I_ZZQualification;
 import za.co.ntier.api.model.I_ZZSkillsProgramme;
-import za.co.ntier.api.model.I_ZZ_AlternateIDType;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
+import za.co.ntier.api.model.X_C_BPartner;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
 import za.co.ntier.api.model.X_ZZDocumentUploadFile;
@@ -42,6 +50,8 @@ import za.co.ntier.api.model.X_ZZLinkAssessorQualification;
 import za.co.ntier.api.model.X_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
+import za.co.ntier.api.model.X_ZZQctoQualification;
+import za.co.ntier.api.model.X_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.X_ZZQualification;
 import za.co.ntier.api.model.X_ZZSkillsProgramme;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
@@ -75,7 +85,7 @@ import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingAddress;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil.SettingTableMode;
 
-public class AssessorRegistrationVM extends BaseAppVM {
+public class AssessorRegistrationVM extends StepAppVM{
 	public static String moderatorFormUU = "dbdc4e66-6cef-403b-9fc6-8669b2458bf1";
 	public static String assessorFormUU = "53779b2b-eb44-4f13-8c03-a8407c3fceae";
 	public static String moderatorScopeFormUU = "ebf7630f-6c99-44a0-a047-b5bbfba05b57";
@@ -85,13 +95,11 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	private NavTab mainTab;
 	X_ZZAssessorPerson assessorPerson;
 	X_ZZAssessorPerson assessorPersonParent;
-	
-	DaoManage daoManage = new DaoManage();
-	
-	@Override
-	public Object getMainApp() {
-		return null;
+	private TableModel tmIdentity;
+	public TableModel getTmIdentity() {
+		return tmIdentity;
 	}
+	DaoManage daoManage = new DaoManage();
 	
 	@Override
 	public List<DaoManage> getDaoManages() {
@@ -103,6 +111,8 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		return List.of(mainTab, tmNames);
 	}
 
+	
+	
 	private static String EmailTemplateAssessorRegistrationConfirmation_UU = "c157e9e9-e05f-4286-b2b9-d9a95361d4cd";
 	
 	public static class EmailPoAssessorInfo extends GenericPO {
@@ -159,11 +169,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	protected void showResult(boolean isSubmit) {
 		if (isSubmit) {
 			
-			
-			int loginId = Env.getAD_User_ID(Env.getCtx());
-			MUser receiver = MUser.get(loginId);
-			
-			MasterUtil.sentEmailSdf(EmailTemplateAssessorRegistrationConfirmation_UU, new EmailPoAssessorInfo(receiver, assessorPerson), receiver);
+			MasterUtil.sentEmailSdf(EmailTemplateAssessorRegistrationConfirmation_UU, new EmailPoAssessorInfo(sdpAdmin, assessorPerson), sdpAdmin);
 			
 			// MasterUtil.sentEmailSdf(EmailTemplateAssessorRegistrationConfirmation_UU, assessorPerson, person);
 		}
@@ -186,10 +192,28 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		return moderatorFormUU.equals(adForm.getAD_Form_UU()) || moderatorScopeFormUU.equals(adForm.getAD_Form_UU());
 	}
 	
+	MUser sdpAdmin;
+	
 	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
+		int loginId = Env.getAD_User_ID(Env.getCtx());
+		sdpAdmin = MUser.get(loginId);
 		adForm = MForm.get(menuContextInfo.getFormId());
 		
+		setFormInfo(new FormInfo(menuContextInfo));
+		
+		initDaoManage();
+		
+		String openFormModel = Env.getContext(Env.getCtx(), menuContextInfo.getWinNo(), "+" + MenuContextInfo.OpenFormModelKey);
+		if (MenuContextInfo.OpenFormModelEdit.equals(openFormModel)) {
+			initStepRegistryAssessor();
+		}else {
+			initStepIdentity();
+		}
+		
+	}
+	
+	void initDaoManage() {
 		daoManage.setPoSupplier(I_AD_User.Table_Name, daoManage -> {
 			person = new MUser_New(Env.getCtx(), 0, null);
 			String name = (String)tmNames.getRow().get(firstNameCol).getValue();
@@ -207,52 +231,127 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			}
 			return assessorPerson;
 		});
-		
-		setFormInfo(new FormInfo(menuContextInfo));
-		setMainTab(new NavTab());
-		initForm();
-		
-		if (menuContextInfo.getRecordID() > 0) {
-			loadForEdit();
-		}
-		
-		if (isNew) {
-			registryHandleEvent();
-		}
 	}
 	
-	private void registryHandleEvent() {
-		idNoCol.setEventHandle((event, cellMode) -> {
-			if (!Objects.equals(cellMode.getDirtyValue(), cellMode.getValue())){
+	private void initStepIdentity(){
+		setStep("identity");
+		if (tmIdentity == null)
+			initIdentity();
+	}
+	
+	
+	private void initIdentity() {
+		List<ColumnModel> cols = new ArrayList<>();
+		
+		identityAlternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
+		cols.add(identityAlternateIDTypeCol);
+		
+		identityIdNoCol = IDCellModel.getIDColumnModel()
+				.required().setTableName(I_AD_User.Table_Name);
+		cols.add(identityIdNoCol);
+		
+		ColumnModel validateCol = CellModel.getColModelForGenericCell("VALIDATE", null, CellModel.BUTTON_CELL);
+		validateCol.setShowTitle(false);
+		cols.add(validateCol);
+		
+		ColumnModel msgCol = CellModel.getColModelForLabel(null);
+		msgCol.setShowTitle(false);
+		cols.add(msgCol);
+		
+		ColumnModel nextStepCol = CellModel.getColModelForGenericCell("Registry Assessor", null, CellModel.BUTTON_CELL);
+		nextStepCol.setShowTitle(false);
+		cols.add(nextStepCol);
+		
+		tmIdentity = TableModel.getTableBean(TableModel.class, cols, false, I_ZZAssessorPerson.Table_Name);
+		tmIdentity.setSclass("srd-general srd-general-assessor-identity");
+		tmIdentity.setViewModel(ViewType.VIEW_FORM);
+		tmIdentity.setSectionHeader("Identity Details");
+		tmIdentity.init();
+		tmIdentity.getRow().get(nextStepCol).setVisible(false);
+		
+		identityAlternateIDTypeCol.setEventHandle((event, cellMode) -> {
+			IDCellModel idCellMode = (IDCellModel)cellMode.getRowModel().get(identityIdNoCol);
+			idCellMode.validate();
+			
+		});
+		
+		validateCol.setEventHandle((event, cellModel) -> {
+			cellModel.getRowModel().get(msgCol).setVisible(false);
+			
+			cellModel.getRowModel().get(nextStepCol).setVisible(false);
+			
+			if (!tmIdentity.validate(false)) {
+				MasterUtil.showInfoDialog("ZZAssessorWrongInputValidateIdentity", null);
 				return;
 			}
 			
-			Object idValue = cellMode.getDirtyValue();
+			Object idValue = cellModel.getRowModel().get(identityIdNoCol).getDirtyValue();
 			
 			@SuppressWarnings("unchecked")
-			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode.getRowModel().get(alternateIDTypeCol);
+			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellModel.getRowModel().get(identityAlternateIDTypeCol);
 			
-			if (idValue != null)
-				cellMode.getColModel().setDefaultValue(idValue);//help it don't set to blank when reload data
+			if (idValue != null && alternateIDCellMode.getSelectedItem() != null) {
+				person = null;
+				assessorPerson = null;
+				assessorPersonParent = null;
+				loadSavedFromInputParam((String)idValue, alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
+				
+				String msg = null;
+				if (person != null && assessorPerson != null) {
+					msg = "ZZAssessorMaintain";
+				}else if(person != null && assessorPerson == null) {
+					msg = "ZZAssessorNewAssessor";
+				}else {
+					msg = "ZZAssessorNewPerson";
+				}
+				
+				cellModel.getRowModel().get(msgCol).setValue(Msg.getMsg(Env.getCtx(), msg));
+				cellModel.getRowModel().get(msgCol).setVisible(true);
+				
+				cellModel.getRowModel().get(nextStepCol).setVisible(true);
+			}else {
+				MasterUtil.showInfoDialog("ZZAssessorInputValidateIdentity", null);
+			}
 			
-			if (idValue != null && alternateIDCellMode.getSelectedItem() != null)
-				loadSaved((String)idValue, alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
-
 		});
 		
-		alternateIDTypeCol.setEventHandle((event, cellMode) -> {
-			@SuppressWarnings("unchecked")
-			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>)cellMode;
-			
-			alternateIDCellMode.resetDefaultValue();
-			alternateIDCellMode.getColModel().setDefaultValue(alternateIDCellMode.getSelectedItem().getName(), MasterUtil.nameAlternateIdTypeCompare);//help it don't set back to rsa id when reload data
-			
-			IDCellModel idCellMode = (IDCellModel)cellMode.getRowModel().get(idNoCol);
-			
-			idCellMode.validate();
-			if (alternateIDCellMode.getSelectedItem() != null && idCellMode.getDirtyValue() != null)
-				loadSaved((String)idCellMode.getDirtyValue(), alternateIDCellMode.getSelectedItem().getZZ_AlternateIDType_ID());
+		nextStepCol.setEventHandle((event, cellModel) -> {
+			initStepRegistryAssessor();
 		});
+	}
+	
+	
+	TableModel tmGeneralDetail;
+	ColumnModel idNoCol;
+	ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
+	
+	ColumnModel identityIdNoCol;
+	ListColumnModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCol;
+	
+	private void initStepRegistryAssessor(){
+		setStep("registryAssessor");
+		
+		setMainTab(new NavTab());
+		initRegistryAssessorForm();
+		
+		if (getMenuContextInfo().getRecordID() > 0) {
+			loadForEdit();
+		}
+		
+		loadData();
+		
+		if (person == null) {
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> alternateIDTypeCell = (ListCellModel<X_ZZ_AlternateIDType>)tmGeneralDetail.getRow().get(alternateIDTypeCol);
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCell = (ListCellModel<X_ZZ_AlternateIDType>)tmIdentity.getRow().get(identityAlternateIDTypeCol);
+			
+			alternateIDTypeCell.setValue(identityAlternateIDTypeCell.getSelectedID());
+			
+			CellModel idNoCell = tmGeneralDetail.getRow().get(idNoCol);
+			CellModel identityIdNoCell = tmIdentity.getRow().get(identityIdNoCol);
+			idNoCell.setValue(identityIdNoCell.getValue());
+		}
 	}
 	
 	private void loadForEdit() {
@@ -290,21 +389,21 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		daoManage.setDao(person);
 		if (isEditCase) {
-			if (!X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPersonCtx.getZZ_DocStatus())) {
-				MasterUtil.showInfoDialog("ZZAssessorWrongStatus", MasterUtil.fCloseActiveWindow);
-			}
-			alternateIDTypeCol.setReadonly(true);
-			idNoCol.setReadonly(true);
+			validateAssessorState(assessorPersonCtx);
 			daoManage.setDao(assessorPersonCtx);
 			assessorPerson = assessorPersonCtx;
-		
 			isNew = false;
 		}
-		
-		loadData();
 	}
 
-	private void loadSaved (String idValue, int idTypeId) {
+	void validateAssessorState(X_ZZAssessorPerson assessorPersonValidate) {
+		boolean isDraft = assessorPersonValidate.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPersonValidate.getZZ_DocStatus());
+		if (!isDraft) {
+			MasterUtil.showInfoDialog("ZZAssessorWrongStatus", MasterUtil.fCloseActiveWindow);
+		}
+	}
+	
+	private void loadSavedFromInputParam (String idValue, int idTypeId) {
 		Query userQuery = MTable.get(Env.getCtx(), I_AD_User.Table_Name)
 				.createQuery(String.format("(%s = ? AND %s = ?) OR (%s = ? AND %s = ?)", 
 												I_AD_User.COLUMNNAME_ZZ_ID_Passport_No
@@ -360,18 +459,14 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			savedDataQuery.setParameters(person.getAD_User_ID(), isExtensionScope(), role);
 			savedDataQuery.setOnlyActiveRecords(true);
 			assessorPersonSaved = savedDataQuery.firstOnly();
-			
-			firstNameCol.setDefaultValue(person.getName());
+
 		}else {
 			daoManage.resetDao(I_AD_User.Table_Name);
 			//firstNameCol.setDefaultValue(null);
 		}
 		
 		if (assessorPersonSaved != null) {
-			boolean isDraft = assessorPersonSaved.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPersonSaved.getZZ_DocStatus());
-			if (!isDraft) {
-				MasterUtil.showInfoDialog("ZZAssessorWrongStatus", MasterUtil.fCloseActiveWindow);
-			}
+			validateAssessorState(assessorPersonSaved);
 			daoManage.setDao(assessorPersonSaved);
 		}else {
 			if (isExtensionScope()) {
@@ -386,21 +481,24 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		isNew = assessorPersonSaved == null;
 		assessorPerson = assessorPersonSaved;
-		
-		loadData();
 	}
 	
 	private void loadData() {
-		if(person != null)// don't reload when null to keep user input
+		if(person != null) {
+			// don't reload when null to keep user input
 			tmNames.reloadDao();
-		
+			firstNameCol.setDefaultValue(person.getName());
+		}
+
 		//if (assessorPerson != null)
-			mainTab.getTabPanelModel().forEach(tabModel -> {
-				tabModel.getCompModel().forEach(tableModel -> {
-					((TableModel)tableModel).reloadDao();
-				});
+		mainTab.getTabPanelModel().forEach(tabModel -> {
+			tabModel.getCompModel().forEach(tableModel -> {
+				((TableModel)tableModel).reloadDao();
 			});
+		});
 		
+		tmLinkedBpartner.loadSavedData();
+			
 		mainTab.getTabPanelModel().forEach(tabModel -> {
 			tabModel.getCompModel().forEach(tableModel -> {
 				((TableModel)tableModel).loadSavedData();
@@ -408,8 +506,9 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		});
 	}
 	
-	private void initForm() {
+	private void initRegistryAssessorForm() {
 		tmNames = initTbName();
+		initLinkedBpartner();
 		initGeneralDetail();
 		if (!isExtensionScope()) {
 			initContactDetail();
@@ -422,18 +521,19 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		initUploadDocument();
 	}
 
-	ColumnModel idNoCol;
-	ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
+
 	
 	
 	private void initGeneralDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
+		alternateIDTypeCol.setReadonly(true);
 		cols.add(alternateIDTypeCol);
 		
 		idNoCol = IDCellModel.getIDColumnModel()
 				.required().setTableName(I_AD_User.Table_Name);
+		idNoCol.setReadonly(true);
 		cols.add(idNoCol);
 
 		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel(
@@ -505,7 +605,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			.required();
 		cols.add(socioEconomicStatusCol);
 
-		TableModel tmGeneralDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZAssessorPerson.Table_Name);
+		tmGeneralDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZAssessorPerson.Table_Name);
 		tmGeneralDetail.setSclass("srd-general srd-general-assessor");
 		
 		tmGeneralDetail.setDaoManage(daoManage);
@@ -552,6 +652,41 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		tmNames.init();
 		
 		return tmNames;
+	}
+	
+	private TableModel tmLinkedBpartner;
+	public TableModel getTmLinkedBpartner() {
+		return tmLinkedBpartner;
+	}
+	void initLinkedBpartner() {
+		List<ColumnModel> cols = new ArrayList<>();
+		
+		ColumnModel valueCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(X_C_BPartner.Table_Name, X_C_BPartner.COLUMNNAME_Value)
+				, X_C_BPartner.COLUMNNAME_Value
+				).setReadonly(true);
+		cols.add(valueCol);
+		
+		ColumnModel nameCol = CellModel.getColModelForLabel(
+				MasterUtil.getNameOfColTranslated(X_C_BPartner.Table_Name, X_C_BPartner.COLUMNNAME_Name)
+				, X_C_BPartner.COLUMNNAME_Name
+				).setReadonly(true);
+		cols.add(nameCol);
+		
+		tmLinkedBpartner = TableModel.getTableBean(TableModel.class, cols, false, X_C_BPartner.Table_Name);
+		tmLinkedBpartner.setSclass("srd-name srd-linked-bpartner");
+		tmLinkedBpartner.setViewModel(ViewType.VIEW_GRID);
+		tmLinkedBpartner.init();
+		
+		tmLinkedBpartner.setLoadSavedDataHandle(tableModel -> {
+			if (sdpAdmin.getC_BPartner_ID() > 0) {
+				PO linkedBpartner = MBPartner_New.get(Env.getCtx(), sdpAdmin.getC_BPartner_ID());
+				
+				tableModel.reset(List.of(linkedBpartner));
+			}
+			 
+		});
+		
 	}
 
 	private void initContactDetail() {
@@ -820,38 +955,38 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		cols = new ArrayList<>();
 		
 		ColumnModel qualificationCodeCol = CellModel.getColModelForLabel(
-					Msg.getElement(Env.getCtx(), I_ZZQualification.COLUMNNAME_ZZSaqaQualificationCode)
-					, I_ZZQualification.COLUMNNAME_ZZSaqaQualificationCode)
+					Msg.getElement(Env.getCtx(), I_ZZQctoQualification.COLUMNNAME_ZZSaqaQualificationCode)
+					, I_ZZQctoQualification.COLUMNNAME_ZZSaqaQualificationCode)
 				.setReadonly(true)
-				.setTableName(I_ZZQualification.Table_Name);
+				.setTableName(I_ZZQctoQualification.Table_Name);
 		cols.add(qualificationCodeCol);
 		
 		ColumnModel qualificationTitleCol = CellModel.getColModelForLabel(
-				Msg.getElement(Env.getCtx(), I_ZZQualification.COLUMNNAME_ZZSaqaQualificationTitle)
-				, I_ZZQualification.COLUMNNAME_ZZSaqaQualificationTitle)
+				Msg.getElement(Env.getCtx(), I_ZZQctoQualification.COLUMNNAME_ZZSaqaQualificationTitle)
+				, I_ZZQctoQualification.COLUMNNAME_ZZSaqaQualificationTitle)
 			.setReadonly(true)
-			.setTableName(I_ZZQualification.Table_Name);
+			.setTableName(I_ZZQctoQualification.Table_Name);
 		cols.add(qualificationTitleCol);
 		
 		ColumnModel qualificationCreditsCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_ZZCredits)
-				, I_ZZQualification.COLUMNNAME_ZZCredits)
+				MasterUtil.getNameOfColTranslated(I_ZZQctoQualification.Table_Name, I_ZZQctoQualification.COLUMNNAME_ZZCredits)
+				, I_ZZQctoQualification.COLUMNNAME_ZZCredits)
 			.setReadonly(true)
-			.setTableName(I_ZZQualification.Table_Name);
+			.setTableName(I_ZZQctoQualification.Table_Name);
 		cols.add(qualificationCreditsCol);
 		
 		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Registrationstartdate)
-				, I_ZZQualification.COLUMNNAME_Registrationstartdate)
+				MasterUtil.getNameOfColTranslated(I_ZZQctoQualification.Table_Name, I_ZZQctoQualification.COLUMNNAME_Registrationstartdate)
+				, I_ZZQctoQualification.COLUMNNAME_Registrationstartdate)
 			.setReadonly(true)
-			.setTableName(I_ZZQualification.Table_Name);
+			.setTableName(I_ZZQctoQualification.Table_Name);
 		cols.add(registrationStartDateCol);
 		
 		ColumnModel registrationEndDateCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_Registrationenddate)
-				, I_ZZQualification.COLUMNNAME_Registrationenddate)
+				MasterUtil.getNameOfColTranslated(I_ZZQctoQualification.Table_Name, I_ZZQctoQualification.COLUMNNAME_Registrationenddate)
+				, I_ZZQctoQualification.COLUMNNAME_Registrationenddate)
 			.setReadonly(true)
-			.setTableName(I_ZZQualification.Table_Name);
+			.setTableName(I_ZZQctoQualification.Table_Name);
 		cols.add(registrationEndDateCol);
 					
 		TableModel tmQualificationLink = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorQualification.Table_Name);
@@ -863,11 +998,18 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		
 		tabPanelQualificationScope.getCompModel().add(tmQualificationLink);
 		
+		String limitByLinkedSDPBpartner = String.format("%s IN (SELECT %s FROM %s WHERE %s = %s)"
+				, I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID
+				, I_C_BP_OC.COLUMNNAME_ZZQctoQualification_ID
+				, I_C_BP_OC.Table_Name
+				, I_C_BP_OC.COLUMNNAME_C_BPartner_ID
+				, sdpAdmin.getC_BPartner_ID());
 		
 		chooseQualificationCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-			InfoPanelPara.getInstance(I_ZZQualification.Table_Name
-					, I_ZZQualification.COLUMNNAME_ZZQualification_ID).setMultiChoose(true)
+					
+			InfoPanelPara.getInstance(I_ZZQctoQualification.Table_Name
+					, I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID).setMultiChoose(true).setWhereClause(limitByLinkedSDPBpartner)
 			, obj -> {
 				// build include selected ids
 				Object [] objs = (Object [])obj;
@@ -878,19 +1020,19 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				// build exclude selected ids
 				List<Object> excludeIds = new ArrayList<Object>();
 				tmQualificationLink.getRows().forEach(rowModel -> {
-					X_ZZQualification qualificationPo = (X_ZZQualification)rowModel.getRowData().getDataNullable(I_ZZQualification.Table_Name);
+					X_ZZQctoQualification qualificationPo = (X_ZZQctoQualification)rowModel.getRowData().getDataNullable(I_ZZQctoQualification.Table_Name);
 					if (qualificationPo != null) {
-						excludeIds.add(qualificationPo.getZZQualification_ID());
+						excludeIds.add(qualificationPo.getZZQctoQualification_ID());
 					}
 				});
 				
 				String excludePlaceholde = MasterUtil.createPlaceHoldForInClause(excludeIds);
 				
-				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQualification.Table_ID)
+				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQctoQualification.Table_ID)
 						.createQuery(String.format("%s IN (%s) AND %s NOT IN (%s)", 
-								I_ZZQualification.COLUMNNAME_ZZQualification_ID, 
+								I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID, 
 								placeholders,
-								I_ZZQualification.COLUMNNAME_ZZQualification_ID,
+								I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID,
 								excludePlaceholde), null);
 				
 				ids.addAll(excludeIds);
@@ -912,8 +1054,8 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			X_ZZLinkAssessorQualification linkPO = X_ZZLinkAssessorQualification.class.cast(po);
 			linkPO.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
 			
-			X_ZZQualification qualification = (X_ZZQualification)rowModel.getRowData().getDataNullable(I_ZZQualification.Table_Name);
-			linkPO.setZZQualification_ID(qualification.getZZQualification_ID());
+			X_ZZQctoQualification qualification = (X_ZZQctoQualification)rowModel.getRowData().getDataNullable(I_ZZQctoQualification.Table_Name);
+			linkPO.setZZQctoQualification_ID(qualification.getZZQctoQualification_ID());
 			
 			linkPO.saveEx(assessorPerson.get_TrxName());
 			
@@ -929,15 +1071,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				
 				List<PO> linkObjs = linkAssessorQuery.list();
 				
-				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQualification.Table_Name)
+				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQctoQualification.Table_Name)
 				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorQualification.COLUMNNAME_ZZAssessorPerson_ID), null);
 				//qualificationQuery.addTableDirectJoin(I_ZZLinkAssessorQualification.Table_Name);
 				qualificationQuery.addJoinClause(String.format( " JOIN %s ON (%s.%s = %s.%s)", 
 						I_ZZLinkAssessorQualification.Table_Name,
 						I_ZZLinkAssessorQualification.Table_Name,
-						I_ZZLinkAssessorQualification.COLUMNNAME_ZZQualification_ID,
-						I_ZZQualification.Table_Name,
-						I_ZZQualification.COLUMNNAME_ZZQualification_ID));
+						I_ZZLinkAssessorQualification.COLUMNNAME_ZZQctoQualification_ID,
+						I_ZZQctoQualification.Table_Name,
+						I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID));
 				
 				qualificationQuery.setOrderBy(I_ZZLinkAssessorQualification.Table_Name + "." + X_ZZLinkAssessorQualification.COLUMNNAME_ZZLinkAssessorQualification_ID);
 				qualificationQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
@@ -977,7 +1119,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		});
 		
 	}
-	private TableModel tmSkillsProgramme;
+	private TableModel tmQctoSkillsProgramme;
 	private void initSkillsProgramme() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
@@ -999,53 +1141,60 @@ public class AssessorRegistrationVM extends BaseAppVM {
 		cols = new ArrayList<>();
 		
 		ColumnModel skillsProgrammeCodeCol = CellModel.getColModelForLabel(
-					Msg.getElement(Env.getCtx(), I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode)
-					, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode)
+					Msg.getElement(Env.getCtx(), I_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode)
+					, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode)
 				.setReadonly(true)
-				.setTableName(I_ZZSkillsProgramme.Table_Name);
+				.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
 		cols.add(skillsProgrammeCodeCol);
 		
 		ColumnModel skillsProgrammeTitleCol = CellModel.getColModelForLabel(
-				Msg.getElement(Env.getCtx(), I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle)
-				, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle)
+				Msg.getElement(Env.getCtx(), I_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle)
+				, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle)
 			.setReadonly(true)
-			.setTableName(I_ZZSkillsProgramme.Table_Name);
+			.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
 		cols.add(skillsProgrammeTitleCol);
 		
 		ColumnModel skillsProgrammeCreditsCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
-				, I_ZZSkillsProgramme.COLUMNNAME_ZZCredits)
+				MasterUtil.getNameOfColTranslated(I_ZZQctoSkillsProgramme.Table_Name, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZCredits)
+				, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZCredits)
 			.setReadonly(true)
-			.setTableName(I_ZZSkillsProgramme.Table_Name);
+			.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
 		cols.add(skillsProgrammeCreditsCol);
 		
 		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Registrationstartdate)
-				, I_ZZSkillsProgramme.COLUMNNAME_Registrationstartdate)
+				MasterUtil.getNameOfColTranslated(I_ZZQctoSkillsProgramme.Table_Name, I_ZZQctoSkillsProgramme.COLUMNNAME_Registrationstartdate)
+				, I_ZZQctoSkillsProgramme.COLUMNNAME_Registrationstartdate)
 			.setReadonly(true)
-			.setTableName(I_ZZSkillsProgramme.Table_Name);
+			.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
 		cols.add(registrationStartDateCol);
 		
 		ColumnModel registrationEndDateCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_Registrationenddate)
-				, I_ZZSkillsProgramme.COLUMNNAME_Registrationenddate)
+				MasterUtil.getNameOfColTranslated(I_ZZQctoSkillsProgramme.Table_Name, I_ZZQctoSkillsProgramme.COLUMNNAME_Registrationenddate)
+				, I_ZZQctoSkillsProgramme.COLUMNNAME_Registrationenddate)
 			.setReadonly(true)
-			.setTableName(I_ZZSkillsProgramme.Table_Name);
+			.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
 		cols.add(registrationEndDateCol);
 					
-		tmSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorSkillsProgramme.Table_Name);
-		tmSkillsProgramme.setViewModel(ViewType.VIEW_GRID);
-		tmSkillsProgramme.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
-		tmSkillsProgramme.setCommandSetting(CommandSetting.getNonAddButton());
-		tmSkillsProgramme.setCreateNewRowWhenEmpty(false);
-		tmSkillsProgramme.init();
+		tmQctoSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorSkillsProgramme.Table_Name);
+		tmQctoSkillsProgramme.setViewModel(ViewType.VIEW_GRID);
+		tmQctoSkillsProgramme.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
+		tmQctoSkillsProgramme.setCommandSetting(CommandSetting.getNonAddButton());
+		tmQctoSkillsProgramme.setCreateNewRowWhenEmpty(false);
+		tmQctoSkillsProgramme.init();
 		
-		tabPanelSkillsProgramme.getCompModel().add(tmSkillsProgramme);
+		tabPanelSkillsProgramme.getCompModel().add(tmQctoSkillsProgramme);
+		
+		String limitByLinkedSDPBpartner = String.format("%s IN (SELECT %s FROM %s WHERE %s = %s)"
+				, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID
+				, I_C_BP_SkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID
+				, I_C_BP_SkillsProgramme.Table_Name
+				, I_C_BP_SkillsProgramme.COLUMNNAME_C_BPartner_ID
+				, sdpAdmin.getC_BPartner_ID());
 		
 		chooseSkillsProgrammeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-			InfoPanelPara.getInstance(I_ZZSkillsProgramme.Table_Name
-					, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID).setMultiChoose(true)
+			InfoPanelPara.getInstance(I_ZZQctoSkillsProgramme.Table_Name
+					, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID).setMultiChoose(true).setWhereClause(limitByLinkedSDPBpartner)
 			,obj -> {
 				Object [] objs = (Object [])obj;
 				List<Object> ids = new ArrayList<>();
@@ -1054,20 +1203,20 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				
 				// build exclude selected ids
 				List<Object> excludeIds = new ArrayList<Object>();
-				tmSkillsProgramme.getRows().forEach(rowModel -> {
-					X_ZZSkillsProgramme skillsProgrammePo = (X_ZZSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZSkillsProgramme.Table_Name);
+				tmQctoSkillsProgramme.getRows().forEach(rowModel -> {
+					X_ZZQctoSkillsProgramme skillsProgrammePo = (X_ZZQctoSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZQctoSkillsProgramme.Table_Name);
 					if (skillsProgrammePo != null) {
-						excludeIds.add(skillsProgrammePo.getZZSkillsProgramme_ID());
+						excludeIds.add(skillsProgrammePo.getZZQctoSkillsProgramme_ID());
 					}
 				});
 				
 				String excludePlaceholde = MasterUtil.createPlaceHoldForInClause(excludeIds);
 				
-				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZSkillsProgramme.Table_ID)
+				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZQctoSkillsProgramme.Table_ID)
 						.createQuery(String.format("%s IN (%s) AND %s NOT IN (%s)", 
-								I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID, 
+								I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID, 
 								placeholders,
-								I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+								I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID,
 								excludePlaceholde), null);
 				
 				ids.addAll(excludeIds);
@@ -1075,11 +1224,11 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				
 				List<PO> selectedSkillsProgramme = skillsProgrammeQuery.list();
 				List<List<PO>> daos = RowData.standardToMultiPo(selectedSkillsProgramme);
-				tmSkillsProgramme.addNewRows(daos);
+				tmQctoSkillsProgramme.addNewRows(daos);
 			});
 		});
 		
-		tmSkillsProgramme.setAfterSave((po, rowModel) -> {
+		tmQctoSkillsProgramme.setAfterSave((po, rowModel) -> {
 			if (po != null)
 				return true;
 			
@@ -1088,15 +1237,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 			X_ZZLinkAssessorSkillsProgramme linkPO = X_ZZLinkAssessorSkillsProgramme.class.cast(po);
 			linkPO.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
 			
-			X_ZZSkillsProgramme skillsProgramme = (X_ZZSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZSkillsProgramme.Table_Name);
-			linkPO.setZZSkillsProgramme_ID(skillsProgramme.getZZSkillsProgramme_ID());
+			X_ZZQctoSkillsProgramme skillsProgramme = (X_ZZQctoSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZQctoSkillsProgramme.Table_Name);
+			linkPO.setZZQctoSkillsProgramme_ID(skillsProgramme.getZZQctoSkillsProgramme_ID());
 			
 			linkPO.saveEx(assessorPerson.get_TrxName());
 			
 			return true;
 		});
 		
-		tmSkillsProgramme.setLoadSavedDataHandle(tableModel -> {
+		tmQctoSkillsProgramme.setLoadSavedDataHandle(tableModel -> {
 			if (assessorPerson != null) {
 				Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorSkillsProgramme.Table_Name)
 				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZAssessorPerson_ID), null);
@@ -1105,15 +1254,15 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				
 				List<PO> linkObjs = linkAssessorQuery.list();
 				
-				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZSkillsProgramme.Table_Name)
+				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZQctoSkillsProgramme.Table_Name)
 				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZAssessorPerson_ID), null);
 				//qualificationQuery.addTableDirectJoin(I_ZZLinkAssessorQualification.Table_Name);
 				skillsProgrammeQuery.addJoinClause(String.format( " JOIN %s ON (%s.%s = %s.%s)", 
 						I_ZZLinkAssessorSkillsProgramme.Table_Name,
 						I_ZZLinkAssessorSkillsProgramme.Table_Name,
-						I_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
-						I_ZZSkillsProgramme.Table_Name,
-						I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID));
+						I_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID,
+						I_ZZQctoSkillsProgramme.Table_Name,
+						I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID));
 				
 				skillsProgrammeQuery.setOrderBy(I_ZZLinkAssessorSkillsProgramme.Table_Name + "." + X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZLinkAssessorSkillsProgramme_ID);
 				skillsProgrammeQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
@@ -1122,18 +1271,18 @@ public class AssessorRegistrationVM extends BaseAppVM {
 				
 				List<List<PO>> savedObjs = RowData.mergedList(linkObjs, skillsProgrammeObjs);
 				
-				tmSkillsProgramme.resetMultiPo(savedObjs);
+				tmQctoSkillsProgramme.resetMultiPo(savedObjs);
 			}
 			 
 		});
 		
-		tmSkillsProgramme.setAfterDelete((trxName, rowModel) -> {
+		tmQctoSkillsProgramme.setAfterDelete((trxName, rowModel) -> {
 			rowModel.getRowData().getDataNullable(I_ZZLinkAssessorSkillsProgramme.Table_Name).deleteEx(true, trxName);
 			return true;
 		});
 		
 		
-		tmSkillsProgramme.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
+		tmQctoSkillsProgramme.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
 			
 			@Override
 			public Boolean apply(RowModel rowModel) {
@@ -1289,7 +1438,7 @@ public class AssessorRegistrationVM extends BaseAppVM {
 	@Override
 	public void doSubmit(String trxName) {
 		if (tmQualificationComp.getRows().size() == 0
-				&& tmSkillsProgramme.getRows().size() == 0) {
+				&& tmQctoSkillsProgramme.getRows().size() == 0) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZAssessorMissingLinkQualificationSkillsProgramme"));
 		}
 		
