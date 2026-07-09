@@ -207,8 +207,10 @@ public class AssessorRegistrationVM extends StepAppVM{
 		String openFormModel = Env.getContext(Env.getCtx(), menuContextInfo.getWinNo(), "+" + MenuContextInfo.OpenFormModelKey);
 		if (MenuContextInfo.OpenFormModelEdit.equals(openFormModel)) {
 			initStepRegistryAssessor();
-		}else {
+		}else if (!isExtensionScope()){
 			initStepIdentity();
+		}else {
+			initStepRegistryAssessor();
 		}
 		
 	}
@@ -1098,7 +1100,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			return true;
 		});
 		
-		tmQualificationLink.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
+		/*tmQualificationLink.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
 			
 			@Override
 			public Boolean apply(RowModel rowModel) {
@@ -1116,7 +1118,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 				
 				return false;
 			}
-		});
+		});*/
 		
 	}
 	private TableModel tmQctoSkillsProgramme;
@@ -1282,7 +1284,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		
-		tmQctoSkillsProgramme.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
+		/*tmQctoSkillsProgramme.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
 			
 			@Override
 			public Boolean apply(RowModel rowModel) {
@@ -1300,7 +1302,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 				
 				return false;
 			}
-		});
+		});*/
 	}
 	
 	
