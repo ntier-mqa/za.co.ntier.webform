@@ -19,14 +19,14 @@
             <include
 			    component="@init(vmAssessor.tmIdentity)"
 			    menuContextInfo="@init(vmAssessor.menuContextInfo)"
-			    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataGridView.zul')))" />
+			    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
         </template>
         
         <template name="registryAssessor">
           <include
 		    component="@init(vmAssessor.tmLinkedBpartner)"
 		    menuContextInfo="@init(vmAssessor.menuContextInfo)"
-		    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+		    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
 		    
            <include
 		    component="@init(vmAssessor.tmNames)"
