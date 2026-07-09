@@ -227,7 +227,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		daoManage.setPoSupplier(I_ZZAssessorPerson.Table_Name, daoManage -> {
 			assessorPerson = new X_ZZAssessorPerson(Env.getCtx(), 0, null);
 			
-			if (moderatorFormUU.equals(adForm.getAD_Form_UU())) {
+			if (isModerator()) {
 				assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Moderator);
 			}else {
 				assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Assessor);
@@ -242,14 +242,13 @@ public class AssessorRegistrationVM extends StepAppVM{
 			initIdentity();
 	}
 	
-	
 	private void initIdentity() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		identityAlternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
+		ListColumnModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
 		cols.add(identityAlternateIDTypeCol);
 		
-		identityIdNoCol = IDCellModel.getIDColumnModel()
+		ColumnModel identityIdNoCol = IDCellModel.getIDColumnModel()
 				.required().setTableName(I_AD_User.Table_Name);
 		cols.add(identityIdNoCol);
 		
@@ -325,11 +324,6 @@ public class AssessorRegistrationVM extends StepAppVM{
 	
 	
 	TableModel tmGeneralDetail;
-	ColumnModel idNoCol;
-	ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
-	
-	ColumnModel identityIdNoCol;
-	ListColumnModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCol;
 	
 	private void initStepRegistryAssessor(){
 		setStep("registryAssessor");
@@ -342,19 +336,6 @@ public class AssessorRegistrationVM extends StepAppVM{
 		}
 		
 		loadData();
-		
-		if (person == null) {
-			@SuppressWarnings("unchecked")
-			ListCellModel<X_ZZ_AlternateIDType> alternateIDTypeCell = (ListCellModel<X_ZZ_AlternateIDType>)tmGeneralDetail.getRow().get(alternateIDTypeCol);
-			@SuppressWarnings("unchecked")
-			ListCellModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCell = (ListCellModel<X_ZZ_AlternateIDType>)tmIdentity.getRow().get(identityAlternateIDTypeCol);
-			
-			alternateIDTypeCell.setValue(identityAlternateIDTypeCell.getSelectedID());
-			
-			CellModel idNoCell = tmGeneralDetail.getRow().get(idNoCol);
-			CellModel identityIdNoCell = tmIdentity.getRow().get(identityIdNoCol);
-			idNoCell.setValue(identityIdNoCell.getValue());
-		}
 	}
 	
 	private void loadForEdit() {
@@ -393,8 +374,9 @@ public class AssessorRegistrationVM extends StepAppVM{
 		daoManage.setDao(person);
 		if (isEditCase) {
 			validateAssessorState(assessorPersonCtx);
-			daoManage.setDao(assessorPersonCtx);
 			assessorPerson = assessorPersonCtx;
+			daoManage.setDao(assessorPerson);
+			
 			isNew = false;
 		}
 	}
@@ -512,29 +494,27 @@ public class AssessorRegistrationVM extends StepAppVM{
 	private void initRegistryAssessorForm() {
 		tmNames = initTbName();
 		initLinkedBpartner();
-		initGeneralDetail();
+		
 		if (!isExtensionScope()) {
+			initGeneralDetail();
 			initContactDetail();
 			initHealthFunction();
 			initAddresss();
 			initEducationDetail();
 		}
-		initQualification(false);
-		initSkillsProgramme(false);
+		initQualification();
+		initSkillsProgramme();
 		initUploadDocument();
 	}
 
-
-	
-	
 	private void initGeneralDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
+		ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
 		alternateIDTypeCol.setReadonly(true);
 		cols.add(alternateIDTypeCol);
 		
-		idNoCol = IDCellModel.getIDColumnModel()
+		ColumnModel idNoCol = IDCellModel.getIDColumnModel()
 				.required().setTableName(I_AD_User.Table_Name);
 		idNoCol.setReadonly(true);
 		cols.add(idNoCol);
@@ -937,7 +917,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 	}
 	
 	TableModel tmQualificationComp;
-	private void initQualification(boolean showApproved) {
+	private void initQualification() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ValueAdaptColumnModel chooseQualificationCol = ValueAdaptCellModel.getValueAdaptColumnModel(
@@ -1070,33 +1050,47 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		tmQualificationLink.setLoadSavedDataHandle(tableModel -> {
-			if (assessorPerson != null) {
-				Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorQualification.Table_Name)
-				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorQualification.COLUMNNAME_ZZAssessorPerson_ID), null);
-				linkAssessorQuery.setOrderBy(X_ZZLinkAssessorQualification.COLUMNNAME_ZZLinkAssessorQualification_ID);
-				linkAssessorQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
+			if (assessorPerson == null && assessorPersonParent == null)
+				return;
+			
+			String where ="""
+		 				ZZLinkAssessorQualification.ZZQctoQualification_ID is not null 
+		 				AND""" + assessorPersonCondition;
 				
-				List<PO> linkObjs = linkAssessorQuery.list();
-				
-				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQctoQualification.Table_Name)
-				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorQualification.COLUMNNAME_ZZAssessorPerson_ID), null);
-				//qualificationQuery.addTableDirectJoin(I_ZZLinkAssessorQualification.Table_Name);
-				qualificationQuery.addJoinClause(String.format( " JOIN %s ON (%s.%s = %s.%s)", 
-						I_ZZLinkAssessorQualification.Table_Name,
-						I_ZZLinkAssessorQualification.Table_Name,
-						I_ZZLinkAssessorQualification.COLUMNNAME_ZZQctoQualification_ID,
-						I_ZZQctoQualification.Table_Name,
-						I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID));
-				
-				qualificationQuery.setOrderBy(I_ZZLinkAssessorQualification.Table_Name + "." + X_ZZLinkAssessorQualification.COLUMNNAME_ZZLinkAssessorQualification_ID);
-				qualificationQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
-				
-				List<PO> qualificationObjs = qualificationQuery.list();
-				
-				List<List<PO>> savedObjs = RowData.mergedList(linkObjs, qualificationObjs);
-				
-				tmQualificationLink.resetMultiPo(savedObjs);
+			String	orderBy = commonOrderBy + ", ZZLinkAssessorQualification_id";
+			
+			Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorQualification.Table_Name)
+			 		.createQuery(where, null);
+			
+			linkAssessorQuery.setOrderBy(orderBy);
+			
+			if(assessorPerson != null) {
+				linkAssessorQuery.setParameters(assessorPerson.getZZAssessorPerson_ID(), assessorPerson.getZZAssessorPerson_ID());
+			}else if (assessorPersonParent != null){
+				linkAssessorQuery.setParameters(assessorPersonParent.getZZAssessorPerson_ID(), assessorPersonParent.getZZAssessorPerson_ID());
 			}
+			
+			List<PO> linkObjs = linkAssessorQuery.list();
+			
+			Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQctoQualification.Table_Name)
+			 		.createQuery(where, null);
+			qualificationQuery.setOrderBy(orderBy);
+			
+			qualificationQuery.addJoinClause("join ZZLinkAssessorQualification on ZZQctoQualification.zzqctoqualification_id = ZZLinkAssessorQualification.zzqctoqualification_id");
+		
+			if(assessorPerson != null) {
+				qualificationQuery.setParameters(assessorPerson.getZZAssessorPerson_ID(), assessorPerson.getZZAssessorPerson_ID());
+			}else if (assessorPersonParent != null){
+				qualificationQuery.setParameters(assessorPersonParent.getZZAssessorPerson_ID(), assessorPersonParent.getZZAssessorPerson_ID());
+			}
+			
+			
+			List<PO> qualificationObjs = qualificationQuery.list();
+			
+			List<List<PO>> savedObjs = RowData.mergedList(linkObjs, qualificationObjs);
+			
+			tmQualificationLink.resetMultiPo(savedObjs);
+			
 			 
 		});
 		
@@ -1105,29 +1099,51 @@ public class AssessorRegistrationVM extends StepAppVM{
 			return true;
 		});
 		
-		/*tmQualificationLink.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
+		tmQualificationLink.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
 			
 			@Override
 			public Boolean apply(RowModel rowModel) {
-				if (assessorPerson == null) {
+				if (assessorPerson == null && assessorPersonParent == null) {
 					return false;
 				}
 				
-				PO linkQua = rowModel.getRowData().getDataNullable(I_ZZLinkAssessorQualification.Table_Name);
+				X_ZZLinkAssessorQualification linkQua = (X_ZZLinkAssessorQualification)rowModel.getRowData().getDataNullable(I_ZZLinkAssessorQualification.Table_Name);
+				
 				if (linkQua == null)
 					return false;
 				
-				if (isExtensionScope() && assessorPerson.getZZSubmittedDate().after(linkQua.getCreated())){
-					return true;
-				}
+				int currentAssessorId = 0;
+				if (assessorPerson != null)
+					currentAssessorId = assessorPerson.getZZAssessorPerson_ID();
 				
-				return false;
+				return linkQua.getZZAssessorPerson_ID() > 0 && linkQua.getZZAssessorPerson_ID() != currentAssessorId;
 			}
-		});*/
+		});
 		
 	}
 	private TableModel tmQctoSkillsProgramme;
-	private void initSkillsProgramme(boolean forShowApproved) {
+	private String assessorPersonCondition =
+			"""
+			\sZZAssessorPerson_ID IN ( 
+			SELECT 
+				cohort.ZZAssessorPerson_ID
+			FROM 
+				ZZAssessorPerson cohort
+				JOIN ZZAssessorPerson input_person ON input_person.ZZAssessorPerson_ID = ?
+			WHERE
+				(input_person.parent_id IS NOT NULL
+					AND (cohort.parent_id = input_person.parent_id OR cohort.ZZAssessorPerson_ID = input_person.parent_id))
+				OR
+				(input_person.parent_id IS NULL 
+					AND (cohort.parent_id = input_person.ZZAssessorPerson_ID OR cohort.ZZAssessorPerson_ID = input_person.ZZAssessorPerson_ID))
+			)\s""";
+	
+	String	commonOrderBy = """
+			\sCASE WHEN ZZAssessorPerson_ID = ? THEN 0 ELSE 1 end DESC
+			, ZZAssessorPerson_ID\s
+			""";
+	
+	private void initSkillsProgramme() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ValueAdaptColumnModel chooseSkillsProgrammeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
@@ -1257,33 +1273,46 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		tmQctoSkillsProgramme.setLoadSavedDataHandle(tableModel -> {
-			if (assessorPerson != null) {
-				Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorSkillsProgramme.Table_Name)
-				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZAssessorPerson_ID), null);
-				linkAssessorQuery.setOrderBy(X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZLinkAssessorSkillsProgramme_ID);
-				linkAssessorQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
-				
-				List<PO> linkObjs = linkAssessorQuery.list();
-				
-				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZQctoSkillsProgramme.Table_Name)
-				 		.createQuery(String.format("%s = ?", X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZAssessorPerson_ID), null);
-				//qualificationQuery.addTableDirectJoin(I_ZZLinkAssessorQualification.Table_Name);
-				skillsProgrammeQuery.addJoinClause(String.format( " JOIN %s ON (%s.%s = %s.%s)", 
-						I_ZZLinkAssessorSkillsProgramme.Table_Name,
-						I_ZZLinkAssessorSkillsProgramme.Table_Name,
-						I_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID,
-						I_ZZQctoSkillsProgramme.Table_Name,
-						I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID));
-				
-				skillsProgrammeQuery.setOrderBy(I_ZZLinkAssessorSkillsProgramme.Table_Name + "." + X_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZLinkAssessorSkillsProgramme_ID);
-				skillsProgrammeQuery.setParameters(assessorPerson.getZZAssessorPerson_ID());
-				
-				List<PO> skillsProgrammeObjs = skillsProgrammeQuery.list();
-				
-				List<List<PO>> savedObjs = RowData.mergedList(linkObjs, skillsProgrammeObjs);
-				
-				tmQctoSkillsProgramme.resetMultiPo(savedObjs);
+			if (assessorPerson == null && assessorPersonParent == null)
+				return;
+			
+			String where ="""
+	 				ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID is not null 
+	 				AND """ + assessorPersonCondition;
+			
+			String	orderBy = commonOrderBy + ", ZZLinkAssessorSkillsProgramme_id";
+					
+			Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorSkillsProgramme.Table_Name)
+			 		.createQuery(where, null);
+			
+			linkAssessorQuery.setOrderBy(orderBy);
+			
+			if(assessorPerson != null) {
+				linkAssessorQuery.setParameters(assessorPerson.getZZAssessorPerson_ID(), assessorPerson.getZZAssessorPerson_ID());
+			}else if (assessorPersonParent != null){
+				linkAssessorQuery.setParameters(assessorPersonParent.getZZAssessorPerson_ID(), assessorPersonParent.getZZAssessorPerson_ID());
 			}
+			
+			List<PO> linkObjs = linkAssessorQuery.list();
+			
+			Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQctoSkillsProgramme.Table_Name)
+			 		.createQuery(where, null);
+			qualificationQuery.setOrderBy(orderBy);
+			
+			qualificationQuery.addJoinClause("join ZZLinkAssessorSkillsProgramme on ZZQctoSkillsProgramme.ZZQctoSkillsProgramme_ID = ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID");
+		
+			if(assessorPerson != null) {
+				qualificationQuery.setParameters(assessorPerson.getZZAssessorPerson_ID(), assessorPerson.getZZAssessorPerson_ID());
+			}else if (assessorPersonParent != null){
+				qualificationQuery.setParameters(assessorPersonParent.getZZAssessorPerson_ID(), assessorPersonParent.getZZAssessorPerson_ID());
+			}
+			
+			
+			List<PO> qualificationObjs = qualificationQuery.list();
+			
+			List<List<PO>> savedObjs = RowData.mergedList(linkObjs, qualificationObjs);
+			
+			tmQctoSkillsProgramme.resetMultiPo(savedObjs);
 			 
 		});
 		
@@ -1293,25 +1322,26 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		
-		/*tmQctoSkillsProgramme.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
+		tmQctoSkillsProgramme.setRowReadonlyLogic(new Function<RowModel, Boolean>() {
 			
 			@Override
 			public Boolean apply(RowModel rowModel) {
-				if (assessorPerson == null) {
+				if (assessorPerson == null && assessorPersonParent == null) {
 					return false;
 				}
 				
-				PO linkQua = rowModel.getRowData().getDataNullable(I_ZZLinkAssessorSkillsProgramme.Table_Name);
+				X_ZZLinkAssessorSkillsProgramme linkQua = (X_ZZLinkAssessorSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZLinkAssessorSkillsProgramme.Table_Name);
+				
 				if (linkQua == null)
 					return false;
 				
-				if (isExtensionScope() && assessorPerson.getZZSubmittedDate().after(linkQua.getCreated())){
-					return true;
-				}
+				int currentAssessorId = 0;
+				if (assessorPerson != null)
+					currentAssessorId = assessorPerson.getZZAssessorPerson_ID();
 				
-				return false;
+				return linkQua.getZZAssessorPerson_ID() > 0 && linkQua.getZZAssessorPerson_ID() != currentAssessorId;
 			}
-		});*/
+		});
 	}
 	
 	

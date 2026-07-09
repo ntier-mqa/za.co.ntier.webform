@@ -149,6 +149,9 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		}
 		
 		public void deleteData(String trxName) {
+			if (!rowModel.isEditable()) {
+				return;
+			}
 			Iterator<Map.Entry<String, PO>> iterator = mData.entrySet().iterator();
 			while (iterator.hasNext()) {
 				Map.Entry<String, PO> entry = iterator.next();
@@ -164,6 +167,9 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		}
 		
 		public void saveDatas(String trxName) {
+			if (!rowModel.isEditable()) {
+				return;
+			}
 			Iterator<Map.Entry<String, PO>> iterator = mData.entrySet().iterator();
 			while (iterator.hasNext()) {
 				Map.Entry<String, PO> entry = iterator.next();
@@ -191,6 +197,12 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		}
 	}
 	
+	/**
+	 * a model isn't update when all columns is ignore
+	 * a model also not update when full row is readonly
+	 * @param tableName
+	 * @return
+	 */
 	public boolean isIgnore (String tableName) {
 		for (ColumnModel colModel : getTableModel().getColumnInfos()) {
 			if (get(colModel).getTableName().equals(tableName) && !get(colModel).isIgnore()) {
@@ -351,6 +363,10 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	public void syncUIToDao(String trxName) {
 		rowInputCheckResult = parseInputState();
 		
+		if (!isEditable()) {
+			return;
+		}
+		
 		if (rowInputCheckResult.getIgnore())
 			return;
 		
@@ -476,6 +492,9 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 	
 	@Override
 	public void saveToDb(String trxName) {
+		if(!isEditable()) {
+			return;
+		}
 		if (getTableModel().getBeforeSave() != null) {
 			getTableModel().getBeforeSave().apply(null, this);
 		}
