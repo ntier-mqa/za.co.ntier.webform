@@ -42,6 +42,7 @@ import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
+import za.co.ntier.api.model.X_C_BP_OC;
 import za.co.ntier.api.model.X_C_BPartner;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
@@ -260,7 +261,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		msgCol.setShowTitle(false);
 		cols.add(msgCol);
 		
-		ColumnModel nextStepCol = CellModel.getColModelForGenericCell("Registry Assessor", null, CellModel.BUTTON_CELL);
+		ColumnModel nextStepCol = CellModel.getColModelForGenericCell("Register Assessor", null, CellModel.BUTTON_CELL);
 		nextStepCol.setShowTitle(false);
 		cols.add(nextStepCol);
 		
@@ -518,8 +519,8 @@ public class AssessorRegistrationVM extends StepAppVM{
 			initAddresss();
 			initEducationDetail();
 		}
-		initQualification();
-		initSkillsProgramme();
+		initQualification(false);
+		initSkillsProgramme(false);
 		initUploadDocument();
 	}
 
@@ -936,7 +937,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 	}
 	
 	TableModel tmQualificationComp;
-	private void initQualification() {
+	private void initQualification(boolean showApproved) {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ValueAdaptColumnModel chooseQualificationCol = ValueAdaptCellModel.getValueAdaptColumnModel(
@@ -1000,12 +1001,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		tabPanelQualificationScope.getCompModel().add(tmQualificationLink);
 		
-		String limitByLinkedSDPBpartner = String.format("%s IN (SELECT %s FROM %s WHERE %s = %s)"
+		String limitByLinkedSDPBpartner = String.format("%s IN (SELECT %s FROM %s WHERE %s = %s AND %s IS NOT NULL AND %s >= CURRENT_DATE::TIMESTAMP AND %s = '%s')"
 				, I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID
 				, I_C_BP_OC.COLUMNNAME_ZZQctoQualification_ID
 				, I_C_BP_OC.Table_Name
 				, I_C_BP_OC.COLUMNNAME_C_BPartner_ID
-				, sdpAdmin.getC_BPartner_ID());
+				, sdpAdmin.getC_BPartner_ID()
+				, I_C_BP_OC.COLUMNNAME_EndDate
+				, I_C_BP_OC.COLUMNNAME_EndDate
+				, I_C_BP_OC.COLUMNNAME_ZZ_Status
+				, X_C_BP_OC.ZZ_STATUS_Accredited);
 		
 		chooseQualificationCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
@@ -1122,7 +1127,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 	}
 	private TableModel tmQctoSkillsProgramme;
-	private void initSkillsProgramme() {
+	private void initSkillsProgramme(boolean forShowApproved) {
 		List<ColumnModel> cols = new ArrayList<>();
 		
 		ValueAdaptColumnModel chooseSkillsProgrammeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
@@ -1186,12 +1191,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		tabPanelSkillsProgramme.getCompModel().add(tmQctoSkillsProgramme);
 		
-		String limitByLinkedSDPBpartner = String.format("%s IN (SELECT %s FROM %s WHERE %s = %s)"
+		String limitByLinkedSDPBpartner = String.format("%s IN (SELECT %s FROM %s WHERE %s = %s AND %s IS NOT NULL AND %s >= CURRENT_DATE::TIMESTAMP AND %s = '%s')"
 				, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID
 				, I_C_BP_SkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID
 				, I_C_BP_SkillsProgramme.Table_Name
 				, I_C_BP_SkillsProgramme.COLUMNNAME_C_BPartner_ID
-				, sdpAdmin.getC_BPartner_ID());
+				, sdpAdmin.getC_BPartner_ID()
+				, I_C_BP_OC.COLUMNNAME_EndDate
+				, I_C_BP_OC.COLUMNNAME_EndDate
+				, I_C_BP_OC.COLUMNNAME_ZZ_Status
+				, X_C_BP_OC.ZZ_STATUS_Accredited);
 		
 		chooseSkillsProgrammeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
