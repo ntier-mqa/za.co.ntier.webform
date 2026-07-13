@@ -225,15 +225,21 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		daoManage.setPoSupplier(I_ZZAssessorPerson.Table_Name, daoManage -> {
-			assessorPerson = new X_ZZAssessorPerson(Env.getCtx(), 0, null);
-			
-			if (isModerator()) {
-				assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Moderator);
-			}else {
-				assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Assessor);
-			}
+			assessorPerson = initAssessor();
 			return assessorPerson;
 		});
+	}
+	
+	private X_ZZAssessorPerson initAssessor() {
+		X_ZZAssessorPerson assessorPerson = new X_ZZAssessorPerson(Env.getCtx(), 0, null);
+		
+		if (isModerator()) {
+			assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Moderator);
+		}else {
+			assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Assessor);
+		}
+		
+		return assessorPerson;
 	}
 	
 	private void initStepIdentity(){
@@ -1458,6 +1464,9 @@ public class AssessorRegistrationVM extends StepAppVM{
 
 	@Override
 	public void doSave(String trxName) {
+		if(assessorPerson == null && isExtensionScope()) {
+			assessorPerson = initAssessor();
+		}
 		boolean isDraft = true;
 		if (assessorPerson != null) {
 			isDraft = assessorPerson.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPerson.getZZ_DocStatus());
