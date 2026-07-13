@@ -1495,12 +1495,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZAssessorWrongStatus"));
 		}
 		
-		super.doSave(trxName);
-		assessorPerson.setAD_User_ID(person.getAD_User_ID());
-		
 		if (isExtensionScope() && isNew) {
 			assessorPerson.setParent_ID(assessorPersonParent.getZZAssessorPerson_ID());
 		}
+		
+		assessorPerson.saveEx(trxName);
+		
+		super.doSave(trxName);
+		
+		assessorPerson.setAD_User_ID(person.getAD_User_ID());
+		
 		assessorPerson.saveEx(trxName);
 	}
 	
