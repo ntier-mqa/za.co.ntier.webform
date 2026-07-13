@@ -251,10 +251,10 @@ public class AssessorRegistrationVM extends StepAppVM{
 	private void initIdentity() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		ListColumnModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
+		identityAlternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
 		cols.add(identityAlternateIDTypeCol);
 		
-		ColumnModel identityIdNoCol = IDCellModel.getIDColumnModel()
+		identityIdNoCol = IDCellModel.getIDColumnModel()
 				.required().setTableName(I_AD_User.Table_Name);
 		cols.add(identityIdNoCol);
 		
@@ -331,6 +331,12 @@ public class AssessorRegistrationVM extends StepAppVM{
 	
 	TableModel tmGeneralDetail;
 	
+	ColumnModel idNoCol;
+	ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
+	
+	ColumnModel identityIdNoCol;
+	ListColumnModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCol;
+	
 	private void initStepRegistryAssessor(){
 		setStep("registryAssessor");
 		
@@ -342,6 +348,19 @@ public class AssessorRegistrationVM extends StepAppVM{
 		}
 		
 		loadData();
+		
+		if (person == null && tmGeneralDetail != null) {
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> alternateIDTypeCell = (ListCellModel<X_ZZ_AlternateIDType>)tmGeneralDetail.getRow().get(alternateIDTypeCol);
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCell = (ListCellModel<X_ZZ_AlternateIDType>)tmIdentity.getRow().get(identityAlternateIDTypeCol);
+						
+			alternateIDTypeCell.setValue(identityAlternateIDTypeCell.getSelectedID());
+			
+			CellModel idNoCell = tmGeneralDetail.getRow().get(idNoCol);
+			CellModel identityIdNoCell = tmIdentity.getRow().get(identityIdNoCol);
+			idNoCell.setValue(identityIdNoCell.getValue());
+		}
 	}
 	
 	private void loadForEdit() {
@@ -516,11 +535,11 @@ public class AssessorRegistrationVM extends StepAppVM{
 	private void initGeneralDetail() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
+		alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
 		alternateIDTypeCol.setReadonly(true);
 		cols.add(alternateIDTypeCol);
 		
-		ColumnModel idNoCol = IDCellModel.getIDColumnModel()
+		idNoCol = IDCellModel.getIDColumnModel()
 				.required().setTableName(I_AD_User.Table_Name);
 		idNoCol.setReadonly(true);
 		cols.add(idNoCol);
