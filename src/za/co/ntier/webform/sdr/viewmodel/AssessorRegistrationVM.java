@@ -1485,6 +1485,9 @@ public class AssessorRegistrationVM extends StepAppVM{
 	public void doSave(String trxName) {
 		if(assessorPerson == null && isExtensionScope()) {
 			assessorPerson = initAssessor();
+			// this case don't show general detail tab because hasn't table model for assessorPerson
+			// need to save it first to get id when save scope
+			assessorPerson.saveEx(trxName);
 		}
 		boolean isDraft = true;
 		if (assessorPerson != null) {
@@ -1498,8 +1501,6 @@ public class AssessorRegistrationVM extends StepAppVM{
 		if (isExtensionScope() && isNew) {
 			assessorPerson.setParent_ID(assessorPersonParent.getZZAssessorPerson_ID());
 		}
-		
-		assessorPerson.saveEx(trxName);
 		
 		super.doSave(trxName);
 		
