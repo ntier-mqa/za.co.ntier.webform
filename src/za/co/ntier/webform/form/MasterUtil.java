@@ -638,6 +638,9 @@ public class MasterUtil {
 			contextVariables = "";
 		}
 		
+		if (contextVariables.length() > 0) {
+			contextVariables += "\n";
+		}
 		contextVariables += buildContextVariables(new ValueNamePair(value, name));
 		
 		openForm(menu.getAD_Form_ID(), contextVariables, menu.isSOTrx());
