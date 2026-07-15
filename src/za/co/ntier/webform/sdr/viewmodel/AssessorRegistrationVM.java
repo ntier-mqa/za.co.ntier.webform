@@ -476,26 +476,36 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		X_ZZAssessorPerson assessorPersonSaved = null;
 		
+		if (person == null && isModerator() && !isExtensionScope()) {
+			MasterUtil.showInfoDialog("ZZAssessorNotExistsAssessor", MasterUtil.fCloseActiveWindow);
+			return;
+		}
+		
 		if (person != null) {
 			daoManage.setDao(person);
+			if (isModerator() && !isExtensionScope()) {
+				Query existAssessorQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
+						.createQuery("""
+								ZZAssessorPerson.AD_User_ID = ?
+								AND ZZAssessorPerson.Parent_ID IS NULL
+								AND ZZAssessorPerson.ZZAssessorRole = ?
+								AND ZZAssessorPerson.ZZ_DocStatus = ?
+								""", null);
+				existAssessorQuery.setParameters(person.getAD_User_ID(), X_ZZAssessorPerson.ZZASSESSORROLE_Assessor, X_ZZAssessorPerson.ZZ_DOCSTATUS_Approved);
+				existAssessorQuery.setOnlyActiveRecords(true);
+				if (existAssessorQuery.first() == null) {
+					MasterUtil.showInfoDialog("ZZAssessorNotExistsAssessor", MasterUtil.fCloseActiveWindow);
+					return;
+				}
+			}
+			
 			// load draft assessor
 			Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
-					.createQuery(String.format("""
-							%s.%s = ? 
-							AND (CASE WHEN %s.%s IS NULL THEN 'N' ELSE 'Y' END) = ?
-							AND (CASE WHEN %s.%s IS NULL THEN %s.%s ELSE parent.%s END) = ?
-							"""
-							// scope extension condition
-							// role condition
-							, I_ZZAssessorPerson.Table_Name
-							, I_ZZAssessorPerson.COLUMNNAME_AD_User_ID
-							, I_ZZAssessorPerson.Table_Name
-							, I_ZZAssessorPerson.COLUMNNAME_Parent_ID
-							, I_ZZAssessorPerson.Table_Name
-							, I_ZZAssessorPerson.COLUMNNAME_Parent_ID
-							, I_ZZAssessorPerson.Table_Name
-							, I_ZZAssessorPerson.COLUMNNAME_ZZAssessorRole
-							, I_ZZAssessorPerson.COLUMNNAME_ZZAssessorRole), null);
+					.createQuery("""
+							ZZAssessorPerson.AD_User_ID = ?
+							AND (CASE WHEN ZZAssessorPerson.Parent_ID IS NULL THEN 'N' ELSE 'Y' END) = ?
+							AND (CASE WHEN ZZAssessorPerson.Parent_ID IS NULL THEN ZZAssessorPerson.ZZAssessorRole ELSE parent.ZZAssessorRole END) = ?
+							""", null);
 			
 			
 			savedDataQuery.addJoinClause(String.format("LEFT JOIN %s parent ON (%s.%s = parent.%s)"
@@ -504,12 +514,12 @@ public class AssessorRegistrationVM extends StepAppVM{
 					, I_ZZAssessorPerson.COLUMNNAME_Parent_ID
 					, I_ZZAssessorPerson.COLUMNNAME_ZZAssessorPerson_ID));
 
-			savedDataQuery.setOrderBy(String.format("(%s.%s = '%s') DESC, %s.%s DESC" // sort to get draft and latest scope extension when multi exists 
-					, I_ZZAssessorPerson.Table_Name
-					, X_ZZAssessorPerson.COLUMNNAME_ZZ_DocStatus
-					, X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft
-					, I_ZZAssessorPerson.Table_Name
-					, I_ZZAssessorPerson.COLUMNNAME_Created));
+			if (isExtensionScope()) {
+				savedDataQuery.setOrderBy(// sort to get draft and latest scope extension when multi exists 
+						"""
+						(ZZAssessorPerson.ZZ_DocStatus = 'DR') DESC, ZZAssessorPerson.Created DESC
+						""");
+			}
 			
 			String role = X_ZZAssessorPerson.ZZASSESSORROLE_Assessor;
 			if (isModerator()) {
