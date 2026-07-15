@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -521,14 +522,32 @@ public class AssessorRegistrationVM extends StepAppVM{
 						""");
 			}
 			
+			if (!isModerator() && !isExtensionScope()) {
+				savedDataQuery.setOrderBy( 
+						"""
+						(ZZAssessorPerson.ZZ_DocStatus <> 'AP') DESC, ZZAssessorPerson.EndDate
+						""");
+			}
+			
 			String role = X_ZZAssessorPerson.ZZASSESSORROLE_Assessor;
 			if (isModerator()) {
 				role = X_ZZAssessorPerson.ZZASSESSORROLE_Moderator;
 			}
 			savedDataQuery.setParameters(person.getAD_User_ID(), isExtensionScope(), role);
 			savedDataQuery.setOnlyActiveRecords(true);
-			assessorPersonSaved = savedDataQuery.firstOnly();
+			assessorPersonSaved = savedDataQuery.first();
 
+			if (!isModerator() && !isExtensionScope() && assessorPersonSaved != null && assessorPersonSaved.getEndDate() != null) {
+				LocalDate endDate = assessorPersonSaved.getEndDate().toLocalDateTime().toLocalDate();
+
+				LocalDate moment = LocalDate.now(); 
+
+				boolean isAfterMoment = moment.isAfter(endDate);
+				
+				if (isAfterMoment) {
+					assessorPersonSaved = null;
+				}
+			}
 		}else {
 			daoManage.resetDao(I_AD_User.Table_Name);
 			//firstNameCol.setDefaultValue(null);
