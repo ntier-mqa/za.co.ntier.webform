@@ -3,10 +3,12 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
@@ -19,6 +21,7 @@ import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_Location;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -341,11 +344,12 @@ public class AssessorRegistrationVM extends StepAppVM{
 		setStep("registryAssessor");
 		
 		setMainTab(new NavTab());
-		initRegistryAssessorForm();
 		
 		if (getMenuContextInfo().getRecordID() > 0) {
 			loadForEdit();
 		}
+		
+		initRegistryAssessorForm();
 		
 		loadData();
 		
@@ -404,8 +408,53 @@ public class AssessorRegistrationVM extends StepAppVM{
 			
 			isNew = false;
 		}
+		
+		selectedQuaIDs = querySelectedScopeID(true);
+		selectedSkillsIDs = querySelectedScopeID(false);
+		
 	}
-
+	
+	int [] selectedQuaIDs;
+	int [] selectedSkillsIDs;
+	private int [] querySelectedScopeID (boolean quaID){
+		if (!isExtensionScope()) {
+			return new int [] {0};
+		}
+		
+		int parentId = 0;
+		int curId = 0;
+		if (assessorPersonParent != null) {
+			parentId = assessorPersonParent.getZZAssessorPerson_ID();
+		}else if (assessorPerson != null) {
+			parentId = assessorPerson.getZZAssessorPerson_ID();
+		}else {
+			throw new AdempiereException("ZZAssessorWrongFormState");
+		}
+		
+		if (assessorPerson != null) {
+			curId = assessorPerson.getZZAssessorPerson_ID();
+		}
+		
+		int [] scopeIds =  DB.getIDsEx(null, String.format("""
+				SELECT %s FROM %s WHERE ZZAssessorPerson_ID IN  (
+					%s
+					WHERE input_person.ZZAssessorPerson_ID = ? and cohort.ZZAssessorPerson_ID != ?
+				)
+				"""
+				, quaID?I_ZZLinkAssessorQualification.COLUMNNAME_ZZQctoQualification_ID:I_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID
+				, quaID?I_ZZLinkAssessorQualification.Table_Name:I_ZZLinkAssessorSkillsProgramme.Table_Name
+				, assessorTreeQuery
+				)
+				,parentId
+				, curId);
+		
+		if (scopeIds.length == 0)
+			scopeIds = new int [] {0};
+					
+		return scopeIds;
+					
+	}
+	
 	void validateAssessorState(X_ZZAssessorPerson assessorPersonValidate) {
 		boolean isDraft = assessorPersonValidate.getZZ_DocStatus() == null || X_ZZAssessorPerson.ZZ_DOCSTATUS_Draft.equals(assessorPersonValidate.getZZ_DocStatus());
 		if (!isDraft) {
@@ -942,6 +991,57 @@ public class AssessorRegistrationVM extends StepAppVM{
 	}
 	
 	TableModel tmQualificationComp;
+	private String getQuaInfoWhere() {
+		String limitByLinkedSDPBpartner = String.format("""
+				\sZZQctoQualification_ID in (
+					select
+						ZZQctoQualification_ID
+					from
+						C_BP_OC
+					where
+						C_BPartner_ID = %s
+						and EndDate is not null
+						and EndDate >= CURRENT_DATE::TIMESTAMP
+						and ZZ_Status = 'AC')\s
+				"""
+				, sdpAdmin.getC_BPartner_ID());
+		
+		if(isExtensionScope()) {
+			String inValues = Arrays.stream(selectedQuaIDs)
+                    .mapToObj(String::valueOf)
+                    .collect(Collectors.joining(", "));
+			
+			limitByLinkedSDPBpartner += " AND ZZQctoQualification_ID NOT IN (" + inValues +  ")";
+		}
+		
+		return limitByLinkedSDPBpartner;
+	}
+	
+	private String getSkillsInfoWhere() {
+		String limitByLinkedSDPBpartner = String.format("""
+				\sZZQctoSkillsProgramme_ID in (
+				select
+					ZZQctoSkillsProgramme_ID
+				from
+					C_BP_SkillsProgramme
+				where
+					C_BPartner_ID = %s
+					and EndDate is not null
+					and EndDate >= CURRENT_DATE::TIMESTAMP
+					and ZZ_Status = 'AC')\s
+				"""
+				, sdpAdmin.getC_BPartner_ID());
+		
+		if(isExtensionScope()) {
+			String inValues = Arrays.stream(selectedSkillsIDs)
+                    .mapToObj(String::valueOf)
+                    .collect(Collectors.joining(", "));
+			
+			limitByLinkedSDPBpartner += " AND ZZQctoSkillsProgramme_ID NOT IN (" + inValues +  ")";
+		}
+		
+		return limitByLinkedSDPBpartner;
+	}
 	private void initQualification() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
@@ -1006,22 +1106,11 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		tabPanelQualificationScope.getCompModel().add(tmQualificationLink);
 		
-		String limitByLinkedSDPBpartner = String.format("%s IN (SELECT %s FROM %s WHERE %s = %s AND %s IS NOT NULL AND %s >= CURRENT_DATE::TIMESTAMP AND %s = '%s')"
-				, I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID
-				, I_C_BP_OC.COLUMNNAME_ZZQctoQualification_ID
-				, I_C_BP_OC.Table_Name
-				, I_C_BP_OC.COLUMNNAME_C_BPartner_ID
-				, sdpAdmin.getC_BPartner_ID()
-				, I_C_BP_OC.COLUMNNAME_EndDate
-				, I_C_BP_OC.COLUMNNAME_EndDate
-				, I_C_BP_OC.COLUMNNAME_ZZ_Status
-				, X_C_BP_OC.ZZ_STATUS_Accredited);
-		
 		chooseQualificationCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
 					
 			InfoPanelPara.getInstance(I_ZZQctoQualification.Table_Name
-					, I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID).setMultiChoose(true).setWhereClause(limitByLinkedSDPBpartner)
+					, I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID).setMultiChoose(true).setWhereClause(getQuaInfoWhere())
 			, obj -> {
 				// build include selected ids
 				Object [] objs = (Object [])obj;
@@ -1078,9 +1167,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (assessorPerson == null && assessorPersonParent == null)
 				return;
 			
-			String where ="""
-		 				ZZLinkAssessorQualification.ZZQctoQualification_ID is not null 
-		 				AND""" + assessorPersonCondition;
+			String where =" ZZLinkAssessorQualification.ZZQctoQualification_ID is not null AND " + assessorPersonCondition;
 				
 			String	orderBy = commonOrderBy + ", ZZLinkAssessorQualification_id";
 			
@@ -1147,21 +1234,20 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 	}
 	private TableModel tmQctoSkillsProgramme;
-	private String assessorPersonCondition =
-			"""
-			\sZZAssessorPerson_ID IN ( 
-			SELECT 
-				cohort.ZZAssessorPerson_ID
-			FROM 
-				ZZAssessorPerson cohort
-				JOIN ZZAssessorPerson input_person ON input_person.ZZAssessorPerson_ID = ?
-			WHERE
-				(input_person.parent_id IS NOT NULL
-					AND (cohort.parent_id = input_person.parent_id OR cohort.ZZAssessorPerson_ID = input_person.parent_id))
-				OR
-				(input_person.parent_id IS NULL 
-					AND (cohort.parent_id = input_person.ZZAssessorPerson_ID OR cohort.ZZAssessorPerson_ID = input_person.ZZAssessorPerson_ID))
-			)\s""";
+	private String assessorTreeQuery = """
+			\sSELECT cohort.ZZAssessorPerson_ID
+			 FROM ZZAssessorPerson input_person
+    
+			 	INNER JOIN ZZAssessorPerson cohort 
+			   	ON (
+			       (input_person.parent_id IS NOT NULL 
+			        AND (cohort.parent_id = input_person.parent_id OR cohort.ZZAssessorPerson_ID = input_person.parent_id))
+			       OR
+			       (input_person.parent_id IS NULL 
+			        AND (cohort.parent_id = input_person.ZZAssessorPerson_ID OR cohort.ZZAssessorPerson_ID = input_person.ZZAssessorPerson_ID))
+			   )\s""";
+	private String assessorPersonCondition = "\sZZAssessorPerson_ID IN (" + assessorTreeQuery + 
+			" WHERE input_person.ZZAssessorPerson_ID = ?)";
 	
 	String	commonOrderBy = """
 			\sCASE WHEN ZZAssessorPerson_ID = ? THEN 0 ELSE 1 end DESC
@@ -1232,21 +1318,10 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		tabPanelSkillsProgramme.getCompModel().add(tmQctoSkillsProgramme);
 		
-		String limitByLinkedSDPBpartner = String.format("%s IN (SELECT %s FROM %s WHERE %s = %s AND %s IS NOT NULL AND %s >= CURRENT_DATE::TIMESTAMP AND %s = '%s')"
-				, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID
-				, I_C_BP_SkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID
-				, I_C_BP_SkillsProgramme.Table_Name
-				, I_C_BP_SkillsProgramme.COLUMNNAME_C_BPartner_ID
-				, sdpAdmin.getC_BPartner_ID()
-				, I_C_BP_OC.COLUMNNAME_EndDate
-				, I_C_BP_OC.COLUMNNAME_EndDate
-				, I_C_BP_OC.COLUMNNAME_ZZ_Status
-				, X_C_BP_OC.ZZ_STATUS_Accredited);
-		
 		chooseSkillsProgrammeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
 			InfoPanelPara.getInstance(I_ZZQctoSkillsProgramme.Table_Name
-					, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID).setMultiChoose(true).setWhereClause(limitByLinkedSDPBpartner)
+					, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID).setMultiChoose(true).setWhereClause(getSkillsInfoWhere())
 			,obj -> {
 				Object [] objs = (Object [])obj;
 				List<Object> ids = new ArrayList<>();
@@ -1301,9 +1376,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (assessorPerson == null && assessorPersonParent == null)
 				return;
 			
-			String where ="""
-	 				ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID is not null 
-	 				AND """ + assessorPersonCondition;
+			String where =" ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID is not null AND " + assessorPersonCondition;
 			
 			String	orderBy = commonOrderBy + ", ZZLinkAssessorSkillsProgramme_id";
 					
