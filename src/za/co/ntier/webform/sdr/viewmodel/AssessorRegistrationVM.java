@@ -1059,7 +1059,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 					C_BP_SkillsProgramme
 				where
 					C_BPartner_ID = %s
-					Parent_ID IS NULL
+					and Parent_ID IS NULL
 					and EndDate is not null
 					and EndDate >= CURRENT_DATE::TIMESTAMP
 					and ZZ_Status = 'AC')\s
