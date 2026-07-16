@@ -526,7 +526,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 						""");
 			}
 			
-			if (!isModerator() && !isExtensionScope()) {
+			if (!isExtensionScope()) {
 				savedDataQuery.setOrderBy( 
 						"""
 						(ZZAssessorPerson.ZZ_DocStatus <> 'AP') DESC, ZZAssessorPerson.EndDate DESC
@@ -541,7 +541,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			savedDataQuery.setOnlyActiveRecords(true);
 			assessorPersonSaved = savedDataQuery.first();
 
-			if (!isModerator() && !isExtensionScope() && assessorPersonSaved != null && assessorPersonSaved.getEndDate() != null) {
+			if (!isExtensionScope() && assessorPersonSaved != null && assessorPersonSaved.getEndDate() != null) {
 				LocalDate endDate = assessorPersonSaved.getEndDate().toLocalDateTime().toLocalDate();
 
 				LocalDate moment = LocalDate.now(); 
