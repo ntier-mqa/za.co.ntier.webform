@@ -178,7 +178,9 @@ public class AssessorRegistrationVM extends StepAppVM{
 			
 			// MasterUtil.sentEmailSdf(EmailTemplateAssessorRegistrationConfirmation_UU, assessorPerson, person);
 		}
-		if(isNew) {
+		if(isSubmit) {
+			MasterUtil.showInfoDialog("ZZAssessorSubmitedSuccess", MasterUtil.fCloseActiveWindow);
+		}if(isNew) {
 			MasterUtil.showInfoDialog("ZZAssessorCreatedSuccess", MasterUtil.fCloseActiveWindow);
 		}else {
 			MasterUtil.showInfoDialog("ZZAssessorSavedSuccess", MasterUtil.fCloseActiveWindow);
