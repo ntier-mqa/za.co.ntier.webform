@@ -1203,7 +1203,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (assessorPerson == null && assessorPersonParent == null)
 				return;
 			
-			String where =" ZZLinkAssessorQualification.ZZQctoQualification_ID is not null AND " + assessorPersonCondition;
+			String where =" ZZLinkAssessorQualification.ZZQctoQualification_ID is not null AND ZZLinkAssessorQualification.zz_isrecommended = 'Y' " + assessorPersonCondition;
 				
 			String	orderBy = commonOrderBy + ", ZZLinkAssessorQualification_id";
 			
@@ -1412,7 +1412,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (assessorPerson == null && assessorPersonParent == null)
 				return;
 			
-			String where =" ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID is not null AND " + assessorPersonCondition;
+			String where =" ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID is not null AND ZZLinkAssessorSkillsProgramme.zz_isrecommended = 'Y' AND " + assessorPersonCondition;
 			
 			String	orderBy = commonOrderBy + ", ZZLinkAssessorSkillsProgramme_id";
 					
