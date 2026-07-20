@@ -293,9 +293,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			return nContact; 
 		});
 		
-		orgContactDetailBean.setBeforeSave((po, rowModel) -> {
-			if (po != null && po.get_TableName().equals(I_AD_User.Table_Name)) {
-				MUser_New user = (MUser_New)po;
+		orgContactDetailBean.setBeforeSave((rowDbEventArgs) -> {
+			if (rowDbEventArgs.isPOEven() && rowDbEventArgs.po().get_TableName().equals(I_AD_User.Table_Name)) {
+				MUser_New user = (MUser_New)rowDbEventArgs.po();
 				if (user.getName() == null) {
 					user.setName(user.getZZFirstName());
 				}
@@ -611,14 +611,14 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			return childOrgLink;
 		});
 		
-		tmChildOrgModel.setBeforeSave((po, rowModel) -> {
-			if (po == null)
+		tmChildOrgModel.setBeforeSave((rowDbEventArgs) -> {
+			if (!rowDbEventArgs.isPOEven())
 				return true;
 			
-			X_ZZOrganisationLinkage childOrgLink = (X_ZZOrganisationLinkage)po;
+			X_ZZOrganisationLinkage childOrgLink = (X_ZZOrganisationLinkage)rowDbEventArgs.po();
 			childOrgLink.setBPartner_Parent_ID(orgPO.getC_BPartner_ID());
 			
-			String sdlNo = (String)rowModel.get(childSdlNoCol).getValue();
+			String sdlNo = (String)rowDbEventArgs.row().get(childSdlNoCol).getValue();
 			MBPartner_New childOrg = MBPartner_New.get(Env.getCtx(), sdlNo);
 			childOrgLink.setC_BPartner_ID(childOrg.getC_BPartner_ID());
 			return true;
@@ -705,11 +705,11 @@ public class MaintainOrganisationVM extends BaseAppVM {
 			return orgTrainingCommittee;
 		});
 		
-		tmTrainingCommittee.setBeforeSave((po, rowModel) -> {
-			if (po == null)
+		tmTrainingCommittee.setBeforeSave((rowDbEventArgs) -> {
+			if (!rowDbEventArgs.isPOEven())
 				return true;
 			
-			X_ZZOrgTrainingCommittee orgTrainingCommittee = (X_ZZOrgTrainingCommittee)po;
+			X_ZZOrgTrainingCommittee orgTrainingCommittee = (X_ZZOrgTrainingCommittee)rowDbEventArgs.po();
 			orgTrainingCommittee.setC_BPartner_ID(orgPO.getC_BPartner_ID());
 			return true;
 		});

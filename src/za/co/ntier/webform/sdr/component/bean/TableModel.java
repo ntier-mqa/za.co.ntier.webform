@@ -31,6 +31,7 @@ import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.viewmodel.BaseAppVM;
 
 public class TableModel implements ISaveForm {
 	/**
@@ -443,17 +444,44 @@ public class TableModel implements ISaveForm {
 
 	private Consumer<RowModel> decoratorCell;
 	
+	public static record RowDbEventArgs(PO po, RowModel row, String trxName) {
+		public static RowDbEventArgs getTableEvent(String trxName) {
+			return new RowDbEventArgs(null, null, trxName);
+		}
+		
+		public static RowDbEventArgs getRowEvent(RowModel row, String trxName) {
+			return new RowDbEventArgs(null, row, trxName);
+		}
+		
+		public static RowDbEventArgs getPOEvent(PO po, RowModel row, String trxName) {
+			return new RowDbEventArgs(po, row, trxName);
+		}
+		
+		public boolean isTableEven() {
+			return po == null && row == null;
+		}
+		
+		public boolean isRowEven() {
+			return po == null && row != null;
+		}
+		
+		public boolean isPOEven() {
+			return po != null && row != null;
+		}
+	}
 	/**
 	 * it happen before call saveEx on each po (of row)
 	 * in case call before save all po then PO = null
+	 * in case call before all row then po = null and rowmodel = null
 	 */
-	private BiFunction<PO, RowModel, Boolean> beforeSave;
+	private Function<RowDbEventArgs, Boolean> beforeSave;
 	
 	/**
 	 * it happen after call saveEx on each po (of row)
 	 * in case call after save all po then PO = null
+	 * in case call after all row then po = null and rowmodel = null
 	 */
-	private BiFunction<PO, RowModel, Boolean> afterSave;
+	private Function<RowDbEventArgs, Boolean> afterSave;
 	
 	private BiFunction<ISaveForm, String, Boolean> afterAppSaveHandle;
 	public void setAfterAppSave(BiFunction<ISaveForm, String, Boolean> afterAppSaveHandle) {
@@ -891,6 +919,12 @@ public class TableModel implements ISaveForm {
 		
 	}
 	
+	public void syncDaoToUI() {
+		for(RowModel row:rows) {
+			row.fillRowDataFromDao();
+		}
+	}
+	
 	private Consumer<RowModel> afterFillFromDaoHandle;
 	
 	/**
@@ -1021,15 +1055,36 @@ public class TableModel implements ISaveForm {
 	public boolean validate(Boolean isSubmit) {
 		return ISaveForm.validates(getValidateRows(), null);
 	}
+	
+	private Function<RowModel, Boolean> rowSaveFilter;
+	
+	public void setRowSaveFilter(Function<RowModel, Boolean> rowSaveFilter) {
+		this.rowSaveFilter = rowSaveFilter;
+	}
+	
 	@Override
 	public void saveToDb(String trxName) {
-		ISaveForm.batchSaveToDb(getRows(), trxName);
+		if (getBeforeSave() != null) {
+			getBeforeSave().apply(RowDbEventArgs.getTableEvent(trxName));
+		}
 		
+		ISaveForm.batchSaveToDb(getRows().stream().filter(rowModel -> {
+			if (rowSaveFilter == null)
+				return true;
+			
+			return rowSaveFilter.apply(rowModel);
+		}).toList(), trxName);
+		
+		
+		if (getAfterSave() != null) {
+			getAfterSave().apply(RowDbEventArgs.getTableEvent(trxName));
+		}
 	}
-	public BiFunction<PO, RowModel, Boolean> getBeforeSave() {
+	public Function<RowDbEventArgs, Boolean> getBeforeSave() {
 		return beforeSave;
 	}
-	public void setBeforeSave(BiFunction<PO, RowModel, Boolean> beforeSave) {
+	
+	public void setBeforeSave(Function<RowDbEventArgs, Boolean> beforeSave) {
 		this.beforeSave = beforeSave;
 	}
 	
@@ -1081,10 +1136,10 @@ public class TableModel implements ISaveForm {
 		this.used = used;
 		BindUtils.postNotifyChange(this, "used");
 	}
-	public BiFunction<PO, RowModel, Boolean> getAfterSave() {
+	public Function<RowDbEventArgs, Boolean> getAfterSave() {
 		return afterSave;
 	}
-	public void setAfterSave(BiFunction<PO, RowModel, Boolean> afterSave) {
+	public void setAfterSave(Function<RowDbEventArgs, Boolean> afterSave) {
 		this.afterSave = afterSave;
 	}
 	public Consumer<RowModel> getAfterFillFromDaoHandle() {

@@ -149,9 +149,9 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		initUser();
 		initRoleAssign();
 		
-		tmContactDetail.setAfterSave((po, rowModel) -> {
-			if (po != null && I_AD_User.Table_Name.equals(po.get_TableName())) {
-				MUser_New user = (MUser_New)po;
+		tmContactDetail.setAfterSave((rowDbEventArgs) -> {
+			if (rowDbEventArgs.isPOEven() && I_AD_User.Table_Name.equals(rowDbEventArgs.po().get_TableName())) {
+				MUser_New user = (MUser_New)rowDbEventArgs.po();
 				for(RowModel roleAssignRow:tmRoleAssign.getRows()) {
 					X_AD_User_Roles roleAssign = roleAssignRow.getDataOneRow(X_AD_User_Roles.class, X_AD_User_Roles.Table_Name);
 					roleAssign.setAD_User_ID(user.getAD_User_ID());
@@ -160,9 +160,9 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 			return true;
 		});
 		
-		tmContactDetail.setBeforeSave((po, rowModel) -> {
-			if (po != null) {
-				MUser_New user = (MUser_New)po;
+		tmContactDetail.setBeforeSave((rowDbEventArgs) -> {
+			if (rowDbEventArgs.isPOEven()) {
+				MUser_New user = (MUser_New)rowDbEventArgs.po();
 				if (user.getName() == null)
 					user.setName(user.getZZFirstName());
 				

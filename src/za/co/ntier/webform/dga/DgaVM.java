@@ -51,6 +51,7 @@ import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.TableModel.RowDbEventArgs;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
@@ -160,12 +161,12 @@ public class DgaVM extends BaseAppVM{
 
 	}
 	
-	BiFunction<PO, RowModel, Boolean> beforeSave = (po, rowModel) -> {
-		if (po == null)
+	Function<RowDbEventArgs, Boolean> beforeSave = (rowDbEventArgs) -> {
+		if (!rowDbEventArgs.isPOEven())
 			return true;
 		
-		if (po.get_TableName().equals(X_ZZ_Application_Form.Table_Name) || 
-				po.get_ColumnIndex(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) < 0
+		if (rowDbEventArgs.po().get_TableName().equals(X_ZZ_Application_Form.Table_Name) || 
+				rowDbEventArgs.po().get_ColumnIndex(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) < 0
 				){
 			return Boolean.TRUE;
 		}
@@ -174,8 +175,8 @@ public class DgaVM extends BaseAppVM{
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZDGAAppNotYetInitAppForm"));
 		}
 		
-		if (po.get_Value(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) == null) {
-			po.set_ValueOfColumn(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, applicationForm.getZZ_Application_Form_ID());
+		if (rowDbEventArgs.po().get_Value(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID) == null) {
+			rowDbEventArgs.po().set_ValueOfColumn(X_ZZ_Application_Form.COLUMNNAME_ZZ_Application_Form_ID, applicationForm.getZZ_Application_Form_ID());
 		}
 		return Boolean.TRUE;
 		

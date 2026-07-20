@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -39,7 +40,9 @@ import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.X_ZZLearnerQCTOArtisans;
 import za.co.ntier.api.model.X_ZZLearnerQCTOLearnership;
 import za.co.ntier.api.model.X_ZZLearnerQCTOSkillsProgramme;
+import za.co.ntier.api.model.X_ZZLearnerQctoLearnershipAssessments;
 import za.co.ntier.api.model.X_ZZLearner_v;
+import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZQctoLearnership;
 import za.co.ntier.api.model.X_ZZQctoLearnershipModule;
 import za.co.ntier.api.model.X_ZZQctoModule;
@@ -50,6 +53,8 @@ import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
+import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
@@ -58,6 +63,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ValueAdaptCellModel;
+import za.co.ntier.webform.sdr.component.bean.column.CheckboxColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
 import za.co.ntier.webform.sdr.viewmodel.BaseAppVM.InfoPanelPara;
@@ -273,8 +279,25 @@ public class LearnerAssessmentVM extends StepAppVM{
 			moduleAssessmentsQuery.setParameters(ids);
 			List<PO> modules = moduleAssessmentsQuery.list();
 			
-			//TODO user mergedList to append I_ZZLearnerQctoLearnershipAssessments
-			tmQctoLearnershipAssessments.resetMultiPo(RowData.standardToMultiPo(modules));
+			Query learnerAssessmentsQuery = MTable.get(Env.getCtx(), I_ZZLearnerQctoLearnershipAssessments.Table_Name).createQuery(
+					String.format("%s IN (%s) AND %s = ?"
+							, X_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZQctoModule_ID
+							, placeholders
+							, X_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZLearnerQCTOLearnership_ID
+							), null);
+			
+			List<Object> learnerAssessmentsParas = new ArrayList<Object>(ids);
+			learnerAssessmentsParas.add(learnerQCTOLearnership.getZZLearnerQCTOLearnership_ID());
+			learnerAssessmentsQuery.setParameters(learnerAssessmentsParas);
+			List<PO> learnerAssessments = learnerAssessmentsQuery.list();
+			
+			List<List<PO>> loadSavedDatas = RowData.mergedList(modules, learnerAssessments, (po1, po2) -> {
+				X_ZZQctoModule module = (X_ZZQctoModule)po1;
+				X_ZZLearnerQctoLearnershipAssessments learnerAssessment = (X_ZZLearnerQctoLearnershipAssessments)po2;
+				return learnerAssessment.getZZQctoModule_ID() != 0 && learnerAssessment.getZZQctoModule_ID() == module.getZZQctoModule_ID();
+			});
+			
+			tmQctoLearnershipAssessments.resetMultiPo(loadSavedDatas);
 		}
 		
 		
@@ -398,66 +421,116 @@ public class LearnerAssessmentVM extends StepAppVM{
 		
 	}
 	
+	public static void setupAssessorSearchCol(ValueAdaptColumnModel chooseAssessorCol, String where) {
+		chooseAssessorCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+			InfoPanelPara.getInstance(I_ZZAssessorPerson_v.Table_Name
+					, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_v_ID).setWhereClause(where)
+			, obj -> {
+				Object [] objs = (Object [])obj;
+				int assessorID = (int)objs[0];
+				
+				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorID, null); 
+				cellModel.setValue(assessor);
+			});
+		});
+		
+		chooseAssessorCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+
+			X_ZZAssessorPerson_v Assessor = (X_ZZAssessorPerson_v) value;
+			return Assessor.getZZFirstName() + " " + Assessor.getZZSurname();
+		});
+
+		chooseAssessorCol.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+
+			X_ZZAssessorPerson_v schoolEmis = (X_ZZAssessorPerson_v) value;
+			return schoolEmis.getZZAssessorPerson_ID();
+		});
+
+		chooseAssessorCol.setValueFromDaoAdaptHandle(obj -> {
+			if (obj == null)
+				return null;
+
+			Integer id = Integer.class.cast(obj);
+			if (id == 0)
+				return null;
+
+			return new X_ZZAssessorPerson_v(Env.getCtx(), id, null);
+		});
+	}
+	
+	ValueAdaptColumnModel chooseAssessorCol;
+	ColumnModel assessmentDate;
+	ValueAdaptColumnModel chooseModeratorCol;
+	ColumnModel moderationDatecol;
+	CheckboxColumnModel competentCol;
+	ColumnModel rplcol;
 	public void initAssessmentParam() {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ValueAdaptColumnModel chooseAssessorCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+		chooseAssessorCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID), 
 				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID, 
 				CellModel.SEARCH_CELL);
 		
 		cols.add(chooseAssessorCol);
 		
-		ColumnModel col = DateCellModel.getDateColumnModel(
+		assessmentDate = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessmentDate)
 				, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessmentDate
 				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
-		cols.add(col);
+		cols.add(assessmentDate);
 		
-		ValueAdaptColumnModel chooseModeratorCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+		chooseModeratorCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerator_ID), 
 				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerator_ID, 
 				CellModel.SEARCH_CELL);
 		
 		cols.add(chooseModeratorCol);
 		
-		col = DateCellModel.getDateColumnModel(
+		moderationDatecol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate)
 				, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate
 				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
-		cols.add(col);
+		cols.add(moderationDatecol);
 		
-		col = CheckboxCellModel.getCheckboxColModel(
+		competentCol = CheckboxCellModel.getCheckboxColModel(
 				"Competent"
 				, null
 				);
-		cols.add(col);
+		cols.add(competentCol);
 		
-		col = CheckboxCellModel.getCheckboxColModel(
+		rplcol = CheckboxCellModel.getCheckboxColModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZRPL)
 				, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZRPL
 				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
-		cols.add(col);
+		cols.add(rplcol);
 		
-		chooseAssessorCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-			InfoPanelPara.getInstance(I_ZZAssessorPerson_v.Table_Name
-					, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_v_ID).setWhereClause(I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole + "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor + "'")
-			, obj -> {
-				Object [] objs = (Object [])obj;
-				int learnerIdSelected = (int)objs[0];
-			});
+		ColumnModel colAssessmentBt = CellModel.getColModelForGenericCell("Assessment", null, CellModel.BUTTON_CELL);
+		cols.add(colAssessmentBt);
+		
+		colAssessmentBt.setEventHandle((event, cellModel) -> {
+			try {
+				TableModel currentLearnerAssessments = getTmLearnerAssessments();
+				
+				ISaveForm.batchManualSaveToDb(List.of(currentLearnerAssessments));
+				
+				currentLearnerAssessments.syncDaoToUI();
+				
+				MasterUtil.showInfoDialog("ZZLearnerAssessmentsSuccess", null);
+				
+			} catch (Exception e) {
+				log.log(Level.WARNING, "ZZLearnerAssessmentsError", e);
+				MasterUtil.showInfoDialog("ZZLearnerAssessmentsError", null);
+			}
 		});
 		
-		chooseModeratorCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-			InfoPanelPara.getInstance(I_ZZAssessorPerson_v.Table_Name
-					, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_v_ID).setWhereClause(I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole + "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator + "'")
-			, obj -> {
-				Object [] objs = (Object [])obj;
-				int learnerIdSelected = (int)objs[0];
-			});
-		});
+		setupAssessorSearchCol(chooseAssessorCol, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole + "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor + "'");
+		setupAssessorSearchCol(chooseModeratorCol, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole + "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator + "'");
 		
 		tmAssessmentParam = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQctoLearnershipAssessments.Table_Name);
 		tmAssessmentParam.setViewModel(ViewType.VIEW_GRID);
@@ -466,9 +539,16 @@ public class LearnerAssessmentVM extends StepAppVM{
 		
 	}
 	
+	CheckboxColumnModel qctoLearnershipAssessmentsSelectedCol;
 	public void initQctoLearnershipAssessments() {
 		List<ColumnModel> cols = new ArrayList<>();
 
+		qctoLearnershipAssessmentsSelectedCol = CheckboxCellModel.getCheckboxColModel(
+				""
+				, null
+				);
+		cols.add(qctoLearnershipAssessmentsSelectedCol);
+		
 		ColumnModel col = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZQctoModule.Table_Name, I_ZZQctoModule.COLUMNNAME_ZZModuleCode)
 				, I_ZZQctoModule.COLUMNNAME_ZZModuleCode
@@ -520,7 +600,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 		
 		col = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerator_ID)
-				, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID
+				, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerator_ID
 				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
 		cols.add(col);
 		
@@ -530,9 +610,60 @@ public class LearnerAssessmentVM extends StepAppVM{
 				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name).setReadonly(true);
 		cols.add(col);
 		
-		tmQctoLearnershipAssessments = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOSkillsProgramme.Table_Name);
+		tmQctoLearnershipAssessments = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQctoLearnershipAssessments.Table_Name);
 		tmQctoLearnershipAssessments.setViewModel(ViewType.VIEW_GRID);
 		tmQctoLearnershipAssessments.setSclass("srd-LearnerAssessment-qctoLearnershipAssessments");
+		
+		tmQctoLearnershipAssessments.setRowSaveFilter(rowMode -> {
+			CheckboxCellModel selectionCell = (CheckboxCellModel)rowMode.get(qctoLearnershipAssessmentsSelectedCol);
+			return selectionCell.isChecked();
+		});
+		
+		tmQctoLearnershipAssessments.setBeforeSave((rowDbEventArgs) -> {
+			if (!rowDbEventArgs.isRowEven())
+				return true;
+			
+			X_ZZLearnerQctoLearnershipAssessments assessment = (X_ZZLearnerQctoLearnershipAssessments)rowDbEventArgs.row().getRowData().getDataNewWhenNull(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+			
+			DateCellModel assessmentDateCell = (DateCellModel)tmAssessmentParam.getRow().get(assessmentDate);
+			assessment.setZZAssessmentDate(assessmentDateCell.getTimestamp());
+			
+			ValueAdaptCellModel assessorSelected = (ValueAdaptCellModel)tmAssessmentParam.getRow().get(chooseAssessorCol);
+			if (assessorSelected.getValue() == null) {
+				assessment.setZZAssessorPerson_ID(0);
+			}else {
+				assessment.setZZAssessorPerson_ID((int)assessorSelected.getValue());
+			}
+			
+			//Query checkModerationQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name).createQuery("", null); 
+			
+			ValueAdaptCellModel moderationSelected = (ValueAdaptCellModel)tmAssessmentParam.getRow().get(chooseModeratorCol);
+			if (moderationSelected.getValue() == null) {
+				assessment.setZZModerator_ID(0);
+			}else {
+				assessment.setZZModerator_ID((int)moderationSelected.getValue());
+			}
+			
+			DateCellModel moderatorDateCell = (DateCellModel)tmAssessmentParam.getRow().get(moderationDatecol);
+			assessment.setZZModerationDate(moderatorDateCell.getTimestamp());
+			
+			CheckboxCellModel competentCell =  (CheckboxCellModel)tmAssessmentParam.getRow().get(competentCol);
+			//
+			
+			CheckboxCellModel rplCell =  (CheckboxCellModel)tmAssessmentParam.getRow().get(rplcol);
+			assessment.setZZRPL(rplCell.isChecked()?X_ZZLearnerQctoLearnershipAssessments.ZZRPL_Yes:X_ZZLearnerQctoLearnershipAssessments.ZZRPL_No);
+			
+			X_ZZQctoModule qctoModule = (X_ZZQctoModule)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoModule.Table_Name);
+			assessment.setZZQctoModule_ID(qctoModule.getZZQctoModule_ID());
+			assessment.setZZLearnerQCTOLearnership_ID(learnerQCTOLearnership.getZZLearnerQCTOLearnership_ID());
+			assessment.saveEx(rowDbEventArgs.trxName());
+			// assessment.setZZAssessmentStatus(null)
+			//assessment.setZZAssessmentStatus()
+			//assessment.setZZPreviouslyAchieved(null)
+			return true;
+		});
+		
+		
 	}
 	
 	private TableModel tmQctoLearnershipAssessments;

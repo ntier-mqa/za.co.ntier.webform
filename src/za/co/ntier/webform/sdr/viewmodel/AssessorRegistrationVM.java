@@ -76,6 +76,7 @@ import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.TableModel.RowDbEventArgs;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
@@ -1181,16 +1182,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 			});
 		});
 		
-		tmQualificationLink.setAfterSave((po, rowModel) -> {
-			if (po != null)
+		tmQualificationLink.setAfterSave((rowDbEventArgs) -> {
+			if (!rowDbEventArgs.isRowEven())
 				return true;
 			
-			po = rowModel.getRowData().getDataNewWhenNull(I_ZZLinkAssessorQualification.Table_Name);
+			PO po = rowDbEventArgs.row().getRowData().getDataNewWhenNull(I_ZZLinkAssessorQualification.Table_Name);
 			
 			X_ZZLinkAssessorQualification linkPO = X_ZZLinkAssessorQualification.class.cast(po);
 			linkPO.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
 			
-			X_ZZQctoQualification qualification = (X_ZZQctoQualification)rowModel.getRowData().getDataNullable(I_ZZQctoQualification.Table_Name);
+			X_ZZQctoQualification qualification = (X_ZZQctoQualification)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoQualification.Table_Name);
 			linkPO.setZZQctoQualification_ID(qualification.getZZQctoQualification_ID());
 			
 			linkPO.saveEx(assessorPerson.get_TrxName());
@@ -1390,16 +1391,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 			});
 		});
 		
-		tmQctoSkillsProgramme.setAfterSave((po, rowModel) -> {
-			if (po != null)
+		tmQctoSkillsProgramme.setAfterSave((rowDbEventArgs) -> {
+			if (!rowDbEventArgs.isRowEven())
 				return true;
 			
-			po = rowModel.getRowData().getDataNewWhenNull(I_ZZLinkAssessorSkillsProgramme.Table_Name);
+			PO po = rowDbEventArgs.row().getRowData().getDataNewWhenNull(I_ZZLinkAssessorSkillsProgramme.Table_Name);
 			
 			X_ZZLinkAssessorSkillsProgramme linkPO = X_ZZLinkAssessorSkillsProgramme.class.cast(po);
 			linkPO.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
 			
-			X_ZZQctoSkillsProgramme skillsProgramme = (X_ZZQctoSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZQctoSkillsProgramme.Table_Name);
+			X_ZZQctoSkillsProgramme skillsProgramme = (X_ZZQctoSkillsProgramme)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoSkillsProgramme.Table_Name);
 			linkPO.setZZQctoSkillsProgramme_ID(skillsProgramme.getZZQctoSkillsProgramme_ID());
 			
 			linkPO.saveEx(assessorPerson.get_TrxName());
@@ -1548,11 +1549,11 @@ public class AssessorRegistrationVM extends StepAppVM{
 		TableModel tmUploadDocInfo = initUploadTab(mainTab, "Upload Document", docUploads);
 		
 		if (tmUploadDocInfo != null) {
-			tmUploadDocInfo.setBeforeSave((po, rowModel) -> {
-				if (po == null)
+			tmUploadDocInfo.setBeforeSave((rowDbEventArgs) -> {
+				if (!rowDbEventArgs.isPOEven())
 					return true;
 				
-				X_ZZDocumentUploadFile documentUploadFile = (X_ZZDocumentUploadFile)po;
+				X_ZZDocumentUploadFile documentUploadFile = (X_ZZDocumentUploadFile)rowDbEventArgs.po();
 				if (documentUploadFile.getZZAssessorPerson_ID() == 0)
 					documentUploadFile.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
 				

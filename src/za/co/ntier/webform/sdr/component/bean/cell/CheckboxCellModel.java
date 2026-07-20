@@ -69,4 +69,8 @@ public class CheckboxCellModel extends CellModel implements ICheckbox {
 		else 
 			return super.getDefaultValue();
 	}
+	
+	public boolean isChecked() {
+		return getValue() != null && (boolean)getValue(); 
+	}
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import org.jfree.util.Log;
 
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
+import za.co.ntier.webform.sdr.component.bean.TableModel.RowDbEventArgs;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
 
@@ -80,6 +82,24 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			}else {
 				return null;
 			}
+		}
+		
+		public static List<List<PO>> mergedList(List<PO> po1s, List<PO> po2s, BiFunction<PO, PO, Boolean> matchFunction){
+			List<List<PO>> savedObjs = new ArrayList<>();
+			for(int i = 0; i < po1s.size(); i++) {
+				List<PO> savedRowObjs = new ArrayList<>();
+				savedObjs.add(savedRowObjs);
+				savedRowObjs.add(po1s.get(i));
+				
+				for(PO po2 : po2s) {
+					if(matchFunction.apply(po1s.get(i), po2)) {
+						savedRowObjs.add(po2);
+						break;
+					}
+				}
+			}
+			
+			return savedObjs;
 		}
 		
 		public static List<List<PO>> mergedList(List<PO> po1s, List<PO> po2s){
@@ -178,7 +198,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 					continue;
 				
 				if (rowModel.getTableModel().getBeforeSave() != null) {
-					rowModel.getTableModel().getBeforeSave().apply(entry.getValue(), rowModel);
+					rowModel.getTableModel().getBeforeSave().apply(RowDbEventArgs.getPOEvent(entry.getValue(), rowModel, trxName));
 				}
 				
 				entry.getValue().saveEx(trxName);
@@ -191,7 +211,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 				}
 				
 				if (rowModel.getTableModel().getAfterSave() != null) {
-					rowModel.getTableModel().getAfterSave().apply(entry.getValue(), rowModel);
+					rowModel.getTableModel().getAfterSave().apply(RowDbEventArgs.getPOEvent(entry.getValue(), rowModel, trxName));
 				}
 			}
 		}
@@ -496,7 +516,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 			return;
 		}
 		if (getTableModel().getBeforeSave() != null) {
-			getTableModel().getBeforeSave().apply(null, this);
+			getTableModel().getBeforeSave().apply(RowDbEventArgs.getRowEvent(this, trxName));
 		}
 		
 		if (tableModel.getDaoManage() == null) {
@@ -512,7 +532,7 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		}
 		
 		if (getTableModel().getAfterSave() != null) {
-			getTableModel().getAfterSave().apply(null, this);
+			getTableModel().getAfterSave().apply(RowDbEventArgs.getRowEvent(this, trxName));
 		}
 		
 	}

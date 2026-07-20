@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import za.co.ntier.webform.sdr.viewmodel.BaseAppVM;
+
 public interface ISaveForm extends IInputState{
 	
 	
@@ -12,6 +14,19 @@ public interface ISaveForm extends IInputState{
 	public void syncUIToDao(String trxName);
 	
 	public void saveToDb(String trxName);
+	
+	public static void batchManualSaveToDb(Collection<?> list) throws Exception {
+		BaseAppVM.trxWrapperFunc(trxName -> {
+			for (Object saveForm : list) {
+				if (saveForm instanceof ISaveForm) {
+					((ISaveForm)saveForm).syncUIToDao(trxName);
+					((ISaveForm)saveForm).saveToDb(trxName);
+				}
+				
+			}
+			
+		}, "ISaveForm", null);
+	}
 	
 	public static void batchSaveToDb(Collection<?> list, String trxName) {
 		for (Object saveForm : list) {

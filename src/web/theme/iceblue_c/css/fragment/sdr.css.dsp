@@ -347,8 +347,9 @@
 }
 
 .mqaWebForm .grid-formview.srd-LearnerAssessment-assessmentParam{
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
 }
+
 
 /******* list view **********/
 .mqaWebForm .sdrForm .grid-listView{
@@ -450,7 +451,7 @@
 }
 
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoLearnershipAssessments{
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(11, 1fr);
 }
 
 .mqaWebForm .sdrForm a.z-button{

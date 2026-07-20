@@ -51,7 +51,7 @@ import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
 
 public abstract class BaseAppVM implements ISaveApp{
 	
-	protected CLogger log = CLogger.getCLogger (getClass());
+	protected static CLogger log = CLogger.getCLogger (BaseAppVM.class);
 	
 	private FormInfo formInfo;
 	
@@ -133,6 +133,44 @@ public abstract class BaseAppVM implements ISaveApp{
 		}
 	}
 	
+	public static void trxWrapperFunc(Consumer<String> func, String baseTrxName, BaseAppVM baseApp) throws Exception {
+		Trx trx = null;
+		Boolean success = null;
+		Exception exc = null;
+		
+		try {
+			trx = Trx.get(Trx.createTrxName(baseTrxName), true);
+			trx.setDisplayName(baseTrxName + "_saveClose");
+			
+			func.accept(trx.getTrxName());
+
+			success = true;
+		}catch (Exception e) {
+			success = false;
+			exc = e;
+			log.log(Level.WARNING, "App error", exc);
+		}finally {
+			if (success != null && success && trx != null) {
+				try {
+					trx.commit(true);
+				} catch (Exception e){
+					log.log(Level.SEVERE, "Commit failed", e);
+					exc = e;
+				}
+			}
+			
+			if (success != null && !success && trx != null) {
+				log.log(Level.INFO, "Rollback");
+				trx.rollback();
+			}
+			
+			if (trx != null)
+				trx.close();
+			
+			if (exc != null)
+				throw exc;	
+		}
+	}
 	
 	public void doSave(String trxName) {
 		List<ISaveForm> saveComponents = getSaveComponents();

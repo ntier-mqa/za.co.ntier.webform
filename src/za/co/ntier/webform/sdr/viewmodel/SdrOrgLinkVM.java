@@ -260,11 +260,11 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				
 		});
 		
-		tmSdrOrgLink.setBeforeSave((po, rowModel) -> {
-			if (po == null)
+		tmSdrOrgLink.setBeforeSave((rowDbEventArgs) -> {
+			if (!rowDbEventArgs.isPOEven())
 				return true;
 			
-			X_ZZSdfOrganisation sdfOrgPo = (X_ZZSdfOrganisation)po;
+			X_ZZSdfOrganisation sdfOrgPo = (X_ZZSdfOrganisation)rowDbEventArgs.po();
 			sdfOrgPo.setC_BPartner_ID(orgPo.getC_BPartner_ID());
 			sdfOrgPo.setZZSdf_ID(sdfPo.getZZSdf_ID());
 			return true;
@@ -383,12 +383,12 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			return bankDetailPo;
 		});
 		
-		tmBank.setBeforeSave((po, rowModel) -> {
-			if (po == null)
+		tmBank.setBeforeSave((rowDbEventArgs) -> {
+			if (!rowDbEventArgs.isPOEven())
 				return true;
 			
 			X_ZZSdfOrganisation sdfOrgPo = sdfOrgModel.getRow().getDataOneRow(X_ZZSdfOrganisation.class, I_ZZSdfOrganisation.Table_Name);
-			((X_ZZBankingDetails)po).setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
+			((X_ZZBankingDetails)rowDbEventArgs.po()).setZZSdfOrganisation_ID(sdfOrgPo.getZZSdfOrganisation_ID());
 			return true;
 		});
 		

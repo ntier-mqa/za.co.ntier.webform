@@ -24,6 +24,7 @@ import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
+import za.co.ntier.webform.sdr.component.bean.TableModel.RowDbEventArgs;
 import za.co.ntier.webform.sdr.component.bean.cell.AreaCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
@@ -31,7 +32,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 public class BuildFormUtil {
 	public static TableModel buildFormContact(ProgramType programType, AddressType addressType, 
 			X_ZZ_Application_Form applicationForm,
-			Function<RowModel, PO> poSupplier, BiFunction<PO, RowModel, Boolean> beforeSave,
+			Function<RowModel, PO> poSupplier, Function<RowDbEventArgs, Boolean> beforeSave,
 			TableModel copyFrom) {
 		List<ColumnModel> cols = new ArrayList<>();
 

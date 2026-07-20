@@ -33,7 +33,7 @@ public class DateCellModel extends CellModel {
 		super.setValue(getTimestamp());
 	}
 
-	private Timestamp getTimestamp() {
+	public Timestamp getTimestamp() {
 		if(localDate == null) {
 			return null;
 		}else {
