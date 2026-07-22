@@ -100,6 +100,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 	private TableModel tmNames;
 	private NavTab mainTab;
 	X_ZZAssessorPerson assessorPerson;
+	X_ZZAssessorPerson assessorPersonExpried;
 	X_ZZAssessorPerson assessorPersonParent;
 	private TableModel tmIdentity;
 	public TableModel getTmIdentity() {
@@ -139,11 +140,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 		public String getSubjectName() {
 			boolean isAssessor = X_ZZAssessorPerson.ZZASSESSORROLE_Assessor.equals(assessorPerson.getZZAssessorRole());
 			boolean isScopeExtension = assessorPerson.getParent_ID() > 0;
+			boolean isReRegistration = X_ZZAssessorPerson.ZZREGISTRATIONTYPE_Re_Registration.equals(assessorPerson.getZZRegistrationType());
 			
-			if (isAssessor && isScopeExtension){
-				return "Assessor Scope Extension";
+			if (!isScopeExtension && isAssessor && isReRegistration){
+				return "Re-registration";
+			}else if (!isScopeExtension && !isAssessor && isReRegistration){
+				return "Re-registration";
+			}else if (isAssessor && isScopeExtension){
+				return "Scope Extension";
 			}else if (!isAssessor && isScopeExtension) {
-				return "Moderator Scope Extension";
+				return "Scope Extension";
 			}else if (isAssessor && !isScopeExtension) {
 				return "Assessor Registration";
 			}else if (!isAssessor && !isScopeExtension) {
@@ -315,7 +321,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 				if (person != null && assessorPerson != null) {
 					msg = "ZZAssessorMaintain";
 				}else if(person != null && assessorPerson == null) {
-					msg = "ZZAssessorNewAssessor";
+					msg = assessorPersonExpried != null ? "ZZAssessorReRegistryAssessor" : "ZZAssessorNewAssessor";
 				}else {
 					msg = "ZZAssessorNewPerson";
 				}
@@ -354,9 +360,13 @@ public class AssessorRegistrationVM extends StepAppVM{
 		}
 		
 		initRegistryAssessorForm();
-		
+		if (assessorPersonExpried != null) {
+			daoManage.setDao(assessorPersonExpried);
+		}
 		loadData();
-		
+		if (assessorPersonExpried != null) {
+			daoManage.resetDao(I_ZZAssessorPerson.Table_Name);
+		}
 		if (person == null && tmGeneralDetail != null) {
 			@SuppressWarnings("unchecked")
 			ListCellModel<X_ZZ_AlternateIDType> alternateIDTypeCell = (ListCellModel<X_ZZ_AlternateIDType>)tmGeneralDetail.getRow().get(alternateIDTypeCol);
@@ -480,6 +490,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		X_ZZAssessorPerson assessorPersonSaved = null;
 		
+		
 		if (person == null && isModerator() && !isExtensionScope()) {
 			MasterUtil.showInfoDialog("ZZAssessorNotExistsAssessor", MasterUtil.fCloseActiveWindow);
 			return;
@@ -552,6 +563,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 				boolean isAfterMoment = moment.isAfter(endDate);
 				
 				if (isAfterMoment) {
+					assessorPersonExpried = assessorPersonSaved;
 					assessorPersonSaved = null;
 				}
 			}
@@ -1026,7 +1038,6 @@ public class AssessorRegistrationVM extends StepAppVM{
 		tabPanelEducationDetail.getCompModel().add(tmEducationDetail);
 	}
 	
-	TableModel tmQualificationComp;
 	private String getQuaInfoWhere() {
 		String limitByLinkedSDPBpartner = String.format("""
 				\sZZQctoQualification_ID in (
@@ -1078,6 +1089,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		return limitByLinkedSDPBpartner;
 	}
+	TableModel tmQualificationLink;
 	private void initQualification() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
@@ -1088,7 +1100,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		chooseQualificationCol.setShowTitle(false);
 		cols.add(chooseQualificationCol);
 		
-		tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false, null);
+		TableModel tmQualificationComp = TableModel.getTableBean(TableModel.class, cols, false, null);
 		tmQualificationComp.setSclass("srd-qualification-scope-comp srd-qualification-scope-comp-assessor");
 		tmQualificationComp.init();
 		
@@ -1133,7 +1145,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			.setTableName(I_ZZQctoQualification.Table_Name);
 		cols.add(registrationEndDateCol);
 					
-		TableModel tmQualificationLink = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorQualification.Table_Name);
+		tmQualificationLink = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorQualification.Table_Name);
 		tmQualificationLink.setViewModel(ViewType.VIEW_GRID);
 		tmQualificationLink.setSclass("srd-qualification-scope srd-qualification-scope-assessor");
 		tmQualificationLink.setCommandSetting(CommandSetting.getNonAddButton());
@@ -1613,6 +1625,12 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		super.doSave(trxName);
 		
+		if (!isExtensionScope() && isNew && assessorPersonExpried != null) {
+			assessorPerson.setZZRegistrationType(X_ZZAssessorPerson.ZZREGISTRATIONTYPE_Re_Registration);
+		}else if (!isExtensionScope() && isNew && assessorPersonExpried == null){
+			assessorPerson.setZZRegistrationType(X_ZZAssessorPerson.ZZREGISTRATIONTYPE_Registration);
+		}
+		
 		assessorPerson.setAD_User_ID(person.getAD_User_ID());
 		
 		assessorPerson.saveEx(trxName);
@@ -1620,7 +1638,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 	
 	@Override
 	public void doSubmit(String trxName) {
-		if (tmQualificationComp.getRows().size() == 0
+		if (tmQualificationLink.getRows().size() == 0
 				&& tmQctoSkillsProgramme.getRows().size() == 0) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZAssessorMissingLinkQualificationSkillsProgramme"));
 		}

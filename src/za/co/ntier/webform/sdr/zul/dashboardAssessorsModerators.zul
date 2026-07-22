@@ -40,8 +40,12 @@
         <label value="@init(item.ZZDocStatusText)"/>
         <div sclass="formBottomPanel">
 
-	       	<button
-	           	label="@init(( vm.getBtLabel(item) ))"
+	       	<button if="${vm.showExtensionBt(item)}"
+	           	label="Extension"
+	           	onClick="@command('extensionAssessor', row=item)"/>
+	           	
+	       <button if="${vm.showEditBt(item)}"
+	           	label="Edit"
 	           	onClick="@command('editAssessor', row=item)"/>
         </div>
         

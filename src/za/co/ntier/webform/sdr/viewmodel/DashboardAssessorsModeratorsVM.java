@@ -1,6 +1,7 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -21,11 +22,12 @@ import za.co.ntier.webform.form.WebForm;
 public class DashboardAssessorsModeratorsVM {
 	private MenuContextInfo menuContextInfo;
 	private ListModelList<MZZAssessorPersonV> assessors = new ListModelList<MZZAssessorPersonV>();
+	private int loginId;
 	
 	@Init
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		this.setMenuContextInfo(menuContextInfo);
-		
+		loginId = Env.getAD_User_ID(Env.getCtx());
 		initList();
 	}
 	
@@ -34,57 +36,64 @@ public class DashboardAssessorsModeratorsVM {
 		initList();
 	}
 	
-	public String getBtLabel(X_ZZAssessorPerson_v row) {
-		boolean isApprove = X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
-							X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus());
+	public boolean showExtensionBt(X_ZZAssessorPerson_v row) {
+		return X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus());
 		
-		if (isApprove) {
-			return "Scope Extension";
-		}else {
-			return "Edit";
+	}
+	
+	public boolean showEditBt(X_ZZAssessorPerson_v row) {
+		return X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Draft.equals(row.getZZ_DocStatus());
+	}
+	
+	
+	@Command
+	public void extensionAssessor(@BindingParam("row") X_ZZAssessorPerson_v row) {
+		boolean isAssessor = X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole());
+		
+		NamePair contextOpenFormModel = new ValueNamePair(MenuContextInfo.OpenFormModelNew, MenuContextInfo.OpenFormModelKey);
+		NamePair contectAssessorPersonID = new KeyNamePair(row.getZZAssessorPerson_ID(), WebForm.recordIDMenuContextKeyNonPlus);
+		
+		if (isAssessor)
+			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorScopeFormUU
+				, contextOpenFormModel
+				, contectAssessorPersonID);
+		else {
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorScopeFormUU
+					, contextOpenFormModel
+					, contectAssessorPersonID);
 		}
 	}
 	
 	@Command
 	public void editAssessor(@BindingParam("row") X_ZZAssessorPerson_v row) {
 		boolean isAssessor = X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor.equals(row.getZZAssessorRole());
-		boolean isDraft =  X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Draft.equals(row.getZZ_DocStatus());
 		boolean isScopeExtension = row.getParent_ID() > 0;
-		boolean isApprove = X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Pending.equals(row.getZZ_DocStatus()) || 
-							X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus());
-		
 
-		String openFormModelValue = isDraft?MenuContextInfo.OpenFormModelEdit:MenuContextInfo.OpenFormModelNew;
+		NamePair contextOpenFormModel = new ValueNamePair(MenuContextInfo.OpenFormModelEdit, MenuContextInfo.OpenFormModelKey);
+		NamePair contectAssessorPersonID = new KeyNamePair(row.getZZAssessorPerson_ID(), WebForm.recordIDMenuContextKeyNonPlus);
 		
-		NamePair contextOpenFormModel = new ValueNamePair(openFormModelValue, MenuContextInfo.OpenFormModelKey);
-		NamePair contectAssessorPersonID = new KeyNamePair(row.getZZAssessorPerson_ID(), WebForm.recordIDMenuContextKeyNonPlus); 
-		if ((isAssessor && isScopeExtension && isDraft) 
-				|| (isApprove && isAssessor)){
-			
+		if (isAssessor && isScopeExtension) {
 			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorScopeFormUU
-					, contextOpenFormModel
-					, contectAssessorPersonID);
-		}else if ((!isAssessor && isScopeExtension && isDraft) 
-				|| (isApprove && !isAssessor)){
-			
-			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorScopeFormUU
-					, contextOpenFormModel
-					, contectAssessorPersonID);
-		}else if (isAssessor && !isScopeExtension && isDraft) {
+					, contectAssessorPersonID
+					, contextOpenFormModel);
+		}else if (isAssessor) {
 			MasterUtil.openFormByUU(AssessorRegistrationVM.assessorFormUU
 					, contectAssessorPersonID
 					, contextOpenFormModel);
-		}else if (!isAssessor && !isScopeExtension && isDraft) {
-			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU
+		}else if (!isAssessor && isScopeExtension) {
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorScopeFormUU
 					, contectAssessorPersonID
 					, contextOpenFormModel);
 		}else {
-			
+			MasterUtil.openFormByUU(AssessorRegistrationVM.moderatorFormUU
+					, contectAssessorPersonID
+					, contextOpenFormModel);
 		}
 	}
 	
 	private void initList() {
-		Query assessorPersonQuery = MTable.get(Env.getCtx(), X_ZZAssessorPerson_v.Table_Name).createQuery(null, null);
+		Query assessorPersonQuery = MTable.get(Env.getCtx(), X_ZZAssessorPerson_v.Table_Name).createQuery("CreatedBy=?", null);
+		assessorPersonQuery.setParameters(loginId);
 		assessors.clear();
 		assessors.addAll(assessorPersonQuery.list());
 		
