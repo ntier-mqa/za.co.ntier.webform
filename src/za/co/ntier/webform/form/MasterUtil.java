@@ -809,6 +809,9 @@ public class MasterUtil {
 		return cellMode.getColModel().getDefaultValue().equals(compareValue);
 	};
 	
+	/*
+	 * ids init by add objs
+	 */
 	public static String createPlaceHoldForInClause(List<Object> ids, Object [] objs) {
 		ids.addAll(Arrays.asList(objs));
 		return createPlaceHoldForInClause(ids);

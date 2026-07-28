@@ -1,11 +1,14 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -13,6 +16,8 @@ import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
+import org.adempiere.model.POWrapper;
+import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MForm;
@@ -42,7 +47,9 @@ import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZQctoQualification;
 import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.I_ZZQualification;
+import za.co.ntier.api.model.I_ZZQualification_v;
 import za.co.ntier.api.model.I_ZZSkillsProgramme;
+import za.co.ntier.api.model.I_ZZSkillsProgramme_v;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
@@ -58,7 +65,9 @@ import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZQctoQualification;
 import za.co.ntier.api.model.X_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.X_ZZQualification;
+import za.co.ntier.api.model.X_ZZQualification_v;
 import za.co.ntier.api.model.X_ZZSkillsProgramme;
+import za.co.ntier.api.model.X_ZZSkillsProgramme_v;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
@@ -187,7 +196,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		}
 		if(isSubmit) {
 			MasterUtil.showInfoDialog("ZZAssessorSubmitedSuccess", MasterUtil.fCloseActiveWindow);
-		}if(isNew) {
+		}else if(isNew) {
 			MasterUtil.showInfoDialog("ZZAssessorCreatedSuccess", MasterUtil.fCloseActiveWindow);
 		}else {
 			MasterUtil.showInfoDialog("ZZAssessorSavedSuccess", MasterUtil.fCloseActiveWindow);
@@ -428,11 +437,18 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 	}
 	
-	int [] selectedQuaIDs;
-	int [] selectedSkillsIDs;
-	private int [] querySelectedScopeID (boolean quaID){
+	AbstractMap.SimpleEntry<List<BigDecimal>, List<BigDecimal>> selectedQuaIDs;
+	AbstractMap.SimpleEntry<List<BigDecimal>, List<BigDecimal>> selectedSkillsIDs;
+	private AbstractMap.SimpleEntry<List<BigDecimal>, List<BigDecimal>> querySelectedScopeID (boolean quaID){
+		List<BigDecimal> qctoScopeIds = new ArrayList<>();
+		List<BigDecimal> nonQctoScopeIds = new ArrayList<>();
+		qctoScopeIds.add(BigDecimal.ZERO);
+		nonQctoScopeIds.add(BigDecimal.ZERO);
+		
+		AbstractMap.SimpleEntry<List<BigDecimal>, List<BigDecimal>> result = new AbstractMap.SimpleEntry<>(qctoScopeIds, nonQctoScopeIds);
+		
 		if (!isExtensionScope()) {
-			return new int [] {0};
+			return result;
 		}
 		
 		int parentId = 0;
@@ -449,23 +465,32 @@ public class AssessorRegistrationVM extends StepAppVM{
 			curId = assessorPerson.getZZAssessorPerson_ID();
 		}
 		
-		int [] scopeIds =  DB.getIDsEx(null, String.format("""
-				SELECT %s FROM %s WHERE ZZAssessorPerson_ID IN  (
+		List<List<Object>> scopeIds =  DB.getSQLArrayObjectsEx(null, String.format("""
+				SELECT %s, %s FROM %s WHERE ZZAssessorPerson_ID IN  (
 					%s
 					WHERE input_person.ZZAssessorPerson_ID = ? and cohort.ZZAssessorPerson_ID != ?
 				)
 				"""
 				, quaID?I_ZZLinkAssessorQualification.COLUMNNAME_ZZQctoQualification_ID:I_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID
+				, quaID?I_ZZLinkAssessorQualification.COLUMNNAME_ZZQualification_ID:I_ZZLinkAssessorSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID
 				, quaID?I_ZZLinkAssessorQualification.Table_Name:I_ZZLinkAssessorSkillsProgramme.Table_Name
 				, assessorTreeQuery
 				)
 				,parentId
 				, curId);
 		
-		if (scopeIds.length == 0)
-			scopeIds = new int [] {0};
-					
-		return scopeIds;
+		if (scopeIds == null || scopeIds.size() == 0)
+			return result;
+		
+		for (List<Object>scopeId : scopeIds) {
+			if (scopeId.get(0) != null) {
+				qctoScopeIds.add((BigDecimal)scopeId.get(0));
+			}else if (scopeId.get(1) != null) {
+				nonQctoScopeIds.add((BigDecimal)scopeId.get(1));
+			}
+		}
+		
+		return result;
 					
 	}
 	
@@ -924,7 +949,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			showInfoPanel(
 			InfoPanelPara.getInstance(I_ZZLkpSchoolEmis.Table_Name
 					, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID)
-			, obj -> {
+			, (obj, infoPanel) -> {
 				Object [] objs = (Object [])obj;
 				X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
 				cellModel.setValue(selected);
@@ -976,7 +1001,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			showInfoPanel(
 			InfoPanelPara.getInstance(X_ZZLkpStatssaAreaCode.Table_Name
 					, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID)
-			, obj -> {
+			, (obj, infoPanel) -> {
 				Object [] objs = (Object [])obj;
 				X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
 				cellModel.setValue(selected);
@@ -1039,55 +1064,72 @@ public class AssessorRegistrationVM extends StepAppVM{
 	}
 	
 	private String getQuaInfoWhere() {
-		String limitByLinkedSDPBpartner = String.format("""
-				\sZZQctoQualification_ID in (
-					select
-						ZZQctoQualification_ID
-					from
-						C_BP_OC
-					where
-						C_BPartner_ID = %s
-						and EndDate is not null
-						and EndDate >= CURRENT_DATE::TIMESTAMP
-						and ZZ_Status = 'AC')\s
-				"""
-				, sdpAdmin.getC_BPartner_ID());
 		
-		if(isExtensionScope()) {
-			String inValues = Arrays.stream(selectedQuaIDs)
-                    .mapToObj(String::valueOf)
-                    .collect(Collectors.joining(", "));
-			
-			limitByLinkedSDPBpartner += " AND ZZQctoQualification_ID NOT IN (" + inValues +  ")";
-		}
-		
-		return limitByLinkedSDPBpartner;
-	}
-	
-	private String getSkillsInfoWhere() {
-		String limitByLinkedSDPBpartner = String.format("""
-				\sZZQctoSkillsProgramme_ID in (
-				select
-					ZZQctoSkillsProgramme_ID
-				from
-					C_BP_SkillsProgramme
-				where
+		String filterByBp = null;
+		if (!isExtensionScope()) {
+			filterByBp = String.format("""
 					C_BPartner_ID = %s
 					and EndDate is not null
 					and EndDate >= CURRENT_DATE::TIMESTAMP
-					and ZZ_Status = 'AC')\s
-				"""
-				, sdpAdmin.getC_BPartner_ID());
-		
-		if(isExtensionScope()) {
-			String inValues = Arrays.stream(selectedSkillsIDs)
-                    .mapToObj(String::valueOf)
+					""", sdpAdmin.getC_BPartner_ID());			
+		}else if(isExtensionScope()) {
+			String selectedQctoQua = selectedQuaIDs.getKey().stream()
+                    .map(bd -> String.valueOf(bd.intValueExact()))
                     .collect(Collectors.joining(", "));
 			
-			limitByLinkedSDPBpartner += " AND ZZQctoSkillsProgramme_ID NOT IN (" + inValues +  ")";
+			String selectedQua = selectedQuaIDs.getValue().stream()
+                    .map(bd -> String.valueOf(bd.intValueExact()))
+                    .collect(Collectors.joining(", "));
+			
+			filterByBp = String.format("""
+					C_BPartner_ID = %s
+					and EndDate is not null
+					and EndDate >= CURRENT_DATE::TIMESTAMP
+					AND (
+						(ZZQcto = 'Y' AND ZZQualification_v_ID NOT IN (%s))
+						OR (ZZQcto = 'N' AND ZZQualification_v_ID NOT IN (%s))
+					)
+					""", sdpAdmin.getC_BPartner_ID()
+					, selectedQctoQua
+					, selectedQua);
 		}
 		
-		return limitByLinkedSDPBpartner;
+		return filterByBp;
+	}
+	
+	private String getSkillsInfoWhere() {
+		String filterByBp = null;
+		if (!isExtensionScope()) {
+			filterByBp = String.format("""
+					C_BPartner_ID = %s
+					and EndDate is not null
+					and EndDate >= CURRENT_DATE::TIMESTAMP
+					""", sdpAdmin.getC_BPartner_ID());			
+		}else if(isExtensionScope()) {
+			String selectedQctoSkills = selectedSkillsIDs.getKey().stream()
+                    .map(bd -> String.valueOf(bd.intValueExact()))
+                    .collect(Collectors.joining(", "));
+			
+			String selectedSkills = selectedSkillsIDs.getValue().stream()
+                    .map(bd -> String.valueOf(bd.intValueExact()))
+                    .collect(Collectors.joining(", "));
+			
+			filterByBp = String.format("""
+					C_BPartner_ID = %s
+					and EndDate is not null
+					and EndDate >= CURRENT_DATE::TIMESTAMP
+					AND (
+						(ZZQcto = 'Y' AND ZZSkillsProgramme_v_ID NOT IN (%s))
+						OR (ZZQcto = 'N' AND ZZSkillsProgramme_v_ID NOT IN (%s))
+					)
+					""", sdpAdmin.getC_BPartner_ID()
+					, selectedQctoSkills
+					, selectedSkills);
+		}
+		
+		
+		
+		return filterByBp;
 	}
 	TableModel tmQualificationLink;
 	private void initQualification() {
@@ -1111,38 +1153,38 @@ public class AssessorRegistrationVM extends StepAppVM{
 		cols = new ArrayList<>();
 		
 		ColumnModel qualificationCodeCol = CellModel.getColModelForLabel(
-					Msg.getElement(Env.getCtx(), I_ZZQctoQualification.COLUMNNAME_ZZSaqaQualificationCode)
-					, I_ZZQctoQualification.COLUMNNAME_ZZSaqaQualificationCode)
+					Msg.getElement(Env.getCtx(), I_ZZQualification_v.COLUMNNAME_ZZSaqaQualificationCode)
+					, I_ZZQualification_v.COLUMNNAME_ZZSaqaQualificationCode)
 				.setReadonly(true)
-				.setTableName(I_ZZQctoQualification.Table_Name);
+				.setTableName(I_ZZQualification_v.Table_Name);
 		cols.add(qualificationCodeCol);
 		
 		ColumnModel qualificationTitleCol = CellModel.getColModelForLabel(
-				Msg.getElement(Env.getCtx(), I_ZZQctoQualification.COLUMNNAME_ZZSaqaQualificationTitle)
-				, I_ZZQctoQualification.COLUMNNAME_ZZSaqaQualificationTitle)
+				Msg.getElement(Env.getCtx(), I_ZZQualification_v.COLUMNNAME_ZZSaqaQualificationTitle)
+				, I_ZZQualification_v.COLUMNNAME_ZZSaqaQualificationTitle)
 			.setReadonly(true)
-			.setTableName(I_ZZQctoQualification.Table_Name);
+			.setTableName(I_ZZQualification_v.Table_Name);
 		cols.add(qualificationTitleCol);
 		
 		ColumnModel qualificationCreditsCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQctoQualification.Table_Name, I_ZZQctoQualification.COLUMNNAME_ZZCredits)
-				, I_ZZQctoQualification.COLUMNNAME_ZZCredits)
+				MasterUtil.getNameOfColTranslated(I_ZZQualification_v.Table_Name, I_ZZQualification_v.COLUMNNAME_ZZCredits)
+				, I_ZZQualification_v.COLUMNNAME_ZZCredits)
 			.setReadonly(true)
 			.setTableName(I_ZZQctoQualification.Table_Name);
 		cols.add(qualificationCreditsCol);
 		
 		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQctoQualification.Table_Name, I_ZZQctoQualification.COLUMNNAME_Registrationstartdate)
-				, I_ZZQctoQualification.COLUMNNAME_Registrationstartdate)
+				MasterUtil.getNameOfColTranslated(I_ZZQualification_v.Table_Name, I_ZZQualification_v.COLUMNNAME_Registrationstartdate)
+				, I_ZZQualification_v.COLUMNNAME_Registrationstartdate)
 			.setReadonly(true)
 			.setTableName(I_ZZQctoQualification.Table_Name);
 		cols.add(registrationStartDateCol);
 		
 		ColumnModel registrationEndDateCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQctoQualification.Table_Name, I_ZZQctoQualification.COLUMNNAME_Registrationenddate)
-				, I_ZZQctoQualification.COLUMNNAME_Registrationenddate)
+				MasterUtil.getNameOfColTranslated(I_ZZQualification_v.Table_Name, I_ZZQualification_v.COLUMNNAME_Registrationenddate)
+				, I_ZZQualification_v.COLUMNNAME_Registrationenddate)
 			.setReadonly(true)
-			.setTableName(I_ZZQctoQualification.Table_Name);
+			.setTableName(I_ZZQualification_v.Table_Name);
 		cols.add(registrationEndDateCol);
 					
 		tmQualificationLink = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorQualification.Table_Name);
@@ -1157,40 +1199,82 @@ public class AssessorRegistrationVM extends StepAppVM{
 		chooseQualificationCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
 					
-			InfoPanelPara.getInstance(I_ZZQctoQualification.Table_Name
-					, I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID).setMultiChoose(true).setWhereClause(getQuaInfoWhere())
-			, obj -> {
-				// build include selected ids
-				Object [] objs = (Object [])obj;
-				List<Object> ids = new ArrayList<Object>();
+			InfoPanelPara.getInstance(I_ZZQualification_v.Table_Name
+					, I_ZZQualification_v.COLUMNNAME_ZZQualification_v_UU).setMultiChoose(true).setWhereClause(getQuaInfoWhere())
+			, (obj, infoPanel) -> {
+				int colIndexZZQcto = -1;
+				int colIndexScopeId = -1;
 				
-				String placeholders = MasterUtil.createPlaceHoldForInClause(ids, objs);
+				for (int colInfoIndex = 0; colInfoIndex < infoPanel.getContentPanel().getLayout().length; colInfoIndex++) {
+					ColumnInfo colInfo = infoPanel.getContentPanel().getLayout()[colInfoIndex];
+					if (I_ZZQualification_v.COLUMNNAME_ZZQcto.equals(colInfo.getColumnName())) {
+						colIndexZZQcto = colInfoIndex;
+					}else if (I_ZZQualification_v.COLUMNNAME_ZZQualification_v_ID.equals(colInfo.getColumnName())) {
+						colIndexScopeId = colInfoIndex;
+					}
+				}
 				
-				// build exclude selected ids
-				List<Object> excludeIds = new ArrayList<Object>();
+				List<Object> scopeSelectedIDs = new ArrayList<Object>();
+				List<Object> qctoScopeSelectedIDs = new ArrayList<Object>();
+				
+				for (List<Object> selectedRow : infoPanel.getSelectedRowInfo().values()) {
+					ValueNamePair qctoValue = (ValueNamePair)selectedRow.get(colIndexZZQcto);
+					if (X_ZZQualification_v.ZZQCTO_Yes.equals(qctoValue.getValue())){
+						qctoScopeSelectedIDs.add(selectedRow.get(colIndexScopeId));
+					}else {
+						scopeSelectedIDs.add(selectedRow.get(colIndexScopeId));
+					}
+				}
+				
+				if (scopeSelectedIDs.size() == 0) {
+					scopeSelectedIDs.add(0);
+				}
+				
+				if (qctoScopeSelectedIDs.size() == 0) {
+					qctoScopeSelectedIDs.add(0);
+				}
+				
+				List<Object> qctoScopeExcludeIds = new ArrayList<Object>();
+				List<Object> scopeExcludeIds = new ArrayList<Object>();
+				
 				tmQualificationLink.getRows().forEach(rowModel -> {
-					X_ZZQctoQualification qualificationPo = (X_ZZQctoQualification)rowModel.getRowData().getDataNullable(I_ZZQctoQualification.Table_Name);
-					if (qualificationPo != null) {
-						excludeIds.add(qualificationPo.getZZQctoQualification_ID());
+					X_ZZQualification_v scopeViewPo = (X_ZZQualification_v)rowModel.getRowData().getDataNullable(I_ZZQualification_v.Table_Name);
+					if (X_ZZQualification_v.ZZQCTO_Yes.equals(scopeViewPo.getZZQcto())) {
+						qctoScopeExcludeIds.add(scopeViewPo.getZZQualification_v_ID());
+					}else {
+						scopeExcludeIds.add(scopeViewPo.getZZQualification_ID());
 					}
 				});
 				
-				String excludePlaceholde = MasterUtil.createPlaceHoldForInClause(excludeIds);
 				
-				Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQctoQualification.Table_ID)
-						.createQuery(String.format("%s IN (%s) AND %s NOT IN (%s)", 
-								I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID, 
-								placeholders,
-								I_ZZQctoQualification.COLUMNNAME_ZZQctoQualification_ID,
-								excludePlaceholde), null);
+				// build include selected ids
+				String qctoScopePlaceholders = MasterUtil.createPlaceHoldForInClause(qctoScopeSelectedIDs);
+				String qctoScopeExcludePlaceholde = MasterUtil.createPlaceHoldForInClause(qctoScopeExcludeIds);
 				
-				ids.addAll(excludeIds);
-				qualificationQuery.setParameters(ids);
+				String scopePlaceholders = MasterUtil.createPlaceHoldForInClause(scopeSelectedIDs);
+				String scopeExcludePlaceholde = MasterUtil.createPlaceHoldForInClause(scopeExcludeIds);
+				
+				Query scopeQuery = MTable.get(Env.getCtx(), I_ZZQualification_v.Table_ID)
+						.createQuery(String.format("""
+								(ZZQcto = 'Y' AND ZZQualification_v_ID IN (%s) AND ZZQualification_v_ID NOT IN (%s))
+								OR (ZZQcto = 'N' AND ZZQualification_v_ID IN (%s) AND ZZQualification_v_ID NOT IN (%s))
+								""" 
+								, qctoScopePlaceholders
+								, qctoScopeExcludePlaceholde
+								, scopePlaceholders
+								, scopeExcludePlaceholde), null);
+				
+				qctoScopeSelectedIDs.addAll(qctoScopeExcludeIds);
+				qctoScopeSelectedIDs.addAll(scopeSelectedIDs);
+				qctoScopeSelectedIDs.addAll(scopeExcludeIds);
+				
+				scopeQuery.setParameters(qctoScopeSelectedIDs);
 				
 				// convert to list of list
-				List<PO> selectedQualifications = qualificationQuery.list();
+				List<PO> selectedQualifications = scopeQuery.list();
 				List<List<PO>> daos = RowData.standardToMultiPo(selectedQualifications);
 				tmQualificationLink.addNewRows(daos);
+				
 			});
 		});
 		
@@ -1203,9 +1287,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 			X_ZZLinkAssessorQualification linkPO = X_ZZLinkAssessorQualification.class.cast(po);
 			linkPO.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
 			
-			X_ZZQctoQualification qualification = (X_ZZQctoQualification)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoQualification.Table_Name);
-			linkPO.setZZQctoQualification_ID(qualification.getZZQctoQualification_ID());
+			X_ZZQualification_v scopePO = (X_ZZQualification_v)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQualification_v.Table_Name);
 			
+			if (scopePO != null && X_ZZQualification_v.ZZQCTO_Yes.equals(scopePO.getZZQcto())) {
+				linkPO.setZZQctoQualification_ID(scopePO.getZZQualification_v_ID());
+				linkPO.setZZQualification_ID(0);
+			}else if (scopePO != null && X_ZZQualification_v.ZZQCTO_No.equals(scopePO.getZZQcto())) {
+				linkPO.setZZQualification_ID(scopePO.getZZQualification_v_ID());
+				linkPO.setZZQctoQualification_ID(0);
+			}
+
 			linkPO.saveEx(assessorPerson.get_TrxName());
 			
 			return true;
@@ -1215,13 +1306,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (assessorPerson == null && assessorPersonParent == null)
 				return;
 			
-			String where =" ZZLinkAssessorQualification.ZZQctoQualification_ID is not null AND ZZLinkAssessorQualification.zz_isrecommended = 'Y' AND " + assessorPersonCondition;
+			String where =" (ass.zz_docstatus = 'DR' or ass.zz_docstatus is null or (ass.zz_docstatus = 'AP' and ZZLinkAssessorQualification.zz_isrecommended = 'Y')) AND " + assessorPersonCondition;
 				
-			String	orderBy = commonOrderBy + ", ZZLinkAssessorQualification_id";
+			String	orderBy = commonOrderBy + ", ZZLinkAssessorQualification.ZZLinkAssessorQualification_id";
 			
 			Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorQualification.Table_Name)
 			 		.createQuery(where, null);
 			
+			linkAssessorQuery.addJoinClause("""
+					join ZZAssessorPerson ass on (ass.zzassessorperson_id = ZZLinkAssessorQualification.zzassessorperson_id)
+				""");
 			linkAssessorQuery.setOrderBy(orderBy);
 			
 			if(assessorPerson != null) {
@@ -1232,22 +1326,41 @@ public class AssessorRegistrationVM extends StepAppVM{
 			
 			List<PO> linkObjs = linkAssessorQuery.list();
 			
-			Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQctoQualification.Table_Name)
+			Query scopeQuery = MTable.get(Env.getCtx(), I_ZZQualification_v.Table_Name)
 			 		.createQuery(where, null);
-			qualificationQuery.setOrderBy(orderBy);
+			scopeQuery.setOrderBy(orderBy);
 			
-			qualificationQuery.addJoinClause("join ZZLinkAssessorQualification on ZZQctoQualification.zzqctoqualification_id = ZZLinkAssessorQualification.zzqctoqualification_id");
+			scopeQuery.addJoinClause("""
+					join ZZLinkAssessorQualification on 
+						(
+						(ZZQcto = 'Y' AND ZZQualification_v.zzqualification_v_id = ZZLinkAssessorQualification.zzqctoqualification_id)
+						OR (ZZQcto = 'N' AND ZZQualification_v.zzqualification_v_id = ZZLinkAssessorQualification.zzqualification_id)
+						)
+					""");
+			
+			scopeQuery.addJoinClause("""
+						join ZZAssessorPerson ass on (ass.zzassessorperson_id = ZZLinkAssessorQualification.zzassessorperson_id)
+					""");
 		
 			if(assessorPerson != null) {
-				qualificationQuery.setParameters(assessorPerson.getZZAssessorPerson_ID(), assessorPerson.getZZAssessorPerson_ID());
+				scopeQuery.setParameters(assessorPerson.getZZAssessorPerson_ID(), assessorPerson.getZZAssessorPerson_ID());
 			}else if (assessorPersonParent != null){
-				qualificationQuery.setParameters(assessorPersonParent.getZZAssessorPerson_ID(), assessorPersonParent.getZZAssessorPerson_ID());
+				scopeQuery.setParameters(assessorPersonParent.getZZAssessorPerson_ID(), assessorPersonParent.getZZAssessorPerson_ID());
 			}
 			
 			
-			List<PO> qualificationObjs = qualificationQuery.list();
+			List<PO> scopeObjs = scopeQuery.list();
 			
-			List<List<PO>> savedObjs = RowData.mergedList(linkObjs, qualificationObjs);
+			List<List<PO>> savedObjs = RowData.mergedList(linkObjs, scopeObjs, (link, scope) -> {
+				X_ZZLinkAssessorQualification linkPo = (X_ZZLinkAssessorQualification)link;
+				X_ZZQualification_v scopePO = (X_ZZQualification_v)scope;
+				if (X_ZZQualification_v.ZZQCTO_Yes.equals(scopePO.getZZQcto()) && linkPo.getZZQctoQualification_ID() == scopePO.getZZQualification_v_ID()) {
+					return true;
+				}else if (X_ZZQualification_v.ZZQCTO_No.equals(scopePO.getZZQcto()) && linkPo.getZZQualification_ID() == scopePO.getZZQualification_v_ID()) {
+					return true;
+				}
+				return false;
+			});
 			
 			tmQualificationLink.resetMultiPo(savedObjs);
 			
@@ -1294,12 +1407,12 @@ public class AssessorRegistrationVM extends StepAppVM{
 			       (input_person.parent_id IS NULL 
 			        AND (cohort.parent_id = input_person.ZZAssessorPerson_ID OR cohort.ZZAssessorPerson_ID = input_person.ZZAssessorPerson_ID))
 			   )\s""";
-	private String assessorPersonCondition = "\sZZAssessorPerson_ID IN (" + assessorTreeQuery + 
+	private String assessorPersonCondition = "\sass.ZZAssessorPerson_ID IN (" + assessorTreeQuery + 
 			" WHERE input_person.ZZAssessorPerson_ID = ?)";
 	
 	String	commonOrderBy = """
-			\sCASE WHEN ZZAssessorPerson_ID = ? THEN 0 ELSE 1 end DESC
-			, ZZAssessorPerson_ID\s
+			\sCASE WHEN ass.ZZAssessorPerson_ID = ? THEN 0 ELSE 1 end DESC
+			, ass.ZZAssessorPerson_ID\s
 			""";
 	
 	private void initSkillsProgramme() {
@@ -1323,24 +1436,24 @@ public class AssessorRegistrationVM extends StepAppVM{
 		cols = new ArrayList<>();
 		
 		ColumnModel skillsProgrammeCodeCol = CellModel.getColModelForLabel(
-					Msg.getElement(Env.getCtx(), I_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode)
-					, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode)
+					Msg.getElement(Env.getCtx(), I_ZZSkillsProgramme_v.COLUMNNAME_ZZSkillsProgrammeCode)
+					, I_ZZSkillsProgramme_v.COLUMNNAME_ZZSkillsProgrammeCode)
 				.setReadonly(true)
-				.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
+				.setTableName(I_ZZSkillsProgramme_v.Table_Name);
 		cols.add(skillsProgrammeCodeCol);
 		
 		ColumnModel skillsProgrammeTitleCol = CellModel.getColModelForLabel(
-				Msg.getElement(Env.getCtx(), I_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle)
-				, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle)
+				Msg.getElement(Env.getCtx(), I_ZZSkillsProgramme_v.COLUMNNAME_ZZSkillsProgrammeTitle)
+				, I_ZZSkillsProgramme_v.COLUMNNAME_ZZSkillsProgrammeTitle)
 			.setReadonly(true)
-			.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
+			.setTableName(I_ZZSkillsProgramme_v.Table_Name);
 		cols.add(skillsProgrammeTitleCol);
 		
 		ColumnModel skillsProgrammeCreditsCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQctoSkillsProgramme.Table_Name, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZCredits)
-				, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZCredits)
+				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme_v.Table_Name, I_ZZSkillsProgramme_v.COLUMNNAME_ZZCredits)
+				, I_ZZSkillsProgramme_v.COLUMNNAME_ZZCredits)
 			.setReadonly(true)
-			.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
+			.setTableName(I_ZZSkillsProgramme_v.Table_Name);
 		cols.add(skillsProgrammeCreditsCol);
 		
 		ColumnModel registrationStartDateCol = CellModel.getColModelForLabel(
@@ -1351,10 +1464,10 @@ public class AssessorRegistrationVM extends StepAppVM{
 		cols.add(registrationStartDateCol);
 		
 		ColumnModel registrationEndDateCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZQctoSkillsProgramme.Table_Name, I_ZZQctoSkillsProgramme.COLUMNNAME_Registrationenddate)
-				, I_ZZQctoSkillsProgramme.COLUMNNAME_Registrationenddate)
+				MasterUtil.getNameOfColTranslated(I_ZZSkillsProgramme_v.Table_Name, I_ZZSkillsProgramme_v.COLUMNNAME_Registrationenddate)
+				, I_ZZSkillsProgramme_v.COLUMNNAME_Registrationenddate)
 			.setReadonly(true)
-			.setTableName(I_ZZQctoSkillsProgramme.Table_Name);
+			.setTableName(I_ZZSkillsProgramme_v.Table_Name);
 		cols.add(registrationEndDateCol);
 					
 		tmQctoSkillsProgramme = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLinkAssessorSkillsProgramme.Table_Name);
@@ -1368,37 +1481,81 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		chooseSkillsProgrammeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-			InfoPanelPara.getInstance(I_ZZQctoSkillsProgramme.Table_Name
-					, I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID).setMultiChoose(true).setWhereClause(getSkillsInfoWhere())
-			,obj -> {
-				Object [] objs = (Object [])obj;
-				List<Object> ids = new ArrayList<>();
+			InfoPanelPara.getInstance(I_ZZSkillsProgramme_v.Table_Name
+					, I_ZZSkillsProgramme_v.COLUMNNAME_ZZSkillsProgramme_v_UU).setMultiChoose(true).setWhereClause(getSkillsInfoWhere())
+			,(obj, infoPanel) -> {
 				
-				String placeholders = MasterUtil.createPlaceHoldForInClause(ids, objs);
+				int colIndexZZQcto = -1;
+				int colIndexScopeId = -1;
 				
-				// build exclude selected ids
-				List<Object> excludeIds = new ArrayList<Object>();
+				for (int colInfoIndex = 0; colInfoIndex < infoPanel.getContentPanel().getLayout().length; colInfoIndex++) {
+					ColumnInfo colInfo = infoPanel.getContentPanel().getLayout()[colInfoIndex];
+					if (I_ZZSkillsProgramme_v.COLUMNNAME_ZZQcto.equals(colInfo.getColumnName())) {
+						colIndexZZQcto = colInfoIndex;
+					}else if (I_ZZSkillsProgramme_v.COLUMNNAME_ZZSkillsProgramme_v_ID.equals(colInfo.getColumnName())) {
+						colIndexScopeId = colInfoIndex;
+					}
+				}
+				
+				List<Object> scopeSelectedIDs = new ArrayList<Object>();
+				List<Object> qctoScopeSelectedIDs = new ArrayList<Object>();
+				
+				for (List<Object> selectedRow : infoPanel.getSelectedRowInfo().values()) {
+					ValueNamePair qctoValue = (ValueNamePair)selectedRow.get(colIndexZZQcto);
+					if (X_ZZSkillsProgramme_v.ZZQCTO_Yes.equals(qctoValue.getValue())){
+						qctoScopeSelectedIDs.add(selectedRow.get(colIndexScopeId));
+					}else {
+						scopeSelectedIDs.add(selectedRow.get(colIndexScopeId));
+					}
+				}
+				
+				if (scopeSelectedIDs.size() == 0) {
+					scopeSelectedIDs.add(0);
+				}
+				
+				if (qctoScopeSelectedIDs.size() == 0) {
+					qctoScopeSelectedIDs.add(0);
+				}
+				
+				List<Object> qctoScopeExcludeIds = new ArrayList<Object>();
+				List<Object> scopeExcludeIds = new ArrayList<Object>();
+				
 				tmQctoSkillsProgramme.getRows().forEach(rowModel -> {
-					X_ZZQctoSkillsProgramme skillsProgrammePo = (X_ZZQctoSkillsProgramme)rowModel.getRowData().getDataNullable(I_ZZQctoSkillsProgramme.Table_Name);
-					if (skillsProgrammePo != null) {
-						excludeIds.add(skillsProgrammePo.getZZQctoSkillsProgramme_ID());
+					X_ZZSkillsProgramme_v scopeViewPo = (X_ZZSkillsProgramme_v)rowModel.getRowData().getDataNullable(X_ZZSkillsProgramme_v.Table_Name);
+					if (X_ZZSkillsProgramme_v.ZZQCTO_Yes.equals(scopeViewPo.getZZQcto())) {
+						qctoScopeExcludeIds.add(scopeViewPo.getZZSkillsProgramme_v_ID());
+					}else {
+						scopeExcludeIds.add(scopeViewPo.getZZSkillsProgramme_v_ID());
 					}
 				});
 				
-				String excludePlaceholde = MasterUtil.createPlaceHoldForInClause(excludeIds);
 				
-				Query skillsProgrammeQuery = MTable.get(Env.getCtx(), I_ZZQctoSkillsProgramme.Table_ID)
-						.createQuery(String.format("%s IN (%s) AND %s NOT IN (%s)", 
-								I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID, 
-								placeholders,
-								I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID,
-								excludePlaceholde), null);
+				// build include selected ids
+				String qctoScopePlaceholders = MasterUtil.createPlaceHoldForInClause(qctoScopeSelectedIDs);
+				String qctoScopeExcludePlaceholde = MasterUtil.createPlaceHoldForInClause(qctoScopeExcludeIds);
 				
-				ids.addAll(excludeIds);
-				skillsProgrammeQuery.setParameters(ids);
+				String scopePlaceholders = MasterUtil.createPlaceHoldForInClause(scopeSelectedIDs);
+				String scopeExcludePlaceholde = MasterUtil.createPlaceHoldForInClause(scopeExcludeIds);
 				
-				List<PO> selectedSkillsProgramme = skillsProgrammeQuery.list();
-				List<List<PO>> daos = RowData.standardToMultiPo(selectedSkillsProgramme);
+				Query scopeQuery = MTable.get(Env.getCtx(), I_ZZSkillsProgramme_v.Table_ID)
+						.createQuery(String.format("""
+								(ZZQcto = 'Y' AND ZZSkillsProgramme_v_ID IN (%s) AND ZZSkillsProgramme_v_ID NOT IN (%s))
+								OR (ZZQcto = 'N' AND ZZSkillsProgramme_v_ID IN (%s) AND ZZSkillsProgramme_v_ID NOT IN (%s))
+								""" 
+								, qctoScopePlaceholders
+								, qctoScopeExcludePlaceholde
+								, scopePlaceholders
+								, scopeExcludePlaceholde), null);
+				
+				qctoScopeSelectedIDs.addAll(qctoScopeExcludeIds);
+				qctoScopeSelectedIDs.addAll(scopeSelectedIDs);
+				qctoScopeSelectedIDs.addAll(scopeExcludeIds);
+				
+				scopeQuery.setParameters(qctoScopeSelectedIDs);
+				
+				// convert to list of list
+				List<PO> selectedQualifications = scopeQuery.list();
+				List<List<PO>> daos = RowData.standardToMultiPo(selectedQualifications);
 				tmQctoSkillsProgramme.addNewRows(daos);
 			});
 		});
@@ -1412,8 +1569,15 @@ public class AssessorRegistrationVM extends StepAppVM{
 			X_ZZLinkAssessorSkillsProgramme linkPO = X_ZZLinkAssessorSkillsProgramme.class.cast(po);
 			linkPO.setZZAssessorPerson_ID(assessorPerson.getZZAssessorPerson_ID());
 			
-			X_ZZQctoSkillsProgramme skillsProgramme = (X_ZZQctoSkillsProgramme)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoSkillsProgramme.Table_Name);
-			linkPO.setZZQctoSkillsProgramme_ID(skillsProgramme.getZZQctoSkillsProgramme_ID());
+			X_ZZSkillsProgramme_v scopePO = (X_ZZSkillsProgramme_v)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZSkillsProgramme_v.Table_Name);
+			
+			if (scopePO != null && X_ZZSkillsProgramme_v.ZZQCTO_Yes.equals(scopePO.getZZQcto())) {
+				linkPO.setZZQctoSkillsProgramme_ID(scopePO.getZZSkillsProgramme_v_ID());
+				linkPO.setZZSkillsProgramme_ID(0);
+			}else if (scopePO != null && X_ZZSkillsProgramme_v.ZZQCTO_No.equals(scopePO.getZZQcto())) {
+				linkPO.setZZSkillsProgramme_ID(scopePO.getZZSkillsProgramme_v_ID());
+				linkPO.setZZQctoSkillsProgramme_ID(0);
+			}
 			
 			linkPO.saveEx(assessorPerson.get_TrxName());
 			
@@ -1424,12 +1588,16 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (assessorPerson == null && assessorPersonParent == null)
 				return;
 			
-			String where =" ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID is not null AND ZZLinkAssessorSkillsProgramme.zz_isrecommended = 'Y' AND " + assessorPersonCondition;
+			String where = " (ass.zz_docstatus = 'DR' or ass.zz_docstatus is null or (ass.zz_docstatus = 'AP' and ZZLinkAssessorSkillsProgramme.zz_isrecommended = 'Y')) AND " + assessorPersonCondition;
 			
-			String	orderBy = commonOrderBy + ", ZZLinkAssessorSkillsProgramme_id";
+			String	orderBy = commonOrderBy + ", ZZLinkAssessorSkillsProgramme.ZZLinkAssessorSkillsProgramme_id";
 					
 			Query linkAssessorQuery = MTable.get(Env.getCtx(), I_ZZLinkAssessorSkillsProgramme.Table_Name)
 			 		.createQuery(where, null);
+			
+			linkAssessorQuery.addJoinClause("""
+					join ZZAssessorPerson ass on (ass.zzassessorperson_id = ZZLinkAssessorSkillsProgramme.zzassessorperson_id)
+				""");
 			
 			linkAssessorQuery.setOrderBy(orderBy);
 			
@@ -1441,22 +1609,42 @@ public class AssessorRegistrationVM extends StepAppVM{
 			
 			List<PO> linkObjs = linkAssessorQuery.list();
 			
-			Query qualificationQuery = MTable.get(Env.getCtx(), I_ZZQctoSkillsProgramme.Table_Name)
+			Query scopeQuery = MTable.get(Env.getCtx(), I_ZZSkillsProgramme_v.Table_Name)
 			 		.createQuery(where, null);
-			qualificationQuery.setOrderBy(orderBy);
+			scopeQuery.setOrderBy(orderBy);
 			
-			qualificationQuery.addJoinClause("join ZZLinkAssessorSkillsProgramme on ZZQctoSkillsProgramme.ZZQctoSkillsProgramme_ID = ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID");
+			
+			scopeQuery.addJoinClause("""
+					join ZZLinkAssessorSkillsProgramme on 
+						(
+						(ZZQcto = 'Y' AND ZZSkillsProgramme_v.ZZSkillsProgramme_v_id = ZZLinkAssessorSkillsProgramme.ZZQctoSkillsProgramme_ID)
+						OR (ZZQcto = 'N' AND ZZSkillsProgramme_v.ZZSkillsProgramme_v_id = ZZLinkAssessorSkillsProgramme.ZZSkillsProgramme_ID)
+						)
+					""");
 		
+			scopeQuery.addJoinClause("""
+					join ZZAssessorPerson ass on (ass.zzassessorperson_id = ZZLinkAssessorSkillsProgramme.zzassessorperson_id)
+				""");
+			
 			if(assessorPerson != null) {
-				qualificationQuery.setParameters(assessorPerson.getZZAssessorPerson_ID(), assessorPerson.getZZAssessorPerson_ID());
+				scopeQuery.setParameters(assessorPerson.getZZAssessorPerson_ID(), assessorPerson.getZZAssessorPerson_ID());
 			}else if (assessorPersonParent != null){
-				qualificationQuery.setParameters(assessorPersonParent.getZZAssessorPerson_ID(), assessorPersonParent.getZZAssessorPerson_ID());
+				scopeQuery.setParameters(assessorPersonParent.getZZAssessorPerson_ID(), assessorPersonParent.getZZAssessorPerson_ID());
 			}
 			
 			
-			List<PO> qualificationObjs = qualificationQuery.list();
+			List<PO> scopeObjs = scopeQuery.list();
 			
-			List<List<PO>> savedObjs = RowData.mergedList(linkObjs, qualificationObjs);
+			List<List<PO>> savedObjs = RowData.mergedList(linkObjs, scopeObjs, (link, scope) -> {
+				X_ZZLinkAssessorSkillsProgramme linkPo = (X_ZZLinkAssessorSkillsProgramme)link;
+				X_ZZSkillsProgramme_v scopePO = (X_ZZSkillsProgramme_v)scope;
+				if (X_ZZSkillsProgramme_v.ZZQCTO_Yes.equals(scopePO.getZZQcto()) && linkPo.getZZQctoSkillsProgramme_ID() == scopePO.getZZSkillsProgramme_v_ID()) {
+					return true;
+				}else if (X_ZZSkillsProgramme_v.ZZQCTO_No.equals(scopePO.getZZQcto()) && linkPo.getZZSkillsProgramme_ID() == scopePO.getZZSkillsProgramme_v_ID()) {
+					return true;
+				}
+				return false;
+			});
 			
 			tmQctoSkillsProgramme.resetMultiPo(savedObjs);
 			 

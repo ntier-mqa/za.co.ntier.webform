@@ -133,7 +133,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 			showInfoPanel(
 			InfoPanelPara.getInstance(I_ZZLearner_v.Table_Name
 					, I_ZZLearner_v.COLUMNNAME_ZZLearner_ID)
-			, obj -> {
+			, (obj, infoPanel) -> {
 				Object [] objs = (Object [])obj;
 				int learnerIdSelected = (int)objs[0];
 				learnerSelected = new X_ZZLearner_v(Env.getCtx(), learnerIdSelected, null);
@@ -220,7 +220,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 		String whereClause = I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID + " = " + learnerSelected.getZZLearner_ID();
 		showInfoPanel(
 				InfoPanelPara.getInstance(tableName, columnId).setWhereClause(whereClause)
-				, obj -> {
+				, (obj, infoPanel) -> {
 					Object [] objs = (Object [])obj;
 					showAssessmentSteo((int)objs[0]);
 					
@@ -426,7 +426,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 			showInfoPanel(
 			InfoPanelPara.getInstance(I_ZZAssessorPerson_v.Table_Name
 					, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_v_ID).setWhereClause(where)
-			, obj -> {
+			, (obj, infoPanel) -> {
 				Object [] objs = (Object [])obj;
 				int assessorID = (int)objs[0];
 				

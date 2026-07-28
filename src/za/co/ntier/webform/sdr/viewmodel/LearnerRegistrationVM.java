@@ -606,7 +606,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
 				InfoPanelPara.getInstance(I_ZZLkpSchoolEmis.Table_Name, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID)
-				, obj -> {
+				, (obj, infoPanel) -> {
 					Object[] objs = (Object[]) obj;
 					X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int) objs[0], null);
 					cellModel.setValue(selected);
@@ -655,7 +655,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		areaCodeCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
 				InfoPanelPara.getInstance(X_ZZLkpStatssaAreaCode.Table_Name, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID)
-				, obj -> {
+				, (obj, infoPanel) -> {
 					Object[] objs = (Object[]) obj;
 					X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int) objs[0], null);
 					cellModel.setValue(selected);

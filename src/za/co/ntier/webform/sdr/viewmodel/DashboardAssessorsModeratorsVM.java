@@ -92,8 +92,8 @@ public class DashboardAssessorsModeratorsVM {
 	}
 	
 	private void initList() {
-		Query assessorPersonQuery = MTable.get(Env.getCtx(), X_ZZAssessorPerson_v.Table_Name).createQuery("CreatedBy=?", null);
-		assessorPersonQuery.setParameters(loginId);
+		Query assessorPersonQuery = MTable.get(Env.getCtx(), X_ZZAssessorPerson_v.Table_Name).createQuery("", null);
+		//assessorPersonQuery.setParameters(loginId);
 		assessors.clear();
 		assessors.addAll(assessorPersonQuery.list());
 		

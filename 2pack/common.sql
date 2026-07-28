@@ -75,3 +75,18 @@ FROM
 AD_Tree tr JOIN AD_Table t ON (tr.AD_Table_ID=t.AD_Table_ID) 
 WHERE tr.AD_Client_ID=? AND tr.TreeType=? AND tr.IsActive='Y' AND t.TableName = ? ORDER BY tr.AD_Tree_ID
 select * from ZZLkpOfoOccupationTree
+
+select created from zzassessorperson 
+update zzassessorperson z set enddate = '2026-06-06 20:14:08.292' 
+where z.ad_user_id in (select ad_user_id from ad_user au where au.ZZ_ID_Passport_No = '0001080842089') 
+
+select approved_by  from zzlearnerqctoartisans where approved_by  is not null or namb_confirmation_user is not null
+
+select approved_by  from zzlearnerqctolearnership where approved_by  is not null or namb_confirmation_user is not null
+
+
+ALTER TABLE adempiere.zzlearnerqctoartisans DROP COLUMN namb_confirmation_user;
+ALTER TABLE adempiere.zzlearnerqctoartisans DROP COLUMN approved_by;
+ALTER TABLE adempiere.zzlearnerqctolearnership DROP COLUMN approved_by;
+ALTER TABLE adempiere.zzlearnerqctolearnership DROP COLUMN namb_confirmation_user;
+ 

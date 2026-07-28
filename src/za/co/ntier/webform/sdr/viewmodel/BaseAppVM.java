@@ -4,6 +4,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -375,7 +377,7 @@ public abstract class BaseAppVM implements ISaveApp{
 	}
 	
 	
-	public static void showInfoPanel(InfoPanelPara infoPanelPara, Consumer<Object> closeHandle){
+	public static void showInfoPanel(InfoPanelPara infoPanelPara, BiConsumer<Object, InfoPanel> closeHandle){
 		// create info window
 		Component activeWin = SessionManager.getAppDesktop().getActiveWindow();
 		Integer winNo = WindowRegistry.getWindowNo(activeWin);
@@ -388,7 +390,8 @@ public abstract class BaseAppVM implements ISaveApp{
 		ip.setStyle("border: 2px");
 		ip.setClosable(true);
 		ip.addValueChangeListener(evt -> {
-			closeHandle.accept(evt.getNewValue());
+			// happen when zoom don't need handle
+			//closeHandle.accept(evt.getNewValue(), null);
 		});
 		
 		ip.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -399,7 +402,7 @@ public abstract class BaseAppVM implements ISaveApp{
 				if (!showedIp.isCancelled()) {
 					Object[] result = showedIp.getSelectedKeys();
 					if (result != null && result.length > 0) {
-						closeHandle.accept(result);
+						closeHandle.accept(result, showedIp);
 					}
 					
 				}

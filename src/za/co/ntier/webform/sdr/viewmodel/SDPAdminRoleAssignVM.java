@@ -238,7 +238,7 @@ public class SDPAdminRoleAssignVM extends BaseAppVM{
 		chooseBpartnerCol.setEventHandle((event, cellModel) -> {
 			BaseAppVM.showInfoPanel(
 				InfoPanelPara.getInstance(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_C_BPartner_ID)
-				,obj -> {
+				,(obj, infoPanel) -> {
 					Object [] objs = (Object [])obj;
 					MBPartner_New selected = (MBPartner_New)MBPartner_New.get(Env.getCtx(), (int)objs[0]);
 					cellModel.setValue(selected);
