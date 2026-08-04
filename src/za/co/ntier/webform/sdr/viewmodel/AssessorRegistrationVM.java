@@ -6,20 +6,15 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
-import org.adempiere.model.POWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.compiere.minigrid.ColumnInfo;
-import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MForm;
 import org.compiere.model.MLocation;
@@ -38,25 +33,18 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
 import za.co.ntier.api.model.I_AD_User;
-import za.co.ntier.api.model.I_C_BP_OC;
-import za.co.ntier.api.model.I_C_BP_SkillsProgramme;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
 import za.co.ntier.api.model.I_ZZDocumentUpload;
 import za.co.ntier.api.model.I_ZZLinkAssessorQualification;
-import za.co.ntier.api.model.I_ZZLinkAssessorQualification_v;
 import za.co.ntier.api.model.I_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
-import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZQctoQualification;
 import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
-import za.co.ntier.api.model.I_ZZQualification;
 import za.co.ntier.api.model.I_ZZQualification_v;
-import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZSkillsProgramme_v;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
-import za.co.ntier.api.model.X_C_BP_OC;
 import za.co.ntier.api.model.X_C_BPartner;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
@@ -65,11 +53,7 @@ import za.co.ntier.api.model.X_ZZLinkAssessorQualification;
 import za.co.ntier.api.model.X_ZZLinkAssessorSkillsProgramme;
 import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
-import za.co.ntier.api.model.X_ZZQctoQualification;
-import za.co.ntier.api.model.X_ZZQctoSkillsProgramme;
-import za.co.ntier.api.model.X_ZZQualification;
 import za.co.ntier.api.model.X_ZZQualification_v;
-import za.co.ntier.api.model.X_ZZSkillsProgramme;
 import za.co.ntier.api.model.X_ZZSkillsProgramme_v;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
@@ -88,7 +72,6 @@ import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
-import za.co.ntier.webform.sdr.component.bean.TableModel.RowDbEventArgs;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
@@ -264,6 +247,32 @@ public class AssessorRegistrationVM extends StepAppVM{
 			assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Assessor);
 		}
 		
+		if (existingAssessorForCopy != null) {
+			assessorPerson.setZZGender(existingAssessorForCopy.getZZGender());
+			assessorPerson.setZZEquity(existingAssessorForCopy.getZZEquity());
+			assessorPerson.setZZ_LI_HomeLanguage_ID(existingAssessorForCopy.getZZ_LI_HomeLanguage_ID());
+			assessorPerson.setZZ_Nationality_ID(existingAssessorForCopy.getZZ_Nationality_ID());
+			assessorPerson.setZZ_LI_CitizenResidentialStatus_ID(existingAssessorForCopy.getZZ_LI_CitizenResidentialStatus_ID());
+			assessorPerson.setZZ_LI_SocioEconomicStatus_ID(existingAssessorForCopy.getZZ_LI_SocioEconomicStatus_ID());
+			
+			assessorPerson.setZZHealthSeeing(existingAssessorForCopy.getZZHealthSeeing());
+			assessorPerson.setZZHealthHearing(existingAssessorForCopy.getZZHealthHearing());
+			assessorPerson.setZZHealthCommunicating(existingAssessorForCopy.getZZHealthCommunicating());
+			assessorPerson.setZZHealthWalking(existingAssessorForCopy.getZZHealthWalking());
+			assessorPerson.setZZHealthRemembering(existingAssessorForCopy.getZZHealthRemembering());
+			assessorPerson.setZZHealthSelfcare(existingAssessorForCopy.getZZHealthSelfcare());
+			
+			assessorPerson.setZZLkpSchoolEmis_ID(existingAssessorForCopy.getZZLkpSchoolEmis_ID());
+			assessorPerson.setZZLkpSchoolEmisText(existingAssessorForCopy.getZZLkpSchoolEmisText());
+			assessorPerson.setZZLastSchoolYear(existingAssessorForCopy.getZZLastSchoolYear());
+			assessorPerson.setZZLkpStatssaAreaCode_ID(existingAssessorForCopy.getZZLkpStatssaAreaCode_ID());
+			assessorPerson.setZZPopiActStatus(existingAssessorForCopy.getZZPopiActStatus());
+			assessorPerson.setZZPopiActStatusDate(existingAssessorForCopy.getZZPopiActStatusDate());
+			
+			assessorPerson.setZZPhysicalLocation_ID(existingAssessorForCopy.getZZPhysicalLocation_ID());
+			assessorPerson.setZZPostalLocation_ID(existingAssessorForCopy.getZZPostalLocation_ID());
+		}
+		
 		return assessorPerson;
 	}
 	
@@ -291,7 +300,8 @@ public class AssessorRegistrationVM extends StepAppVM{
 		msgCol.setShowTitle(false);
 		cols.add(msgCol);
 		
-		ColumnModel nextStepCol = CellModel.getColModelForGenericCell("Register Assessor", null, CellModel.BUTTON_CELL);
+		String nextStepLabel = isModerator() ? "Register Moderator" : "Register Assessor";
+		ColumnModel nextStepCol = CellModel.getColModelForGenericCell(nextStepLabel, null, CellModel.BUTTON_CELL);
 		nextStepCol.setShowTitle(false);
 		cols.add(nextStepCol);
 		
@@ -374,6 +384,9 @@ public class AssessorRegistrationVM extends StepAppVM{
 		initRegistryAssessorForm();
 		if (assessorPersonExpried != null) {
 			daoManage.setDao(assessorPersonExpried);
+		}
+		if (existingAssessorForCopy != null) {
+			daoManage.getDaoForSave(I_ZZAssessorPerson.Table_Name);
 		}
 		loadData();
 		if (assessorPersonExpried != null) {
@@ -504,7 +517,10 @@ public class AssessorRegistrationVM extends StepAppVM{
 		}
 	}
 	
+	X_ZZAssessorPerson existingAssessorForCopy = null;
+	
 	private void loadSavedFromInputParam (String idValue, int idTypeId) {
+		existingAssessorForCopy = null;
 		Query userQuery = MTable.get(Env.getCtx(), I_AD_User.Table_Name)
 				.createQuery(String.format("(%s = ? AND %s = ?) OR (%s = ? AND %s = ?)", 
 												I_AD_User.COLUMNNAME_ZZ_ID_Passport_No
@@ -540,7 +556,8 @@ public class AssessorRegistrationVM extends StepAppVM{
 				
 				existAssessorQuery.setOrderBy("ZZAssessorPerson.EndDate");
 				
-				if (existAssessorQuery.first() == null) {
+				existingAssessorForCopy = existAssessorQuery.first();
+				if (existingAssessorForCopy == null) {
 					MasterUtil.showInfoDialog("ZZAssessorNotExistsAssessor", MasterUtil.fCloseActiveWindow);
 					return;
 				}
