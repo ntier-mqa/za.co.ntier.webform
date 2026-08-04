@@ -82,7 +82,7 @@
             <!-- list - Area - province -->
             <listbox
               if="${ vmRowRender.row[col].cellType eq CellModel.LIST_CELL }"
-              disabled="@init(col.readonly)"
+              disabled="@bind(col.readonly)"
 
               mold="select"
               model="@bind(vmRowRender.row[col].model)"
@@ -161,8 +161,8 @@
             <!-- Date -->
             <datebox if="${vmRowRender.row[col].cellType eq CellModel.DATE_CELL}"
               format="yyyy/MM/dd" placeholder="yyyy/MM/dd"
-              readonly="@init(col.readonly)"
-              buttonVisible="@init(!col.readonly)"
+              readonly="@bind(col.readonly)"
+              buttonVisible="@bind(!col.readonly)"
               valueInLocalDate="@bind(vmRowRender.row[col].localDate)" />
 
 			<button if="${vmRowRender.row[col].cellType eq CellModel.BUTTON_CELL}"

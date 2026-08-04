@@ -212,6 +212,7 @@ public class ColumnModel implements PropertyChangeListener{
 	 */
 	public ColumnModel setReadonly(boolean readonly) {
 		this.readonly = readonly;
+		BindUtils.postNotifyChange(this, "readonly");
 		return this;
 	}
 

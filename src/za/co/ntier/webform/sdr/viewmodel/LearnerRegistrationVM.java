@@ -228,7 +228,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			showCreateNew = false;
 			identityValidated = true;
 			alternateIDTypeCol.setReadonly(true);
-			idNoCol.setReadonly(true);
+			//idNoCol.setReadonly(true);
 		} else {
 			// Person NOT found
 			validationMessage = "A person with " + selectedIdType.getName() + " " + idNumber
@@ -254,7 +254,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			alternateIDTypeCol.setDefaultValue(selectedIdType.getName(), MasterUtil.nameAlternateIdTypeCompare);
 		}
 		alternateIDTypeCol.setReadonly(true);
-		idNoCol.setReadonly(true);
+		//idNoCol.setReadonly(true);
 
 		if (tmGeneralDetail != null && tmGeneralDetail.getRow() != null) {
 			CellModel idCell = tmGeneralDetail.getRow().get(idNoCol);
@@ -284,7 +284,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	private void loadForEdit() {
 		alternateIDTypeCol.setReadonly(true);
-		idNoCol.setReadonly(true);
+		//idNoCol.setReadonly(true);
 		learner = (X_ZZLearner) MTable.get(Env.getCtx(), I_ZZLearner.Table_Name)
 				.getPO(getMenuContextInfo().getRecordID(), null);
 		if (learner == null) {
@@ -412,7 +412,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			if (dobCell != null)
 			{
 				dobCell.setValue(dob);
-				BindUtils.postNotifyChange(null, null, dobCell, "value");
+				dateOfBirthCol.setReadonly(true);
+				//BindUtils.postNotifyChange(null, null, dobCell, "value");
 			}
 		}
 		String genderCode = MasterUtil.getGenderFromId(idString);
@@ -425,7 +426,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			if (genderCell != null && genderVal != null)
 			{
 				genderCell.setValue(genderVal);
-				BindUtils.postNotifyChange(null, null, genderCell, "value");
+				genderCol.setReadonly(true);
+				//BindUtils.postNotifyChange(null, null, genderCell, "value");
 			}
 		}
 	}
@@ -446,7 +448,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		});
 		cols.add(alternateIDTypeCol);
 
-		idNoCol = IDCellModel.getIDColumnModel().required().setTableName(I_ZZPerson.Table_Name);
+		idNoCol = IDCellModel.getIDColumnModel().required().setTableName(I_ZZPerson.Table_Name).setReadonly(true);
 		idNoCol.setEventHandle((event, cellMode) -> {
 			Object idValue = cellMode.getDirtyValue();
 			if (idValue != null) {
