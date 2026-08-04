@@ -166,6 +166,9 @@ public class CellModel implements IValueChange , IInputState{
 	}
 	
 	public InputCheckResult parseInputState() {
+		if (colModel.getBeforeParseInputState() != null)
+			colModel.getBeforeParseInputState().accept(this);
+		
 		InputCheckResult inputCheckResult = new InputCheckResult();
 		inputCheckResult.setEmpty(true).setFillMandatory(true).setNotChange(true);
 		

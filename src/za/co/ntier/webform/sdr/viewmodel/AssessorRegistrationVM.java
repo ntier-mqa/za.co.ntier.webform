@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
 import org.adempiere.model.POWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Location;
@@ -33,6 +34,8 @@ import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Textbox;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BP_OC;
@@ -942,19 +945,8 @@ public class AssessorRegistrationVM extends StepAppVM{
 		ValueAdaptColumnModel lastSchoolEmisCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), 
 				I_ZZAssessorPerson.COLUMNNAME_ZZLkpSchoolEmis_ID, 
-				CellModel.SEARCH_CELL);
+				CellModel.SEARCH_CELL).setAllowClearText(true);
 		lastSchoolEmisCol.required();
-		
-		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-			InfoPanelPara.getInstance(I_ZZLkpSchoolEmis.Table_Name
-					, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID)
-			, (obj, infoPanel) -> {
-				Object [] objs = (Object [])obj;
-				X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
-				cellModel.setValue(selected);
-			});
-		});
 		
 		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
 			if (value == null)
@@ -984,6 +976,45 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		cols.add(lastSchoolEmisCol);
+		
+		ColumnModel lastSchoolEmisTextCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZLkpSchoolEmisText), 
+				I_ZZAssessorPerson.COLUMNNAME_ZZLkpSchoolEmisText
+				);
+		cols.add(lastSchoolEmisTextCol);
+		
+		lastSchoolEmisTextCol.setEventHandle((event, cellModel) -> {
+			if (cellModel.getValue() != null) {
+				CellModel lastSchoolEmisCell = cellModel.getRowModel().get(lastSchoolEmisCol);
+				lastSchoolEmisCell.setValue(null);
+			}
+		});
+		
+		lastSchoolEmisCol.setBeforeParseInputState(cellModel -> {
+			CellModel lastSchoolEmisTextCell = cellModel.getRowModel().get(lastSchoolEmisTextCol);
+			cellModel.getColModel().setMandatory(lastSchoolEmisTextCell.getValue() == null);
+			
+		});
+		
+		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
+			if (event.getTarget() instanceof Button)
+				showInfoPanel(
+				InfoPanelPara.getInstance(I_ZZLkpSchoolEmis.Table_Name
+						, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID)
+				, (obj, infoPanel) -> {
+					Object [] objs = (Object [])obj;
+					X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
+					cellModel.setValue(selected);
+					// clear text on lastSchoolEmisTextCol
+					cellModel.getRowModel().get(lastSchoolEmisTextCol).setValue(null);
+				});
+			else if (event.getTarget() instanceof Textbox){
+				// clear text so set selected item to null
+				Textbox textField = (Textbox)event.getTarget();
+				if(StringUtils.isBlank(textField.getValue()))
+					cellModel.setValue(null);
+			}
+		});
 		
 		ColumnModel lastSchoolYearCol = CellModel.getColModelForPositiveNumber(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZLastSchoolYear), 

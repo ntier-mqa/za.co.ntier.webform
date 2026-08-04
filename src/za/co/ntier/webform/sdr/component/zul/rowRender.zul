@@ -67,7 +67,7 @@
             
             <!-- search cell -->
            	<textbox if="${ vmRowRender.row[col].cellType eq CellModel.SEARCH_CELL and col.daoPropertyName ne null }"
-              readonly="true"
+              readonly="@bind(!col.allowClearText)"
               value="
               	@load(vmRowRender.row[col].displayValue)
               	@converter(ConvertUtil.getConvertBlankNull())

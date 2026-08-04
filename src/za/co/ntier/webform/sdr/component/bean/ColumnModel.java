@@ -7,6 +7,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Triple;
@@ -30,6 +31,7 @@ public class ColumnModel implements PropertyChangeListener{
 		this.refDocUploadDefCol = refDocUploadDefCol;
 	}
 	
+	private Consumer<CellModel> beforeParseInputState;  
 	
 	private boolean isCalTotlal = false;
 	private Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> cellModelSupplier;
@@ -269,6 +271,12 @@ public class ColumnModel implements PropertyChangeListener{
 	}
 	public void setValidateHandle(BiConsumer<CellModel, List<String>> validateHandle) {
 		this.validateHandle = validateHandle;
+	}
+	public Consumer<CellModel> getBeforeParseInputState() {
+		return beforeParseInputState;
+	}
+	public void setBeforeParseInputState(Consumer<CellModel> beforeParseInputState) {
+		this.beforeParseInputState = beforeParseInputState;
 	}
 	
 
