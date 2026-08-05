@@ -44,6 +44,7 @@ import za.co.ntier.api.model.I_ZZQualification_v;
 import za.co.ntier.api.model.I_ZZSkillsProgramme_v;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.MBPartner_New;
+import za.co.ntier.api.model.MQAConfiguration;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_C_BPartner;
 import za.co.ntier.api.model.X_ZZAssessorPerson;
@@ -549,9 +550,12 @@ public class AssessorRegistrationVM extends StepAppVM{
 								AND ZZAssessorPerson.Parent_ID IS NULL
 								AND ZZAssessorPerson.ZZAssessorRole = ?
 								AND ZZAssessorPerson.ZZ_DocStatus = ?
-								AND EndDate >= CURRENT_DATE::timestamp
+								AND EndDate >= (CURRENT_DATE - (INTERVAL '1 month' * ?))
 								""", null);
-				existAssessorQuery.setParameters(person.getAD_User_ID(), X_ZZAssessorPerson.ZZASSESSORROLE_Assessor, X_ZZAssessorPerson.ZZ_DOCSTATUS_Approved);
+				existAssessorQuery.setParameters(person.getAD_User_ID()
+						, X_ZZAssessorPerson.ZZASSESSORROLE_Assessor
+						, X_ZZAssessorPerson.ZZ_DOCSTATUS_Approved
+						, MQAConfiguration.getMonthsBeforeExpiry());
 				existAssessorQuery.setOnlyActiveRecords(true);
 				
 				existAssessorQuery.setOrderBy("ZZAssessorPerson.EndDate");
@@ -603,7 +607,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (!isExtensionScope() && assessorPersonSaved != null && assessorPersonSaved.getEndDate() != null) {
 				LocalDate endDate = assessorPersonSaved.getEndDate().toLocalDateTime().toLocalDate();
 
-				LocalDate moment = LocalDate.now(); 
+				LocalDate moment = LocalDate.now().minusMonths(MQAConfiguration.getMonthsBeforeExpiry()); 
 
 				boolean isAfterMoment = moment.isAfter(endDate);
 				
