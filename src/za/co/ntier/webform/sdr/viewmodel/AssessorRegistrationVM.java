@@ -537,6 +537,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		
 		
 		if (person == null && isModerator() && !isExtensionScope()) {
+			// not exists person so not exists Assessor
 			MasterUtil.showInfoDialog("ZZAssessorNotExistsAssessor", MasterUtil.fCloseActiveWindow);
 			return;
 		}
@@ -550,27 +551,32 @@ public class AssessorRegistrationVM extends StepAppVM{
 								AND ZZAssessorPerson.Parent_ID IS NULL
 								AND ZZAssessorPerson.ZZAssessorRole = ?
 								AND ZZAssessorPerson.ZZ_DocStatus = ?
-								AND EndDate >= (CURRENT_DATE - (INTERVAL '1 month' * ?))
+								AND ZZAssessorPerson.EndDate >= (CURRENT_DATE - (INTERVAL '1 month' * ?))
+								AND ZZAssessorPerson.C_BPartner_ID = ?
 								""", null);
 				existAssessorQuery.setParameters(person.getAD_User_ID()
 						, X_ZZAssessorPerson.ZZASSESSORROLE_Assessor
 						, X_ZZAssessorPerson.ZZ_DOCSTATUS_Approved
-						, MQAConfiguration.getMonthsBeforeExpiry());
+						, MQAConfiguration.getMonthsBeforeExpiry()
+						, sdpAdmin.getC_BPartner_ID());
+				
 				existAssessorQuery.setOnlyActiveRecords(true);
 				
 				existAssessorQuery.setOrderBy("ZZAssessorPerson.EndDate");
 				
 				existingAssessorForCopy = existAssessorQuery.first();
 				if (existingAssessorForCopy == null) {
+					// exists person but not exists Assessor still active (not yet end date)
 					MasterUtil.showInfoDialog("ZZAssessorNotExistsAssessor", MasterUtil.fCloseActiveWindow);
 					return;
 				}
 			}
 			
-			// load draft assessor
+			// load first assessor to check it's exists also check expired
 			Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name)
 					.createQuery("""
-							ZZAssessorPerson.AD_User_ID = ?
+							ZZAssessorPerson.C_BPartner_ID = ?
+							AND ZZAssessorPerson.AD_User_ID = ?
 							AND (CASE WHEN ZZAssessorPerson.Parent_ID IS NULL THEN 'N' ELSE 'Y' END) = ?
 							AND (CASE WHEN ZZAssessorPerson.Parent_ID IS NULL THEN ZZAssessorPerson.ZZAssessorRole ELSE parent.ZZAssessorRole END) = ?
 							""", null);
@@ -600,7 +606,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (isModerator()) {
 				role = X_ZZAssessorPerson.ZZASSESSORROLE_Moderator;
 			}
-			savedDataQuery.setParameters(person.getAD_User_ID(), isExtensionScope(), role);
+			savedDataQuery.setParameters(sdpAdmin.getC_BPartner_ID(), person.getAD_User_ID(), isExtensionScope(), role);
 			savedDataQuery.setOnlyActiveRecords(true);
 			assessorPersonSaved = savedDataQuery.first();
 
