@@ -13,6 +13,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.ListModelList;
 
+import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.MZZAssessorPersonV;
 import za.co.ntier.api.model.X_ZZAssessorPerson_v;
 import za.co.ntier.webform.form.MasterUtil;
@@ -92,8 +93,9 @@ public class DashboardAssessorsModeratorsVM {
 	}
 	
 	private void initList() {
-		Query assessorPersonQuery = MTable.get(Env.getCtx(), X_ZZAssessorPerson_v.Table_Name).createQuery("CreatedBy=?", null);
-		assessorPersonQuery.setParameters(loginId);
+		Query assessorPersonQuery = MTable.get(Env.getCtx(), X_ZZAssessorPerson_v.Table_Name).createQuery("C_BPartner_ID=?", null);
+		MUser_New loginUser = MUser_New.get(Env.getCtx(), loginId);
+		assessorPersonQuery.setParameters(loginUser.getC_BPartner_ID());
 		assessors.clear();
 		assessors.addAll(assessorPersonQuery.list());
 		
