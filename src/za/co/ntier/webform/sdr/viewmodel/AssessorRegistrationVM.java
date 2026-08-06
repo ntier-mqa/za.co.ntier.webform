@@ -551,7 +551,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 								AND ZZAssessorPerson.Parent_ID IS NULL
 								AND ZZAssessorPerson.ZZAssessorRole = ?
 								AND ZZAssessorPerson.ZZ_DocStatus = ?
-								AND ZZAssessorPerson.EndDate >= (CURRENT_DATE - (INTERVAL '1 month' * ?))
+								AND (ZZAssessorPerson.EndDate ) >= (CURRENT_DATE + (INTERVAL '1 month' * ?))
 								AND ZZAssessorPerson.C_BPartner_ID = ?
 								""", null);
 				existAssessorQuery.setParameters(person.getAD_User_ID()
@@ -613,7 +613,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (!isExtensionScope() && assessorPersonSaved != null && assessorPersonSaved.getEndDate() != null) {
 				LocalDate endDate = assessorPersonSaved.getEndDate().toLocalDateTime().toLocalDate();
 
-				LocalDate moment = LocalDate.now().minusMonths(MQAConfiguration.getMonthsBeforeExpiry()); 
+				LocalDate moment = LocalDate.now().plusMonths(MQAConfiguration.getMonthsBeforeExpiry()); 
 
 				boolean isAfterMoment = moment.isAfter(endDate);
 				
