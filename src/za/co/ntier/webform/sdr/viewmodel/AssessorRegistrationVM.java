@@ -241,7 +241,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 	
 	private X_ZZAssessorPerson initAssessor() {
 		X_ZZAssessorPerson assessorPerson = new X_ZZAssessorPerson(Env.getCtx(), 0, null);
-		
+		assessorPerson.setC_BPartner_ID(sdpAdmin.getC_BPartner_ID());
 		if (isModerator()) {
 			assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Moderator);
 		}else {
@@ -833,12 +833,20 @@ public class AssessorRegistrationVM extends StepAppVM{
 		tmLinkedBpartner.init();
 		
 		tmLinkedBpartner.setLoadSavedDataHandle(tableModel -> {
-			if (sdpAdmin.getC_BPartner_ID() > 0) {
-				PO linkedBpartner = MBPartner_New.get(Env.getCtx(), sdpAdmin.getC_BPartner_ID());
+			int ownerPartnerID = 0;
+			if (assessorPerson != null) {
+				ownerPartnerID = assessorPerson.getC_BPartner_ID();
+			}
+			if (ownerPartnerID == 0 && sdpAdmin.getC_BPartner_ID() > 0) {
+				ownerPartnerID = sdpAdmin.getC_BPartner_ID();
+			}
+			 
+			if(ownerPartnerID > 0) {
+				PO linkedBpartner = MBPartner_New.get(Env.getCtx(), ownerPartnerID);
 				
 				tableModel.reset(List.of(linkedBpartner));
 			}
-			 
+			
 		});
 		
 	}
