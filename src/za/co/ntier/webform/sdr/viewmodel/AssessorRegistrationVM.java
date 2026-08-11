@@ -367,8 +367,10 @@ public class AssessorRegistrationVM extends StepAppVM{
 	
 	TableModel tmGeneralDetail;
 	
-	ColumnModel idNoCol;
-	ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
+	ColumnModel								idNoCol;
+	ListColumnModel<X_ZZ_AlternateIDType>	alternateIDTypeCol;
+	ColumnModel								dateOfBirthCol;
+	ColumnModel								genderCol;
 	
 	ColumnModel identityIdNoCol;
 	ListColumnModel<X_ZZ_AlternateIDType> identityAlternateIDTypeCol;
@@ -404,6 +406,44 @@ public class AssessorRegistrationVM extends StepAppVM{
 			CellModel idNoCell = tmGeneralDetail.getRow().get(idNoCol);
 			CellModel identityIdNoCell = tmIdentity.getRow().get(identityIdNoCol);
 			idNoCell.setValue(identityIdNoCell.getValue());
+			
+			if (identityAlternateIDTypeCell.getSelectedItem() != null
+				&& IDCellModel.idTypeRSA_ID.equals(identityAlternateIDTypeCell.getSelectedItem().getName()))
+			{
+				String idString = (String) identityIdNoCell.getValue();
+				if (idString != null && !idString.isBlank())
+				{
+					autoPopulateDobAndGender(idString, tmGeneralDetail.getRow());
+				}
+			}
+		}
+	}
+	
+	private void autoPopulateDobAndGender(String idNumber, RowModel rowModel)
+	{
+		String idString = idNumber.trim();
+		Timestamp dob = MasterUtil.getDobFromId(idString);
+		if (dob != null)
+		{
+			CellModel dobCell = rowModel.get(dateOfBirthCol);
+			if (dobCell != null)
+			{
+				dobCell.setValue(dob);
+				dateOfBirthCol.setReadonly(true);
+			}
+		}
+		String genderCode = MasterUtil.getGenderFromId(idString);
+		if (genderCode != null)
+		{
+			ValueNamePair genderVal = MasterUtil.getLkpGenders().stream()
+												.filter(v -> v.getValue().equals(genderCode))
+												.findFirst().orElse(null);
+			CellModel genderCell = rowModel.get(genderCol);
+			if (genderCell != null && genderVal != null)
+			{
+				genderCell.setValue(genderVal);
+				genderCol.setReadonly(true);
+			}
 		}
 	}
 	
@@ -696,14 +736,14 @@ public class AssessorRegistrationVM extends StepAppVM{
 		idNoCol.setReadonly(true);
 		cols.add(idNoCol);
 
-		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel(
+		dateOfBirthCol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Birthday)
 				, I_AD_User.COLUMNNAME_Birthday
 			).required()
 			.setTableName(I_AD_User.Table_Name);
 		cols.add(dateOfBirthCol);
 
-		ColumnModel genderCol = ListCellModel.getListColumnModel(
+		genderCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZGender)
 				, I_ZZAssessorPerson.COLUMNNAME_ZZGender
 				, MasterUtil.getLkpGenders()
