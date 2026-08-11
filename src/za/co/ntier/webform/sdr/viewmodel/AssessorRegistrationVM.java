@@ -429,7 +429,6 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (dobCell != null)
 			{
 				dobCell.setValue(dob);
-				dateOfBirthCol.setReadonly(true);
 			}
 		}
 		String genderCode = MasterUtil.getGenderFromId(idString);
@@ -442,7 +441,6 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (genderCell != null && genderVal != null)
 			{
 				genderCell.setValue(genderVal);
-				genderCol.setReadonly(true);
 			}
 		}
 	}
@@ -1200,6 +1198,28 @@ public class AssessorRegistrationVM extends StepAppVM{
 					, selectedQua);
 		}
 		
+		if (isModerator() && person != null && person.getAD_User_ID() > 0) {
+			String moderatorFilter = String.format("""
+					AND (
+						(ZZFromQcto = 'Y' AND ZZQualification_v_ID IN (
+							SELECT link.ZZQctoQualification_ID 
+							FROM ZZLinkAssessorQualification link
+							JOIN ZZAssessorPerson ap ON link.ZZAssessorPerson_ID = ap.ZZAssessorPerson_ID
+							WHERE ap.AD_User_ID = %s AND ap.ZZAssessorRole = '%s' AND ap.ZZ_DocStatus = '%s'
+						))
+						OR
+						(ZZFromQcto = 'N' AND ZZQualification_v_ID IN (
+							SELECT link.ZZQualification_ID 
+							FROM ZZLinkAssessorQualification link
+							JOIN ZZAssessorPerson ap ON link.ZZAssessorPerson_ID = ap.ZZAssessorPerson_ID
+							WHERE ap.AD_User_ID = %s AND ap.ZZAssessorRole = '%s' AND ap.ZZ_DocStatus = '%s'
+						))
+					)
+					""", person.getAD_User_ID(), X_ZZAssessorPerson.ZZASSESSORROLE_Assessor, X_ZZAssessorPerson.ZZ_DOCSTATUS_Approved,
+					person.getAD_User_ID(), X_ZZAssessorPerson.ZZASSESSORROLE_Assessor, X_ZZAssessorPerson.ZZ_DOCSTATUS_Approved);
+			filterByBp = filterByBp + moderatorFilter;
+		}
+		
 		return filterByBp;
 	}
 	
@@ -1233,7 +1253,27 @@ public class AssessorRegistrationVM extends StepAppVM{
 					, selectedSkills);
 		}
 		
-		
+		if (isModerator() && person != null && person.getAD_User_ID() > 0) {
+			String moderatorFilter = String.format("""
+					AND (
+						(ZZFromQcto = 'Y' AND ZZSkillsProgramme_v_ID IN (
+							SELECT link.ZZQctoSkillsProgramme_ID 
+							FROM ZZLinkAssessorSkillsProgramme link
+							JOIN ZZAssessorPerson ap ON link.ZZAssessorPerson_ID = ap.ZZAssessorPerson_ID
+							WHERE ap.AD_User_ID = %s AND ap.ZZAssessorRole = '%s' AND ap.ZZ_DocStatus = '%s'
+						))
+						OR
+						(ZZFromQcto = 'N' AND ZZSkillsProgramme_v_ID IN (
+							SELECT link.ZZSkillsProgramme_ID 
+							FROM ZZLinkAssessorSkillsProgramme link
+							JOIN ZZAssessorPerson ap ON link.ZZAssessorPerson_ID = ap.ZZAssessorPerson_ID
+							WHERE ap.AD_User_ID = %s AND ap.ZZAssessorRole = '%s' AND ap.ZZ_DocStatus = '%s'
+						))
+					)
+					""", person.getAD_User_ID(), X_ZZAssessorPerson.ZZASSESSORROLE_Assessor, X_ZZAssessorPerson.ZZ_DOCSTATUS_Approved,
+					person.getAD_User_ID(), X_ZZAssessorPerson.ZZASSESSORROLE_Assessor, X_ZZAssessorPerson.ZZ_DOCSTATUS_Approved);
+			filterByBp = filterByBp + moderatorFilter;
+		}
 		
 		return filterByBp;
 	}
