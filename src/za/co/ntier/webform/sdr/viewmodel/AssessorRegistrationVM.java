@@ -248,30 +248,32 @@ public class AssessorRegistrationVM extends StepAppVM{
 			assessorPerson.setZZAssessorRole(X_ZZAssessorPerson.ZZASSESSORROLE_Assessor);
 		}
 		
-		if (existingAssessorForCopy != null) {
-			assessorPerson.setZZGender(existingAssessorForCopy.getZZGender());
-			assessorPerson.setZZEquity(existingAssessorForCopy.getZZEquity());
-			assessorPerson.setZZ_LI_HomeLanguage_ID(existingAssessorForCopy.getZZ_LI_HomeLanguage_ID());
-			assessorPerson.setZZ_Nationality_ID(existingAssessorForCopy.getZZ_Nationality_ID());
-			assessorPerson.setZZ_LI_CitizenResidentialStatus_ID(existingAssessorForCopy.getZZ_LI_CitizenResidentialStatus_ID());
-			assessorPerson.setZZ_LI_SocioEconomicStatus_ID(existingAssessorForCopy.getZZ_LI_SocioEconomicStatus_ID());
+		X_ZZAssessorPerson sourceCopy = existingAssessorForCopy != null ? existingAssessorForCopy : assessorPersonExpried;
+
+		if (sourceCopy != null) {
+			assessorPerson.setZZGender(sourceCopy.getZZGender());
+			assessorPerson.setZZEquity(sourceCopy.getZZEquity());
+			assessorPerson.setZZ_LI_HomeLanguage_ID(sourceCopy.getZZ_LI_HomeLanguage_ID());
+			assessorPerson.setZZ_Nationality_ID(sourceCopy.getZZ_Nationality_ID());
+			assessorPerson.setZZ_LI_CitizenResidentialStatus_ID(sourceCopy.getZZ_LI_CitizenResidentialStatus_ID());
+			assessorPerson.setZZ_LI_SocioEconomicStatus_ID(sourceCopy.getZZ_LI_SocioEconomicStatus_ID());
 			
-			assessorPerson.setZZHealthSeeing(existingAssessorForCopy.getZZHealthSeeing());
-			assessorPerson.setZZHealthHearing(existingAssessorForCopy.getZZHealthHearing());
-			assessorPerson.setZZHealthCommunicating(existingAssessorForCopy.getZZHealthCommunicating());
-			assessorPerson.setZZHealthWalking(existingAssessorForCopy.getZZHealthWalking());
-			assessorPerson.setZZHealthRemembering(existingAssessorForCopy.getZZHealthRemembering());
-			assessorPerson.setZZHealthSelfcare(existingAssessorForCopy.getZZHealthSelfcare());
+			assessorPerson.setZZHealthSeeing(sourceCopy.getZZHealthSeeing());
+			assessorPerson.setZZHealthHearing(sourceCopy.getZZHealthHearing());
+			assessorPerson.setZZHealthCommunicating(sourceCopy.getZZHealthCommunicating());
+			assessorPerson.setZZHealthWalking(sourceCopy.getZZHealthWalking());
+			assessorPerson.setZZHealthRemembering(sourceCopy.getZZHealthRemembering());
+			assessorPerson.setZZHealthSelfcare(sourceCopy.getZZHealthSelfcare());
 			
-			assessorPerson.setZZLkpSchoolEmis_ID(existingAssessorForCopy.getZZLkpSchoolEmis_ID());
-			assessorPerson.setZZLkpSchoolEmisText(existingAssessorForCopy.getZZLkpSchoolEmisText());
-			assessorPerson.setZZLastSchoolYear(existingAssessorForCopy.getZZLastSchoolYear());
-			assessorPerson.setZZLkpStatssaAreaCode_ID(existingAssessorForCopy.getZZLkpStatssaAreaCode_ID());
-			assessorPerson.setZZPopiActStatus(existingAssessorForCopy.getZZPopiActStatus());
-			assessorPerson.setZZPopiActStatusDate(existingAssessorForCopy.getZZPopiActStatusDate());
+			assessorPerson.setZZLkpSchoolEmis_ID(sourceCopy.getZZLkpSchoolEmis_ID());
+			assessorPerson.setZZLkpSchoolEmisText(sourceCopy.getZZLkpSchoolEmisText());
+			assessorPerson.setZZLastSchoolYear(sourceCopy.getZZLastSchoolYear());
+			assessorPerson.setZZLkpStatssaAreaCode_ID(sourceCopy.getZZLkpStatssaAreaCode_ID());
+			assessorPerson.setZZPopiActStatus(sourceCopy.getZZPopiActStatus());
+			assessorPerson.setZZPopiActStatusDate(sourceCopy.getZZPopiActStatusDate());
 			
-			assessorPerson.setZZPhysicalLocation_ID(existingAssessorForCopy.getZZPhysicalLocation_ID());
-			assessorPerson.setZZPostalLocation_ID(existingAssessorForCopy.getZZPostalLocation_ID());
+			assessorPerson.setZZPhysicalLocation_ID(sourceCopy.getZZPhysicalLocation_ID());
+			assessorPerson.setZZPostalLocation_ID(sourceCopy.getZZPostalLocation_ID());
 		}
 		
 		return assessorPerson;
@@ -1867,7 +1869,9 @@ public class AssessorRegistrationVM extends StepAppVM{
 			if (assessorPerson != null && assessorPerson.getZZPhysicalLocation_ID() > 0) {
 				X_C_Location physicalLocation = MLocation.getCopy(Env.getCtx(), assessorPerson.getZZPhysicalLocation_ID(), null);
 				tm.getRow().setDataOneRow(physicalLocation);
-			  
+			}else if (assessorPersonExpried != null && assessorPersonExpried.getZZPhysicalLocation_ID() > 0) {
+				X_C_Location physicalLocation = MLocation.getCopy(Env.getCtx(), assessorPersonExpried.getZZPhysicalLocation_ID(), null);
+				tm.getRow().setDataOneRow(physicalLocation);
 			}else {
 				tm.getRow().setDataOneRow(null);
 			}
@@ -1877,6 +1881,9 @@ public class AssessorRegistrationVM extends StepAppVM{
 		tmPostalAddress.setLoadSavedDataHandle(tm -> {
 			if (assessorPerson != null && assessorPerson.getZZPostalLocation_ID() > 0) {
 				X_C_Location postalLocation = MLocation.getCopy(Env.getCtx(), assessorPerson.getZZPostalLocation_ID(), null);
+				tm.getRow().setDataOneRow(postalLocation);
+			}else if (assessorPersonExpried != null && assessorPersonExpried.getZZPostalLocation_ID() > 0) {
+				X_C_Location postalLocation = MLocation.getCopy(Env.getCtx(), assessorPersonExpried.getZZPostalLocation_ID(), null);
 				tm.getRow().setDataOneRow(postalLocation);
 			}else {
 				tm.getRow().setDataOneRow(null);
