@@ -26,6 +26,7 @@ import za.co.ntier.api.model.I_ZZLearnerLearnershipAssessments;
 import za.co.ntier.api.model.I_ZZLearnerQCTOArtisans;
 import za.co.ntier.api.model.I_ZZLearnerQCTOLearnership;
 import za.co.ntier.api.model.I_ZZLearnerQCTOSkillsProgramme;
+import za.co.ntier.api.model.I_ZZLearnerQCTOSkillsProgrammeAssessments;
 import za.co.ntier.api.model.I_ZZLearnerQctoLearnershipAssessments;
 import za.co.ntier.api.model.I_ZZLearner_v;
 import za.co.ntier.api.model.I_ZZLearnership;
@@ -33,6 +34,7 @@ import za.co.ntier.api.model.I_ZZLearnershipUnitStandard;
 import za.co.ntier.api.model.I_ZZQctoLearnership;
 import za.co.ntier.api.model.I_ZZQctoModule;
 import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
+import za.co.ntier.api.model.I_ZZQctoSkillsProgrammeModule;
 import za.co.ntier.api.model.I_ZZUnitStandard;
 import za.co.ntier.api.model.X_ZZAssessorPerson_v;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
@@ -40,6 +42,7 @@ import za.co.ntier.api.model.X_ZZLearnerLearnershipAssessments;
 import za.co.ntier.api.model.X_ZZLearnerQCTOArtisans;
 import za.co.ntier.api.model.X_ZZLearnerQCTOLearnership;
 import za.co.ntier.api.model.X_ZZLearnerQCTOSkillsProgramme;
+import za.co.ntier.api.model.X_ZZLearnerQCTOSkillsProgrammeAssessments;
 import za.co.ntier.api.model.X_ZZLearnerQctoLearnershipAssessments;
 import za.co.ntier.api.model.X_ZZLearner_v;
 import za.co.ntier.api.model.X_ZZLearnership;
@@ -317,8 +320,51 @@ public class LearnerAssessmentVM extends StepAppVM{
 			});
 			
 			tmQctoLearnershipAssessments.resetMultiPo(loadSavedDatas);
+		
 		}
-		else if (isInterventionLearnerships())
+		else if (isInterventionQCTOSkills())
+		{
+			if (tmQCTOSkillsAssessments == null)
+			{
+				initQctoSkillsAssessments();
+			}
+
+			int[] moduleIds = DB.getIDsEx(null, String.format(	"SELECT %s FROM %s WHERE %s = ?", I_ZZQctoSkillsProgrammeModule.COLUMNNAME_ZZQctoModule_ID,
+																I_ZZQctoSkillsProgrammeModule.Table_Name,
+																I_ZZQctoSkillsProgrammeModule.COLUMNNAME_ZZQctoSkillsProgramme_ID), learnerQCTOSkills
+																																						.getZZQctoSkillsProgramme_ID());
+
+			List<Object> ids = Arrays.stream(moduleIds).boxed().collect(Collectors.toList());
+			String placeholders = MasterUtil.createPlaceHoldForInClause(ids);
+
+			Query moduleAssessmentsQuery = MTable.get(Env.getCtx(), X_ZZQctoModule.Table_Name).createQuery(
+																											String.format(	"%s IN (%s)",
+																															X_ZZQctoModule.COLUMNNAME_ZZQctoModule_ID,
+																															placeholders), null);
+			moduleAssessmentsQuery.setParameters(ids);
+			List<PO> modules = moduleAssessmentsQuery.list();
+
+			Query learnerAssessmentsQuery = MTable.get(Env.getCtx(), I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name).createQuery(
+																																		String.format(	"%s IN (%s) AND %s = ?",
+																																						I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZQctoModule_ID,
+																																						placeholders,
+																																						I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZLearnerQCTOSkillsProgramme_ID),
+																																		null);
+
+			List<Object> learnerAssessmentsParas = new ArrayList<Object>(ids);
+			learnerAssessmentsParas.add(learnerQCTOSkills.getZZLearnerQCTOSkillsProgramme_ID());
+			learnerAssessmentsQuery.setParameters(learnerAssessmentsParas);
+			List<PO> learnerAssessments = learnerAssessmentsQuery.list();
+
+			List<List<PO>> loadSavedDatas = RowData.mergedList(modules, learnerAssessments, (po1, po2) -> {
+				X_ZZQctoModule module = (X_ZZQctoModule) po1;
+				X_ZZLearnerQCTOSkillsProgrammeAssessments learnerAssessment = (X_ZZLearnerQCTOSkillsProgrammeAssessments) po2;
+				return learnerAssessment.getZZQctoModule_ID() != 0 && learnerAssessment.getZZQctoModule_ID() == module.getZZQctoModule_ID();
+			});
+
+			tmQCTOSkillsAssessments.resetMultiPo(loadSavedDatas);
+
+		} else if (isInterventionLearnerships())
 		{
 			if (tmLearnershipAssessments == null)
 			{
@@ -734,6 +780,135 @@ public class LearnerAssessmentVM extends StepAppVM{
 	TableModel	tmLearnerLearnerships;
 	TableModel	tmLearnershipAssessments;
 	
+	
+	public void initQctoSkillsAssessments()
+	{
+		List<ColumnModel> cols = new ArrayList<>();
+
+		qctoLearnershipAssessmentsSelectedCol = CheckboxCellModel.getCheckboxColModel("", null);
+		cols.add(qctoLearnershipAssessmentsSelectedCol);
+
+		ColumnModel col = CellModel.getColModelForLabel(
+														MasterUtil.getNameOfColTranslated(I_ZZQctoModule.Table_Name, I_ZZQctoModule.COLUMNNAME_ZZModuleCode),
+														I_ZZQctoModule.COLUMNNAME_ZZModuleCode).setTableName(I_ZZQctoModule.Table_Name);
+		cols.add(col);
+
+		col = CellModel.getColModelForLabel(
+											MasterUtil.getNameOfColTranslated(I_ZZQctoModule.Table_Name, I_ZZQctoModule.COLUMNNAME_ZZModuleTitle),
+											I_ZZQctoModule.COLUMNNAME_ZZModuleTitle).setTableName(I_ZZQctoModule.Table_Name);
+		cols.add(col);
+
+		col = CellModel.getColModelForLabel(
+											MasterUtil.getNameOfColTranslated(I_ZZQctoModule.Table_Name, I_ZZQctoModule.COLUMNNAME_ZZCredits),
+											I_ZZQctoModule.COLUMNNAME_ZZModuleTitle).setTableName(I_ZZQctoModule.Table_Name);
+		cols.add(col);
+
+		col = CellModel.getColModelForLabel(
+											MasterUtil.getNameOfColTranslated(I_ZZQctoModule.Table_Name, I_ZZQctoModule.COLUMNNAME_ZZModuleType),
+											I_ZZQctoModule.COLUMNNAME_ZZModuleType).setTableName(I_ZZQctoModule.Table_Name);
+		cols.add(col);
+
+		col = CellModel.getColModelForLabel(
+											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
+																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZRPL),
+											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZRPL).setTableName(
+																														I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		cols.add(col);
+
+		col = CellModel.getColModelForLabel(
+											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
+																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Is_Previously_Achieved),
+											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Is_Previously_Achieved).setTableName(
+																																		I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		cols.add(col);
+
+		col = CellModel.getColModelForLabel(
+											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
+																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID),
+											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID).setTableName(
+																															I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		cols.add(col);
+
+		col = DateCellModel	.getDateColumnModel(
+												MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
+																					I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessment_Date),
+												I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessment_Date).setTableName(
+																																	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name)
+							.setReadonly(true);
+		cols.add(col);
+
+		col = CellModel.getColModelForLabel(
+											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
+																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderator_ID),
+											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderator_ID).setTableName(
+																															I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		cols.add(col);
+
+		col = DateCellModel	.getDateColumnModel(
+												MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
+																					I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderation_Date),
+												I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderation_Date).setTableName(
+																																	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name)
+							.setReadonly(true);
+		cols.add(col);
+
+		tmQCTOSkillsAssessments = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		tmQCTOSkillsAssessments.setViewModel(ViewType.VIEW_GRID);
+		tmQCTOSkillsAssessments.setSclass("srd-LearnerAssessment-qctoLearnershipAssessments");
+
+		tmQCTOSkillsAssessments.setRowSaveFilter(rowMode -> {
+			CheckboxCellModel selectionCell = (CheckboxCellModel) rowMode.get(qctoLearnershipAssessmentsSelectedCol);
+			return selectionCell.isChecked();
+		});
+
+		tmQCTOSkillsAssessments.setBeforeSave((rowDbEventArgs) -> {
+			if (!rowDbEventArgs.isRowEven())
+				return true;
+
+			X_ZZLearnerQCTOSkillsProgrammeAssessments assessment = (X_ZZLearnerQCTOSkillsProgrammeAssessments) rowDbEventArgs	.row().getRowData()
+																																.getDataNewWhenNull(I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+
+			DateCellModel assessmentDateCell = (DateCellModel) tmAssessmentParam.getRow().get(assessmentDate);
+			assessment.setAssessment_Date(assessmentDateCell.getTimestamp());
+
+			ValueAdaptCellModel assessorSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseAssessorCol);
+			if (assessorSelected.getValue() == null)
+			{
+				assessment.setAssessor_ID(0);
+			}
+			else
+			{
+				assessment.setAssessor_ID((int) assessorSelected.getValue());
+			}
+
+			ValueAdaptCellModel moderationSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseModeratorCol);
+			if (moderationSelected.getValue() == null)
+			{
+				assessment.setModerator_ID(0);
+			}
+			else
+			{
+				assessment.setModerator_ID((int) moderationSelected.getValue());
+			}
+
+			DateCellModel moderatorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(moderationDatecol);
+			assessment.setModeration_Date(moderatorDateCell.getTimestamp());
+
+			// Assessment Status ID and RPL (which are boolean / int in this table)
+			CheckboxCellModel rplCell = (CheckboxCellModel) tmAssessmentParam.getRow().get(rplcol);
+			assessment.setZZRPL(rplCell.isChecked());
+
+			CheckboxCellModel competentCell = (CheckboxCellModel) tmAssessmentParam.getRow().get(competentCol);
+			assessment.setZZAssessmentStatus(competentCell.isChecked() ? X_ZZLearnerQCTOSkillsProgrammeAssessments.ZZASSESSMENTSTATUS_Competent : X_ZZLearnerQCTOSkillsProgrammeAssessments.ZZASSESSMENTSTATUS_NotCompetent);
+
+			X_ZZQctoModule qctoModule = (X_ZZQctoModule) rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoModule.Table_Name);
+			assessment.setZZQctoModule_ID(qctoModule.getZZQctoModule_ID());
+			assessment.setZZLearnerQCTOSkillsProgramme_ID(learnerQCTOSkills.getZZLearnerQCTOSkillsProgramme_ID());
+			assessment.saveEx(rowDbEventArgs.trxName());
+			return true;
+		});
+	}
+
 	public TableModel getTmLearnerAssessments()
 	{
 		if (isInterventionQCTOArtisans())
