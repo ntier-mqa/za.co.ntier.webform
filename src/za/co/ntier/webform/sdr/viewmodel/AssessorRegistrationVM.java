@@ -1387,10 +1387,12 @@ public class AssessorRegistrationVM extends StepAppVM{
 				
 				tmQualificationLink.getRows().forEach(rowModel -> {
 					X_ZZQualification_v scopeViewPo = (X_ZZQualification_v)rowModel.getRowData().getDataNullable(I_ZZQualification_v.Table_Name);
-					if (X_ZZQualification_v.ZZFROMQCTO_Yes.equals(scopeViewPo.getZZFromQcto())) {
-						qctoScopeExcludeIds.add(scopeViewPo.getZZQualification_v_ID());
-					}else {
-						scopeExcludeIds.add(scopeViewPo.getZZQualification_ID());
+					if (scopeViewPo != null) {
+						if (X_ZZQualification_v.ZZFROMQCTO_Yes.equals(scopeViewPo.getZZFromQcto())) {
+							qctoScopeExcludeIds.add(scopeViewPo.getZZQualification_v_ID());
+						}else {
+							scopeExcludeIds.add(scopeViewPo.getZZQualification_ID());
+						}
 					}
 				});
 				
@@ -1669,11 +1671,13 @@ public class AssessorRegistrationVM extends StepAppVM{
 				List<Object> scopeExcludeIds = new ArrayList<Object>();
 				
 				tmQctoSkillsProgramme.getRows().forEach(rowModel -> {
-					X_ZZSkillsProgramme_v scopeViewPo = (X_ZZSkillsProgramme_v)rowModel.getRowData().getDataNullable(X_ZZSkillsProgramme_v.Table_Name);
-					if (X_ZZSkillsProgramme_v.ZZFROMQCTO_Yes.equals(scopeViewPo.getZZFromQcto())) {
-						qctoScopeExcludeIds.add(scopeViewPo.getZZSkillsProgramme_v_ID());
-					}else {
-						scopeExcludeIds.add(scopeViewPo.getZZSkillsProgramme_v_ID());
+					X_ZZSkillsProgramme_v scopeViewPo = (X_ZZSkillsProgramme_v)rowModel.getRowData().getDataNullable(I_ZZSkillsProgramme_v.Table_Name);
+					if (scopeViewPo != null) {
+						if (X_ZZSkillsProgramme_v.ZZFROMQCTO_Yes.equals(scopeViewPo.getZZFromQcto())) {
+							qctoScopeExcludeIds.add(scopeViewPo.getZZSkillsProgramme_v_ID());
+						}else {
+							scopeExcludeIds.add(scopeViewPo.getZZSkillsProgramme_v_ID());
+						}
 					}
 				});
 				
