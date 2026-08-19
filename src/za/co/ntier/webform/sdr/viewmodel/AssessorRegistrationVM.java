@@ -1518,7 +1518,10 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		tmQualificationLink.setAfterDelete((trxName, rowModel) -> {
-			rowModel.getRowData().getDataNullable(I_ZZLinkAssessorQualification.Table_Name).deleteEx(true, trxName);
+			PO po = rowModel.getRowData().getDataNullable(I_ZZLinkAssessorQualification.Table_Name);
+			if (po != null) {
+				po.deleteEx(true, trxName);
+			}
 			return true;
 		});
 		
@@ -1803,7 +1806,10 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		tmQctoSkillsProgramme.setAfterDelete((trxName, rowModel) -> {
-			rowModel.getRowData().getDataNullable(I_ZZLinkAssessorSkillsProgramme.Table_Name).deleteEx(true, trxName);
+			PO po = rowModel.getRowData().getDataNullable(I_ZZLinkAssessorSkillsProgramme.Table_Name);
+			if (po != null) {
+				po.deleteEx(true, trxName);
+			}
 			return true;
 		});
 		
