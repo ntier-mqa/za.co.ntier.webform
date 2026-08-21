@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import za.co.ntier.webform.form.WebForm ?>
+<?import za.co.ntier.api.model.I_ZZLearner_v ?>
+<?import za.co.ntier.webform.form.MasterUtil ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vm') @init('za.co.ntier.webform.sdr.viewmodel.DashboardLearnerVM')">
+      
+<style>
+  .custom-paging a {
+      padding: 4px 10px;
+      margin: 0 4px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      background-color: #ffffff;
+      color: #333333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+  }
+  .custom-paging a:hover {
+      background-color: #f0f0f0;
+      border-color: #999;
+  }
+  .custom-paging .z-paging-os-selected,
+  .custom-paging a.z-paging-os-selected,
+  .custom-paging .z-paging-selected,
+  .custom-paging a.z-paging-selected,
+  .custom-paging strong, 
+  .custom-paging b,
+  .custom-paging > span:not(.z-paging-info) {
+      padding: 4px 10px !important;
+      margin: 0 4px !important;
+      border: 1px solid #4a148c !important;
+      border-radius: 4px !important;
+      background-color: #4a148c !important;
+      color: #ffffff !important;
+      font-weight: bold !important;
+      text-decoration: none !important;
+      display: inline-block;
+  }
+  .custom-paging .z-paging-info {
+      background-color: transparent !important;
+      border: none !important;
+      color: #333 !important;
+      padding: 4px !important;
+  }
+</style>
+
+<div sclass="sectionHeader">
+  <label sclass="sectionHeaderTitle" value="Learner Dashboard"/>
+</div>
+
+<div style="padding: 10px; margin-bottom: 10px;">
+  <hlayout spacing="15px" valign="middle">
+    <textbox value="@bind(vm.searchFirstName)" placeholder="First Name" width="150px" onOK="@command('cmdRefreshList')"/>
+    <textbox value="@bind(vm.searchSurname)" placeholder="Surname" width="150px" onOK="@command('cmdRefreshList')"/>
+    <textbox value="@bind(vm.searchIdNumber)" placeholder="ID/Passport No" width="180px" onOK="@command('cmdRefreshList')"/>
+    <button label="Search" onClick="@command('cmdRefreshList')" />
+    <button label="Clear" onClick="@command('cmdClearSearch')" />
+  </hlayout>
+</div>
+
+<paging sclass="custom-paging" totalSize="@load(vm.totalSize)" pageSize="@load(vm.pageSize)" activePage="@bind(vm.activePage)" onPaging="@command('cmdPaging')" detailed="true" mold="os" />
+<grid vflex="1" model="@load(vm.learners)" sizedByContent="true" emptyMessage="No learners found">
+  <columns sizable="true">
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_ZZFirstName) ))" width="150px"/>
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_Surname) ))" width="150px"/>
+  	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_EMail) ))" width="200px"/>
+  	<column label="ID Type" width="150px"/>
+  	<column label="ID Number" width="150px"/>
+  	<column label="Action" align="center"/>
+  </columns>
+  <rows>
+    <template name="model" var="item">
+      <row>
+      	<label value="@init(item.ZZFirstName)"/>
+        <label value="@init(item.surname)"/>
+        <label value="@init(item.EMail)"/>
+        <label value="@init(empty item.ZZ_AlternateIDType ? 'National ID/Passport' : item.ZZ_AlternateIDType.name)"/>
+        <label value="@init(empty item.ZZOtherIDNo ? item.ZZ_ID_Passport_No : item.ZZOtherIDNo)"/>
+        <div sclass="formBottomPanel">
+	       	<button label="Assessment"
+	           	onClick="@command('zoomLearner', row=item)"/>
+        </div>
+      </row>
+    </template>
+  </rows>
+</grid>
+
+</idspace>

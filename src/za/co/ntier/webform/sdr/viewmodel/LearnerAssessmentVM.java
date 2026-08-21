@@ -103,6 +103,22 @@ public class LearnerAssessmentVM extends StepAppVM{
 		initStep("selectAssessment");
 		initLearnerSelection();
 		initLearnerSelectionInfo();
+		
+		if (menuContextInfo != null && menuContextInfo.getRecordID() > 0) {
+			int learnerId = menuContextInfo.getRecordID();
+			learnerSelected = new X_ZZLearner_v(Env.getCtx(), learnerId, null);
+			tmLearnerSelectionInfo.reset(learnerSelected);
+			
+			// Set the value in the search cell so it visually appears
+			if (tmLearnerSelection != null && tmLearnerSelection.getRow() != null) {
+				for (ColumnModel col : tmLearnerSelection.getRow().keySet()) {
+					if (col instanceof ValueAdaptColumnModel && Boolean.FALSE.equals(col.getShowTitle())) {
+						CellModel cell = tmLearnerSelection.getRow().get(col);
+						cell.setValue(learnerSelected);
+					}
+				}
+			}
+		}
 	}
 	X_ZZLearner_v learnerSelected;
 	
