@@ -1020,7 +1020,7 @@ public class AssessorRegistrationVM extends StepAppVM{
 		ValueAdaptColumnModel lastSchoolEmisCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), 
 				I_ZZAssessorPerson.COLUMNNAME_ZZLkpSchoolEmis_ID, 
-				CellModel.SEARCH_CELL).setAllowClearText(true);
+				CellModel.SEARCH_CELL);
 		lastSchoolEmisCol.required();
 		
 		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
@@ -1055,13 +1055,13 @@ public class AssessorRegistrationVM extends StepAppVM{
 		ColumnModel lastSchoolEmisTextCol = CellModel.getColModelForText(
 				MasterUtil.getNameOfColTranslated(I_ZZAssessorPerson.Table_Name, I_ZZAssessorPerson.COLUMNNAME_ZZLkpSchoolEmisText), 
 				I_ZZAssessorPerson.COLUMNNAME_ZZLkpSchoolEmisText
-				);
+				).setReadonly(true);
 		cols.add(lastSchoolEmisTextCol);
 		
 		lastSchoolEmisTextCol.setEventHandle((event, cellModel) -> {
 			if (cellModel.getValue() != null) {
-				CellModel lastSchoolEmisCell = cellModel.getRowModel().get(lastSchoolEmisCol);
-				lastSchoolEmisCell.setValue(null);
+				//CellModel lastSchoolEmisCell = cellModel.getRowModel().get(lastSchoolEmisCol);
+				//lastSchoolEmisCell.setValue(null);
 			}
 		});
 		
@@ -1080,15 +1080,23 @@ public class AssessorRegistrationVM extends StepAppVM{
 					Object [] objs = (Object [])obj;
 					X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int)objs[0], null);// TODO make a get function to cache
 					cellModel.setValue(selected);
-					// clear text on lastSchoolEmisTextCol
-					cellModel.getRowModel().get(lastSchoolEmisTextCol).setValue(null);
+					
+					if (!"Other".equalsIgnoreCase(selected.getName())) {
+						cellModel.getRowModel().get(lastSchoolEmisTextCol).setValue(null);
+					}
 				});
-			else if (event.getTarget() instanceof Textbox){
-				// clear text so set selected item to null
-				Textbox textField = (Textbox)event.getTarget();
-				if(StringUtils.isBlank(textField.getValue()))
-					cellModel.setValue(null);
+			
+		});
+		
+		lastSchoolEmisCol.addCellPropertyChangeListener(evt -> {
+			CellModel srcEvt = (CellModel)evt.getSource();
+			X_ZZLkpSchoolEmis schoolEmisSelected = (X_ZZLkpSchoolEmis)evt.getNewValue();
+			if (schoolEmisSelected == null) {
+				lastSchoolEmisTextCol.setReadonly(true);
+			}else {
+				lastSchoolEmisTextCol.setReadonly(!"Other".equalsIgnoreCase(schoolEmisSelected.getName()));
 			}
+			
 		});
 		
 		ColumnModel lastSchoolYearCol = CellModel.getColModelForPositiveNumber(
