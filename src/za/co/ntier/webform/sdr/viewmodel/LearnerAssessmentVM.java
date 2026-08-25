@@ -419,7 +419,6 @@ boolean isInterventionLearnerships()
 			moduleAssessmentsQuery.setParameters(ids);
 			List<PO> modules = moduleAssessmentsQuery.list();
 			
-			// We also need ZZSkillsProgrammeUnitStandard records to join!
 			Query junctionQuery = MTable.get(Env.getCtx(), I_ZZSkillsProgrammeUnitStandard.Table_Name).createQuery(
 																											String.format(	"%s IN (%s) AND %s = ?",
 																															I_ZZSkillsProgrammeUnitStandard.COLUMNNAME_ZZUnitStandard_ID,
@@ -431,13 +430,13 @@ boolean isInterventionLearnerships()
 			List<PO> junctions = junctionQuery.list();
 
 			Query learnerAssessmentsQuery = MTable.get(Env.getCtx(), I_ZZLearnerSkillsProgrammeAssessments.Table_Name).createQuery(
-																																		String.format(	"%s IN (%s) AND %s = ?",
-																																						I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZSkillsProgrammeUnitStandard_ID,
-																																						MasterUtil.createPlaceHoldForInClause(junctions.stream().map(po -> ((X_ZZSkillsProgrammeUnitStandard)po).getZZSkillsProgrammeUnitStandard_ID()).collect(Collectors.toList())),
-																																						I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZLearnerSkillsProgramme_ID),
-																																		null);
+																											String.format(	"%s IN (%s) AND %s = ?",
+																															I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZUnitStandard_ID,
+																															placeholders,
+																															I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZLearnerSkillsProgramme_ID),
+																															null);
 
-			List<Object> learnerAssessmentsParas = new ArrayList<Object>(junctions.stream().map(po -> ((X_ZZSkillsProgrammeUnitStandard)po).getZZSkillsProgrammeUnitStandard_ID()).collect(Collectors.toList()));
+			List<Object> learnerAssessmentsParas = new ArrayList<Object>(ids);
 			learnerAssessmentsParas.add(learnerSkillsProgramme.getZZLearnerSkillsProgramme_ID());
 			learnerAssessmentsQuery.setParameters(learnerAssessmentsParas);
 			List<PO> learnerAssessments = learnerAssessmentsQuery.list();
@@ -459,7 +458,7 @@ boolean isInterventionLearnerships()
 					X_ZZLearnerSkillsProgrammeAssessments matchingAssessment = null;
 					for (PO assessmentPo : learnerAssessments) {
 						X_ZZLearnerSkillsProgrammeAssessments assessment = (X_ZZLearnerSkillsProgrammeAssessments) assessmentPo;
-						if (assessment.getZZSkillsProgrammeUnitStandard_ID() != 0 && assessment.getZZSkillsProgrammeUnitStandard_ID() == matchingJunction.getZZSkillsProgrammeUnitStandard_ID()) {
+						if (assessment.getZZUnitStandard_ID() != 0 && assessment.getZZUnitStandard_ID() == module.getZZUnitStandard_ID()) {
 							matchingAssessment = assessment;
 							break;
 						}
@@ -1188,7 +1187,7 @@ boolean isInterventionLearnerships()
 			assessment.setZZAssessmentStatus(competentCell.isChecked() ? X_ZZLearnerSkillsProgrammeAssessments.ZZASSESSMENTSTATUS_Competent : X_ZZLearnerSkillsProgrammeAssessments.ZZASSESSMENTSTATUS_NotCompetent);
 
 			X_ZZSkillsProgrammeUnitStandard unitStandard = (X_ZZSkillsProgrammeUnitStandard) rowDbEventArgs.row().getRowData().getDataNullable(I_ZZSkillsProgrammeUnitStandard.Table_Name);
-			assessment.setZZSkillsProgrammeUnitStandard_ID(unitStandard.getZZSkillsProgrammeUnitStandard_ID());
+			assessment.setZZUnitStandard_ID(unitStandard.getZZUnitStandard_ID());
 			assessment.setZZLearnerSkillsProgramme_ID(learnerSkillsProgramme.getZZLearnerSkillsProgramme_ID());
 			assessment.saveEx(rowDbEventArgs.trxName());
 			return true;
