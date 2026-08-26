@@ -454,6 +454,10 @@
     grid-template-columns: repeat(11, 1fr);
 }
 
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-certificateAssessments{
+    grid-template-columns: repeat(10, 1fr);
+}
+
 .mqaWebForm .sdrForm a.z-button{
 	text-decoration:none;
 }

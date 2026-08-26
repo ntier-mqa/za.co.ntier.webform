@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vmLrCert') @init('za.co.ntier.webform.sdr.viewmodel.LearnerCertificateVM')">
+
+  <style>
+        .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-certificateAssessments{
+            grid-template-columns: repeat(10, 1fr);
+        }
+        .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-completions{
+            grid-template-columns: repeat(8, 1fr);
+        }
+    </style>
+
+  <!-- Always Visible Form Header -->
+  <div style="display:flex; padding:5px 0 20px 0; flex-direction: column; align-items: center;">
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLrCert.formInfo.formHeader)" />
+    <div style="padding-bottom:10px;font-size:smaller">
+      <html content="@init(( vmLrCert.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
+    </div>
+  </div>
+  
+    <nodom children="@load(vmLrCert.steps) @template(each)">
+        <template name="selectAssessment">
+            <include
+			    component="@init(vmLrCert.tmLearnerSelection)"
+			    menuContextInfo="@init(vmLrCert.menuContextInfo)"
+			    src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+			    
+		   <include
+                component="@init(vmLrCert.tmLearnerSelectionInfo)"
+                menuContextInfo="@init(vmLrCert.menuContextInfo)"
+                visible="@load(vmLrCert.learnerSelected ne null)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+                
+		   <include
+                component="@init(vmLrCert.tmInterventionSelection)"
+                menuContextInfo="@init(vmLrCert.menuContextInfo)"
+                visible="@load(vmLrCert.learnerSelected ne null)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+        </template>
+        
+        <template name="assessment">
+            <include style="height:unset !important"
+                component="@init(vmLrCert.tmLearnerProgram)"
+                menuContextInfo="@init(vmLrCert.menuContextInfo)"
+                src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+            <tabbox>
+                <tabs>
+                    <tab label="Completions"/>
+                    <tab label="Assessments"/>
+                </tabs>
+                <tabpanels>
+                    <tabpanel style="overflow:auto; height:450px;">
+                        <include style="height:unset !important"
+                            component="@init(vmLrCert.tmLearnerCompletions)"
+                            menuContextInfo="@init(vmLrCert.menuContextInfo)"
+                            src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+                    </tabpanel>
+                    <tabpanel style="overflow:auto; height:450px;">
+                        <include style="height:unset !important"
+                            component="@load(vmLrCert.tmLearnerAssessments)"
+                            menuContextInfo="@init(vmLrCert.menuContextInfo)"
+                            src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+        </template>
+    </nodom>
+</idspace>
