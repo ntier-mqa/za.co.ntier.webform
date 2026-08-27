@@ -318,6 +318,7 @@ public abstract class BaseAppVM implements ISaveApp{
 		private String whereClause = null;
 		private boolean isMultiChoose = false;
 		private boolean lookup = true;
+		private int adInfoWindowId = 0;
 		
 		public InfoPanelPara (String tableName, String colID, String whereClause) {
 			this.setTableName(tableName);
@@ -369,6 +370,26 @@ public abstract class BaseAppVM implements ISaveApp{
 			return lookup;
 		}
 
+		public InfoPanelPara setAdInfoWindowId(int adInfoWindowId) {
+			this.adInfoWindowId = adInfoWindowId;
+			return this;
+		}
+
+		public int getAdInfoWindowId() {
+			return this.adInfoWindowId;
+		}
+
+		public InfoPanelPara setAdInfoWindowByName(String infoWindowName) {
+			if (infoWindowName != null && !infoWindowName.trim().isEmpty()) {
+				int id = org.compiere.util.DB.getSQLValue(null, 
+					"SELECT AD_InfoWindow_ID FROM AD_InfoWindow WHERE Name=?", infoWindowName);
+				if (id > 0) {
+					this.adInfoWindowId = id;
+				}
+			}
+			return this;
+		}
+		
 		public InfoPanelPara setLookup(boolean lookup) {
 			this.lookup = lookup;
 			return this;
@@ -382,8 +403,26 @@ public abstract class BaseAppVM implements ISaveApp{
 		Component activeWin = SessionManager.getAppDesktop().getActiveWindow();
 		Integer winNo = WindowRegistry.getWindowNo(activeWin);
 		
+		int adInfoWindowId = infoPanelPara.getAdInfoWindowId();
 		
-		InfoPanel ip = InfoManager.create(winNo, infoPanelPara.tableName, infoPanelPara.colID, null, infoPanelPara.isMultiChoose, infoPanelPara.whereClause, infoPanelPara.lookup);
+		InfoPanel ip;
+		if (adInfoWindowId == -1) {
+			ip = new org.adempiere.webui.panel.InfoGeneralPanel(null, winNo, 
+					infoPanelPara.getTableName(), infoPanelPara.getColID(), 
+					infoPanelPara.isMultiChoose(), infoPanelPara.getWhereClause(), infoPanelPara.isLookup(), null);
+		} else {
+			ip = InfoManager.create(
+				(factory) -> factory.create(
+						winNo,
+						infoPanelPara.getTableName(),
+						infoPanelPara.getColID(), 
+						null, 
+						infoPanelPara.isMultiChoose(),
+						infoPanelPara.getWhereClause(), 
+						adInfoWindowId, 
+						infoPanelPara.isLookup())
+			);
+		}
 		
 		// set layout for info window
 		ip.setVisible(true);

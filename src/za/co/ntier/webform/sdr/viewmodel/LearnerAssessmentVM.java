@@ -631,17 +631,24 @@ boolean isInterventionLearnerships()
 	
 	public static void setupAssessorSearchCol(ValueAdaptColumnModel chooseAssessorCol, String where) {
 		chooseAssessorCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-			InfoPanelPara.getInstance(I_ZZAssessorPerson_v.Table_Name
-					, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_v_ID).setWhereClause(where)
-			, (obj, infoPanel) -> {
-				Object [] objs = (Object [])obj;
-				int assessorID = (int)objs[0];
+			InfoPanelPara para = InfoPanelPara.getInstance(
+					I_ZZAssessorPerson_v.Table_Name, 
+					I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_v_ID
+			).setWhereClause(where).setAdInfoWindowId(-1);
+			
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] objs = (Object[]) obj;
+				int assessorID = (int) objs[0];
 				
 				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorID, null); 
 				cellModel.setValue(assessor);
 			});
 		});
+		
+		setupAssessorSearchColAdapters(chooseAssessorCol);
+	}
+
+	private static void setupAssessorSearchColAdapters(ValueAdaptColumnModel chooseAssessorCol) {
 		
 		chooseAssessorCol.setDisplayAdaptHandle(value -> {
 			if (value == null)
