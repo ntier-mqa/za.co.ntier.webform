@@ -71,6 +71,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
+import java.sql.Timestamp;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ValueAdaptCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.CheckboxColumnModel;
@@ -537,13 +538,13 @@ boolean isInterventionLearnerships()
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisans.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCommencementDate)
-				, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber
+				, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCommencementDate
 				).setTableName(I_ZZLearnerQCTOArtisans.Table_Name).setReadonly(true);
 		cols.add(col);
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisans.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCompletionDate)
-				, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber
+				, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCompletionDate
 				).setTableName(I_ZZLearnerQCTOArtisans.Table_Name).setReadonly(true);
 		cols.add(col);
 		
@@ -575,13 +576,13 @@ boolean isInterventionLearnerships()
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOLearnership.Table_Name, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCommencementDate)
-				, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber
+				, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCommencementDate
 				).setTableName(I_ZZLearnerQCTOLearnership.Table_Name).setReadonly(true);
 		cols.add(col);
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOLearnership.Table_Name, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCompletionDate)
-				, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber
+				, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCompletionDate
 				).setTableName(I_ZZLearnerQCTOLearnership.Table_Name).setReadonly(true);
 		cols.add(col);
 		
@@ -613,13 +614,13 @@ boolean isInterventionLearnerships()
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOSkillsProgramme.Table_Name, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCommencementDate)
-				, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber
+				, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCommencementDate
 				).setTableName(I_ZZLearnerQCTOSkillsProgramme.Table_Name).setReadonly(true);
 		cols.add(col);
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOSkillsProgramme.Table_Name, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCompletionDate)
-				, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber
+				, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCompletionDate
 				).setTableName(I_ZZLearnerQCTOSkillsProgramme.Table_Name).setReadonly(true);
 		cols.add(col);
 		
@@ -872,6 +873,9 @@ boolean isInterventionLearnerships()
 			X_ZZQctoModule qctoModule = (X_ZZQctoModule)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoModule.Table_Name);
 			assessment.setZZQctoModule_ID(qctoModule.getZZQctoModule_ID());
 			assessment.setZZLearnerQCTOLearnership_ID(learnerQCTOLearnership.getZZLearnerQCTOLearnership_ID());
+			if (assessment.getZZDateAssessmentCaptured() == null) {
+				assessment.setZZDateAssessmentCaptured(new Timestamp(System.currentTimeMillis()));
+			}
 			assessment.saveEx(rowDbEventArgs.trxName());
 			// assessment.setZZAssessmentStatus(null)
 			//assessment.setZZAssessmentStatus()
@@ -1224,14 +1228,14 @@ public void initLearnerLearnership()
 		col = DateCellModel.getDateColumnModel(
 												MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnership.Table_Name,
 																					I_ZZLearnerLearnership.COLUMNNAME_ZZCommencementDate),
-												I_ZZLearnerLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerLearnership.Table_Name).setReadonly(
+												I_ZZLearnerLearnership.COLUMNNAME_ZZCommencementDate).setTableName(I_ZZLearnerLearnership.Table_Name).setReadonly(
 																																								true);
 		cols.add(col);
 
 		col = DateCellModel.getDateColumnModel(
 												MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnership.Table_Name,
 																					I_ZZLearnerLearnership.COLUMNNAME_ZZEstimateCompletionDate),
-												I_ZZLearnerLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerLearnership.Table_Name).setReadonly(
+												I_ZZLearnerLearnership.COLUMNNAME_ZZEstimateCompletionDate).setTableName(I_ZZLearnerLearnership.Table_Name).setReadonly(
 																																								true);
 		cols.add(col);
 
@@ -1367,6 +1371,9 @@ public void initLearnerLearnership()
 			X_ZZUnitStandard std = (X_ZZUnitStandard) rowDbEventArgs.row().getRowData().getDataNullable(I_ZZUnitStandard.Table_Name);
 			assessment.setZZUnitStandard_ID(std.getZZUnitStandard_ID());
 			assessment.setZZLearnerLearnership_ID(learnerLearnership.getZZLearnerLearnership_ID());
+			if (assessment.getZZDateAssessmentCaptured() == null) {
+				assessment.setZZDateAssessmentCaptured(new Timestamp(System.currentTimeMillis()));
+			}
 			assessment.saveEx(rowDbEventArgs.trxName());
 
 			return true;
