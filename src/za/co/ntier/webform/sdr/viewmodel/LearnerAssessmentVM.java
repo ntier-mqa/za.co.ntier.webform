@@ -32,6 +32,8 @@ import za.co.ntier.api.model.I_ZZLearnerSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLearnerSkillsProgrammeAssessments;
 import za.co.ntier.api.model.I_ZZLearner_v;
 import za.co.ntier.api.model.I_ZZLearnership;
+import za.co.ntier.api.model.I_ZZLinkAssessorQualification_v;
+import za.co.ntier.api.model.I_zzlinkassessorskillsprogramme_v;
 import za.co.ntier.api.model.I_ZZLearnershipUnitStandard;
 import za.co.ntier.api.model.I_ZZQctoLearnership;
 import za.co.ntier.api.model.I_ZZQctoModule;
@@ -66,6 +68,7 @@ import za.co.ntier.webform.form.WebForm;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
@@ -692,13 +695,14 @@ boolean isInterventionLearnerships()
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID), 
 				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID, 
 				CellModel.SEARCH_CELL);
+		chooseAssessorCol.required();
 		
 		cols.add(chooseAssessorCol);
 		
 		assessmentDate = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessmentDate)
 				, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessmentDate
-				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name).required();
 		cols.add(assessmentDate);
 		
 		chooseModeratorCol = ValueAdaptCellModel.getValueAdaptColumnModel(
@@ -712,6 +716,14 @@ boolean isInterventionLearnerships()
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate)
 				, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate
 				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+				moderationDatecol.setValidateHandle((cellModel, msgs) -> {
+					RowModel row = cellModel.getRowModel();
+					CellModel moderatorCell = row.get(chooseModeratorCol);
+					if (moderatorCell != null && moderatorCell.getValue() != null && cellModel.getValue() == null)
+					{
+						msgs.add("Moderator Date is mandatory");
+					}
+				});
 		cols.add(moderationDatecol);
 		
 		competentCol = CheckboxCellModel.getCheckboxColModel(
@@ -726,10 +738,14 @@ boolean isInterventionLearnerships()
 				).setTableName(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
 		cols.add(rplcol);
 		
-		ColumnModel colAssessmentBt = CellModel.getColModelForGenericCell("Assessment", null, CellModel.BUTTON_CELL);
+		ColumnModel colAssessmentBt = CellModel.getColModelForGenericCell("Assess", null, CellModel.BUTTON_CELL);
 		cols.add(colAssessmentBt);
 		
 		colAssessmentBt.setEventHandle((event, cellModel) -> {
+			if (!tmAssessmentParam.validate(true))
+			{
+				return;
+			}
 			try {
 				TableModel currentLearnerAssessments = getTmLearnerAssessments();
 				
@@ -745,8 +761,67 @@ boolean isInterventionLearnerships()
 			}
 		});
 		
-		setupAssessorSearchCol(chooseAssessorCol, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole + "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor + "'");
-		setupAssessorSearchCol(chooseModeratorCol, I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole + "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator + "'");
+		String activeApproved = String.format(	" AND %s='%s' AND (%s IS NULL OR %s >= CURRENT_DATE)",
+												I_ZZAssessorPerson_v.COLUMNNAME_ZZ_DocStatus,
+												X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved,
+												I_ZZAssessorPerson_v.COLUMNNAME_EndDate,
+												I_ZZAssessorPerson_v.COLUMNNAME_EndDate);
+
+		String qualificationLink = "";
+		if (isInterventionQCTOLearnerships() && qctoLearnership != null)
+		{
+			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q WHERE q.%s = %s.%s AND q.%s = %d)",
+												I_ZZLinkAssessorQualification_v.Table_Name,
+												I_ZZLinkAssessorQualification_v.COLUMNNAME_ZZAssessorPerson_ID,
+												I_ZZAssessorPerson_v.Table_Name,
+												I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_ID,
+												I_ZZLinkAssessorQualification_v.COLUMNNAME_ZZQctoQualification_ID,
+												qctoLearnership.getZZQualification_ID());
+		}
+		else if (isInterventionLearnerships() && learnership != null)
+		{
+			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q WHERE q.%s = %s.%s AND q.%s = %d)",
+												I_ZZLinkAssessorQualification_v.Table_Name,
+												I_ZZLinkAssessorQualification_v.COLUMNNAME_ZZAssessorPerson_ID,
+												I_ZZAssessorPerson_v.Table_Name,
+												I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_ID,
+												I_ZZLinkAssessorQualification_v.COLUMNNAME_ZZQualification_ID,
+												learnership.getZZQualification_ID());
+		}
+		else if (isInterventionSkillsProgrammes() && skillsProgramme != null)
+		{
+			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q JOIN %s sp ON q.%s = sp.%s WHERE q.%s = %s.%s AND sp.%s = %d)",
+												I_zzlinkassessorskillsprogramme_v.Table_Name,
+												I_ZZSkillsProgramme.Table_Name,
+												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZSkillsProgramme_ID,
+												I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZAssessorPerson_ID,
+												I_ZZAssessorPerson_v.Table_Name,
+												I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_ID,
+												I_ZZSkillsProgramme.COLUMNNAME_ZZQualification_ID,
+												skillsProgramme.getZZQualification_ID());
+		}
+		else if (isInterventionQCTOSkills() && qctoSkills != null)
+		{
+			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q JOIN %s qsp ON q.%s = qsp.%s WHERE q.%s = %s.%s AND qsp.%s = %d)",
+												I_zzlinkassessorskillsprogramme_v.Table_Name,
+												I_ZZQctoSkillsProgramme.Table_Name,
+												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZQctoSkillsProgramme_ID,
+												I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID,
+												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZAssessorPerson_ID,
+												I_ZZAssessorPerson_v.Table_Name,
+												I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_ID,
+												I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQualification_ID,
+												qctoSkills.getZZQualification_ID());
+		}
+
+		String whereAssessor = I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole	+ "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor + "'" + activeApproved
+								+ qualificationLink;
+		String whereModerator = I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole	+ "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Moderator + "'" + activeApproved
+								+ qualificationLink;
+
+		setupAssessorSearchCol(chooseAssessorCol, whereAssessor);
+		setupAssessorSearchCol(chooseModeratorCol, whereModerator);
 		
 		tmAssessmentParam = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQctoLearnershipAssessments.Table_Name);
 		tmAssessmentParam.setViewModel(ViewType.VIEW_GRID);
@@ -1370,6 +1445,14 @@ public void initLearnerLearnership()
 
 			X_ZZUnitStandard std = (X_ZZUnitStandard) rowDbEventArgs.row().getRowData().getDataNullable(I_ZZUnitStandard.Table_Name);
 			assessment.setZZUnitStandard_ID(std.getZZUnitStandard_ID());
+			if (competentCell.isChecked())
+			{
+				assessment.setZZCredits(std.getZZCredits());
+			}
+			else
+			{
+				assessment.setZZCredits(0);
+			}
 			assessment.setZZLearnerLearnership_ID(learnerLearnership.getZZLearnerLearnership_ID());
 			if (assessment.getZZDateAssessmentCaptured() == null) {
 				assessment.setZZDateAssessmentCaptured(new Timestamp(System.currentTimeMillis()));
