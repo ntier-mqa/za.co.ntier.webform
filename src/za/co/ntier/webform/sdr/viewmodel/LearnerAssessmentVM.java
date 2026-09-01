@@ -250,11 +250,23 @@ boolean isInterventionLearnerships()
 				);
 		cols.add(col);
 		
-		col = CellModel.getColModelForLabel(
+		ValueAdaptColumnModel idCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_ZZ_ID_Passport_No)
 				, I_ZZLearner_v.COLUMNNAME_ZZ_ID_Passport_No
+				, CellModel.LABEL_CELL
 				);
-		cols.add(col);
+				idCol.setValueFromDaoAdaptHandle(obj -> {
+					String idPassport = (String) obj;
+					if (idPassport == null || idPassport.isBlank())
+					{
+						if (learnerSelected != null)
+						{
+							return learnerSelected.getZZOtherIDNo();
+						}
+					}
+					return idPassport;
+				});
+		cols.add(idCol);
 		
 		tmLearnerSelectionInfo = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearner_v.Table_Name);
 		tmLearnerSelectionInfo.setViewModel(ViewType.VIEW_GRID);

@@ -13,6 +13,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.SelectEvent;
@@ -39,6 +41,7 @@ import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZSkillsProgrammeUnitStandard;
 import za.co.ntier.api.model.I_ZZUnitStandard;
 import za.co.ntier.api.model.X_ZZCompletedAssessments_v;
+import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
 import za.co.ntier.api.model.X_ZZLearnerLearnershipAssessments;
 import za.co.ntier.api.model.X_ZZLearnerQCTOArtisans;
@@ -86,7 +89,7 @@ public class LearnerCertificateVM extends StepAppVM
 		return canDownload;
 	}
 
-	@org.zkoss.bind.annotation.Command
+	@Command
 	public void downloadCertificate()
 	{
 		MasterUtil.showInfoDialog("SOR/Certificate download functionality will be implemented here.", null);
@@ -108,7 +111,7 @@ public class LearnerCertificateVM extends StepAppVM
 		List<String> parentSteps = super.getSteps();
 		if (parentSteps != null && parentSteps.contains("assessment"))
 		{
-			return java.util.Arrays.asList("selectAssessment", "assessment");
+			return Arrays.asList("selectAssessment", "assessment");
 		}
 		return parentSteps;
 	}
@@ -226,10 +229,10 @@ public class LearnerCertificateVM extends StepAppVM
 									tmInterventionSelection.getRow().get(intCols.get(1)).setVisible(false);
 								}
 								initStep("selectAssessment");
-								org.zkoss.bind.BindUtils.postNotifyChange(null, null, LearnerCertificateVM.this, "steps");
+								BindUtils.postNotifyChange(null, null, LearnerCertificateVM.this, "steps");
 
 								// Make intervention table visible by notifying binder
-								org.zkoss.bind.BindUtils.postNotifyChange(null, null, LearnerCertificateVM.this, "learnerSelected");
+								BindUtils.postNotifyChange(null, null, LearnerCertificateVM.this, "learnerSelected");
 							});
 		});
 
@@ -247,7 +250,7 @@ public class LearnerCertificateVM extends StepAppVM
 
 		List<ValueNamePair> legacyInterventions = MasterUtil.getLkpInterventionList().stream()
 															.filter(vnp -> !vnp.getValue().contains("QCTO"))
-															.collect(java.util.stream.Collectors.toList());
+															.collect(Collectors.toList());
 
 		ListColumnModel<ValueNamePair> interventionListCol = ListCellModel.getListColumnModel(
 																								Msg.getElement(Env.getCtx(), "ZZInterventionList"), null,
@@ -326,10 +329,20 @@ public class LearnerCertificateVM extends StepAppVM
 											I_ZZLearner_v.COLUMNNAME_Surname);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
+		ValueAdaptColumnModel idCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 											MasterUtil.getNameOfColTranslated(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_ZZ_ID_Passport_No),
-											I_ZZLearner_v.COLUMNNAME_ZZ_ID_Passport_No);
-		cols.add(col);
+											I_ZZLearner_v.COLUMNNAME_ZZ_ID_Passport_No,
+											CellModel.LABEL_CELL);
+		idCol.setValueFromDaoAdaptHandle(obj -> {
+			String idPassport = (String) obj;
+			if (idPassport == null || idPassport.isBlank()) {
+				if (learnerSelected != null) {
+					return learnerSelected.getZZOtherIDNo();
+				}
+			}
+			return idPassport;
+		});
+		cols.add(idCol);
 
 		tmLearnerSelectionInfo = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearner_v.Table_Name);
 		tmLearnerSelectionInfo.setViewModel(ViewType.VIEW_GRID);
@@ -433,7 +446,12 @@ public class LearnerCertificateVM extends StepAppVM
 			{
 				completedAssessment.set_ValueNoCheck(I_ZZCompletedAssessments_v.COLUMNNAME_ZZFirstName, learnerSelected.getZZFirstName());
 				completedAssessment.set_ValueNoCheck(I_ZZCompletedAssessments_v.COLUMNNAME_Surname, learnerSelected.getSurname());
-				completedAssessment.set_ValueNoCheck(I_ZZCompletedAssessments_v.COLUMNNAME_ZZ_ID_Passport_No, learnerSelected.getZZ_ID_Passport_No());
+				
+				String idPassport = learnerSelected.getZZ_ID_Passport_No();
+				if (idPassport == null || idPassport.isBlank()) {
+					idPassport = learnerSelected.getZZOtherIDNo();
+				}
+				completedAssessment.set_ValueNoCheck(I_ZZCompletedAssessments_v.COLUMNNAME_ZZ_ID_Passport_No, idPassport);
 			}
 
 			List<PO> dummyRow = new ArrayList<>();
@@ -441,7 +459,7 @@ public class LearnerCertificateVM extends StepAppVM
 			tmLearnerCompletions.resetMultiPo(List.of(dummyRow));
 
 			String status = completedAssessment.getZZ_DocStatus();
-			if (status == null || !status.equalsIgnoreCase("CO"))
+			if (status == null || !status.equalsIgnoreCase(X_ZZLearner.ZZ_DOCSTATUS_Completed))
 			{
 				tmLearnerCompletions.getRow().get(downloadActionCol).setVisible(false);
 			}
@@ -456,7 +474,7 @@ public class LearnerCertificateVM extends StepAppVM
 			tmLearnerCompletions.getRow().get(downloadActionCol).setVisible(false);
 		}
 
-		org.zkoss.bind.BindUtils.postNotifyChange(null, null, this, "*");
+		BindUtils.postNotifyChange(null, null, this, "*");
 
 		if (isInterventionQCTOLearnerships())
 		{
@@ -635,7 +653,7 @@ public class LearnerCertificateVM extends StepAppVM
 				initLearnershipAssessments();
 			}
 
-			List<X_ZZLearnershipUnitStandard> mods = new Query(Env.getCtx(), I_ZZLearnershipUnitStandard.Table_Name, "ZZLearnership_ID=?", null)
+			List<X_ZZLearnershipUnitStandard> mods = new Query(Env.getCtx(), I_ZZLearnershipUnitStandard.Table_Name, I_ZZLearnershipUnitStandard.COLUMNNAME_ZZLearnership_ID + "=?", null)
 																																				.setParameters(learnership.getZZLearnership_ID())
 																																				.list();
 
@@ -643,7 +661,7 @@ public class LearnerCertificateVM extends StepAppVM
 			for (X_ZZLearnershipUnitStandard mod : mods)
 			{
 				X_ZZLearnerLearnershipAssessments ass = new Query(	Env.getCtx(), I_ZZLearnerLearnershipAssessments.Table_Name,
-																	"ZZLearnerLearnership_ID=? AND ZZUnitStandard_ID=?", null)
+																	I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZLearnerLearnership_ID + "=? AND " + I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZUnitStandard_ID + "=?", null)
 																																.setParameters(	learnerLearnership.getZZLearnerLearnership_ID(),
 																																				mod.getZZUnitStandard_ID())
 																																.first();
