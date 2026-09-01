@@ -13,6 +13,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 public class NavTabPanel implements ISaveForm {
 	private String sclass;
 	private NavTab parent;
+	private boolean showTabAddButton;
 
 	public boolean isDefaultTabPanel() {
 		return true;
@@ -102,6 +103,14 @@ public class NavTabPanel implements ISaveForm {
 	 */
 	public void setSclass(String sclass) {
 		this.sclass = sclass;
+	}
+
+	public boolean isShowTabAddButton() {
+		return showTabAddButton;
+	}
+
+	public void setShowTabAddButton(boolean showTabAddButton) {
+		this.showTabAddButton = showTabAddButton;
 	}
 
 	@Override

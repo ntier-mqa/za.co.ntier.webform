@@ -22,6 +22,16 @@
                 menuContextInfo="@init(vmNavTab.menuContextInfo)"
                 src="@load( tabPanelItem.zulPath )" />
           </nodom>
+
+          <nodom if = "${ tabPanelItem.defaultTabPanel }">
+            <div if="${tabPanelItem.showTabAddButton and tabPanelItem.compModel.size() > 0 and tabPanelItem.compModel[0] ne null}"
+                 style="display:flex; justify-content:flex-start; margin: 3px 0 0 3px;">
+              <button
+                  label="Add"
+                  iconSclass="z-icon-plus"
+                  onClick="@command('addTableRow', tableModel = tabPanelItem.compModel[0])" />
+            </div>
+          </nodom>
             
         
           <nodom if = "${ tabPanelItem.defaultTabPanel }" 
