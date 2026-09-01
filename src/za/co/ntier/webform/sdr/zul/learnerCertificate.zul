@@ -49,7 +49,7 @@
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
             <tabbox>
                 <tabs>
-                    <tab label="Completions"/>
+                    <tab label="Achievements"/>
                     <tab label="Assessments"/>
                 </tabs>
                 <tabpanels>
