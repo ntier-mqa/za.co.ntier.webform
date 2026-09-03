@@ -935,7 +935,9 @@ boolean isInterventionLearnerships()
 			if (assessorSelected.getValue() == null) {
 				assessment.setZZAssessorPerson_ID(0);
 			}else {
-				assessment.setZZAssessorPerson_ID((int)assessorSelected.getValue());
+				int assessorId = (int)assessorSelected.getValue();
+				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorId, null);
+				assessment.setAssessor_ID(assessor.getAD_User_ID());
 			}
 			
 			//Query checkModerationQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name).createQuery("", null); 
@@ -944,7 +946,9 @@ boolean isInterventionLearnerships()
 			if (moderationSelected.getValue() == null) {
 				assessment.setZZModerator_ID(0);
 			}else {
-				assessment.setZZModerator_ID((int)moderationSelected.getValue());
+				int moderatorId = (int)moderationSelected.getValue();
+				X_ZZAssessorPerson_v moderator = new X_ZZAssessorPerson_v(Env.getCtx(), moderatorId, null);
+				assessment.setZZModerator_ID(moderator.getAD_User_ID());
 			}
 			
 			DateCellModel moderatorDateCell = (DateCellModel)tmAssessmentParam.getRow().get(moderationDatecol);
@@ -1090,7 +1094,9 @@ boolean isInterventionLearnerships()
 			}
 			else
 			{
-				assessment.setAssessor_ID((int) assessorSelected.getValue());
+				int assessorId = (int) assessorSelected.getValue();
+				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorId, null);
+				assessment.setAssessor_ID(assessor.getAD_User_ID());
 			}
 
 			ValueAdaptCellModel moderationSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseModeratorCol);
@@ -1100,7 +1106,9 @@ boolean isInterventionLearnerships()
 			}
 			else
 			{
-				assessment.setModerator_ID((int) moderationSelected.getValue());
+				int moderatorId = (int) moderationSelected.getValue();
+				X_ZZAssessorPerson_v moderator = new X_ZZAssessorPerson_v(Env.getCtx(), moderatorId, null);
+				assessment.setModerator_ID(moderator.getAD_User_ID());
 			}
 
 			DateCellModel moderatorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(moderationDatecol);
@@ -1265,14 +1273,18 @@ boolean isInterventionLearnerships()
 			if (assessorSelected.getValue() == null) {
 				assessment.setAssessor_ID(0);
 			} else {
-				assessment.setAssessor_ID((int) assessorSelected.getValue());
+				int assessorId = (int) assessorSelected.getValue();
+				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorId, null);
+				assessment.setAssessor_ID(assessor.getAD_User_ID());
 			}
 
 			ValueAdaptCellModel moderationSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseModeratorCol);
 			if (moderationSelected.getValue() == null) {
 				assessment.setModerator_ID(0);
 			} else {
-				assessment.setModerator_ID((int) moderationSelected.getValue());
+				int moderatorId = (int) moderationSelected.getValue();
+				X_ZZAssessorPerson_v moderator = new X_ZZAssessorPerson_v(Env.getCtx(), moderatorId, null);
+				assessment.setModerator_ID(moderator.getAD_User_ID());
 			}
 
 			DateCellModel moderatorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(moderationDatecol);
@@ -1432,7 +1444,9 @@ public void initLearnerLearnership()
 			}
 			else
 			{
-				assessment.setZZAssessorPerson_ID((int) assessorSelected.getValue());
+				int assessorId = (int) assessorSelected.getValue();
+				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorId, null);
+				assessment.setAssessor_ID(assessor.getAD_User_ID());
 			}
 
 			ValueAdaptCellModel moderationSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseModeratorCol);
@@ -1442,7 +1456,9 @@ public void initLearnerLearnership()
 			}
 			else
 			{
-				assessment.setZZModerator_ID((int) moderationSelected.getValue());
+				int moderatorId = (int) moderationSelected.getValue();
+				X_ZZAssessorPerson_v moderator = new X_ZZAssessorPerson_v(Env.getCtx(), moderatorId, null);
+				assessment.setZZModerator_ID(moderator.getAD_User_ID());
 			}
 
 			DateCellModel moderatorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(moderationDatecol);
