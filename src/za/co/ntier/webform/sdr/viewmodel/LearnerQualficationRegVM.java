@@ -446,11 +446,11 @@ public class LearnerQualficationRegVM extends BaseAppVM
 		initLearnerProgrammeTab("Skills Programmes", I_ZZLearnerSkillsProgramme.Table_Name,
 								"JOIN ZZSkillsProgramme p ON p.ZZSkillsProgramme_ID = ZZLearnerSkillsProgramme.ZZSkillsProgramme_ID",
 								false,
-								List.of(label(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode),
-										label(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle),
-										text(I_ZZLearnerSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZStudentNumber),
-										editableDate(I_ZZLearnerSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCommencementDate),
-										editableDate(I_ZZLearnerSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCompletionDate)));
+								selectableProgrammeColumns(I_ZZLearnerSkillsProgramme.Table_Name,
+										I_ZZSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+										I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+										I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle,
+										id -> new X_ZZSkillsProgramme(Env.getCtx(), id, null)));
 	}
 
 	private List<ColumnModel> selectableProgrammeColumns(	String learnerTable, String programmeTable,
