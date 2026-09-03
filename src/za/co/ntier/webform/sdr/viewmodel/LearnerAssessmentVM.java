@@ -780,7 +780,7 @@ boolean isInterventionLearnerships()
 												I_ZZAssessorPerson_v.COLUMNNAME_EndDate);
 
 		String qualificationLink = "";
-		if (isInterventionQCTOLearnerships() && qctoLearnership != null)
+		if (isInterventionQCTOLearnerships() && qctoLearnership != null && qctoLearnership.getZZQctoQualification_ID() > 0)
 		{
 			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q WHERE q.%s = %s.%s AND q.%s = %d)",
 												I_ZZLinkAssessorQualification_v.Table_Name,
@@ -788,9 +788,9 @@ boolean isInterventionLearnerships()
 												I_ZZAssessorPerson_v.Table_Name,
 												I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_ID,
 												I_ZZLinkAssessorQualification_v.COLUMNNAME_ZZQctoQualification_ID,
-												qctoLearnership.getZZQualification_ID());
+												qctoLearnership.getZZQctoQualification_ID());
 		}
-		else if (isInterventionLearnerships() && learnership != null)
+		else if (isInterventionLearnerships() && learnership != null && learnership.getZZQualification_ID() > 0)
 		{
 			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q WHERE q.%s = %s.%s AND q.%s = %d)",
 												I_ZZLinkAssessorQualification_v.Table_Name,
@@ -802,29 +802,23 @@ boolean isInterventionLearnerships()
 		}
 		else if (isInterventionSkillsProgrammes() && skillsProgramme != null)
 		{
-			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q JOIN %s sp ON q.%s = sp.%s WHERE q.%s = %s.%s AND sp.%s = %d)",
+			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q WHERE q.%s = %s.%s AND q.%s = %d)",
 												I_zzlinkassessorskillsprogramme_v.Table_Name,
-												I_ZZSkillsProgramme.Table_Name,
-												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZSkillsProgramme_ID,
-												I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
 												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZAssessorPerson_ID,
 												I_ZZAssessorPerson_v.Table_Name,
 												I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_ID,
-												I_ZZSkillsProgramme.COLUMNNAME_ZZQualification_ID,
-												skillsProgramme.getZZQualification_ID());
+												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZSkillsProgramme_ID,
+												skillsProgramme.get_ID());
 		}
 		else if (isInterventionQCTOSkills() && qctoSkills != null)
 		{
-			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q JOIN %s qsp ON q.%s = qsp.%s WHERE q.%s = %s.%s AND qsp.%s = %d)",
+			qualificationLink = String.format(	" AND EXISTS (SELECT 1 FROM %s q WHERE q.%s = %s.%s AND q.%s = %d)",
 												I_zzlinkassessorskillsprogramme_v.Table_Name,
-												I_ZZQctoSkillsProgramme.Table_Name,
-												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZQctoSkillsProgramme_ID,
-												I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID,
 												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZAssessorPerson_ID,
 												I_ZZAssessorPerson_v.Table_Name,
 												I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorPerson_ID,
-												I_ZZQctoSkillsProgramme.COLUMNNAME_ZZQualification_ID,
-												qctoSkills.getZZQualification_ID());
+												I_zzlinkassessorskillsprogramme_v.COLUMNNAME_ZZQctoSkillsProgramme_ID,
+												qctoSkills.get_ID());
 		}
 
 		String whereAssessor = I_ZZAssessorPerson_v.COLUMNNAME_ZZAssessorRole	+ "='" + X_ZZAssessorPerson_v.ZZASSESSORROLE_Assessor + "'" + activeApproved
