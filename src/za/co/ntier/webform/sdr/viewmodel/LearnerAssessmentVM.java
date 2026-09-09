@@ -957,6 +957,11 @@ boolean isInterventionLearnerships()
 			
 			X_ZZQctoModule qctoModule = (X_ZZQctoModule)rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoModule.Table_Name);
 			assessment.setZZQctoModule_ID(qctoModule.getZZQctoModule_ID());
+			if (competentCell.isChecked()) {
+				assessment.setZZCredits(qctoModule.getZZCredits());
+			} else {
+				assessment.setZZCredits(0);
+			}
 			assessment.setZZLearnerQCTOLearnership_ID(learnerQCTOLearnership.getZZLearnerQCTOLearnership_ID());
 			if (assessment.getZZDateAssessmentCaptured() == null) {
 				assessment.setZZDateAssessmentCaptured(new Timestamp(System.currentTimeMillis()));
@@ -1117,6 +1122,11 @@ boolean isInterventionLearnerships()
 
 			X_ZZQctoModule qctoModule = (X_ZZQctoModule) rowDbEventArgs.row().getRowData().getDataNullable(I_ZZQctoModule.Table_Name);
 			assessment.setZZQctoModule_ID(qctoModule.getZZQctoModule_ID());
+			if (competentCell.isChecked()) {
+				assessment.setZZCredits(qctoModule.getZZCredits());
+			} else {
+				assessment.setZZCredits(0);
+			}
 			assessment.setZZLearnerQCTOSkillsProgramme_ID(learnerQCTOSkills.getZZLearnerQCTOSkillsProgramme_ID());
 			assessment.saveEx(rowDbEventArgs.trxName());
 			return true;
@@ -1292,6 +1302,12 @@ boolean isInterventionLearnerships()
 
 			X_ZZSkillsProgrammeUnitStandard unitStandard = (X_ZZSkillsProgrammeUnitStandard) rowDbEventArgs.row().getRowData().getDataNullable(I_ZZSkillsProgrammeUnitStandard.Table_Name);
 			assessment.setZZUnitStandard_ID(unitStandard.getZZUnitStandard_ID());
+			X_ZZUnitStandard std = (X_ZZUnitStandard) rowDbEventArgs.row().getRowData().getDataNullable(I_ZZUnitStandard.Table_Name);
+			if (competentCell.isChecked()) {
+				assessment.setZZCredits(std != null ? std.getZZCredits() : 0);
+			} else {
+				assessment.setZZCredits(0);
+			}
 			assessment.setZZLearnerSkillsProgramme_ID(learnerSkillsProgramme.getZZLearnerSkillsProgramme_ID());
 			assessment.saveEx(rowDbEventArgs.trxName());
 			return true;
