@@ -182,7 +182,7 @@ public class CellModel implements IValueChange , IInputState{
 		inputCheckResult.setFillMandatory((isMandatory() && !inputCheckResult.empty) || (!isMandatory()));
 		
 		if (!inputCheckResult.getFillMandatory()) {
-			inputCheckResult.appendLog(this.colModel.getTitle()).appendLog(" mandatory but not input");
+			inputCheckResult.appendLog("\"").appendLog(this.colModel.getTitle()).appendLog("\" is mandatory but not input. ");
 		}
 		
 		return inputCheckResult;

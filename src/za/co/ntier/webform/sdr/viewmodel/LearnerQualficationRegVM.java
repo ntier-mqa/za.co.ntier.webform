@@ -3,10 +3,13 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.panel.RegistrationWindow;
+import org.compiere.model.I_C_BPartner;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -32,6 +35,8 @@ import za.co.ntier.api.model.I_ZZPerson;
 import za.co.ntier.api.model.I_ZZQctoLearnership;
 import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.I_ZZSkillsProgramme;
+import za.co.ntier.api.model.I_ZZProvider;
+import za.co.ntier.api.model.I_ZZWorkplaceApproval;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
@@ -44,6 +49,8 @@ import za.co.ntier.api.model.X_ZZPerson;
 import za.co.ntier.api.model.X_ZZQctoLearnership;
 import za.co.ntier.api.model.X_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.X_ZZSkillsProgramme;
+import za.co.ntier.api.model.X_ZZProvider;
+import za.co.ntier.api.model.X_ZZWorkplaceApproval;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
@@ -392,27 +399,14 @@ public class LearnerQualficationRegVM extends BaseAppVM
 
 	private void initLearnerChildTabs()
 	{
-		List<ColumnModel> artisanColumns = new ArrayList<>();
-		ValueAdaptColumnModel artisanLearnershipCol = ValueAdaptCellModel.getValueAdaptColumnModel(	Msg.getElement(	Env.getCtx(),
-																													I_ZZQctoLearnership.COLUMNNAME_ZZLearnershipCode),
-																									I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQctoLearnership_ID,
-																									CellModel.SEARCH_CELL);
-		artisanLearnershipCol.setTableName(I_ZZLearnerQCTOArtisans.Table_Name);
-		ColumnModel artisanLearnershipTitleCol = label(I_ZZQctoLearnership.Table_Name, I_ZZQctoLearnership.COLUMNNAME_ZZLearnershipTitle);
-		artisanColumns.add(artisanLearnershipCol);
-		artisanColumns.add(artisanLearnershipTitleCol);
-		artisanColumns.add(text(I_ZZLearnerQCTOArtisans.Table_Name,
-								I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber));
-		artisanColumns.add(editableDate(I_ZZLearnerQCTOArtisans.Table_Name,
-										I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCommencementDate));
-		artisanColumns.add(editableDate(I_ZZLearnerQCTOArtisans.Table_Name,
-										I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCompletionDate));
-		configureLearnershipSelector(artisanLearnershipCol, artisanLearnershipTitleCol);
-
 		initLearnerProgrammeTab("QCTO Artisans", I_ZZLearnerQCTOArtisans.Table_Name,
 								"INNER JOIN ZZQctoLearnership q ON q.ZZQctoLearnership_ID = ZZLearnerQCTOArtisans.ZZQctoLearnership_ID",
 								false,
-								artisanColumns);
+								selectableProgrammeColumns(	I_ZZLearnerQCTOArtisans.Table_Name,
+															I_ZZQctoLearnership.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQctoLearnership_ID,
+															I_ZZQctoLearnership.COLUMNNAME_ZZQctoLearnership_ID,
+															I_ZZQctoLearnership.COLUMNNAME_ZZLearnershipCode, I_ZZQctoLearnership.COLUMNNAME_ZZLearnershipTitle,
+															id -> new X_ZZQctoLearnership(Env.getCtx(), id, null)));
 
 		initLearnerProgrammeTab("QCTO Learnerships", I_ZZLearnerQCTOLearnership.Table_Name,
 								"INNER JOIN ZZQctoLearnership q ON q.ZZQctoLearnership_ID = ZZLearnerQCTOLearnership.ZZQctoLearnership_ID",
@@ -446,32 +440,104 @@ public class LearnerQualficationRegVM extends BaseAppVM
 		initLearnerProgrammeTab("Skills Programmes", I_ZZLearnerSkillsProgramme.Table_Name,
 								"JOIN ZZSkillsProgramme p ON p.ZZSkillsProgramme_ID = ZZLearnerSkillsProgramme.ZZSkillsProgramme_ID",
 								false,
-								selectableProgrammeColumns(I_ZZLearnerSkillsProgramme.Table_Name,
-										I_ZZSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
-										I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
-										I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle,
-										id -> new X_ZZSkillsProgramme(Env.getCtx(), id, null)));
+								selectableProgrammeColumns(	I_ZZLearnerSkillsProgramme.Table_Name,
+															I_ZZSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+															I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+															I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode,
+															I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle,
+															id -> new X_ZZSkillsProgramme(Env.getCtx(), id, null)));
 	}
 
 	private List<ColumnModel> selectableProgrammeColumns(	String learnerTable, String programmeTable,
 															String learnerProgrammeId, String programmeIdColumn, String codeColumn, String titleColumn,
 															Function<Integer, PO> programmeLoader)
 	{
-		ValueAdaptColumnModel programmeCol = ValueAdaptCellModel.getValueAdaptColumnModel(Msg.getElement(Env.getCtx(), codeColumn), learnerProgrammeId,
+		List<ColumnModel> cols = new ArrayList<>();
+
+		ValueAdaptColumnModel programmeCol = ValueAdaptCellModel.getValueAdaptColumnModel(	Msg.getElement(Env.getCtx(), codeColumn), learnerProgrammeId,
 																							CellModel.SEARCH_CELL);
 		programmeCol.setTableName(learnerTable);
+		programmeCol.required();
+		cols.add(programmeCol);
+
+		boolean isQctoArtisans = I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable);
+
+		if (isQctoArtisans)
+		{
+			String providerColName = I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLeadSDProvider_ID;
+
+			ValueAdaptColumnModel providerCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+																								Msg.getElement(Env.getCtx(), providerColName),
+																								providerColName, CellModel.SEARCH_CELL);
+			providerCol.setTableName(learnerTable).required();
+
+			ValueAdaptColumnModel workplaceApprovalCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+																										Msg.getElement(	Env.getCtx(),
+																														I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZWA_ID),
+																										I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZWA_ID,
+																										CellModel.SEARCH_CELL);
+			workplaceApprovalCol.setTableName(learnerTable).required();
+
+			configureProgrammeSelector(	providerCol, null,
+										id -> new X_ZZProvider(Env.getCtx(), id, null), I_ZZProvider.COLUMNNAME_ZZProvider_ID,
+										I_ZZProvider.COLUMNNAME_Name, I_ZZProvider.COLUMNNAME_Name, I_ZZProvider.Table_Name, null);
+			configureProgrammeSelector(	workplaceApprovalCol,
+										null,
+										id -> new X_ZZWorkplaceApproval(Env.getCtx(), id, null),
+										I_ZZWorkplaceApproval.COLUMNNAME_ZZWorkplaceApproval_ID,
+										I_ZZWorkplaceApproval.COLUMNNAME_ZZWorkplaceApprovalNumber,
+										I_ZZWorkplaceApproval.COLUMNNAME_ZZWorkplaceApprovalNumber, I_ZZWorkplaceApproval.Table_Name, null);
+
+			cols.add(providerCol);
+			cols.add(workplaceApprovalCol);
+		}
+		else
+		{
+			String sdpColName = I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZ_SDP_ID;
+			String employerColName = I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZ_Employer_ID;
+
+			ValueAdaptColumnModel sdpCol = ValueAdaptCellModel.getValueAdaptColumnModel(Msg.getElement(Env.getCtx(), sdpColName),
+																						sdpColName, CellModel.SEARCH_CELL);
+			sdpCol.setTableName(learnerTable).required();
+
+			ValueAdaptColumnModel employerCol = ValueAdaptCellModel.getValueAdaptColumnModel(	Msg.getElement(Env.getCtx(), employerColName),
+																								employerColName, CellModel.SEARCH_CELL);
+			employerCol.setTableName(learnerTable).required();
+
+			configureProgrammeSelector(	sdpCol, null,
+										id -> new MBPartner(Env.getCtx(), id, null), I_C_BPartner.COLUMNNAME_C_BPartner_ID,
+										I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.Table_Name,
+										" C_BPartner.IsActive ='Y' AND C_BPartner.ZZ_Is_SDP='Y'");
+			configureProgrammeSelector(	employerCol, null,
+										id -> new MBPartner(Env.getCtx(), id, null), I_C_BPartner.COLUMNNAME_C_BPartner_ID,
+										I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.Table_Name,
+										"C_BPartner.IsActive ='Y' AND C_BPartner.C_BPartner_ID IN  (SELECT AD_User.C_BPartner_ID FROM AD_User WHERE AD_User.IsActive ='Y')");
+
+			cols.add(sdpCol);
+			cols.add(employerCol);
+		}
+
 		ColumnModel titleCol = label(programmeTable, titleColumn);
+		cols.add(titleCol);
+
 		configureProgrammeSelector(	programmeCol, titleCol, programmeLoader, programmeIdColumn, codeColumn, titleColumn,
 									programmeTable);
+
 		String studentColumn = learnerTable	.equals(I_ZZLearnerQCTOLearnership.Table_Name)
 											? I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber
 						: learnerTable	.equals(I_ZZLearnerQCTOSkillsProgramme.Table_Name)
 										? I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber
 							: learnerTable	.equals(I_ZZLearnerLearnership.Table_Name)
 											? I_ZZLearnerLearnership.COLUMNNAME_ZZStudentNumber
+							: learnerTable	.equals(I_ZZLearnerQCTOArtisans.Table_Name)
+											? I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber
 							: I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZStudentNumber;
-		return List.of(	programmeCol, titleCol, text(learnerTable, studentColumn),
-						editableDate(learnerTable, "ZZCommencementDate"), editableDate(learnerTable, "ZZCompletionDate"));
+
+		cols.add(text(learnerTable, studentColumn));
+		cols.add(editableDate(learnerTable, "ZZCommencementDate").required());
+		cols.add(editableDate(learnerTable, "ZZCompletionDate"));
+
+		return cols;
 	}
 
 	private ColumnModel label(String tableName, String columnName)
@@ -492,36 +558,62 @@ public class LearnerQualficationRegVM extends BaseAppVM
 							.setTableName(tableName);
 	}
 
-	private void configureLearnershipSelector(ValueAdaptColumnModel learnershipCol, ColumnModel titleCol)
-	{
-		configureProgrammeSelector(	learnershipCol, titleCol, id -> new X_ZZQctoLearnership(Env.getCtx(), id, null),
-									I_ZZQctoLearnership.COLUMNNAME_ZZQctoLearnership_ID, I_ZZQctoLearnership.COLUMNNAME_ZZLearnershipCode,
-									I_ZZQctoLearnership.COLUMNNAME_ZZLearnershipTitle, I_ZZQctoLearnership.Table_Name);
-	}
-
 	private void configureProgrammeSelector(ValueAdaptColumnModel programmeCol, ColumnModel titleCol,
 											Function<Integer, PO> programmeLoader, String idColumn, String codeColumn, String titleColumn,
 											String programmeTable)
 	{
-		programmeCol.setDisplayAdaptHandle(value -> value == null ? null : ((PO) value).get_Value(codeColumn));
+		configureProgrammeSelector(programmeCol, titleCol, programmeLoader, idColumn, codeColumn, titleColumn, programmeTable, null);
+	}
+
+	private void configureProgrammeSelector(ValueAdaptColumnModel programmeCol, ColumnModel titleCol,
+											Function<Integer, PO> programmeLoader, String idColumn, String codeColumn, String titleColumn,
+											String programmeTable, String whereClause)
+	{
+		programmeCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			PO po = (PO) value;
+			Object val = po.get_Value(codeColumn);
+			if (val != null && !val.toString().isBlank())
+				return val;
+			Object name = po.get_Value("Name");
+			if (name != null && !name.toString().isBlank())
+				return name;
+			Object code = po.get_Value("ZZProviderCode");
+			if (code != null && !code.toString().isBlank())
+				return code;
+			return po.toString();
+		});
 		programmeCol.setValueAdaptHandle(value -> value == null ? null : ((PO) value).get_ID());
 		programmeCol.setValueFromDaoAdaptHandle(value -> {
 			if (value == null || Integer.class.cast(value) == 0)
 				return null;
 			return programmeLoader.apply(Integer.class.cast(value));
 		});
-		programmeCol.setEventHandle((event, cellModel) -> showInfoPanel(
-																		InfoPanelPara.getInstance(programmeTable, idColumn), (obj, infoPanel) -> {
-																			Object[] values = (Object[]) obj;
-																			PO selected = programmeLoader.apply((int) values[0]);
-																			cellModel.setValue(selected);
-																			cellModel.getRowModel().get(titleCol).setValue(selected.get_Value(titleColumn));
-																		}));
+		programmeCol.setEventHandle((event, cellModel) -> {
+			InfoPanelPara para = InfoPanelPara.getInstance(programmeTable, idColumn);
+			if (whereClause != null && !whereClause.isBlank())
+			{
+				para.setWhereClause(whereClause);
+			}
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] values = (Object[]) obj;
+				PO selected = programmeLoader.apply((int) values[0]);
+				cellModel.setValue(selected);
+				cellModel.resetValidate();
+				if (titleCol != null)
+				{
+					cellModel.getRowModel().get(titleCol).setValue(selected.get_Value(titleColumn));
+				}
+			});
+		});
 	}
 
 	private PO getLearnerProgramme(PO child, String learnerTable)
 	{
 		int programmeId = 0;
+		if(Objects.isNull(child))
+			return null;
 		if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable))
 			programmeId = child.get_ValueAsInt(I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQctoLearnership_ID);
 		else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
@@ -534,8 +626,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 			programmeId = child.get_ValueAsInt(I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID);
 		if (programmeId <= 0)
 			return null;
-		if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable)
-			|| I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
+		if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable) || I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
 			return new X_ZZQctoLearnership(Env.getCtx(), programmeId, null);
 		if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable))
 			return new X_ZZQctoSkillsProgramme(Env.getCtx(), programmeId, null);
@@ -544,6 +635,31 @@ public class LearnerQualficationRegVM extends BaseAppVM
 		if (I_ZZLearnerSkillsProgramme.Table_Name.equals(learnerTable))
 			return new X_ZZSkillsProgramme(Env.getCtx(), programmeId, null);
 		return null;
+	}
+
+	private List<PO> getChildRelatedRecords(PO child, String learnerTable)
+	{
+		List<PO> relatedRecords = new ArrayList<>();
+		PO programme = getLearnerProgramme(child, learnerTable);
+		if (programme != null)
+			relatedRecords.add(programme);
+
+		boolean hasProviderAndWA = I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable);
+
+		if (hasProviderAndWA)
+		{
+			String providerColName = I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLeadSDProvider_ID;
+
+			int providerId = child.get_ValueAsInt(providerColName);
+			if (providerId > 0)
+				relatedRecords.add(new X_ZZProvider(Env.getCtx(), providerId, null));
+
+			int workplaceApprovalId = child.get_ValueAsInt(I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZWA_ID);
+			if (workplaceApprovalId > 0)
+				relatedRecords.add(new X_ZZWorkplaceApproval(Env.getCtx(), workplaceApprovalId, null));
+		}
+
+		return relatedRecords;
 	}
 
 	private void initLearnerProgrammeTab(	String title, String tableName, String joinClause, boolean readOnly,
@@ -581,9 +697,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 				{
 					List<PO> row = new ArrayList<>();
 					row.add(child);
-					PO programme = getLearnerProgramme(child, tableName);
-					if (programme != null)
-						row.add(programme);
+					row.addAll(getChildRelatedRecords(child, tableName));
 					rowData.add(row);
 				}
 				model.resetMultiPo(rowData);
@@ -594,8 +708,19 @@ public class LearnerQualficationRegVM extends BaseAppVM
 			table.setBeforeSave(event -> {
 				if (event.isPOEven() && learner != null && learner.getZZLearner_ID() > 0)
 				{
-					event.po().set_ValueOfColumn(	I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID,
-													learner.getZZLearner_ID());
+					if (event.po().get_ID() <= 0 || event.po().get_ValueAsInt(I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID) <= 0)
+					{
+						event.po().set_ValueOfColumn(I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID, learner.getZZLearner_ID());
+					}
+				}
+				PO programme = getLearnerProgramme(event.po(), tableName);
+				if (programme != null)
+				{
+					int credits = programme.get_ValueAsInt("ZZCredits");
+					if (credits > 0)
+					{
+						event.po().set_ValueOfColumn("ZZCredits", credits);
+					}
 				}
 				return true;
 			});
@@ -884,8 +1009,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 					int count = DB.getSQLValue(trxName, sql, otherIdNo, alternateIdTypeId, person.get_ID());
 					if (count > 0)
 					{
-						throw new AdempiereException(
-														"A person with this ID Type and ID Number already exists in the system.");
+						throw new AdempiereException("A person with this ID Type and ID Number already exists in the system.");
 					}
 				}
 			}

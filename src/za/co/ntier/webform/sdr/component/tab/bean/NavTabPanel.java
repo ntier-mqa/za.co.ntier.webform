@@ -145,6 +145,10 @@ public class NavTabPanel implements ISaveForm {
 				if (!cellInputCheckResult.getFillMandatory()) {
 					rowInputCheckResult.setFillMandatory(false);// has at least once field have value
 					log.warning("not input for mandatory field on table:" + tbModel.getTableTitle() + " sclass:" + tbModel.getSclass());
+					if (getTabTitle() != null && !getTabTitle().isBlank()) {
+						rowInputCheckResult.appendLog("[").appendLog(getTabTitle()).appendLog(" Tab] ");
+					}
+					rowInputCheckResult.appendLog(cellInputCheckResult.getLog());
 				}
 				
 				if (!cellInputCheckResult.getNotChange()) {

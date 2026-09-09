@@ -1,78 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import za.co.ntier.webform.form.WebForm ?>
+<idspace xmlns:n="native" sclass="sdrForm" viewModel="@id(&apos;vmLearner&apos;) @init(&apos;za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM&apos;)">
+  <style>
+    /* Compact Grid layout for Learner Qualification registration tabs */
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;],
+    .grid-listView[class*=&quot;srd-learner&quot;] {
+      display: grid !important;
+      grid-template-columns: minmax(120px, 1fr) minmax(135px, 1.1fr) minmax(135px, 1.1fr) minmax(145px, 1.2fr) minmax(110px, 0.9fr) minmax(120px, 1fr) minmax(120px, 1fr) 40px !important;
+      width: 100% !important;
+      gap: 1px !important;
+      background-color: #F0F0F0 !important;
+      border-radius: 6px !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+      margin-top: 10px !important;
+      margin-bottom: 15px !important;
+    }
 
-<idspace xmlns:n="native" 
-    sclass="sdrForm"
-    viewModel="@id('vmLearner') @init('za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM')">
+    /* Continuous Dark Blue Header Bar */
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .colHead,
+    .grid-listView[class*=&quot;srd-learner&quot;] .colHead,
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cellHead,
+    .grid-listView[class*=&quot;srd-learner&quot;] .cellHead {
+      background: #1b2a6b !important;
+      color: #ffffff !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      padding: 6px 8px !important;
+      box-sizing: border-box !important;
+      min-height: 42px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      width: 100% !important;
+    }
 
-  <!-- Always Visible Form Header -->
+    /* Data Row Cells */
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell,
+    .grid-listView[class*=&quot;srd-learner&quot;] .cell {
+      background-color: #F0F0F0 !important;
+      padding: 6px 6px !important;
+      box-sizing: border-box !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      min-height: 58px !important;
+    }
+
+    /* Input textboxes */
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell-content .z-textbox,
+    .grid-listView[class*=&quot;srd-learner&quot;] .cell-content .z-textbox,
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell-content input[type=&quot;text&quot;],
+    .grid-listView[class*=&quot;srd-learner&quot;] .cell-content input[type=&quot;text&quot;] {
+      width: 100% !important;
+      height: 30px !important;
+      font-size: 12px !important;
+      padding: 3px 6px !important;
+      border: 1px solid #cbd5e1 !important;
+      border-radius: 4px !important;
+      box-sizing: border-box !important;
+      background: #ffffff !important;
+      text-overflow: ellipsis !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+    }
+
+    /* Search Buttons */
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .z-button,
+    .grid-listView[class*=&quot;srd-learner&quot;] .z-button {
+      width: 100% !important;
+      height: 28px !important;
+      background: #1b2a6b !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 4px !important;
+      font-size: 11px !important;
+      font-weight: 500 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      padding: 0 6px !important;
+      margin-top: 3px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      gap: 4px !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+      box-sizing: border-box !important;
+    }
+
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .z-button:hover,
+    .grid-listView[class*=&quot;srd-learner&quot;] .z-button:hover {
+      background: #243b6b !important;
+    }
+
+    /* Datebox Controls */
+    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell-content .z-datebox,
+    .grid-listView[class*=&quot;srd-learner&quot;] .cell-content .z-datebox {
+      width: 100% !important;
+      height: 30px !important;
+    }
+  </style><!-- Always Visible Form Header -->
   <div style="display:flex; padding:5px 0 20px 0; flex-direction: column; align-items: center;">
-    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLearner.formInfo.formHeader)" />
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLearner.formInfo.formHeader)"/>
     <div style="padding-bottom:10px;font-size:smaller">
       <html content="@init(( vmLearner.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
     </div>
-  </div>
-
-
-  <!-- Phase 1: Identity Details -->
-   <div visible="@load(!vmLearner.identityValidated)">
+  </div><!-- Phase 1: Identity Details -->
+  <div visible="@load(!vmLearner.identityValidated)">
     <div sclass="sectionHeader" style="margin: 0 20px;">
-      <label sclass="sectionHeaderTitle" value="Identity Details" />
+      <label sclass="sectionHeaderTitle" value="Identity Details"/>
     </div>
     <div style="margin: 0 20px 20px 20px;">
       <div sclass="grid-formview two-col" style="grid-template-columns: 1fr 1fr;">
         <div sclass="cell cellType2">
           <div sclass="cell-title">
-            <label sclass="label" value="ID Type" />
-            <label sclass="required" value="*" />
+            <label sclass="label" value="ID Type"/>
+            <label sclass="required" value="*"/>
           </div>
           <div sclass="cell-content cell-content15">
-            <listbox mold="select"
-                     model="@load(vmLearner.alternateIdTypes)" 
-                     selectedItem="@bind(vmLearner.selectedIdType)">
+            <listbox mold="select" model="@load(vmLearner.alternateIdTypes)" selectedItem="@bind(vmLearner.selectedIdType)">
               <template name="model">
-                <listitem label="@load(each.name)" />
+                <listitem label="@load(each.name)"/>
               </template>
             </listbox>
           </div>
         </div>
         <div sclass="cell cellType1">
           <div sclass="cell-title">
-            <label sclass="label" value="ID Number" />
-            <label sclass="required" value=" *" />
+            <label sclass="label" value="ID Number"/>
+            <label sclass="required" value=" *"/>
           </div>
           <div sclass="cell-content cell-content15">
-            <textbox value="@bind(vmLearner.idNumber)" />
+            <textbox value="@bind(vmLearner.idNumber)"/>
           </div>
         </div>
       </div>
       <div style="padding:10px 0;">
-        <button label="VALIDATE" onClick="@command('onValidateIdentity')" 
-                sclass="z-button"
-                visible="@load(!vmLearner.identityValidated)"
-                style="font-weight:bold;" />
+        <button label="VALIDATE" onClick="@command(&apos;onValidateIdentity&apos;)" sclass="z-button" visible="@load(!vmLearner.identityValidated)" style="font-weight:bold;"/>
       </div>
-      <hlayout visible="@load(vmLearner.validationMessage ne '')" style="padding:10px 0;">
-        <label value="@load(vmLearner.validationMessage)" 
-               style="padding:8px 12px; border:1px solid #ccc; background:#f9f9f9; display:block; width:100%;" />
+      <hlayout visible="@load(vmLearner.validationMessage ne &apos;&apos;)" style="padding:10px 0;">
+        <label value="@load(vmLearner.validationMessage)" style="padding:8px 12px; border:1px solid #ccc; background:#f9f9f9; display:block; width:100%;"/>
       </hlayout>
     </div>
   </div>
   <div visible="@load(vmLearner.identityValidated)">
-    <include
-      component="@init(vmLearner.tmNames)"
-      menuContextInfo="@init(vmLearner.menuContextInfo)"
-      src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
-
-    <include
-      sclass="navTabOuter"
-      component="@init(vmLearner.mainTab)"
-      menuContextInfo="@init(vmLearner.menuContextInfo)"
-      src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
-
-    <include
-      saveApp="@init(vmLearner)"
-      navTab="@init(vmLearner.mainTab)"
-      src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/tabButton.zul')))" />
-  </div>  
+    <include component="@init(vmLearner.tmNames)" menuContextInfo="@init(vmLearner.menuContextInfo)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/zul/dataFormView.zul&apos;)))"/>
+    <include sclass="navTabOuter" component="@init(vmLearner.mainTab)" menuContextInfo="@init(vmLearner.menuContextInfo)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/tab/zul/navTab.zul&apos;)))"/>
+    <include saveApp="@init(vmLearner)" navTab="@init(vmLearner.mainTab)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/tab/zul/tabButton.zul&apos;)))"/>
+  </div>
 </idspace>
