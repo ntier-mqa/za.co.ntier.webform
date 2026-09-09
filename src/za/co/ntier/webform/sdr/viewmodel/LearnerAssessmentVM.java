@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -923,15 +924,18 @@ boolean isInterventionLearnerships()
 			X_ZZLearnerQctoLearnershipAssessments assessment = (X_ZZLearnerQctoLearnershipAssessments)rowDbEventArgs.row().getRowData().getDataNewWhenNull(I_ZZLearnerQctoLearnershipAssessments.Table_Name);
 			
 			DateCellModel assessmentDateCell = (DateCellModel)tmAssessmentParam.getRow().get(assessmentDate);
-			assessment.setZZAssessmentDate(assessmentDateCell.getTimestamp());
+			assessment.setZZAssessmentDate(appendCurrentTimeToDate(assessmentDateCell.getTimestamp()));
 			
 			ValueAdaptCellModel assessorSelected = (ValueAdaptCellModel)tmAssessmentParam.getRow().get(chooseAssessorCol);
 			if (assessorSelected.getValue() == null) {
 				assessment.setZZAssessorPerson_ID(0);
+				assessment.set_ValueOfColumn(I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZ_SDPAdmin_ID, null);
 			}else {
 				int assessorId = (int)assessorSelected.getValue();
 				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorId, null);
+				assessment.setZZAssessorPerson_ID(assessorId);
 				assessment.setAssessor_ID(assessor.getAD_User_ID());
+				assessment.set_ValueOfColumn(I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZ_SDPAdmin_ID, assessor.getCreatedBy());
 			}
 			
 			//Query checkModerationQuery = MTable.get(Env.getCtx(), I_ZZAssessorPerson.Table_Name).createQuery("", null); 
@@ -941,8 +945,7 @@ boolean isInterventionLearnerships()
 				assessment.setZZModerator_ID(0);
 			}else {
 				int moderatorId = (int)moderationSelected.getValue();
-				X_ZZAssessorPerson_v moderator = new X_ZZAssessorPerson_v(Env.getCtx(), moderatorId, null);
-				assessment.setZZModerator_ID(moderator.getAD_User_ID());
+				assessment.setZZModerator_ID(moderatorId);
 			}
 			
 			DateCellModel moderatorDateCell = (DateCellModel)tmAssessmentParam.getRow().get(moderationDatecol);
@@ -1084,18 +1087,20 @@ boolean isInterventionLearnerships()
 																																.getDataNewWhenNull(I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
 
 			DateCellModel assessmentDateCell = (DateCellModel) tmAssessmentParam.getRow().get(assessmentDate);
-			assessment.setAssessment_Date(assessmentDateCell.getTimestamp());
+			assessment.setAssessment_Date(appendCurrentTimeToDate(assessmentDateCell.getTimestamp()));
 
 			ValueAdaptCellModel assessorSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseAssessorCol);
 			if (assessorSelected.getValue() == null)
 			{
 				assessment.setAssessor_ID(0);
+				assessment.set_ValueOfColumn(I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZ_SDPAdmin_ID, null);
 			}
 			else
 			{
 				int assessorId = (int) assessorSelected.getValue();
 				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorId, null);
 				assessment.setAssessor_ID(assessor.getAD_User_ID());
+				assessment.set_ValueOfColumn(I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZ_SDPAdmin_ID, assessor.getCreatedBy());
 			}
 
 			ValueAdaptCellModel moderationSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseModeratorCol);
@@ -1106,8 +1111,7 @@ boolean isInterventionLearnerships()
 			else
 			{
 				int moderatorId = (int) moderationSelected.getValue();
-				X_ZZAssessorPerson_v moderator = new X_ZZAssessorPerson_v(Env.getCtx(), moderatorId, null);
-				assessment.setModerator_ID(moderator.getAD_User_ID());
+				assessment.setModerator_ID(moderatorId);
 			}
 
 			DateCellModel moderatorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(moderationDatecol);
@@ -1128,6 +1132,9 @@ boolean isInterventionLearnerships()
 				assessment.setZZCredits(0);
 			}
 			assessment.setZZLearnerQCTOSkillsProgramme_ID(learnerQCTOSkills.getZZLearnerQCTOSkillsProgramme_ID());
+			if (assessment.getDate_Assessment_Captured() == null) {
+				assessment.setDate_Assessment_Captured(new Timestamp(System.currentTimeMillis()));
+			}
 			assessment.saveEx(rowDbEventArgs.trxName());
 			return true;
 		});
@@ -1271,15 +1278,17 @@ boolean isInterventionLearnerships()
 			X_ZZLearnerSkillsProgrammeAssessments assessment = (X_ZZLearnerSkillsProgrammeAssessments) rowDbEventArgs.row().getRowData().getDataNewWhenNull(I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
 
 			DateCellModel assessorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(assessmentDate);
-			assessment.setAssessment_Date(assessorDateCell.getTimestamp());
+			assessment.setAssessment_Date(appendCurrentTimeToDate(assessorDateCell.getTimestamp()));
 
 			ValueAdaptCellModel assessorSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseAssessorCol);
 			if (assessorSelected.getValue() == null) {
 				assessment.setAssessor_ID(0);
+				assessment.set_ValueOfColumn(I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZ_SDPAdmin_ID, null);
 			} else {
 				int assessorId = (int) assessorSelected.getValue();
 				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorId, null);
 				assessment.setAssessor_ID(assessor.getAD_User_ID());
+				assessment.set_ValueOfColumn(I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZ_SDPAdmin_ID, assessor.getCreatedBy());
 			}
 
 			ValueAdaptCellModel moderationSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseModeratorCol);
@@ -1287,8 +1296,7 @@ boolean isInterventionLearnerships()
 				assessment.setModerator_ID(0);
 			} else {
 				int moderatorId = (int) moderationSelected.getValue();
-				X_ZZAssessorPerson_v moderator = new X_ZZAssessorPerson_v(Env.getCtx(), moderatorId, null);
-				assessment.setModerator_ID(moderator.getAD_User_ID());
+				assessment.setModerator_ID(moderatorId);
 			}
 
 			DateCellModel moderatorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(moderationDatecol);
@@ -1309,6 +1317,9 @@ boolean isInterventionLearnerships()
 				assessment.setZZCredits(0);
 			}
 			assessment.setZZLearnerSkillsProgramme_ID(learnerSkillsProgramme.getZZLearnerSkillsProgramme_ID());
+			if (assessment.getDate_Assessment_Captured() == null) {
+				assessment.setDate_Assessment_Captured(new Timestamp(System.currentTimeMillis()));
+			}
 			assessment.saveEx(rowDbEventArgs.trxName());
 			return true;
 		});
@@ -1445,18 +1456,21 @@ public void initLearnerLearnership()
 																																					I_ZZLearnerLearnershipAssessments.Table_Name);
 
 			DateCellModel assessorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(assessmentDate);
-			assessment.setZZAssessmentDate(assessorDateCell.getTimestamp());
+			assessment.setZZAssessmentDate(appendCurrentTimeToDate(assessorDateCell.getTimestamp()));
 
 			ValueAdaptCellModel assessorSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseAssessorCol);
 			if (assessorSelected.getValue() == null)
 			{
 				assessment.setZZAssessorPerson_ID(0);
+				assessment.set_ValueOfColumn("ZZ_SDPAdmin_ID", null);
 			}
 			else
 			{
 				int assessorId = (int) assessorSelected.getValue();
 				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorId, null);
+				assessment.setZZAssessorPerson_ID(assessorId);
 				assessment.setAssessor_ID(assessor.getAD_User_ID());
+				assessment.set_ValueOfColumn("ZZ_SDPAdmin_ID", assessor.getCreatedBy());
 			}
 
 			ValueAdaptCellModel moderationSelected = (ValueAdaptCellModel) tmAssessmentParam.getRow().get(chooseModeratorCol);
@@ -1467,8 +1481,7 @@ public void initLearnerLearnership()
 			else
 			{
 				int moderatorId = (int) moderationSelected.getValue();
-				X_ZZAssessorPerson_v moderator = new X_ZZAssessorPerson_v(Env.getCtx(), moderatorId, null);
-				assessment.setZZModerator_ID(moderator.getAD_User_ID());
+				assessment.setZZModerator_ID(moderatorId);
 			}
 
 			DateCellModel moderatorDateCell = (DateCellModel) tmAssessmentParam.getRow().get(moderationDatecol);
@@ -1501,4 +1514,17 @@ public void initLearnerLearnership()
 		});
 	}
 
+	private Timestamp appendCurrentTimeToDate(Timestamp selectedDate)
+	{
+		if (selectedDate == null)
+			return null;
+		Calendar calDate = Calendar.getInstance();
+		calDate.setTime(selectedDate);
+		Calendar calTime = Calendar.getInstance();
+		calDate.set(Calendar.HOUR_OF_DAY, calTime.get(Calendar.HOUR_OF_DAY));
+		calDate.set(Calendar.MINUTE, calTime.get(Calendar.MINUTE));
+		calDate.set(Calendar.SECOND, calTime.get(Calendar.SECOND));
+		calDate.set(Calendar.MILLISECOND, calTime.get(Calendar.MILLISECOND));
+		return new Timestamp(calDate.getTimeInMillis());
+	}
 }
