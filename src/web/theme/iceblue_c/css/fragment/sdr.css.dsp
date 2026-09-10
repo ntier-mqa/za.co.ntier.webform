@@ -359,11 +359,11 @@
   background-color: #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  
 }
 
 .mqaWebForm .sdrForm .outter-view_grid{
 	padding: 20px 20px 20px 0;
+	overflow-x: auto;
 }
 
 .mqaWebForm .sdrForm .grid-listView .colHead{
@@ -371,6 +371,9 @@
 	color:white;
 	position: sticky;
 	top: 0;
+	z-index: 10;
+	white-space: normal;
+	word-wrap: break-word;
 }
 
 .mqaWebForm .sdrForm .grid-listView .colHead .z-label{
@@ -382,6 +385,11 @@
 	display: flex;
   	flex-direction: column;
   	justify-content: flex-end;
+}
+
+.mqaWebForm .sdrForm .grid-listView .cell .z-label{
+	white-space: normal;
+	word-wrap: break-word;
 }
 
 .mqaWebForm .sdrForm .grid-listView .cellHead{
@@ -450,8 +458,20 @@
 	grid-template-columns: repeat(4, 1fr) max-content;
 }
 
-.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoLearnershipAssessments{
-    grid-template-columns: repeat(11, 1fr);
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoLearnershipAssessments,
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnershipAssessments {
+    /* 12 columns including 'Previously Achieved' */
+    grid-template-columns: 35px 120px minmax(200px, 275px) 80px 120px 60px 110px minmax(150px, max-content) 160px minmax(150px, max-content) 160px 120px;
+    min-width: 100%;
+    width: max-content;
+}
+
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoSkillsProgrammeAssessments,
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-skillsProgrammeAssessments {
+    /* 11 columns (no 'Previously Achieved' column) */
+    grid-template-columns: 35px 120px minmax(200px, 275px) 80px 120px 60px minmax(150px, max-content) 160px minmax(150px, max-content) 160px 120px;
+    min-width: 100%;
+    width: max-content;
 }
 
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-certificateAssessments{
