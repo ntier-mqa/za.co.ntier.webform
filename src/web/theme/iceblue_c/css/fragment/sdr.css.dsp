@@ -347,7 +347,11 @@
 }
 
 .mqaWebForm .grid-formview.srd-LearnerAssessment-assessmentParam{
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.mqaWebForm .grid-formview.srd-LearnerAssessment-assessmentParam > :nth-child(11){
+    grid-column: 1 / span 2;
 }
 
 
