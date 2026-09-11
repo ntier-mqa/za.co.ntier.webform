@@ -3,7 +3,7 @@
 
 <idspace xmlns:n="native" 
     sclass="sdrForm"
-    viewModel="@id('vmLrCert') @init('za.co.ntier.webform.sdr.viewmodel.LearnerCertificateVM')">
+    viewModel="@id('vmLrCert') @init('za.co.ntier.webform.sdr.viewmodel.LearnerAchievementsVM')">
 
   <style>
         .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-certificateAssessments{

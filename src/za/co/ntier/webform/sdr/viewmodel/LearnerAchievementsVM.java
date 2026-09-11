@@ -1,23 +1,30 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.ProcessUtil;
+import org.compiere.model.MPInstance;
+import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_Process;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Listitem;
 
 import za.co.ntier.api.model.I_ZZCompletedAssessments_v;
@@ -76,7 +83,7 @@ import za.co.ntier.webform.sdr.component.bean.column.CheckboxColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
 
-public class LearnerCertificateVM extends StepAppVM
+public class LearnerAchievementsVM extends StepAppVM
 {
 	private TableModel	tmLearnerSelection;
 	private TableModel	tmLearnerSelectionInfo;
@@ -89,11 +96,63 @@ public class LearnerCertificateVM extends StepAppVM
 		return canDownload;
 	}
 
-	@Command
-	public void downloadCertificate()
+	public void downloadCertificate(CellModel cellModel)
 	{
-		MasterUtil.showInfoDialog("SOR/Certificate download functionality will be implemented here.", null);
+		try {
+			PO po = cellModel.getRowModel().getRowData().getDataNullable(I_ZZCompletedAssessments_v.Table_Name);
+			if (po == null || po.get_ID() <= 0) {
+				MasterUtil.showInfoDialog("Please select an assessment to download.", null);
+				return;
+			}
+			
+			int recordId = po.get_ID();
+			int processId = DB.getSQLValue(null, "SELECT " + X_AD_Process.COLUMNNAME_AD_Process_ID + " FROM " + X_AD_Process.Table_Name + " WHERE " + X_AD_Process.COLUMNNAME_Value + " = ?", "GenerateSORProcess");
+			if (processId <= 0) {
+				MasterUtil.showInfoDialog("Process not found! Please log in as System Administrator and create a Report & Process record with Search Key: GenerateSORProcess", null);
+				return;
+			}
+
+			MProcess proc = new MProcess(Env.getCtx(), processId, null);
+			ProcessInfo pi = new ProcessInfo(proc.getName(), processId, po.get_Table_ID(), recordId);
+			pi.setClassName(proc.getClassname());
+			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+
+			MPInstance instance = new MPInstance(Env.getCtx(), processId, po.get_Table_ID(), recordId, null);
+			instance.saveEx();
+			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
+			
+			Trx trx = null;
+			try {
+				trx = Trx.get(Trx.createTrxName("SOR"), true);
+				boolean success = ProcessUtil.startJavaProcess(Env.getCtx(), pi, trx);
+				
+				if (success && pi.getExportFile() != null) {
+					
+					String idPassport = learnerSelected.getZZ_ID_Passport_No();
+					if (idPassport == null || idPassport.isBlank())
+					{
+						idPassport = learnerSelected.getZZOtherIDNo();
+					}
+					
+					String interventionName = selectedIntervention != null ? selectedIntervention.getValue().replaceAll(" ", "") : "Program";
+					String fileName = "SOR_" + interventionName + "_" + idPassport + ".pdf";
+					
+					byte[] pdfBytes = Files.readAllBytes(pi.getExportFile().toPath());
+					Filedownload.save(pdfBytes, "application/pdf", fileName);
+				} else {
+					MasterUtil.showInfoDialog("Process failed: " + pi.getSummary(), null);
+				}
+			} finally {
+				if (trx != null) trx.close();
+			}
+
+		} catch (Exception e) {
+			MasterUtil.showInfoDialog("Error generating SOR: " + e.getMessage(), null);
+		}
 	}
+
+
 
 	public TableModel getTmLearnerSelectionInfo()
 	{
@@ -229,10 +288,10 @@ public class LearnerCertificateVM extends StepAppVM
 									tmInterventionSelection.getRow().get(intCols.get(1)).setVisible(false);
 								}
 								initStep("selectAssessment");
-								BindUtils.postNotifyChange(null, null, LearnerCertificateVM.this, "steps");
+								BindUtils.postNotifyChange(null, null, LearnerAchievementsVM.this, "steps");
 
 								// Make intervention table visible by notifying binder
-								BindUtils.postNotifyChange(null, null, LearnerCertificateVM.this, "learnerSelected");
+								BindUtils.postNotifyChange(null, null, LearnerAchievementsVM.this, "learnerSelected");
 							});
 		});
 
@@ -461,7 +520,7 @@ public class LearnerCertificateVM extends StepAppVM
 
 			String status = completedAssessment.getZZ_DocStatus();
 			isCompleted = (status != null && status.equalsIgnoreCase(X_ZZLearner.ZZ_DOCSTATUS_Completed));
-			if (!isCompleted)
+			if (!isCompleted || isInterventionQCTOLearnerships() || isInterventionQCTOSkills())
 			{
 				tmLearnerCompletions.getRow().get(downloadActionCol).setVisible(false);
 			}
@@ -902,7 +961,7 @@ public class LearnerCertificateVM extends StepAppVM
 		cols.add(statusCol);
 
 		downloadActionCol = CellModel.getColModelForGenericCell("Download Certificate", null, CellModel.BUTTON_CELL);
-		downloadActionCol.setEventHandle((event, cellModel) -> downloadCertificate());
+		downloadActionCol.setEventHandle((event, cellModel) -> downloadCertificate(cellModel));
 		cols.add(downloadActionCol);
 
 		tmLearnerCompletions = TableModel.getTableBean(TableModel.class, cols, false, I_ZZCompletedAssessments_v.Table_Name);
