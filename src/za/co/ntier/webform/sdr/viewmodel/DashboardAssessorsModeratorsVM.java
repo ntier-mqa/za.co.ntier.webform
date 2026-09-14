@@ -1,7 +1,6 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import org.compiere.model.MTable;
-import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -38,8 +37,8 @@ public class DashboardAssessorsModeratorsVM {
 	}
 	
 	public boolean showExtensionBt(X_ZZAssessorPerson_v row) {
-		return X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus());
-		
+		return X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus())
+				&& row.getParent_ID() <= 0;
 	}
 	
 	public boolean showEditBt(X_ZZAssessorPerson_v row) {

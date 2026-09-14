@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
-import org.apache.commons.lang3.StringUtils;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.I_C_Location;
 import org.compiere.model.MForm;
@@ -30,7 +29,6 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Textbox;
 
 import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_ZZAssessorPerson;
