@@ -33,7 +33,7 @@
     <nodom if="${rowStatus.first}"
       children="@bind(vmListView.component.columnInfos)">
         <template name="children" var="titleCol">
-          <div sclass="cellHead colHead">
+          <div sclass="cellHead colHead" style="@init(titleCol.colStyle)">
             <label value="@init(titleCol.title)" />
             
             <label

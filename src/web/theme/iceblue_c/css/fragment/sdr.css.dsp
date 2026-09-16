@@ -465,7 +465,7 @@
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoLearnershipAssessments,
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnershipAssessments {
     /* 12 columns including 'Previously Achieved' */
-    grid-template-columns: 35px 120px minmax(200px, 275px) 80px 120px 60px 110px minmax(150px, max-content) 160px minmax(150px, max-content) 160px 120px;
+    grid-template-columns: 35px 120px minmax(200px, 275px) 150px 80px 120px 60px 65px minmax(150px, max-content) 160px minmax(150px, max-content) 160px;
     min-width: 100%;
     width: max-content;
 }
@@ -473,7 +473,7 @@
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoSkillsProgrammeAssessments,
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-skillsProgrammeAssessments {
     /* 11 columns (no 'Previously Achieved' column) */
-    grid-template-columns: 35px 120px minmax(200px, 275px) 80px 120px 60px minmax(150px, max-content) 160px minmax(150px, max-content) 160px 120px;
+    grid-template-columns: 35px 120px minmax(200px, 275px) 150px 80px 120px 60px minmax(150px, max-content) 160px minmax(150px, max-content) 160px;
     min-width: 100%;
     width: max-content;
 }

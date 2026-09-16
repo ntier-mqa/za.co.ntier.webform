@@ -31,7 +31,6 @@ import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.cell.IntCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
-import za.co.ntier.webform.sdr.viewmodel.BaseAppVM;
 
 public class TableModel implements ISaveForm {
 	/**
@@ -58,6 +57,13 @@ public class TableModel implements ISaveForm {
 	
 	private Function<RowModel, Boolean> rowReadonlyLogic;
 	
+	private Function<RowModel, String> rowStyleLogic;
+	public Function<RowModel, String> getRowStyleLogic() {
+		return rowStyleLogic;
+	}
+	public void setRowStyleLogic(Function<RowModel, String> rowStyleLogic) {
+		this.rowStyleLogic = rowStyleLogic;
+	}
 	private RowModel virtualRow;
 	public RowModel getVirtualRow() {
 		if (virtualRow == null) {
@@ -922,6 +928,7 @@ public class TableModel implements ISaveForm {
 	public void syncDaoToUI() {
 		for(RowModel row:rows) {
 			row.fillRowDataFromDao();
+			BindUtils.postNotifyChange(null, null, row, "*");
 		}
 	}
 	

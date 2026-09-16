@@ -45,6 +45,21 @@ public class RowModel extends HashMap<ColumnModel, CellModel> implements ISaveFo
 		return !getTableModel().getRowReadonlyLogic().apply(this);
 	}
 	
+	public String getRowStyle(ColumnModel col) {
+		String style = "";
+		if (col != null && col.getWidth() != null && !col.getWidth().isEmpty()) {
+			style += "width:" + col.getWidth() + ";";
+		}
+		if (this.tableModel != null && this.tableModel.getRowStyleLogic() != null) {
+			style += this.tableModel.getRowStyleLogic().apply(this);
+		}
+		return style;
+	}
+	
+	public String getRowStyle() {
+		return getRowStyle(null);
+	}
+	
 	public static class RowData{
 		private RowModel rowModel;
 		public RowData(RowModel rowModel) {

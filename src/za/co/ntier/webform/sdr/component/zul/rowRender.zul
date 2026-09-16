@@ -14,6 +14,7 @@
       <template name="children" var="col">
         <!-- group title/content -->
         <div sclass="@init(( 'cell cellType' += vmRowRender.row[col].cellType ))"
+        	style="@load(vmRowRender.row.getRowStyle(col))"
         	visible="@load(vmRowRender.row[col].visible)">
           <!-- title part, show description, error message -->
           <div sclass="cell-title">

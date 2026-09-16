@@ -19,7 +19,22 @@ import org.zkoss.zk.ui.event.Event;
  * otherwise override {@link #getCellModel(TableModel, RowModel)}
  */
 public class ColumnModel implements PropertyChangeListener{
-	//TODO create UploadColumnModel for this properties
+	private String width = null;
+	public String getWidth() {
+		return width;
+	}
+	public String getColStyle() {
+		if (width != null && !width.isEmpty()) {
+			return "width:" + width + ";";
+		}
+		return "";
+	}
+	public ColumnModel setWidth(String width) {
+		this.width = width;
+		BindUtils.postNotifyChange(null, null, this, "width");
+		return this;
+	}
+	
 	private ColumnModel refDocUploadDefCol;
 	
 	private BiConsumer<CellModel, List<String>> validateHandle;
