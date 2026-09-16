@@ -89,6 +89,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 	private TableModel tmLearnerSelection;
 	private TableModel tmLearnerSelectionInfo;
 	ValueNamePair selectedIntervention;
+	private int adminBpId;
 	
 	public TableModel getTmLearnerSelectionInfo() {
 		return tmLearnerSelectionInfo;
@@ -108,6 +109,12 @@ public class LearnerAssessmentVM extends StepAppVM{
 
 	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
+		int loginId = Env.getAD_User_ID(Env.getCtx());
+		if (loginId > 0) {
+			MUser sdpAdmin = new MUser(Env.getCtx(), loginId, null);
+			adminBpId = sdpAdmin.getC_BPartner_ID();
+		}
+		
 		initStep("selectAssessment");
 		initLearnerSelection();
 		initLearnerSelectionInfo();
@@ -146,11 +153,38 @@ public class LearnerAssessmentVM extends StepAppVM{
 	boolean isInterventionSkillsProgrammes() {
 		return "Skills Programmes".equals(selectedIntervention.getValue());
 	}
-boolean isInterventionLearnerships()
+	boolean isInterventionLearnerships()
 	{
 		return "Learnerships".equals(selectedIntervention.getValue());
 	}
 	
+	private String getSdpColumnForIntervention() {
+		if (isInterventionLearnerships())
+			return I_ZZLearnerLearnership.Table_Name + "." + I_ZZLearnerLearnership.COLUMNNAME_ZZ_SDP_ID;
+		if (isInterventionSkillsProgrammes())
+			return I_ZZLearnerSkillsProgramme.Table_Name + "." + I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZ_SDP_ID;
+		if (isInterventionQCTOLearnerships())
+			return I_ZZLearnerQCTOLearnership.Table_Name + "." + I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZ_SDP_ID;
+		if (isInterventionQCTOSkills())
+			return I_ZZLearnerQCTOSkillsProgramme.Table_Name + "." + I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZ_SDP_ID;
+		return null;
+	}
+
+	private String buildSdpLearnerFilter() {
+		if (adminBpId <= 0) return "";
+		
+		return String.format(
+			I_ZZLearner_v.COLUMNNAME_ZZLearner_ID + " IN (" +
+			"SELECT " + I_ZZLearnerLearnership.COLUMNNAME_ZZLearner_ID + " FROM " + I_ZZLearnerLearnership.Table_Name + " WHERE " + I_ZZLearnerLearnership.COLUMNNAME_ZZ_SDP_ID + " = %d " +
+			"UNION " +
+			"SELECT " + I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZLearner_ID + " FROM " + I_ZZLearnerSkillsProgramme.Table_Name + " WHERE " + I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZ_SDP_ID + " = %d " +
+			"UNION " +
+			"SELECT " + I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZLearner_ID + " FROM " + I_ZZLearnerQCTOLearnership.Table_Name + " WHERE " + I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZ_SDP_ID + " = %d " +
+			"UNION " +
+			"SELECT " + I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZLearner_ID + " FROM " + I_ZZLearnerQCTOSkillsProgramme.Table_Name + " WHERE " + I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZ_SDP_ID + " = %d" +
+			")", adminBpId, adminBpId, adminBpId, adminBpId);
+	}
+
 	X_ZZLearnerQCTOArtisans learnerQCTOArtisans;
 	X_ZZQctoLearnership qctoArtisans;
 	
@@ -175,10 +209,13 @@ boolean isInterventionLearnerships()
 		cols.add(chooseLearnerCol);
 		
 		chooseLearnerCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-			InfoPanelPara.getInstance(I_ZZLearner_v.Table_Name
-					, I_ZZLearner_v.COLUMNNAME_ZZLearner_ID)
-			, (obj, infoPanel) -> {
+			InfoPanelPara infoPara = InfoPanelPara.getInstance(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_ZZLearner_ID);
+			String sdpFilter = buildSdpLearnerFilter();
+			if (sdpFilter != null && !sdpFilter.isBlank()) {
+				infoPara.setWhereClause(sdpFilter);
+			}
+			
+			showInfoPanel(infoPara, (obj, infoPanel) -> {
 				Object [] objs = (Object [])obj;
 				int learnerIdSelected = (int)objs[0];
 				learnerSelected = new X_ZZLearner_v(Env.getCtx(), learnerIdSelected, null);
@@ -278,7 +315,15 @@ boolean isInterventionLearnerships()
 		tmLearnerSelectionInfo.init();
 	}
 	void showInfoPanelForIntervention(String tableName, String columnId) {
-		String whereClause = I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID + " = " + learnerSelected.getZZLearner_ID();
+		String whereClause = I_ZZLearner_v.COLUMNNAME_ZZLearner_ID + " = " + learnerSelected.getZZLearner_ID();
+		
+		if (adminBpId > 0) {
+			String sdpColumn = getSdpColumnForIntervention();
+			if (sdpColumn != null) {
+				whereClause += " AND " + sdpColumn + " = " + adminBpId;
+			}
+		}
+
 		showInfoPanel(
 				InfoPanelPara.getInstance(tableName, columnId).setWhereClause(whereClause)
 				, (obj, infoPanel) -> {
@@ -822,11 +867,19 @@ boolean isInterventionLearnerships()
 		int qctoSkillsProgId = 0;
 		
 		int creditsRequired = 0;
+		boolean hasCore = false;
+		boolean hasFunda = false;
 
 		if (isInterventionLearnerships() && learnerLearnership != null && learnership != null)
 		{
 			learnerLearnershipId = learnerLearnership.get_ID();
 			creditsRequired = learnership.getZZCredits();
+			hasCore = new Query(Env.getCtx(), I_ZZLearnershipUnitStandard.Table_Name, 
+					I_ZZLearnershipUnitStandard.COLUMNNAME_ZZLearnership_ID + "=? AND " + I_ZZLearnershipUnitStandard.COLUMNNAME_ZZUnitStandardType + "=?", null)
+					.setParameters(learnership.get_ID(), X_ZZLearnershipUnitStandard.ZZUNITSTANDARDTYPE_Core).match();
+			hasFunda = new Query(Env.getCtx(), I_ZZLearnershipUnitStandard.Table_Name, 
+					I_ZZLearnershipUnitStandard.COLUMNNAME_ZZLearnership_ID + "=? AND " + I_ZZLearnershipUnitStandard.COLUMNNAME_ZZUnitStandardType + "=?", null)
+					.setParameters(learnership.get_ID(), X_ZZLearnershipUnitStandard.ZZUNITSTANDARDTYPE_Fundamental).match();
 		}
 		else if (isInterventionQCTOLearnerships() && learnerQCTOLearnership != null && qctoLearnership != null)
 		{
@@ -837,6 +890,12 @@ boolean isInterventionLearnerships()
 		{
 			skillsProgId = learnerSkillsProgramme.get_ID();
 			creditsRequired = skillsProgramme.getZZCredits();
+			hasCore = new Query(Env.getCtx(), I_ZZSkillsProgrammeUnitStandard.Table_Name, 
+					I_ZZSkillsProgrammeUnitStandard.COLUMNNAME_ZZSkillsProgramme_ID + "=? AND " + I_ZZSkillsProgrammeUnitStandard.COLUMNNAME_ZZUnitStandardType + "=?", null)
+					.setParameters(skillsProgramme.get_ID(), X_ZZSkillsProgrammeUnitStandard.ZZUNITSTANDARDTYPE_Core).match();
+			hasFunda = new Query(Env.getCtx(), I_ZZSkillsProgrammeUnitStandard.Table_Name, 
+					I_ZZSkillsProgrammeUnitStandard.COLUMNNAME_ZZSkillsProgramme_ID + "=? AND " + I_ZZSkillsProgrammeUnitStandard.COLUMNNAME_ZZUnitStandardType + "=?", null)
+					.setParameters(skillsProgramme.get_ID(), X_ZZSkillsProgrammeUnitStandard.ZZUNITSTANDARDTYPE_Fundamental).match();
 		}
 		else if (isInterventionQCTOSkills() && learnerQCTOSkills != null && qctoSkills != null)
 		{
@@ -858,20 +917,36 @@ boolean isInterventionLearnerships()
 
 		X_ZZCompletedAssessments_v summary = new Query(Env.getCtx(), I_ZZCompletedAssessments_v.Table_Name, where.toString(), null).first();
 
+		String defaultCore = hasCore ? "No" : "N/A";
+		String defaultFunda = hasFunda ? "No" : "N/A";
+
+		tmAssessmentParam.getRow().get(creditsReqCol).setValue(String.valueOf(creditsRequired));
+
 		if (summary == null)
 		{
-			tmAssessmentParam.getRow().get(creditsReqCol).setValue(String.valueOf(creditsRequired));
 			tmAssessmentParam.getRow().get(creditsAchCol).setValue("0");
-			tmAssessmentParam.getRow().get(coreAchCol).setValue("N/A");
-			tmAssessmentParam.getRow().get(fundaAchCol).setValue("N/A");
+			tmAssessmentParam.getRow().get(coreAchCol).setValue(defaultCore);
+			tmAssessmentParam.getRow().get(fundaAchCol).setValue(defaultFunda);
 			return;
 		}
 
-		tmAssessmentParam.getRow().get(creditsReqCol).setValue(String.valueOf(creditsRequired));
 		tmAssessmentParam.getRow().get(creditsAchCol).setValue(summary.gettotal_achieved_credits() != null	? String.valueOf(summary.gettotal_achieved_credits())
 																											: "0");
-		tmAssessmentParam.getRow().get(coreAchCol).setValue(summary.getcore_requirements_met() != null ? summary.getcore_requirements_met() : "N/A");
-		tmAssessmentParam.getRow().get(fundaAchCol).setValue(summary.getfundamentals_met() != null ? summary.getfundamentals_met() : "N/A");
+		tmAssessmentParam.getRow().get(coreAchCol).setValue(formatRequirementMet(summary.getcore_requirements_met(), defaultCore));
+		tmAssessmentParam.getRow().get(fundaAchCol).setValue(formatRequirementMet(summary.getfundamentals_met(), defaultFunda));
+	}
+	
+	private String formatRequirementMet(String value, String defaultValue) {
+		if (value == null || value.trim().isEmpty()) {
+			return defaultValue;
+		}
+		if ("Y".equalsIgnoreCase(value)) {
+			return "Yes";
+		}
+		if ("N".equalsIgnoreCase(value)) {
+			return "No";
+		}
+		return value;
 	}
 	
 	private String buildAssessorSearchQuery(String role) {
