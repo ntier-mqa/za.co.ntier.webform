@@ -168,7 +168,7 @@
 
 			<button if="${vmRowRender.row[col].cellType eq CellModel.BUTTON_CELL}"
 			  iconSclass="@init(vmRowRender.row[col].iconSclass)"
-			  label="@load(col.title)"
+			  label="@load(vmRowRender.row[col].btText ne null ? vmRowRender.row[col].btText : col.title)"
               onClick="@command('cmdBtClick', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
               
           </div>

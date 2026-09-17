@@ -945,7 +945,11 @@ public class LearnerAchievementsVM extends StepAppVM
 		});
 		cols.add(statusCol);
 
-		downloadActionCol = CellModel.getColModelForGenericCell("Download Certificate", null, CellModel.BUTTON_CELL);
+		downloadActionCol = CellModel.getColModelForCell(
+				CellModel.CellModelInfo.of(ColumnModel.class, CellModel.class, (columnModel, cell) -> {
+					cell.setIconSclass("z-icon-download");
+				}),
+				CellModel.CellModelParams.of("SOR", null, CellModel.BUTTON_CELL)).setBtText("");
 		downloadActionCol.setEventHandle((event, cellModel) -> downloadCertificate(cellModel));
 		cols.add(downloadActionCol);
 

@@ -503,6 +503,15 @@ public class CellModel implements IValueChange , IInputState{
 		return null;
 	}
 
+	private String btText;
+	public String getBtText() {
+		return btText;
+	}
+	public void setBtText(String btText) {
+		this.btText = btText;
+		BindUtils.postNotifyChange(this, "btText");
+	}
+
 	public String getIconSclass() {
 		return iconSclass;
 	}

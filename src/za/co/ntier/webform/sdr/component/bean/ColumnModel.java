@@ -71,6 +71,7 @@ public class ColumnModel implements PropertyChangeListener{
 	
 	public final CellModel getCellModel(TableModel tableModel, RowModel rowModel) {
 		CellModel cellModel = initCellModel(tableModel, rowModel);
+		cellModel.setBtText(this.getBtText());
 		cellModel.addPropertyChangeListener(this);
 		return cellModel;
 	}
@@ -132,6 +133,16 @@ public class ColumnModel implements PropertyChangeListener{
 	public void setTitle(String title) {
 		this.title = title;
 		BindUtils.postNotifyChange(this, "title");
+	}
+
+	private String btText;
+	public String getBtText() {
+		return btText;
+	}
+	public ColumnModel setBtText(String btText) {
+		this.btText = btText;
+		BindUtils.postNotifyChange(this, "btText");
+		return this;
 	}
 
 	/**

@@ -16,16 +16,6 @@ public class UploadColumnModel extends ColumnModel {
 		this.daoPropertyFileName = daoPropertyFileName;
 	}
 
-	public String getBtText() {
-		return btText;
-	}
-
-	public void setBtText(String btText) {
-		this.btText = btText;
-	}
-
-	private String btText;
-
 	public UploadColumnModel(String colTitle) {
 		super(colTitle);
 	}
@@ -33,13 +23,12 @@ public class UploadColumnModel extends ColumnModel {
 	public UploadColumnModel(String colTitle, String daoProperty, String daoPropertyFileName, String btText) {
 		super(colTitle, daoProperty);
 		this.daoPropertyFileName = daoPropertyFileName;
-		this.btText = btText;
+		setBtText(btText);
 	}
 
 	@Override
 	public CellModel initCellModel(TableModel tableModel, RowModel rowModel) {
 		UploadCellModel cellModel = new UploadCellModel(tableModel, rowModel, this);
-		cellModel.setBtText(btText);
 		return cellModel;
 	}
 

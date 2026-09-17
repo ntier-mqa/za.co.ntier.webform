@@ -28,14 +28,6 @@ public class UploadCellModel extends CellModel {
 		setCellType(BTUPLOAD_CELL);
 	}
 
-	private String btText;
-	public String getBtText() {
-		return btText;
-	}
-	public void setBtText(String btText) {
-		this.btText = btText;
-	}
-
 	private String fileName;
 	private byte[] bytes;     // <- in-memory payload (no disk)
 
