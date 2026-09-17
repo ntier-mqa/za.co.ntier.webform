@@ -949,7 +949,7 @@ public class LearnerAchievementsVM extends StepAppVM
 				CellModel.CellModelInfo.of(ColumnModel.class, CellModel.class, (columnModel, cell) -> {
 					cell.setIconSclass("z-icon-download");
 				}),
-				CellModel.CellModelParams.of("SOR", null, CellModel.BUTTON_CELL)).setBtText("");
+				CellModel.CellModelParams.of("Download SOR", null, CellModel.BUTTON_CELL)).setBtText("");
 		downloadActionCol.setEventHandle((event, cellModel) -> downloadCertificate(cellModel));
 		cols.add(downloadActionCol);
 
