@@ -1,5 +1,6 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -8,7 +9,6 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.MBPartner;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
@@ -23,6 +23,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Listitem;
 
 import za.co.ntier.api.model.I_ZZAssessorPerson_v;
+import za.co.ntier.api.model.I_ZZCompletedAssessments_v;
 import za.co.ntier.api.model.I_ZZLearner;
 import za.co.ntier.api.model.I_ZZLearnerLearnership;
 import za.co.ntier.api.model.I_ZZLearnerLearnershipAssessments;
@@ -33,13 +34,10 @@ import za.co.ntier.api.model.I_ZZLearnerQCTOSkillsProgrammeAssessments;
 import za.co.ntier.api.model.I_ZZLearnerQctoLearnershipAssessments;
 import za.co.ntier.api.model.I_ZZLearnerSkillsProgramme;
 import za.co.ntier.api.model.I_ZZLearnerSkillsProgrammeAssessments;
-import za.co.ntier.api.model.I_ZZCompletedAssessments_v;
-import za.co.ntier.api.model.X_ZZCompletedAssessments_v;
 import za.co.ntier.api.model.I_ZZLearner_v;
 import za.co.ntier.api.model.I_ZZLearnership;
-import za.co.ntier.api.model.I_ZZLinkAssessorQualification_v;
-import za.co.ntier.api.model.I_zzlinkassessorskillsprogramme_v;
 import za.co.ntier.api.model.I_ZZLearnershipUnitStandard;
+import za.co.ntier.api.model.I_ZZLinkAssessorQualification_v;
 import za.co.ntier.api.model.I_ZZQctoLearnership;
 import za.co.ntier.api.model.I_ZZQctoModule;
 import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
@@ -47,7 +45,9 @@ import za.co.ntier.api.model.I_ZZQctoSkillsProgrammeModule;
 import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZSkillsProgrammeUnitStandard;
 import za.co.ntier.api.model.I_ZZUnitStandard;
+import za.co.ntier.api.model.I_zzlinkassessorskillsprogramme_v;
 import za.co.ntier.api.model.X_ZZAssessorPerson_v;
+import za.co.ntier.api.model.X_ZZCompletedAssessments_v;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
 import za.co.ntier.api.model.X_ZZLearnerLearnershipAssessments;
 import za.co.ntier.api.model.X_ZZLearnerQCTOArtisans;
@@ -79,7 +79,6 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
-import java.sql.Timestamp;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ValueAdaptCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.CheckboxColumnModel;
@@ -729,18 +728,39 @@ public class LearnerAssessmentVM extends StepAppVM{
 				return null;
 
 			X_ZZAssessorPerson_v schoolEmis = (X_ZZAssessorPerson_v) value;
-			return schoolEmis.getZZAssessorPerson_ID();
+			return schoolEmis.getAD_User_ID();
 		});
 
 		chooseAssessorCol.setValueFromDaoAdaptHandle(obj -> {
 			if (obj == null)
 				return null;
 
-			Integer id = Integer.class.cast(obj);
-			if (id == 0)
+			int id = 0;
+			if (obj instanceof Number)
+			{
+				id = ((Number) obj).intValue();
+			}
+			else if (obj instanceof String)
+			{
+				try
+				{
+					id = Integer.parseInt(obj.toString());
+				}
+				catch (NumberFormatException e)
+				{
+					return null;
+				}
+			}
+
+			if (id <= 0)
 				return null;
 
-			return new X_ZZAssessorPerson_v(Env.getCtx(), id, null);
+			int[] assessorIds = PO.getAllIDs("ZZAssessorPerson_v", "AD_User_ID=" + id, null);
+			if (assessorIds.length > 0)
+			{
+				return new X_ZZAssessorPerson_v(Env.getCtx(), assessorIds[0], null);
+			}
+			return null;
 		});
 	}
 	
@@ -759,7 +779,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 
 		chooseAssessorCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				"Assessor", 
-				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID, 
+				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_Assessor_ID, 
 				CellModel.SEARCH_CELL);
 		chooseAssessorCol.setShowTitle(false);
 		chooseAssessorCol.required();
@@ -781,7 +801,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 		
 		chooseModeratorCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				"Moderator", 
-				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerator_ID, 
+				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_Moderator_ID, 
 				CellModel.SEARCH_CELL);
 		chooseModeratorCol.setShowTitle(false);
 		cols.add(chooseModeratorCol);
@@ -1069,30 +1089,52 @@ public class LearnerAssessmentVM extends StepAppVM{
 			CellModel.LABEL_CELL
 		);
 		col.setValueFromDaoAdaptHandle(value -> {
-			if (value == null) return null;
-			int id = (int) value;
-			if (id <= 0) return null;
-			
-			MUser user = new MUser(Env.getCtx(), id, null);
-			MBPartner bp = new MBPartner(Env.getCtx(), user.getC_BPartner_ID(), null);
-			
-			int[] assessorIds = PO.getAllIDs("ZZAssessorPerson_v", "AD_User_ID=" + id, null);
-			if (assessorIds.length > 0) {
-				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorIds[0], null);
-				String firstName = assessor.getZZFirstName() != null ? assessor.getZZFirstName().trim() : "";
-				String surname = assessor.getZZSurname() != null ? assessor.getZZSurname().trim() : "";
-				if (!firstName.isEmpty() || !surname.isEmpty()) {
-					return (firstName + " " + surname).trim();
+			if (value == null)
+				return null;
+			int id = 0;
+			if (value instanceof Number)
+			{
+				id = ((Number) value).intValue();
+			}
+			else if (value instanceof String)
+			{
+				try
+				{
+					id = Integer.parseInt(value.toString());
+				}
+				catch (NumberFormatException e)
+				{
+					return null;
 				}
 			}
-			
-			if (bp.get_ID() > 0 && bp.getName() != null) {
-				return bp.getName();
+			if (id <= 0)
+				return null;
+
+			int[] assessorIds = PO.getAllIDs("ZZAssessorPerson_v", "AD_User_ID=" + id, null);
+			if (assessorIds.length > 0)
+			{
+				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorIds[0], null);
+				String name = formatAssessorName(assessor);
+				if (name != null)
+					return name;
 			}
+
+			MUser user = new MUser(Env.getCtx(), id, null);
 			return user.getName();
 		});
 		col.setTableName(tableName).setReadonly(true);
 		return col;
+	}
+
+	private String formatAssessorName(X_ZZAssessorPerson_v assessor)
+	{
+		String firstName = assessor.getZZFirstName() != null ? assessor.getZZFirstName().trim() : "";
+		String surname = assessor.getZZSurname() != null ? assessor.getZZSurname().trim() : "";
+		if (!firstName.isEmpty() || !surname.isEmpty())
+		{
+			return (firstName + " " + surname).trim();
+		}
+		return null;
 	}
 
 	CheckboxColumnModel qctoLearnershipAssessmentsSelectedCol;
@@ -1680,7 +1722,7 @@ public void initLearnerLearnership()
 											I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZRPL).setTableName(I_ZZLearnerLearnershipAssessments.Table_Name);
 		cols.add(col);
 
-		ValueAdaptColumnModel prevAchCol = ValueAdaptCellModel.getValueAdaptColumnModel("Prev. Achieved", I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZIsPreviouslyAchieved, CellModel.LABEL_CELL);
+		ValueAdaptColumnModel prevAchCol = ValueAdaptCellModel.getValueAdaptColumnModel("Prev.\nAchieved", I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZIsPreviouslyAchieved, CellModel.LABEL_CELL);
 		prevAchCol.setTableName(I_ZZLearnerLearnershipAssessments.Table_Name);
 		prevAchCol.setValueFromDaoAdaptHandle(value -> {
 			if (value == null) return "N";

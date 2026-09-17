@@ -1,6 +1,8 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +13,7 @@ import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Process;
@@ -22,6 +25,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
+
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Filedownload;
@@ -47,6 +51,7 @@ import za.co.ntier.api.model.I_ZZQctoSkillsProgrammeModule;
 import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZSkillsProgrammeUnitStandard;
 import za.co.ntier.api.model.I_ZZUnitStandard;
+import za.co.ntier.api.model.X_ZZAssessorPerson_v;
 import za.co.ntier.api.model.X_ZZCompletedAssessments_v;
 import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
@@ -803,16 +808,10 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOArtisans.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOArtisans.Table_Name,
-																				I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCommencementDate),
-											I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOArtisans.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQCTOArtisans.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCommencementDate);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOArtisans.Table_Name,
-																				I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCompletionDate),
-											I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOArtisans.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQCTOArtisans.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCompletionDate);
 		cols.add(col);
 
 		tmLearnerQCTOArtisans = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOArtisans.Table_Name);
@@ -842,16 +841,10 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOLearnership.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOLearnership.Table_Name,
-																				I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCommencementDate),
-											I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOLearnership.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQCTOLearnership.Table_Name, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCommencementDate);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOLearnership.Table_Name,
-																				I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCompletionDate),
-											I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOLearnership.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQCTOLearnership.Table_Name, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCompletionDate);
 		cols.add(col);
 
 		tmLearnerQCTOLearnerships = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOLearnership.Table_Name);
@@ -882,16 +875,10 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOSkillsProgramme.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgramme.Table_Name,
-																				I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCommencementDate),
-											I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOSkillsProgramme.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQCTOSkillsProgramme.Table_Name, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCommencementDate);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgramme.Table_Name,
-																				I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCompletionDate),
-											I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerQCTOSkillsProgramme.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQCTOSkillsProgramme.Table_Name, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCompletionDate);
 		cols.add(col);
 
 		tmLearnerQCTOSkills = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOSkillsProgramme.Table_Name);
@@ -938,9 +925,7 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZCompletedAssessments_v.COLUMNNAME_minimum_required_credits).setTableName(I_ZZCompletedAssessments_v.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(MasterUtil.getNameOfColTranslated(	I_ZZCompletedAssessments_v.Table_Name,
-																				I_ZZCompletedAssessments_v.COLUMNNAME_Assessment_Date),
-											I_ZZCompletedAssessments_v.COLUMNNAME_Assessment_Date).setTableName(I_ZZCompletedAssessments_v.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZCompletedAssessments_v.Table_Name, I_ZZCompletedAssessments_v.COLUMNNAME_Assessment_Date);
 		cols.add(col);
 
 		ValueAdaptColumnModel statusCol = ValueAdaptCellModel.getValueAdaptColumnModel(	MasterUtil.getNameOfColTranslated(	I_ZZCompletedAssessments_v.Table_Name,
@@ -1005,39 +990,19 @@ public class LearnerAchievementsVM extends StepAppVM
 																													I_ZZLearnerQctoLearnershipAssessments.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQctoLearnershipAssessments.Table_Name,
-																				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZPreviouslyAchieved),
-											I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZPreviouslyAchieved).setTableName(
-																																I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+		col = getPrevAchievedColModel(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZPreviouslyAchieved);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQctoLearnershipAssessments.Table_Name,
-																				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID),
-											I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID).setTableName(
-																																I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+		col = getAssessorPersonColModel("Assessor", I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_Assessor_ID);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQctoLearnershipAssessments.Table_Name,
-																				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessmentDate),
-											I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessmentDate).setTableName(
-																															I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZAssessmentDate);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQctoLearnershipAssessments.Table_Name,
-																				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerator_ID),
-											I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerator_ID).setTableName(
-																															I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+		col = getAssessorPersonColModel("Moderator", I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_Moderator_ID);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQctoLearnershipAssessments.Table_Name,
-																				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate),
-											I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate).setTableName(
-																															I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate);
 		cols.add(col);
 
 		tmQctoLearnershipAssessments = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQctoLearnershipAssessments.Table_Name);
@@ -1096,39 +1061,19 @@ public class LearnerAchievementsVM extends StepAppVM
 																														I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Is_Previously_Achieved),
-											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Is_Previously_Achieved).setTableName(
-																																		I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		col = getPrevAchievedColModel(I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Is_Previously_Achieved);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID),
-											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID).setTableName(
-																															I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		col = getAssessorPersonColModel("Assessor", I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessment_Date),
-											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessment_Date).setTableName(
-																																I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessment_Date);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderator_ID),
-											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderator_ID).setTableName(
-																															I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		col = getAssessorPersonColModel("Moderator", I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderator_ID);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderation_Date),
-											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderation_Date).setTableName(
-																																I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Moderation_Date);
 		cols.add(col);
 
 		tmQCTOSkillsAssessments = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
@@ -1192,16 +1137,10 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerSkillsProgramme.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerSkillsProgramme.Table_Name,
-																				I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCommencementDate),
-											I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCommencementDate).setTableName(I_ZZLearnerSkillsProgramme.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCommencementDate);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerSkillsProgramme.Table_Name,
-																				I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCompletionDate),
-											I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCompletionDate).setTableName(I_ZZLearnerSkillsProgramme.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCompletionDate);
 		cols.add(col);
 
 		tmLearnerSkillsProgrammes = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerSkillsProgramme.Table_Name);
@@ -1253,32 +1192,16 @@ public class LearnerAchievementsVM extends StepAppVM
 																																I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID),
-											I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID).setTableName(
-																														I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
+		col = getAssessorPersonColModel("Assessor", I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Assessment_Date),
-											I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Assessment_Date).setTableName(
-																															I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Assessment_Date);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Moderator_ID),
-											I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Moderator_ID).setTableName(
-																														I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
+		col = getAssessorPersonColModel("Moderator", I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Moderator_ID);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Moderation_Date),
-											I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Moderation_Date).setTableName(
-																															I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Moderation_Date);
 		cols.add(col);
 
 		tmSkillsProgrammeAssessments = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
@@ -1309,18 +1232,10 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZLearnerLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerLearnership.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnership.Table_Name,
-																				I_ZZLearnerLearnership.COLUMNNAME_ZZCommencementDate),
-											I_ZZLearnerLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerLearnership.Table_Name).setReadonly(
-																																							true);
+		col = getReadOnlyDateColModel(I_ZZLearnerLearnership.Table_Name, I_ZZLearnerLearnership.COLUMNNAME_ZZCommencementDate);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnership.Table_Name,
-																				I_ZZLearnerLearnership.COLUMNNAME_ZZEstimateCompletionDate),
-											I_ZZLearnerLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerLearnership.Table_Name).setReadonly(
-																																							true);
+		col = getReadOnlyDateColModel(I_ZZLearnerLearnership.Table_Name, I_ZZLearnerLearnership.COLUMNNAME_ZZEstimateCompletionDate);
 		cols.add(col);
 
 		tmLearnerLearnerships = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerLearnership.Table_Name);
@@ -1366,39 +1281,19 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZRPL).setTableName(I_ZZLearnerLearnershipAssessments.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnershipAssessments.Table_Name,
-																				I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZIsPreviouslyAchieved),
-											I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZIsPreviouslyAchieved).setTableName(
-																																I_ZZLearnerLearnershipAssessments.Table_Name);
+		col = getPrevAchievedColModel(I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZIsPreviouslyAchieved);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnershipAssessments.Table_Name,
-																				I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID),
-											I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZAssessorPerson_ID).setTableName(
-																															I_ZZLearnerLearnershipAssessments.Table_Name);
+		col = getAssessorPersonColModel("Assessor", I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_Assessor_ID);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnershipAssessments.Table_Name,
-																				I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZAssessmentDate),
-											I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZAssessmentDate).setTableName(
-																														I_ZZLearnerLearnershipAssessments.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZAssessmentDate);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnershipAssessments.Table_Name,
-																				I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZModerator_ID),
-											I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZModerator_ID).setTableName(
-																														I_ZZLearnerLearnershipAssessments.Table_Name);
+		col = getAssessorPersonColModel("Moderator", I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_Moderator_ID);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnershipAssessments.Table_Name,
-																				I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZModerationDate),
-											I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZModerationDate).setTableName(
-																														I_ZZLearnerLearnershipAssessments.Table_Name);
+		col = getReadOnlyDateColModel(I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZModerationDate);
 		cols.add(col);
 
 		tmLearnershipAssessments = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerLearnershipAssessments.Table_Name);
@@ -1408,4 +1303,92 @@ public class LearnerAchievementsVM extends StepAppVM
 		// read-only in certificate view
 	}
 
+	private ColumnModel getPrevAchievedColModel(String tableName, String columnName)
+	{
+		ValueAdaptColumnModel col = ValueAdaptCellModel.getValueAdaptColumnModel(
+																					"Prev.\nAchieved",
+																					columnName,
+																					CellModel.LABEL_CELL);
+		col.setValueFromDaoAdaptHandle(value -> {
+			if (value == null)
+				return "N";
+			String s = value.toString().toUpperCase().trim();
+			return (s.equals("YES")) ? "Y" : "N";
+		});
+		col.setTableName(tableName).setReadonly(true);
+		return col;
+	}
+
+	private ColumnModel getAssessorPersonColModel(String headerName, String tableName, String columnName)
+	{
+		ValueAdaptColumnModel col = ValueAdaptCellModel.getValueAdaptColumnModel(
+																					headerName,
+																					columnName,
+																					CellModel.LABEL_CELL);
+		col.setValueFromDaoAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			int id = 0;
+			if (value instanceof Number)
+			{
+				id = ((Number) value).intValue();
+			}
+			else if (value instanceof String)
+			{
+				try
+				{
+					id = Integer.parseInt(value.toString());
+				}
+				catch (NumberFormatException e)
+				{
+					return null;
+				}
+			}
+			if (id <= 0)
+				return null;
+
+			int[] assessorIds = PO.getAllIDs("ZZAssessorPerson_v", "AD_User_ID=" + id, null);
+			if (assessorIds.length > 0)
+			{
+				X_ZZAssessorPerson_v assessor = new X_ZZAssessorPerson_v(Env.getCtx(), assessorIds[0], null);
+				String name = formatAssessorName(assessor);
+				if (name != null)
+					return name;
+			}
+
+			MUser user = new MUser(Env.getCtx(), id, null);
+			return user.getName();
+		});
+		col.setTableName(tableName).setReadonly(true);
+		return col;
+	}
+
+	private ColumnModel getReadOnlyDateColModel(String tableName, String columnName)
+	{
+		ValueAdaptColumnModel col = ValueAdaptCellModel.getValueAdaptColumnModel(
+																					MasterUtil.getNameOfColTranslated(tableName, columnName), columnName,
+																					CellModel.LABEL_CELL);
+		col.setValueFromDaoAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof Timestamp)
+			{
+				return new SimpleDateFormat("yyyy/MM/dd").format((Timestamp) value);
+			}
+			return value.toString();
+		});
+		col.setTableName(tableName).setReadonly(true);
+		return col;
+	}
+
+	private String formatAssessorName(X_ZZAssessorPerson_v assessor)
+	{
+		String firstName = assessor.getZZFirstName() != null ? assessor.getZZFirstName().trim() : "";
+		String surname = assessor.getZZSurname() != null ? assessor.getZZSurname().trim() : "";
+		if (!firstName.isEmpty() || !surname.isEmpty())
+		{
+			return (firstName + " " + surname).trim();
+		}
+		return null;
+	}
 }
