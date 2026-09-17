@@ -3,29 +3,40 @@
 <idspace xmlns:n="native" sclass="sdrForm" viewModel="@id(&apos;vmLearner&apos;) @init(&apos;za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM&apos;)">
   <style>
     /* Compact Grid layout for Learner Qualification registration tabs */
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;],
-    .grid-listView[class*=&quot;srd-learner&quot;] {
+    .outter-view_grid,
+    .mqaWebForm .sdrForm .outter-view_grid {
+      overflow: visible !important;
+    }
+
+    .grid-listView[class*="srd-ZZLearner"],
+    .grid-listView[class*="srd-learner"] {
       display: grid !important;
-      grid-template-columns: minmax(120px, 1fr) minmax(135px, 1.1fr) minmax(135px, 1.1fr) minmax(145px, 1.2fr) minmax(110px, 0.9fr) minmax(120px, 1fr) minmax(120px, 1fr) 40px !important;
+      grid-template-columns: minmax(135px, 1.1fr) minmax(160px, 1.45fr) minmax(160px, 1.45fr) minmax(140px, 1.2fr) minmax(95px, 0.75fr) minmax(110px, 0.85fr) minmax(110px, 0.85fr) 40px !important;
       width: 100% !important;
       gap: 1px !important;
       background-color: #F0F0F0 !important;
       border-radius: 6px !important;
-      overflow: hidden !important;
+      max-height: calc(100vh - 250px) !important;
+      overflow-y: auto !important;
+      position: relative !important;
       box-sizing: border-box !important;
       margin-top: 10px !important;
       margin-bottom: 15px !important;
     }
 
-    /* Continuous Dark Blue Header Bar */
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .colHead,
-    .grid-listView[class*=&quot;srd-learner&quot;] .colHead,
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cellHead,
-    .grid-listView[class*=&quot;srd-learner&quot;] .cellHead {
+    /* Continuous Dark Blue Sticky Header Bar */
+    .grid-listView[class*="srd-ZZLearner"] .colHead,
+    .grid-listView[class*="srd-learner"] .colHead,
+    .grid-listView[class*="srd-ZZLearner"] .cellHead,
+    .grid-listView[class*="srd-learner"] .cellHead {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 100 !important;
       background: #1b2a6b !important;
       color: #ffffff !important;
       white-space: normal !important;
-      word-break: break-word !important;
+      word-break: normal !important;
+      overflow-wrap: normal !important;
       font-size: 11px !important;
       font-weight: 600 !important;
       padding: 6px 8px !important;
@@ -35,11 +46,12 @@
       align-items: center !important;
       justify-content: flex-start !important;
       width: 100% !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12) !important;
     }
 
     /* Data Row Cells */
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell,
-    .grid-listView[class*=&quot;srd-learner&quot;] .cell {
+    .grid-listView[class*="srd-ZZLearner"] .cell,
+    .grid-listView[class*="srd-learner"] .cell {
       background-color: #F0F0F0 !important;
       padding: 6px 6px !important;
       box-sizing: border-box !important;
@@ -51,10 +63,10 @@
     }
 
     /* Input textboxes */
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell-content .z-textbox,
-    .grid-listView[class*=&quot;srd-learner&quot;] .cell-content .z-textbox,
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell-content input[type=&quot;text&quot;],
-    .grid-listView[class*=&quot;srd-learner&quot;] .cell-content input[type=&quot;text&quot;] {
+    .grid-listView[class*="srd-ZZLearner"] .cell-content .z-textbox,
+    .grid-listView[class*="srd-learner"] .cell-content .z-textbox,
+    .grid-listView[class*="srd-ZZLearner"] .cell-content input[type="text"],
+    .grid-listView[class*="srd-learner"] .cell-content input[type="text"] {
       width: 100% !important;
       height: 30px !important;
       font-size: 12px !important;
@@ -69,28 +81,38 @@
     }
 
     /* Search Buttons */
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .z-button,
-    .grid-listView[class*=&quot;srd-learner&quot;] .z-button {
+    .grid-listView[class*="srd-ZZLearner"] .z-button,
+    .grid-listView[class*="srd-learner"] .z-button {
       width: 100% !important;
-      height: 28px !important;
+      min-height: 28px !important;
+      height: auto !important;
       background: #1b2a6b !important;
       color: #ffffff !important;
       border: none !important;
       border-radius: 4px !important;
       font-size: 11px !important;
       font-weight: 500 !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      padding: 0 6px !important;
+      white-space: normal !important;
+      word-break: normal !important;
+      overflow-wrap: break-word !important;
+      padding: 3px 6px !important;
       margin-top: 3px !important;
       display: inline-flex !important;
       align-items: center !important;
-      justify-content: center !important;
-      text-align: center !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
       gap: 4px !important;
+      line-height: 1.2 !important;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
       box-sizing: border-box !important;
+    }
+
+    .grid-listView[class*="srd-ZZLearner"] .z-button .z-button-label,
+    .grid-listView[class*="srd-learner"] .z-button .z-button-label {
+      white-space: normal !important;
+      word-break: normal !important;
+      display: inline-block !important;
+      max-width: 100% !important;
     }
 
     .grid-listView[class*=&quot;srd-ZZLearner&quot;] .z-button:hover,

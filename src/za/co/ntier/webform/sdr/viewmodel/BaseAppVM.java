@@ -4,7 +4,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -27,8 +26,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 
 import za.co.ntier.api.model.I_ZZDocumentUploadFile;
 import za.co.ntier.api.model.X_ZZDocumentUpload;
@@ -433,17 +430,12 @@ public abstract class BaseAppVM implements ISaveApp{
 			//closeHandle.accept(evt.getNewValue(), null);
 		});
 		
-		ip.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-
-			@Override
-			public void onEvent(Event event) throws Exception {
-				InfoPanel showedIp = (InfoPanel)event.getTarget();
-				if (!showedIp.isCancelled()) {
-					Object[] result = showedIp.getSelectedKeys();
-					if (result != null && result.length > 0) {
-						closeHandle.accept(result, showedIp);
-					}
-					
+		ip.addEventListener(DialogEvents.ON_WINDOW_CLOSE, event -> {
+			InfoPanel showedIp = (InfoPanel) event.getTarget();
+			if (!showedIp.isCancelled()) {
+				Object[] result = showedIp.getSelectedKeys();
+				if (result != null && result.length > 0) {
+					closeHandle.accept(result, showedIp);
 				}
 			}
 		});
