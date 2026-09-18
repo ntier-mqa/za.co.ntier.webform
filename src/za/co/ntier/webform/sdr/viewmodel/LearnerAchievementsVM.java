@@ -1182,18 +1182,17 @@ public class LearnerAchievementsVM extends StepAppVM
 																														I_ZZSkillsProgrammeUnitStandard.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL),
-											I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL).setTableName(
-																													I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
+		ValueAdaptColumnModel rplCol = ValueAdaptCellModel.getValueAdaptColumnModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL), I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL, CellModel.LABEL_CELL);
+		rplCol.setTableName(I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
+		rplCol.setValueFromDaoAdaptHandle(value -> {
+			if (value == null) return "N";
+			String s = value.toString().toUpperCase().trim();
+			return (s.equals("YES")) ? "Y" : "N";
+		});
+		col = rplCol;
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZAssessmentStatus),
-											I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZAssessmentStatus).setTableName(
-																																I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
+		col = getPrevAchievedColModel(I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZIsPreviouslyAchieved);
 		cols.add(col);
 
 		col = getAssessorPersonColModel("Assessor", I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID);
