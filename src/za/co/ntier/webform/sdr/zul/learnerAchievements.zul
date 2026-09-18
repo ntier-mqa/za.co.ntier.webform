@@ -47,19 +47,19 @@
                 component="@init(vmLrCert.tmLearnerProgram)"
                 menuContextInfo="@init(vmLrCert.menuContextInfo)"
                 src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
-            <tabbox>
+            <tabbox sclass="expand-tabbox">
                 <tabs>
                     <tab label="Achievements"/>
                     <tab label="Assessments"/>
                 </tabs>
                 <tabpanels>
-                    <tabpanel style="overflow:auto; height:450px;">
+                    <tabpanel>
                         <include style="height:unset !important"
                             component="@init(vmLrCert.tmLearnerCompletions)"
                             menuContextInfo="@init(vmLrCert.menuContextInfo)"
                             src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
                     </tabpanel>
-                    <tabpanel style="overflow:auto; height:450px;">
+                    <tabpanel>
                         <include style="height:unset !important"
                             component="@load(vmLrCert.tmLearnerAssessments)"
                             menuContextInfo="@init(vmLrCert.menuContextInfo)"

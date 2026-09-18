@@ -51,6 +51,18 @@
   justify-content: space-between;
 }
 
+.mqaWebForm .sdrForm .expand-tabbox{
+  height: auto !important;
+  flex-shrink: 0;
+}
+.mqaWebForm .sdrForm .expand-tabbox.z-tabbox,
+.mqaWebForm .sdrForm .expand-tabbox .z-tabbox-body,
+.mqaWebForm .sdrForm .expand-tabbox .z-tabpanels,
+.mqaWebForm .sdrForm .expand-tabbox .z-tabpanel {
+  height: auto !important;
+  overflow: visible !important;
+}
+
 .mqaWebForm .sdrForm .navTabOuter{
   flex:1;
   display:flex;
