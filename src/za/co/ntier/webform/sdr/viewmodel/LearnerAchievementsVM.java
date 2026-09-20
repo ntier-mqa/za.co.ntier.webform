@@ -987,14 +987,10 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZQctoModule.COLUMNNAME_ZZModuleType).setTableName(I_ZZQctoModule.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQctoLearnershipAssessments.Table_Name,
-																				I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZRPL),
-											I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZRPL).setTableName(
-																													I_ZZLearnerQctoLearnershipAssessments.Table_Name);
+		col = getBooleanColModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZRPL), I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZRPL);
 		cols.add(col);
 
-		col = getPrevAchievedColModel(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZPreviouslyAchieved);
+		col = getBooleanColModel("Prev.\nAchieved", I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZPreviouslyAchieved);
 		cols.add(col);
 
 		col = getAssessorPersonColModel("Assessor", I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_Assessor_ID);
@@ -1058,15 +1054,10 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZQctoModule.COLUMNNAME_ZZModuleType).setTableName(I_ZZQctoModule.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name,
-																				I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZRPL),
-											I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZRPL).setTableName(
-																														I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name);
+		col = getBooleanColModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZRPL), I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZRPL);
 		cols.add(col);
 
-		col = getPrevAchievedColModel(I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Is_Previously_Achieved);
-		cols.add(col);
+
 
 		col = getAssessorPersonColModel("Assessor", I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID);
 		cols.add(col);
@@ -1182,18 +1173,10 @@ public class LearnerAchievementsVM extends StepAppVM
 																														I_ZZSkillsProgrammeUnitStandard.Table_Name);
 		cols.add(col);
 
-		ValueAdaptColumnModel rplCol = ValueAdaptCellModel.getValueAdaptColumnModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL), I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL, CellModel.LABEL_CELL);
-		rplCol.setTableName(I_ZZLearnerSkillsProgrammeAssessments.Table_Name);
-		rplCol.setValueFromDaoAdaptHandle(value -> {
-			if (value == null) return "N";
-			String s = value.toString().toUpperCase().trim();
-			return (s.equals("YES")) ? "Y" : "N";
-		});
-		col = rplCol;
+		col = getBooleanColModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL), I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL);
 		cols.add(col);
 
-		col = getPrevAchievedColModel(I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZIsPreviouslyAchieved);
-		cols.add(col);
+
 
 		col = getAssessorPersonColModel("Assessor", I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID);
 		cols.add(col);
@@ -1278,15 +1261,11 @@ public class LearnerAchievementsVM extends StepAppVM
 											I_ZZLearnershipUnitStandard.COLUMNNAME_ZZUnitStandardType).setTableName(I_ZZLearnershipUnitStandard.Table_Name);
 		cols.add(col);
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnershipAssessments.Table_Name,
-																				I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZRPL),
-											I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZRPL).setTableName(I_ZZLearnerLearnershipAssessments.Table_Name);
+		col = getBooleanColModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZRPL), I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZRPL);
 		cols.add(col);
 
-		col = getPrevAchievedColModel(I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZIsPreviouslyAchieved);
+		col = getBooleanColModel("Prev.\nAchieved", I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_ZZIsPreviouslyAchieved);
 		cols.add(col);
-
 		col = getAssessorPersonColModel("Assessor", I_ZZLearnerLearnershipAssessments.Table_Name, I_ZZLearnerLearnershipAssessments.COLUMNNAME_Assessor_ID);
 		cols.add(col);
 
@@ -1306,17 +1285,20 @@ public class LearnerAchievementsVM extends StepAppVM
 		// read-only in certificate view
 	}
 
-	private ColumnModel getPrevAchievedColModel(String tableName, String columnName)
+	private ColumnModel getBooleanColModel(String headerName, String tableName, String columnName)
 	{
 		ValueAdaptColumnModel col = ValueAdaptCellModel.getValueAdaptColumnModel(
-																					"Prev.\nAchieved",
+																					headerName,
 																					columnName,
 																					CellModel.LABEL_CELL);
 		col.setValueFromDaoAdaptHandle(value -> {
 			if (value == null)
 				return "N";
+			if (value instanceof Boolean) {
+				return ((Boolean) value) ? "Y" : "N";
+			}
 			String s = value.toString().toUpperCase().trim();
-			return (s.equals("YES")) ? "Y" : "N";
+			return (s.equals("Y") || s.equals("TRUE")) ? "Y" : "N";
 		});
 		col.setTableName(tableName).setReadonly(true);
 		return col;
