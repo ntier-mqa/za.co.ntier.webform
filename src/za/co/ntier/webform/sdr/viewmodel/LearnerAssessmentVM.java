@@ -578,6 +578,24 @@ public class LearnerAssessmentVM extends StepAppVM{
 		setStep("assessment");
 	}
 	
+	private ColumnModel getStudentColumnModel()
+	{
+		ColumnModel studentCol = CellModel.getColModelForLabel("Student", null);
+		java.util.function.Function<org.apache.commons.lang3.tuple.Triple<TableModel, RowModel, ColumnModel>, CellModel> originalSupplier = studentCol.getCellModelSupplier();
+
+		studentCol.setCellModelSupplier(triple -> {
+			CellModel cell = originalSupplier.apply(triple);
+			if (learnerSelected != null)
+			{
+				String fname = learnerSelected.getZZFirstName();
+				String sname = learnerSelected.getSurname();
+				cell.setValue((fname != null ? fname : "") + " " + (sname != null ? sname : ""));
+			}
+			return cell;
+		});
+		return studentCol;
+	}
+
 	TableModel tmLearnerQCTOArtisans;
 	public void initLearnerQCTOArtisans() {
 		List<ColumnModel> cols = new ArrayList<>();
@@ -594,6 +612,8 @@ public class LearnerAssessmentVM extends StepAppVM{
 				).setTableName(I_ZZQctoLearnership.Table_Name);
 		cols.add(col);
 		
+		cols.add(getStudentColumnModel());
+
 		col = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisans.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber)
 				, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber
@@ -632,6 +652,8 @@ public class LearnerAssessmentVM extends StepAppVM{
 				).setTableName(I_ZZQctoLearnership.Table_Name);
 		cols.add(col);
 		
+		cols.add(getStudentColumnModel());
+
 		col = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOLearnership.Table_Name, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber)
 				, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber
@@ -670,6 +692,8 @@ public class LearnerAssessmentVM extends StepAppVM{
 				).setTableName(I_ZZQctoSkillsProgramme.Table_Name);
 		cols.add(col);
 		
+		cols.add(getStudentColumnModel());
+
 		col = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOSkillsProgramme.Table_Name, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber)
 				, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber
@@ -1541,6 +1565,8 @@ public class LearnerAssessmentVM extends StepAppVM{
 				I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle).setTableName(I_ZZSkillsProgramme.Table_Name);
 		cols.add(col);
 
+		cols.add(getStudentColumnModel());
+
 		col = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZStudentNumber),
 				I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerSkillsProgramme.Table_Name);
@@ -1715,6 +1741,8 @@ public void initLearnerLearnership()
 											MasterUtil.getNameOfColTranslated(I_ZZLearnership.Table_Name, I_ZZLearnership.COLUMNNAME_ZZLearnershipTitle),
 											I_ZZLearnership.COLUMNNAME_ZZLearnershipTitle).setTableName(I_ZZLearnership.Table_Name);
 		cols.add(col);
+
+		cols.add(getStudentColumnModel());
 
 		col = CellModel.getColModelForLabel(
 											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnership.Table_Name,

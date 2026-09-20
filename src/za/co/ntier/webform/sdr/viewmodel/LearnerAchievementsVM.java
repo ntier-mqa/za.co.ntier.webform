@@ -816,7 +816,7 @@ public class LearnerAchievementsVM extends StepAppVM
 
 		tmLearnerQCTOArtisans = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOArtisans.Table_Name);
 		tmLearnerQCTOArtisans.setViewModel(ViewType.VIEW_GRID);
-		tmLearnerQCTOArtisans.setSclass("srd-LearnerAssessment-learnerQCTOArtisans");
+		tmLearnerQCTOArtisans.setSclass("srd-LearnerAchievement-learnerQCTOArtisans");
 	}
 
 	public void initLearnerQCTOLearnership()
@@ -849,7 +849,7 @@ public class LearnerAchievementsVM extends StepAppVM
 
 		tmLearnerQCTOLearnerships = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOLearnership.Table_Name);
 		tmLearnerQCTOLearnerships.setViewModel(ViewType.VIEW_GRID);
-		tmLearnerQCTOLearnerships.setSclass("srd-LearnerAssessment-learnerQCTOLearnership");
+		tmLearnerQCTOLearnerships.setSclass("srd-LearnerAchievement-learnerQCTOLearnership");
 	}
 
 	public void initLearnerQCTOSkills()
@@ -883,7 +883,7 @@ public class LearnerAchievementsVM extends StepAppVM
 
 		tmLearnerQCTOSkills = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerQCTOSkillsProgramme.Table_Name);
 		tmLearnerQCTOSkills.setViewModel(ViewType.VIEW_GRID);
-		tmLearnerQCTOSkills.setSclass("srd-LearnerAssessment-learnerQCTOSkill");
+		tmLearnerQCTOSkills.setSclass("srd-LearnerAchievement-learnerQCTOSkill");
 
 	}
 
@@ -1143,7 +1143,7 @@ public class LearnerAchievementsVM extends StepAppVM
 
 		tmLearnerSkillsProgrammes = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerSkillsProgramme.Table_Name);
 		tmLearnerSkillsProgrammes.setViewModel(ViewType.VIEW_GRID);
-		tmLearnerSkillsProgrammes.setSclass("srd-LearnerAssessment-learnerLearnership");
+		tmLearnerSkillsProgrammes.setSclass("srd-LearnerAchievement-learnerLearnership");
 	}
 
 	public void initSkillsProgrammeAssessments()
@@ -1232,7 +1232,7 @@ public class LearnerAchievementsVM extends StepAppVM
 
 		tmLearnerLearnerships = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerLearnership.Table_Name);
 		tmLearnerLearnerships.setViewModel(ViewType.VIEW_GRID);
-		tmLearnerLearnerships.setSclass("srd-LearnerAssessment-learnerLearnership");
+		tmLearnerLearnerships.setSclass("srd-LearnerAchievement-learnerLearnership");
 	}
 
 	CheckboxColumnModel learnershipAssessmentsSelectedCol;

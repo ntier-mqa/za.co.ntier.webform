@@ -474,6 +474,14 @@
 	grid-template-columns: repeat(4, 1fr) max-content;
 }
 
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnerQCTOArtisans,
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnerQCTOLearnership,
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnerQCTOSkill,
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnerLearnership {
+    grid-template-columns: minmax(150px, 200px) minmax(200px, auto) minmax(150px, max-content) 120px 140px 140px;
+    min-width: 100%;
+}
+
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoLearnershipAssessments,
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnershipAssessments,
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoSkillsProgrammeAssessments,
