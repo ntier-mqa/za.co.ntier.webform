@@ -1057,6 +1057,9 @@ public class LearnerAchievementsVM extends StepAppVM
 		col = getBooleanColModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZRPL), I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_ZZRPL);
 		cols.add(col);
 
+		col = getBooleanColModel("Prev.\nAchieved", I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Is_Previously_Achieved);
+		cols.add(col);
+
 
 
 		col = getAssessorPersonColModel("Assessor", I_ZZLearnerQCTOSkillsProgrammeAssessments.Table_Name, I_ZZLearnerQCTOSkillsProgrammeAssessments.COLUMNNAME_Assessor_ID);
@@ -1174,6 +1177,9 @@ public class LearnerAchievementsVM extends StepAppVM
 		cols.add(col);
 
 		col = getBooleanColModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL), I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZRPL);
+		cols.add(col);
+
+		col = getBooleanColModel("Prev.\nAchieved", I_ZZLearnerSkillsProgrammeAssessments.Table_Name, I_ZZLearnerSkillsProgrammeAssessments.COLUMNNAME_ZZIsPreviouslyAchieved);
 		cols.add(col);
 
 
