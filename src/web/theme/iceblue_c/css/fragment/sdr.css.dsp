@@ -366,6 +366,18 @@
     grid-column: 1 / span 2;
 }
 
+.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam{
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(3),
+.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(5) {
+    grid-column-start: 1;
+}
+
+.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(6) {
+    grid-column: 1 / span 2;
+}
 
 /******* list view **********/
 .mqaWebForm .sdrForm .grid-listView{
@@ -488,6 +500,13 @@
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-skillsProgrammeAssessments {
     /* 12 columns including 'Previously Achieved' */
     grid-template-columns: 35px 120px minmax(200px, 275px) 150px 80px 120px 60px 75px minmax(150px, max-content) 160px minmax(150px, max-content) 160px;
+    min-width: 100%;
+    width: max-content;
+}
+
+.mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoArtisansAssessments {
+    /* 10 columns */
+    grid-template-columns: 35px 120px minmax(200px, 275px) 150px 80px 120px 80px 120px 120px minmax(150px, max-content);
     min-width: 100%;
     width: max-content;
 }
