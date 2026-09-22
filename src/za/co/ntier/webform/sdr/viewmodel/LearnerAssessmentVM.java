@@ -18,6 +18,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.Event;
@@ -891,13 +892,13 @@ public class LearnerAssessmentVM extends StepAppVM{
 					if (dateCell != null && dateCell.getValue() != null)
 					{
 						dateCell.setValue(null);
-						org.zkoss.bind.BindUtils.postNotifyChange(null, null, dateCell, "value");
+						BindUtils.postNotifyChange(null, null, dateCell, "value");
 					}
 					CheckboxCellModel nambConfCell = (CheckboxCellModel) cellModel.getRowModel().get(nambConfirmationCol);
 					if (nambConfCell != null && nambConfCell.isChecked())
 					{
 						nambConfCell.setValue(false);
-						org.zkoss.bind.BindUtils.postNotifyChange(null, null, nambConfCell, "value");
+						BindUtils.postNotifyChange(null, null, nambConfCell, "value");
 					}
 				}
 			};
@@ -915,13 +916,13 @@ public class LearnerAssessmentVM extends StepAppVM{
 					if (tradeNum != null && tradeNum.getValue() != null && !tradeNum.getValue().toString().trim().isEmpty())
 					{
 						tradeNum.setValue(null);
-						org.zkoss.bind.BindUtils.postNotifyChange(null, null, tradeNum, "value");
+						BindUtils.postNotifyChange(null, null, tradeNum, "value");
 					}
 					CellModel tradeDate = cellModel.getRowModel().get(tradeTestDateCol);
 					if (tradeDate != null && tradeDate.getValue() != null)
 					{
 						tradeDate.setValue(null);
-						org.zkoss.bind.BindUtils.postNotifyChange(null, null, tradeDate, "value");
+						BindUtils.postNotifyChange(null, null, tradeDate, "value");
 					}
 				}
 			};
@@ -955,6 +956,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 					currentLearnerAssessments.syncDaoToUI();
 
 					MasterUtil.showInfoDialog("ZZLearnerAssessmentsSuccess", null);
+					clearAssessmentSelections();
 				}
 				catch (Exception e)
 				{
@@ -1037,7 +1039,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 				CheckboxCellModel rplCell = (CheckboxCellModel) cellModel.getRowModel().get(rplcol);
 				if (rplCell != null && rplCell.isChecked()) {
 					rplCell.setValue(false);
-					org.zkoss.bind.BindUtils.postNotifyChange(null, null, rplCell, "value");
+					BindUtils.postNotifyChange(null, null, rplCell, "value");
 				}
 			}
 		});
@@ -1048,7 +1050,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 				CheckboxCellModel competentCell = (CheckboxCellModel) cellModel.getRowModel().get(competentCol);
 				if (competentCell != null && competentCell.isChecked()) {
 					competentCell.setValue(false);
-					org.zkoss.bind.BindUtils.postNotifyChange(null, null, competentCell, "value");
+					BindUtils.postNotifyChange(null, null, competentCell, "value");
 				}
 			}
 		});
@@ -1071,6 +1073,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 				populateAssessmentSummaryFields();
 				
 				MasterUtil.showInfoDialog("ZZLearnerAssessmentsSuccess", null);
+				clearAssessmentSelections();
 				
 			} catch (Exception e) {
 				log.log(Level.WARNING, "ZZLearnerAssessmentsError", e);
@@ -1093,6 +1096,41 @@ public class LearnerAssessmentVM extends StepAppVM{
 		
 	}
 	
+	private void clearAssessmentSelections()
+	{
+		TableModel currentLearnerAssessments = getTmLearnerAssessments();
+		if (currentLearnerAssessments != null && currentLearnerAssessments.getRows() != null)
+		{
+			for (RowModel row : currentLearnerAssessments.getRows())
+			{
+				for (CellModel cell : row.values())
+				{
+					if (cell instanceof CheckboxCellModel)
+					{
+						ColumnModel col = cell.getColModel();
+						if (col != null && ("".equals(col.getTitle()) || col.getTitle() == null))
+						{
+							((CheckboxCellModel) cell).setValue(false);
+							BindUtils.postNotifyChange(null, null, cell, "value");
+						}
+					}
+				}
+			}
+		}
+
+		if (tmAssessmentParam != null && tmAssessmentParam.getRow() != null)
+		{
+			for (CellModel cell : tmAssessmentParam.getRow().values())
+			{
+				if (cell instanceof CheckboxCellModel)
+				{
+					((CheckboxCellModel) cell).setValue(false);
+					BindUtils.postNotifyChange(null, null, cell, "value");
+				}
+			}
+		}
+	}
+
 	private void populateAssessmentSummaryFields()
 	{
 		int learnerLearnershipId = 0;
@@ -1502,7 +1540,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 				assessment.setZZDateAssessmentCaptured(new Timestamp(System.currentTimeMillis()));
 			}
 			assessment.saveEx(rowDbEventArgs.trxName());
-			org.zkoss.bind.BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
+			BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
 			// assessment.setZZAssessmentStatus(null)
 			//assessment.setZZAssessmentStatus()
 			//assessment.setZZPreviouslyAchieved(null)
@@ -1652,7 +1690,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 			}
 
 			assessment.saveEx(rowDbEventArgs.trxName());
-			org.zkoss.bind.BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
+			BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
 			return true;
 		});
 	}
@@ -1828,7 +1866,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 				assessment.setDate_Assessment_Captured(new Timestamp(System.currentTimeMillis()));
 			}
 			assessment.saveEx(rowDbEventArgs.trxName());
-			org.zkoss.bind.BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
+			BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
 			return true;
 		});
 	}
@@ -2037,7 +2075,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 				assessment.setDate_Assessment_Captured(new Timestamp(System.currentTimeMillis()));
 			}
 			assessment.saveEx(rowDbEventArgs.trxName());
-			org.zkoss.bind.BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
+			BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
 			return true;
 		});
 	}
@@ -2240,7 +2278,7 @@ public void initLearnerLearnership()
 				assessment.setZZDateAssessmentCaptured(new Timestamp(System.currentTimeMillis()));
 			}
 			assessment.saveEx(rowDbEventArgs.trxName());
-			org.zkoss.bind.BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
+			BindUtils.postNotifyChange(null, null, rowDbEventArgs.row(), "rowStyle");
 
 			return true;
 		});
