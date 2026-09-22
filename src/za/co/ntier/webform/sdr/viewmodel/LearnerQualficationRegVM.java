@@ -45,6 +45,7 @@ import za.co.ntier.api.model.X_ZZLearnerSkillsProgramme;
 import za.co.ntier.api.model.X_ZZLearnership;
 import za.co.ntier.api.model.X_ZZPerson;
 import za.co.ntier.api.model.X_ZZQctoLearnership;
+import za.co.ntier.api.model.X_ZZQctoQualification;
 import za.co.ntier.api.model.X_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.X_ZZSkillsProgramme;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
@@ -396,7 +397,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 	private void initLearnerChildTabs()
 	{
 		initLearnerProgrammeTab("QCTO Artisans", I_ZZLearnerQCTOArtisans.Table_Name,
-								"INNER JOIN ZZQctoLearnership q ON q.ZZQctoLearnership_ID = ZZLearnerQCTOArtisans.ZZQctoLearnership_ID",
+								"LEFT JOIN ZZQctoLearnership q ON q.ZZQctoLearnership_ID = ZZLearnerQCTOArtisans.ZZQctoLearnership_ID",
 								false,
 								selectableProgrammeColumns(	I_ZZLearnerQCTOArtisans.Table_Name,
 															I_ZZQctoLearnership.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQctoLearnership_ID,
@@ -405,7 +406,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 															id -> new X_ZZQctoLearnership(Env.getCtx(), id, null)));
 
 		initLearnerProgrammeTab("QCTO Learnerships", I_ZZLearnerQCTOLearnership.Table_Name,
-								"INNER JOIN ZZQctoLearnership q ON q.ZZQctoLearnership_ID = ZZLearnerQCTOLearnership.ZZQctoLearnership_ID",
+								"LEFT JOIN ZZQctoLearnership q ON q.ZZQctoLearnership_ID = ZZLearnerQCTOLearnership.ZZQctoLearnership_ID",
 								false,
 								selectableProgrammeColumns(	I_ZZLearnerQCTOLearnership.Table_Name,
 															I_ZZQctoLearnership.Table_Name, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZQctoLearnership_ID,
@@ -414,7 +415,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 															id -> new X_ZZQctoLearnership(Env.getCtx(), id, null)));
 
 		initLearnerProgrammeTab("QCTO Skills Programmes", I_ZZLearnerQCTOSkillsProgramme.Table_Name,
-								"INNER JOIN ZZQctoSkillsProgramme q ON q.ZZQctoSkillsProgramme_ID = ZZLearnerQCTOSkillsProgramme.ZZQctoSkillsProgramme_ID",
+								"LEFT JOIN ZZQctoSkillsProgramme q ON q.ZZQctoSkillsProgramme_ID = ZZLearnerQCTOSkillsProgramme.ZZQctoSkillsProgramme_ID",
 								false,
 								selectableProgrammeColumns(	I_ZZLearnerQCTOSkillsProgramme.Table_Name,
 															I_ZZQctoSkillsProgramme.Table_Name,
@@ -425,7 +426,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 															id -> new X_ZZQctoSkillsProgramme(Env.getCtx(), id, null)));
 
 		initLearnerProgrammeTab("Learnerships", I_ZZLearnerLearnership.Table_Name,
-								"INNER JOIN ZZLearnership p ON p.ZZLearnership_ID = ZZLearnerLearnership.ZZLearnership_ID",
+								"LEFT JOIN ZZLearnership p ON p.ZZLearnership_ID = ZZLearnerLearnership.ZZLearnership_ID",
 								false,
 								selectableProgrammeColumns(	I_ZZLearnerLearnership.Table_Name,
 															I_ZZLearnership.Table_Name, I_ZZLearnerLearnership.COLUMNNAME_ZZLearnership_ID,
@@ -434,7 +435,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 															id -> new X_ZZLearnership(Env.getCtx(), id, null)));
 
 		initLearnerProgrammeTab("Skills Programmes", I_ZZLearnerSkillsProgramme.Table_Name,
-								"JOIN ZZSkillsProgramme p ON p.ZZSkillsProgramme_ID = ZZLearnerSkillsProgramme.ZZSkillsProgramme_ID",
+								"LEFT JOIN ZZSkillsProgramme p ON p.ZZSkillsProgramme_ID = ZZLearnerSkillsProgramme.ZZSkillsProgramme_ID",
 								false,
 								selectableProgrammeColumns(	I_ZZLearnerSkillsProgramme.Table_Name,
 															I_ZZSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
@@ -493,7 +494,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 		// Set validation for a Artisans, Skill program and Learnership retrieved as per condition
 		if (isQctoArtisans)
 		{
-			programmeWhereClause = "ZZQctoLearnership.ZZArtisanLearnership = 'Y' ";
+			programmeWhereClause = "(ZZQctoLearnership.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoQualification q WHERE q.ZZArtisanQualification = 'Y'))";
 		}
 		else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
 		{
@@ -505,9 +506,9 @@ public class LearnerQualficationRegVM extends BaseAppVM
 		else if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable))
 		{
 			programmeWhereClause = """
-							ZZLearnerQCTOSkillsProgramme_ID IN (select ZZLearnerQCTOSkillsProgramme_id from zzlinkassessorskillsprogramme
+							ZZQctoSkillsProgramme_ID IN (select ZZQctoSkillsProgramme_ID from zzlinkassessorskillsprogramme
 																where zzassessorperson_id in (	select zzassessorperson_id from zzassessorperson
-																								where ZZ_DocStatus='AP')) """;
+																								where ZZ_DocStatus='AP') AND ZZQctoSkillsProgramme_ID IS NOT NULL ) """;
 		}
 		else if (I_ZZLearnerLearnership.Table_Name.equals(learnerTable))
 		{
@@ -522,7 +523,7 @@ public class LearnerQualficationRegVM extends BaseAppVM
 			programmeWhereClause = """
 							zzskillsprogramme_ID IN (select zzskillsprogramme_id from zzlinkassessorskillsprogramme
 																		where zzassessorperson_id in (	select zzassessorperson_id from zzassessorperson
-																										where ZZ_DocStatus='AP')) """;
+																										where ZZ_DocStatus='AP') AND zzskillsprogramme_id IS NOT NULL ) """;
 		}
 
 		configureProgrammeSelector(	programmeCol, titleCol, programmeLoader, programmeIdColumn, codeColumn, titleColumn,
@@ -610,31 +611,31 @@ public class LearnerQualficationRegVM extends BaseAppVM
 																													: "C_BPartner.IsActive ='Y' AND C_BPartner.ZZ_Is_SDP='Y'");
 						if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable))
 						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (select C_BP_Trades.C_BPartner_ID from C_BP_Trades where C_BP_Trades.ZZQctoQualification_ID = ")
+							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_Trades.C_BPartner_ID FROM C_BP_Trades WHERE C_BP_Trades.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoLearnership q WHERE q.ZZQctoLearnership_ID = ")
 									.append(selectedProgId)
-									.append(" AND C_BP_Trades.IsActive = 'Y' AND C_BP_Trades.ZZ_Status = 'AC' AND (C_BP_Trades.EndDate IS NULL OR C_BP_Trades.EndDate >= CURRENT_DATE))");
+									.append(") AND C_BP_Trades.IsActive = 'Y' AND C_BP_Trades.ZZ_Status = 'AC' AND (C_BP_Trades.EndDate IS NULL OR C_BP_Trades.EndDate >= CURRENT_DATE))");
 						}
 						else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
 						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (select bp.C_BPartner_ID from C_BP_Learnerships bp where bp.ZZQctoLearnership_ID = ")
+							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT bp.C_BPartner_ID FROM C_BP_OC bp WHERE bp.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoLearnership q WHERE q.ZZQctoLearnership_ID = ")
 									.append(selectedProgId)
-									.append(" AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
+									.append(") AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
 						}
 						else if (I_ZZLearnerLearnership.Table_Name.equals(learnerTable))
 						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (select C_BP_Learnerships.C_BPartner_ID from C_BP_Learnerships where C_BP_Learnerships.ZZLearnership_ID = ")
+							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT bp.C_BPartner_ID FROM C_BP_OC bp WHERE bp.ZZQualification_ID IN (SELECT q.ZZQualification_ID FROM ZZLearnership q WHERE q.ZZLearnership_ID = ")
 									.append(selectedProgId)
-									.append(" AND C_BP_Learnerships.IsActive = 'Y' AND C_BP_Learnerships.ZZ_Status = 'AC' AND (C_BP_Learnerships.EndDate IS NULL OR C_BP_Learnerships.EndDate >= CURRENT_DATE))");
+									.append(") AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
 						}
 						else if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable))
 						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (select C_BP_SkillsProgramme.C_BPartner_ID from C_BP_SkillsProgramme where C_BP_SkillsProgramme.ZZQctoSkillsProgramme_ID = ")
+							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_SkillsProgramme.C_BPartner_ID FROM C_BP_SkillsProgramme WHERE C_BP_SkillsProgramme.ZZQctoSkillsProgramme_ID = ")
 									.append(selectedProgId)
 									.append(" AND C_BP_SkillsProgramme.IsActive = 'Y' AND C_BP_SkillsProgramme.ZZ_Status = 'AC' AND (C_BP_SkillsProgramme.EndDate IS NULL OR C_BP_SkillsProgramme.EndDate >= CURRENT_DATE))");
 						}
 						else if (I_ZZLearnerSkillsProgramme.Table_Name.equals(learnerTable))
 						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (select C_BP_SkillsProgramme.C_BPartner_ID from C_BP_SkillsProgramme where C_BP_SkillsProgramme.ZZSkillsProgramme_ID = ")
+							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_SkillsProgramme.C_BPartner_ID FROM C_BP_SkillsProgramme WHERE C_BP_SkillsProgramme.ZZSkillsProgramme_ID = ")
 									.append(selectedProgId)
 									.append(" AND C_BP_SkillsProgramme.IsActive = 'Y' AND C_BP_SkillsProgramme.ZZ_Status = 'AC' AND (C_BP_SkillsProgramme.EndDate IS NULL OR C_BP_SkillsProgramme.EndDate >= CURRENT_DATE))");
 						}
@@ -666,7 +667,11 @@ public class LearnerQualficationRegVM extends BaseAppVM
 		if (Objects.isNull(child))
 			return null;
 		if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable))
-			programmeId = child.get_ValueAsInt(I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQctoLearnership_ID);
+		{
+			programmeId = child.get_ValueAsInt(I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQualification_ID);
+			if (programmeId <= 0)
+				programmeId = child.get_ValueAsInt(I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQctoLearnership_ID);
+		}
 		else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
 			programmeId = child.get_ValueAsInt(I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZQctoLearnership_ID);
 		else if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable))
@@ -677,7 +682,9 @@ public class LearnerQualficationRegVM extends BaseAppVM
 			programmeId = child.get_ValueAsInt(I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID);
 		if (programmeId <= 0)
 			return null;
-		if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable) || I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
+		if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable))
+			return new X_ZZQctoQualification(Env.getCtx(), programmeId, null);
+		if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
 			return new X_ZZQctoLearnership(Env.getCtx(), programmeId, null);
 		if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable))
 			return new X_ZZQctoSkillsProgramme(Env.getCtx(), programmeId, null);
