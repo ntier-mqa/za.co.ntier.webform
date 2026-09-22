@@ -6,10 +6,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.apache.commons.lang3.tuple.Triple;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
@@ -630,7 +632,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 	private ColumnModel getStudentColumnModel()
 	{
 		ColumnModel studentCol = CellModel.getColModelForLabel("Student", null);
-		java.util.function.Function<org.apache.commons.lang3.tuple.Triple<TableModel, RowModel, ColumnModel>, CellModel> originalSupplier = studentCol.getCellModelSupplier();
+		Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> originalSupplier = studentCol.getCellModelSupplier();
 
 		studentCol.setCellModelSupplier(triple -> {
 			CellModel cell = originalSupplier.apply(triple);
@@ -643,6 +645,27 @@ public class LearnerAssessmentVM extends StepAppVM{
 			return cell;
 		});
 		return studentCol;
+	}
+
+	private ColumnModel getStudentIdColumnModel()
+	{
+		ColumnModel studentIdCol = CellModel.getColModelForLabel("Student ID", null);
+		Function<Triple<TableModel, RowModel, ColumnModel>, CellModel> originalSupplier = studentIdCol.getCellModelSupplier();
+
+		studentIdCol.setCellModelSupplier(triple -> {
+			CellModel cell = originalSupplier.apply(triple);
+			if (learnerSelected != null)
+			{
+				String idPassport = learnerSelected.getZZ_ID_Passport_No();
+				if (idPassport == null || idPassport.trim().isEmpty())
+				{
+					idPassport = learnerSelected.getZZOtherIDNo();
+				}
+				cell.setValue(idPassport != null ? idPassport : "");
+			}
+			return cell;
+		});
+		return studentIdCol;
 	}
 
 	TableModel tmLearnerQCTOArtisans;
@@ -663,11 +686,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 		
 		cols.add(getStudentColumnModel());
 
-		col = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisans.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber)
-				, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZStudentNumber
-				).setTableName(I_ZZLearnerQCTOArtisans.Table_Name);
-		cols.add(col);
+		cols.add(getStudentIdColumnModel());
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisans.Table_Name, I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZCommencementDate)
@@ -703,11 +722,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 		
 		cols.add(getStudentColumnModel());
 
-		col = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOLearnership.Table_Name, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber)
-				, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber
-				).setTableName(I_ZZLearnerQCTOLearnership.Table_Name);
-		cols.add(col);
+		cols.add(getStudentIdColumnModel());
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOLearnership.Table_Name, I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZCommencementDate)
@@ -743,11 +758,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 		
 		cols.add(getStudentColumnModel());
 
-		col = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOSkillsProgramme.Table_Name, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber)
-				, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber
-				).setTableName(I_ZZLearnerQCTOSkillsProgramme.Table_Name);
-		cols.add(col);
+		cols.add(getStudentIdColumnModel());
 		
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOSkillsProgramme.Table_Name, I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZCommencementDate)
@@ -1001,6 +1012,44 @@ public class LearnerAssessmentVM extends StepAppVM{
 		chooseModeratorCol.setShowTitle(false);
 		cols.add(chooseModeratorCol);
 		
+		chooseAssessorCol.setValidateHandle((cellModel, msgs) -> {
+			RowModel row = cellModel.getRowModel();
+			CellModel moderatorCell = row.get(chooseModeratorCol);
+			if (moderatorCell != null && moderatorCell.getValue() != null && cellModel.getValue() != null)
+			{
+				if (cellModel.getValue().equals(moderatorCell.getValue()))
+				{
+					msgs.add("The Assessor and Moderator cannot be the same person.");
+				}
+			}
+		});
+
+		chooseModeratorCol.setValidateHandle((cellModel, msgs) -> {
+			RowModel row = cellModel.getRowModel();
+			CellModel assessorCell = row.get(chooseAssessorCol);
+			if (assessorCell != null && assessorCell.getValue() != null && cellModel.getValue() != null)
+			{
+				if (cellModel.getValue().equals(assessorCell.getValue()))
+				{
+					msgs.add("The Assessor and Moderator cannot be the same person.");
+				}
+			}
+		});
+
+		assessmentDate.setValidateHandle((cellModel, msgs) -> {
+			if (cellModel.getValue() != null)
+			{
+				Timestamp assessDate = ((DateCellModel) cellModel).getTimestamp();
+				if (assessDate != null)
+				{
+					if (assessDate.after(new Timestamp(System.currentTimeMillis())))
+					{
+						msgs.add("Assessor Date cannot be in the future.");
+					}
+				}
+			}
+		});
+
 		moderationDatecol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerQctoLearnershipAssessments.Table_Name, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate)
 				, I_ZZLearnerQctoLearnershipAssessments.COLUMNNAME_ZZModerationDate
@@ -1012,6 +1061,23 @@ public class LearnerAssessmentVM extends StepAppVM{
 			if (moderatorCell != null && moderatorCell.getValue() != null && cellModel.getValue() == null)
 			{
 				msgs.add("Moderator Date is mandatory");
+			}
+			
+			if (cellModel.getValue() != null) {
+				Timestamp modDate = ((DateCellModel) cellModel).getTimestamp();
+				if (modDate != null) {
+					if (modDate.after(new Timestamp(System.currentTimeMillis()))) {
+						msgs.add("Moderator Date cannot be in the future.");
+					}
+					
+					CellModel assessDateCell = row.get(assessmentDate);
+					if (assessDateCell != null && assessDateCell.getValue() != null) {
+						Timestamp assessDate = ((DateCellModel) assessDateCell).getTimestamp();
+						if (assessDate != null && modDate.before(assessDate)) {
+							msgs.add("Moderator Date must be greater than or equal to the Assessor Date.");
+						}
+					}
+				}
 			}
 		});
 		cols.add(moderationDatecol);
@@ -1919,10 +1985,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 
 		cols.add(getStudentColumnModel());
 
-		col = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(I_ZZLearnerSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZStudentNumber),
-				I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerSkillsProgramme.Table_Name);
-		cols.add(col);
+		cols.add(getStudentIdColumnModel());
 
 		col = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZLearnerSkillsProgramme.Table_Name, I_ZZLearnerSkillsProgramme.COLUMNNAME_ZZCommencementDate),
@@ -2096,11 +2159,7 @@ public void initLearnerLearnership()
 
 		cols.add(getStudentColumnModel());
 
-		col = CellModel.getColModelForLabel(
-											MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnership.Table_Name,
-																				I_ZZLearnerLearnership.COLUMNNAME_ZZStudentNumber),
-											I_ZZLearnerLearnership.COLUMNNAME_ZZStudentNumber).setTableName(I_ZZLearnerLearnership.Table_Name);
-		cols.add(col);
+		cols.add(getStudentIdColumnModel());
 
 		col = DateCellModel.getDateColumnModel(
 												MasterUtil.getNameOfColTranslated(	I_ZZLearnerLearnership.Table_Name,
