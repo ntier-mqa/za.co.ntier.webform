@@ -185,8 +185,10 @@ public class LearnerAssessmentVM extends StepAppVM{
 			"UNION " +
 			"(SELECT " + I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZLearner_ID + " FROM " + I_ZZLearnerQCTOLearnership.Table_Name + " WHERE " + I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZ_SDP_ID + " = %d) " +
 			"UNION " +
-			"(SELECT " + I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZLearner_ID + " FROM " + I_ZZLearnerQCTOSkillsProgramme.Table_Name + " WHERE " + I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZ_SDP_ID + " = %d)" +
-			")", adminBpId, adminBpId, adminBpId, adminBpId);
+			"(SELECT " + I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZLearner_ID + " FROM " + I_ZZLearnerQCTOSkillsProgramme.Table_Name + " WHERE " + I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZ_SDP_ID + " = %d) " +
+			"UNION " +
+			"(SELECT " + I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID + " FROM " + I_ZZLearnerQCTOArtisans.Table_Name + " WHERE " + I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZ_SDP_ID + " = %d)" +
+			")", adminBpId, adminBpId, adminBpId, adminBpId, adminBpId);
 	}
 
 	X_ZZLearnerQCTOArtisans learnerQCTOArtisans;
