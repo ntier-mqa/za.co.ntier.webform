@@ -509,21 +509,29 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		cols.add(tradeNameCol);
 		
 		
-		/*
-		 * ListColumnModel<ValueNamePair> parentUploadCol =
-		 * ListCellModel.getListColumnModel(
-		 * MasterUtil.getNameOfColTranslated(I_ZZOrganisationLinkage.Table_Name,
-		 * I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads),
-		 * I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads,
-		 * MasterUtil.getYesNoList(), ref -> {return ref.getName();}, ref -> {return
-		 * ref.getValue();}, CellModel.RADIO_CELL ).setzClass(ValueNamePair.class);
-		 * parentUploadCol.required();
-		 * 
-		 * cols.add(parentUploadCol);
-		 */
+		// Parent Uploads decides whether this parent uploads and submits the WSP/ATR on this
+		// child's behalf (Yes) or the child does its own (No). Mandatory with no default, so the
+		// SDF has to make the call per child rather than inheriting one by omission.
+		//
+		// The header comes from the dedicated ZZParentUpload element (like ZZLegalName /
+		// ZZTradeName above) rather than from AD_Column.Name, so this grid can read "Upload"
+		// while the back office keeps the more explicit "Parent Uploads" field label.
+		ListColumnModel<ValueNamePair> parentUploadCol = ListCellModel.getListColumnModel(
+				Msg.getElement(Env.getCtx(), "ZZParentUpload"),
+				I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads,
+				MasterUtil.getYesNoList(),
+				ref -> {return ref.getName();},
+				ref -> {return ref.getValue();},
+				CellModel.RADIO_CELL
+				).setzClass(ValueNamePair.class);
+		parentUploadCol.required();
+
+		cols.add(parentUploadCol);
 		
+		// Button caption only (the 1st argument is the column header, deliberately blank).
+		// "Upload" is dropped from it now that the Upload column above owns that word.
 		ColumnModel linkRequestCol = UploadCellModel.getUploadColumnModel("", null, null,
-				"Upload Link Request");
+				"Link Request");
 			
 		cols.add(linkRequestCol);
 		
