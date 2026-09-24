@@ -12,6 +12,9 @@
         .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-completions{
             grid-template-columns: repeat(8, 1fr);
         }
+        .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-artisanAssessments{
+            grid-template-columns: 1.2fr 4fr 1fr 1fr 0.8fr 1fr;
+        }
     </style>
 
   <!-- Always Visible Form Header -->

@@ -178,7 +178,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 	}
 
 	private String buildSdpLearnerFilter() {
-		if (adminBpId <= 0) return "";
+		if (adminBpId <= 0) return "1=0";
 		
 		return String.format(
 			I_ZZLearner_v.COLUMNNAME_ZZLearner_ID + " IN (" +
