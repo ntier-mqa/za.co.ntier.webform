@@ -862,94 +862,41 @@ public class LearnerAssessmentVM extends StepAppVM{
 	ColumnModel tradeTestNumberCol;
 	ColumnModel tradeTestDateCol;
 	ColumnModel nambConfirmationDateCol;
-	CheckboxColumnModel nambConfirmationCol;
 
 	public void initAssessmentParam() {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		if (isInterventionQCTOArtisans())
 		{
-			tradeTestNumberCol = CellModel.getColModelForGenericCell(	"Trade Test Number", I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Trade_Test_Number,
+			tradeTestNumberCol = CellModel.getColModelForGenericCell(	MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisansAssessments.Table_Name, I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Trade_Test_Number), I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Trade_Test_Number,
 																		CellModel.POSITIVE_NUM_CELL).setTableName(
-																													I_ZZLearnerQCTOArtisansAssessments.Table_Name);
+																													I_ZZLearnerQCTOArtisansAssessments.Table_Name).required();
 			cols.add(tradeTestNumberCol);
 
-			tradeTestDateCol = DateCellModel.getDateColumnModel("Trade Test Date", I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_ZZTradeTestDate).setTableName(
-																																								I_ZZLearnerQCTOArtisansAssessments.Table_Name);
+			tradeTestDateCol = DateCellModel.getDateColumnModel(MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisansAssessments.Table_Name, I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_ZZTradeTestDate), I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_ZZTradeTestDate).setTableName(
+																																								I_ZZLearnerQCTOArtisansAssessments.Table_Name).required();
 			cols.add(tradeTestDateCol);
 
-			nambConfirmationDateCol = DateCellModel.getDateColumnModel(	"NAMB Confirmation Date",
+			creditsReqCol = CellModel.getColModelForGenericCell("Credits Required", null, CellModel.TEXT_CELL).setReadonly(true);
+			cols.add(creditsReqCol);
+			
+			creditsAchCol = CellModel.getColModelForGenericCell("Credits Achieved", null, CellModel.TEXT_CELL).setReadonly(true);
+			cols.add(creditsAchCol);
+
+			nambConfirmationDateCol = DateCellModel.getDateColumnModel(	MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisansAssessments.Table_Name, I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Namb_Confirmation_Date),
 																		I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Namb_Confirmation_Date).setTableName(
-																																							I_ZZLearnerQCTOArtisansAssessments.Table_Name);
+																																							I_ZZLearnerQCTOArtisansAssessments.Table_Name).required();
 			cols.add(nambConfirmationDateCol);
 
-			nambConfirmationCol = CheckboxCellModel.getCheckboxColModel("NAMB Confirmation", I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Namb_Confirmation);
-			nambConfirmationCol.setTableName(I_ZZLearnerQCTOArtisansAssessments.Table_Name);
-			nambConfirmationCol.setShowTitle(false);
-			cols.add(nambConfirmationCol);
+			coreAchCol = CellModel.getColModelForGenericCell("Core Achieved", null, CellModel.TEXT_CELL).setReadonly(true);
+			cols.add(coreAchCol);
+
+			fundaAchCol = CellModel.getColModelForGenericCell("Fundamentals Achieved", null, CellModel.TEXT_CELL).setReadonly(true);
+			cols.add(fundaAchCol);
 
 			competentCol = CheckboxCellModel.getCheckboxColModel("Competent", null);
 			competentCol.setShowTitle(false);
 			cols.add(competentCol);
-
-			BiConsumer<Event, CellModel> tradeTestHandler = (event, cellModel) -> {
-				CellModel tradeNum = cellModel.getRowModel().get(tradeTestNumberCol);
-				CellModel tradeDate = cellModel.getRowModel().get(tradeTestDateCol);
-				boolean hasTradeNum = tradeNum != null && tradeNum.getValue() != null && !tradeNum.getValue().toString().trim().isEmpty();
-				boolean hasTradeDate = tradeDate != null && tradeDate.getValue() != null;
-				if (hasTradeNum || hasTradeDate)
-				{
-					DateCellModel dateCell = (DateCellModel) cellModel.getRowModel().get(nambConfirmationDateCol);
-					if (dateCell != null && dateCell.getValue() != null)
-					{
-						dateCell.setValue(null);
-						BindUtils.postNotifyChange(null, null, dateCell, "value");
-					}
-					CheckboxCellModel nambConfCell = (CheckboxCellModel) cellModel.getRowModel().get(nambConfirmationCol);
-					if (nambConfCell != null && nambConfCell.isChecked())
-					{
-						nambConfCell.setValue(false);
-						BindUtils.postNotifyChange(null, null, nambConfCell, "value");
-					}
-				}
-			};
-			tradeTestNumberCol.setEventHandle(tradeTestHandler);
-			tradeTestDateCol.setEventHandle(tradeTestHandler);
-
-			BiConsumer<Event, CellModel> nambHandler = (event, cellModel) -> {
-				CellModel nambDate = cellModel.getRowModel().get(nambConfirmationDateCol);
-				CheckboxCellModel nambConf = (CheckboxCellModel) cellModel.getRowModel().get(nambConfirmationCol);
-				boolean hasNambDate = nambDate != null && nambDate.getValue() != null;
-				boolean hasNambConf = nambConf != null && nambConf.isChecked();
-				if (hasNambDate || hasNambConf)
-				{
-					CellModel tradeNum = cellModel.getRowModel().get(tradeTestNumberCol);
-					if (tradeNum != null && tradeNum.getValue() != null && !tradeNum.getValue().toString().trim().isEmpty())
-					{
-						tradeNum.setValue(null);
-						BindUtils.postNotifyChange(null, null, tradeNum, "value");
-					}
-					CellModel tradeDate = cellModel.getRowModel().get(tradeTestDateCol);
-					if (tradeDate != null && tradeDate.getValue() != null)
-					{
-						tradeDate.setValue(null);
-						BindUtils.postNotifyChange(null, null, tradeDate, "value");
-					}
-				}
-			};
-			nambConfirmationDateCol.setEventHandle(nambHandler);
-			nambConfirmationCol.setEventHandle(nambHandler);
-
-			nambConfirmationDateCol.setValidateHandle((cellModel, validateMsgs) -> {
-				CheckboxCellModel nambConfCell = (CheckboxCellModel) cellModel.getRowModel().get(nambConfirmationCol);
-				if (nambConfCell != null && nambConfCell.isChecked())
-				{
-					if (cellModel.getValue() == null)
-					{
-						validateMsgs.add("NAMB Confirmation Date is mandatory when NAMB Confirmation is checked");
-					}
-				}
-			});
 
 			ColumnModel colAssessmentBt = CellModel.getColModelForGenericCell("Assess", null, CellModel.BUTTON_CELL);
 			colAssessmentBt.setShowTitle(false);
@@ -965,6 +912,43 @@ public class LearnerAssessmentVM extends StepAppVM{
 					TableModel currentLearnerAssessments = getTmLearnerAssessments();
 					ISaveForm.batchManualSaveToDb(List.of(currentLearnerAssessments));
 					currentLearnerAssessments.syncDaoToUI();
+					populateAssessmentSummaryFields();
+
+					X_ZZCompletedAssessments_v summary = new Query(Env.getCtx(), I_ZZCompletedAssessments_v.Table_Name, 
+							I_ZZCompletedAssessments_v.COLUMNNAME_ZZLearnerQCTOArtisans_ID + "=?", null)
+							.setParameters(learnerQCTOArtisans.get_ID()).first();
+					
+					boolean meetsRequirements = summary != null && summary.ismet_requirements();
+					String currentStatus = learnerQCTOArtisans.getZZ_DocStatus();
+					
+					if (meetsRequirements)
+					{
+						if (!X_ZZLearner_v.ZZ_DOCSTATUS_Completed.equals(currentStatus))
+						{
+							learnerQCTOArtisans.setZZ_DocStatus(X_ZZLearner_v.ZZ_DOCSTATUS_Completed);
+							learnerQCTOArtisans.setZZEnrolmentStatusReason(X_ZZLearnerQCTOArtisans.ZZENROLMENTSTATUSREASON_MetRequirements);
+							learnerQCTOArtisans.saveEx();
+							
+							if (tmLearnerQCTOArtisans != null) {
+								tmLearnerQCTOArtisans.syncDaoToUI();
+							}
+						}
+					}
+					else
+					{
+						if (!X_ZZLearner_v.ZZ_DOCSTATUS_Draft.equals(currentStatus))
+						{
+							learnerQCTOArtisans.setZZ_DocStatus(X_ZZLearner_v.ZZ_DOCSTATUS_Draft);
+							if (X_ZZLearnerQCTOArtisans.ZZENROLMENTSTATUSREASON_MetRequirements.equals(learnerQCTOArtisans.getZZEnrolmentStatusReason())) {
+								learnerQCTOArtisans.setZZEnrolmentStatusReason(null);
+							}
+							learnerQCTOArtisans.saveEx();
+							
+							if (tmLearnerQCTOArtisans != null) {
+								tmLearnerQCTOArtisans.syncDaoToUI();
+							}
+						}
+					}
 
 					MasterUtil.showInfoDialog("ZZLearnerAssessmentsSuccess", null);
 					clearAssessmentSelections();
@@ -980,6 +964,9 @@ public class LearnerAssessmentVM extends StepAppVM{
 			tmAssessmentParam.setViewModel(ViewType.VIEW_FORM);
 			tmAssessmentParam.setSclass("srd-LearnerAssessment-artisanAssessmentParam");
 			tmAssessmentParam.init();
+			
+			populateAssessmentSummaryFields();
+			
 			return;
 		}
 
@@ -1203,6 +1190,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 		int qctoLearnershipId = 0;
 		int skillsProgId = 0;
 		int qctoSkillsProgId = 0;
+		int qctoArtisanId = 0;
 		
 		int creditsRequired = 0;
 		boolean hasCore = false;
@@ -1223,6 +1211,11 @@ public class LearnerAssessmentVM extends StepAppVM{
 		{
 			qctoLearnershipId = learnerQCTOLearnership.get_ID();
 			creditsRequired = qctoLearnership.getZZCredits();
+		}
+		else if (isInterventionQCTOArtisans() && learnerQCTOArtisans != null && qctoArtisans != null)
+		{
+			qctoArtisanId = learnerQCTOArtisans.get_ID();
+			creditsRequired = qctoArtisans.getZZCredits();
 		}
 		else if (isInterventionSkillsProgrammes() && learnerSkillsProgramme != null && skillsProgramme != null)
 		{
@@ -1246,6 +1239,8 @@ public class LearnerAssessmentVM extends StepAppVM{
 			where.append(I_ZZCompletedAssessments_v.COLUMNNAME_ZZLearnerLearnership_ID).append("=").append(learnerLearnershipId);
 		else if (qctoLearnershipId > 0)
 			where.append(I_ZZCompletedAssessments_v.COLUMNNAME_ZZLearnerQCTOLearnership_ID).append("=").append(qctoLearnershipId);
+		else if (qctoArtisanId > 0)
+			where.append(I_ZZCompletedAssessments_v.COLUMNNAME_ZZLearnerQCTOArtisans_ID).append("=").append(qctoArtisanId);
 		else if (skillsProgId > 0)
 			where.append(I_ZZCompletedAssessments_v.COLUMNNAME_ZZLearnerSkillsProgramme_ID).append("=").append(skillsProgId);
 		else if (qctoSkillsProgId > 0)
@@ -1658,9 +1653,6 @@ public class LearnerAssessmentVM extends StepAppVM{
 							.setReadonly(true);
 		cols.add(col);
 
-		col = getBooleanColModel("NAMB Conf.", I_ZZLearnerQCTOArtisansAssessments.Table_Name, I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Namb_Confirmation);
-		cols.add(col);
-
 		col = DateCellModel	.getDateColumnModel("NAMB Conf. Date", I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Namb_Confirmation_Date).setTableName(
 																																						I_ZZLearnerQCTOArtisansAssessments.Table_Name)
 							.setReadonly(true);
@@ -1717,38 +1709,38 @@ public class LearnerAssessmentVM extends StepAppVM{
 			CellModel tradeTestCell = (CellModel) tmAssessmentParam.getRow().get(tradeTestNumberCol);
 			DateCellModel tradeTestDateCell = (DateCellModel) tmAssessmentParam.getRow().get(tradeTestDateCol);
 			DateCellModel dateCell = (DateCellModel) tmAssessmentParam.getRow().get(nambConfirmationDateCol);
-			CheckboxCellModel nambConfCell = (CheckboxCellModel) tmAssessmentParam.getRow().get(nambConfirmationCol);
 
 			boolean hasTradeNum = tradeTestCell != null && tradeTestCell.getValue() != null && !tradeTestCell.getValue().toString().trim().isEmpty();
 			boolean hasTradeDate = tradeTestDateCell != null && tradeTestDateCell.getTimestamp() != null;
 			boolean hasNambDate = dateCell != null && dateCell.getTimestamp() != null;
-			boolean hasNambConf = nambConfCell != null && nambConfCell.isChecked();
 
-			if (hasTradeNum || hasTradeDate)
+			if (hasTradeNum)
 			{
-				if (hasTradeNum)
-				{
-					assessment.setTrade_Test_Number(Integer.parseInt(tradeTestCell.getValue().toString()));
-				}
-				if (hasTradeDate)
-				{
-					assessment.setZZTradeTestDate(tradeTestDateCell.getTimestamp());
-				}
-				assessment.setNamb_Confirmation_Date(null);
-				assessment.setNamb_Confirmation(false);
+				assessment.setTrade_Test_Number(Integer.parseInt(tradeTestCell.getValue().toString()));
 			}
-			else if (hasNambDate || hasNambConf)
+			else
 			{
 				assessment.setTrade_Test_Number(0);
+			}
+
+			if (hasTradeDate)
+			{
+				assessment.setZZTradeTestDate(tradeTestDateCell.getTimestamp());
+			}
+			else
+			{
 				assessment.setZZTradeTestDate(null);
-				if (hasNambDate)
-				{
-					assessment.setNamb_Confirmation_Date(dateCell.getTimestamp());
-				}
-				if (hasNambConf)
-				{
-					assessment.setNamb_Confirmation(true);
-				}
+			}
+
+			if (hasNambDate)
+			{
+				assessment.setNamb_Confirmation_Date(dateCell.getTimestamp());
+				assessment.setNamb_Confirmation(true);
+			}
+			else
+			{
+				assessment.setNamb_Confirmation_Date(null);
+				assessment.setNamb_Confirmation(false);
 			}
 			if (assessment.getZZDateAssessmentCaptured() == null)
 			{

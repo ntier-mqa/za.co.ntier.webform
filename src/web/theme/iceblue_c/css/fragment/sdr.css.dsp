@@ -370,12 +370,15 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
-.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(3),
-.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(5) {
+.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(6) {
+    grid-column-start: 3;
+}
+
+.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(8) {
     grid-column-start: 1;
 }
 
-.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(6) {
+.mqaWebForm .grid-formview.srd-LearnerAssessment-artisanAssessmentParam > :nth-child(9) {
     grid-column: 1 / span 2;
 }
 
@@ -505,8 +508,8 @@
 }
 
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-qctoArtisansAssessments {
-    /* 10 columns */
-    grid-template-columns: 35px 120px minmax(200px, 275px) 150px 80px 120px 80px 120px 120px minmax(150px, max-content);
+    /* 9 columns */
+    grid-template-columns: 35px 120px minmax(200px, 275px) 150px 80px 120px 80px 120px minmax(150px, max-content);
     min-width: 100%;
     width: max-content;
 }
