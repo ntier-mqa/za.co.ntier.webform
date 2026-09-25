@@ -485,8 +485,13 @@
 	grid-template-columns: repeat(1, 1fr) max-content;
 }
 
+/* Child Organisation grid - MaintainOrganisationVM.initChildOrg().
+   Tracks, in order: SDL Number | Legal Name | Trade Name | Upload | Link Request | +/- command.
+   The track count MUST match the number of columns added in initChildOrg() plus the command
+   column; too few tracks wraps every row onto a second line. Upload holds only a Yes/No radio
+   pair, so it takes max-content instead of an equal 1fr share. */
 .mqaWebForm .sdrForm .grid-listView.linkOrgChild{
-	grid-template-columns: repeat(4, 1fr) max-content;
+	grid-template-columns: repeat(3, 1fr) max-content 1fr max-content;
 }
 
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnerQCTOArtisans,
