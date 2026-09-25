@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Listitem;
 
@@ -869,7 +867,7 @@ public class LearnerAssessmentVM extends StepAppVM{
 		if (isInterventionQCTOArtisans())
 		{
 			tradeTestNumberCol = CellModel.getColModelForGenericCell(	MasterUtil.getNameOfColTranslated(I_ZZLearnerQCTOArtisansAssessments.Table_Name, I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Trade_Test_Number), I_ZZLearnerQCTOArtisansAssessments.COLUMNNAME_Trade_Test_Number,
-																		CellModel.POSITIVE_NUM_CELL).setTableName(
+																		CellModel.TEXT_CELL).setTableName(
 																													I_ZZLearnerQCTOArtisansAssessments.Table_Name).required();
 			cols.add(tradeTestNumberCol);
 
@@ -1716,11 +1714,11 @@ public class LearnerAssessmentVM extends StepAppVM{
 
 			if (hasTradeNum)
 			{
-				assessment.setTrade_Test_Number(Integer.parseInt(tradeTestCell.getValue().toString()));
+				assessment.setTrade_Test_Number((tradeTestCell.getValue().toString()));
 			}
 			else
 			{
-				assessment.setTrade_Test_Number(0);
+				assessment.setTrade_Test_Number(null);
 			}
 
 			if (hasTradeDate)
