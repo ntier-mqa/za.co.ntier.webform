@@ -513,15 +513,29 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		// child's behalf (Yes) or the child does its own (No). Mandatory with no default, so the
 		// SDF has to make the call per child rather than inheriting one by omission.
 		//
-		// The header comes from the dedicated ZZParentUpload element (like ZZLegalName /
-		// ZZTradeName above) rather than from AD_Column.Name, so this grid can read "Upload"
-		// while the back office keeps the more explicit "Parent Uploads" field label.
+		// The header is hardcoded rather than resolved from an AD element: it is specific to this
+		// grid and asks the question from the CHILD's point of view, while AD_Column.Name
+		// ("Parent Uploads") still correctly describes the stored value for the back office.
+		// The two are opposites - hence the valueConvert inversion below.
 		ListColumnModel<ValueNamePair> parentUploadCol = ListCellModel.getListColumnModel(
-				Msg.getElement(Env.getCtx(), "ZZParentUpload"),
+				"Separate WSP-ATR?",
 				I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads,
 				MasterUtil.getYesNoList(),
 				ref -> {return ref.getName();},
-				ref -> {return ref.getValue();},
+				// The column is displayed as "Separate WSP-ATR?" but stored as ZZ_Parent_Uploads,
+				// which means the opposite: a child doing its OWN separate WSP-ATR is precisely a
+				// child the parent does NOT upload for. So the value is inverted here, at the
+				// persistence boundary, leaving the stored semantics (and every SQL predicate
+				// that reads them) untouched.
+				//
+				// ListCellModel uses valueConvert in both directions - getSelectedID() on save and
+				// setValue() to match the stored value back to a radio on load - so this single
+				// lambda inverts reading and writing symmetrically.
+				ref -> {
+					return X_ZZOrganisationLinkage.ZZ_PARENT_UPLOADS_Yes.equals(ref.getValue())
+							? X_ZZOrganisationLinkage.ZZ_PARENT_UPLOADS_No
+							: X_ZZOrganisationLinkage.ZZ_PARENT_UPLOADS_Yes;
+				},
 				CellModel.RADIO_CELL
 				).setzClass(ValueNamePair.class);
 		parentUploadCol.required();
