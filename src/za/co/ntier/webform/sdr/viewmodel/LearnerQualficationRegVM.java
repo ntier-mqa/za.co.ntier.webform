@@ -459,7 +459,6 @@ public class LearnerQualficationRegVM extends BaseAppVM
 																							CellModel.SEARCH_CELL);
 		programmeCol.setTableName(learnerTable);
 		programmeCol.required();
-		cols.add(programmeCol);
 
 		String sdpColName = I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZ_SDP_ID;
 		String employerColName = I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZ_Employer_ID;
@@ -472,62 +471,28 @@ public class LearnerQualficationRegVM extends BaseAppVM
 																							employerColName, CellModel.SEARCH_CELL);
 		employerCol.setTableName(learnerTable).required();
 
-		configureProgrammeSelector(	sdpCol, null,
-									id -> new MBPartner(Env.getCtx(), id, null), I_C_BPartner.COLUMNNAME_C_BPartner_ID,
-									I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.Table_Name,
-									" C_BPartner.IsActive ='Y' AND C_BPartner.ZZ_Is_SDP='Y'",
-									programmeCol, learnerTable);
-		configureProgrammeSelector(	employerCol, null,
-									id -> new MBPartner(Env.getCtx(), id, null), I_C_BPartner.COLUMNNAME_C_BPartner_ID,
-									I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.Table_Name,
-									"C_BPartner.IsActive ='Y' AND C_BPartner.C_BPartner_ID IN  (SELECT AD_User.C_BPartner_ID FROM AD_User WHERE AD_User.IsActive ='Y')",
-									null, learnerTable);
-
+		// Add SDP column first, then Programme Code (switched column order), then Employer
 		cols.add(sdpCol);
+		cols.add(programmeCol);
 		cols.add(employerCol);
 
 		ColumnModel titleCol = label(programmeTable, titleColumn);
 		cols.add(titleCol);
 
-		String programmeWhereClause = programmeTable + ".IsActive = 'Y'";
+		String programmeWhereClause = buildProgrammeBaseWhereClause(learnerTable, programmeTable);
 
-		// Set validation for a Artisans, Skill program and Learnership retrieved as per condition
-		if (isQctoArtisans)
-		{
-			programmeWhereClause = "(ZZQctoLearnership.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoQualification q WHERE q.ZZArtisanQualification = 'Y'))";
-		}
-		else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
-		{
-			programmeWhereClause = """
-							ZZQualification_ID IN (    select zzlinkassessorqualification.ZZQualification_ID    from zzlinkassessorqualification
-														inner join zzassessorperson on zzassessorperson.zzassessorperson_id = zzlinkassessorqualification.ZZAssessorPerson_ID
-														where zzassessorperson.ZZ_DocStatus = 'AP'       and zzlinkassessorqualification.ZZQualification_ID IS NOT NULL) """;
-		}
-		else if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable))
-		{
-			programmeWhereClause = """
-							ZZQctoSkillsProgramme_ID IN (select ZZQctoSkillsProgramme_ID from zzlinkassessorskillsprogramme
-																where zzassessorperson_id in (	select zzassessorperson_id from zzassessorperson
-																								where ZZ_DocStatus='AP') AND ZZQctoSkillsProgramme_ID IS NOT NULL ) """;
-		}
-		else if (I_ZZLearnerLearnership.Table_Name.equals(learnerTable))
-		{
-			programmeWhereClause = """
-							ZZQualification_ID IN (
-								select zzlinkassessorqualification.ZZQualification_ID    from zzlinkassessorqualification
-								inner join zzassessorperson        on zzassessorperson.zzassessorperson_id = zzlinkassessorqualification.ZZAssessorPerson_ID
-								where zzassessorperson.ZZ_DocStatus = 'AP'       and zzlinkassessorqualification.ZZQualification_ID IS NOT NULL)""";
-		}
-		else if (I_ZZLearnerSkillsProgramme.Table_Name.equals(learnerTable))
-		{
-			programmeWhereClause = """
-							zzskillsprogramme_ID IN (select zzskillsprogramme_id from zzlinkassessorskillsprogramme
-																		where zzassessorperson_id in (	select zzassessorperson_id from zzassessorperson
-																										where ZZ_DocStatus='AP') AND zzskillsprogramme_id IS NOT NULL ) """;
-		}
-
+		configureProgrammeSelector(	sdpCol, null,
+									id -> new MBPartner(Env.getCtx(), id, null), I_C_BPartner.COLUMNNAME_C_BPartner_ID,
+									I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.Table_Name,
+									" C_BPartner.IsActive ='Y' AND C_BPartner.ZZ_Is_SDP='Y'",
+									programmeCol, learnerTable);
 		configureProgrammeSelector(	programmeCol, titleCol, programmeLoader, programmeIdColumn, codeColumn, titleColumn,
-									programmeTable, programmeWhereClause, null, learnerTable);
+									programmeTable, programmeWhereClause, sdpCol, learnerTable);
+		configureProgrammeSelector(	employerCol, null,
+									id -> new MBPartner(Env.getCtx(), id, null), I_C_BPartner.COLUMNNAME_C_BPartner_ID,
+									I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.COLUMNNAME_Name, I_C_BPartner.Table_Name,
+									"C_BPartner.IsActive ='Y' AND C_BPartner.C_BPartner_ID IN  (SELECT AD_User.C_BPartner_ID FROM AD_User WHERE AD_User.IsActive ='Y')",
+									null, learnerTable);
 
 		String studentColumn = learnerTable.equals(I_ZZLearnerQCTOLearnership.Table_Name) ? I_ZZLearnerQCTOLearnership.COLUMNNAME_ZZStudentNumber
 						: learnerTable.equals(I_ZZLearnerQCTOSkillsProgramme.Table_Name) ? I_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZStudentNumber
@@ -542,6 +507,47 @@ public class LearnerQualficationRegVM extends BaseAppVM
 		cols.add(editableDate(learnerTable, "ZZCompletionDate"));
 
 		return cols;
+	}
+
+	private String buildProgrammeBaseWhereClause(String learnerTable, String programmeTable)
+	{
+		boolean isQctoArtisans = I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable);
+		String programmeWhereClause = programmeTable + ".IsActive = 'Y' AND (" + programmeTable + ".ZZLastEnrolmentDate IS NULL OR " + programmeTable + ".ZZLastEnrolmentDate >= CURRENT_DATE)";
+
+		if (isQctoArtisans)
+		{
+			programmeWhereClause += " AND (ZZQctoLearnership.ZZArtisanLearnership = 'Y' OR ZZQctoLearnership.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoQualification q WHERE q.ZZArtisanQualification = 'Y'))";
+		}
+		else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
+		{
+			programmeWhereClause += """
+							 AND ZZQctoLearnership.ZZQualification_ID IN (    select zzlinkassessorqualification.ZZQualification_ID    from zzlinkassessorqualification
+														inner join zzassessorperson on zzassessorperson.zzassessorperson_id = zzlinkassessorqualification.ZZAssessorPerson_ID
+														where zzassessorperson.ZZ_DocStatus = 'AP'       and zzlinkassessorqualification.ZZQualification_ID IS NOT NULL) """;
+		}
+		else if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable))
+		{
+			programmeWhereClause += """
+							 AND ZZQctoSkillsProgramme.ZZQctoSkillsProgramme_ID IN (select ZZQctoSkillsProgramme_ID from zzlinkassessorskillsprogramme
+																where zzassessorperson_id in (	select zzassessorperson_id from zzassessorperson
+																								where ZZ_DocStatus='AP') AND ZZQctoSkillsProgramme_ID IS NOT NULL ) """;
+		}
+		else if (I_ZZLearnerLearnership.Table_Name.equals(learnerTable))
+		{
+			programmeWhereClause += """
+							 AND ZZLearnership.ZZQualification_ID IN (
+								select zzlinkassessorqualification.ZZQualification_ID    from zzlinkassessorqualification
+								inner join zzassessorperson        on zzassessorperson.zzassessorperson_id = zzlinkassessorqualification.ZZAssessorPerson_ID
+								where zzassessorperson.ZZ_DocStatus = 'AP'       and zzlinkassessorqualification.ZZQualification_ID IS NOT NULL)""";
+		}
+		else if (I_ZZLearnerSkillsProgramme.Table_Name.equals(learnerTable))
+		{
+			programmeWhereClause += """
+							 AND ZZSkillsProgramme.zzskillsprogramme_ID IN (select zzskillsprogramme_id from zzlinkassessorskillsprogramme
+																		where zzassessorperson_id in (	select zzassessorperson_id from zzassessorperson
+																										where ZZ_DocStatus='AP') AND zzskillsprogramme_id IS NOT NULL ) """;
+		}
+		return programmeWhereClause;
 	}
 
 	private ColumnModel label(String tableName, String columnName)
@@ -594,52 +600,27 @@ public class LearnerQualficationRegVM extends BaseAppVM
 				CellModel progCell = cellModel.getRowModel().get(progColRef);
 				if (progCell != null && progCell.getValue() != null)
 				{
-					int selectedProgId = 0;
+					int selectedRefId = 0;
 					Object val = progCell.getValue();
 					if (val instanceof PO)
 					{
-						selectedProgId = ((PO) val).get_ID();
+						selectedRefId = ((PO) val).get_ID();
 					}
 					else if (val instanceof Number)
 					{
-						selectedProgId = ((Number) val).intValue();
+						selectedRefId = ((Number) val).intValue();
 					}
 
-					if (selectedProgId > 0 && I_C_BPartner.Table_Name.equals(programmeTable))
+					if (selectedRefId > 0)
 					{
-						StringBuilder sqlWhere = new StringBuilder(whereClause != null && !whereClause.isBlank()	? whereClause
-																													: "C_BPartner.IsActive ='Y' AND C_BPartner.ZZ_Is_SDP='Y'");
-						if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable))
+						if (I_C_BPartner.Table_Name.equals(programmeTable))
 						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_Trades.C_BPartner_ID FROM C_BP_Trades WHERE C_BP_Trades.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoLearnership q WHERE q.ZZQctoLearnership_ID = ")
-									.append(selectedProgId)
-									.append(") AND C_BP_Trades.IsActive = 'Y' AND C_BP_Trades.ZZ_Status = 'AC' AND (C_BP_Trades.EndDate IS NULL OR C_BP_Trades.EndDate >= CURRENT_DATE))");
+							finalWhereClause = buildSdpLookupWhereClauseForSelectedProgramme(learnerTable, selectedRefId, whereClause);
 						}
-						else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
+						else
 						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT bp.C_BPartner_ID FROM C_BP_OC bp WHERE bp.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoLearnership q WHERE q.ZZQctoLearnership_ID = ")
-									.append(selectedProgId)
-									.append(") AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
+							finalWhereClause = buildProgrammeLookupWhereClauseForSelectedSdp(learnerTable, programmeTable, selectedRefId, whereClause);
 						}
-						else if (I_ZZLearnerLearnership.Table_Name.equals(learnerTable))
-						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT bp.C_BPartner_ID FROM C_BP_OC bp WHERE bp.ZZQualification_ID IN (SELECT q.ZZQualification_ID FROM ZZLearnership q WHERE q.ZZLearnership_ID = ")
-									.append(selectedProgId)
-									.append(") AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
-						}
-						else if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable))
-						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_SkillsProgramme.C_BPartner_ID FROM C_BP_SkillsProgramme WHERE C_BP_SkillsProgramme.ZZQctoSkillsProgramme_ID = ")
-									.append(selectedProgId)
-									.append(" AND C_BP_SkillsProgramme.IsActive = 'Y' AND C_BP_SkillsProgramme.ZZ_Status = 'AC' AND (C_BP_SkillsProgramme.EndDate IS NULL OR C_BP_SkillsProgramme.EndDate >= CURRENT_DATE))");
-						}
-						else if (I_ZZLearnerSkillsProgramme.Table_Name.equals(learnerTable))
-						{
-							sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_SkillsProgramme.C_BPartner_ID FROM C_BP_SkillsProgramme WHERE C_BP_SkillsProgramme.ZZSkillsProgramme_ID = ")
-									.append(selectedProgId)
-									.append(" AND C_BP_SkillsProgramme.IsActive = 'Y' AND C_BP_SkillsProgramme.ZZ_Status = 'AC' AND (C_BP_SkillsProgramme.EndDate IS NULL OR C_BP_SkillsProgramme.EndDate >= CURRENT_DATE))");
-						}
-						finalWhereClause = sqlWhere.toString();
 					}
 				}
 			}
@@ -659,6 +640,108 @@ public class LearnerQualficationRegVM extends BaseAppVM
 				}
 			});
 		});
+	}
+
+	/**
+	 * Builds the SQL WHERE clause for filtering Skills Development Providers (SDP C_BPartner) based on the selected programme in the row.
+	 * Checks accreditation status (ZZ_Status = 'AC'), active record state, and unexpired EndDate across BP sub-tables (C_BP_Trades, C_BP_OC, C_BP_SkillsProgramme).
+	 * 
+	 * @param learnerTableName Name of the learner child table (e.g. ZZLearnerSkillsProgramme)
+	 * @param selectedProgrammeId ID of the programme selected in the row
+	 * @param defaultWhereClause Default base WHERE clause
+	 * @return SQL WHERE clause for SDP lookup
+	 */
+	private String buildSdpLookupWhereClauseForSelectedProgramme(String learnerTableName, int selectedProgrammeId, String defaultWhereClause)
+	{
+		StringBuilder sqlWhere = new StringBuilder(defaultWhereClause != null && !defaultWhereClause.isBlank() ? defaultWhereClause
+																												: "C_BPartner.IsActive ='Y' AND C_BPartner.ZZ_Is_SDP='Y'");
+		if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_Trades.C_BPartner_ID FROM C_BP_Trades WHERE C_BP_Trades.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoLearnership q WHERE q.ZZQctoLearnership_ID = ")
+					.append(selectedProgrammeId)
+					.append(") AND C_BP_Trades.IsActive = 'Y' AND C_BP_Trades.ZZ_Status = 'AC' AND (C_BP_Trades.EndDate IS NULL OR C_BP_Trades.EndDate >= CURRENT_DATE))");
+		}
+		else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT bp.C_BPartner_ID FROM C_BP_OC bp WHERE bp.ZZQctoQualification_ID IN (SELECT q.ZZQctoQualification_ID FROM ZZQctoLearnership q WHERE q.ZZQctoLearnership_ID = ")
+					.append(selectedProgrammeId)
+					.append(") AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
+		}
+		else if (I_ZZLearnerLearnership.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT bp.C_BPartner_ID FROM C_BP_OC bp WHERE bp.ZZQualification_ID IN (SELECT q.ZZQualification_ID FROM ZZLearnership q WHERE q.ZZLearnership_ID = ")
+					.append(selectedProgrammeId)
+					.append(") AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
+		}
+		else if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_SkillsProgramme.C_BPartner_ID FROM C_BP_SkillsProgramme WHERE C_BP_SkillsProgramme.ZZQctoSkillsProgramme_ID = ")
+					.append(selectedProgrammeId)
+					.append(" AND C_BP_SkillsProgramme.IsActive = 'Y' AND C_BP_SkillsProgramme.ZZ_Status = 'AC' AND (C_BP_SkillsProgramme.EndDate IS NULL OR C_BP_SkillsProgramme.EndDate >= CURRENT_DATE))");
+		}
+		else if (I_ZZLearnerSkillsProgramme.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND C_BPartner.C_BPartner_ID IN (SELECT C_BP_SkillsProgramme.C_BPartner_ID FROM C_BP_SkillsProgramme WHERE C_BP_SkillsProgramme.ZZSkillsProgramme_ID = ")
+					.append(selectedProgrammeId)
+					.append(" AND C_BP_SkillsProgramme.IsActive = 'Y' AND C_BP_SkillsProgramme.ZZ_Status = 'AC' AND (C_BP_SkillsProgramme.EndDate IS NULL OR C_BP_SkillsProgramme.EndDate >= CURRENT_DATE))");
+		}
+		return sqlWhere.toString();
+	}
+
+	/**
+	 * Builds the SQL WHERE clause for filtering Programme options based on the selected SDP (C_BPartner_ID).
+	 * Ensures the selected SDP is certified for the programme (status = 'AC', active, unexpired EndDate).
+	 * 
+	 * @param learnerTableName Name of the learner child table (e.g. ZZLearnerSkillsProgramme)
+	 * @param programmeTableName Name of the target programme table (e.g. ZZSkillsProgramme)
+	 * @param selectedSdpBPartnerId BPartner ID of the selected SDP
+	 * @param defaultWhereClause Default base WHERE clause
+	 * @return SQL WHERE clause for Programme lookup
+	 */
+	private String buildProgrammeLookupWhereClauseForSelectedSdp(String learnerTableName, String programmeTableName, int selectedSdpBPartnerId, String defaultWhereClause)
+	{
+		StringBuilder sqlWhere = new StringBuilder(defaultWhereClause != null && !defaultWhereClause.isBlank() ? defaultWhereClause : programmeTableName + ".IsActive = 'Y'");
+		if (I_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND ")
+					.append(programmeTableName)
+					.append(".ZZQctoQualification_ID IN (SELECT t.ZZQctoQualification_ID FROM C_BP_Trades t WHERE t.C_BPartner_ID = ")
+					.append(selectedSdpBPartnerId)
+					.append(" AND t.IsActive = 'Y' AND t.ZZ_Status = 'AC' AND (t.EndDate IS NULL OR t.EndDate >= CURRENT_DATE))");
+		}
+		else if (I_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND ")
+					.append(programmeTableName)
+					.append(".ZZQctoQualification_ID IN (SELECT bp.ZZQctoQualification_ID FROM C_BP_OC bp WHERE bp.C_BPartner_ID = ")
+					.append(selectedSdpBPartnerId)
+					.append(" AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
+		}
+		else if (I_ZZLearnerLearnership.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND ")
+					.append(programmeTableName)
+					.append(".ZZQualification_ID IN (SELECT bp.ZZQualification_ID FROM C_BP_OC bp WHERE bp.C_BPartner_ID = ")
+					.append(selectedSdpBPartnerId)
+					.append(" AND bp.IsActive = 'Y' AND bp.ZZ_Status = 'AC' AND (bp.EndDate IS NULL OR bp.EndDate >= CURRENT_DATE))");
+		}
+		else if (I_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND ")
+					.append(programmeTableName)
+					.append(".ZZQctoSkillsProgramme_ID IN (SELECT sp.ZZQctoSkillsProgramme_ID FROM C_BP_SkillsProgramme sp WHERE sp.C_BPartner_ID = ")
+					.append(selectedSdpBPartnerId)
+					.append(" AND sp.IsActive = 'Y' AND sp.ZZ_Status = 'AC' AND (sp.EndDate IS NULL OR sp.EndDate >= CURRENT_DATE))");
+		}
+		else if (I_ZZLearnerSkillsProgramme.Table_Name.equals(learnerTableName))
+		{
+			sqlWhere.append(" AND ")
+					.append(programmeTableName)
+					.append(".ZZSkillsProgramme_ID IN (SELECT sp.ZZSkillsProgramme_ID FROM C_BP_SkillsProgramme sp WHERE sp.C_BPartner_ID = ")
+					.append(selectedSdpBPartnerId)
+					.append(" AND sp.IsActive = 'Y' AND sp.ZZ_Status = 'AC' AND (sp.EndDate IS NULL OR sp.EndDate >= CURRENT_DATE))");
+		}
+		return sqlWhere.toString();
 	}
 
 	private PO getLearnerProgramme(PO child, String learnerTable)
