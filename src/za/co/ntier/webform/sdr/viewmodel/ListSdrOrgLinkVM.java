@@ -103,8 +103,9 @@ public class ListSdrOrgLinkVM {
 				    	%s
 			    FROM %s
 			    WHERE %s = ? AND %s IN ('%s', '%s',  '%s')
-				""", 
-				I_ZZSdfOrganisation_v.COLUMNNAME_DocumentNo	
+			    ORDER BY %s
+				""",
+				I_ZZSdfOrganisation_v.COLUMNNAME_DocumentNo
 				, I_ZZSdfOrganisation_v.COLUMNNAME_OrgName
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No
 				, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfRoleType
@@ -118,6 +119,7 @@ public class ListSdrOrgLinkVM {
 				, X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Draft
 				, X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Approved
 				, X_ZZSdfOrganisation_v.ZZ_DOCSTATUS_Pending
+				, I_ZZSdfOrganisation_v.COLUMNNAME_OrgName
 				), Env.getAD_User_ID(Env.getCtx()));
 		
 		if (linkedOrganisationsPo == null) {
