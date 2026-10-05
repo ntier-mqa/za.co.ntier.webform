@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import za.co.ntier.webform.form.WebForm ?>
+
+<idspace xmlns:n="native" 
+    sclass="sdrForm"
+    viewModel="@id('vmSerial') @init('za.co.ntier.webform.sdr.viewmodel.ArtisanSerialNumberRequestBatchVM')">
+
+  <!-- Always Visible Form Header -->
+  <div style="display:flex; padding:5px 0 20px 0; flex-direction: column; align-items: center;">
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vmSerial.formInfo.formHeader)" />
+    <div style="padding-bottom:10px;font-size:smaller">
+      <html content="@init(( vmSerial.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
+    </div>
+  </div>
+  
+  <vlayout spacing="20px" style="padding: 10px;">
+    
+    <!-- Add Learner to Batch -->
+    <panel title="Add Learner to Batch" border="normal">
+      <panelchildren style="padding: 15px;">
+          <!-- Learner Selection Combobox/Search -->
+          <include component="@init(vmSerial.tmLearnerSelection)"
+                   menuContextInfo="@init(vmSerial.menuContextInfo)"
+                   src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+          
+          <!-- Selected Learner Details Grid -->
+          <div visible="@load(vmSerial.learnerSelected ne null)" style="margin-top: 10px;">
+              <include component="@init(vmSerial.tmLearnerSelectionInfo)"
+                       menuContextInfo="@init(vmSerial.menuContextInfo)"
+                       src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+          </div>
+          
+          <separator height="20px"/>
+          
+          <!-- Document Upload Grid for this Learner -->
+          <groupbox title="Required Documents" closable="false" visible="@load(vmSerial.learnerSelected ne null)">
+              <include component="@init(vmSerial.tmDocumentUpload)"
+                       menuContextInfo="@init(vmSerial.menuContextInfo)"
+                       src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+          </groupbox>
+          
+          <div style="margin-top: 15px; text-align: right;">
+              <button label="+ Add Learner to Batch List" sclass="btn-primary" 
+                      onClick="@command('addLearnerToBatch')" 
+                      disabled="@load(vmSerial.learnerSelected eq null)" />
+          </div>
+      </panelchildren>
+    </panel>
+    
+    <!-- Current Batch List -->
+    <panel title="Current Batch List" border="normal">
+      <panelchildren style="padding: 15px;">
+          <!-- DataListView showing all staged learners in the current batch -->
+          <div style="max-height: 250px; overflow-y: auto; border: 1px solid #ccc; border-radius: 8px;">
+              <include component="@init(vmSerial.tmStagedLearners)"
+                       menuContextInfo="@init(vmSerial.menuContextInfo)"
+                       src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+          </div>
+          
+          <div sclass="formBottomPanel">
+              <button label="Discard Application" iconSclass="z-icon-xmark" onClick="@command('discardBatch')" />
+              <button label="Submit Batch Application" iconSclass="z-icon-gear" sclass="icon-on-right" onClick="@command('submitBatch')" />
+          </div>
+      </panelchildren>
+    </panel>
+    
+  </vlayout>
+</idspace>

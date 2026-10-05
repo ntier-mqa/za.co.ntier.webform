@@ -358,6 +358,11 @@
   width:50%;
 }
 
+.mqaWebForm .grid-formview.srd-batch-doc-upload {
+	grid-template-columns: repeat(2, 1fr);
+	gap: 15px;
+}
+
 .mqaWebForm .grid-formview.srd-LearnerAssessment-assessmentParam{
     grid-template-columns: repeat(4, 1fr);
 }
@@ -492,6 +497,12 @@
    pair, so it takes max-content instead of an equal 1fr share. */
 .mqaWebForm .sdrForm .grid-listView.linkOrgChild{
 	grid-template-columns: repeat(3, 1fr) max-content 1fr max-content;
+}
+
+.mqaWebForm .sdrForm .grid-listView.srd-ZZ_ArtisanBatchLearner {
+	grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr) 80px 80px;
+	max-height: 400px;
+	overflow-y: auto;
 }
 
 .mqaWebForm .sdrForm .grid-listView.srd-LearnerAssessment-learnerQCTOArtisans,
