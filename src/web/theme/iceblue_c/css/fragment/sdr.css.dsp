@@ -332,6 +332,31 @@
   grid-column: span 2;
 }
 
+/* parent details */
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(1) {
+  grid-column: span 2;
+}
+
+/* post school education */
+.mqaWebForm .grid-formview.two-col.srd-post-school-education > :nth-child(5) {
+  grid-column: span 2;
+}
+
+/* experiential learning */
+.mqaWebForm .grid-formview.two-col.srd-experiential-learning,
+.mqaWebForm .grid-formview.two-col.srd-contactable-reference {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* employment history */
+.mqaWebForm .grid-formview.two-col.srd-employment-history > :nth-child(5) {
+  grid-column: span 2;
+}
+
+.mqaWebForm .grid-formview.two-col.srd-employment-history > :nth-child(6) .fileUploadContent {
+  align-items: flex-start;
+}
+
 /* person detail */
 .mqaWebForm .grid-formview.srd-person-detail > :nth-child(1){
   grid-column: span 3;

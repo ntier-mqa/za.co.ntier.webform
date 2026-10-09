@@ -22,19 +22,28 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.WrongValueException;
 
+import org.compiere.model.PO;
+
 import za.co.ntier.api.model.I_ZZLearner;
-import za.co.ntier.api.model.I_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.I_ZZPerson;
+import za.co.ntier.api.model.I_ZZQualification_v;
 import za.co.ntier.api.model.I_ZZ_AlternateIDType;
+import za.co.ntier.api.model.I_ZZ_EmploymentHistory;
+import za.co.ntier.api.model.I_ZZ_ExperientialLearning;
+import za.co.ntier.api.model.I_ZZ_ParentDetails;
+import za.co.ntier.api.model.I_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.api.model.X_ZZLearner;
-import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
-import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZPerson;
+import za.co.ntier.api.model.X_ZZQualification_v;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
+import za.co.ntier.api.model.X_ZZ_EmploymentHistory;
+import za.co.ntier.api.model.X_ZZ_ExperientialLearning;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
+import za.co.ntier.api.model.X_ZZ_ParentDetails;
+import za.co.ntier.api.model.X_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -63,10 +72,25 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	private TableModel tmNames;
 	private TableModel tmGeneralDetail;
+	private TableModel tmParentDetails;
+	private TableModel tmPostSchoolEducation;
+	private TableModel tmExperientialLearning;
+	private TableModel tmContactableReference;
+	private TableModel tmEmploymentHistory;
 	private NavTab mainTab;
 	X_ZZLearner learner;
 
 	DaoManage daoManage = new DaoManage();
+
+	private ColumnModel parentFirstNameCol;
+	private ColumnModel parentMiddleNameCol;
+	private ColumnModel parentSurnameCol;
+	private ColumnModel parentTitleCol;
+
+	private ColumnModel qualificationNameCol;
+	private ColumnModel linkedOfoDescCol;
+
+	private ColumnModel empUploadCol;
 
 	public static final String healthFunctionDefault = "No difficulty";
 	BiFunction<ListCellModel<ValueNamePair>, ValueNamePair, Boolean> healthFunctionNameCompare = (cellModel, item) -> {
@@ -279,6 +303,27 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
+		if (tmParentDetails != null && tmParentDetails.getRow() != null) {
+			tmParentDetails.getRow().setDataOneRow(null);
+			tmParentDetails.reloadDao();
+		}
+		if (tmPostSchoolEducation != null && tmPostSchoolEducation.getRow() != null) {
+			tmPostSchoolEducation.getRow().setDataOneRow(null);
+			tmPostSchoolEducation.reloadDao();
+		}
+		if (tmExperientialLearning != null && tmExperientialLearning.getRow() != null) {
+			tmExperientialLearning.getRow().setDataOneRow(null);
+			tmExperientialLearning.reloadDao();
+		}
+		if (tmContactableReference != null && tmContactableReference.getRow() != null) {
+			tmContactableReference.getRow().setDataOneRow(null);
+			tmContactableReference.reloadDao();
+		}
+		if (tmEmploymentHistory != null && tmEmploymentHistory.getRow() != null) {
+			tmEmploymentHistory.getRow().setDataOneRow(null);
+			tmEmploymentHistory.reloadDao();
+		}
+
 		isNew = true;
 	}
 
@@ -393,8 +438,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		initContactDetail();
 		initHealthFunction();
 		initAddresss();
-		initEducationDetail();
-		initUploadDocument();
+		initParentDetails();
+		initPostSchoolEducation();
+		initExperientialLearning();
+		initEmploymentHistory();
 	}
 
 	ColumnModel idNoCol;
@@ -597,126 +644,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	}
 
-	private void initEducationDetail() {
-		List<ColumnModel> cols = new ArrayList<>();
-
-		ValueAdaptColumnModel lastSchoolEmisCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), I_ZZPerson.COLUMNNAME_ZZLkpSchoolEmis_ID,
-				CellModel.SEARCH_CELL);
-		lastSchoolEmisCol.required();
-
-		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-				InfoPanelPara.getInstance(I_ZZLkpSchoolEmis.Table_Name, I_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID)
-				, (obj, infoPanel) -> {
-					Object[] objs = (Object[]) obj;
-					X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), (int) objs[0], null);
-					cellModel.setValue(selected);
-				});
-		});
-
-		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
-			if (value == null)
-				return null;
-
-			X_ZZLkpSchoolEmis schoolEmis = (X_ZZLkpSchoolEmis) value;
-			return schoolEmis.getName();
-		});
-
-		lastSchoolEmisCol.setValueAdaptHandle(value -> {
-			if (value == null)
-				return null;
-
-			X_ZZLkpSchoolEmis schoolEmis = (X_ZZLkpSchoolEmis) value;
-			return schoolEmis.getZZLkpSchoolEmis_ID();
-		});
-
-		lastSchoolEmisCol.setValueFromDaoAdaptHandle(obj -> {
-			if (obj == null)
-				return null;
-
-			Integer id = Integer.class.cast(obj);
-			if (id == 0)
-				return null;
-
-			return new X_ZZLkpSchoolEmis(Env.getCtx(), id, null);
-		});
-
-		cols.add(lastSchoolEmisCol);
-
-		ColumnModel lastSchoolYearCol = CellModel.getColModelForPositiveNumber(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZLastSchoolYear),
-				I_ZZPerson.COLUMNNAME_ZZLastSchoolYear).required();
-		cols.add(lastSchoolYearCol);
-
-		ValueAdaptColumnModel areaCodeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID),
-				I_ZZPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID, CellModel.SEARCH_CELL);
-		areaCodeCol.required();
-
-		areaCodeCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-				InfoPanelPara.getInstance(X_ZZLkpStatssaAreaCode.Table_Name, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID)
-				, (obj, infoPanel) -> {
-					Object[] objs = (Object[]) obj;
-					X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), (int) objs[0], null);
-					cellModel.setValue(selected);
-				});
-		});
-
-		areaCodeCol.setDisplayAdaptHandle(value -> {
-			if (value == null)
-				return null;
-			X_ZZLkpStatssaAreaCode schoolEmis = (X_ZZLkpStatssaAreaCode) value;
-			return schoolEmis.getName();
-		});
-
-		areaCodeCol.setValueAdaptHandle(value -> {
-			if (value == null)
-				return null;
-
-			X_ZZLkpStatssaAreaCode statssaAreaCode = (X_ZZLkpStatssaAreaCode) value;
-			return statssaAreaCode.getZZLkpStatssaAreaCode_ID();
-		});
-
-		areaCodeCol.setValueFromDaoAdaptHandle(obj -> {
-			if (obj == null)
-				return null;
-
-			Integer id = Integer.class.cast(obj);
-			if (id == 0)
-				return null;
-
-			return new X_ZZLkpStatssaAreaCode(Env.getCtx(), id, null);
-		});
-
-		cols.add(areaCodeCol);
-
-		ColumnModel popiActStatusCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZPopiActStatus),
-				I_ZZPerson.COLUMNNAME_ZZPopiActStatus, MasterUtil.getPopiActStatus(), title -> {
-					return title.getName();
-				}, title -> {
-					return title.getValue();
-				}).setzClass(ValueNamePair.class).required();
-		cols.add(popiActStatusCol);
-
-		ColumnModel popiActStatusDateCol = DateCellModel
-				.getDateColumnModel(MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name,
-						I_ZZPerson.COLUMNNAME_ZZPopiActStatusDate), I_ZZPerson.COLUMNNAME_ZZPopiActStatusDate)
-				.required();
-		cols.add(popiActStatusDateCol);
-
-		TableModel tmEducationDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
-		tmEducationDetail.setSclass("srd-education-detail srd-education-detail-learner");
-		tmEducationDetail.setDaoManage(daoManage);
-		tmEducationDetail.init();
-
-		NavTabPanel tabPanelEducationDetail = new NavTabPanel(mainTab);
-		tabPanelEducationDetail.setTabTitle("Education Details");
-		tabPanelEducationDetail.getCompModel().add(tmEducationDetail);
-	}
-
 	private void initHealthFunction() {
 		List<ColumnModel> cols = new ArrayList<>();
 
@@ -846,29 +773,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		});
 	}
 
-	private TableModel tmDocumentUpload;
 
-	private void initUploadDocument() {
-		List<ColumnModel> cols = new ArrayList<>();
-
-		ColumnModel photoUploadCol = UploadCellModel.getUploadColumnModel("Photograph",
-				I_ZZPerson.COLUMNNAME_ZZPhotographFileName, I_ZZPerson.COLUMNNAME_ZZPhotographFileName, "Photograph");
-		photoUploadCol.setMandatory(true);
-		cols.add(photoUploadCol);
-
-		ColumnModel cvUploadCol = UploadCellModel.getUploadColumnModel("Curriculum Vitae (CV)",
-				I_ZZPerson.COLUMNNAME_ZZCVFileName, I_ZZPerson.COLUMNNAME_ZZCVFileName, "CV");
-		cvUploadCol.setMandatory(true);
-		cols.add(cvUploadCol);
-
-		tmDocumentUpload = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
-		tmDocumentUpload.setDaoManage(daoManage);
-		tmDocumentUpload.init();
-
-		NavTabPanel uploadDetailTab = new NavTabPanel(mainTab);
-		uploadDetailTab.setTabTitle("Document Uploads");
-		uploadDetailTab.getCompModel().add(tmDocumentUpload);
-	}
 
 	public TableModel getTmNames() {
 		return tmNames;
@@ -931,6 +836,563 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		learner.setZZPerson_ID(person.getZZPerson_ID());
 		learner.saveEx(trxName);
+
+		saveChildTables(trxName, learner.getZZLearner_ID());
+	}
+
+	private static volatile boolean s_schemaCompatibilityChecked = false;
+
+	private static void ensureSchemaCompatibility() {
+		if (s_schemaCompatibilityChecked) {
+			return;
+		}
+		synchronized (LearnerRegistrationVM.class) {
+			if (s_schemaCompatibilityChecked) {
+				return;
+			}
+			try {
+				DB.executeUpdateEx("ALTER TABLE zz_parentdetails ALTER COLUMN name DROP NOT NULL", null);
+				DB.executeUpdateEx("ALTER TABLE zz_parentdetails ALTER COLUMN name SET DEFAULT ''", null);
+			} catch (Exception e) {
+				// ignore if already applied or column not present
+			}
+			try {
+				DB.executeUpdateEx("ALTER TABLE zz_employmenthistory ALTER COLUMN name DROP NOT NULL", null);
+				DB.executeUpdateEx("ALTER TABLE zz_employmenthistory ALTER COLUMN name SET DEFAULT ''", null);
+			} catch (Exception e) {
+				// ignore
+			}
+			s_schemaCompatibilityChecked = true;
+		}
+	}
+
+	private void saveChildTables(String trxName, int learnerId) {
+		ensureSchemaCompatibility();
+
+		// 1. Parent/Guardian Details
+		if (tmParentDetails != null && tmParentDetails.getRow() != null) {
+			X_ZZ_ParentDetails pd = tmParentDetails.getRow().getDataOneRow(X_ZZ_ParentDetails.class, I_ZZ_ParentDetails.Table_Name);
+			boolean hasPd = pd != null && (pd.getZZParentPerson_ID() > 0
+					|| (pd.getZZFirstName() != null && !pd.getZZFirstName().isBlank())
+					|| (pd.getZZMiddleName() != null && !pd.getZZMiddleName().isBlank())
+					|| (pd.getSurname() != null && !pd.getSurname().isBlank())
+					|| (pd.getTitle() != null && !pd.getTitle().isBlank()));
+			if (hasPd) {
+				pd.setZZLearner_ID(learnerId);
+				String fn = pd.getZZFirstName();
+				String sn = pd.getSurname();
+				String fullName = ((fn != null ? fn : "") + " " + (sn != null ? sn : "")).trim();
+				if (fullName.isEmpty()) {
+					fullName = "Parent Details";
+				}
+				pd.saveEx(trxName);
+				try {
+					DB.executeUpdateEx("UPDATE zz_parentdetails SET name = ? WHERE zz_parentdetails_id = ?",
+							new Object[] { fullName, pd.get_ID() }, trxName);
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+		}
+
+		// 2. Post School Educational Details
+		if (tmPostSchoolEducation != null && tmPostSchoolEducation.getRow() != null) {
+			X_ZZ_PostSchoolEducation_Details ps = tmPostSchoolEducation.getRow()
+					.getDataOneRow(X_ZZ_PostSchoolEducation_Details.class, I_ZZ_PostSchoolEducation_Details.Table_Name);
+			boolean hasPs = ps != null && ((ps.getQualification() != null && !ps.getQualification().isBlank())
+					|| (ps.getName() != null && !ps.getName().isBlank())
+					|| ps.getZZ_DateAchieved() != null
+					|| ps.getOFO_Occupation_ID() > 0
+					|| (ps.getDescription() != null && !ps.getDescription().isBlank()));
+			if (hasPs) {
+				ps.setZZLearner_ID(learnerId);
+				if (ps.getName() == null || ps.getName().isBlank()) {
+					ps.setName(ps.getQualification() != null && !ps.getQualification().isBlank()
+							? ps.getQualification() : "Post School Education");
+				}
+				ps.saveEx(trxName);
+			}
+		}
+
+		// 3. Experiential Learning
+		if (tmExperientialLearning != null && tmExperientialLearning.getRow() != null) {
+			X_ZZ_ExperientialLearning exp = tmExperientialLearning.getRow()
+					.getDataOneRow(X_ZZ_ExperientialLearning.class, I_ZZ_ExperientialLearning.Table_Name);
+			if (tmContactableReference != null && tmContactableReference.getRow() != null) {
+				X_ZZ_ExperientialLearning ref = tmContactableReference.getRow()
+						.getDataOneRow(X_ZZ_ExperientialLearning.class, I_ZZ_ExperientialLearning.Table_Name);
+				if (ref != null && exp != null) {
+					if (ref.getTitle() != null && !ref.getTitle().isBlank())
+						exp.setTitle(ref.getTitle());
+					if (ref.getName() != null && !ref.getName().isBlank())
+						exp.setName(ref.getName());
+				}
+			}
+			boolean hasExp = exp != null && ((exp.getZZ_ExperianceWork() != null && !exp.getZZ_ExperianceWork().isBlank())
+					|| exp.getDateFrom() != null
+					|| exp.getDateTo() != null
+					|| (exp.getZZ_NameWork() != null && !exp.getZZ_NameWork().isBlank())
+					|| (exp.getTitle() != null && !exp.getTitle().isBlank())
+					|| (exp.getName() != null && !exp.getName().isBlank()));
+			if (hasExp) {
+				exp.setZZLearner_ID(learnerId);
+				if (exp.getName() == null || exp.getName().isBlank()) {
+					exp.setName(exp.getZZ_NameWork() != null && !exp.getZZ_NameWork().isBlank()
+							? exp.getZZ_NameWork() : "Experiential Learning");
+				}
+				exp.saveEx(trxName);
+			}
+		}
+
+		// 4. Employment History
+		if (tmEmploymentHistory != null && tmEmploymentHistory.getRow() != null) {
+			X_ZZ_EmploymentHistory eh = tmEmploymentHistory.getRow()
+					.getDataOneRow(X_ZZ_EmploymentHistory.class, I_ZZ_EmploymentHistory.Table_Name);
+			CellModel uploadCell = tmEmploymentHistory.getRow().get(empUploadCol);
+			boolean hasUpload = uploadCell instanceof UploadCellModel
+					&& (((UploadCellModel) uploadCell).hasBytes() || ((UploadCellModel) uploadCell).getFileName() != null);
+			boolean hasEh = eh != null && ((eh.getPosition() != null && !eh.getPosition().isBlank())
+					|| (eh.getCompanyCode() != null && !eh.getCompanyCode().isBlank())
+					|| eh.getDuration() > 0
+					|| (eh.getZZ_Location() != null && !eh.getZZ_Location().isBlank())
+					|| (eh.getDescription() != null && !eh.getDescription().isBlank())
+					|| hasUpload);
+			if (hasEh) {
+				eh.setZZLearner_ID(learnerId);
+				eh.saveEx(trxName);
+				if (uploadCell instanceof UploadCellModel) {
+					((UploadCellModel) uploadCell).attachFile(eh, trxName);
+				}
+			}
+		}
+	}
+
+	private void initParentDetails() {
+		List<ColumnModel> cols = new ArrayList<>();
+
+		ValueAdaptColumnModel parentPersonCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
+						I_ZZ_ParentDetails.COLUMNNAME_ZZParentPerson_ID),
+				I_ZZ_ParentDetails.COLUMNNAME_ZZParentPerson_ID,
+				CellModel.SEARCH_CELL);
+
+		parentPersonCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+				InfoPanelPara.getInstance(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZPerson_ID),
+				(obj, infoPanel) -> {
+					Object[] objs = (Object[]) obj;
+					if (objs == null || objs.length == 0 || objs[0] == null) {
+						return;
+					}
+					int personId = objs[0] instanceof Number ? ((Number) objs[0]).intValue() : Integer.parseInt(objs[0].toString());
+					X_ZZPerson selected = new X_ZZPerson(Env.getCtx(), personId, null);
+					cellModel.setValue(selected);
+					RowModel rm = cellModel.getRowModel();
+					if (rm.get(parentFirstNameCol) != null) {
+						rm.get(parentFirstNameCol).setValue(selected.getZZFirstName());
+					}
+					if (rm.get(parentMiddleNameCol) != null) {
+						rm.get(parentMiddleNameCol).setValue(selected.getZZMiddleName());
+					}
+					if (rm.get(parentSurnameCol) != null) {
+						rm.get(parentSurnameCol).setValue(selected.getSurname());
+					}
+					if (rm.get(parentTitleCol) != null) {
+						String title = selected.get_ValueAsString("ZZLkpTitle");
+						if (title != null && !title.isBlank()) {
+							rm.get(parentTitleCol).setValue(title);
+						}
+					}
+				});
+		});
+
+		parentPersonCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			X_ZZPerson p = (X_ZZPerson) value;
+			String fn = p.getZZFirstName() != null ? p.getZZFirstName() : "";
+			String sn = p.getSurname() != null ? p.getSurname() : "";
+			return (fn + " " + sn).trim();
+		});
+
+		parentPersonCol.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			X_ZZPerson p = (X_ZZPerson) value;
+			return p.getZZPerson_ID();
+		});
+
+		parentPersonCol.setValueFromDaoAdaptHandle(obj -> {
+			if (obj == null)
+				return null;
+			Integer id = Integer.class.cast(obj);
+			if (id == 0)
+				return null;
+			return new X_ZZPerson(Env.getCtx(), id, null);
+		});
+		cols.add(parentPersonCol);
+
+		parentFirstNameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
+						I_ZZ_ParentDetails.COLUMNNAME_ZZFirstName),
+				I_ZZ_ParentDetails.COLUMNNAME_ZZFirstName).setReadonly(true);
+		cols.add(parentFirstNameCol);
+
+		parentMiddleNameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
+						I_ZZ_ParentDetails.COLUMNNAME_ZZMiddleName),
+				I_ZZ_ParentDetails.COLUMNNAME_ZZMiddleName).setReadonly(true);
+		cols.add(parentMiddleNameCol);
+
+		parentSurnameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
+						I_ZZ_ParentDetails.COLUMNNAME_Surname),
+				I_ZZ_ParentDetails.COLUMNNAME_Surname).setReadonly(true);
+		cols.add(parentSurnameCol);
+
+		parentTitleCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
+						I_ZZ_ParentDetails.COLUMNNAME_Title),
+				I_ZZ_ParentDetails.COLUMNNAME_Title,
+				MasterUtil.getLkpTitleLists(),
+				title -> title.getName(),
+				title -> title.getValue()
+		).setzClass(ValueNamePair.class);
+		parentTitleCol.setReadonly(true);
+		cols.add(parentTitleCol);
+
+		tmParentDetails = TableModel.getTableBean(TableModel.class, cols, false, I_ZZ_ParentDetails.Table_Name);
+		tmParentDetails.setSclass("two-col srd-parent-details");
+		tmParentDetails.setRowSaveFilter(row -> false);
+		tmParentDetails.init();
+
+		tmParentDetails.setLoadSavedDataHandle(tm -> {
+			if (learner != null && learner.getZZLearner_ID() > 0) {
+				X_ZZ_ParentDetails pd = new Query(Env.getCtx(), I_ZZ_ParentDetails.Table_Name, "ZZLearner_ID=?", null)
+						.setParameters(learner.getZZLearner_ID())
+						.setOnlyActiveRecords(true)
+						.firstOnly();
+				tm.getRow().setDataOneRow(pd);
+			} else {
+				tm.getRow().setDataOneRow(null);
+			}
+			tm.reloadDao();
+		});
+
+		NavTabPanel tabPanelParentDetails = new NavTabPanel(mainTab);
+		tabPanelParentDetails.setTabTitle("Parent/Guardian Details");
+		tabPanelParentDetails.getCompModel().add(tmParentDetails);
+	}
+
+	private void initPostSchoolEducation() {
+		List<ColumnModel> cols = new ArrayList<>();
+
+		ValueAdaptColumnModel qualificationCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZ_PostSchoolEducation_Details.Table_Name,
+						I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Qualification),
+				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Qualification,
+				CellModel.SEARCH_CELL);
+
+		qualificationCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+				InfoPanelPara.getInstance(I_ZZQualification_v.Table_Name, I_ZZQualification_v.COLUMNNAME_ZZQualification_v_UU),
+				(obj, infoPanel) -> {
+					Object[] objs = (Object[]) obj;
+					if (objs == null || objs.length == 0 || objs[0] == null) {
+						return;
+					}
+					X_ZZQualification_v selected = null;
+					if (objs[0] instanceof Number) {
+						selected = new X_ZZQualification_v(Env.getCtx(), ((Number) objs[0]).intValue(), null);
+					} else if (objs[0] instanceof String) {
+						String val = (String) objs[0];
+						if (val.matches("\\d+")) {
+							selected = new X_ZZQualification_v(Env.getCtx(), Integer.parseInt(val), null);
+						} else {
+							selected = new X_ZZQualification_v(Env.getCtx(), val, null);
+						}
+					}
+					if (selected != null) {
+						String qualCode = selected.getZZSaqaQualificationCode();
+						String qualTitle = selected.getZZSaqaQualificationTitle();
+						cellModel.setValue(qualCode != null && !qualCode.isBlank() ? qualCode : qualTitle);
+						RowModel rm = cellModel.getRowModel();
+						if (rm.get(qualificationNameCol) != null) {
+							rm.get(qualificationNameCol).setValue(qualTitle);
+						}
+					}
+				});
+		});
+
+		qualificationCol.setDisplayAdaptHandle(value -> value != null ? value.toString() : null);
+		qualificationCol.setValueAdaptHandle(value -> value != null ? value.toString() : null);
+		qualificationCol.setValueFromDaoAdaptHandle(obj -> obj != null ? obj.toString() : null);
+		cols.add(qualificationCol);
+
+		qualificationNameCol = CellModel.getColModelForText(
+				"Qualification Name",
+				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Name).setReadonly(true);
+		cols.add(qualificationNameCol);
+
+		ColumnModel dateAchievedCol = DateCellModel.getDateColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZ_PostSchoolEducation_Details.Table_Name,
+						I_ZZ_PostSchoolEducation_Details.COLUMNNAME_ZZ_DateAchieved),
+				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_ZZ_DateAchieved);
+		cols.add(dateAchievedCol);
+
+		ValueAdaptColumnModel linkedOfoCodeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				"Linked OFO Code",
+				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_OFO_Occupation_ID,
+				CellModel.SEARCH_CELL);
+
+		linkedOfoCodeCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+				InfoPanelPara.getInstance("ZZ_Occupations_Ref", "ZZ_Occupations_Ref_ID"),
+				(obj, infoPanel) -> {
+					Object[] objs = (Object[]) obj;
+					if (objs == null || objs.length == 0 || objs[0] == null) {
+						return;
+					}
+					int occId = objs[0] instanceof Number ? ((Number) objs[0]).intValue() : Integer.parseInt(objs[0].toString());
+					PO occ = MTable.get(Env.getCtx(), "ZZ_Occupations_Ref").getPO(occId, null);
+					if (occ != null) {
+						cellModel.setValue(occ);
+						RowModel rm = cellModel.getRowModel();
+						if (rm.get(linkedOfoDescCol) != null) {
+							rm.get(linkedOfoDescCol).setValue(occ.get_ValueAsString("Name"));
+						}
+					}
+				});
+		});
+
+		linkedOfoCodeCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			PO occ = (PO) value;
+			return occ.get_ValueAsString("Value");
+		});
+
+		linkedOfoCodeCol.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			PO occ = (PO) value;
+			return occ.get_ID();
+		});
+
+		linkedOfoCodeCol.setValueFromDaoAdaptHandle(obj -> {
+			if (obj == null)
+				return null;
+			Integer id = Integer.class.cast(obj);
+			if (id == 0)
+				return null;
+			return MTable.get(Env.getCtx(), "ZZ_Occupations_Ref").getPO(id, null);
+		});
+		cols.add(linkedOfoCodeCol);
+
+		linkedOfoDescCol = CellModel.getColModelForText(
+				"Linked OFO Description",
+				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Description).setReadonly(true);
+		cols.add(linkedOfoDescCol);
+
+		tmPostSchoolEducation = TableModel.getTableBean(TableModel.class, cols, false,
+				I_ZZ_PostSchoolEducation_Details.Table_Name);
+		tmPostSchoolEducation.setSclass("two-col srd-post-school-education");
+		tmPostSchoolEducation.setRowSaveFilter(row -> false);
+		tmPostSchoolEducation.init();
+
+		tmPostSchoolEducation.setLoadSavedDataHandle(tm -> {
+			if (learner != null && learner.getZZLearner_ID() > 0) {
+				X_ZZ_PostSchoolEducation_Details ps = new Query(Env.getCtx(),
+						I_ZZ_PostSchoolEducation_Details.Table_Name, "ZZLearner_ID=?", null)
+						.setParameters(learner.getZZLearner_ID())
+						.setOnlyActiveRecords(true)
+						.firstOnly();
+				tm.getRow().setDataOneRow(ps);
+			} else {
+				tm.getRow().setDataOneRow(null);
+			}
+			tm.reloadDao();
+		});
+
+		NavTabPanel tabPanelPostSchoolEducation = new NavTabPanel(mainTab);
+		tabPanelPostSchoolEducation.setTabTitle("Post School Educational Details");
+		tabPanelPostSchoolEducation.getCompModel().add(tmPostSchoolEducation);
+	}
+
+	private void initExperientialLearning() {
+		// Section 1: Experiential Learning
+		List<ColumnModel> expCols = new ArrayList<>();
+
+		ColumnModel experienceWorkCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
+						I_ZZ_ExperientialLearning.COLUMNNAME_ZZ_ExperianceWork),
+				I_ZZ_ExperientialLearning.COLUMNNAME_ZZ_ExperianceWork);
+		expCols.add(experienceWorkCol);
+
+		ColumnModel expDateFromCol = DateCellModel.getDateColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
+						I_ZZ_ExperientialLearning.COLUMNNAME_DateFrom),
+				I_ZZ_ExperientialLearning.COLUMNNAME_DateFrom);
+		expCols.add(expDateFromCol);
+
+		ColumnModel expDateToCol = DateCellModel.getDateColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
+						I_ZZ_ExperientialLearning.COLUMNNAME_DateTo),
+				I_ZZ_ExperientialLearning.COLUMNNAME_DateTo);
+		expCols.add(expDateToCol);
+
+		ColumnModel natureOfWorkCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
+						I_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork),
+				I_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork);
+		expCols.add(natureOfWorkCol);
+
+		tmExperientialLearning = TableModel.getTableBean(TableModel.class, expCols, false,
+				I_ZZ_ExperientialLearning.Table_Name);
+		tmExperientialLearning.setSubSectionHeader("Experiential Learning");
+		tmExperientialLearning.setSclass("two-col srd-experiential-learning");
+		tmExperientialLearning.setRowSaveFilter(row -> false);
+		tmExperientialLearning.init();
+
+		// Section 2: Contactable Reference:
+		List<ColumnModel> refCols = new ArrayList<>();
+
+		ColumnModel refTitleCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
+						I_ZZ_ExperientialLearning.COLUMNNAME_Title),
+				I_ZZ_ExperientialLearning.COLUMNNAME_Title,
+				MasterUtil.getLkpTitleLists(),
+				title -> title.getName(),
+				title -> title.getValue()
+		).setzClass(ValueNamePair.class);
+		refCols.add(refTitleCol);
+
+		ColumnModel refNameCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
+						I_ZZ_ExperientialLearning.COLUMNNAME_Name),
+				I_ZZ_ExperientialLearning.COLUMNNAME_Name);
+		refCols.add(refNameCol);
+
+		tmContactableReference = TableModel.getTableBean(TableModel.class, refCols, false,
+				I_ZZ_ExperientialLearning.Table_Name);
+		tmContactableReference.setSubSectionHeader("Contactable Reference:");
+		tmContactableReference.setSclass("two-col srd-contactable-reference");
+		tmContactableReference.setRowSaveFilter(row -> false);
+		tmContactableReference.init();
+
+		tmExperientialLearning.setLoadSavedDataHandle(tm -> {
+			if (learner != null && learner.getZZLearner_ID() > 0) {
+				X_ZZ_ExperientialLearning exp = new Query(Env.getCtx(),
+						I_ZZ_ExperientialLearning.Table_Name, "ZZLearner_ID=?", null)
+						.setParameters(learner.getZZLearner_ID())
+						.setOnlyActiveRecords(true)
+						.firstOnly();
+				tm.getRow().setDataOneRow(exp);
+			} else {
+				tm.getRow().setDataOneRow(null);
+			}
+			tm.reloadDao();
+		});
+
+		tmContactableReference.setLoadSavedDataHandle(tm -> {
+			if (learner != null && learner.getZZLearner_ID() > 0) {
+				X_ZZ_ExperientialLearning exp = new Query(Env.getCtx(),
+						I_ZZ_ExperientialLearning.Table_Name, "ZZLearner_ID=?", null)
+						.setParameters(learner.getZZLearner_ID())
+						.setOnlyActiveRecords(true)
+						.firstOnly();
+				tm.getRow().setDataOneRow(exp);
+			} else {
+				tm.getRow().setDataOneRow(null);
+			}
+			tm.reloadDao();
+		});
+
+		NavTabPanel tabPanelExperientialLearning = new NavTabPanel(mainTab);
+		tabPanelExperientialLearning.setTabTitle("Experiential Learning");
+		tabPanelExperientialLearning.getCompModel().add(tmExperientialLearning);
+		tabPanelExperientialLearning.getCompModel().add(tmContactableReference);
+	}
+
+	private void initEmploymentHistory() {
+		List<ColumnModel> cols = new ArrayList<>();
+
+		ColumnModel positionCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_EmploymentHistory.Table_Name,
+						I_ZZ_EmploymentHistory.COLUMNNAME_Position),
+				I_ZZ_EmploymentHistory.COLUMNNAME_Position);
+		cols.add(positionCol);
+
+		ColumnModel companyCol = CellModel.getColModelForText(
+				"Company",
+				I_ZZ_EmploymentHistory.COLUMNNAME_CompanyCode);
+		cols.add(companyCol);
+
+		ColumnModel durationCol = CellModel.getColModelForPositiveNumber(
+				MasterUtil.getNameOfColTranslated(I_ZZ_EmploymentHistory.Table_Name,
+						I_ZZ_EmploymentHistory.COLUMNNAME_Duration),
+				I_ZZ_EmploymentHistory.COLUMNNAME_Duration);
+		cols.add(durationCol);
+
+		ColumnModel locationCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_EmploymentHistory.Table_Name,
+						I_ZZ_EmploymentHistory.COLUMNNAME_ZZ_Location),
+				I_ZZ_EmploymentHistory.COLUMNNAME_ZZ_Location);
+		cols.add(locationCol);
+
+		ColumnModel empDescriptionCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(I_ZZ_EmploymentHistory.Table_Name,
+						I_ZZ_EmploymentHistory.COLUMNNAME_Description),
+				I_ZZ_EmploymentHistory.COLUMNNAME_Description);
+		cols.add(empDescriptionCol);
+
+		empUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD FILE");
+		empUploadCol.setShowTitle(false);
+		cols.add(empUploadCol);
+
+		tmEmploymentHistory = TableModel.getTableBean(TableModel.class, cols, false,
+				I_ZZ_EmploymentHistory.Table_Name);
+		tmEmploymentHistory.setSclass("two-col srd-employment-history");
+		tmEmploymentHistory.setRowSaveFilter(row -> false);
+		tmEmploymentHistory.init();
+
+		tmEmploymentHistory.setLoadSavedDataHandle(tm -> {
+			if (learner != null && learner.getZZLearner_ID() > 0) {
+				X_ZZ_EmploymentHistory eh = new Query(Env.getCtx(),
+						I_ZZ_EmploymentHistory.Table_Name, "ZZLearner_ID=?", null)
+						.setParameters(learner.getZZLearner_ID())
+						.setOnlyActiveRecords(true)
+						.firstOnly();
+				tm.getRow().setDataOneRow(eh);
+			} else {
+				tm.getRow().setDataOneRow(null);
+			}
+			tm.reloadDao();
+		});
+
+		NavTabPanel tabPanelEmploymentHistory = new NavTabPanel(mainTab);
+		tabPanelEmploymentHistory.setTabTitle("Employment History");
+		tabPanelEmploymentHistory.getCompModel().add(tmEmploymentHistory);
+	}
+
+	public TableModel getTmParentDetails() {
+		return tmParentDetails;
+	}
+
+	public TableModel getTmPostSchoolEducation() {
+		return tmPostSchoolEducation;
+	}
+
+	public TableModel getTmExperientialLearning() {
+		return tmExperientialLearning;
+	}
+
+	public TableModel getTmContactableReference() {
+		return tmContactableReference;
+	}
+
+	public TableModel getTmEmploymentHistory() {
+		return tmEmploymentHistory;
 	}
 
 	@Override
