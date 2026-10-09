@@ -624,7 +624,7 @@ public class DiscretionaryGrantsApplicationProgramVM {
 
 	@DependsOn("program") // re-evaluate when program/annexure rows change (notified from table VM)
 	public boolean isProgramComplete() {
-		if (program != null) {
+		if (program != null && isShowProgram()) {
 			return program.isProgramValid();
 		}
 		return true;//app list
@@ -1161,8 +1161,16 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	
 	public boolean isShowProgram()
 	{
+		if (isHEISuportAfter2025(menuContextInfo))
+			return false;
+		
 		return programType != ProgramType.EDP_APP_INDIVIDUAL && programType != ProgramType.EDP_APP_EMPLOYER;
 	}
-
+	
+	public static boolean isHEISuportAfter2025 (MenuContextInfo menuContextInfo) {
+		return !"2025".equals(menuContextInfo.getProgramMasterData().getC_Year().getFiscalYear()) 
+				&& menuContextInfo.getProgramType() == ProgramType.HET_LECTURE_SUPPORT;
+		
+	}
 
 }

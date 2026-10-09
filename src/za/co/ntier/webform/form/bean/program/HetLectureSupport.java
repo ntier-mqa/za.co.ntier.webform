@@ -15,6 +15,7 @@ import za.co.ntier.webform.form.Util;
 import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
 import za.co.ntier.webform.form.bean.component.ProjectInput;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class HetLectureSupport  extends AbstractProgram {
 	private ProgramInput disciplines;
@@ -23,50 +24,59 @@ public class HetLectureSupport  extends AbstractProgram {
 	// keep refs for validation
 	private ColumnInfo<?> noLectureAllocated, noLectureAbsorbed, noLectureResigned, noLectureCompleted, noLectureContinuing;
 	private ColumnInfo<?> titleCol, colNoLecture, colStartDate;
-
+	private boolean isAfter2025 = false; 
 	public Boolean getShowInstitutionParticipated(){
 		return institutionParticipatedStr != null && "Y".equalsIgnoreCase(institutionParticipatedStr);
 	}
 
 	public HetLectureSupport(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
-		List<ColumnInfo<?>> cols = new ArrayList<>();
+		
+		isAfter2025 = DiscretionaryGrantsApplicationProgramVM.isHEISuportAfter2025(menuContextInfo);
+		
+		if (!isAfter2025) {
+			List<ColumnInfo<?>> cols = new ArrayList<>();
+	
+			noLectureAllocated = ColumnInfo.getColPositiveNumber("No. of Lectures Allocated", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesAllocated);
+			noLectureAbsorbed = ColumnInfo.getColPositiveNumber("No. of Lectures Absorbed", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesAbsorbed);
+			noLectureResigned = ColumnInfo.getColPositiveNumber("No. of Lectures Resigned", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesResigned);
+			noLectureCompleted = ColumnInfo.getColPositiveNumber("No. of Lectures Completed The Programme", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesCompleted);
+			noLectureContinuing = ColumnInfo.getColPositiveNumber("No. of Lectures Continuing The Programme", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesContinuing);
+	
+			cols.add(noLectureAllocated);
+			cols.add(noLectureAbsorbed);
+			cols.add(noLectureResigned);
+			cols.add(noLectureCompleted);
+			cols.add(noLectureContinuing);
 
-		noLectureAllocated = ColumnInfo.getColPositiveNumber("No. of Lectures Allocated", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesAllocated);
-		noLectureAbsorbed = ColumnInfo.getColPositiveNumber("No. of Lectures Absorbed", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesAbsorbed);
-		noLectureResigned = ColumnInfo.getColPositiveNumber("No. of Lectures Resigned", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesResigned);
-		noLectureCompleted = ColumnInfo.getColPositiveNumber("No. of Lectures Completed The Programme", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesCompleted);
-		noLectureContinuing = ColumnInfo.getColPositiveNumber("No. of Lectures Continuing The Programme", I_ZZLearnersApplied.COLUMNNAME_ZZNoLecturesContinuing);
+		
+			institutionParticipated = ProjectInput.getProject(cols, null, false);
+			institutionParticipated.setTableTitle("If the answer to the above is yes, please provide details of your institution’s participation in terms of");
+			institutionParticipated.initProject(applicationForm);
+		}
+		
+		if (!isAfter2025) {
+			titleCol = ColumnInfo.getColLearnerInfo("MINING DISCIPLINES"
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Disciplines_ID);
+	
+			colNoLecture = ColumnInfo.getColPositiveNumber("NUMBER OF LECTURERS"
+					, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoLecture);
+			colNoLecture.setCalTotal(true);
+	
+			colStartDate = ColumnInfo.getColDate("START DATE"
+					, I_ZZ_FormDiscipline.COLUMNNAME_StartDate);
+	
+	
+			List<ColumnInfo<?>> columns = new ArrayList<>();
+			columns.add(titleCol);
+			columns.add(colNoLecture);
+			columns.add(colStartDate);
 
-		cols.add(noLectureAllocated);
-		cols.add(noLectureAbsorbed);
-		cols.add(noLectureResigned);
-		cols.add(noLectureCompleted);
-		cols.add(noLectureContinuing);
-
-		institutionParticipated = ProjectInput.getProject(cols, null, false);
-		institutionParticipated.setTableTitle("If the answer to the above is yes, please provide details of your institution’s participation in terms of");
-		institutionParticipated.initProject(applicationForm);
-
-		titleCol = ColumnInfo.getColLearnerInfo("MINING DISCIPLINES"
-				, I_ZZ_FormDiscipline.COLUMNNAME_ZZ_Disciplines_ID);
-
-		colNoLecture = ColumnInfo.getColPositiveNumber("NUMBER OF LECTURERS"
-				, I_ZZ_FormDiscipline.COLUMNNAME_ZZNoLecture);
-		colNoLecture.setCalTotal(true);
-
-		colStartDate = ColumnInfo.getColDate("START DATE"
-				, I_ZZ_FormDiscipline.COLUMNNAME_StartDate);
-
-
-		List<ColumnInfo<?>> columns = new ArrayList<>();
-		columns.add(titleCol);
-		columns.add(colNoLecture);
-		columns.add(colStartDate);
-
-		disciplines = ProgramInput.getDisciplines(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
-				applicationForm, columns);
-		disciplines.setSectionHeader("HEI LECTURER SUPPORT GRANT APPLICATION");
+		
+			disciplines = ProgramInput.getDisciplines(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(),
+					applicationForm, columns);
+			disciplines.setSectionHeader("HEI LECTURER SUPPORT GRANT APPLICATION");
+		}
 
 		if(applicationForm != null) {
 			institutionParticipatedStr = applicationForm.getZZHasPastParticipatedLecturer();
@@ -92,8 +102,11 @@ public class HetLectureSupport  extends AbstractProgram {
 	public void saveForm(String trxName, X_ZZ_Application_Form applicationForm) {
 		super.saveForm(applicationForm);
 		applicationForm.setZZHasPastParticipatedLecturer(institutionParticipatedStr);
-		institutionParticipated.save(trxName, applicationForm);
-		disciplines.save(trxName, applicationForm);
+		
+		if (institutionParticipated != null)
+			institutionParticipated.save(trxName, applicationForm);
+		if (disciplines != null)
+			disciplines.save(trxName, applicationForm);
 
 	}
 	/**
