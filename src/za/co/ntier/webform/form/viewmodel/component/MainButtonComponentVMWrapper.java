@@ -54,10 +54,10 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 
 	    switch (continueGate) {
 	    case "DECLARATION":
-	        return (tabIndex == 0) ? !vm.isDeclarationComplete() : true;
+	        return !vm.isDeclarationComplete();
 
 	    case "ORG":
-	        return (tabIndex >= 1) ? !vm.isOrganisationComplete() : true;
+	        return !vm.isOrganisationComplete();
 
 	    case "PROGRAM": {
 	        // Special handling for Standards Setting (has subtabs)
@@ -77,13 +77,12 @@ public class MainButtonComponentVMWrapper extends ComponentVMWrapper<MainButtonC
 	                // (StandardSetting.isProgramValid()).
 	            }
 	        }
-	        return (tabIndex >= 2) ? !vm.isProgramComplete() : true;
+	        return !vm.isProgramComplete();
 	    }
 
-	    case "PROGRAMCONTACT":
-	        return (tabIndex >= 3) ? !vm.isProgramContactComplete() : true;
-
-	    default:
+	    case "PROGRAMCONTACT":{
+	        return !vm.isProgramContactComplete();
+	    }default:
 	        return false;
 	    }
 	}
