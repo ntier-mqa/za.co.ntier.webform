@@ -835,40 +835,16 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		}
 
 		learner.setZZPerson_ID(person.getZZPerson_ID());
+		int currentUserId = Env.getAD_User_ID(Env.getCtx());
+		if (currentUserId > 0) {
+			learner.setZZ_SDPAdmin_ID(currentUserId);
+		}
 		learner.saveEx(trxName);
 
 		saveChildTables(trxName, learner.getZZLearner_ID());
 	}
 
-	private static volatile boolean s_schemaCompatibilityChecked = false;
-
-	private static void ensureSchemaCompatibility() {
-		if (s_schemaCompatibilityChecked) {
-			return;
-		}
-		synchronized (LearnerRegistrationVM.class) {
-			if (s_schemaCompatibilityChecked) {
-				return;
-			}
-			try {
-				DB.executeUpdateEx("ALTER TABLE zz_parentdetails ALTER COLUMN name DROP NOT NULL", null);
-				DB.executeUpdateEx("ALTER TABLE zz_parentdetails ALTER COLUMN name SET DEFAULT ''", null);
-			} catch (Exception e) {
-				// ignore if already applied or column not present
-			}
-			try {
-				DB.executeUpdateEx("ALTER TABLE zz_employmenthistory ALTER COLUMN name DROP NOT NULL", null);
-				DB.executeUpdateEx("ALTER TABLE zz_employmenthistory ALTER COLUMN name SET DEFAULT ''", null);
-			} catch (Exception e) {
-				// ignore
-			}
-			s_schemaCompatibilityChecked = true;
-		}
-	}
-
 	private void saveChildTables(String trxName, int learnerId) {
-		ensureSchemaCompatibility();
-
 		// 1. Parent/Guardian Details
 		if (tmParentDetails != null && tmParentDetails.getRow() != null) {
 			X_ZZ_ParentDetails pd = tmParentDetails.getRow().getDataOneRow(X_ZZ_ParentDetails.class, I_ZZ_ParentDetails.Table_Name);
@@ -879,19 +855,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					|| (pd.getTitle() != null && !pd.getTitle().isBlank()));
 			if (hasPd) {
 				pd.setZZLearner_ID(learnerId);
-				String fn = pd.getZZFirstName();
-				String sn = pd.getSurname();
-				String fullName = ((fn != null ? fn : "") + " " + (sn != null ? sn : "")).trim();
-				if (fullName.isEmpty()) {
-					fullName = "Parent Details";
-				}
 				pd.saveEx(trxName);
-				try {
-					DB.executeUpdateEx("UPDATE zz_parentdetails SET name = ? WHERE zz_parentdetails_id = ?",
-							new Object[] { fullName, pd.get_ID() }, trxName);
-				} catch (Exception e) {
-					// ignore
-				}
 			}
 		}
 
@@ -907,8 +871,14 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			if (hasPs) {
 				ps.setZZLearner_ID(learnerId);
 				if (ps.getName() == null || ps.getName().isBlank()) {
-					ps.setName(ps.getQualification() != null && !ps.getQualification().isBlank()
-							? ps.getQualification() : "Post School Education");
+					String nm = ps.getQualification() != null && !ps.getQualification().isBlank()
+							? ps.getQualification() : "Post School Education";
+					if (nm.length() > 60) {
+						nm = nm.substring(0, 60);
+					}
+					ps.setName(nm);
+				} else if (ps.getName().length() > 60) {
+					ps.setName(ps.getName().substring(0, 60));
 				}
 				ps.saveEx(trxName);
 			}
@@ -937,8 +907,14 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			if (hasExp) {
 				exp.setZZLearner_ID(learnerId);
 				if (exp.getName() == null || exp.getName().isBlank()) {
-					exp.setName(exp.getZZ_NameWork() != null && !exp.getZZ_NameWork().isBlank()
-							? exp.getZZ_NameWork() : "Experiential Learning");
+					String nm = exp.getZZ_NameWork() != null && !exp.getZZ_NameWork().isBlank()
+							? exp.getZZ_NameWork() : "Experiential Learning";
+					if (nm.length() > 60) {
+						nm = nm.substring(0, 60);
+					}
+					exp.setName(nm);
+				} else if (exp.getName().length() > 60) {
+					exp.setName(exp.getName().substring(0, 60));
 				}
 				exp.saveEx(trxName);
 			}
@@ -1397,6 +1373,11 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	@Override
 	public void doSubmit(String trxName) {
+		int currentUserId = Env.getAD_User_ID(Env.getCtx());
+		if (learner != null && currentUserId > 0) {
+			learner.setZZ_SDPAdmin_ID(currentUserId);
+			learner.saveEx(trxName);
+		}
 		super.doSubmit(trxName);
 	}
 

@@ -111,7 +111,7 @@ public class UploadCellModel extends CellModel {
 
 			// free memory for this row after persisting
 			setBytes(null);
-		}else {
+		} else if (org.apache.commons.lang3.StringUtils.isBlank(fileName)) {
 			AttachmentUtil.removeAttachmentEntry(data, getBtText(), trxName);
 		}
 		
