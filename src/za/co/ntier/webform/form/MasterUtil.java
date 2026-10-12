@@ -121,6 +121,9 @@ public class MasterUtil {
 	}
 	
 	public static X_C_BP_Group getBPGroup(String bpGroupUU) {
+		if (bpGroupUU.indexOf(",") > 0) {
+			bpGroupUU = bpGroupUU.split(",")[0];// get first item
+		}
 		Query queryBpGroup = new Query(Env.getCtx(), I_C_BP_Group.Table_Name,
 				String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_C_BP_Group_UU), null);
 		queryBpGroup.setParameters(bpGroupUU);//"Z-CET"
@@ -131,7 +134,7 @@ public class MasterUtil {
 		List<X_C_BPartner> bpartners = s_CetTvetCollege.get(bpGroupUU);
 		if (bpartners == null) {
 			Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
-					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_C_BP_Group_UU), null);
+					String.format("%s.%s = ANY(string_to_array(?, ','))", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_C_BP_Group_UU), null);
 			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
 			queryCetColleges.setParameters(bpGroupUU);//"Z-CET"
 			queryCetColleges.setOrderBy(I_C_BPartner.COLUMNNAME_Name + " ASC");

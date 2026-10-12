@@ -1161,15 +1161,14 @@ public class DiscretionaryGrantsApplicationProgramVM {
 	
 	public boolean isShowProgram()
 	{
-		if (isHEISuportAfter2025(menuContextInfo))
+		if (isAfter2025(menuContextInfo) && menuContextInfo.getProgramType() == ProgramType.HET_LECTURE_SUPPORT)
 			return false;
 		
 		return programType != ProgramType.EDP_APP_INDIVIDUAL && programType != ProgramType.EDP_APP_EMPLOYER;
 	}
 	
-	public static boolean isHEISuportAfter2025 (MenuContextInfo menuContextInfo) {
-		return !"2025".equals(menuContextInfo.getProgramMasterData().getC_Year().getFiscalYear()) 
-				&& menuContextInfo.getProgramType() == ProgramType.HET_LECTURE_SUPPORT;
+	public static boolean isAfter2025 (MenuContextInfo menuContextInfo) {
+		return !"2025".equals(menuContextInfo.getProgramMasterData().getC_Year().getFiscalYear());
 		
 	}
 
