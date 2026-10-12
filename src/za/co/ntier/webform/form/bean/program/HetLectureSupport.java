@@ -32,7 +32,7 @@ public class HetLectureSupport  extends AbstractProgram {
 	public HetLectureSupport(MenuContextInfo menuContextInfo, X_ZZ_Application_Form applicationForm) {
 		super(menuContextInfo, applicationForm);
 		
-		isAfter2025 = DiscretionaryGrantsApplicationProgramVM.isHEISuportAfter2025(menuContextInfo);
+		isAfter2025 = DiscretionaryGrantsApplicationProgramVM.isAfter2025(menuContextInfo);
 		
 		if (!isAfter2025) {
 			List<ColumnInfo<?>> cols = new ArrayList<>();
