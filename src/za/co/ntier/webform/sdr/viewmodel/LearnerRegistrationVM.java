@@ -7,7 +7,6 @@ import java.util.function.BiFunction;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.panel.RegistrationWindow;
-import org.compiere.model.I_C_Location;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_Location;
@@ -24,15 +23,9 @@ import org.zkoss.zk.ui.WrongValueException;
 
 import org.compiere.model.PO;
 
-import za.co.ntier.api.model.I_ZZLearner;
-import za.co.ntier.api.model.I_ZZPerson;
-import za.co.ntier.api.model.I_ZZQualification_v;
-import za.co.ntier.api.model.I_ZZ_AlternateIDType;
-import za.co.ntier.api.model.I_ZZ_EmploymentHistory;
-import za.co.ntier.api.model.I_ZZ_ExperientialLearning;
-import za.co.ntier.api.model.I_ZZ_ParentDetails;
-import za.co.ntier.api.model.I_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.api.model.X_ZZLearner;
+import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
+import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZPerson;
 import za.co.ntier.api.model.X_ZZQualification_v;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
@@ -73,15 +66,18 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	private TableModel tmNames;
 	private TableModel tmGeneralDetail;
 	private TableModel tmParentDetails;
+	private TableModel tmEducationDetail;
 	private TableModel tmPostSchoolEducation;
 	private TableModel tmExperientialLearning;
 	private TableModel tmContactableReference;
 	private TableModel tmEmploymentHistory;
+	private TableModel tmDocumentUpload;
 	private NavTab mainTab;
 	X_ZZLearner learner;
 
 	DaoManage daoManage = new DaoManage();
 
+	private ValueAdaptColumnModel parentPersonCol;
 	private ColumnModel parentFirstNameCol;
 	private ColumnModel parentMiddleNameCol;
 	private ColumnModel parentSurnameCol;
@@ -172,14 +168,14 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		selectedIdType = alternateIdTypes.stream().filter(t -> IDCellModel.idTypeRSA_ID.equals(t.getName())).findFirst()
 				.orElse(null);
 
-		daoManage.setPoSupplier(I_ZZPerson.Table_Name, daoManage -> {
+		daoManage.setPoSupplier(X_ZZPerson.Table_Name, daoManage -> {
 			person = new X_ZZPerson(Env.getCtx(), 0, null);
 			String name = (String) tmNames.getRow().get(firstNameCol).getValue();
 			person.setZZFirstName(name);
 			return person;
 		});
 
-		daoManage.setPoSupplier(I_ZZLearner.Table_Name, daoManage -> {
+		daoManage.setPoSupplier(X_ZZLearner.Table_Name, daoManage -> {
 			learner = new X_ZZLearner(Env.getCtx(), 0, null);
 			return learner;
 		});
@@ -270,8 +266,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		validationMessage = "Creating new learner record. Please fill in all required fields.";
 
 		// Reset DAOs for new person
-		daoManage.resetDao(I_ZZPerson.Table_Name);
-		daoManage.resetDao(I_ZZLearner.Table_Name);
+		daoManage.resetDao(X_ZZPerson.Table_Name);
+		daoManage.resetDao(X_ZZLearner.Table_Name);
 
 		idNoCol.setDefaultValue(idNumber);
 		if (selectedIdType != null) {
@@ -306,6 +302,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		if (tmParentDetails != null && tmParentDetails.getRow() != null) {
 			tmParentDetails.getRow().setDataOneRow(null);
 			tmParentDetails.reloadDao();
+			updateParentFieldsReadonly(false);
 		}
 		if (tmPostSchoolEducation != null && tmPostSchoolEducation.getRow() != null) {
 			tmPostSchoolEducation.getRow().setDataOneRow(null);
@@ -330,12 +327,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	private void loadForEdit() {
 		alternateIDTypeCol.setReadonly(true);
 		//idNoCol.setReadonly(true);
-		learner = (X_ZZLearner) MTable.get(Env.getCtx(), I_ZZLearner.Table_Name)
+		learner = (X_ZZLearner) MTable.get(Env.getCtx(), X_ZZLearner.Table_Name)
 				.getPO(getMenuContextInfo().getRecordID(), null);
 		if (learner == null) {
 			MasterUtil.showInfoDialog("ZZLearnerNotFoundLearner", MasterUtil.fCloseActiveWindow);
 		} else {
-			person = (X_ZZPerson) MTable.get(Env.getCtx(), I_ZZPerson.Table_Name).getPO(learner.getZZPerson_ID(), null);
+			person = (X_ZZPerson) MTable.get(Env.getCtx(), X_ZZPerson.Table_Name).getPO(learner.getZZPerson_ID(), null);
 		}
 
 		if (person == null) {
@@ -363,18 +360,18 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	private void loadSaved(String idValue, int idTypeId) {
 		Query userQuery;
 		if (IDCellModel.idTypeRSA_ID.equals(selectedIdType.getName())) {
-			userQuery = MTable.get(Env.getCtx(), I_ZZPerson.Table_Name)
-					.createQuery(String.format("%s = ? AND %s.%s = ?", I_ZZPerson.COLUMNNAME_ZZ_ID_Passport_No,
-							I_ZZ_AlternateIDType.Table_Name, I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID),
+			userQuery = MTable.get(Env.getCtx(), X_ZZPerson.Table_Name)
+					.createQuery(String.format("%s = ? AND %s.%s = ?", X_ZZPerson.COLUMNNAME_ZZ_ID_Passport_No,
+							X_ZZ_AlternateIDType.Table_Name, X_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID),
 							null);
 		} else {
-			userQuery = MTable.get(Env.getCtx(), I_ZZPerson.Table_Name)
-					.createQuery(String.format("%s = ? AND %s.%s = ?", I_ZZPerson.COLUMNNAME_ZZOtherIDNo,
-							I_ZZ_AlternateIDType.Table_Name, I_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID),
+			userQuery = MTable.get(Env.getCtx(), X_ZZPerson.Table_Name)
+					.createQuery(String.format("%s = ? AND %s.%s = ?", X_ZZPerson.COLUMNNAME_ZZOtherIDNo,
+							X_ZZ_AlternateIDType.Table_Name, X_ZZ_AlternateIDType.COLUMNNAME_ZZ_AlternateIDType_ID),
 							null);
 		}
 
-		userQuery.addTableDirectJoin(I_ZZ_AlternateIDType.Table_Name);
+		userQuery.addTableDirectJoin(X_ZZ_AlternateIDType.Table_Name);
 
 		userQuery.setParameters(idValue, idTypeId);
 		userQuery.setOnlyActiveRecords(true);
@@ -384,8 +381,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		if (person != null) {
 			daoManage.setDao(person);
-			Query savedDataQuery = MTable.get(Env.getCtx(), I_ZZLearner.Table_Name)
-					.createQuery(String.format("%s = ?", I_ZZLearner.COLUMNNAME_ZZPerson_ID), null);
+			Query savedDataQuery = MTable.get(Env.getCtx(), X_ZZLearner.Table_Name)
+					.createQuery(String.format("%s = ?", X_ZZLearner.COLUMNNAME_ZZPerson_ID), null);
 
 			savedDataQuery.setParameters(person.getZZPerson_ID());
 			savedDataQuery.setOnlyActiveRecords(true);
@@ -394,7 +391,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 			firstNameCol.setDefaultValue(person.getZZFirstName());
 		} else {
-			daoManage.resetDao(I_ZZPerson.Table_Name);
+			daoManage.resetDao(X_ZZPerson.Table_Name);
 		}
 
 		if (learnerSaved != null) {
@@ -405,7 +402,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 			daoManage.setDao(learnerSaved);
 		} else {
-			daoManage.resetDao(I_ZZLearner.Table_Name);
+			daoManage.resetDao(X_ZZLearner.Table_Name);
 		}
 
 		isNew = learnerSaved == null;
@@ -439,9 +436,11 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		initHealthFunction();
 		initAddresss();
 		initParentDetails();
+		initEducationDetail();
 		initPostSchoolEducation();
 		initExperientialLearning();
 		initEmploymentHistory();
+		initUploadDocument();
 	}
 
 	ColumnModel idNoCol;
@@ -483,7 +482,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
-		alternateIDTypeCol.setTableName(I_ZZPerson.Table_Name);
+		alternateIDTypeCol.setTableName(X_ZZPerson.Table_Name);
 		alternateIDTypeCol.setEventHandle((event, cellMode) -> {
 			@SuppressWarnings("unchecked")
 			ListCellModel<X_ZZ_AlternateIDType> alternateIDCellMode = (ListCellModel<X_ZZ_AlternateIDType>) cellMode;
@@ -495,7 +494,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		});
 		cols.add(alternateIDTypeCol);
 
-		idNoCol = IDCellModel.getIDColumnModel().required().setTableName(I_ZZPerson.Table_Name).setReadonly(true);
+		idNoCol = IDCellModel.getIDColumnModel().required().setTableName(X_ZZPerson.Table_Name).setReadonly(true);
 		idNoCol.setEventHandle((event, cellMode) -> {
 			Object idValue = cellMode.getDirtyValue();
 			if (idValue != null) {
@@ -509,13 +508,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(idNoCol);
 
 		dateOfBirthCol = DateCellModel.getDateColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Birthday),
-				I_ZZPerson.COLUMNNAME_Birthday).required().setTableName(I_ZZPerson.Table_Name);
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_Birthday),
+				X_ZZPerson.COLUMNNAME_Birthday).required().setTableName(X_ZZPerson.Table_Name);
 		cols.add(dateOfBirthCol);
 
 		genderCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZGender),
-				I_ZZPerson.COLUMNNAME_ZZGender, MasterUtil.getLkpGenders(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZGender),
+				X_ZZPerson.COLUMNNAME_ZZGender, MasterUtil.getLkpGenders(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getValue();
@@ -523,8 +522,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(genderCol);
 
 		ColumnModel equityCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZEquity),
-				I_ZZPerson.COLUMNNAME_ZZEquity, MasterUtil.getLkpEquity(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZEquity),
+				X_ZZPerson.COLUMNNAME_ZZEquity, MasterUtil.getLkpEquity(), title -> {
 					return title.toString();
 				}, title -> {
 					return title.getValue();
@@ -532,8 +531,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(equityCol);
 
 		ColumnModel homeLanguageCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZ_LI_HomeLanguage_ID),
-				I_ZZPerson.COLUMNNAME_ZZ_LI_HomeLanguage_ID, MasterUtil.getHomeLanguage(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZ_LI_HomeLanguage_ID),
+				X_ZZPerson.COLUMNNAME_ZZ_LI_HomeLanguage_ID, MasterUtil.getHomeLanguage(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getZZ_LI_HomeLanguage_ID();
@@ -541,8 +540,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(homeLanguageCol);
 
 		ColumnModel nationalityCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZ_Nationality_ID),
-				I_ZZPerson.COLUMNNAME_ZZ_Nationality_ID, MasterUtil.getNationality(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZ_Nationality_ID),
+				X_ZZPerson.COLUMNNAME_ZZ_Nationality_ID, MasterUtil.getNationality(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getZZ_Nationality_ID();
@@ -550,9 +549,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(nationalityCol);
 
 		ColumnModel citizenResidentialStatusCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name,
-						I_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID),
-				I_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID, MasterUtil.getCitizenResidentialStatus(),
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name,
+						X_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID),
+				X_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID, MasterUtil.getCitizenResidentialStatus(),
 				title -> {
 					return title.getName();
 				}, title -> {
@@ -561,16 +560,16 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(citizenResidentialStatusCol);
 
 		ColumnModel socioEconomicStatusCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name,
-						I_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID),
-				I_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID, MasterUtil.getSocioEconomicStatus(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name,
+						X_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID),
+				X_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID, MasterUtil.getSocioEconomicStatus(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getZZ_LI_SocioEconomicStatus_ID();
 				}).setzClass(X_ZZ_LI_SocioEconomicStatus.class).setUseForID(true).required();
 		cols.add(socioEconomicStatusCol);
 
-		tmGeneralDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
+		tmGeneralDetail = TableModel.getTableBean(TableModel.class, cols, false, X_ZZPerson.Table_Name);
 		tmGeneralDetail.setSclass("srd-general srd-general-learner");
 
 		tmGeneralDetail.setDaoManage(daoManage);
@@ -588,26 +587,26 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel greettingCol = ListCellModel.getLkpTitleColumnModel();
-		greettingCol.setTableName(I_ZZPerson.Table_Name);
+		greettingCol.setTableName(X_ZZPerson.Table_Name);
 		cols.add(greettingCol);
 
 		firstNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZFirstName),
-				I_ZZPerson.COLUMNNAME_ZZFirstName).required();
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZFirstName),
+				X_ZZPerson.COLUMNNAME_ZZFirstName).required();
 
 		cols.add(firstNameCol);
 
 		ColumnModel midNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZMiddleName),
-				I_ZZPerson.COLUMNNAME_ZZMiddleName);
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZMiddleName),
+				X_ZZPerson.COLUMNNAME_ZZMiddleName);
 		cols.add(midNameCol);
 
 		ColumnModel surnameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Surname),
-				I_ZZPerson.COLUMNNAME_Surname).required();
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_Surname),
+				X_ZZPerson.COLUMNNAME_Surname).required();
 		cols.add(surnameCol);
 
-		TableModel tmNames = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
+		TableModel tmNames = TableModel.getTableBean(TableModel.class, cols, false, X_ZZPerson.Table_Name);
 		tmNames.setSclass("srd-name srd-name-assessor");
 		tmNames.setDaoManage(daoManage);
 		tmNames.init();
@@ -619,21 +618,21 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Phone),
-				I_ZZPerson.COLUMNNAME_Phone).required();
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_Phone),
+				X_ZZPerson.COLUMNNAME_Phone).required();
 		cols.add(cellPhoneNumberCol);
 
 		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_Phone2),
-				I_ZZPerson.COLUMNNAME_Phone2);
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_Phone2),
+				X_ZZPerson.COLUMNNAME_Phone2);
 		cols.add(telephoneNumberCol);
 
 		ColumnModel emailCol = CellModel.getColModelForEmail(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_EMail),
-				I_ZZPerson.COLUMNNAME_EMail).required();
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_EMail),
+				X_ZZPerson.COLUMNNAME_EMail).required();
 		cols.add(emailCol);
 
-		TableModel tmContactDetail = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
+		TableModel tmContactDetail = TableModel.getTableBean(TableModel.class, cols, false, X_ZZPerson.Table_Name);
 		tmContactDetail.setSclass("srd-contact srd-contact-learner");
 		tmContactDetail.setDaoManage(daoManage);
 		tmContactDetail.init();
@@ -648,8 +647,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel seeingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthSeeing),
-				I_ZZPerson.COLUMNNAME_ZZHealthSeeing, MasterUtil.getHealthFunctions(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZHealthSeeing),
+				X_ZZPerson.COLUMNNAME_ZZHealthSeeing, MasterUtil.getHealthFunctions(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getValue();
@@ -658,8 +657,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(seeingCol);
 
 		ColumnModel hearingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthHearing),
-				I_ZZPerson.COLUMNNAME_ZZHealthHearing, MasterUtil.getHealthFunctions(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZHealthHearing),
+				X_ZZPerson.COLUMNNAME_ZZHealthHearing, MasterUtil.getHealthFunctions(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getValue();
@@ -668,8 +667,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(hearingCol);
 
 		ColumnModel communicatingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthCommunicating),
-				I_ZZPerson.COLUMNNAME_ZZHealthCommunicating, MasterUtil.getHealthFunctions(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZHealthCommunicating),
+				X_ZZPerson.COLUMNNAME_ZZHealthCommunicating, MasterUtil.getHealthFunctions(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getValue();
@@ -678,8 +677,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(communicatingCol);
 
 		ColumnModel walkingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthWalking),
-				I_ZZPerson.COLUMNNAME_ZZHealthWalking, MasterUtil.getHealthFunctions(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZHealthWalking),
+				X_ZZPerson.COLUMNNAME_ZZHealthWalking, MasterUtil.getHealthFunctions(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getValue();
@@ -688,8 +687,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(walkingCol);
 
 		ColumnModel rememberingCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthRemembering),
-				I_ZZPerson.COLUMNNAME_ZZHealthRemembering, MasterUtil.getHealthFunctions(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZHealthRemembering),
+				X_ZZPerson.COLUMNNAME_ZZHealthRemembering, MasterUtil.getHealthFunctions(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getValue();
@@ -698,8 +697,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(rememberingCol);
 
 		ColumnModel selfcareCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZHealthSelfcare),
-				I_ZZPerson.COLUMNNAME_ZZHealthSelfcare, MasterUtil.getHealthFunctions(), title -> {
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZHealthSelfcare),
+				X_ZZPerson.COLUMNNAME_ZZHealthSelfcare, MasterUtil.getHealthFunctions(), title -> {
 					return title.getName();
 				}, title -> {
 					return title.getValue();
@@ -707,7 +706,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				.required();
 		cols.add(selfcareCol);
 
-		TableModel tmHealthFunctions = TableModel.getTableBean(TableModel.class, cols, false, I_ZZPerson.Table_Name);
+		TableModel tmHealthFunctions = TableModel.getTableBean(TableModel.class, cols, false, X_ZZPerson.Table_Name);
 		tmHealthFunctions.setSclass("srd-health-function srd-health-function-learner");
 		tmHealthFunctions.setDaoManage(daoManage);
 		tmHealthFunctions.init();
@@ -732,7 +731,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		tmPhysicalAddress.setAfterAppSave((tableModel, trxName) -> {
 			TableModel tmAddress = (TableModel) tableModel;
-			X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
+			X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, X_C_Location.Table_Name);
 			if (location != null) {
 				person.setZZPhysicalLocation_ID(location.getC_Location_ID());
 				person.saveEx(trxName);
@@ -742,7 +741,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		tmPostalAddress.setAfterAppSave((tableModel, trxName) -> {
 			TableModel tmAddress = (TableModel) tableModel;
-			X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, I_C_Location.Table_Name);
+			X_C_Location location = tmAddress.getRow().getDataOneRow(X_C_Location.class, X_C_Location.Table_Name);
 			if (location != null) {
 				person.setZZPostalLocation_ID(location.getC_Location_ID());
 				person.saveEx(trxName);
@@ -790,10 +789,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	@Override
 	public void doSave(String trxName) {
 		if (learner == null) {
-			learner = (X_ZZLearner) daoManage.getDaoForSave(I_ZZLearner.Table_Name);
+			learner = (X_ZZLearner) daoManage.getDaoForSave(X_ZZLearner.Table_Name);
 		}
 		if (person == null) {
-			person = (X_ZZPerson) daoManage.getDaoForSave(I_ZZPerson.Table_Name);
+			person = (X_ZZPerson) daoManage.getDaoForSave(X_ZZPerson.Table_Name);
 		}
 
 		boolean isDraft = true;
@@ -847,7 +846,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	private void saveChildTables(String trxName, int learnerId) {
 		// 1. Parent/Guardian Details
 		if (tmParentDetails != null && tmParentDetails.getRow() != null) {
-			X_ZZ_ParentDetails pd = tmParentDetails.getRow().getDataOneRow(X_ZZ_ParentDetails.class, I_ZZ_ParentDetails.Table_Name);
+			X_ZZ_ParentDetails pd = tmParentDetails.getRow().getDataOneRow(X_ZZ_ParentDetails.class, X_ZZ_ParentDetails.Table_Name);
 			boolean hasPd = pd != null && (pd.getZZParentPerson_ID() > 0
 					|| (pd.getZZFirstName() != null && !pd.getZZFirstName().isBlank())
 					|| (pd.getZZMiddleName() != null && !pd.getZZMiddleName().isBlank())
@@ -862,7 +861,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		// 2. Post School Educational Details
 		if (tmPostSchoolEducation != null && tmPostSchoolEducation.getRow() != null) {
 			X_ZZ_PostSchoolEducation_Details ps = tmPostSchoolEducation.getRow()
-					.getDataOneRow(X_ZZ_PostSchoolEducation_Details.class, I_ZZ_PostSchoolEducation_Details.Table_Name);
+					.getDataOneRow(X_ZZ_PostSchoolEducation_Details.class, X_ZZ_PostSchoolEducation_Details.Table_Name);
 			boolean hasPs = ps != null && ((ps.getQualification() != null && !ps.getQualification().isBlank())
 					|| (ps.getName() != null && !ps.getName().isBlank())
 					|| ps.getZZ_DateAchieved() != null
@@ -887,10 +886,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		// 3. Experiential Learning
 		if (tmExperientialLearning != null && tmExperientialLearning.getRow() != null) {
 			X_ZZ_ExperientialLearning exp = tmExperientialLearning.getRow()
-					.getDataOneRow(X_ZZ_ExperientialLearning.class, I_ZZ_ExperientialLearning.Table_Name);
+					.getDataOneRow(X_ZZ_ExperientialLearning.class, X_ZZ_ExperientialLearning.Table_Name);
 			if (tmContactableReference != null && tmContactableReference.getRow() != null) {
 				X_ZZ_ExperientialLearning ref = tmContactableReference.getRow()
-						.getDataOneRow(X_ZZ_ExperientialLearning.class, I_ZZ_ExperientialLearning.Table_Name);
+						.getDataOneRow(X_ZZ_ExperientialLearning.class, X_ZZ_ExperientialLearning.Table_Name);
 				if (ref != null && exp != null) {
 					if (ref.getTitle() != null && !ref.getTitle().isBlank())
 						exp.setTitle(ref.getTitle());
@@ -923,7 +922,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		// 4. Employment History
 		if (tmEmploymentHistory != null && tmEmploymentHistory.getRow() != null) {
 			X_ZZ_EmploymentHistory eh = tmEmploymentHistory.getRow()
-					.getDataOneRow(X_ZZ_EmploymentHistory.class, I_ZZ_EmploymentHistory.Table_Name);
+					.getDataOneRow(X_ZZ_EmploymentHistory.class, X_ZZ_EmploymentHistory.Table_Name);
 			CellModel uploadCell = tmEmploymentHistory.getRow().get(empUploadCol);
 			boolean hasUpload = uploadCell instanceof UploadCellModel
 					&& (((UploadCellModel) uploadCell).hasBytes() || ((UploadCellModel) uploadCell).getFileName() != null);
@@ -946,15 +945,24 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	private void initParentDetails() {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ValueAdaptColumnModel parentPersonCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
-						I_ZZ_ParentDetails.COLUMNNAME_ZZParentPerson_ID),
-				I_ZZ_ParentDetails.COLUMNNAME_ZZParentPerson_ID,
+		parentTitleCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(X_ZZ_ParentDetails.Table_Name,
+						X_ZZ_ParentDetails.COLUMNNAME_Title),
+				X_ZZ_ParentDetails.COLUMNNAME_Title,
+				MasterUtil.getLkpTitleLists(),
+				title -> title.getName(),
+				title -> title.getValue()
+		).setzClass(ValueNamePair.class);
+		cols.add(parentTitleCol);
+
+		parentPersonCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				"RSA ID",
+				X_ZZ_ParentDetails.COLUMNNAME_ZZParentPerson_ID,
 				CellModel.SEARCH_CELL);
 
 		parentPersonCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-				InfoPanelPara.getInstance(I_ZZPerson.Table_Name, I_ZZPerson.COLUMNNAME_ZZPerson_ID),
+				InfoPanelPara.getInstance(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZPerson_ID),
 				(obj, infoPanel) -> {
 					Object[] objs = (Object[]) obj;
 					if (objs == null || objs.length == 0 || objs[0] == null) {
@@ -966,19 +974,30 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					RowModel rm = cellModel.getRowModel();
 					if (rm.get(parentFirstNameCol) != null) {
 						rm.get(parentFirstNameCol).setValue(selected.getZZFirstName());
+						BindUtils.postNotifyChange(null, null, rm.get(parentFirstNameCol), "value");
 					}
 					if (rm.get(parentMiddleNameCol) != null) {
 						rm.get(parentMiddleNameCol).setValue(selected.getZZMiddleName());
+						BindUtils.postNotifyChange(null, null, rm.get(parentMiddleNameCol), "value");
 					}
 					if (rm.get(parentSurnameCol) != null) {
 						rm.get(parentSurnameCol).setValue(selected.getSurname());
+						BindUtils.postNotifyChange(null, null, rm.get(parentSurnameCol), "value");
 					}
 					if (rm.get(parentTitleCol) != null) {
-						String title = selected.get_ValueAsString("ZZLkpTitle");
+						String title = selected.getZZLkpTitle();
 						if (title != null && !title.isBlank()) {
-							rm.get(parentTitleCol).setValue(title);
+							ValueNamePair titlePair = MasterUtil.getLkpTitleLists().stream()
+									.filter(p -> p.getValue().equalsIgnoreCase(title) || p.getName().equalsIgnoreCase(title))
+									.findFirst().orElse(null);
+							if (titlePair != null) {
+								rm.get(parentTitleCol).setValue(titlePair);
+								BindUtils.postNotifyChange(null, null, rm.get(parentTitleCol), "value");
+								BindUtils.postNotifyChange(null, null, rm.get(parentTitleCol), "selectedItem");
+							}
 						}
 					}
+					updateParentFieldsReadonly(true);
 				});
 		});
 
@@ -986,6 +1005,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			if (value == null)
 				return null;
 			X_ZZPerson p = (X_ZZPerson) value;
+			if (p.getZZ_ID_Passport_No() != null && !p.getZZ_ID_Passport_No().isBlank()) {
+				return p.getZZ_ID_Passport_No();
+			}
+			if (p.getZZOtherIDNo() != null && !p.getZZOtherIDNo().isBlank()) {
+				return p.getZZOtherIDNo();
+			}
 			String fn = p.getZZFirstName() != null ? p.getZZFirstName() : "";
 			String sn = p.getSurname() != null ? p.getSurname() : "";
 			return (fn + " " + sn).trim();
@@ -1009,48 +1034,40 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(parentPersonCol);
 
 		parentFirstNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
-						I_ZZ_ParentDetails.COLUMNNAME_ZZFirstName),
-				I_ZZ_ParentDetails.COLUMNNAME_ZZFirstName).setReadonly(true);
+				MasterUtil.getNameOfColTranslated(X_ZZ_ParentDetails.Table_Name,
+						X_ZZ_ParentDetails.COLUMNNAME_ZZFirstName),
+				X_ZZ_ParentDetails.COLUMNNAME_ZZFirstName);
 		cols.add(parentFirstNameCol);
 
 		parentMiddleNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
-						I_ZZ_ParentDetails.COLUMNNAME_ZZMiddleName),
-				I_ZZ_ParentDetails.COLUMNNAME_ZZMiddleName).setReadonly(true);
+				MasterUtil.getNameOfColTranslated(X_ZZ_ParentDetails.Table_Name,
+						X_ZZ_ParentDetails.COLUMNNAME_ZZMiddleName),
+				X_ZZ_ParentDetails.COLUMNNAME_ZZMiddleName);
 		cols.add(parentMiddleNameCol);
 
 		parentSurnameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
-						I_ZZ_ParentDetails.COLUMNNAME_Surname),
-				I_ZZ_ParentDetails.COLUMNNAME_Surname).setReadonly(true);
+				MasterUtil.getNameOfColTranslated(X_ZZ_ParentDetails.Table_Name,
+						X_ZZ_ParentDetails.COLUMNNAME_Surname),
+				X_ZZ_ParentDetails.COLUMNNAME_Surname);
 		cols.add(parentSurnameCol);
 
-		parentTitleCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ParentDetails.Table_Name,
-						I_ZZ_ParentDetails.COLUMNNAME_Title),
-				I_ZZ_ParentDetails.COLUMNNAME_Title,
-				MasterUtil.getLkpTitleLists(),
-				title -> title.getName(),
-				title -> title.getValue()
-		).setzClass(ValueNamePair.class);
-		parentTitleCol.setReadonly(true);
-		cols.add(parentTitleCol);
-
-		tmParentDetails = TableModel.getTableBean(TableModel.class, cols, false, I_ZZ_ParentDetails.Table_Name);
-		tmParentDetails.setSclass("two-col srd-parent-details");
+		tmParentDetails = TableModel.getTableBean(TableModel.class, cols, false, X_ZZ_ParentDetails.Table_Name);
+		tmParentDetails.setSclass("srd-parent-details");
 		tmParentDetails.setRowSaveFilter(row -> false);
 		tmParentDetails.init();
 
 		tmParentDetails.setLoadSavedDataHandle(tm -> {
 			if (learner != null && learner.getZZLearner_ID() > 0) {
-				X_ZZ_ParentDetails pd = new Query(Env.getCtx(), I_ZZ_ParentDetails.Table_Name, "ZZLearner_ID=?", null)
+				X_ZZ_ParentDetails pd = new Query(Env.getCtx(), X_ZZ_ParentDetails.Table_Name, "ZZLearner_ID=?", null)
 						.setParameters(learner.getZZLearner_ID())
 						.setOnlyActiveRecords(true)
 						.firstOnly();
 				tm.getRow().setDataOneRow(pd);
+				boolean hasPerson = pd != null && pd.getZZParentPerson_ID() > 0;
+				updateParentFieldsReadonly(hasPerson);
 			} else {
 				tm.getRow().setDataOneRow(null);
+				updateParentFieldsReadonly(false);
 			}
 			tm.reloadDao();
 		});
@@ -1060,18 +1077,161 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		tabPanelParentDetails.getCompModel().add(tmParentDetails);
 	}
 
+	private void updateParentFieldsReadonly(boolean isReadonly) {
+		if (parentTitleCol != null) {
+			parentTitleCol.setReadonly(isReadonly);
+		}
+		if (parentFirstNameCol != null) {
+			parentFirstNameCol.setReadonly(isReadonly);
+		}
+		if (parentMiddleNameCol != null) {
+			parentMiddleNameCol.setReadonly(isReadonly);
+		}
+		if (parentSurnameCol != null) {
+			parentSurnameCol.setReadonly(isReadonly);
+		}
+	}
+
+	private void initEducationDetail() {
+		List<ColumnModel> cols = new ArrayList<>();
+
+		ValueAdaptColumnModel lastSchoolEmisCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				Msg.getElement(Env.getCtx(), "ZZLastSchoolEmis"), X_ZZPerson.COLUMNNAME_ZZLkpSchoolEmis_ID,
+				CellModel.SEARCH_CELL);
+		lastSchoolEmisCol.required();
+
+		lastSchoolEmisCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+				InfoPanelPara.getInstance(X_ZZLkpSchoolEmis.Table_Name, X_ZZLkpSchoolEmis.COLUMNNAME_ZZLkpSchoolEmis_ID),
+				(obj, infoPanel) -> {
+					Object[] objs = (Object[]) obj;
+					if (objs == null || objs.length == 0 || objs[0] == null) {
+						return;
+					}
+					int id = objs[0] instanceof Number ? ((Number) objs[0]).intValue() : Integer.parseInt(objs[0].toString());
+					X_ZZLkpSchoolEmis selected = new X_ZZLkpSchoolEmis(Env.getCtx(), id, null);
+					cellModel.setValue(selected);
+				});
+		});
+
+		lastSchoolEmisCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+
+			X_ZZLkpSchoolEmis schoolEmis = (X_ZZLkpSchoolEmis) value;
+			return schoolEmis.getName();
+		});
+
+		lastSchoolEmisCol.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+
+			X_ZZLkpSchoolEmis schoolEmis = (X_ZZLkpSchoolEmis) value;
+			return schoolEmis.getZZLkpSchoolEmis_ID();
+		});
+
+		lastSchoolEmisCol.setValueFromDaoAdaptHandle(obj -> {
+			if (obj == null)
+				return null;
+
+			Integer id = Integer.class.cast(obj);
+			if (id == 0)
+				return null;
+
+			return new X_ZZLkpSchoolEmis(Env.getCtx(), id, null);
+		});
+
+		cols.add(lastSchoolEmisCol);
+
+		ColumnModel lastSchoolYearCol = CellModel.getColModelForPositiveNumber(
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZLastSchoolYear),
+				X_ZZPerson.COLUMNNAME_ZZLastSchoolYear).required();
+		cols.add(lastSchoolYearCol);
+
+		ValueAdaptColumnModel areaCodeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID),
+				X_ZZPerson.COLUMNNAME_ZZLkpStatssaAreaCode_ID, CellModel.SEARCH_CELL);
+		areaCodeCol.required();
+
+		areaCodeCol.setEventHandle((event, cellModel) -> {
+			showInfoPanel(
+				InfoPanelPara.getInstance(X_ZZLkpStatssaAreaCode.Table_Name, X_ZZLkpStatssaAreaCode.COLUMNNAME_ZZLkpStatssaAreaCode_ID),
+				(obj, infoPanel) -> {
+					Object[] objs = (Object[]) obj;
+					if (objs == null || objs.length == 0 || objs[0] == null) {
+						return;
+					}
+					int id = objs[0] instanceof Number ? ((Number) objs[0]).intValue() : Integer.parseInt(objs[0].toString());
+					X_ZZLkpStatssaAreaCode selected = new X_ZZLkpStatssaAreaCode(Env.getCtx(), id, null);
+					cellModel.setValue(selected);
+				});
+		});
+
+		areaCodeCol.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			X_ZZLkpStatssaAreaCode schoolEmis = (X_ZZLkpStatssaAreaCode) value;
+			return schoolEmis.getName();
+		});
+
+		areaCodeCol.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+
+			X_ZZLkpStatssaAreaCode statssaAreaCode = (X_ZZLkpStatssaAreaCode) value;
+			return statssaAreaCode.getZZLkpStatssaAreaCode_ID();
+		});
+
+		areaCodeCol.setValueFromDaoAdaptHandle(obj -> {
+			if (obj == null)
+				return null;
+
+			Integer id = Integer.class.cast(obj);
+			if (id == 0)
+				return null;
+
+			return new X_ZZLkpStatssaAreaCode(Env.getCtx(), id, null);
+		});
+
+		cols.add(areaCodeCol);
+
+		ColumnModel popiActStatusCol = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name, X_ZZPerson.COLUMNNAME_ZZPopiActStatus),
+				X_ZZPerson.COLUMNNAME_ZZPopiActStatus, MasterUtil.getPopiActStatus(), title -> {
+					return title.getName();
+				}, title -> {
+					return title.getValue();
+				}).setzClass(ValueNamePair.class).required();
+		cols.add(popiActStatusCol);
+
+		ColumnModel popiActStatusDateCol = DateCellModel
+				.getDateColumnModel(MasterUtil.getNameOfColTranslated(X_ZZPerson.Table_Name,
+						X_ZZPerson.COLUMNNAME_ZZPopiActStatusDate), X_ZZPerson.COLUMNNAME_ZZPopiActStatusDate)
+				.required();
+		cols.add(popiActStatusDateCol);
+
+		tmEducationDetail = TableModel.getTableBean(TableModel.class, cols, false, X_ZZPerson.Table_Name);
+		tmEducationDetail.setSclass("srd-education-detail srd-education-detail-learner");
+		tmEducationDetail.setDaoManage(daoManage);
+		tmEducationDetail.init();
+
+		NavTabPanel tabPanelEducationDetail = new NavTabPanel(mainTab);
+		tabPanelEducationDetail.setTabTitle("Education Details");
+		tabPanelEducationDetail.getCompModel().add(tmEducationDetail);
+	}
+
 	private void initPostSchoolEducation() {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ValueAdaptColumnModel qualificationCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZ_PostSchoolEducation_Details.Table_Name,
-						I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Qualification),
-				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Qualification,
+				MasterUtil.getNameOfColTranslated(X_ZZ_PostSchoolEducation_Details.Table_Name,
+						X_ZZ_PostSchoolEducation_Details.COLUMNNAME_Qualification),
+				X_ZZ_PostSchoolEducation_Details.COLUMNNAME_Qualification,
 				CellModel.SEARCH_CELL);
 
 		qualificationCol.setEventHandle((event, cellModel) -> {
 			showInfoPanel(
-				InfoPanelPara.getInstance(I_ZZQualification_v.Table_Name, I_ZZQualification_v.COLUMNNAME_ZZQualification_v_UU),
+				InfoPanelPara.getInstance(X_ZZQualification_v.Table_Name, X_ZZQualification_v.COLUMNNAME_ZZQualification_v_UU),
 				(obj, infoPanel) -> {
 					Object[] objs = (Object[]) obj;
 					if (objs == null || objs.length == 0 || objs[0] == null) {
@@ -1107,18 +1267,18 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		qualificationNameCol = CellModel.getColModelForText(
 				"Qualification Name",
-				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Name).setReadonly(true);
+				X_ZZ_PostSchoolEducation_Details.COLUMNNAME_Name).setReadonly(true);
 		cols.add(qualificationNameCol);
 
 		ColumnModel dateAchievedCol = DateCellModel.getDateColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZ_PostSchoolEducation_Details.Table_Name,
-						I_ZZ_PostSchoolEducation_Details.COLUMNNAME_ZZ_DateAchieved),
-				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_ZZ_DateAchieved);
+				MasterUtil.getNameOfColTranslated(X_ZZ_PostSchoolEducation_Details.Table_Name,
+						X_ZZ_PostSchoolEducation_Details.COLUMNNAME_ZZ_DateAchieved),
+				X_ZZ_PostSchoolEducation_Details.COLUMNNAME_ZZ_DateAchieved);
 		cols.add(dateAchievedCol);
 
 		ValueAdaptColumnModel linkedOfoCodeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
 				"Linked OFO Code",
-				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_OFO_Occupation_ID,
+				X_ZZ_PostSchoolEducation_Details.COLUMNNAME_OFO_Occupation_ID,
 				CellModel.SEARCH_CELL);
 
 		linkedOfoCodeCol.setEventHandle((event, cellModel) -> {
@@ -1167,11 +1327,11 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		linkedOfoDescCol = CellModel.getColModelForText(
 				"Linked OFO Description",
-				I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Description).setReadonly(true);
+				X_ZZ_PostSchoolEducation_Details.COLUMNNAME_Description).setReadonly(true);
 		cols.add(linkedOfoDescCol);
 
 		tmPostSchoolEducation = TableModel.getTableBean(TableModel.class, cols, false,
-				I_ZZ_PostSchoolEducation_Details.Table_Name);
+				X_ZZ_PostSchoolEducation_Details.Table_Name);
 		tmPostSchoolEducation.setSclass("two-col srd-post-school-education");
 		tmPostSchoolEducation.setRowSaveFilter(row -> false);
 		tmPostSchoolEducation.init();
@@ -1179,7 +1339,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		tmPostSchoolEducation.setLoadSavedDataHandle(tm -> {
 			if (learner != null && learner.getZZLearner_ID() > 0) {
 				X_ZZ_PostSchoolEducation_Details ps = new Query(Env.getCtx(),
-						I_ZZ_PostSchoolEducation_Details.Table_Name, "ZZLearner_ID=?", null)
+						X_ZZ_PostSchoolEducation_Details.Table_Name, "ZZLearner_ID=?", null)
 						.setParameters(learner.getZZLearner_ID())
 						.setOnlyActiveRecords(true)
 						.firstOnly();
@@ -1200,31 +1360,31 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		List<ColumnModel> expCols = new ArrayList<>();
 
 		ColumnModel experienceWorkCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
-						I_ZZ_ExperientialLearning.COLUMNNAME_ZZ_ExperianceWork),
-				I_ZZ_ExperientialLearning.COLUMNNAME_ZZ_ExperianceWork);
+				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
+						X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_ExperianceWork),
+				X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_ExperianceWork);
 		expCols.add(experienceWorkCol);
 
 		ColumnModel expDateFromCol = DateCellModel.getDateColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
-						I_ZZ_ExperientialLearning.COLUMNNAME_DateFrom),
-				I_ZZ_ExperientialLearning.COLUMNNAME_DateFrom);
+				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
+						X_ZZ_ExperientialLearning.COLUMNNAME_DateFrom),
+				X_ZZ_ExperientialLearning.COLUMNNAME_DateFrom);
 		expCols.add(expDateFromCol);
 
 		ColumnModel expDateToCol = DateCellModel.getDateColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
-						I_ZZ_ExperientialLearning.COLUMNNAME_DateTo),
-				I_ZZ_ExperientialLearning.COLUMNNAME_DateTo);
+				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
+						X_ZZ_ExperientialLearning.COLUMNNAME_DateTo),
+				X_ZZ_ExperientialLearning.COLUMNNAME_DateTo);
 		expCols.add(expDateToCol);
 
 		ColumnModel natureOfWorkCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
-						I_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork),
-				I_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork);
+				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
+						X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork),
+				X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork);
 		expCols.add(natureOfWorkCol);
 
 		tmExperientialLearning = TableModel.getTableBean(TableModel.class, expCols, false,
-				I_ZZ_ExperientialLearning.Table_Name);
+				X_ZZ_ExperientialLearning.Table_Name);
 		tmExperientialLearning.setSubSectionHeader("Experiential Learning");
 		tmExperientialLearning.setSclass("two-col srd-experiential-learning");
 		tmExperientialLearning.setRowSaveFilter(row -> false);
@@ -1234,9 +1394,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		List<ColumnModel> refCols = new ArrayList<>();
 
 		ColumnModel refTitleCol = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
-						I_ZZ_ExperientialLearning.COLUMNNAME_Title),
-				I_ZZ_ExperientialLearning.COLUMNNAME_Title,
+				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
+						X_ZZ_ExperientialLearning.COLUMNNAME_Title),
+				X_ZZ_ExperientialLearning.COLUMNNAME_Title,
 				MasterUtil.getLkpTitleLists(),
 				title -> title.getName(),
 				title -> title.getValue()
@@ -1244,13 +1404,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		refCols.add(refTitleCol);
 
 		ColumnModel refNameCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_ExperientialLearning.Table_Name,
-						I_ZZ_ExperientialLearning.COLUMNNAME_Name),
-				I_ZZ_ExperientialLearning.COLUMNNAME_Name);
+				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
+						X_ZZ_ExperientialLearning.COLUMNNAME_Name),
+				X_ZZ_ExperientialLearning.COLUMNNAME_Name);
 		refCols.add(refNameCol);
 
 		tmContactableReference = TableModel.getTableBean(TableModel.class, refCols, false,
-				I_ZZ_ExperientialLearning.Table_Name);
+				X_ZZ_ExperientialLearning.Table_Name);
 		tmContactableReference.setSubSectionHeader("Contactable Reference:");
 		tmContactableReference.setSclass("two-col srd-contactable-reference");
 		tmContactableReference.setRowSaveFilter(row -> false);
@@ -1259,7 +1419,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		tmExperientialLearning.setLoadSavedDataHandle(tm -> {
 			if (learner != null && learner.getZZLearner_ID() > 0) {
 				X_ZZ_ExperientialLearning exp = new Query(Env.getCtx(),
-						I_ZZ_ExperientialLearning.Table_Name, "ZZLearner_ID=?", null)
+						X_ZZ_ExperientialLearning.Table_Name, "ZZLearner_ID=?", null)
 						.setParameters(learner.getZZLearner_ID())
 						.setOnlyActiveRecords(true)
 						.firstOnly();
@@ -1273,7 +1433,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		tmContactableReference.setLoadSavedDataHandle(tm -> {
 			if (learner != null && learner.getZZLearner_ID() > 0) {
 				X_ZZ_ExperientialLearning exp = new Query(Env.getCtx(),
-						I_ZZ_ExperientialLearning.Table_Name, "ZZLearner_ID=?", null)
+						X_ZZ_ExperientialLearning.Table_Name, "ZZLearner_ID=?", null)
 						.setParameters(learner.getZZLearner_ID())
 						.setOnlyActiveRecords(true)
 						.firstOnly();
@@ -1294,32 +1454,32 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		List<ColumnModel> cols = new ArrayList<>();
 
 		ColumnModel positionCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_EmploymentHistory.Table_Name,
-						I_ZZ_EmploymentHistory.COLUMNNAME_Position),
-				I_ZZ_EmploymentHistory.COLUMNNAME_Position);
+				MasterUtil.getNameOfColTranslated(X_ZZ_EmploymentHistory.Table_Name,
+						X_ZZ_EmploymentHistory.COLUMNNAME_Position),
+				X_ZZ_EmploymentHistory.COLUMNNAME_Position);
 		cols.add(positionCol);
 
 		ColumnModel companyCol = CellModel.getColModelForText(
 				"Company",
-				I_ZZ_EmploymentHistory.COLUMNNAME_CompanyCode);
+				X_ZZ_EmploymentHistory.COLUMNNAME_CompanyCode);
 		cols.add(companyCol);
 
 		ColumnModel durationCol = CellModel.getColModelForPositiveNumber(
-				MasterUtil.getNameOfColTranslated(I_ZZ_EmploymentHistory.Table_Name,
-						I_ZZ_EmploymentHistory.COLUMNNAME_Duration),
-				I_ZZ_EmploymentHistory.COLUMNNAME_Duration);
+				MasterUtil.getNameOfColTranslated(X_ZZ_EmploymentHistory.Table_Name,
+						X_ZZ_EmploymentHistory.COLUMNNAME_Duration),
+				X_ZZ_EmploymentHistory.COLUMNNAME_Duration);
 		cols.add(durationCol);
 
 		ColumnModel locationCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_EmploymentHistory.Table_Name,
-						I_ZZ_EmploymentHistory.COLUMNNAME_ZZ_Location),
-				I_ZZ_EmploymentHistory.COLUMNNAME_ZZ_Location);
+				MasterUtil.getNameOfColTranslated(X_ZZ_EmploymentHistory.Table_Name,
+						X_ZZ_EmploymentHistory.COLUMNNAME_ZZ_Location),
+				X_ZZ_EmploymentHistory.COLUMNNAME_ZZ_Location);
 		cols.add(locationCol);
 
 		ColumnModel empDescriptionCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_ZZ_EmploymentHistory.Table_Name,
-						I_ZZ_EmploymentHistory.COLUMNNAME_Description),
-				I_ZZ_EmploymentHistory.COLUMNNAME_Description);
+				MasterUtil.getNameOfColTranslated(X_ZZ_EmploymentHistory.Table_Name,
+						X_ZZ_EmploymentHistory.COLUMNNAME_Description),
+				X_ZZ_EmploymentHistory.COLUMNNAME_Description);
 		cols.add(empDescriptionCol);
 
 		empUploadCol = UploadCellModel.getUploadColumnModel("", null, null, "UPLOAD FILE");
@@ -1327,7 +1487,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(empUploadCol);
 
 		tmEmploymentHistory = TableModel.getTableBean(TableModel.class, cols, false,
-				I_ZZ_EmploymentHistory.Table_Name);
+				X_ZZ_EmploymentHistory.Table_Name);
 		tmEmploymentHistory.setSclass("two-col srd-employment-history");
 		tmEmploymentHistory.setRowSaveFilter(row -> false);
 		tmEmploymentHistory.init();
@@ -1335,7 +1495,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		tmEmploymentHistory.setLoadSavedDataHandle(tm -> {
 			if (learner != null && learner.getZZLearner_ID() > 0) {
 				X_ZZ_EmploymentHistory eh = new Query(Env.getCtx(),
-						I_ZZ_EmploymentHistory.Table_Name, "ZZLearner_ID=?", null)
+						X_ZZ_EmploymentHistory.Table_Name, "ZZLearner_ID=?", null)
 						.setParameters(learner.getZZLearner_ID())
 						.setOnlyActiveRecords(true)
 						.firstOnly();
@@ -1351,8 +1511,34 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		tabPanelEmploymentHistory.getCompModel().add(tmEmploymentHistory);
 	}
 
+	private void initUploadDocument() {
+		List<ColumnModel> cols = new ArrayList<>();
+
+		ColumnModel photoUploadCol = UploadCellModel.getUploadColumnModel("Photograph",
+				X_ZZPerson.COLUMNNAME_ZZPhotographFileName, X_ZZPerson.COLUMNNAME_ZZPhotographFileName, "Photograph");
+		photoUploadCol.setMandatory(true);
+		cols.add(photoUploadCol);
+
+		ColumnModel cvUploadCol = UploadCellModel.getUploadColumnModel("Curriculum Vitae (CV)",
+				X_ZZPerson.COLUMNNAME_ZZCVFileName, X_ZZPerson.COLUMNNAME_ZZCVFileName, "CV");
+		cvUploadCol.setMandatory(true);
+		cols.add(cvUploadCol);
+
+		tmDocumentUpload = TableModel.getTableBean(TableModel.class, cols, false, X_ZZPerson.Table_Name);
+		tmDocumentUpload.setDaoManage(daoManage);
+		tmDocumentUpload.init();
+
+		NavTabPanel uploadDetailTab = new NavTabPanel(mainTab);
+		uploadDetailTab.setTabTitle("Document Uploads");
+		uploadDetailTab.getCompModel().add(tmDocumentUpload);
+	}
+
 	public TableModel getTmParentDetails() {
 		return tmParentDetails;
+	}
+
+	public TableModel getTmEducationDetail() {
+		return tmEducationDetail;
 	}
 
 	public TableModel getTmPostSchoolEducation() {
@@ -1369,6 +1555,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	public TableModel getTmEmploymentHistory() {
 		return tmEmploymentHistory;
+	}
+
+	public TableModel getTmDocumentUpload() {
+		return tmDocumentUpload;
 	}
 
 	@Override

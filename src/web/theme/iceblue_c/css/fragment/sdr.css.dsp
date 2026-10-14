@@ -333,7 +333,22 @@
 }
 
 /* parent details */
-.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(1) {
+.mqaWebForm .grid-formview.srd-parent-details,
+.mqaWebForm .grid-formview.two-col.srd-parent-details {
+  grid-template-columns: repeat(6, 1fr);
+}
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(1),
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(2),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(1),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(2) {
+  grid-column: span 3;
+}
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(3),
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(4),
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(5),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(3),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(4),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(5) {
   grid-column: span 2;
 }
 
