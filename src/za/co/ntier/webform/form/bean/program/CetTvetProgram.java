@@ -18,6 +18,7 @@ import za.co.ntier.webform.form.bean.component.ColumnInfo;
 import za.co.ntier.webform.form.bean.component.IntData;
 import za.co.ntier.webform.form.bean.component.LearnerInputInfo;
 import za.co.ntier.webform.form.bean.component.ProgramInput;
+import za.co.ntier.webform.form.viewmodel.DiscretionaryGrantsApplicationProgramVM;
 
 public class CetTvetProgram extends AbstractProgram {
 	private AddressInfo addressInfo;
@@ -156,10 +157,19 @@ public class CetTvetProgram extends AbstractProgram {
 				daoColumn = I_ZZSubAnnex.COLUMNNAME_ZZ_Disciplines_ID;
 			}else {
 				tradeObj = ProgramInput.queryLearnerInputInfos(menuContextInfo.getProgramMasterData().getZZ_Program_Master_Data_ID(), true);
-				identify = "TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION";
+				
+				if (DiscretionaryGrantsApplicationProgramVM.isAfter2025(menuContextInfo)) {
+					identify = "Unemployed Bursars for Public Universities and TVET Support";
+				}else {
+					identify = "TVET UNEMPLOYED BURSARS SUPPORT FUNDING APPLICATION";
+				}
+				
 			}
 			
-			
+			tableTitle = identify;
+			if (menuContextInfo.getProgramType() != ProgramType.UNIVERSITY && DiscretionaryGrantsApplicationProgramVM.isAfter2025(menuContextInfo)) {
+				tableTitle = null;
+			}
 			
 			tradeInfo = tradeObj;
 			if (tradeInfo != null) {
@@ -170,7 +180,7 @@ public class CetTvetProgram extends AbstractProgram {
 
 				cols = List.of(colRowTitle, colNoLearners);
 				
-				subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, null, identify);
+				subAnnexure = CetTvetMultiLineInput.getCetTvetMultiLineInput(applicationForm, cols, identify, null, tableTitle);
 				// keep a reference for validation
 				this.tradeAnnexure = subAnnexure;
 
