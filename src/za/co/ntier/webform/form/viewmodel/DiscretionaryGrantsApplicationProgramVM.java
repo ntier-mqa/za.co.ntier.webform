@@ -388,6 +388,10 @@ public class DiscretionaryGrantsApplicationProgramVM {
 		// main contact
 		if (programType.isShowMainAddress()) {
 			programContact = new AddressInfo(programType, false);
+			if (programType == ProgramType.HET_LECTURE_SUPPORT && isAfter2025(menuContextInfo)) {
+				programContact.setAddressTitle("Contact details of person responsible");
+			}
+			
 			programContact.initComponent(applicationForm);
 			
 			saveForms.add(programContact);
