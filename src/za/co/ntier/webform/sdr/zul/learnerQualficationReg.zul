@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import za.co.ntier.webform.form.WebForm ?>
-<idspace xmlns:n="native" sclass="sdrForm" viewModel="@id(&apos;vmLearner&apos;) @init(&apos;za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM&apos;)">
+<idspace xmlns:n="native" sclass="sdrForm" viewModel="@id('vmLearner') @init('za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM')">
   <style>
-    /* Compact Grid layout for Learner Qualification registration tabs */
+    /* Compact Grid layout for Learner Qualification registration */
     .outter-view_grid,
     .mqaWebForm .sdrForm .outter-view_grid {
       overflow: visible !important;
@@ -115,64 +115,69 @@
       max-width: 100% !important;
     }
 
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .z-button:hover,
-    .grid-listView[class*=&quot;srd-learner&quot;] .z-button:hover {
+    .grid-listView[class*="srd-ZZLearner"] .z-button:hover,
+    .grid-listView[class*="srd-learner"] .z-button:hover {
       background: #243b6b !important;
     }
 
     /* Datebox Controls */
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell-content .z-datebox,
-    .grid-listView[class*=&quot;srd-learner&quot;] .cell-content .z-datebox {
+    .grid-listView[class*="srd-ZZLearner"] .cell-content .z-datebox,
+    .grid-listView[class*="srd-learner"] .cell-content .z-datebox {
       width: 100% !important;
       height: 30px !important;
     }
-  </style><!-- Always Visible Form Header -->
+  </style>
+
+  <!-- Always Visible Form Header -->
   <div style="display:flex; padding:5px 0 20px 0; flex-direction: column; align-items: center;">
-    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLearner.formInfo.formHeader)"/>
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLearner.formInfo.formHeader)" />
     <div style="padding-bottom:10px;font-size:smaller">
       <html content="@init(( vmLearner.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
     </div>
-  </div><!-- Phase 1: Identity Details -->
-  <div visible="@load(!vmLearner.identityValidated)">
-    <div sclass="sectionHeader" style="margin: 0 20px;">
-      <label sclass="sectionHeaderTitle" value="Identity Details"/>
-    </div>
-    <div style="margin: 0 20px 20px 20px;">
-      <div sclass="grid-formview two-col" style="grid-template-columns: 1fr 1fr;">
-        <div sclass="cell cellType2">
-          <div sclass="cell-title">
-            <label sclass="label" value="ID Type"/>
-            <label sclass="required" value="*"/>
-          </div>
-          <div sclass="cell-content cell-content15">
-            <listbox mold="select" model="@load(vmLearner.alternateIdTypes)" selectedItem="@bind(vmLearner.selectedIdType)">
-              <template name="model">
-                <listitem label="@load(each.name)"/>
-              </template>
-            </listbox>
-          </div>
-        </div>
-        <div sclass="cell cellType1">
-          <div sclass="cell-title">
-            <label sclass="label" value="ID Number"/>
-            <label sclass="required" value=" *"/>
-          </div>
-          <div sclass="cell-content cell-content15">
-            <textbox value="@bind(vmLearner.idNumber)"/>
-          </div>
-        </div>
-      </div>
-      <div style="padding:10px 0;">
-        <button label="VALIDATE" onClick="@command(&apos;onValidateIdentity&apos;)" sclass="z-button" visible="@load(!vmLearner.identityValidated)" style="font-weight:bold;"/>
-      </div>
-      <hlayout visible="@load(vmLearner.validationMessage ne &apos;&apos;)" style="padding:10px 0;">
-        <label value="@load(vmLearner.validationMessage)" style="padding:8px 12px; border:1px solid #ccc; background:#f9f9f9; display:block; width:100%;"/>
-      </hlayout>
-    </div>
   </div>
-  <div visible="@load(vmLearner.identityValidated)">
-    <include component="@init(vmLearner.tmNames)" menuContextInfo="@init(vmLearner.menuContextInfo)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/zul/dataFormView.zul&apos;)))"/>
-    <include sclass="navTabOuter" component="@init(vmLearner.mainTab)" menuContextInfo="@init(vmLearner.menuContextInfo)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/tab/zul/navTab.zul&apos;)))"/>
-    <include saveApp="@init(vmLearner)" navTab="@init(vmLearner.mainTab)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/tab/zul/tabButton.zul&apos;)))"/>
-  </div>
+
+  <nodom children="@load(vmLearner.steps) @template(each)">
+    <template name="selectRegistration">
+      <include
+        component="@init(vmLearner.tmLearnerSelection)"
+        menuContextInfo="@init(vmLearner.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+        
+      <include
+        component="@init(vmLearner.tmLearnerSelectionInfo)"
+        menuContextInfo="@init(vmLearner.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+    </template>
+
+    <template name="registration">
+      <include
+        component="@init(vmLearner.tmLearnerSelectionInfo)"
+        menuContextInfo="@init(vmLearner.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+
+      <div style="margin: 10px 0 5px 0;">
+        <button
+          label="Back"
+          iconSclass="z-icon-arrow-left"
+          onClick="@command('backToSelection')" />
+      </div>
+
+      <include
+        component="@init(vmLearner.tmRegistration)"
+        menuContextInfo="@init(vmLearner.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+
+      <div sclass="formBottomPanel">
+        <button
+          label="Cancel"
+          iconSclass="z-icon-xmark"
+          onClick="@command('cancelApp')" />
+        <button
+          label="Submit Application"
+          iconSclass="z-icon-gear"
+          sclass="icon-on-right"
+          onClick="@command('submitApp')" />
+      </div>
+    </template>
+  </nodom>
 </idspace>

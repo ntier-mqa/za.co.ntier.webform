@@ -666,6 +666,14 @@ public class TableModel implements ISaveForm {
 		public static CommandSetting getNonAddButton() {
 			return new CommandSetting(false, true);
 		}
+
+		public static CommandSetting getOnlyAddButton() {
+			return new CommandSetting(true, false);
+		}
+
+		public static CommandSetting getOnlyRemoveButton() {
+			return new CommandSetting(false, true);
+		}
 	}
 
 	private CommandSetting commandSetting = null;
