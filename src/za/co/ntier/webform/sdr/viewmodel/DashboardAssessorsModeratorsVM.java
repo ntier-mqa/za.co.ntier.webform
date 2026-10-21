@@ -1,5 +1,8 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -36,9 +39,31 @@ public class DashboardAssessorsModeratorsVM {
 		initList();
 	}
 	
-	public boolean showExtensionBt(X_ZZAssessorPerson_v row) {
-		return X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus())
-				&& row.getParent_ID() <= 0;
+	public boolean showExtensionBt(X_ZZAssessorPerson_v row)
+	{
+		if (row == null || row.getParent_ID() > 0
+			|| !X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(row.getZZ_DocStatus()))
+		{
+			return false;
+		}
+
+		List<MZZAssessorPersonV> extensions = assessors	.stream()
+														.filter(a -> a.getParent_ID() == row.getZZAssessorPerson_ID())
+														.collect(Collectors.toList());
+
+		if (extensions.isEmpty())
+		{
+			return true;
+		}
+
+		boolean hasPending = extensions.stream().anyMatch(e -> !X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(e.getZZ_DocStatus())
+																&& !X_ZZAssessorPerson_v.ZZ_DOCSTATUS_NotApproved.equals(e.getZZ_DocStatus()));
+		if (hasPending)
+		{
+			return false;
+		}
+
+		return extensions.stream().anyMatch(e -> X_ZZAssessorPerson_v.ZZ_DOCSTATUS_Approved.equals(e.getZZ_DocStatus()));
 	}
 	
 	public boolean showEditBt(X_ZZAssessorPerson_v row) {
