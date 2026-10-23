@@ -126,6 +126,68 @@
       width: 100% !important;
       height: 30px !important;
     }
+
+    /* DG Programme and Documents View Styling */
+    .srd-dg-programme .cell-content .z-textbox[readonly],
+    .srd-dg-programme .cell-content input[readonly] {
+      background-color: #f1f5f9 !important;
+      color: #334155 !important;
+      cursor: default !important;
+    }
+
+    /* DG Programme search buttons: compact icon-only beside input */
+    .srd-dg-programme .cell-content15,
+    [class*="srd-dg-programme"] .cell-content15,
+    .srd-dg-programme .cellType15 .cell-content,
+    [class*="srd-dg-programme"] .cellType15 .cell-content {
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .srd-dg-programme .cell-content15 .z-textbox,
+    [class*="srd-dg-programme"] .cell-content15 .z-textbox,
+    .srd-dg-programme .cell-content15 input[type="text"],
+    [class*="srd-dg-programme"] .cell-content15 input[type="text"] {
+      flex: 1 1 auto !important;
+      width: auto !important;
+    }
+
+    .srd-dg-programme .cell-content15 .z-button,
+    [class*="srd-dg-programme"] .cell-content15 .z-button,
+    .srd-dg-programme .cellType15 .z-button,
+    [class*="srd-dg-programme"] .cellType15 .z-button {
+      flex: 0 0 auto !important;
+      width: 34px !important;
+      min-width: 34px !important;
+      height: 30px !important;
+      padding: 0 !important;
+      margin-left: 5px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 0 !important;
+    }
+
+    .srd-dg-programme .cell-content15 .z-button i,
+    [class*="srd-dg-programme"] .cell-content15 .z-button i,
+    .srd-dg-programme .cellType15 .z-button i,
+    [class*="srd-dg-programme"] .cellType15 .z-button i {
+      font-size: 14px !important;
+    }
+
+    .srd-dg-programme .cell-content15 .z-button .z-button-label,
+    [class*="srd-dg-programme"] .cell-content15 .z-button .z-button-label,
+    .srd-dg-programme .cellType15 .z-button .z-button-label,
+    [class*="srd-dg-programme"] .cellType15 .z-button .z-button-label {
+      display: none !important;
+    }
+
+    .srd-dg-documents .header-cell {
+      background: #1b2a6b !important;
+      color: #ffffff !important;
+      font-weight: 600 !important;
+      font-size: 12px !important;
+    }
   </style>
 
   <!-- Always Visible Form Header -->
@@ -147,6 +209,52 @@
         component="@init(vmLearner.tmLearnerSelectionInfo)"
         menuContextInfo="@init(vmLearner.menuContextInfo)"
         src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+
+      <div visible="@load(vmLearner.dgProgrammeActive)" style="margin-top: 15px;">
+        <tabbox sclass="expand-tabbox" selectedIndex="@bind(vmLearner.dgSelectedTabIndex)">
+          <tabs>
+            <tab label="Programme" />
+            <tab label="Documents" />
+          </tabs>
+          <tabpanels>
+            <tabpanel>
+              <include
+                component="@load(vmLearner.tmDGProgrammeDetails)"
+                menuContextInfo="@init(vmLearner.menuContextInfo)"
+                src="@load(vmLearner.dgProgrammeActive ? (WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')) : null)" />
+            </tabpanel>
+            <tabpanel>
+              <include
+                component="@load(vmLearner.tmDGDocuments)"
+                menuContextInfo="@init(vmLearner.menuContextInfo)"
+                src="@load(vmLearner.dgProgrammeActive ? (WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')) : null)" />
+            </tabpanel>
+          </tabpanels>
+        </tabbox>
+        <div sclass="formBottomPanel" style="margin-top: 15px;">
+          <button
+            label="Cancel"
+            iconSclass="z-icon-xmark"
+            onClick="@command('cancelApp')" />
+          <button
+            label="Save &amp; Exit"
+            iconSclass="z-icon-floppy-disk"
+            sclass="icon-on-right"
+            onClick="@command('saveDGAppDraft')" />
+          <button
+            visible="@load(vmLearner.dgSelectedTabIndex eq 0)"
+            label="Next"
+            iconSclass="z-icon-arrow-right"
+            sclass="icon-on-right"
+            onClick="@command('nextDGTab')" />
+          <button
+            visible="@load(vmLearner.dgSelectedTabIndex eq 1)"
+            label="Submit"
+            iconSclass="z-icon-gear"
+            sclass="icon-on-right"
+            onClick="@command('submitDGApp')" />
+        </div>
+      </div>
     </template>
 
     <template name="registration">

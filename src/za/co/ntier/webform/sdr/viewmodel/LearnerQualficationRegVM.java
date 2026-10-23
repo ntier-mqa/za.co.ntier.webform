@@ -1,17 +1,31 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.X_C_BPartner;
+import org.compiere.model.I_AD_User;
+import org.compiere.model.I_C_BPartner;
+import org.compiere.model.I_C_Year;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MColumn;
+import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.MYear;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_BPartner;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -23,7 +37,11 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Listitem;
 
+import za.co.ntier.api.model.I_ZZLearnerDGProgramme;
+import za.co.ntier.api.model.I_ZZRegistrationDocs;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.X_ZZLearner;
+import za.co.ntier.api.model.X_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
 import za.co.ntier.api.model.X_ZZLearnerQCTOArtisans;
 import za.co.ntier.api.model.X_ZZLearnerQCTOLearnership;
@@ -34,7 +52,11 @@ import za.co.ntier.api.model.X_ZZLearnership;
 import za.co.ntier.api.model.X_ZZPerson;
 import za.co.ntier.api.model.X_ZZQctoLearnership;
 import za.co.ntier.api.model.X_ZZQctoSkillsProgramme;
+import za.co.ntier.api.model.X_ZZRegistrationDocs;
 import za.co.ntier.api.model.X_ZZSkillsProgramme;
+import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
+import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
+import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -42,15 +64,21 @@ import za.co.ntier.webform.form.bean.component.FormInfo;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.CommandSetting;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
 import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.PresetTitleCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ValueAdaptCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
+import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
+import za.co.ntier.webform.sdr.component.bean.column.UploadColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
 
 /**
@@ -61,9 +89,20 @@ import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
  */
 public class LearnerQualficationRegVM extends StepAppVM
 {
+	public static final String INTERVENTION_DG_PROGRAMMES = "Discretionary Grant Programmes";
+
 	private TableModel		tmLearnerSelection;
 	private TableModel		tmLearnerSelectionInfo;
 	private TableModel		tmRegistration;
+	private ColumnModel		actionCol;
+
+	private TableModel					tmDGProgrammeDetails;
+	private TableModel					tmDGDocuments;
+	private PresetTitleColumnModel<X_ZZRegistrationDocs> dgDocumentNameCol;
+	private UploadColumnModel			dgUploadCol;
+	private X_ZZ_Program_Master_Data	selectedDGProgramme;
+	private boolean						dgProgrammeActive			= false;
+	private int							dgSelectedTabIndex			= 0;
 
 	private ValueNamePair	selectedIntervention;
 	private X_ZZLearner_v	learnerSelected;
@@ -169,6 +208,8 @@ public class LearnerQualficationRegVM extends StepAppVM
 		initStep("selectRegistration");
 		initLearnerSelection();
 		initLearnerSelectionInfo();
+		initDGProgrammeDetails();
+		initDGDocuments();
 
 		if (menuContextInfo != null && menuContextInfo.getRecordID() > 0)
 		{
@@ -222,12 +263,24 @@ public class LearnerQualficationRegVM extends StepAppVM
 			tmLearnerSelectionInfo.reset(learnerSelected);
 		}
 		BindUtils.postNotifyChange(null, null, tmLearnerSelectionInfo, "rows");
+
+		dgProgrammeActive = false;
+		selectedDGProgramme = null;
+		BindUtils.postNotifyChange(null, null, this, "dgProgrammeActive");
+		BindUtils.postNotifyChange(null, null, this, "selectedDGProgramme");
+
 		BindUtils.postNotifyChange(null, null, this, "*");
 	}
 
 	public List<ValueNamePair> getFilteredInterventionList()
 	{
-		List<String> allowedOrder = List.of("QCTO Artisans", "QCTO Learnerships", "QCTO Skills Programmes", "Learnerships", "Skills Programmes");
+		List<String> allowedOrder = List.of(
+											"QCTO Artisans",
+											"QCTO Learnerships",
+											"QCTO Skills Programmes",
+											"Learnerships",
+											"Skills Programmes",
+											INTERVENTION_DG_PROGRAMMES);
 
 		List<ValueNamePair> allInterventions = MasterUtil.getLkpInterventionList();
 		List<ValueNamePair> filtered = new ArrayList<>();
@@ -305,12 +358,25 @@ public class LearnerQualficationRegVM extends StepAppVM
 			subQueries.add(String.format("SELECT %s FROM %s WHERE %s = %d",
 				X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID, X_ZZLearnerQCTOArtisans.Table_Name,
 				X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZ_SDP_ID, adminBpId));
+			subQueries.add(String.format("SELECT %s FROM %s WHERE %s = %d",
+				I_ZZLearnerDGProgramme.COLUMNNAME_ZZLearner_ID, I_ZZLearnerDGProgramme.Table_Name,
+				I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID, adminBpId));
 		}
 
 		sb.append(String.join(" UNION ", subQueries));
 		sb.append(")");
 
 		return sb.toString();
+	}
+
+	public boolean isInterventionDG()
+	{
+		if (selectedIntervention == null)
+			return false;
+		String val = selectedIntervention.getValue();
+		String name = selectedIntervention.getName();
+		return INTERVENTION_DG_PROGRAMMES.equalsIgnoreCase(val) || INTERVENTION_DG_PROGRAMMES.equalsIgnoreCase(name)
+				|| "DG Programmes".equalsIgnoreCase(val) || "DG Programme".equalsIgnoreCase(val);
 	}
 
 	private void initLearnerSelection()
@@ -339,10 +405,6 @@ public class LearnerQualficationRegVM extends StepAppVM
 					return;
 				int learnerIdSelected = objs[0] instanceof Number ? ((Number) objs[0]).intValue() : Integer.parseInt(objs[0].toString());
 				loadLearner(learnerIdSelected);
-				if (selectedIntervention != null)
-				{
-					openProgramInfoPanelOrLoad();
-				}
 			});
 		});
 
@@ -355,7 +417,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		interventionListCol.setzClass(ValueNamePair.class).required();
 		cols.add(interventionListCol);
 
-		ColumnModel actionCol = CellModel.getColModelForGenericCell("", null, CellModel.BUTTON_CELL);
+		actionCol = CellModel.getColModelForGenericCell("", null, CellModel.BUTTON_CELL);
 		actionCol.setShowTitle(false);
 		cols.add(actionCol);
 
@@ -365,17 +427,18 @@ public class LearnerQualficationRegVM extends StepAppVM
 			selectedIntervention = selectEvent.getSelectedObjects().iterator().next();
 
 			CellModel actionCell = cellModel.getRowModel().get(actionCol);
-			actionCol.setTitle(selectedIntervention.getName());
-			actionCell.setBtText(selectedIntervention.getName());
+			String btnText = isInterventionDG() ? "Grant Programmes" : selectedIntervention.getName();
+			actionCol.setTitle(btnText);
+			actionCell.setBtText(btnText);
 			actionCell.setVisible(true);
 			BindUtils.postNotifyChange(null, null, actionCell, "btText");
 			BindUtils.postNotifyChange(null, null, actionCell, "visible");
 			BindUtils.postNotifyChange(null, null, tmLearnerSelection, "row");
 
-			if (getSelectedLearnerId() > 0)
-			{
-				openProgramInfoPanelOrLoad();
-			}
+			dgProgrammeActive = false;
+			selectedDGProgramme = null;
+			BindUtils.postNotifyChange(null, null, this, "dgProgrammeActive");
+			BindUtils.postNotifyChange(null, null, this, "selectedDGProgramme");
 		});
 
 		actionCol.setEventHandle((event, cellModel) -> {
@@ -389,7 +452,14 @@ public class LearnerQualficationRegVM extends StepAppVM
 				MasterUtil.showInfoDialog("Please select an intervention type.", null);
 				return;
 			}
-			openProgramInfoPanelOrLoad();
+			if (isInterventionDG())
+			{
+				openDGProgrammeLookup();
+			}
+			else
+			{
+				openProgramInfoPanelOrLoad();
+			}
 		});
 
 		tmLearnerSelection = TableModel.getTableBean(TableModel.class, cols, false, X_ZZLearner_v.Table_Name);
@@ -1089,6 +1159,11 @@ public class LearnerQualficationRegVM extends StepAppVM
 			learner.setZZ_SDPAdmin_ID(currentUserId);
 			learner.saveEx(trxName);
 		}
+		if (dgProgrammeActive)
+		{
+			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
+			return;
+		}
 		super.doSave(trxName);
 	}
 
@@ -1100,6 +1175,11 @@ public class LearnerQualficationRegVM extends StepAppVM
 		{
 			learner.setZZ_SDPAdmin_ID(currentUserId);
 			learner.saveEx(trxName);
+		}
+		if (dgProgrammeActive)
+		{
+			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Submitted);
+			return;
 		}
 		super.doSubmit(trxName);
 	}
@@ -1132,5 +1212,1198 @@ public class LearnerQualficationRegVM extends StepAppVM
 	public void cancel()
 	{
 		cancelApp();
+	}
+
+	private String buildDGProgrammeWhereClause()
+	{
+		StringBuilder sql = new StringBuilder(I_ZZ_Program_Master_Data.Table_Name + "." + I_ZZ_Program_Master_Data.COLUMNNAME_IsActive + " = 'Y'");
+		sql.append(" AND ").append(I_ZZ_Program_Master_Data.Table_Name).append(".").append(I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_IsLearnerRegistration).append(" = 'Y'");
+		return sql.toString();
+	}
+
+	private void openDGProgrammeLookup()
+	{
+		if (getSelectedLearnerId() <= 0)
+		{
+			MasterUtil.showInfoDialog("Please select a learner first.", null);
+			return;
+		}
+
+		InfoPanelPara para = InfoPanelPara.getInstance(
+														I_ZZ_Program_Master_Data.Table_Name,
+														I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID);
+		para.setWhereClause(buildDGProgrammeWhereClause());
+
+		showInfoPanel(para, (obj, infoPanel) -> {
+			Object[] values = (Object[]) obj;
+			if (values == null || values.length == 0 || values[0] == null)
+				return;
+			int progId = values[0] instanceof Number ? ((Number) values[0]).intValue() : Integer.parseInt(values[0].toString());
+			if (progId <= 0)
+				return;
+
+			loadDGProgramme(progId);
+		});
+	}
+
+	private void loadDGProgramme(int progId)
+	{
+		selectedDGProgramme = new X_ZZ_Program_Master_Data(Env.getCtx(), progId, null);
+		dgProgrammeActive = true;
+
+		if (tmLearnerSelection != null && tmLearnerSelection.getRow() != null && actionCol != null)
+		{
+			CellModel cell = tmLearnerSelection.getRow().get(actionCol);
+			if (cell != null)
+			{
+				actionCol.setTitle("Grant Programmes");
+				cell.setBtText("Grant Programmes");
+				BindUtils.postNotifyChange(null, null, cell, "btText");
+			}
+		}
+
+		setDgSelectedTabIndex(0);
+		initDGProgrammeDetails();
+		loadDGDocuments();
+
+		BindUtils.postNotifyChange(null, null, this, "selectedDGProgramme");
+		BindUtils.postNotifyChange(null, null, this, "dgProgrammeActive");
+		BindUtils.postNotifyChange(null, null, this, "tmDGProgrammeDetails");
+		BindUtils.postNotifyChange(null, null, this, "tmDGDocuments");
+		BindUtils.postNotifyChange(null, null, this, "dgSelectedTabIndex");
+	}
+
+	private void initDGProgrammeDetails()
+	{
+		List<ColumnModel> cols = new ArrayList<>();
+
+		ColumnModel colRefNo = CellModel.getColModelForText(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber);
+		cols.add(colRefNo);
+
+		ColumnModel colProg = CellModel.getColModelForText(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID).setReadonly(true);
+		if (selectedDGProgramme != null)
+		{
+			String title = selectedDGProgramme.getTitle();
+			if (title == null || title.isBlank())
+				title = selectedDGProgramme.getName();
+			colProg.setDefaultValue(title);
+		}
+		cols.add(colProg);
+
+		ValueAdaptColumnModel colLeadSdp = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID,
+			CellModel.SEARCH_CELL);
+		colLeadSdp.required();
+		cols.add(colLeadSdp);
+
+		ValueAdaptColumnModel colLeadEmployer = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID,
+			CellModel.SEARCH_CELL);
+		colLeadEmployer.required();
+		cols.add(colLeadEmployer);
+
+		List<ValueNamePair> yesNoOptions = List.of(
+			new ValueNamePair("N", "No"),
+			new ValueNamePair("Y", "Yes")
+		);
+
+		ListColumnModel<ValueNamePair> colLeadSdpLevy = ListCellModel.getListColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy,
+			yesNoOptions,
+			ValueNamePair::getName,
+			ValueNamePair::getValue);
+		colLeadSdpLevy.setzClass(ValueNamePair.class).required();
+		cols.add(colLeadSdpLevy);
+
+		ListColumnModel<ValueNamePair> colLeadEmployerLevy = ListCellModel.getListColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy,
+			yesNoOptions,
+			ValueNamePair::getName,
+			ValueNamePair::getValue);
+		colLeadEmployerLevy.setzClass(ValueNamePair.class).required();
+		cols.add(colLeadEmployerLevy);
+
+		ValueAdaptColumnModel colLeadSdpContact = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID,
+			CellModel.SEARCH_CELL);
+		colLeadSdpContact.required();
+		cols.add(colLeadSdpContact);
+
+		ValueAdaptColumnModel colLeadEmployerContact = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID,
+			CellModel.SEARCH_CELL);
+		colLeadEmployerContact.required();
+		cols.add(colLeadEmployerContact);
+
+		ValueAdaptColumnModel colSecondarySdp = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID,
+			CellModel.SEARCH_CELL);
+		cols.add(colSecondarySdp);
+
+		ValueAdaptColumnModel colSecondaryEmployer = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID,
+			CellModel.SEARCH_CELL);
+		cols.add(colSecondaryEmployer);
+
+		ListColumnModel<ValueNamePair> colSecondarySdpLevy = ListCellModel.getListColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy,
+			yesNoOptions,
+			ValueNamePair::getName,
+			ValueNamePair::getValue);
+		colSecondarySdpLevy.setzClass(ValueNamePair.class);
+		cols.add(colSecondarySdpLevy);
+
+		ListColumnModel<ValueNamePair> colSecondaryEmployerLevy = ListCellModel.getListColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy,
+			yesNoOptions,
+			ValueNamePair::getName,
+			ValueNamePair::getValue);
+		colSecondaryEmployerLevy.setzClass(ValueNamePair.class);
+		cols.add(colSecondaryEmployerLevy);
+
+		ValueAdaptColumnModel colSecondarySdpContact = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID,
+			CellModel.SEARCH_CELL);
+		cols.add(colSecondarySdpContact);
+
+		ValueAdaptColumnModel colSecondaryEmployerContact = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID,
+			CellModel.SEARCH_CELL);
+		cols.add(colSecondaryEmployerContact);
+
+		MColumn socioCol = MTable.get(Env.getCtx(), I_ZZLearnerDGProgramme.Table_Name)
+								.getColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZSocioEconomicStatus);
+		int socioRefId = socioCol != null ? socioCol.getAD_Reference_Value_ID() : 1000250;
+		ValueNamePair[] socioPairs = MRefList.getList(Env.getCtx(), socioRefId, false);
+		List<ValueNamePair> socioList = socioPairs != null && socioPairs.length > 0
+				? Arrays.asList(socioPairs)
+				: List.of(
+					new ValueNamePair(X_ZZLearnerDGProgramme.ZZSOCIOECONOMICSTATUS_Employed, "Employed"),
+					new ValueNamePair(X_ZZLearnerDGProgramme.ZZSOCIOECONOMICSTATUS_Unemployed, "Unemployed"));
+
+		ListColumnModel<ValueNamePair> colSocio = ListCellModel.getListColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSocioEconomicStatus),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZSocioEconomicStatus,
+			socioList,
+			ValueNamePair::getName,
+			ValueNamePair::getValue);
+		colSocio.setzClass(ValueNamePair.class).required();
+		cols.add(colSocio);
+
+		MColumn fundingCol = MTable.get(Env.getCtx(), I_ZZLearnerDGProgramme.Table_Name)
+								.getColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType);
+		int fundingRefId = fundingCol != null ? fundingCol.getAD_Reference_Value_ID() : 1000367;
+		ValueNamePair[] fundingPairs = MRefList.getList(Env.getCtx(), fundingRefId, false);
+		List<ValueNamePair> fundingTypeList = fundingPairs != null && fundingPairs.length > 0
+				? Arrays.asList(fundingPairs)
+				: List.of(
+					new ValueNamePair(X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_IndustryFunded, "Industry Funded"),
+					new ValueNamePair(X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_SETAFunded, "SETA Funded"));
+
+		ListColumnModel<ValueNamePair> colFundingType = ListCellModel.getListColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType,
+			fundingTypeList,
+			ValueNamePair::getName,
+			ValueNamePair::getValue);
+		colFundingType.setzClass(ValueNamePair.class).required();
+		cols.add(colFundingType);
+
+		ColumnModel colContractNo = CellModel.getColModelForText(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber);
+		cols.add(colContractNo);
+
+		ValueAdaptColumnModel colFinancialYear = ValueAdaptCellModel.getValueAdaptColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID,
+			CellModel.SEARCH_CELL);
+		colFinancialYear.required();
+		cols.add(colFinancialYear);
+
+		ColumnModel colCommenceDate = DateCellModel.getDateColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate).required();
+		cols.add(colCommenceDate);
+
+		ColumnModel colCompletionDate = DateCellModel.getDateColumnModel(
+			MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name, I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate),
+			I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate).required();
+		cols.add(colCompletionDate);
+
+		String sdpWhere = I_C_BPartner.Table_Name + "." + I_C_BPartner.COLUMNNAME_IsActive + " = 'Y' AND "
+						+ I_C_BPartner.Table_Name + ".ZZ_Is_SDP = 'Y'";
+		String empWhere = I_C_BPartner.Table_Name + "." + I_C_BPartner.COLUMNNAME_IsActive + " = 'Y'";
+		configureBPartnerSearch(colLeadSdp, sdpWhere, colLeadSdpContact);
+		configureBPartnerSearch(colSecondarySdp, sdpWhere, colSecondarySdpContact);
+		configureBPartnerSearch(colLeadEmployer, empWhere, colLeadEmployerContact);
+		configureBPartnerSearch(colSecondaryEmployer, empWhere, colSecondaryEmployerContact);
+
+		configureUserContactSearch(colLeadSdpContact, colLeadSdp);
+		configureUserContactSearch(colSecondarySdpContact, colSecondarySdp);
+		configureUserContactSearch(colLeadEmployerContact, colLeadEmployer);
+		configureUserContactSearch(colSecondaryEmployerContact, colSecondaryEmployer);
+
+		configureYearSearch(colFinancialYear);
+
+		tmDGProgrammeDetails = TableModel.getTableBean(TableModel.class, cols, false, I_ZZLearnerDGProgramme.Table_Name);
+		tmDGProgrammeDetails.setViewModel(ViewType.VIEW_FORM);
+		tmDGProgrammeDetails.setSclass("two-col srd-dg-programme");
+		tmDGProgrammeDetails.init();
+
+		if (tmDGProgrammeDetails.getRow() != null)
+		{
+			RowModel row = tmDGProgrammeDetails.getRow();
+			if (selectedDGProgramme != null)
+			{
+				String title = selectedDGProgramme.getTitle();
+				if (title == null || title.isBlank())
+					title = selectedDGProgramme.getName();
+				row.get(colProg).setValue(title);
+			}
+
+			X_ZZLearnerDGProgramme existingDg = findExistingDGDraft(
+				getSelectedLearnerId(),
+				selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0,
+				null);
+
+			if (existingDg != null)
+			{
+				prePopulateDGProgrammeDetails(existingDg);
+			}
+		}
+	}
+
+	private void initDGDocuments()
+	{
+		List<ColumnModel> cols = new ArrayList<>();
+		String docHeader = MasterUtil.getNameOfColTranslated(I_ZZRegistrationDocs.Table_Name, I_ZZRegistrationDocs.COLUMNNAME_Name);
+		if (docHeader == null || docHeader.isBlank())
+		{
+			docHeader = "Document Description";
+		}
+		dgDocumentNameCol = PresetTitleCellModel.getPresetTitleColumnModel(
+			docHeader,
+			doc -> doc != null ? (doc.getName() + (doc.isMandatory() ? " *" : "")) : "");
+		cols.add(dgDocumentNameCol);
+
+		dgUploadCol = UploadCellModel.getUploadColumnModel("Action", null, null, "Upload Document");
+		cols.add(dgUploadCol);
+
+		tmDGDocuments = TableModel.getTableBean(TableModel.class, cols, false, I_ZZRegistrationDocs.Table_Name);
+		tmDGDocuments.setViewModel(ViewType.VIEW_GRID);
+		tmDGDocuments.setSclass("srd-dg-documents");
+		tmDGDocuments.setCreateNewRowWhenEmpty(false);
+		tmDGDocuments.init(null, TitleInfo.empty);
+	}
+
+	private void loadDGDocuments()
+	{
+		if (tmDGDocuments == null || dgDocumentNameCol == null || dgUploadCol == null)
+		{
+			initDGDocuments();
+		}
+
+		List<X_ZZRegistrationDocs> docUploads = new ArrayList<>();
+		if (selectedDGProgramme != null && selectedDGProgramme.getZZ_Program_Master_Data_ID() > 0)
+		{
+			String sql = "SELECT * FROM " + I_ZZRegistrationDocs.Table_Name
+						+ " WHERE (" + I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? OR "
+						+ I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL) AND "
+						+ I_ZZRegistrationDocs.COLUMNNAME_IsActive + " = 'Y' "
+						+ "ORDER BY " + I_ZZRegistrationDocs.COLUMNNAME_Name + ", " + I_ZZRegistrationDocs.COLUMNNAME_ZZRegistrationDocs_ID;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setInt(1, selectedDGProgramme.getZZ_Program_Master_Data_ID());
+				rs = pstmt.executeQuery();
+				while (rs.next())
+				{
+					docUploads.add(new X_ZZRegistrationDocs(Env.getCtx(), rs, null));
+				}
+			}
+			catch (Exception e)
+			{
+				log.log(Level.SEVERE, "Failed to load ZZRegistrationDocs for programme " + selectedDGProgramme.getZZ_Program_Master_Data_ID(), e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+			}
+		}
+
+		if (docUploads.isEmpty())
+		{
+			tmDGDocuments.resetMultiPo(new ArrayList<>());
+			return;
+		}
+
+		List<Map<ColumnModel, Object>> rowTitles = new ArrayList<>();
+		for (X_ZZRegistrationDocs doc : docUploads)
+		{
+			Map<ColumnModel, Object> m = new HashMap<>();
+			m.put(dgDocumentNameCol, doc);
+			rowTitles.add(m);
+		}
+
+		tmDGDocuments.resetMultiPo(null, TitleInfo.createTitleInfo(rowTitles));
+
+		// Check for existing draft to populate any previously attached files
+		X_ZZLearnerDGProgramme existingDg = findExistingDGDraft(
+			getSelectedLearnerId(),
+			selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0,
+			null);
+
+		for (int i = 0; i < docUploads.size() && i < tmDGDocuments.getRows().size(); i++)
+		{
+			X_ZZRegistrationDocs doc = docUploads.get(i);
+			RowModel row = tmDGDocuments.getRows().get(i);
+			CellModel uploadCell = row.get(dgUploadCol);
+			if (uploadCell instanceof UploadCellModel)
+			{
+				UploadCellModel uCell = (UploadCellModel) uploadCell;
+				uCell.setBtText(doc.isMandatory() ? "Upload Document *" : "Upload Document");
+				if (existingDg != null)
+				{
+					String existingFile = AttachmentUtil.getFileNameFromAttachmentEntries(existingDg, doc.getName(), null);
+					if (existingFile != null && !existingFile.isBlank())
+					{
+						uCell.setFileName(existingFile);
+					}
+				}
+			}
+		}
+
+		BindUtils.postNotifyChange(null, null, tmDGDocuments, "rows");
+	}
+
+	private List<String> validateDGProgrammeDetails()
+	{
+		List<String> missingCols = new ArrayList<>();
+		if (tmDGProgrammeDetails == null || tmDGProgrammeDetails.getRow() == null)
+			return missingCols;
+
+		RowModel row = tmDGProgrammeDetails.getRow();
+		for (ColumnModel col : row.keySet())
+		{
+			if (col.isMandatory())
+			{
+				CellModel cell = row.get(col);
+				Object val = cell != null ? cell.getValue() : null;
+				if (cell instanceof DateCellModel)
+				{
+					Timestamp ts = ((DateCellModel) cell).getTimestamp();
+					if (ts != null)
+						val = ts;
+					else if (((DateCellModel) cell).getLocalDate() != null)
+						val = ((DateCellModel) cell).getLocalDate();
+				}
+				if (cell instanceof ValueAdaptCellModel)
+				{
+					Object sel = ((ValueAdaptCellModel) cell).getSelectedValue();
+					if (sel != null)
+					{
+						if (sel instanceof PO && ((PO) sel).get_ID() > 0)
+							val = ((PO) sel).get_ID();
+						else if (sel instanceof Number && ((Number) sel).intValue() > 0)
+							val = sel;
+						else if (val == null)
+							val = sel;
+					}
+					if (val == null)
+					{
+						Object disp = ((ValueAdaptCellModel) cell).getDisplayValue();
+						if (disp != null && !disp.toString().isBlank())
+							val = disp;
+					}
+				}
+				boolean empty = false;
+				if (val == null)
+				{
+					empty = true;
+				}
+				else if (val instanceof String && ((String) val).isBlank())
+				{
+					empty = true;
+				}
+				else if (val instanceof Number && ((Number) val).intValue() <= 0)
+				{
+					empty = true;
+				}
+				else if (val instanceof ValueNamePair && (((ValueNamePair) val).getValue() == null || ((ValueNamePair) val).getValue().isBlank()))
+				{
+					empty = true;
+				}
+				if (empty)
+				{
+					String title = col.getTitle();
+					if (title != null && !title.isBlank())
+						missingCols.add(title);
+				}
+			}
+		}
+		return missingCols;
+	}
+
+	@Command
+	public void nextDGTab()
+	{
+		setDgSelectedTabIndex(1);
+	}
+
+	@Command
+	public void saveDGAppDraft()
+	{
+		if (getSelectedLearnerId() <= 0)
+		{
+			MasterUtil.showInfoDialog("Please select a learner first.", null);
+			return;
+		}
+		if (selectedDGProgramme == null)
+		{
+			MasterUtil.showInfoDialog("Please select a DG Programme.", null);
+			return;
+		}
+
+		trxWrapper(trxName -> {
+			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
+		});
+		MasterUtil.showInfoDialog("Draft application saved successfully.", null);
+	}
+
+	@Command
+	public void submitDGApp()
+	{
+		if (getSelectedLearnerId() <= 0)
+		{
+			MasterUtil.showInfoDialog("Please select a learner first.", null);
+			return;
+		}
+		if (selectedDGProgramme == null)
+		{
+			MasterUtil.showInfoDialog("Please select a DG Programme.", null);
+			return;
+		}
+		List<String> missingCols = validateDGProgrammeDetails();
+		if (!missingCols.isEmpty())
+		{
+			String msg = "Please fill all mandatory fields marked with *:\n• " + String.join("\n• ", missingCols);
+			MasterUtil.showInfoDialog(msg, null);
+			return;
+		}
+
+		if (tmDGDocuments != null && tmDGDocuments.getRows() != null)
+		{
+			List<String> missingDocs = new ArrayList<>();
+			for (RowModel row : tmDGDocuments.getRows())
+			{
+				CellModel docNameCell = row.get(dgDocumentNameCol);
+				X_ZZRegistrationDocs doc = docNameCell != null && docNameCell.getValue() instanceof X_ZZRegistrationDocs
+						? (X_ZZRegistrationDocs) docNameCell.getValue()
+						: null;
+
+				if (doc != null && doc.isMandatory())
+				{
+					CellModel cell = row.get(dgUploadCol);
+					if (cell instanceof UploadCellModel)
+					{
+						UploadCellModel uCell = (UploadCellModel) cell;
+						if (!uCell.hasBytes() && (uCell.getFileName() == null || uCell.getFileName().isBlank()))
+						{
+							missingDocs.add(doc.getName());
+						}
+					}
+				}
+			}
+			if (!missingDocs.isEmpty())
+			{
+				MasterUtil.showInfoDialog("Please upload the following mandatory documents:\n• " + String.join("\n• ", missingDocs), null);
+				return;
+			}
+		}
+
+		trxWrapper(trxName -> {
+			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Submitted);
+		});
+		MasterUtil.showInfoDialog("Application submitted successfully.", null);
+	}
+
+	private void saveDGRegistration(String trxName, String docStatus)
+	{
+		if (tmDGProgrammeDetails == null || tmDGProgrammeDetails.getRow() == null)
+			return;
+
+		RowModel row = tmDGProgrammeDetails.getRow();
+		X_ZZLearnerDGProgramme dg = findExistingDGDraft(
+			getSelectedLearnerId(),
+			selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0,
+			trxName);
+
+		if (dg == null)
+		{
+			dg = new X_ZZLearnerDGProgramme(Env.getCtx(), 0, trxName);
+			dg.setZZLearner_ID(getSelectedLearnerId());
+			if (selectedDGProgramme != null)
+			{
+				dg.setZZ_Program_Master_Data_ID(selectedDGProgramme.getZZ_Program_Master_Data_ID());
+			}
+		}
+
+		for (ColumnModel col : row.keySet())
+		{
+			String prop = col.getDaoPropertyName();
+			if (prop == null)
+				continue;
+			CellModel cell = row.get(col);
+			Object val = cell != null ? cell.getValue() : null;
+
+			if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber.equals(prop))
+			{
+				dg.setZZAgreementReferenceNumber(extractString(val));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate.equals(prop))
+			{
+				Timestamp ts = extractTimestamp(cell, val);
+				if (ts != null)
+					dg.setZZCommencementDate(ts);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate.equals(prop))
+			{
+				Timestamp ts = extractTimestamp(cell, val);
+				if (ts != null)
+					dg.setZZCompletionDate(ts);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber.equals(prop))
+			{
+				dg.setZZContractNumber(extractString(val));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSocioEconomicStatus.equals(prop))
+			{
+				String status = extractString(val);
+				if ("Employed".equalsIgnoreCase(status))
+					status = X_ZZLearnerDGProgramme.ZZSOCIOECONOMICSTATUS_Employed;
+				else if ("Unemployed".equalsIgnoreCase(status))
+					status = X_ZZLearnerDGProgramme.ZZSOCIOECONOMICSTATUS_Unemployed;
+				else if (val instanceof X_ZZ_LI_SocioEconomicStatus)
+				{
+					String name = ((X_ZZ_LI_SocioEconomicStatus) val).getName();
+					if ("Employed".equalsIgnoreCase(name))
+						status = X_ZZLearnerDGProgramme.ZZSOCIOECONOMICSTATUS_Employed;
+					else if ("Unemployed".equalsIgnoreCase(name))
+						status = X_ZZLearnerDGProgramme.ZZSOCIOECONOMICSTATUS_Unemployed;
+				}
+				if (status != null && !status.isBlank())
+					dg.setZZSocioEconomicStatus(status);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop))
+			{
+				int id = extractId(val);
+				if (id > 0)
+					dg.setZZ_SDP_ID(id);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy.equals(prop))
+			{
+				String s = extractString(val);
+				if (s != null && !s.isBlank())
+					dg.setZZLeadSDProviderLevy(s);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop))
+			{
+				int id = extractId(val);
+				if (id > 0)
+					dg.setZZLeadSDProviderContact_ID(id);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID.equals(prop))
+			{
+				dg.setZZSecondarySDProvider_ID(extractId(val));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy.equals(prop))
+			{
+				dg.setZZSecondarySDProviderLevy(extractString(val));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID.equals(prop))
+			{
+				dg.setZZSecondarySDProviderContact_ID(extractId(val));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(prop))
+			{
+				int id = extractId(val);
+				if (id > 0)
+					dg.setZZ_Employer_ID(id);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy.equals(prop))
+			{
+				String s = extractString(val);
+				if (s != null && !s.isBlank())
+					dg.setZZWALevy(s);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID.equals(prop))
+			{
+				int id = extractId(val);
+				if (id > 0)
+					dg.setZZWAContact_ID(id);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID.equals(prop))
+			{
+				dg.setZZSecondaryWA_ID(extractId(val));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy.equals(prop))
+			{
+				dg.setZZSecondaryWALevy(extractString(val));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID.equals(prop))
+			{
+				dg.setZZSecondaryWAContact_ID(extractId(val));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(prop))
+			{
+				String ft = extractString(val);
+				if ("SETA Funded".equalsIgnoreCase(ft))
+					ft = X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_SETAFunded;
+				else if ("Industry Funded".equalsIgnoreCase(ft))
+					ft = X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_IndustryFunded;
+				if (ft != null && !ft.isBlank())
+					dg.setZZFundingType(ft);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop))
+			{
+				int id = extractId(val);
+				if (id > 0)
+					dg.setZZFinancialYear_ID(id);
+			}
+		}
+
+		dg.setZZ_DocStatus(docStatus != null ? docStatus : X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
+		dg.setZZRegistrationDate(new Timestamp(System.currentTimeMillis()));
+		dg.setZZRegisteredBy(Env.getAD_User_ID(Env.getCtx()));
+		dg.saveEx(trxName);
+
+		if (tmDGDocuments != null && tmDGDocuments.getRows() != null)
+		{
+			for (RowModel docRow : tmDGDocuments.getRows())
+			{
+				CellModel docNameCell = docRow.get(dgDocumentNameCol);
+				String docName = null;
+				if (docNameCell != null && docNameCell.getValue() instanceof X_ZZRegistrationDocs)
+				{
+					docName = ((X_ZZRegistrationDocs) docNameCell.getValue()).getName();
+				}
+				if (docName == null || docName.isBlank())
+				{
+					docName = "Registration Document";
+				}
+
+				CellModel cell = docRow.get(dgUploadCol);
+				if (cell instanceof UploadCellModel)
+				{
+					UploadCellModel uCell = (UploadCellModel) cell;
+					byte[] bytes = uCell.getBytes();
+					String fileName = uCell.getFileName();
+					if (bytes != null && bytes.length > 0 && fileName != null && !fileName.isBlank())
+					{
+						AttachmentUtil.addOrReplaceAttachmentEntry(dg, fileName, bytes, docName, trxName);
+						uCell.setBytes(null);
+					}
+					else if (fileName == null || fileName.isBlank())
+					{
+						AttachmentUtil.removeAttachmentEntry(dg, docName, trxName);
+					}
+				}
+			}
+		}
+	}
+
+	private X_ZZLearnerDGProgramme findExistingDGDraft(int learnerId, int progId, String trxName)
+	{
+		if (learnerId <= 0 || progId <= 0)
+			return null;
+		int existingId = DB.getSQLValue(trxName,
+			"SELECT " + I_ZZLearnerDGProgramme.COLUMNNAME_ZZLearnerDGProgramme_ID + " FROM " + I_ZZLearnerDGProgramme.Table_Name
+				+ " WHERE " + I_ZZLearnerDGProgramme.COLUMNNAME_ZZLearner_ID + " = ? AND "
+				+ I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? AND "
+				+ I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus + " = ? ORDER BY " + I_ZZLearnerDGProgramme.COLUMNNAME_ZZLearnerDGProgramme_ID + " DESC",
+			learnerId, progId, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
+		return existingId > 0 ? new X_ZZLearnerDGProgramme(Env.getCtx(), existingId, trxName) : null;
+	}
+
+
+	private void prePopulateDGProgrammeDetails(X_ZZLearnerDGProgramme draft)
+	{
+		if (draft == null || tmDGProgrammeDetails == null || tmDGProgrammeDetails.getRow() == null)
+			return;
+
+		RowModel row = tmDGProgrammeDetails.getRow();
+		for (ColumnModel col : row.keySet())
+		{
+			String prop = col.getDaoPropertyName();
+			if (prop == null)
+				continue;
+
+			CellModel cell = row.get(col);
+			if (cell == null)
+				continue;
+
+			if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber.equals(prop))
+			{
+				if (draft.getZZAgreementReferenceNumber() != null)
+					cell.setValue(draft.getZZAgreementReferenceNumber());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber.equals(prop))
+			{
+				if (draft.getZZContractNumber() != null)
+					cell.setValue(draft.getZZContractNumber());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop))
+			{
+				if (draft.getZZ_SDP_ID() > 0)
+					cell.setValue(new MBPartner(Env.getCtx(), draft.getZZ_SDP_ID(), null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(prop))
+			{
+				if (draft.getZZ_Employer_ID() > 0)
+					cell.setValue(new MBPartner(Env.getCtx(), draft.getZZ_Employer_ID(), null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID.equals(prop))
+			{
+				if (draft.getZZSecondarySDProvider_ID() > 0)
+					cell.setValue(new MBPartner(Env.getCtx(), draft.getZZSecondarySDProvider_ID(), null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID.equals(prop))
+			{
+				if (draft.getZZSecondaryWA_ID() > 0)
+					cell.setValue(new MBPartner(Env.getCtx(), draft.getZZSecondaryWA_ID(), null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop))
+			{
+				if (draft.getZZLeadSDProviderContact_ID() > 0)
+					cell.setValue(new MUser(Env.getCtx(), draft.getZZLeadSDProviderContact_ID(), null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID.equals(prop))
+			{
+				if (draft.getZZWAContact_ID() > 0)
+					cell.setValue(new MUser(Env.getCtx(), draft.getZZWAContact_ID(), null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID.equals(prop))
+			{
+				if (draft.getZZSecondarySDProviderContact_ID() > 0)
+					cell.setValue(new MUser(Env.getCtx(), draft.getZZSecondarySDProviderContact_ID(), null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID.equals(prop))
+			{
+				if (draft.getZZSecondaryWAContact_ID() > 0)
+					cell.setValue(new MUser(Env.getCtx(), draft.getZZSecondaryWAContact_ID(), null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy.equals(prop))
+			{
+				setListCellValue(cell, draft.getZZLeadSDProviderLevy());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy.equals(prop))
+			{
+				setListCellValue(cell, draft.getZZWALevy());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy.equals(prop))
+			{
+				setListCellValue(cell, draft.getZZSecondarySDProviderLevy());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy.equals(prop))
+			{
+				setListCellValue(cell, draft.getZZSecondaryWALevy());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSocioEconomicStatus.equals(prop))
+			{
+				setListCellValue(cell, draft.getZZSocioEconomicStatus());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(prop))
+			{
+				setListCellValue(cell, draft.getZZFundingType());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop))
+			{
+				int yrId = draft.getZZFinancialYear_ID();
+				if (yrId <= 0 && selectedDGProgramme != null)
+					yrId = selectedDGProgramme.getC_Year_ID();
+				if (yrId > 0)
+					cell.setValue(new MYear(Env.getCtx(), yrId, null));
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate.equals(prop))
+			{
+				if (draft.getZZCommencementDate() != null)
+					cell.setValue(draft.getZZCommencementDate());
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate.equals(prop))
+			{
+				if (draft.getZZCompletionDate() != null)
+					cell.setValue(draft.getZZCompletionDate());
+			}
+			BindUtils.postNotifyChange(null, null, cell, "*");
+		}
+
+		BindUtils.postNotifyChange(null, null, tmDGProgrammeDetails, "row");
+		BindUtils.postNotifyChange(null, null, tmDGProgrammeDetails, "rows");
+	}
+
+	private void setListCellValue(CellModel cell, String val)
+	{
+		if (cell instanceof ListCellModel && val != null && !val.isBlank())
+		{
+			ListCellModel<?> listCell = (ListCellModel<?>) cell;
+			for (Object item : listCell.getDataProvider())
+			{
+				if (item instanceof ValueNamePair)
+				{
+					ValueNamePair pair = (ValueNamePair) item;
+					if (val.equalsIgnoreCase(pair.getValue()) || val.equalsIgnoreCase(pair.getName()))
+					{
+						listCell.setValue(pair.getValue());
+						BindUtils.postNotifyChange(null, null, listCell, "model");
+						BindUtils.postNotifyChange(null, null, listCell, "value");
+						return;
+					}
+				}
+			}
+			listCell.setValue(val);
+			BindUtils.postNotifyChange(null, null, listCell, "model");
+			BindUtils.postNotifyChange(null, null, listCell, "value");
+		}
+	}
+
+	private void configureBPartnerSearch(ValueAdaptColumnModel colBp, String whereClause, ValueAdaptColumnModel autoContactCol)
+	{
+		colBp.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof MBPartner)
+				return ((MBPartner) value).getName();
+			if (value instanceof PO)
+				return ((PO) value).get_ValueAsString(I_C_BPartner.COLUMNNAME_Name);
+			return value.toString();
+		});
+		colBp.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof PO)
+				return ((PO) value).get_ID();
+			if (value instanceof Number)
+				return ((Number) value).intValue();
+			return value;
+		});
+		colBp.setValueFromDaoAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
+			return id > 0 ? new MBPartner(Env.getCtx(), id, null) : null;
+		});
+		colBp.setEventHandle((event, cellModel) -> {
+			InfoPanelPara para = InfoPanelPara.getInstance(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_C_BPartner_ID);
+			para.setWhereClause(whereClause);
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] values = (Object[]) obj;
+				if (values == null || values.length == 0 || values[0] == null)
+					return;
+				int bpId = values[0] instanceof Number ? ((Number) values[0]).intValue() : Integer.parseInt(values[0].toString());
+				MBPartner bp = new MBPartner(Env.getCtx(), bpId, null);
+				cellModel.setValue(bp);
+				cellModel.resetValidate();
+
+				if (autoContactCol != null && cellModel.getRowModel() != null)
+				{
+					String userWhere = I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_C_BPartner_ID + " = ? AND "
+									+ I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_IsActive + " = 'Y'";
+					PO adUser = MTable.get(Env.getCtx(), I_AD_User.Table_Name)
+											.createQuery(userWhere, null)
+											.setParameters(bpId)
+											.first();
+					if (adUser != null)
+					{
+						CellModel contactCell = cellModel.getRowModel().get(autoContactCol);
+						if (contactCell != null)
+						{
+							contactCell.setValue(adUser);
+							contactCell.resetValidate();
+							BindUtils.postNotifyChange(null, null, contactCell, "value");
+						}
+					}
+				}
+			});
+		});
+	}
+
+	private void configureUserContactSearch(ValueAdaptColumnModel colContact, ValueAdaptColumnModel parentBpCol)
+	{
+		colContact.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof MUser)
+				return ((MUser) value).getName();
+			if (value instanceof PO)
+				return ((PO) value).get_ValueAsString(I_AD_User.COLUMNNAME_Name);
+			return value.toString();
+		});
+		colContact.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof PO)
+				return ((PO) value).get_ID();
+			if (value instanceof Number)
+				return ((Number) value).intValue();
+			return value;
+		});
+		colContact.setValueFromDaoAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
+			return id > 0 ? new MUser(Env.getCtx(), id, null) : null;
+		});
+		colContact.setEventHandle((event, cellModel) -> {
+			InfoPanelPara para = InfoPanelPara.getInstance(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_AD_User_ID);
+			int bpId = 0;
+			if (parentBpCol != null && cellModel.getRowModel() != null)
+			{
+				CellModel bpCell = cellModel.getRowModel().get(parentBpCol);
+				if (bpCell != null)
+				{
+					bpId = extractId(bpCell.getValue());
+					if (bpId <= 0 && bpCell instanceof ValueAdaptCellModel)
+					{
+						bpId = extractId(((ValueAdaptCellModel) bpCell).getSelectedValue());
+					}
+				}
+			}
+			String baseWhere = I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_IsActive + " = 'Y'";
+			if (bpId > 0)
+			{
+				para.setWhereClause(baseWhere + " AND " + I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_C_BPartner_ID + " = " + bpId);
+			}
+			else
+			{
+				para.setWhereClause(baseWhere);
+			}
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] values = (Object[]) obj;
+				if (values == null || values.length == 0 || values[0] == null)
+					return;
+				int userId = values[0] instanceof Number ? ((Number) values[0]).intValue() : Integer.parseInt(values[0].toString());
+				MUser u = new MUser(Env.getCtx(), userId, null);
+				cellModel.setValue(u);
+				cellModel.resetValidate();
+			});
+		});
+	}
+
+
+	private void configureYearSearch(ValueAdaptColumnModel colFinancialYear)
+	{
+		colFinancialYear.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof MYear)
+			{
+				String desc = ((MYear) value).getDescription();
+				return (desc != null && !desc.isBlank()) ? desc : ((MYear) value).getFiscalYear();
+			}
+			if (value instanceof PO)
+			{
+				String desc = ((PO) value).get_ValueAsString(I_C_Year.COLUMNNAME_Description);
+				return (desc != null && !desc.isBlank()) ? desc : ((PO) value).get_ValueAsString(I_C_Year.COLUMNNAME_FiscalYear);
+			}
+			if (value instanceof Number)
+			{
+				int id = ((Number) value).intValue();
+				if (id > 0)
+				{
+					MYear y = new MYear(Env.getCtx(), id, null);
+					String desc = y.getDescription();
+					return (desc != null && !desc.isBlank()) ? desc : y.getFiscalYear();
+				}
+			}
+			if (value instanceof String)
+			{
+				String s = (String) value;
+				if (s.matches("\\d+"))
+				{
+					try
+					{
+						int id = Integer.parseInt(s);
+						if (id > 1000)
+						{
+							MYear y = new MYear(Env.getCtx(), id, null);
+							if (y.get_ID() > 0)
+							{
+								String desc = y.getDescription();
+								return (desc != null && !desc.isBlank()) ? desc : y.getFiscalYear();
+							}
+						}
+					}
+					catch (Exception ignored)
+					{
+					}
+				}
+				MYear y = new Query(Env.getCtx(), I_C_Year.Table_Name, I_C_Year.COLUMNNAME_FiscalYear + " = ?", null)
+						.setParameters(s)
+						.first();
+				if (y != null)
+				{
+					String desc = y.getDescription();
+					if (desc != null && !desc.isBlank())
+						return desc;
+				}
+				return s;
+			}
+			return value.toString();
+		});
+		colFinancialYear.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof PO)
+				return ((PO) value).get_ID();
+			if (value instanceof Number)
+				return ((Number) value).intValue();
+			return value;
+		});
+		colFinancialYear.setValueFromDaoAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
+			return id > 0 ? new MYear(Env.getCtx(), id, null) : null;
+		});
+		colFinancialYear.setEventHandle((event, cellModel) -> {
+			InfoPanelPara para = InfoPanelPara.getInstance(I_C_Year.Table_Name, I_C_Year.COLUMNNAME_C_Year_ID);
+			para.setWhereClause(I_C_Year.Table_Name + "." + I_C_Year.COLUMNNAME_IsActive + " = 'Y'");
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] values = (Object[]) obj;
+				if (values == null || values.length == 0 || values[0] == null)
+					return;
+				int id = values[0] instanceof Number ? ((Number) values[0]).intValue() : Integer.parseInt(values[0].toString());
+				MYear yr = new MYear(Env.getCtx(), id, null);
+				cellModel.setValue(yr);
+				cellModel.resetValidate();
+			});
+		});
+	}
+
+	private Timestamp extractTimestamp(CellModel cell, Object val)
+	{
+		if (cell instanceof DateCellModel)
+		{
+			Timestamp ts = ((DateCellModel) cell).getTimestamp();
+			if (ts != null)
+				return ts;
+		}
+		if (val instanceof Timestamp)
+			return (Timestamp) val;
+		if (val instanceof java.util.Date)
+			return new Timestamp(((java.util.Date) val).getTime());
+		return null;
+	}
+
+	private int extractId(Object val)
+	{
+		if (val == null)
+			return 0;
+		if (val instanceof PO)
+			return ((PO) val).get_ID();
+		if (val instanceof ValueNamePair)
+		{
+			try
+			{
+				return Integer.parseInt(((ValueNamePair) val).getValue());
+			}
+			catch (Exception ignored)
+			{
+			}
+		}
+		if (val instanceof Number)
+			return ((Number) val).intValue();
+		try
+		{
+			return Integer.parseInt(val.toString());
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+	}
+
+	private String extractString(Object val)
+	{
+		if (val == null)
+			return null;
+		if (val instanceof ValueNamePair)
+			return ((ValueNamePair) val).getValue();
+		String s = val.toString();
+		if ("Yes".equalsIgnoreCase(s))
+			return "Y";
+		if ("No".equalsIgnoreCase(s))
+			return "N";
+		return s;
+	}
+
+	public TableModel getTmDGProgrammeDetails()
+	{
+		return tmDGProgrammeDetails;
+	}
+
+	public void setTmDGProgrammeDetails(TableModel tmDGProgrammeDetails)
+	{
+		this.tmDGProgrammeDetails = tmDGProgrammeDetails;
+	}
+
+	public TableModel getTmDGDocuments()
+	{
+		return tmDGDocuments;
+	}
+
+	public void setTmDGDocuments(TableModel tmDGDocuments)
+	{
+		this.tmDGDocuments = tmDGDocuments;
+	}
+
+	public boolean isDgProgrammeActive()
+	{
+		return dgProgrammeActive;
+	}
+
+	public void setDgProgrammeActive(boolean dgProgrammeActive)
+	{
+		this.dgProgrammeActive = dgProgrammeActive;
+	}
+
+	public X_ZZ_Program_Master_Data getSelectedDGProgramme()
+	{
+		return selectedDGProgramme;
+	}
+
+	public void setSelectedDGProgramme(X_ZZ_Program_Master_Data selectedDGProgramme)
+	{
+		this.selectedDGProgramme = selectedDGProgramme;
+	}
+
+	public int getDgSelectedTabIndex()
+	{
+		return dgSelectedTabIndex;
+	}
+
+	public void setDgSelectedTabIndex(int dgSelectedTabIndex)
+	{
+		this.dgSelectedTabIndex = dgSelectedTabIndex;
+		BindUtils.postNotifyChange(null, null, this, "dgSelectedTabIndex");
 	}
 }
