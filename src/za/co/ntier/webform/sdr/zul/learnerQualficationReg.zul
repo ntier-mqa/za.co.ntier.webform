@@ -173,10 +173,10 @@
           iconSclass="z-icon-xmark"
           onClick="@command('cancelApp')" />
         <button
-          label="Submit Application"
-          iconSclass="z-icon-gear"
+          label="Save"
+          iconSclass="z-icon-floppy-disk"
           sclass="icon-on-right"
-          onClick="@command('submitApp')" />
+          onClick="@command('saveApp')" />
       </div>
     </template>
   </nodom>
