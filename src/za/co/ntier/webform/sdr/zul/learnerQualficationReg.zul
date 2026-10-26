@@ -8,15 +8,28 @@
       overflow: visible !important;
     }
 
+    .expand-tabbox .z-tabpanel {
+      overflow: hidden !important;
+    }
+
+    /* Disable direct tab clicking - user must use Next button */
+    .expand-tabbox > .z-tabs .z-tab,
+    .expand-tabbox .z-tabs-content .z-tab {
+      pointer-events: none !important;
+      cursor: default !important;
+    }
+
     .grid-listView[class*="srd-ZZLearner"],
     .grid-listView[class*="srd-learner"] {
       display: grid !important;
-      grid-template-columns: minmax(135px, 1.1fr) minmax(160px, 1.45fr) minmax(160px, 1.45fr) minmax(140px, 1.2fr) minmax(95px, 0.75fr) minmax(110px, 0.85fr) minmax(110px, 0.85fr) 40px !important;
+      grid-template-columns: minmax(180px, 1.3fr) minmax(180px, 1.3fr) minmax(180px, 1.3fr) minmax(180px, 1.3fr) minmax(120px, 0.9fr) minmax(170px, 1.2fr) minmax(150px, 1.0fr) minmax(150px, 1.0fr) !important;
       width: 100% !important;
+      max-width: 100% !important;
       gap: 1px !important;
       background-color: #F0F0F0 !important;
       border-radius: 6px !important;
       max-height: calc(100vh - 250px) !important;
+      overflow-x: auto !important;
       overflow-y: auto !important;
       position: relative !important;
       box-sizing: border-box !important;
@@ -237,6 +250,11 @@
             iconSclass="z-icon-xmark"
             onClick="@command('cancelApp')" />
           <button
+            visible="@load(vmLearner.dgSelectedTabIndex eq 1)"
+            label="Previous"
+            iconSclass="z-icon-arrow-left"
+            onClick="@command('prevDGTab')" />
+          <button
             label="Save &amp; Exit"
             iconSclass="z-icon-floppy-disk"
             sclass="icon-on-right"
@@ -270,21 +288,54 @@
           onClick="@command('backToSelection')" />
       </div>
 
-      <include
-        component="@init(vmLearner.tmRegistration)"
-        menuContextInfo="@init(vmLearner.menuContextInfo)"
-        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+      <tabbox sclass="expand-tabbox" selectedIndex="@bind(vmLearner.regSelectedTabIndex)">
+        <tabs>
+          <tab label="Programme" />
+          <tab label="Documents" />
+        </tabs>
+        <tabpanels>
+          <tabpanel>
+            <include
+              component="@load(vmLearner.tmRegistration)"
+              menuContextInfo="@init(vmLearner.menuContextInfo)"
+              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+          </tabpanel>
+          <tabpanel>
+            <include
+              component="@load(vmLearner.tmRegistrationDocuments)"
+              menuContextInfo="@init(vmLearner.menuContextInfo)"
+              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+          </tabpanel>
+        </tabpanels>
+      </tabbox>
 
-      <div sclass="formBottomPanel">
+      <div sclass="formBottomPanel" style="margin-top: 15px;">
         <button
           label="Cancel"
           iconSclass="z-icon-xmark"
           onClick="@command('cancelApp')" />
         <button
-          label="Save"
+          visible="@load(vmLearner.regSelectedTabIndex eq 1)"
+          label="Previous"
+          iconSclass="z-icon-arrow-left"
+          onClick="@command('prevRegTab')" />
+        <button
+          label="Save &amp; Exit"
           iconSclass="z-icon-floppy-disk"
           sclass="icon-on-right"
-          onClick="@command('saveApp')" />
+          onClick="@command('saveRegAppDraft')" />
+        <button
+          visible="@load(vmLearner.regSelectedTabIndex eq 0)"
+          label="Next"
+          iconSclass="z-icon-arrow-right"
+          sclass="icon-on-right"
+          onClick="@command('nextRegTab')" />
+        <button
+          visible="@load(vmLearner.regSelectedTabIndex eq 1)"
+          label="Submit"
+          iconSclass="z-icon-gear"
+          sclass="icon-on-right"
+          onClick="@command('submitRegApp')" />
       </div>
     </template>
   </nodom>
