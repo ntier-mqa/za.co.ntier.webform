@@ -1,0 +1,3192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.5.final using JasperReports Library version 6.20.5-3efcf2e67f959db3888d79f73dde2dbd7acb4f8e  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LearnerAgreement" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6fb10afe-189f-4cf9-878a-c099e1f16881">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="ZZPerson_ID" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT 1 FROM ZZPerson WHERE ZZPerson_ID = $P{ZZPerson_ID}]]>
+	</queryString>
+	<detail>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="40" width="555" height="70" uuid="d8a146f2-f510-426f-8dba-48e9ca856748"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="10" width="555" height="25" uuid="4e94c938-23c6-4b2d-872d-7fb735b93aec"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LEARNING PROGRAMME AGREEMENT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="130" width="200" height="20" uuid="2d729e42-49b9-409d-90fd-358d889fce18"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Learner Name:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="130" width="300" height="20" uuid="021a919c-dfbc-4667-b5bb-8e4e638178b0"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="160" width="200" height="20" uuid="64846a01-7d0c-4d50-a329-6152c2b4b2b3"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Learner ID:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="160" width="300" height="20" uuid="675f32e9-5138-476d-875b-51fb45f1abcc"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="190" width="200" height="20" uuid="04691250-d759-43a8-8ddb-1db7196f25dc"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Type of Learnership:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="190" width="300" height="20" uuid="825283e6-4a15-4f46-bebd-a34e0fb2e896"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="220" width="200" height="20" uuid="84357fc5-e51e-42e4-a50d-671ebdd73e91"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Learnership Code:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="220" width="300" height="20" uuid="86ccce71-572f-451a-a7f4-19fce8739fc1"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="250" width="200" height="20" uuid="f91d67d2-f589-4505-98cb-1e387bec623c"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Socio Economic Status:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="250" width="300" height="20" uuid="de4cc9f0-ce2b-4cfd-bcd9-6c9ae7c662c1"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="280" width="200" height="20" uuid="c8e870a5-fb7a-41a6-827e-4d31e8d089c6"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sponsored:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="280" width="300" height="20" uuid="678590f0-93c4-4564-a79e-7ace67f5aee2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="310" width="200" height="20" uuid="5933d2b6-22b4-48fd-bfef-b8ebcaaaf3d1"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Agreement Ref No:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="310" width="300" height="20" uuid="3840a528-1597-4ac4-861b-1563a3ea66cc"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="340" width="200" height="20" uuid="72902d34-345a-473b-aeb4-b3398a0765a1"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Disability:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="340" width="300" height="20" uuid="416a5eaf-b723-4d78-ad9d-0efa33135a22"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="370" width="200" height="20" uuid="8e7a5ae8-e75e-40e8-95b9-1d1e56057d6d"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Artisan Type:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="370" width="300" height="20" uuid="b2a912ab-846d-4415-9ff3-9a27ea51a205"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="400" width="200" height="20" uuid="e1b74d97-af2e-4cc7-beba-ea772dd05f62"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Financial Year:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="400" width="300" height="20" uuid="21bf94e5-d204-4a07-b83e-b2bb20d43b1a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="6cd82ae0-deec-4679-8f6d-7159df592453"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="110" width="555" height="25" uuid="46d12820-045b-4d00-a659-91130165becf"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Annexure A]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="150" width="555" height="25" uuid="ea450404-bfee-4485-bc09-599547a1d37b"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[WORK-BASED LEARNING PROGRAMME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="175" width="555" height="25" uuid="616bbf9a-3aa0-479e-b036-fda96dbb98dd"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AGREEMENT]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="e5bcb673-aac6-45e2-92f8-cfa7a7770f93"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="100" width="515" height="577" uuid="52930259-cee1-406a-b9a4-2f300b8b650c"/>
+				<textElement markup="styled">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[<b>PART A: INTERPRETATION</b>
+
+In this Agreement, unless the context indicates otherwise, any word or expression to which a meaning has been assigned in the
+Skills Development Act, 1998 (Act 97 of 1998) (‘the Act’) or the SETA Workplace Based Learning Programme Agreement
+Regulations, 2018 (‘these regulations’) shall have the meaning so assigned.
+
+<b>PART B: DEFINITIONS</b>
+
+For purposes of workplace based learning programme agreements only:
+
+"apprenticeship" means a period of workplace based learning culminating in an occupational qualification for a listed trade.
+
+"candidacy" means a period of workplace based learning undertaken by a graduate as part of the requirement for registration as a
+professional in the required professional designation as stipulated by a professional body.
+
+"internship for the "N" Diploma" means a period of workplace based learning undertaken as part of the requirement for the "N"
+Diploma.
+
+“learnership” means a period of workplace based learning culminating in an occupational qualification or part qualification.
+
+“student internship: Category A” means a period of workplace based learning undertaken as part of the requirement for the
+Diploma, National Diploma, Higher Certificate or Advanced Certificate as a vocational qualification stipulated in the Higher
+Education Qualifications Sub-Framework (HEQSF).
+
+“student internship: Category B” means a period of workplace based learning undertaken as part of the requirement for a
+professional qualification.
+
+"student internship: Category C" means a period of workplace based learning undertaken as part of the requirement for the
+Occupational Qualifications of the Quality Council for Trades and Occupations (QCTO).
+
+“graduate internship” means a period of workplace based learning for the purposes allowing a person who has completed a
+post-school qualification to gain workplace experience or exposure to enhance competence and/or employability. This may include
+academic staff with existing qualifications that need industrial exposure or experience .
+
+"student internship" means a period of workplace based learning for a person who is enrolled at an education and training
+institution for a SAQA registered qualification and may include vacation work .]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="4ffcf1b2-0034-480a-9045-4c8c0be78d62"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="80" width="515" height="597" uuid="646fe3ec-5230-47f9-b4e9-ac7b3c3ed21c"/>
+				<textElement markup="styled">
+					<font size="9"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
+				</textElement>
+				<text><![CDATA[<b>PART C: TERMS AND CONDITIONS OF AGREEMENT</b>
+
+<b>1.     Declaration of the parties</b>
+
+       We understand that this agreement is legally binding .
+
+       We understand that it is an offence in terms of the Act to provide false or misleading information in this agreement .
+
+       We agree to the following rights and duties.
+
+<b>2.     Rights and duties of learners, employers and providers</b>
+
+       <b>2.1 Rights of the Learner</b>
+
+             The Learner has the right to:
+
+             2.1.1    receive an induction to the workplace based learning programme;
+
+             2.1.2    be educated and trained under the workplace based learning programme;
+
+             2.1.3    access to the required resources for all required curriculum components of the work-based learning programme;
+
+             2.1.4    be assessed internally as specified and have access to the assessment results of the workplace based learning
+                      programme;
+
+             2.1.5    have access to final external summative assessments as specified in the assessment specification;
+
+             2.1.6    if successful, be awarded a certificate of competence, by the relevant body;
+
+             2.1.7    in the case of an unemployed learner, receive the agreed workplace-based learning programme allowance for
+                      the duration of the learning programme; and
+
+             2.1.8    raise grievances in writing with the SETA concerning any shortcomings in the quality of the education and
+                      training under the workplace based learning programme.
+
+      <b>2.2    Duties of the Learner</b>
+
+             The Learner must:
+
+             2.2.1. carry out all related work experience activities specified in the workplace-based learning programme;
+
+             2.2.2    comply with the employer’s workplace policies and procedures ;
+
+             2.2.3    be available for, and participate in, all knowledge, practical skills and work experience activities required by the]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="c43ee681-fb48-4998-94bb-2b8df5453bc7"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="80" width="515" height="597" uuid="82c78bc5-8ef5-4ce9-a4ed-d221ee48b2ea"/>
+				<textElement markup="styled">
+					<font size="9"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
+				</textElement>
+				<text><![CDATA[workplace-based learning programme;
+
+        2.2.4    complete timesheets and projects, and participate in all internal assessment activities that are required for the
+                 final external summative assessment at the end of the workplace-based learning programme; and
+
+        2.2.5    be available for the final external summative assessment of occupational competence on the date and place
+                 scheduled.
+
+<b>2.3     Rights of the Employer</b>
+
+        The Employer has the right to require the Learner to:
+
+        2.3.1    perform lawful duties in terms of this agreement; and
+
+        2.3.2    comply with the rules and regulations concerning the employer’s workplace policies and procedures .
+
+<b>2.4     Duties of the Employer</b>
+
+        The employer must:
+
+        2.4.1    comply with all duties in terms of the Act and applicable legislation including those listed hereunder unless other
+                 legislation exists that is applicable to the employer specifically :
+
+                 2.4.1.1     Basic Conditions of Employment Act ,1997(Act 75 of 1997);
+
+                 2.4.1.2   Labour Relations Act, 1995 (Act 66 of 1995);
+
+                 2.4.1.3   Employment Equity Act, 1998 (Act 55 of 1998);
+
+                 2.4.1.4   Occupational Health and Safety Act, 1993 (Act 85 of 1993) or Mine Health and Safety Act, 1996 (Act 27
+                           of 1996);
+
+                 2.4.1.5   Compensation for Occupational Injuries and Diseases Act , 1993 (Act 130 of 1993); and
+
+                 2.4.1.6   Unemployment Insurance Act, 1996 (Act 30 of 1996);
+
+        2.4.2    provide the facilities and resources required for the work experience components of the workplace-based
+                 learning programme;
+
+        2.4.3    provide the learner with supervision and mentoring at work;
+
+        2.4.4    release the learner during normal working hours to attend off -the-job components of the workplace-based
+                 learning programme;
+
+        2.4.5    complete the learner’s work records;]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="99431552-ab4e-48e4-8563-814dfda08c75"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="80" width="515" height="597" uuid="be2682bd-1a83-4826-856f-556468780902"/>
+				<textElement markup="styled">
+					<font size="9"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
+				</textElement>
+				<text><![CDATA[2.4.6   keep up to date records of workplace learning and periodically discuss progress with the learner and the provider;
+
+             2.4.7   if the learner was not in the employment of the employer at the time of concluding this agreement, the employer
+                     must:
+
+                     2.4.7.1   enter into a contract of employment with the learner for the duration of the learning programme;
+
+                     2.4.7.2   advise the learner of the terms and conditions of his or her employment, including the learner allowance;
+
+                     2.4.7.3   advise the learner of the employer’s workplace policies and procedures ;
+
+                      2.4.7.4 pay the learner on time the agreed learner allowance for the duration of the learning programme; and
+
+                      2.4.7.5 apply the same disciplinary, grievance and dispute resolution procedures to the learner as to any other
+                                  employee.
+
+                      2.4.7.6 submit the signed learning programme agreement to the SETA for registration .
+
+     <b>2.5     Rights of the Provider</b>
+
+             The provider has the right to access the learner's work experience records.
+
+     <b>2.6     Duties of the Provider</b>
+
+             The provider must:
+
+             2.6.1   provide the knowledge and practical skills components specified in the work-based learning programme;
+
+             2.6.2   provide the learner support as required by the workplace-based learning programme;
+
+             2.6.3    record, monitor and retain details of the education and training provided to the learner in terms of the workplace
+                      based learning programme and periodically discuss and record progress with the learner and the employer;
+
+             2.6.4    conduct internal assessments for the knowledge and practical skills components specified in the workplace-
+                      based learning programme; and
+
+             2.6.5    issue statements of results.
+
+<b>3.     Completion or termination of this agreement</b>
+
+3.1 This workplace based learning programme agreement is completed:
+
+       3.1.1     on the date as stipulated in this agreement as completion date; or
+
+       3.1.2     on an earlier date if the learner has successfully completed the final external summative assessment and fulfilled
+                 all requirements associated with the specified workplace experience activities of the work-based learning programme.]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="fa3b482c-58be-41e6-a3ab-3b13bc5f46ab"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="80" width="515" height="597" uuid="f2252837-909e-459f-9120-031810f4c320"/>
+				<textElement markup="styled">
+					<font size="9"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
+				</textElement>
+				<text><![CDATA[3.2 This workplace based learning programme agreement is terminated if:
+
+    3.2.1     the learner is fairly dismissed by the employer for a reason related to the learner ’s conduct or capacity as an
+              employee; or
+
+    3.2.2     the SETA approves the termination of the agreement in terms of the SETA Workplace -Based Learning Programme
+              Regulations.]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="67a32bfe-1a2a-4034-a59e-3c8338ae8b2c"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="100" width="555" height="25" uuid="e38bf48b-4bc0-465c-b51f-0be86cb60edd"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PART D: DETAILS OF THE LEARNING PROGRAMME AND THE PARTIES TO THIS AGREEMENT]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="20" y="125" width="515" height="205" uuid="a4a9a5c4-9d92-47f7-9846-a8dce85e3c24"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="25" y="130" width="505" height="195" uuid="1fc28b9e-71e1-4684-b5d5-cb15a1d6dee7"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Please take note of the following:</b>
+
+- If the learner is not already in the employ of the employer, the learner and employer must conclude a contract of employment;
+- If the learner is an unmarried person under 18 years then the learner's parent or guardian must be a party to this agreement and must complete Section 2. The parent or guardian ceases to be a party to this agreement once the learner turns 18;
+- If a group of employers is party to this agreement, one of the employers must perform the function of a lead employer. The lead employer must complete Section 3. Details of the other employers must be attached on a separate sheet; and
+- If a group of providers is party to this agreement, one of them must perform the function of lead provider. The lead provider must be accredited for the relevant curriculum components and must complete Section 4. Details of the other providers must be attached on a separate sheet.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="340" width="515" height="20" uuid="3cd82a55-2b55-4f71-b5d3-1637afa5a92e"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1. Learner details]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="340" width="0" height="20" uuid="9a7f98ca-ea9c-4736-a157-2549c21c1d19"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="370" width="200" height="20" uuid="a3b796c7-8117-4652-b546-d6946cd80521"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.1 Title:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="370" width="300" height="20" uuid="f5b054f0-fe02-46e4-982c-ceb1ddef6266"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="400" width="200" height="20" uuid="c4ae4e43-51d7-4b8e-8de0-a10b4ef61f31"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.2 Full name:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="400" width="300" height="20" uuid="140d28f3-f961-4b24-84ef-2024a8e5d530"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="430" width="200" height="20" uuid="8e62ace2-7216-4ea3-b290-73fe963887e3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.3 Identity Number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="430" width="300" height="20" uuid="48e76c0a-339c-483a-8144-0f3a26dd8320"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="460" width="200" height="20" uuid="bc0c33cc-4a75-43ed-86b5-d4e6620939ac"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.4 Date of Birth:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="460" width="300" height="20" uuid="fa0be3ae-1181-46fb-90da-82f40b978e7c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="490" width="200" height="20" uuid="92746ec9-84a1-4459-b9d6-871c5b98357c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.5 Sex:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="520" width="200" height="20" uuid="9f578490-e3e4-4238-bb4c-312a42ed5a44"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.6 Race:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="550" width="515" height="20" uuid="ecfbcc1a-2be6-41c2-adb2-e0a1ae3377ea"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.7 Do you have a disability, as contemplated by the Employment Equity Act 55 of 1998?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="575" width="10" height="20" uuid="9f44098a-7e0b-416a-8789-6433aeb3dc19"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="605" width="515" height="70" uuid="4f8c9e5b-d356-4ab2-9998-ae542e240337"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.8 Learner's residential, home and birth place addressses:
+____________________________________
+____________________________________
+____________________________________
+____________________________________]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="250" y="493" width="12" height="12" uuid="9876285f-a271-4ef7-bee0-8accd03eb642"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="268" y="490" width="50" height="20" uuid="66f88ec1-fdde-461d-8e92-c51b862d2cd3"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Male</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="330" y="493" width="12" height="12" uuid="e4d51828-5f62-4999-8b94-daa03271ba95"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="348" y="490" width="60" height="20" uuid="f5899264-f19f-40e3-9b26-c75d3bb3de45"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Female</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="250" y="523" width="12" height="12" uuid="0942c57a-c870-4974-b4ed-6aac78c1b47c"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="268" y="520" width="50" height="20" uuid="ea6ed2b7-980c-4a20-90f8-defea4c54945"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>African</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="330" y="523" width="12" height="12" uuid="687e3bfd-9933-4c63-827b-76223aa23a3d"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="348" y="520" width="50" height="20" uuid="11aaa09e-c364-41db-91be-213065c93725"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Indian</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="410" y="523" width="12" height="12" uuid="36204e5f-092b-4fb7-b572-80f9d821d28f"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="428" y="520" width="60" height="20" uuid="37e9069e-47ce-476e-9147-3e9708b10fb7"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Coloured</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="500" y="523" width="12" height="12" uuid="84197268-69ff-4117-9c44-f063efe59e5c"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="518" y="520" width="50" height="20" uuid="08d5e606-b54e-4ca8-9fc8-967fd629ad8c"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>White</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="80" y="578" width="12" height="12" uuid="40ad7821-484c-4011-a0d0-61740b69b856"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="98" y="575" width="250" height="20" uuid="97597674-a175-444c-bcba-ea0cfaa7d64f"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes (specify):</b> ___________________]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="360" y="578" width="12" height="12" uuid="b025b034-fc9a-4fc8-9744-ee00d05f7eb5"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="378" y="575" width="40" height="20" uuid="82adbe3a-140d-4f57-a56b-d0bb056cc9f6"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="328" y="491" width="16" height="16" uuid="30f3b377-179b-409c-9987-0a37df10c09a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="252" y="498" width="3" height="3" uuid="124a5e2f-85dc-43e4-97bf-8d70d06d14da"/>
+				<graphicElement>
+					<pen lineWidth="1.5"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement x="255" y="492" width="6" height="9" uuid="6e8d121e-9c1a-4289-aabb-3b09ebae651e"/>
+				<graphicElement>
+					<pen lineWidth="1.5"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="dbd64204-829d-4e12-9401-0fad400fdc46"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="30" y="120" width="400" height="20" uuid="f794a251-893a-4e60-a6b1-27090b4e25db"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.9 Contact Telephone Numbers:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="120" width="400" height="20" uuid="26a7a80b-cc31-4f8c-af52-b6346b37fcd0"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="160" width="400" height="20" uuid="80aac10a-e560-4128-848c-24d2022c3bd7"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>(As many contact numbers as possible. One MUST be a cell number.)</b>]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="200" width="400" height="20" uuid="75c4bf94-c827-4cb2-82c3-a97e03b7ab82"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.10 Postal address (if different from residential):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="200" width="400" height="20" uuid="e32c1b02-dce1-4253-b583-edfd9ac8f660"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="230" width="515" height="40" uuid="0513d74e-288d-49fd-9fd2-e983bfb8ef03"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="290" width="160" height="20" uuid="37fca20d-ece5-4487-b25b-a62d6a46baa0"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.11 E-mail Address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="290" width="300" height="20" uuid="43173ff0-bdac-4f37-bd6f-c0145ea73d75"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="340" width="250" height="20" uuid="52897d89-22a0-464a-aecd-028f01de2967"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.12 Are you a South African citizen?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="380" width="515" height="40" uuid="b287025f-6c38-4176-b48c-998459051b07"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[If No (specify and attach documents indicating your status including citizenship
+and/or permanent residence, study permit, etc. Nationality: ____________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="440" width="260" height="20" uuid="d237440b-5c16-45d7-ae86-09acc69cceae"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.13 What is the title of your highest qualification?]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="300" y="440" width="200" height="20" uuid="55effc2b-92d0-4be6-b9f2-e0879348d08b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="490" width="360" height="20" uuid="7887d474-cd2e-4b3a-99aa-e92eb181a718"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.14 Were you employed by your employer before concluding this Agreement ?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="540" width="515" height="30" uuid="3c5f2119-b864-4daa-9ff3-1148f873acfc"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.15 Were you party to a workplace-based learning programme agreement at any time in the past before
+concluding this agreement?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="580" width="10" height="20" uuid="98dc07fe-8de1-4c6f-9e0a-6e19d5f65e83"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="300" y="343" width="12" height="12" uuid="db571343-45c4-4239-ac38-422521842f28"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="318" y="340" width="40" height="20" uuid="0e573a82-eece-4ac4-ba96-0eb9af4e6f16"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="380" y="343" width="12" height="12" uuid="dc45aa27-fed9-45bf-8dda-47a1538a42ed"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="398" y="340" width="40" height="20" uuid="341aaf77-9114-4f99-a290-27282feb21b9"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="400" y="493" width="12" height="12" uuid="39db8dbb-2179-448c-8072-bfaf8d34f860"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="418" y="490" width="40" height="20" uuid="6314c64e-d7f5-487d-825d-d9fe12b1241b"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="480" y="493" width="12" height="12" uuid="a9c8eb9d-56e3-44f9-ae1c-b055e6fb6021"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="498" y="490" width="40" height="20" uuid="42ce539c-7319-4da2-9908-a93875dd1f0f"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="200" y="583" width="12" height="12" uuid="e376245f-032e-4487-a877-3f847671a444"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="218" y="580" width="40" height="20" uuid="76ca59b5-908a-44a8-88f4-7686e798d0a7"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="280" y="583" width="12" height="12" uuid="1af63a02-b8b6-4a48-a6ec-b632c34b74bd"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="298" y="580" width="40" height="20" uuid="c68a264e-a2f5-41eb-bf44-ea4526291a72"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="c452d87f-70d7-482f-bdfc-82dbe1c0dec2"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="120" width="500" height="20" uuid="db35c727-0697-4342-b69e-5aeba57a2044"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2. Parent or Guardian details]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="120" width="0" height="20" uuid="4682c8e3-cc62-4612-85ac-4636e0cba7b3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="25" y="150" width="500" height="20" uuid="c56cf327-c1a3-46a3-81d3-0decae6bfaaa"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(To be completed if learner is a minor - i.e. an unmarried person under 18 years)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="190" width="120" height="20" uuid="aa0f33be-7d29-4c1e-bc24-e5a2b680b7d8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.1 Full name:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="190" width="350" height="20" uuid="0f2b5b9f-1277-45c7-bdc1-f1f226405d9e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="220" width="120" height="20" uuid="acffe79c-b743-4a52-9d95-ed4a49328382"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.2 Identity Number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="220" width="350" height="20" uuid="4ae99947-21f9-4314-939d-d35b88518d1a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="250" width="200" height="20" uuid="36ce3e2f-6bec-41fc-beb9-8c8904bcd41e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.3 Home Address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="250" width="200" height="20" uuid="34b34214-e2ac-4bef-b6d0-9eddd8943180"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="270" width="515" height="40" uuid="c1c6f5ab-40ac-4121-b862-c9d4a228588b"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="320" width="300" height="20" uuid="763b4084-df9d-4cee-9631-32782427274a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.4 Postal Address (if different from above):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="320" width="100" height="20" uuid="dfa660d0-04ad-4174-9e3e-1f4442d79840"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="340" width="515" height="40" uuid="8eecf30b-2395-4446-b713-6a656e891fde"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="400" width="210" height="20" uuid="2fa2412c-523c-4421-93f5-82c9a296f74a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.5 Telephone number(home and work):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="400" width="250" height="20" uuid="c8069448-3bed-459d-b621-a59e0e80f2f8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="440" width="160" height="20" uuid="a57ae4da-3ee5-4894-ab68-61cc797d7b6b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.6 E-mail Address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="440" width="300" height="20" uuid="7f05285a-d20b-461e-9725-5cb12353149e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="e04184da-4983-4abd-8362-64e635d9da47"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="120" width="500" height="20" uuid="32f576a2-b538-4edd-b003-23d07825a614"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3. Employer details]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="120" width="0" height="20" uuid="b2a0474b-2cc6-44c8-abcf-3af930708261"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="145" width="160" height="20" uuid="44c240e3-61ac-462c-a17a-904cbe412cde"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.1 Legal name of employer:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="145" width="300" height="20" uuid="504e4e6e-bfca-493b-b558-651d4891937d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="170" width="230" height="20" uuid="3f5921bb-1453-4742-aca5-e3aa8c5720a9"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.2 Trading name (if different from above):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="170" width="230" height="20" uuid="19c7c2b8-d7aa-40f0-946d-3e994ca92da0"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="195" width="230" height="20" uuid="c4d057c6-2003-4830-8a3e-a524680c4075"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.3 Employer Workplace Approval Number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="195" width="230" height="20" uuid="d245b416-5320-400a-9088-35a051bfe728"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="220" width="110" height="20" uuid="c121dfdf-b403-4142-b7c0-285449e28a3b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.4 Approving SETA:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="220" width="350" height="20" uuid="a55e53a3-b3d5-47a4-b1fa-5c2bb4cf5fd8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="245" width="110" height="20" uuid="afa0a3ee-e70c-4f2b-8874-d7ca5001d10d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.5 Approval Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="245" width="350" height="20" uuid="cc881f41-20ef-47e3-b2c0-23471681cedb"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="270" width="130" height="20" uuid="0defde13-2c96-40b7-9597-7ed1e57d7150"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.6 Approval Review Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="270" width="330" height="20" uuid="84c06768-39cd-4d82-b555-4619f7b2f33b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="295" width="300" height="20" uuid="95dec520-56ec-45e1-ac36-62b65b3b976a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.7 Are you liable for the skills development levy?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="320" width="170" height="20" uuid="010b37a2-fc73-492d-9523-97222c1fe118"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>If yes, what is your SDL number:</b>]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="320" width="250" height="20" uuid="5f5f3004-76cf-4085-a417-4b7237c65662"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="345" width="260" height="20" uuid="9ec0d7fd-1269-4276-ac65-663aa1138e39"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.8 Name of SETA with which you are registered:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="300" y="345" width="200" height="20" uuid="d15179d4-bd6f-4814-b2e3-de01c0f7c188"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="370" width="440" height="20" uuid="82c7ef9e-76ee-404e-a450-c05914f72689"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.9 What is the Standard Industrial Classification (SIC) code that applies to your core business:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="370" width="50" height="20" uuid="5bdb5bad-f79d-4b86-b616-d6b33bcaf4ae"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="395" width="230" height="20" uuid="11db7f66-1ba7-4e28-8234-34cb0697c70b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.10 Are you acting as the Lead Employer?]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="395" width="230" height="20" uuid="a5d93603-1bd3-4a4a-a12a-7fc27b40f39d"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="420" width="200" height="20" uuid="16606862-3be1-4009-b2fd-3fbf3773d0ae"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.11 Business address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="420" width="200" height="20" uuid="e9e395e0-ce47-4cec-a5c9-3dcdbe021288"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="440" width="515" height="40" uuid="622556b6-950c-4aed-8ead-ef1d0ba800d3"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="485" width="300" height="20" uuid="4522ee92-7add-4482-a6ec-db3798637831"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.12 Postal address(if different from 3.11):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="485" width="100" height="20" uuid="9765489b-62d4-4689-ae1b-c7d36a52f8f4"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="505" width="515" height="40" uuid="8a17b57d-0a1c-4154-ad65-0bc7fe830424"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="550" width="160" height="20" uuid="8a427e6c-d0c5-4c2a-9d2c-5991a0fc2ee4"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.13 Name of contact person:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="550" width="300" height="20" uuid="415dd1db-87f2-440c-9566-4f28342a0172"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="575" width="130" height="20" uuid="cee30fd6-ffa0-4eb3-852b-9ff45569a866"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.14 Telephone number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="575" width="330" height="20" uuid="97327099-3b52-428a-b6af-0e57b61c246b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="600" width="110" height="20" uuid="c2a42b2b-f540-458b-bd8f-b0f40b81543a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.15 Fax number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="600" width="350" height="20" uuid="7fbd210f-b7ee-4063-ae7c-7489e97aaa56"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="350" y="298" width="12" height="12" uuid="31048980-6ae5-4eef-9b0d-69f6877c17a6"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="368" y="295" width="40" height="20" uuid="21babbd7-2d94-4c39-b4bb-dab74bf5bc2d"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="430" y="298" width="12" height="12" uuid="0ce5671e-b564-4b41-ab4a-c3dc9ab309b5"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="448" y="295" width="40" height="20" uuid="777f1529-207a-4d00-85fc-bfecbee40244"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="417e0fb7-6311-4a7a-9b10-9fb50bbee749"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="30" y="120" width="110" height="20" uuid="072bd00c-71e4-448b-8a09-e81cf8c7fea2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.16 Cell number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="120" width="350" height="20" uuid="cad3f610-4a88-4f23-9f22-f8f9a284afdf"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="150" width="110" height="20" uuid="ea8ad9f5-6b82-49c9-8510-9ce135c6af20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.17 E-mail Address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="150" width="350" height="20" uuid="48ba73e8-51f1-45e3-ae89-1b35593fb762"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="79751f16-cf2a-4341-8362-47f3f3b8c0e4"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="120" width="500" height="20" uuid="e694cd98-11b5-49ed-ab4f-fb729f98a637"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4. Additional Employer details]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="120" width="0" height="20" uuid="7851376d-0d78-467a-b86b-621566a2be63"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="145" width="160" height="20" uuid="10ed1f17-63ea-4926-b922-29d866ad6aeb"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.1 Legal name of employer:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="145" width="300" height="20" uuid="75a7d2d1-7e71-47b8-ac82-8022cc1bd1a5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="170" width="230" height="20" uuid="27d628a0-93d2-4be3-bd25-9be4c4d142be"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.2 Trading name (if different from above):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="170" width="230" height="20" uuid="64481db3-2f13-4d3c-8991-66e7f6ea4611"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="195" width="230" height="20" uuid="a994cc9e-ea88-4140-a62d-2c0c2b25ecb9"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.3 Employer Workplace Approval Number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="195" width="230" height="20" uuid="877cbf68-bdfc-49bc-a657-0616afc1c54e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="220" width="110" height="20" uuid="e3423f49-d7f9-4146-82a1-3bd455111a4f"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.4 Approving SETA:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="220" width="350" height="20" uuid="cb72723a-c6f7-4052-9b5e-303cd2d6cfc3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="245" width="110" height="20" uuid="8631a0f6-bc0e-4f82-944f-be3a8760f576"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.5 Approval Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="245" width="350" height="20" uuid="232f2c6e-996b-45c7-a673-ae86cd1f2702"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="270" width="130" height="20" uuid="d3efe2f4-5a1e-4bda-b518-d01592c1474b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.6 Approval Review Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="270" width="330" height="20" uuid="1bf68b0a-8d48-4549-ae74-236b22a31415"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="295" width="400" height="20" uuid="5dc28839-bed3-44fb-b047-a44270dad6aa"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.7 Are you liable for the skills development levy?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="315" width="10" height="20" uuid="b4a050b0-37a0-47b3-9542-299c8fd168df"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="230" y="315" width="190" height="20" uuid="50a121f2-c9a1-4dad-b981-e3aba93580bc"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>If yes, what is your SDL number:</b>]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="420" y="315" width="90" height="20" uuid="74e65926-eac1-474e-8ce3-6477a47451df"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="340" width="260" height="20" uuid="0d13757e-45c6-40be-95c8-2074b60781b3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.8 Name of SETA with which you are registered:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="300" y="340" width="200" height="20" uuid="3c198255-b3b8-4472-9f32-27e45c257c91"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="365" width="440" height="20" uuid="e41803f3-40ff-42f7-9f7b-82c8ec9fce43"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.9 What is the Standard Industrial Classification (SIC) code that applies to your core business:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="365" width="50" height="20" uuid="bc09317f-1e7a-4762-a52e-453ff06cb87c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="390" width="230" height="20" uuid="b29318ce-1ae9-49af-ab44-86153569db50"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.10 Are you acting as the Lead Employer?]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="390" width="230" height="20" uuid="62589a22-0e1f-4d95-8a44-f51fc22c8a92"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="415" width="200" height="20" uuid="4b7488ea-d6d4-4f5e-aa19-a94e43511d52"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.11 Business address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="415" width="200" height="20" uuid="32206589-b4e9-498b-941a-2d68c33537ae"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="435" width="515" height="40" uuid="f1506a40-3d3d-4952-98a2-328b44c38409"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="480" width="300" height="20" uuid="4f44534a-624c-4189-8abb-79294260f0f5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.12 Postal address(if different from 4.11):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="480" width="100" height="20" uuid="77c4c625-fef0-4632-820a-d1cf7f1a9391"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="500" width="515" height="40" uuid="acdbecc6-e24b-4cfb-8006-c75fc1c3c036"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="545" width="160" height="20" uuid="c44673c6-27d6-4d84-8acf-c1ba449827b7"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.13 Name of contact person:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="545" width="300" height="20" uuid="aa8736ec-f263-4181-a8a3-cbbe819dea8d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="565" width="130" height="20" uuid="c0174cde-9e8b-4b5c-85c3-675d982aa336"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.14 Telephone number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="565" width="330" height="20" uuid="80a624d5-71f3-449e-ba2b-c7a67d5f1c58"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="585" width="110" height="20" uuid="ff9f7956-d297-4ce9-b664-7c0271e8cc88"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.15 Fax number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="585" width="350" height="20" uuid="5a509a93-8c7b-4cbb-8b01-36f8818ff5f9"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="605" width="110" height="20" uuid="f6a47ee0-d8a1-4e90-a062-6ab3b69d1361"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.16 Cell number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="605" width="350" height="20" uuid="0565303b-c6b9-42f2-89f7-1df5f12d2ecd"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="625" width="110" height="20" uuid="63b1caea-0310-4bd9-bef8-7e1e8ad54f58"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.17 E-mail Address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="625" width="350" height="20" uuid="06dcf139-912c-470a-963c-8171db10610e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="100" y="318" width="12" height="12" uuid="ba97d6a0-66d9-4530-9609-2238818f06a8"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="118" y="315" width="40" height="20" uuid="755bf5e2-ce48-48c6-b51f-d4018716027f"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="180" y="318" width="12" height="12" uuid="48a9956a-f39c-4180-b6ba-4af1a8cd1cb1"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="198" y="315" width="40" height="20" uuid="d372f139-18d6-4ad5-bcdb-ccd8c1565367"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="45b6925a-6413-426a-8dfc-b0357db66da9"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="120" width="500" height="20" uuid="e0ee8df4-d332-4d30-8493-ea3a74590414"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5. Training Provider details]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="120" width="0" height="20" uuid="4097059c-1de2-4652-8a9b-cceeefea4895"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="145" width="160" height="20" uuid="87465bae-4fe4-426d-8a64-73069ab390e0"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.1 Legal name of provider:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="145" width="300" height="20" uuid="6c1eb490-b2aa-41a5-80fd-bd2d11db127f"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="170" width="230" height="20" uuid="92cf6af8-6ade-4ff4-9b1a-2ba9aaea810b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.2 Trading name (if different from above):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="170" width="230" height="20" uuid="6e2f974b-5b5b-4ef6-902c-2e4414f0f82c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="195" width="260" height="20" uuid="f57079fa-0f03-4f80-9df5-9af9cb35b73e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.3 Are you acting as the Lead Training Provider?]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="300" y="195" width="200" height="20" uuid="bb288320-8572-4e20-8b54-abc7b464e934"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="220" width="300" height="20" uuid="283efe74-6705-481a-a6cd-af0da3768849"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.4 Are you liable for the skills development levy?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="245" width="170" height="20" uuid="bdfb17b1-bbd8-4b80-881e-6401d428be26"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>If yes, what is your SDL number:</b>]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="245" width="250" height="20" uuid="609fb312-cfde-4096-b2e7-9a0cdb3ce5f9"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="270" width="440" height="20" uuid="65f1e116-8c92-4ebf-8d68-df2c0eb6d143"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.5 What is the Standard Industrial Classification (SIC) code that applies to your core business:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="270" width="50" height="20" uuid="699c27b6-becc-4176-a07e-5220442f5380"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="295" width="130" height="20" uuid="25c5d9bf-1adb-4e21-94ff-55f19bf2f015"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.6 Accrediting Council:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="295" width="330" height="20" uuid="51c605ea-4245-49f3-a656-6154e35248f5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="320" width="140" height="20" uuid="d39c31cc-c866-4b2f-928b-31efffc8c8ce"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.7 Accreditation number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="180" y="320" width="320" height="20" uuid="25b621ec-2b0f-44fd-9656-7093ae6dabbd"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="345" width="130" height="20" uuid="034cbf56-89d2-4ae3-953a-b0a5a9d3c005"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.8 Accreditation Status:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="345" width="330" height="20" uuid="ee418bff-19f7-4b81-892e-9bc7959ce68b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="370" width="150" height="20" uuid="c0376486-0f3e-4df4-a301-685444d5ae8d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.9 Accreditation Start Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="190" y="370" width="310" height="20" uuid="bae55f6a-e91a-407d-9a09-b31370682451"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="395" width="140" height="20" uuid="76d08f0c-2e23-4203-a5a5-1e9b2f26dbc8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.10 Accreditation End Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="180" y="395" width="320" height="20" uuid="d962cbde-d6db-4e66-880f-33147a23fd5a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="420" width="160" height="20" uuid="99cd4529-d3f1-4ab5-9714-7a5d36217030"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.11 Accreditation Review Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="420" width="300" height="20" uuid="76a65377-502c-4cda-8ad1-e1e5e0cfe323"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="445" width="200" height="20" uuid="1c136a32-5b88-42ea-ae24-1bd0aed4e2f5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.12 Business address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="445" width="200" height="20" uuid="cdaad6ac-2bb1-4c25-ba4d-8a4dad3c559e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="465" width="515" height="40" uuid="8c06bdbe-adc4-4341-a591-78b2e5bc4602"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="510" width="300" height="20" uuid="4cbab84c-3bd9-48e6-8fb8-0a40ada5fd36"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.13 Postal address(if different from above):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="510" width="100" height="20" uuid="68b1be14-f685-4e43-9dea-2f85fc3ee472"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="530" width="515" height="40" uuid="d1da2d45-2c42-4449-8a0d-cd92c22d1341"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="575" width="160" height="20" uuid="06d7836e-732a-4fec-b728-fbaecbe372d2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.14 Name of contact person:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="575" width="300" height="20" uuid="d313f26d-1df3-43ca-a0f2-403152a97e46"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="600" width="130" height="20" uuid="bcba3353-9811-4c86-86a0-daf61b9fa502"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.15 Telephone number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="600" width="330" height="20" uuid="d89c59cf-0763-4f96-b12f-b85c8ae1aca8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="625" width="110" height="20" uuid="1ccf3994-e255-45e5-bea3-a355939fa801"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.16 Fax number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="625" width="350" height="20" uuid="51d32ba3-15ad-468d-adb8-df080abdaec6"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="350" y="223" width="12" height="12" uuid="9a886a10-5244-44f8-bce2-b0a7f1d78606"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="368" y="220" width="40" height="20" uuid="04fb43c1-ccf5-4617-ae7f-5b0a000c3b5a"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="430" y="223" width="12" height="12" uuid="983dfc57-fe0a-41c3-8a9f-d59307bf0efc"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="448" y="220" width="40" height="20" uuid="618f5a17-9a5c-4207-9afa-498054d49264"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="b93f936b-c995-48e2-9e9b-85ebac1f827a"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="30" y="120" width="110" height="20" uuid="41ed81b7-b7cd-4ecf-9366-11cc3c830453"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.17 E-mail Address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="120" width="350" height="20" uuid="152f0b19-328d-440e-b20f-bb351a78e918"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="47a4ecfe-9b27-4367-835a-05b8ae9a121b"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="20" y="120" width="500" height="20" uuid="a6e551e8-6b53-4e71-bd91-8b92699e3ac4"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[6. Additional Provider details]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="120" width="0" height="20" uuid="4e1f23e3-b390-43e2-aa72-cd220611ab5c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="145" width="160" height="20" uuid="8bd1b497-ab06-4e76-8be2-823c0cba6fb6"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.1 Legal name of provider:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="145" width="300" height="20" uuid="d14dffbd-27ff-42fa-83df-bc69e19511ed"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="170" width="230" height="20" uuid="81d78980-7141-4330-a051-a089a826f6db"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.2 Trading name (if different from above):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="170" width="230" height="20" uuid="79a2f377-de03-4cc2-be0b-23a154ee2fa4"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="195" width="260" height="20" uuid="2ab4af34-66ed-4cfb-a308-1180af945ef9"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.3 Are you acting as the Lead Training Provider?]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="300" y="195" width="200" height="20" uuid="162b9c85-2fb3-4104-a32a-d37cdde9d332"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="220" width="300" height="20" uuid="80449209-bb1c-431b-bab9-2dac1aa1242d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.4 Are you liable for the skills development levy?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="245" width="170" height="20" uuid="0c7ad370-7231-42fd-8ce8-221a9d7ecad2"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>If yes, what is your SDL number:</b>]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="245" width="250" height="20" uuid="53dd4598-7044-4198-8a35-76a71e286b86"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="270" width="440" height="20" uuid="f491cf15-376a-4f19-9e39-fb78fd24594f"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.5 What is the Standard Industrial Classification (SIC) code that applies to your core business:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="270" width="50" height="20" uuid="1cff2e19-41a1-4666-8b1a-f596554c1d42"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="295" width="130" height="20" uuid="40edb82b-b19a-4dbb-a7c3-fd4086cfdf81"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.6 Accrediting Council:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="295" width="330" height="20" uuid="d7d4389b-6ece-468d-952c-fff884b1fd5b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="320" width="140" height="20" uuid="ad200138-ae58-48c0-93d8-87db1e77842b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.7 Accreditation number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="180" y="320" width="320" height="20" uuid="7785e119-3af5-4f76-9caa-6a0e99d9b9b5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="345" width="130" height="20" uuid="2eb1fbfc-55b4-4f4e-b0d3-5cde8a51cc0f"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.8 Accreditation Status:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="345" width="330" height="20" uuid="1124af2f-6170-468b-b06e-70decce25161"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="370" width="150" height="20" uuid="916ede46-3e8f-4027-93ea-c28cfd45e65c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.9 Accreditation Start Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="190" y="370" width="310" height="20" uuid="b0806538-f14f-4aa7-8aba-20b5d41ed9db"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="395" width="140" height="20" uuid="9f7927f1-2093-4454-8d65-c0727aeb069b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.10 Accreditation End Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="180" y="395" width="320" height="20" uuid="af9ca849-4d82-4a51-8887-75b486d9c92c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="420" width="160" height="20" uuid="78828df3-2bcd-47bf-a93e-b68612ed5aa2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.11 Accreditation Review Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="420" width="300" height="20" uuid="28f6f74f-c1dd-47a2-825d-7fde356ef250"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="445" width="200" height="20" uuid="705500b0-6bbe-45be-92dc-8ddba30e6151"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.12 Business address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="445" width="200" height="20" uuid="7f3f1cc5-4ba5-4006-ab88-c64fdd4dd8f2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="465" width="515" height="40" uuid="b097cbbc-146f-4882-b94a-28c95bdf6488"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="510" width="300" height="20" uuid="ebf19155-3873-41ac-a904-d8fda2442ed7"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.13 Postal address(if different from above):]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="510" width="100" height="20" uuid="c2be45ce-d167-4b9f-886a-13087b2a9fa3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="530" width="515" height="40" uuid="767a04bd-ef2d-4a3e-b666-84ef240aeaab"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________________
+____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="575" width="160" height="20" uuid="e2470cbf-a8f8-45ee-8405-cc2dc96a5516"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.14 Name of contact person:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="200" y="575" width="300" height="20" uuid="59ea6bf1-42e0-407c-a392-c50adf21639c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="600" width="130" height="20" uuid="71d93720-72c4-407a-988c-21fea42ee411"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.15 Telephone number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="170" y="600" width="330" height="20" uuid="b4f0b043-87fe-41d8-9b6c-f6bec36cfeb5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="625" width="110" height="20" uuid="97a51491-0f5a-42f4-8003-6ee6605ab8d9"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.16 Fax number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="625" width="350" height="20" uuid="fa35ab03-e8ac-47c1-8f89-aaf85f508613"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="350" y="223" width="12" height="12" uuid="70e37ea3-fbf7-4d27-bbb6-4301c05d3e33"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="368" y="220" width="40" height="20" uuid="49aa8a86-f7f9-4834-8d91-3de7b4011cc1"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="430" y="223" width="12" height="12" uuid="2872d920-0246-44c4-8538-7ecf2964dc4f"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="448" y="220" width="40" height="20" uuid="dda43229-a57a-4af8-8327-335e36876e5d"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="ebc84bd7-79e3-40eb-8ee2-0185d93d2efa"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="30" y="120" width="110" height="20" uuid="e20ead90-a937-478e-bb45-a6cebd5c96ac"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.17 E-mail Address:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="150" y="120" width="350" height="20" uuid="ad8347f0-e70b-4745-89ee-d72075925c9a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="160" width="500" height="20" uuid="038d0127-4f33-4a78-9f9b-a60057b55c33"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[7. Contract of Employment]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="160" width="0" height="20" uuid="a938b484-8a57-4b36-b3e1-231422177e0b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="190" width="500" height="20" uuid="e6f378a4-6c16-4dd3-a01b-c3d4788dbe5f"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.1 Is the learner's contract of employment specific to the period of the agreement?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="210" width="10" height="20" uuid="6808102b-1bee-4752-a534-adee27dfe8b1"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="240" width="400" height="20" uuid="fe65e1dd-1f4d-41ca-b12d-10b16e9beaa0"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[If yes, attach a copy of the contract of employment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="270" width="500" height="20" uuid="cb79e3eb-5c96-43e6-974a-414b1d08df5e"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.2 Does the learner have a copy of the contract of employment?]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="290" width="10" height="20" uuid="9b52d288-0565-44f2-8f19-d29cc5ca16ce"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="340" width="500" height="20" uuid="40d84d95-a40a-46c6-8fff-ca2c932b34a8"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[8. Workplace Based Learning Programme Selection:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="340" width="0" height="20" uuid="bb4e19a9-d705-4398-91dc-fec14d10c886"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="25" y="360" width="500" height="40" uuid="13f02653-c98e-4bc4-906e-f0c73c0da887"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="370" width="300" height="20" uuid="4109c991-6e4c-4859-a420-d2fa98ca6ac3"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Workplace Based Learning Programme Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="365" width="110" height="30" uuid="2552391c-0520-45c6-b463-645365ee1a71"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Place an X next to
+ONLY ONE TYPE]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="400" width="500" height="25" uuid="1ef2e3d8-da6c-42b4-91a0-dbabf888ef8e"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="405" width="300" height="20" uuid="b24ea0dc-700a-45cc-99b6-4640ec286626"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.   Apprenticeship]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="425" width="500" height="25" uuid="a8e032c2-f263-4ad8-a578-c06cb5bb3b32"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="430" width="300" height="20" uuid="3cd6a248-7def-4ea6-8427-fc8ada6092b6"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.   Learnership]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="450" width="500" height="25" uuid="9aeefc21-3b47-431b-9f97-a2d7e8400875"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="455" width="300" height="20" uuid="035fcf36-a2a1-41ce-b05c-454d5d2b707a"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[3.   Internship for the "N" Diploma]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="475" width="500" height="25" uuid="08d8149b-b501-44d3-a3ed-f3b879dac4fa"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="480" width="300" height="20" uuid="d79e6512-ae7c-483a-9f0d-b53d3796b8ef"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.   Candidacy]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="500" width="500" height="25" uuid="f22df811-be90-401d-9059-fea8d5ec5d14"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="505" width="300" height="20" uuid="2a3b5564-bd0b-4c1e-a16c-beed2f76fa1c"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.   Student Internship: Category A]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="525" width="500" height="25" uuid="ec103957-5ff5-4acc-9bad-01c09f7fd521"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="530" width="300" height="20" uuid="c3ab91af-83dc-4dc4-ba4c-9b2bbba0f350"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.   Student Internship: Category B]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="550" width="500" height="25" uuid="e6fbadb6-0597-478b-875f-58797b06a9b3"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="555" width="300" height="20" uuid="ae546e95-d721-46fc-9612-3b0f1559fc4c"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.   Student Internship: Category C]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="575" width="500" height="25" uuid="df05f63e-7172-4363-8200-982471f00636"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="580" width="300" height="20" uuid="ca5d275f-7856-48b8-a286-af2dc029e820"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[8.   Student Internship]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="600" width="500" height="25" uuid="09f2e18c-53e8-4386-bc6d-3d772a08cfcb"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="605" width="300" height="20" uuid="5eee4eed-b494-4bf9-b43f-696c973d07f9"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[9.   Graduate Internship]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="380" y="360" width="1" height="265" uuid="7ece0e92-0b04-4930-8adc-39cccbaf4289"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="150" y="213" width="12" height="12" uuid="453c8180-fa3c-43b8-a9b8-a11a6e3585ce"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="168" y="210" width="40" height="20" uuid="ad63949e-eafd-4bad-b996-b9f363212d73"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="230" y="213" width="12" height="12" uuid="7e2bb754-f71f-4f3b-a183-a0b4951334ff"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="248" y="210" width="40" height="20" uuid="a1eb492c-fba5-4a35-8bee-b8287fce807d"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="150" y="293" width="12" height="12" uuid="8f41f696-83fc-4baa-b039-148f75d54e15"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="168" y="290" width="40" height="20" uuid="82643741-78fe-4e3d-9a24-780c2dd2d5db"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Yes</b>]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="230" y="293" width="12" height="12" uuid="7ff332cb-94df-41a7-9144-d67e6532299a"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="248" y="290" width="40" height="20" uuid="f049d320-11bf-4877-aad5-4555918353c4"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>No</b>]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="48c9e123-c027-478f-b3ff-0fe8b2b7f022"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<rectangle>
+				<reportElement x="25" y="85" width="500" height="30" uuid="149e8953-b8df-4741-9285-81c5daf50d65"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="90" width="330" height="20" uuid="a78fea29-d8ea-4bb0-9699-fbc85bce620a"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[SETA responsible for agreement]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="115" width="500" height="45" uuid="897b0860-f85c-4c55-8a56-91e295249983"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="120" width="330" height="35" uuid="7020708a-7341-4cbb-a545-f6ed5b23835b"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Qualification or part qualification title associated with
+agreement if applicable]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="160" width="500" height="40" uuid="a89ba573-2c78-4514-addc-4ab7dda2bcc1"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="165" width="330" height="30" uuid="cf9b719f-6498-43cb-962e-6f5c228560fa"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Qualification or part qualification SAQA ID number associated
+with agreement if applicable]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="200" width="500" height="30" uuid="a2798b6a-b831-43f2-a174-b2568f093227"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="205" width="330" height="20" uuid="04ffc330-3b05-4e34-ba9e-87f0d9dd7879"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Curriculum registration number associated with the agreement]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="230" width="500" height="40" uuid="c21c8722-b955-4303-9708-9f9d0c007766"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="235" width="330" height="30" uuid="8d23b40d-a0a0-4171-b77c-a650786069e9"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[QCTO appointed Assessment Quality Partner (AQP)
+associated with the workplace-based agreement]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="270" width="500" height="30" uuid="03690215-a8d6-466a-9811-4caa3e3e70e5"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="275" width="330" height="20" uuid="fe4b374f-63a9-4e5e-b59c-b1e38a547d90"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Agreement Start Date (date SETA registers the agreement)]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="300" width="500" height="45" uuid="1914c65c-3a4d-4069-a49b-3e4cd51f94c6"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="305" width="330" height="35" uuid="ffebb881-8db9-4e62-91f7-83bb1bdf3d7d"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Agreement End Date (subject to number of credits of
+qualification or part qualification or duration of curriculum)]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="345" width="500" height="30" uuid="0974525b-29ec-46d9-9e77-c955fc07b6be"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="350" width="330" height="20" uuid="e8356408-7d82-4741-9685-67a2233d614f"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Designation registered with SAQA if applicable]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="25" y="375" width="500" height="45" uuid="7a5c7f81-0d61-4b0f-9333-4c1485a4d356"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="380" width="330" height="35" uuid="da68ea2f-4373-4262-af5d-8ae0d906cf3f"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Occupation that this qualification or part qualification is related
+to (as per the Organizing Framework of Occupations(OFO))]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="385" y="85" width="1" height="335" uuid="747e6450-9ee8-4457-be77-6e9e0858ad63"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="20" y="450" width="200" height="20" uuid="b0ad0dd0-56ba-4dde-a2b8-11d2f6bc1de1"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[9. Signatories]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="450" width="0" height="20" uuid="96b694b4-facf-4b1d-a9e2-fa0c67725095"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="30" y="480" width="200" height="20" uuid="13263cf6-0805-4d22-a309-9275f1befcb6"/>
+				<textElement markup="styled">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[<b>Learner Full Name:</b>]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="480" width="0" height="20" uuid="23d41228-df0f-462f-8ded-c28ab2f2fcf1"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="480" width="250" height="20" uuid="3c676749-e1c4-4075-8c86-62d0a3184e1d"/>
+				<textElement markup="styled">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[<b>Parent or Guardian's Full Name:</b>]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="480" width="0" height="20" uuid="ca62141b-ef97-4e3e-bc35-344d550d8603"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="495" width="200" height="20" uuid="0a7269a4-c496-46e0-8578-f97a72e2e4e6"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(only if learner is a minor)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="520" width="250" height="20" uuid="a3b9c892-185f-47d3-acea-079298ba3d6c"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="520" width="250" height="20" uuid="652714ba-a4e5-41b4-a572-77c16c275cce"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[__________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="560" width="70" height="20" uuid="2fd1d1b7-afc1-4a47-81f5-76ff1e7fe269"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Signature:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="560" width="0" height="20" uuid="ed04b7c0-8f1b-48a0-b41d-8a4c49199380"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="95" y="555" width="200" height="20" uuid="e5ca02de-87df-4d90-9e85-0d63a6a67b59"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="560" width="70" height="20" uuid="9b00957b-e80b-4e39-ab82-99f76999538a"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Signature:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="560" width="0" height="20" uuid="14976eac-5ea6-4193-b90c-9def528fc08d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="365" y="555" width="200" height="20" uuid="82c39f41-709c-4832-9800-1e9d0d126cf0"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="600" width="50" height="20" uuid="739022b0-15f3-4938-a6fa-5fc3ff4a552f"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="600" width="0" height="20" uuid="bc7a9acd-f0bb-4873-a3e1-cb44fe4af093"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="595" width="200" height="20" uuid="69b64f82-e7e2-4cda-a5de-a352ce33aa13"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="600" width="50" height="20" uuid="d6fc05dd-64ea-4413-ac43-08d76dc1a800"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="600" width="0" height="20" uuid="df7187bb-0035-4fa1-bb3d-fd3e78ea0622"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="350" y="595" width="200" height="20" uuid="ecf15b6e-5c25-4d6a-be00-bd73c9bb199e"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="640" width="100" height="30" uuid="96beacde-42c7-464f-a021-a66ed09c953b"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Witness
+Signature:1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="650" width="200" height="20" uuid="60be622d-7a9b-468f-820d-f08ed9057f1b"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="640" width="100" height="30" uuid="10c9e267-38ab-42af-bbb5-436a066d6931"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Witness
+Signature:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="365" y="650" width="200" height="20" uuid="09ca50a1-4b91-47cf-9f9f-50e36d5cf40f"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="290498cc-e952-4393-9909-48c77bfcfd42"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="30" y="120" width="50" height="20" uuid="d156db67-2dfb-4ebc-aa3b-8811fd0760ee"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="120" width="0" height="20" uuid="796ebcc9-3461-4445-a895-561115f8a062"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="115" width="200" height="20" uuid="cd195109-6f21-44a5-9604-6f6cfe85d206"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="120" width="50" height="20" uuid="d0941e32-b212-487c-bdff-a8642b14b5bd"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="120" width="0" height="20" uuid="6f88e137-5b04-4224-947b-5ad113309df3"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="350" y="115" width="200" height="20" uuid="c15225d5-c318-4b30-97a5-91937fe4dd1c"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="180" width="250" height="20" uuid="e82b0e9c-50c5-47ca-a5a0-a325f6be22be"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Employer or Lead Employer’s signature</b>]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="180" width="0" height="20" uuid="2e93f7a2-7ba2-4f6b-b0b0-3e6e7113840f"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="180" width="200" height="30" uuid="6854869c-2c5e-4bf4-8899-a39e4fa0deaa"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[<b>Training Provider or Lead Training
+Provider's signature</b>]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="230" width="80" height="20" uuid="a701c243-a748-4043-93e6-757ab8ac83e8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Full Name:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="230" width="0" height="20" uuid="afe45fa4-79d8-4cb2-93f3-5959c31403d8"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="225" width="170" height="20" uuid="cdf12233-5d20-41fb-b729-debac65edb0a"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="230" width="80" height="20" uuid="382d0dd8-1932-44c5-afe0-d04ddfb74b90"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Full Name:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="230" width="0" height="20" uuid="146b500b-7237-4552-b889-d213c38fa110"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="370" y="225" width="170" height="20" uuid="9d3c4327-05cc-4c74-8a92-395bbdeadd20"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="270" width="70" height="20" uuid="f37160d8-aec2-47a8-b579-061542671307"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Signature:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="270" width="0" height="20" uuid="27d1672e-38c2-4c44-ad05-2d6fca4cc15b"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="95" y="265" width="175" height="20" uuid="e6dd3d03-cef3-4c0a-bd7a-927acddc8094"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="270" width="70" height="20" uuid="ee73287e-ed86-49ab-91d4-4cc367f91327"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Signature:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="270" width="0" height="20" uuid="1dd3670b-9bbd-4ee4-8e2e-9e624ced86c9"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="365" y="265" width="175" height="20" uuid="0fd14c4e-6bd4-4c87-a21e-4be44bbe2ef3"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="310" width="50" height="20" uuid="2768c6fe-6727-4cbd-a1f2-736f058fd808"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="310" width="0" height="20" uuid="a839453b-d33e-4450-94f7-5d11d3c23300"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="305" width="190" height="20" uuid="d427b271-0529-413c-b5e5-2e04e3305b52"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="310" width="50" height="20" uuid="917bfda0-abab-4f29-b886-36d0dd99f0e0"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="310" width="0" height="20" uuid="20737957-9e0f-462d-b844-1af626c58c72"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="350" y="305" width="190" height="20" uuid="d6a826f6-62dc-479e-9617-0e285c0b51a1"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="350" width="100" height="30" uuid="ac644821-4699-4a3e-96af-e54e7229af63"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Witness
+Signature:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="360" width="175" height="20" uuid="70262bbb-6a2c-4b6f-bd1e-08ae8c76f00a"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="350" width="100" height="30" uuid="42293699-5557-464a-aeef-623412f48163"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Witness
+Signature:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="365" y="360" width="175" height="20" uuid="48856138-9223-4fb1-9ab2-8436715e1d56"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="400" width="50" height="20" uuid="cdfe2e4f-889b-4d5c-89a4-3cf26bef277d"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="400" width="0" height="20" uuid="2b7dec24-482b-4937-b0ad-6f1d1b44f1b0"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="395" width="190" height="20" uuid="538ac8c7-8aad-4e71-b0dc-ba1ca0cc2fad"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="400" width="50" height="20" uuid="c21d4579-e3ca-481c-af67-09c1215d6adc"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Date:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="400" width="0" height="20" uuid="1ab612af-46fc-4aac-804a-e562b75d5a87"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="350" y="395" width="190" height="20" uuid="83d6c891-4866-4e27-937d-b14557be1a0d"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_______________________________]]></text>
+			</staticText>
+		</band>
+		<band height="677" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="0" y="0" width="555" height="70" uuid="d2f8df3e-8f82-42ab-b0e0-c971cf4f1aed"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
+			</image>
+			<rectangle>
+				<reportElement mode="Opaque" x="25" y="110" width="500" height="390" backcolor="#C0C0C0" uuid="3a8dff6c-1511-4ebd-9b11-3120726703fc"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="25" y="90" width="500" height="20" uuid="055b23b4-2c37-4c45-be77-17ae264a6f13"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SETA Official Use Only]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="120" width="0" height="20" uuid="282f0a10-17ec-47d9-95a6-cb438180d4bd"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="160" width="300" height="40" uuid="6bf07d72-91ac-449e-a505-79f8024e061c"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Workplace Based Learning Programme
+Agreement Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="170" width="230" height="20" uuid="f4c2e412-2f2e-49d3-8657-ea1eefa325fb"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="220" width="300" height="40" uuid="fb1ce4a7-fa6f-42ca-9fa2-489df8808a13"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Conditional date of the agreement
+(Regulation 6(1))]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="230" width="230" height="20" uuid="d74caf21-b174-41bb-8d1c-04f36db5b065"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="280" width="300" height="40" uuid="9ecc7540-79f3-4832-a32a-e536599c3e8a"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Registration date of the agreement
+(Regulation 10(1))]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="290" width="230" height="20" uuid="d2786b46-1513-4106-ba48-8e914e418972"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_____________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="360" width="300" height="60" uuid="82ad70f1-84b9-4810-8955-792e54873b68"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[SETA Official Approved by the CEO to
+register Workplace Based Learning
+Programme Agreements:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="375" width="50" height="20" uuid="40883ec6-5696-4cfb-b875-30d74e514ce9"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Name:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="375" width="0" height="20" uuid="3c76fd3a-ab40-4a80-8c98-688be269e8dc"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="325" y="370" width="185" height="20" uuid="ba3b0063-e25a-4f11-8799-3b359f6be01a"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="415" width="80" height="20" uuid="0f04bc3e-0b4a-4ed9-9263-eb8ab04f509e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Designation:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="415" width="0" height="20" uuid="c858732a-704c-46a7-beb1-6fe00463a3c5"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="355" y="410" width="155" height="20" uuid="589e837d-25cf-42ed-a26a-76dcaaa80cc0"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[_____________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="455" width="70" height="20" uuid="a3b0b7c8-6ca3-4f64-a583-c2687f50d949"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Signature:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="250" y="455" width="0" height="20" uuid="b9ca18e1-ff4a-47af-845e-7d95f5e4c0ca"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="345" y="450" width="165" height="20" uuid="15087679-9b31-4d93-8a22-cc325c6dd151"/>
+				<textElement markup="styled">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[______________________________]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="125">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="60" uuid="b964626c-a665-4a52-9ac6-1f39154b9114"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="5" y="5" width="100" height="15" uuid="e84e1884-e52a-4228-881f-1eae8cf13d09"/>
+				<textElement markup="styled">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[<b>Initial :</b>]]></text>
+			</staticText>
+			<line>
+				<reportElement x="5" y="40" width="160" height="1" uuid="68883fae-e0d7-41fe-a145-ae3acabc4acd"/>
+			</line>
+			<staticText>
+				<reportElement x="5" y="42" width="160" height="15" uuid="23c8a31d-7964-4c7c-b9dc-8c4755900c9c"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Employer]]></text>
+			</staticText>
+			<line>
+				<reportElement x="195" y="40" width="160" height="1" uuid="37f8ccb4-f9d5-444b-905e-654527ad4852"/>
+			</line>
+			<staticText>
+				<reportElement x="195" y="42" width="160" height="15" uuid="a692a1fd-bfc7-436d-872d-2eaa9af6f03c"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Learner]]></text>
+			</staticText>
+			<line>
+				<reportElement x="385" y="40" width="160" height="1" uuid="4af2d3e8-b410-4a15-8fce-c5045d37f77b"/>
+			</line>
+			<staticText>
+				<reportElement x="385" y="42" width="160" height="15" uuid="e0f1ad54-5a30-4249-9ff0-6fa25863e87c"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Provider]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" hAlign="Center">
+				<reportElement x="0" y="62" width="555" height="30" uuid="e08ecfd8-2fe5-48a2-a071-72a484d36b42"/>
+				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Footer_Mining_Future_Skills.png")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="95" width="138" height="15" forecolor="#2C3580" uuid="c840b809-3393-4fd9-9e9d-a42c2437330b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[MQA/COM/00/000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="138" y="95" width="138" height="15" forecolor="#2C3580" uuid="fd96fbef-dbc1-4072-bcc4-de31faa9ea86"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Revision: 01]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="276" y="95" width="138" height="15" forecolor="#2C3580" uuid="0b4ebe33-f12b-4866-89a3-771429dbe47a"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Approved: ESMR]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="414" y="95" width="141" height="15" forecolor="#2C3580" uuid="e1cae121-5418-47f9-988c-f0dc87197d99"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Print Date:     " + new java.text.SimpleDateFormat("yyyy/MM/dd").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="414" y="110" width="115" height="15" forecolor="#2C3580" uuid="f4aec9b6-912b-4ccd-9753-21be7e6da844"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="529" y="110" width="26" height="15" forecolor="#2C3580" uuid="2cbaadc4-52e7-4353-96e5-3966a2f32d93"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

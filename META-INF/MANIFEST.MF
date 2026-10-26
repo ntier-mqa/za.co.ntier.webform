@@ -33,7 +33,8 @@ Require-Bundle: org.idempiere.zk.extra;bundle-version="12.0.0",
  zk;bundle-version="10.0.1",
  zkplus;bundle-version="10.0.1",
  zul;bundle-version="10.0.1",
- zweb;bundle-version="10.0.1"
+ zweb;bundle-version="10.0.1",
+ net.sf.jasperreports.engine
 Bundle-Vendor: Ntier
 Automatic-Module-Name: za.co.ntier.webform
 Bundle-RequiredExecutionEnvironment: JavaSE-17

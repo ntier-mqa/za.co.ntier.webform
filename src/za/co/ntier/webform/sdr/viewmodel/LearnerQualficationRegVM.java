@@ -1,5 +1,6 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -13,6 +14,15 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.compiere.model.I_AD_User;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Year;
@@ -35,6 +45,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Listitem;
 
 import za.co.ntier.api.model.I_ZZLearnerDGProgramme;
@@ -99,6 +110,8 @@ public class LearnerQualficationRegVM extends StepAppVM
 	private DaoManage										dgDaoManage					= new DaoManage();
 	private ColumnModel										colProgMasterData;
 	private ValueAdaptColumnModel							colFinancialYear;
+	private ValueAdaptColumnModel							colLeadSdp;
+	private ValueAdaptColumnModel							colLeadSdpContact;
 	public static final String								UU_QCTO_ARTISANS			= "fcfe3129-e217-42bc-aea1-1c0975782d62";
 	public static final String								UU_QCTO_LEARNERSHIPS		= "b1f00823-76bf-4bfa-b389-51e6826697e8";
 	public static final String								UU_QCTO_SKILLS_PROGRAMMES	= "8b1e7369-4763-4085-a458-933fbff0e1b8";
@@ -775,6 +788,14 @@ public class LearnerQualficationRegVM extends StepAppVM
 				if (event.po().get_ID() <= 0 || event.po().get_ValueAsInt(X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID) <= 0)
 					event.po().set_ValueOfColumn(X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID, getSelectedLearnerId());
 			}
+			if (event.po() != null && event.po().get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus) >= 0)
+			{
+				String curStatus = event.po().get_ValueAsString(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus);
+				if (curStatus == null || curStatus.trim().isEmpty())
+				{
+					event.po().set_ValueOfColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
+				}
+			}
 			PO programme = getLearnerProgramme(event.po(), tableName);
 			if (programme != null)
 			{
@@ -1196,6 +1217,10 @@ public class LearnerQualficationRegVM extends StepAppVM
 		{
 			record.set_ValueOfColumn(X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID, getSelectedLearnerId());
 		}
+		if (record.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus) >= 0)
+		{
+			record.set_ValueOfColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
+		}
 		return record;
 	}
 
@@ -1217,6 +1242,27 @@ public class LearnerQualficationRegVM extends StepAppVM
 			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
 			return;
 		}
+		if (tmRegistration != null && tmRegistration.getRows() != null && selectedIntervention != null)
+		{
+			String tableName = getTableNameForIntervention(selectedIntervention.getValue());
+			if (tableName != null)
+			{
+				for (RowModel row : tmRegistration.getRows())
+				{
+					if (row.getRowData() != null)
+					{
+						PO po = row.getRowData().getDataNullable(tableName);
+						if (po != null)
+						{
+							if (po.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus) >= 0)
+							{
+								po.set_ValueOfColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
+							}
+						}
+					}
+				}
+			}
+		}
 		super.doSave(trxName);
 		saveRegistrationDocuments(trxName);
 	}
@@ -1232,7 +1278,12 @@ public class LearnerQualficationRegVM extends StepAppVM
 		}
 		if (dgProgrammeActive)
 		{
-			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Submitted);
+			List<String> missingCols = validateDGProgrammeDetails();
+			if (!missingCols.isEmpty())
+			{
+				throw new AdempiereException("Please fill all mandatory fields:\n• " + String.join("\n• ", missingCols));
+			}
+			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Created);
 			return;
 		}
 		if (tmRegistration != null && tmRegistration.getRows() != null && selectedIntervention != null)
@@ -1247,14 +1298,9 @@ public class LearnerQualficationRegVM extends StepAppVM
 						PO po = row.getRowData().getDataNullable(tableName);
 						if (po != null)
 						{
-							if (po.get_ColumnIndex("ZZ_DocStatus") >= 0)
+							if (po.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus) >= 0)
 							{
-								po.set_ValueOfColumn("ZZ_DocStatus", "IP");
-								po.saveEx(trxName);
-							}
-							else if (po.get_ColumnIndex("DocStatus") >= 0)
-							{
-								po.set_ValueOfColumn("DocStatus", "IP");
+								po.set_ValueOfColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Created);
 								po.saveEx(trxName);
 							}
 						}
@@ -1396,6 +1442,34 @@ public class LearnerQualficationRegVM extends StepAppVM
 			}
 		}
 
+		// Default SDP from adminBpId linked to logged-in SDP Admin if not already populated from draft
+		if (colLeadSdp != null && tmDGProgrammeDetails.getRow() != null && adminBpId > 0)
+		{
+			CellModel sdpCell = tmDGProgrammeDetails.getRow().get(colLeadSdp);
+			if (sdpCell != null && (existingDg == null || sdpCell.getValue() == null || extractId(sdpCell.getValue()) <= 0))
+			{
+				MBPartner sdpBp = new MBPartner(Env.getCtx(), adminBpId, null);
+				sdpCell.setValue(sdpBp);
+				sdpCell.resetValidate();
+				BindUtils.postNotifyChange(null, null, sdpCell, "value");
+				BindUtils.postNotifyChange(null, null, sdpCell, "displayValue");
+			}
+		}
+
+		// Default Lead SDP Contact to the logged-in SDP Admin user if not already populated from draft
+		if (colLeadSdpContact != null && tmDGProgrammeDetails.getRow() != null && loginId > 0)
+		{
+			CellModel contactCell = tmDGProgrammeDetails.getRow().get(colLeadSdpContact);
+			if (contactCell != null && (existingDg == null || contactCell.getValue() == null || extractId(contactCell.getValue()) <= 0))
+			{
+				MUser sdpUser = new MUser(Env.getCtx(), loginId, null);
+				contactCell.setValue(sdpUser);
+				contactCell.resetValidate();
+				BindUtils.postNotifyChange(null, null, contactCell, "value");
+				BindUtils.postNotifyChange(null, null, contactCell, "displayValue");
+			}
+		}
+
 		// Post notify change on all cells in the row so ZK refreshes every field
 		if (tmDGProgrammeDetails.getRow() != null)
 		{
@@ -1447,7 +1521,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 															null).setReadonly(true);
 		cols.add(colProgMasterData);
 
-		ValueAdaptColumnModel colLeadSdp = ValueAdaptCellModel.getValueAdaptColumnModel(
+		colLeadSdp = ValueAdaptCellModel.getValueAdaptColumnModel(
 																						MasterUtil.getNameOfColTranslated(	I_ZZLearnerDGProgramme.Table_Name,
 																															I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID),
 																						I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID,
@@ -1487,7 +1561,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		colLeadEmployerLevy.setzClass(ValueNamePair.class).required();
 		cols.add(colLeadEmployerLevy);
 
-		ValueAdaptColumnModel colLeadSdpContact = ValueAdaptCellModel.getValueAdaptColumnModel(
+		colLeadSdpContact = ValueAdaptCellModel.getValueAdaptColumnModel(
 																								MasterUtil.getNameOfColTranslated(	I_ZZLearnerDGProgramme.Table_Name,
 																																	I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID),
 																								I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID,
@@ -1595,7 +1669,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		colFundingType.setzClass(ValueNamePair.class).required();
 		cols.add(colFundingType);
 
-		ColumnModel colContractNo = CellModel.getColModelForText(
+		ColumnModel colContractNo = CellModel.getColModelForPhone(
 																	MasterUtil.getNameOfColTranslated(	I_ZZLearnerDGProgramme.Table_Name,
 																										I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber),
 																	I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber);
@@ -1641,6 +1715,27 @@ public class LearnerQualficationRegVM extends StepAppVM
 		tmDGProgrammeDetails.setSclass("two-col srd-dg-programme");
 		tmDGProgrammeDetails.setDaoManage(dgDaoManage);
 		tmDGProgrammeDetails.init();
+
+		if (colLeadSdp != null && tmDGProgrammeDetails.getRow() != null && adminBpId > 0)
+		{
+			CellModel sdpCell = tmDGProgrammeDetails.getRow().get(colLeadSdp);
+			if (sdpCell != null)
+			{
+				MBPartner sdpBp = new MBPartner(Env.getCtx(), adminBpId, null);
+				sdpCell.setValue(sdpBp);
+				sdpCell.resetValidate();
+			}
+		}
+		if (colLeadSdpContact != null && tmDGProgrammeDetails.getRow() != null && loginId > 0)
+		{
+			CellModel contactCell = tmDGProgrammeDetails.getRow().get(colLeadSdpContact);
+			if (contactCell != null)
+			{
+				MUser sdpUser = new MUser(Env.getCtx(), loginId, null);
+				contactCell.setValue(sdpUser);
+				contactCell.resetValidate();
+			}
+		}
 	}
 
 	private void initDGDocuments()
@@ -2008,9 +2103,9 @@ public class LearnerQualficationRegVM extends StepAppVM
 		RowModel row = tmDGProgrammeDetails.getRow();
 		for (ColumnModel col : row.keySet())
 		{
+			CellModel cell = row.get(col);
 			if (col.isMandatory())
 			{
-				CellModel cell = row.get(col);
 				Object val = cell != null ? cell.getValue() : null;
 				if (cell instanceof DateCellModel)
 				{
@@ -2063,6 +2158,24 @@ public class LearnerQualficationRegVM extends StepAppVM
 						missingCols.add(title);
 				}
 			}
+			else if (cell != null)
+			{
+				Object val = cell.getValue();
+				if (val != null && !(val instanceof String && ((String) val).isBlank()))
+				{
+					if (!cell.validate())
+					{
+						List<String> errs = cell.getValidateMsgs();
+						if (errs != null && !errs.isEmpty())
+						{
+							for (String err : errs)
+							{
+								missingCols.add(col.getTitle() + ": " + err);
+							}
+						}
+					}
+				}
+			}
 		}
 		return missingCols;
 	}
@@ -2070,6 +2183,24 @@ public class LearnerQualficationRegVM extends StepAppVM
 	@Command
 	public void nextDGTab()
 	{
+		if (getSelectedLearnerId() <= 0)
+		{
+			MasterUtil.showInfoDialog("Please select a learner first.", null);
+			return;
+		}
+		if (selectedDGProgramme == null)
+		{
+			MasterUtil.showInfoDialog("Please select a DG Programme.", null);
+			return;
+		}
+		List<String> missingCols = validateDGProgrammeDetails();
+		if (!missingCols.isEmpty())
+		{
+			String msg = "Please fill all mandatory fields or correct the following:\n• " + String.join("\n• ", missingCols);
+			MasterUtil.showInfoDialog(msg, null);
+			return;
+		}
+		downloadLearnerAgreement();
 		setDgSelectedTabIndex(1);
 	}
 
@@ -2084,6 +2215,13 @@ public class LearnerQualficationRegVM extends StepAppVM
 		if (selectedDGProgramme == null)
 		{
 			MasterUtil.showInfoDialog("Please select a DG Programme.", null);
+			return;
+		}
+		List<String> missingCols = validateDGProgrammeDetails();
+		if (!missingCols.isEmpty())
+		{
+			String msg = "Please fill all mandatory fields or correct the following:\n• " + String.join("\n• ", missingCols);
+			MasterUtil.showInfoDialog(msg, null);
 			return;
 		}
 
@@ -2109,7 +2247,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		List<String> missingCols = validateDGProgrammeDetails();
 		if (!missingCols.isEmpty())
 		{
-			String msg = "Please fill all mandatory fields marked with *:\n• " + String.join("\n• ", missingCols);
+			String msg = "Please fill all mandatory fields or correct the following:\n• " + String.join("\n• ", missingCols);
 			MasterUtil.showInfoDialog(msg, null);
 			return;
 		}
@@ -2146,7 +2284,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 		isDgSubmit = true;
 		trxWrapper(trxName -> {
-			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Submitted);
+			saveDGRegistration(trxName, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Created);
 		});
 	}
 
@@ -2225,6 +2363,69 @@ public class LearnerQualficationRegVM extends StepAppVM
 			return;
 		}
 		setRegSelectedTabIndex(1);
+	}
+
+	private void downloadLearnerAgreement()
+	{
+		try
+		{
+			final String reportPath = "/za/co/ntier/report/jrxmls/";
+			Map<String, Object> jasperParams = new HashMap<>();
+			ClassLoader reportClassLoader = new ClassLoader(LearnerQualficationRegVM.class.getClassLoader())
+			{
+				@Override
+				public InputStream getResourceAsStream(String name)
+				{
+					InputStream is = super.getResourceAsStream(name);
+					if (is == null && name != null && name.startsWith("/"))
+					{
+						is = super.getResourceAsStream(name.substring(1));
+					}
+					return is;
+				}
+			};
+			jasperParams.put(JRParameter.REPORT_CLASS_LOADER, reportClassLoader);
+
+			JasperReport jasperReport = null;
+			InputStream jasperStream = LearnerQualficationRegVM.class.getResourceAsStream(reportPath + "LearnerAgreement.jasper");
+			if (jasperStream != null)
+			{
+				try
+				{
+					jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
+				}
+				catch (Exception e)
+				{
+					log.log(Level.WARNING, "Could not load precompiled LearnerAgreement.jasper: " + e.getMessage());
+				}
+			}
+			if (jasperReport == null)
+			{
+				InputStream jrxmlStream = LearnerQualficationRegVM.class.getResourceAsStream(reportPath + "LearnerAgreement.jrxml");
+				if (jrxmlStream != null)
+				{
+					jasperReport = JasperCompileManager.compileReport(jrxmlStream);
+				}
+			}
+
+			if (jasperReport != null)
+			{
+				JasperPrint print = JasperFillManager.fillReport(jasperReport, jasperParams, new JREmptyDataSource(1));
+				byte[] pdfBytes = JasperExportManager.exportReportToPdf(print);
+				if (pdfBytes != null && pdfBytes.length > 0)
+				{
+					Filedownload.save(pdfBytes, "application/pdf", "Learner_Agreement.pdf");
+					return;
+				}
+			}
+
+			MasterUtil.showInfoDialog("Could not generate Learner Agreement.", null);
+		}
+		catch (Exception e)
+		{
+			log.log(Level.WARNING, "Could not download Learner Agreement: " + e.getMessage(), e);
+			MasterUtil.showInfoDialog("Could not generate Learner Agreement: " + e.getMessage(), null);
+		}
 	}
 
 	@Command
@@ -2553,20 +2754,36 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 				if (autoContactCol != null && cellModel.getRowModel() != null)
 				{
-					String userWhere = I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_C_BPartner_ID + " = ? AND "
-										+ I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_IsActive + " = 'Y'";
-					PO adUser = MTable	.get(Env.getCtx(), I_AD_User.Table_Name)
-										.createQuery(userWhere, null)
-										.setParameters(bpId)
-										.first();
-					if (adUser != null)
+					if (bpId == adminBpId && loginId > 0)
 					{
+						MUser sdpUser = new MUser(Env.getCtx(), loginId, null);
 						CellModel contactCell = cellModel.getRowModel().get(autoContactCol);
 						if (contactCell != null)
 						{
-							contactCell.setValue(adUser);
+							contactCell.setValue(sdpUser);
 							contactCell.resetValidate();
 							BindUtils.postNotifyChange(null, null, contactCell, "value");
+							BindUtils.postNotifyChange(null, null, contactCell, "displayValue");
+						}
+					}
+					else
+					{
+						String userWhere = I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_C_BPartner_ID + " = ? AND "
+											+ I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_IsActive + " = 'Y'";
+						PO adUser = MTable	.get(Env.getCtx(), I_AD_User.Table_Name)
+											.createQuery(userWhere, null)
+											.setParameters(bpId)
+											.first();
+						if (adUser != null)
+						{
+							CellModel contactCell = cellModel.getRowModel().get(autoContactCol);
+							if (contactCell != null)
+							{
+								contactCell.setValue(adUser);
+								contactCell.resetValidate();
+								BindUtils.postNotifyChange(null, null, contactCell, "value");
+								BindUtils.postNotifyChange(null, null, contactCell, "displayValue");
+							}
 						}
 					}
 				}
@@ -2828,6 +3045,18 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 	public void setDgSelectedTabIndex(int dgSelectedTabIndex)
 	{
+		if (dgSelectedTabIndex == 1 && this.dgSelectedTabIndex == 0)
+		{
+			List<String> missingCols = validateDGProgrammeDetails();
+			if (!missingCols.isEmpty())
+			{
+				String msg = "Please fill all mandatory fields or correct the following:\n• " + String.join("\n• ", missingCols);
+				MasterUtil.showInfoDialog(msg, null);
+				this.dgSelectedTabIndex = 0;
+				BindUtils.postNotifyChange(null, null, this, "dgSelectedTabIndex");
+				return;
+			}
+		}
 		this.dgSelectedTabIndex = dgSelectedTabIndex;
 		BindUtils.postNotifyChange(null, null, this, "dgSelectedTabIndex");
 	}

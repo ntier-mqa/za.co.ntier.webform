@@ -201,6 +201,11 @@
       font-weight: 600 !important;
       font-size: 12px !important;
     }
+    .expand-tabbox .z-tab:nth-child(2),
+    .expand-tabbox .z-tab-disabled {
+      pointer-events: none !important;
+      cursor: default !important;
+    }
   </style>
 
   <!-- Always Visible Form Header -->
@@ -224,10 +229,10 @@
         src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
 
       <div visible="@load(vmLearner.dgProgrammeActive)" style="margin-top: 15px;">
-        <tabbox sclass="expand-tabbox" selectedIndex="@bind(vmLearner.dgSelectedTabIndex)">
+        <tabbox sclass="expand-tabbox" selectedIndex="@load(vmLearner.dgSelectedTabIndex)">
           <tabs>
             <tab label="Programme" />
-            <tab label="Documents" />
+            <tab label="Documents" disabled="true" style="pointer-events: none !important; cursor: default !important;" />
           </tabs>
           <tabpanels>
             <tabpanel>
@@ -261,7 +266,7 @@
             onClick="@command('saveDGAppDraft')" />
           <button
             visible="@load(vmLearner.dgSelectedTabIndex eq 0)"
-            label="Next"
+            label="Generate Agreement &amp; Next"
             iconSclass="z-icon-arrow-right"
             sclass="icon-on-right"
             onClick="@command('nextDGTab')" />
