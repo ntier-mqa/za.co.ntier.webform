@@ -912,6 +912,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		ValueAdaptColumnModel sdpCol = ValueAdaptCellModel.getValueAdaptColumnModel(Msg.getElement(Env.getCtx(), sdpColName),
 																					sdpColName, CellModel.SEARCH_CELL);
 		sdpCol.setTableName(learnerTable).required();
+		sdpCol.setBtText("");
 
 		ValueAdaptColumnModel employerCol = ValueAdaptCellModel.getValueAdaptColumnModel(	Msg.getElement(Env.getCtx(), employerColName),
 																							employerColName, CellModel.SEARCH_CELL);
@@ -2432,6 +2433,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			MasterUtil.showInfoDialog(msg, null);
 			return;
 		}
+		downloadLearnerAgreement();
 		setRegSelectedTabIndex(1);
 	}
 

@@ -142,7 +142,9 @@
 
     /* DG Programme and Documents View Styling */
     .srd-dg-programme .cell-content .z-textbox[readonly],
-    .srd-dg-programme .cell-content input[readonly] {
+    .srd-dg-programme .cell-content input[readonly],
+    .col-ZZ_SDP_ID .cell-content .z-textbox[readonly],
+    .col-ZZ_SDP_ID .cell-content input[readonly] {
       background-color: #f1f5f9 !important;
       color: #334155 !important;
       cursor: default !important;
@@ -192,6 +194,40 @@
     [class*="srd-dg-programme"] .cell-content15 .z-button .z-button-label,
     .srd-dg-programme .cellType15 .z-button .z-button-label,
     [class*="srd-dg-programme"] .cellType15 .z-button .z-button-label {
+      display: none !important;
+    }
+
+    /* SDP search button: compact icon-only beside input */
+    .col-ZZ_SDP_ID .cell-content,
+    .col-ZZ_SDP_ID.cellType15 .cell-content {
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .col-ZZ_SDP_ID .cell-content .z-textbox,
+    .col-ZZ_SDP_ID .cell-content input[type="text"] {
+      flex: 1 1 auto !important;
+      width: auto !important;
+    }
+
+    .col-ZZ_SDP_ID .z-button {
+      flex: 0 0 auto !important;
+      width: 34px !important;
+      min-width: 34px !important;
+      height: 30px !important;
+      padding: 0 !important;
+      margin-left: 5px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 0 !important;
+    }
+
+    .col-ZZ_SDP_ID .z-button i {
+      font-size: 14px !important;
+    }
+
+    .col-ZZ_SDP_ID .z-button .z-button-label {
       display: none !important;
     }
 
@@ -331,7 +367,7 @@
           onClick="@command('saveRegAppDraft')" />
         <button
           visible="@load(vmLearner.regSelectedTabIndex eq 0)"
-          label="Next"
+          label="Generate Agreement &amp; Next"
           iconSclass="z-icon-arrow-right"
           sclass="icon-on-right"
           onClick="@command('nextRegTab')" />
