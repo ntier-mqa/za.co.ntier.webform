@@ -29,6 +29,7 @@ import org.compiere.model.I_C_Year;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRefList;
+import org.compiere.model.MReference;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MYear;
@@ -888,16 +889,30 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 		cols.add(text(learnerTable, studentColumn));
 
-		ValueNamePair[] fundingPairs = MRefList.getList(Env.getCtx(), 1000537, false);
+		MColumn fundingCol = MTable	.get(Env.getCtx(), learnerTable) != null
+									? MTable.get(Env.getCtx(), learnerTable).getColumn(X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZFundingType)
+									: null;
+		int fundingRefId = fundingCol != null ? fundingCol.getAD_Reference_Value_ID() : 0;
+		if (fundingRefId <= 0)
+		{
+			MReference ref = new Query(Env.getCtx(), MReference.Table_Name, "Name=?", null)
+								.setParameters("Funding Type")
+								.first();
+			if (ref != null)
+				fundingRefId = ref.getAD_Reference_ID();
+		}
+		ValueNamePair[] fundingPairs = fundingRefId > 0 ? MRefList.getList(Env.getCtx(), fundingRefId, false) : null;
 		List<ValueNamePair> fundingTypeList = fundingPairs != null && fundingPairs.length > 0
 																								? Arrays.asList(fundingPairs)
 																								: List.of(
-																											new ValueNamePair("IF", "Industry Funded"),
-																											new ValueNamePair("SF", "SETA Funded"));
+																											new ValueNamePair(	X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_IndustryFunded,
+																																"Industry Funded"),
+																											new ValueNamePair(	X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_SETAFunded,
+																																"SETA Funded"));
 
 		ListColumnModel<ValueNamePair> colFundingType = ListCellModel.getListColumnModel(
-																							"Funding type",
-																							"ZZFundingType",
+																							Msg.getElement(Env.getCtx(), X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZFundingType),
+																							X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZFundingType,
 																							fundingTypeList,
 																							ValueNamePair::getName,
 																							ValueNamePair::getValue);
