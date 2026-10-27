@@ -875,6 +875,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 				: null;
 		loadRegistrationDocuments(draft != null ? draft.get_ID() : 0);
 
+		setRegSelectedTabIndex(0);
 		setStep("registration");
 		BindUtils.postNotifyChange(null, null, this, "tmRegistration");
 	}
@@ -882,6 +883,11 @@ public class LearnerQualficationRegVM extends StepAppVM
 	@Command
 	public void backToSelection()
 	{
+		if (regSelectedTabIndex > 0)
+		{
+			setRegSelectedTabIndex(0);
+			return;
+		}
 		setStep("selectRegistration");
 	}
 
@@ -985,10 +991,22 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 	private String getFundingTypeColumn(String learnerTable)
 	{
-		if (X_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable))
-			return X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZFundingType;
-		if (X_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
-			return X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZFundingType;
+		if (X_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable)
+				|| X_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable)
+				|| X_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(learnerTable)
+				|| X_ZZLearnerLearnership.Table_Name.equals(learnerTable)
+				|| X_ZZLearnerSkillsProgramme.Table_Name.equals(learnerTable))
+		{
+			return "ZZFundingType";
+		}
+		if (learnerTable != null)
+		{
+			MTable learnerModelTable = MTable.get(Env.getCtx(), learnerTable);
+			if (learnerModelTable != null && learnerModelTable.getColumn("ZZFundingType") != null)
+			{
+				return "ZZFundingType";
+			}
+		}
 		return null;
 	}
 
@@ -2484,6 +2502,12 @@ public class LearnerQualficationRegVM extends StepAppVM
 	public void prevDGTab()
 	{
 		setDgSelectedTabIndex(0);
+	}
+
+	@Command
+	public void prevRegTab()
+	{
+		setRegSelectedTabIndex(0);
 	}
 
 	@Command
