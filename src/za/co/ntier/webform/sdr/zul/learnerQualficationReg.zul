@@ -303,7 +303,7 @@
             <include
               component="@load(vmLearner.tmRegistration)"
               menuContextInfo="@init(vmLearner.menuContextInfo)"
-              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
           </tabpanel>
           <tabpanel>
             <include
@@ -319,11 +319,6 @@
           label="Cancel"
           iconSclass="z-icon-xmark"
           onClick="@command('cancelApp')" />
-        <button
-          visible="@load(vmLearner.regSelectedTabIndex eq 1)"
-          label="Previous"
-          iconSclass="z-icon-arrow-left"
-          onClick="@command('prevRegTab')" />
         <button
           label="Save &amp; Exit"
           iconSclass="z-icon-floppy-disk"

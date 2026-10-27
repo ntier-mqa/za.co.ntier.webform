@@ -7,7 +7,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -44,7 +46,6 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Listitem;
@@ -76,7 +77,6 @@ import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
-import za.co.ntier.webform.sdr.component.bean.RowModel.RowData;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
@@ -100,6 +100,131 @@ import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
 public class LearnerQualficationRegVM extends StepAppVM
 {
 	public static final String								INTERVENTION_DG_PROGRAMMES	= "Discretionary Grant Programmes";
+	private static final String							INTERVENTION_QCTO_ARTISANS	= "QCTO Artisans";
+	private static final String							INTERVENTION_QCTO_LEARNERSHIPS = "QCTO Learnerships";
+	private static final String							INTERVENTION_QCTO_SKILLS	= "QCTO Skills Programmes";
+	private static final String							INTERVENTION_LEARNERSHIPS	= "Learnerships";
+	private static final String							INTERVENTION_SKILLS			= "Skills Programmes";
+	private static final String							INTERVENTION_QCTO_LEARNERSHIP = "QCTO Learnership";
+	private static final String							INTERVENTION_QCTO_SKILL		= "QCTO Skills Programme";
+	private static final String							INTERVENTION_LEARNERSHIP	= "Learnership";
+	private static final String							INTERVENTION_SKILL			= "Skills Programme";
+
+	public static final String								UU_QCTO_ARTISANS			= "fcfe3129-e217-42bc-aea1-1c0975782d62";
+	public static final String								UU_QCTO_LEARNERSHIPS		= "b1f00823-76bf-4bfa-b389-51e6826697e8";
+	public static final String								UU_QCTO_SKILLS_PROGRAMMES	= "8b1e7369-4763-4085-a458-933fbff0e1b8";
+	public static final String								UU_LEARNERSHIPS				= "58f0fbf5-f57e-48f9-af65-4910a01a045a";
+	public static final String								UU_SKILLS_PROGRAMMES		= "2832696b-6133-4d56-898b-73b67ae62c12";
+
+	private static final List<InterventionConfig> INTERVENTION_CONFIGS = List.of(
+		new InterventionConfig(
+			INTERVENTION_QCTO_ARTISANS,
+			X_ZZLearnerQCTOArtisans.Table_Name,
+			X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearnerQCTOArtisans_ID,
+			X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQctoLearnership_ID,
+			X_ZZQctoLearnership.Table_Name,
+			X_ZZQctoLearnership.COLUMNNAME_ZZQctoLearnership_ID,
+			X_ZZQctoLearnership.COLUMNNAME_ZZLearnershipCode,
+			X_ZZQctoLearnership.COLUMNNAME_ZZLearnershipTitle,
+			UU_QCTO_ARTISANS,
+			id -> new X_ZZQctoLearnership(Env.getCtx(), id, null)),
+		new InterventionConfig(
+			INTERVENTION_QCTO_LEARNERSHIPS,
+			X_ZZLearnerQCTOLearnership.Table_Name,
+			X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZLearnerQCTOLearnership_ID,
+			X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZQctoLearnership_ID,
+			X_ZZQctoLearnership.Table_Name,
+			X_ZZQctoLearnership.COLUMNNAME_ZZQctoLearnership_ID,
+			X_ZZQctoLearnership.COLUMNNAME_ZZLearnershipCode,
+			X_ZZQctoLearnership.COLUMNNAME_ZZLearnershipTitle,
+			UU_QCTO_LEARNERSHIPS,
+			id -> new X_ZZQctoLearnership(Env.getCtx(), id, null),
+			INTERVENTION_QCTO_LEARNERSHIP),
+		new InterventionConfig(
+			INTERVENTION_QCTO_SKILLS,
+			X_ZZLearnerQCTOSkillsProgramme.Table_Name,
+			X_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZLearnerQCTOSkillsProgramme_ID,
+			X_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID,
+			X_ZZQctoSkillsProgramme.Table_Name,
+			X_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID,
+			X_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode,
+			X_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle,
+			UU_QCTO_SKILLS_PROGRAMMES,
+			id -> new X_ZZQctoSkillsProgramme(Env.getCtx(), id, null),
+			INTERVENTION_QCTO_SKILL),
+		new InterventionConfig(
+			INTERVENTION_LEARNERSHIPS,
+			X_ZZLearnerLearnership.Table_Name,
+			X_ZZLearnerLearnership.COLUMNNAME_ZZLearnerLearnership_ID,
+			X_ZZLearnerLearnership.COLUMNNAME_ZZLearnership_ID,
+			X_ZZLearnership.Table_Name,
+			X_ZZLearnership.COLUMNNAME_ZZLearnership_ID,
+			X_ZZLearnership.COLUMNNAME_ZZLearnershipCode,
+			X_ZZLearnership.COLUMNNAME_ZZLearnershipTitle,
+			UU_LEARNERSHIPS,
+			id -> new X_ZZLearnership(Env.getCtx(), id, null),
+			INTERVENTION_LEARNERSHIP),
+		new InterventionConfig(
+			INTERVENTION_SKILLS,
+			X_ZZLearnerSkillsProgramme.Table_Name,
+			X_ZZLearnerSkillsProgramme.COLUMNNAME_ZZLearnerSkillsProgramme_ID,
+			X_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+			X_ZZSkillsProgramme.Table_Name,
+			X_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID,
+			X_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode,
+			X_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle,
+			UU_SKILLS_PROGRAMMES,
+			id -> new X_ZZSkillsProgramme(Env.getCtx(), id, null),
+			INTERVENTION_SKILL));
+
+	private static final class InterventionConfig
+	{
+		private final String displayName;
+		private final String learnerTable;
+		private final String learnerKeyColumn;
+		private final String learnerProgrammeColumn;
+		private final String programmeTable;
+		private final String programmeKeyColumn;
+		private final String programmeCodeColumn;
+		private final String programmeTitleColumn;
+		private final String programmeMasterUuid;
+		private final Function<Integer, PO> programmeLoader;
+		private final List<String> aliases;
+
+		private InterventionConfig(	String displayName, String learnerTable, String learnerKeyColumn,
+									String learnerProgrammeColumn, String programmeTable, String programmeKeyColumn,
+									String programmeCodeColumn, String programmeTitleColumn, String programmeMasterUuid,
+									Function<Integer, PO> programmeLoader, String... aliases)
+		{
+			this.displayName = displayName;
+			this.learnerTable = learnerTable;
+			this.learnerKeyColumn = learnerKeyColumn;
+			this.learnerProgrammeColumn = learnerProgrammeColumn;
+			this.programmeTable = programmeTable;
+			this.programmeKeyColumn = programmeKeyColumn;
+			this.programmeCodeColumn = programmeCodeColumn;
+			this.programmeTitleColumn = programmeTitleColumn;
+			this.programmeMasterUuid = programmeMasterUuid;
+			this.programmeLoader = programmeLoader;
+			this.aliases = Arrays.asList(aliases);
+		}
+
+		private boolean matches(String interventionValue)
+		{
+			if (interventionValue == null)
+				return false;
+			if (displayName.equalsIgnoreCase(interventionValue) || learnerTable.equalsIgnoreCase(interventionValue))
+				return true;
+			return aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(interventionValue));
+		}
+
+		private String getJoinClause()
+		{
+			String alias = programmeTable.startsWith("ZZQcto") ? "q" : "p";
+			return "LEFT JOIN " + programmeTable + " " + alias + " ON " + alias + "." + programmeKeyColumn + " = "
+					+ learnerTable + "." + learnerProgrammeColumn;
+		}
+	}
 
 	private TableModel										tmLearnerSelection;
 	private TableModel										tmLearnerSelectionInfo;
@@ -108,16 +233,11 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 	private TableModel										tmDGProgrammeDetails;
 	private TableModel										tmDGDocuments;
-	private DaoManage										dgDaoManage					= new DaoManage();
+	private final DaoManage								dgDaoManage					= new DaoManage();
 	private ColumnModel										colProgMasterData;
 	private ValueAdaptColumnModel							colFinancialYear;
 	private ValueAdaptColumnModel							colLeadSdp;
 	private ValueAdaptColumnModel							colLeadSdpContact;
-	public static final String								UU_QCTO_ARTISANS			= "fcfe3129-e217-42bc-aea1-1c0975782d62";
-	public static final String								UU_QCTO_LEARNERSHIPS		= "b1f00823-76bf-4bfa-b389-51e6826697e8";
-	public static final String								UU_QCTO_SKILLS_PROGRAMMES	= "8b1e7369-4763-4085-a458-933fbff0e1b8";
-	public static final String								UU_LEARNERSHIPS				= "58f0fbf5-f57e-48f9-af65-4910a01a045a";
-	public static final String								UU_SKILLS_PROGRAMMES		= "2832696b-6133-4d56-898b-73b67ae62c12";
 
 	private PresetTitleColumnModel<X_ZZRegistrationDocs>	dgDocumentNameCol;
 	private UploadColumnModel								dgUploadCol;
@@ -139,7 +259,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 	private int												adminBpId;
 	private int												loginId;
 
-	private DaoManage										daoManage					= new DaoManage();
+	private final DaoManage								daoManage					= new DaoManage();
 
 	public TableModel getTmLearnerSelection()
 	{
@@ -321,13 +441,12 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 	public List<ValueNamePair> getFilteredInterventionList()
 	{
-		List<String> allowedOrder = List.of(
-											"QCTO Artisans",
-											"QCTO Learnerships",
-											"QCTO Skills Programmes",
-											"Learnerships",
-											"Skills Programmes",
-											INTERVENTION_DG_PROGRAMMES);
+		List<String> allowedOrder = new ArrayList<>();
+		for (InterventionConfig config : INTERVENTION_CONFIGS)
+		{
+			allowedOrder.add(config.displayName);
+		}
+		allowedOrder.add(INTERVENTION_DG_PROGRAMMES);
 
 		List<ValueNamePair> allInterventions = MasterUtil.getLkpInterventionList();
 		List<ValueNamePair> filtered = new ArrayList<>();
@@ -560,223 +679,122 @@ public class LearnerQualficationRegVM extends StepAppVM
 		tmLearnerSelectionInfo.init();
 	}
 
-	private String getLearnerTableIdColumn(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue) || X_ZZLearnerQCTOArtisans.Table_Name.equals(interventionValue))
-			return X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearnerQCTOArtisans_ID;
-		if ("QCTO Learnerships".equals(interventionValue) || X_ZZLearnerQCTOLearnership.Table_Name.equals(interventionValue))
-			return X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZLearnerQCTOLearnership_ID;
-		if ("QCTO Skills Programmes".equals(interventionValue)	|| "QCTO Skills Programme".equals(interventionValue)
-			|| X_ZZLearnerQCTOSkillsProgramme.Table_Name.equals(interventionValue))
-			return X_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZLearnerQCTOSkillsProgramme_ID;
-		if ("Learnerships".equals(interventionValue)	|| "Learnership".equals(interventionValue)
-			|| X_ZZLearnerLearnership.Table_Name.equals(interventionValue))
-			return X_ZZLearnerLearnership.COLUMNNAME_ZZLearnerLearnership_ID;
-		if ("Skills Programmes".equals(interventionValue)	|| "Skills Programme".equals(interventionValue)
-			|| X_ZZLearnerSkillsProgramme.Table_Name.equals(interventionValue))
-			return X_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID;
-		return null;
-	}
-
 	private void openProgramInfoPanelOrLoad()
-	{
-		showRegistrationStep(0);
-	}
-
-	private String getTableNameForIntervention(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue))
-			return X_ZZLearnerQCTOArtisans.Table_Name;
-		if ("QCTO Learnerships".equals(interventionValue))
-			return X_ZZLearnerQCTOLearnership.Table_Name;
-		if ("QCTO Skills Programmes".equals(interventionValue) || "QCTO Skills Programme".equals(interventionValue))
-			return X_ZZLearnerQCTOSkillsProgramme.Table_Name;
-		if ("Learnerships".equals(interventionValue) || "Learnership".equals(interventionValue))
-			return X_ZZLearnerLearnership.Table_Name;
-		if ("Skills Programmes".equals(interventionValue) || "Skills Programme".equals(interventionValue))
-			return X_ZZLearnerSkillsProgramme.Table_Name;
-		return null;
-	}
-
-	private String getJoinClauseForIntervention(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue))
-			return "LEFT JOIN ZZQctoLearnership q ON q.ZZQctoLearnership_ID = ZZLearnerQCTOArtisans.ZZQctoLearnership_ID";
-		if ("QCTO Learnerships".equals(interventionValue))
-			return "LEFT JOIN ZZQctoLearnership q ON q.ZZQctoLearnership_ID = ZZLearnerQCTOLearnership.ZZQctoLearnership_ID";
-		if ("QCTO Skills Programmes".equals(interventionValue) || "QCTO Skills Programme".equals(interventionValue))
-			return "LEFT JOIN ZZQctoSkillsProgramme q ON q.ZZQctoSkillsProgramme_ID = ZZLearnerQCTOSkillsProgramme.ZZQctoSkillsProgramme_ID";
-		if ("Learnerships".equals(interventionValue) || "Learnership".equals(interventionValue))
-			return "LEFT JOIN ZZLearnership p ON p.ZZLearnership_ID = ZZLearnerLearnership.ZZLearnership_ID";
-		if ("Skills Programmes".equals(interventionValue) || "Skills Programme".equals(interventionValue))
-			return "LEFT JOIN ZZSkillsProgramme p ON p.ZZSkillsProgramme_ID = ZZLearnerSkillsProgramme.ZZSkillsProgramme_ID";
-		return "";
-	}
-
-	private Function<Integer, PO> getProgrammeLoaderForIntervention(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue) || "QCTO Learnerships".equals(interventionValue))
-			return id -> new X_ZZQctoLearnership(Env.getCtx(), id, null);
-		if ("QCTO Skills Programmes".equals(interventionValue) || "QCTO Skills Programme".equals(interventionValue))
-			return id -> new X_ZZQctoSkillsProgramme(Env.getCtx(), id, null);
-		if ("Learnerships".equals(interventionValue) || "Learnership".equals(interventionValue))
-			return id -> new X_ZZLearnership(Env.getCtx(), id, null);
-		if ("Skills Programmes".equals(interventionValue) || "Skills Programme".equals(interventionValue))
-			return id -> new X_ZZSkillsProgramme(Env.getCtx(), id, null);
-		return null;
-	}
-
-	private String getProgrammeTableForIntervention(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue) || "QCTO Learnerships".equals(interventionValue))
-			return X_ZZQctoLearnership.Table_Name;
-		if ("QCTO Skills Programmes".equals(interventionValue) || "QCTO Skills Programme".equals(interventionValue))
-			return X_ZZQctoSkillsProgramme.Table_Name;
-		if ("Learnerships".equals(interventionValue))
-			return X_ZZLearnership.Table_Name;
-		if ("Skills Programmes".equals(interventionValue) || "Skills Programme".equals(interventionValue))
-			return X_ZZSkillsProgramme.Table_Name;
-		return null;
-	}
-
-	private String getLearnerProgrammeIdColumnForIntervention(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue))
-			return X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZQctoLearnership_ID;
-		if ("QCTO Learnerships".equals(interventionValue))
-			return X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZQctoLearnership_ID;
-		if ("QCTO Skills Programmes".equals(interventionValue) || "QCTO Skills Programme".equals(interventionValue))
-			return X_ZZLearnerQCTOSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID;
-		if ("Learnerships".equals(interventionValue))
-			return X_ZZLearnerLearnership.COLUMNNAME_ZZLearnership_ID;
-		if ("Skills Programmes".equals(interventionValue) || "Skills Programme".equals(interventionValue))
-			return X_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID;
-		return null;
-	}
-
-	private String getProgrammeIdColumnForIntervention(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue) || "QCTO Learnerships".equals(interventionValue))
-			return X_ZZQctoLearnership.COLUMNNAME_ZZQctoLearnership_ID;
-		if ("QCTO Skills Programmes".equals(interventionValue) || "QCTO Skills Programme".equals(interventionValue))
-			return X_ZZQctoSkillsProgramme.COLUMNNAME_ZZQctoSkillsProgramme_ID;
-		if ("Learnerships".equals(interventionValue))
-			return X_ZZLearnership.COLUMNNAME_ZZLearnership_ID;
-		if ("Skills Programmes".equals(interventionValue) || "Skills Programme".equals(interventionValue))
-			return X_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID;
-		return null;
-	}
-
-	private String getProgrammeCodeColumnForIntervention(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue) || "QCTO Learnerships".equals(interventionValue))
-			return X_ZZQctoLearnership.COLUMNNAME_ZZLearnershipCode;
-		if ("QCTO Skills Programmes".equals(interventionValue) || "QCTO Skills Programme".equals(interventionValue))
-			return X_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode;
-		if ("Learnerships".equals(interventionValue))
-			return X_ZZLearnership.COLUMNNAME_ZZLearnershipCode;
-		if ("Skills Programmes".equals(interventionValue) || "Skills Programme".equals(interventionValue))
-			return X_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode;
-		return null;
-	}
-
-	private String getProgrammeTitleColumnForIntervention(String interventionValue)
-	{
-		if ("QCTO Artisans".equals(interventionValue) || "QCTO Learnerships".equals(interventionValue))
-			return X_ZZQctoLearnership.COLUMNNAME_ZZLearnershipTitle;
-		if ("QCTO Skills Programmes".equals(interventionValue) || "QCTO Skills Programme".equals(interventionValue))
-			return X_ZZQctoSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle;
-		if ("Learnerships".equals(interventionValue))
-			return X_ZZLearnership.COLUMNNAME_ZZLearnershipTitle;
-		if ("Skills Programmes".equals(interventionValue) || "Skills Programme".equals(interventionValue))
-			return X_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeTitle;
-		return null;
-	}
-
-	private void showRegistrationStep(int selectedRecordId)
 	{
 		if (selectedIntervention == null)
 			return;
 
-		String val = selectedIntervention.getValue();
-		String tableName = getTableNameForIntervention(val);
-		String programmeTable = getProgrammeTableForIntervention(val);
-		String learnerProgrammeId = getLearnerProgrammeIdColumnForIntervention(val);
-		String programmeIdColumn = getProgrammeIdColumnForIntervention(val);
-		String codeColumn = getProgrammeCodeColumnForIntervention(val);
-		String titleColumn = getProgrammeTitleColumnForIntervention(val);
-		Function<Integer, PO> programmeLoader = getProgrammeLoaderForIntervention(val);
-		String joinClause = getJoinClauseForIntervention(val);
-		String primaryKeyColumn = getLearnerTableIdColumn(val);
+		InterventionConfig config = getInterventionConfig(selectedIntervention.getValue());
+		if (config == null)
+		{
+			log.warning("Unsupported learner intervention: " + selectedIntervention.getValue());
+			return;
+		}
+
+		InfoPanelPara para = InfoPanelPara.getInstance(config.programmeTable, config.programmeKeyColumn);
+		String whereClause = buildProgrammeBaseWhereClause(config.learnerTable, config.programmeTable);
+		if (whereClause != null && !whereClause.isBlank())
+		{
+			para.setWhereClause(whereClause);
+		}
+
+		showInfoPanel(para, (obj, infoPanel) -> {
+			Object[] values = (Object[]) obj;
+			if (values == null || values.length == 0 || values[0] == null)
+				return;
+			int progId = values[0] instanceof Number ? ((Number) values[0]).intValue() : Integer.parseInt(values[0].toString());
+			if (progId <= 0)
+				return;
+
+			PO selectedProg = config.programmeLoader.apply(progId);
+			showRegistrationStep(selectedProg);
+		});
+	}
+
+	private InterventionConfig getInterventionConfig(String interventionValue)
+	{
+		for (InterventionConfig config : INTERVENTION_CONFIGS)
+		{
+			if (config.matches(interventionValue))
+				return config;
+		}
+		return null;
+	}
+
+	private String getTableNameForIntervention(String interventionValue)
+	{
+		InterventionConfig config = getInterventionConfig(interventionValue);
+		return config != null ? config.learnerTable : null;
+	}
+
+	private void showRegistrationStep(PO selectedProg)
+	{
+		if (selectedIntervention == null)
+			return;
+
+		InterventionConfig config = getInterventionConfig(selectedIntervention.getValue());
+		if (config == null)
+		{
+			log.warning("Unsupported learner intervention: " + selectedIntervention.getValue());
+			return;
+		}
+
+		String tableName = config.learnerTable;
+		String programmeTable = config.programmeTable;
+		String learnerProgrammeId = config.learnerProgrammeColumn;
+		String programmeIdColumn = config.programmeKeyColumn;
+		String codeColumn = config.programmeCodeColumn;
+		String titleColumn = config.programmeTitleColumn;
+		Function<Integer, PO> programmeLoader = config.programmeLoader;
+		String joinClause = config.getJoinClause();
+		String primaryKeyColumn = config.learnerKeyColumn;
 
 		List<ColumnModel> cols = selectableProgrammeColumns(tableName, programmeTable, learnerProgrammeId,
 															programmeIdColumn, codeColumn, titleColumn, programmeLoader);
 
 		tmRegistration = TableModel.getTableBean(TableModel.class, cols, false, tableName);
-		tmRegistration.setViewModel(ViewType.VIEW_GRID);
-		tmRegistration.setSclass("srd-learner-" + selectedIntervention.getName().toLowerCase().replace(' ', '-'));
+		tmRegistration.setViewModel(ViewType.VIEW_FORM);
+		tmRegistration.setSclass("two-col srd-learner-" + selectedIntervention.getName().toLowerCase().replace(' ', '-'));
 		tmRegistration.setPoSupplier(row -> createLearnerChildRecord(tableName));
-		tmRegistration.setCreateNewRowWhenEmpty(false);
+		tmRegistration.setCreateNewRowWhenEmpty(true);
 		tmRegistration.init();
-
-		tmRegistration.setRowReadonlyLogic(rowModel -> {
-			if (rowModel == null || rowModel.getRowData() == null)
-				return false;
-			PO child = rowModel.getRowData().getDataNullable(tableName);
-			return child != null && child.get_ID() > 0;
-		});
-
-		tmRegistration.setRowStyleLogic(rowModel -> {
-			if (rowModel != null && !rowModel.isEditable())
-			{
-				return "pointer-events: none; opacity: 0.85; background-color: #f5f5f7;";
-			}
-			return "";
-		});
-
-		tmRegistration.setRowSaveFilter(rowModel -> rowModel != null && rowModel.isEditable());
 
 		tmRegistration.setLoadSavedDataHandle(model -> {
 			if (getSelectedLearnerId() <= 0)
 				return;
-			String where = tableName + "." + X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID + " = ?";
-			Query query;
-			if (selectedRecordId > 0 && primaryKeyColumn != null)
+			String where = tableName + "." + X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID + " = ? AND "
+					+ tableName + "." + I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus + " = ?";
+			Object[] params;
+			if (selectedProg != null)
 			{
-				where += " AND " + tableName + "." + primaryKeyColumn + " = ?";
-				query = MTable.get(Env.getCtx(), tableName).createQuery(where, null);
-				if (!joinClause.isBlank())
-					query.addJoinClause(joinClause);
-				query.setParameters(getSelectedLearnerId(), selectedRecordId);
+				where += " AND " + tableName + "." + learnerProgrammeId + " = ?";
+				params = new Object[]{ getSelectedLearnerId(), X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft, selectedProg.get_ID() };
 			}
 			else
 			{
-				query = MTable.get(Env.getCtx(), tableName).createQuery(where, null);
-				if (!joinClause.isBlank())
-					query.addJoinClause(joinClause);
-				query.setParameters(getSelectedLearnerId());
+				params = new Object[]{ getSelectedLearnerId(), X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft };
+			}
+			Query query = MTable.get(Env.getCtx(), tableName).createQuery(where, null)
+															.setParameters(params);
+			if (primaryKeyColumn != null)
+			{
+				query.setOrderBy(tableName + "." + primaryKeyColumn + " DESC");
 			}
 
-			List<PO> rows = query.list();
-			if (joinClause.isBlank())
+			PO draft = query.first();
+			if (draft == null)
 			{
-				model.resetMultiPo(RowData.standardToMultiPo(rows));
-			}
-			else
-			{
-				List<List<PO>> rowData = new ArrayList<>();
-				for (PO child : rows)
-				{
-					List<PO> row = new ArrayList<>();
-					row.add(child);
-					row.addAll(getChildRelatedRecords(child, tableName));
-					rowData.add(row);
-				}
-				model.resetMultiPo(rowData);
+				model.resetMultiPo(new ArrayList<>());
+				return;
 			}
 
-			// Always display a new line for the user to fill
-			model.addNewRow(null);
+			List<PO> row = new ArrayList<>();
+			row.add(draft);
+			if (!joinClause.isBlank())
+			{
+				row.addAll(getChildRelatedRecords(draft, tableName));
+			}
+			model.resetMultiPo(List.of(row));
 		});
 
 		tmRegistration.setBeforeSave(event -> {
@@ -810,21 +828,55 @@ public class LearnerQualficationRegVM extends StepAppVM
 		tmRegistration.reloadDao();
 		tmRegistration.loadSavedData();
 
-		loadRegistrationDocuments(selectedRecordId);
+		if (selectedProg != null && tmRegistration.getRow() != null)
+		{
+			ColumnModel progCol = tmRegistration.getColumnInfos().stream()
+					.filter(c -> c.getDaoPropertyName() != null && c.getDaoPropertyName().equalsIgnoreCase(learnerProgrammeId))
+					.findFirst()
+					.orElse(cols.size() > 1 ? cols.get(1) : null);
+			if (progCol != null)
+			{
+				CellModel progCell = tmRegistration.getRow().get(progCol);
+				if (progCell != null)
+				{
+					progCell.setValue(selectedProg);
+					progCell.resetValidate();
+				}
+			}
+			ColumnModel tCol = tmRegistration.getColumnInfos().stream()
+					.filter(c -> c.getDaoPropertyName() != null && c.getDaoPropertyName().equalsIgnoreCase(titleColumn))
+					.findFirst()
+					.orElse(cols.size() > 3 ? cols.get(3) : null);
+			if (tCol != null)
+			{
+				CellModel titleCell = tmRegistration.getRow().get(tCol);
+				if (titleCell != null)
+				{
+					titleCell.setValue(selectedProg.get_Value(titleColumn));
+					titleCell.resetValidate();
+				}
+			}
+			PO draftPo = tmRegistration.getRow().getRowData() != null
+					? tmRegistration.getRow().getRowData().getDataNullable(tableName)
+					: null;
+			if (draftPo != null)
+			{
+				draftPo.set_ValueOfColumn(learnerProgrammeId, selectedProg.get_ID());
+				int credits = selectedProg.get_ValueAsInt("ZZCredits");
+				if (credits > 0 && draftPo.get_ColumnIndex("ZZCredits") >= 0)
+				{
+					draftPo.set_ValueOfColumn("ZZCredits", credits);
+				}
+			}
+		}
+
+		PO draft = tmRegistration.getRow() != null && tmRegistration.getRow().getRowData() != null
+				? tmRegistration.getRow().getRowData().getDataNullable(tableName)
+				: null;
+		loadRegistrationDocuments(draft != null ? draft.get_ID() : 0);
 
 		setStep("registration");
 		BindUtils.postNotifyChange(null, null, this, "tmRegistration");
-	}
-
-	@Command
-	@NotifyChange("tmRegistration")
-	public void addRegistrationRow()
-	{
-		if (tmRegistration != null)
-		{
-			tmRegistration.addNewRow(null);
-			BindUtils.postNotifyChange(null, null, tmRegistration, "rows");
-		}
 	}
 
 	@Command
@@ -889,36 +941,39 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 		cols.add(text(learnerTable, studentColumn));
 
-		MColumn fundingCol = MTable	.get(Env.getCtx(), learnerTable) != null
-									? MTable.get(Env.getCtx(), learnerTable).getColumn(X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZFundingType)
-									: null;
-		int fundingRefId = fundingCol != null ? fundingCol.getAD_Reference_Value_ID() : 0;
-		if (fundingRefId <= 0)
+		String fundingTypeColumn = getFundingTypeColumn(learnerTable);
+		if (fundingTypeColumn != null)
 		{
-			MReference ref = new Query(Env.getCtx(), MReference.Table_Name, "Name=?", null)
-								.setParameters("Funding Type")
-								.first();
-			if (ref != null)
-				fundingRefId = ref.getAD_Reference_ID();
-		}
-		ValueNamePair[] fundingPairs = fundingRefId > 0 ? MRefList.getList(Env.getCtx(), fundingRefId, false) : null;
-		List<ValueNamePair> fundingTypeList = fundingPairs != null && fundingPairs.length > 0
-																								? Arrays.asList(fundingPairs)
-																								: List.of(
-																											new ValueNamePair(	X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_IndustryFunded,
+			MTable learnerModelTable = MTable.get(Env.getCtx(), learnerTable);
+			MColumn fundingCol = learnerModelTable != null ? learnerModelTable.getColumn(fundingTypeColumn) : null;
+			int fundingRefId = fundingCol != null ? fundingCol.getAD_Reference_Value_ID() : 0;
+			if (fundingRefId <= 0)
+			{
+				MReference ref = new Query(Env.getCtx(), MReference.Table_Name, "Name=?", null)
+									.setParameters("Funding Type")
+									.first();
+				if (ref != null)
+					fundingRefId = ref.getAD_Reference_ID();
+			}
+			ValueNamePair[] fundingPairs = fundingRefId > 0 ? MRefList.getList(Env.getCtx(), fundingRefId, false) : null;
+			List<ValueNamePair> fundingTypeList = fundingPairs != null && fundingPairs.length > 0
+																									? Arrays.asList(fundingPairs)
+																									: List.of(
+																												new ValueNamePair(	X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_IndustryFunded,
 																																"Industry Funded"),
-																											new ValueNamePair(	X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_SETAFunded,
+																												new ValueNamePair(	X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_SETAFunded,
 																																"SETA Funded"));
 
-		ListColumnModel<ValueNamePair> colFundingType = ListCellModel.getListColumnModel(
-																							Msg.getElement(Env.getCtx(), X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZFundingType),
-																							X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZFundingType,
-																							fundingTypeList,
-																							ValueNamePair::getName,
-																							ValueNamePair::getValue);
-		colFundingType.setzClass(ValueNamePair.class).required();
-		colFundingType.setTableName(learnerTable);
-		cols.add(colFundingType);
+			ListColumnModel<ValueNamePair> colFundingType = ListCellModel.getListColumnModel(
+																									Msg.getElement(Env.getCtx(), fundingTypeColumn),
+																									fundingTypeColumn,
+																									fundingTypeList,
+																									ValueNamePair::getName,
+																									ValueNamePair::getValue);
+			colFundingType.setzClass(ValueNamePair.class).required();
+			colFundingType.setTableName(learnerTable);
+			cols.add(colFundingType);
+		}
 
 		ColumnModel startDateCol = editableDate(learnerTable, "ZZCommencementDate").required();
 		startDateCol.setTitle("Start Date");
@@ -926,6 +981,15 @@ public class LearnerQualficationRegVM extends StepAppVM
 		cols.add(editableDate(learnerTable, "ZZCompletionDate"));
 
 		return cols;
+	}
+
+	private String getFundingTypeColumn(String learnerTable)
+	{
+		if (X_ZZLearnerQCTOArtisans.Table_Name.equals(learnerTable))
+			return X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZFundingType;
+		if (X_ZZLearnerQCTOLearnership.Table_Name.equals(learnerTable))
+			return X_ZZLearnerQCTOLearnership.COLUMNNAME_ZZFundingType;
+		return null;
 	}
 
 	private String buildProgrammeBaseWhereClause(String learnerTable, String programmeTable)
@@ -1776,6 +1840,67 @@ public class LearnerQualficationRegVM extends StepAppVM
 		tmDGDocuments.init(null, TitleInfo.empty);
 	}
 
+	private List<X_ZZRegistrationDocs> loadRegistrationDocumentDefinitions(int programmeMasterId, boolean includeSharedDocuments)
+	{
+		if (programmeMasterId <= 0 && !includeSharedDocuments)
+			return new ArrayList<>();
+
+		String programmeFilter;
+		if (programmeMasterId > 0 && includeSharedDocuments)
+		{
+			programmeFilter = "(" + I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? OR "
+					+ I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL)";
+		}
+		else if (programmeMasterId > 0)
+		{
+			programmeFilter = I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?";
+		}
+		else
+		{
+			programmeFilter = I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL";
+		}
+
+		String sql = "SELECT * FROM " + I_ZZRegistrationDocs.Table_Name
+				+ " WHERE " + programmeFilter + " AND " + I_ZZRegistrationDocs.COLUMNNAME_IsActive + " = 'Y' "
+				+ "ORDER BY " + I_ZZRegistrationDocs.COLUMNNAME_Name + ", "
+				+ I_ZZRegistrationDocs.COLUMNNAME_ZZRegistrationDocs_ID;
+
+		Map<String, X_ZZRegistrationDocs> uniqueDocuments = new LinkedHashMap<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			if (programmeMasterId > 0)
+			{
+				pstmt.setInt(1, programmeMasterId);
+			}
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				X_ZZRegistrationDocs candidate = new X_ZZRegistrationDocs(Env.getCtx(), rs, null);
+				String name = candidate.getName();
+				String documentKey = name == null || name.isBlank()
+						? "#" + candidate.getZZRegistrationDocs_ID()
+						: name.trim().toLowerCase(Locale.ROOT);
+				X_ZZRegistrationDocs current = uniqueDocuments.get(documentKey);
+				if (current == null || (candidate.isMandatory() && !current.isMandatory()))
+				{
+					uniqueDocuments.put(documentKey, candidate);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "Failed to load registration documents for programme master data " + programmeMasterId, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		return new ArrayList<>(uniqueDocuments.values());
+	}
+
 	private void loadDGDocuments()
 	{
 		if (tmDGDocuments == null || dgDocumentNameCol == null || dgUploadCol == null)
@@ -1783,35 +1908,8 @@ public class LearnerQualficationRegVM extends StepAppVM
 			initDGDocuments();
 		}
 
-		List<X_ZZRegistrationDocs> docUploads = new ArrayList<>();
-		if (selectedDGProgramme != null && selectedDGProgramme.getZZ_Program_Master_Data_ID() > 0)
-		{
-			String sql = "SELECT * FROM "	+ I_ZZRegistrationDocs.Table_Name
-							+ " WHERE (" + I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? OR "
-							+ I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL) AND "
-							+ I_ZZRegistrationDocs.COLUMNNAME_IsActive + " = 'Y' "
-							+ "ORDER BY " + I_ZZRegistrationDocs.COLUMNNAME_Name + ", " + I_ZZRegistrationDocs.COLUMNNAME_ZZRegistrationDocs_ID;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql, null);
-				pstmt.setInt(1, selectedDGProgramme.getZZ_Program_Master_Data_ID());
-				rs = pstmt.executeQuery();
-				while (rs.next())
-				{
-					docUploads.add(new X_ZZRegistrationDocs(Env.getCtx(), rs, null));
-				}
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, "Failed to load ZZRegistrationDocs for programme " + selectedDGProgramme.getZZ_Program_Master_Data_ID(), e);
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-			}
-		}
+		int programmeMasterId = selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0;
+		List<X_ZZRegistrationDocs> docUploads = loadRegistrationDocumentDefinitions(programmeMasterId, false);
 
 		if (docUploads.isEmpty())
 		{
@@ -1876,33 +1974,14 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 	private int getProgramMasterDataIdForIntervention(String interventionValue)
 	{
-		if (interventionValue == null)
+		InterventionConfig config = getInterventionConfig(interventionValue);
+		if (config == null)
 			return 0;
-		String uu = null;
-		if ("QCTO Artisans".equalsIgnoreCase(interventionValue) || X_ZZLearnerQCTOArtisans.Table_Name.equalsIgnoreCase(interventionValue))
-			uu = UU_QCTO_ARTISANS;
-		else if ("QCTO Learnerships".equalsIgnoreCase(interventionValue)	|| "QCTO Learnership".equalsIgnoreCase(interventionValue)
-					|| X_ZZLearnerQCTOLearnership.Table_Name.equalsIgnoreCase(interventionValue))
-			uu = UU_QCTO_LEARNERSHIPS;
-		else if ("QCTO Skills Programmes".equalsIgnoreCase(interventionValue)	|| "QCTO Skills Programme".equalsIgnoreCase(interventionValue)
-					|| X_ZZLearnerQCTOSkillsProgramme.Table_Name.equalsIgnoreCase(interventionValue))
-			uu = UU_QCTO_SKILLS_PROGRAMMES;
-		else if ("Learnerships".equalsIgnoreCase(interventionValue) || "Learnership".equalsIgnoreCase(interventionValue)
-					|| X_ZZLearnerLearnership.Table_Name.equalsIgnoreCase(interventionValue))
-			uu = UU_LEARNERSHIPS;
-		else if ("Skills Programmes".equalsIgnoreCase(interventionValue)	|| "Skills Programme".equalsIgnoreCase(interventionValue)
-					|| X_ZZLearnerSkillsProgramme.Table_Name.equalsIgnoreCase(interventionValue))
-			uu = UU_SKILLS_PROGRAMMES;
 
-		if (uu != null)
-		{
-			int id = DB.getSQLValueEx(null, "SELECT "	+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID
-											+ " FROM " + I_ZZ_Program_Master_Data.Table_Name
-											+ " WHERE " + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU + " = ?", uu);
-			if (id > 0)
-				return id;
-		}
-		return 0;
+		return Math.max(0, DB.getSQLValueEx(null, "SELECT " + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID
+				+ " FROM " + I_ZZ_Program_Master_Data.Table_Name
+				+ " WHERE " + I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU + " = ?",
+			config.programmeMasterUuid));
 	}
 
 	private void initRegistrationDocuments()
@@ -1944,35 +2023,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			pmdId = getProgramMasterDataIdForIntervention(selectedIntervention.getName());
 		}
 
-		List<X_ZZRegistrationDocs> docUploads = new ArrayList<>();
-		if (pmdId > 0)
-		{
-			String sql = "SELECT * FROM "	+ I_ZZRegistrationDocs.Table_Name
-							+ " WHERE (" + I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? OR "
-							+ I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL) AND "
-							+ I_ZZRegistrationDocs.COLUMNNAME_IsActive + " = 'Y' "
-							+ "ORDER BY " + I_ZZRegistrationDocs.COLUMNNAME_Name + ", " + I_ZZRegistrationDocs.COLUMNNAME_ZZRegistrationDocs_ID;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql, null);
-				pstmt.setInt(1, pmdId);
-				rs = pstmt.executeQuery();
-				while (rs.next())
-				{
-					docUploads.add(new X_ZZRegistrationDocs(Env.getCtx(), rs, null));
-				}
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, "Failed to load ZZRegistrationDocs for programme master data " + pmdId, e);
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-			}
-		}
+		List<X_ZZRegistrationDocs> docUploads = loadRegistrationDocumentDefinitions(pmdId, true);
 
 		if (docUploads.isEmpty())
 		{
@@ -1991,22 +2042,14 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 		tmRegistrationDocuments.resetMultiPo(null, TitleInfo.createTitleInfo(rowTitles));
 
-		// Check for existing saved record to populate any previously attached files
+		// Only the currently loaded draft can provide existing attachments.
 		PO existingRecord = null;
-		if (selectedIntervention != null)
+		if (selectedIntervention != null && selectedRecordId > 0)
 		{
 			String tableName = getTableNameForIntervention(selectedIntervention.getValue());
-			if (tableName != null && selectedRecordId > 0)
+			if (tableName != null)
 			{
 				existingRecord = MTable.get(Env.getCtx(), tableName).getPO(selectedRecordId, null);
-			}
-			else if (tableName != null && getSelectedLearnerId() > 0)
-			{
-				String where = X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID + " = ?";
-				existingRecord = MTable	.get(Env.getCtx(), tableName).createQuery(where, null)
-										.setParameters(getSelectedLearnerId())
-										.setOrderBy(MTable.get(Env.getCtx(), tableName).getKeyColumns()[0] + " DESC")
-										.first();
 			}
 		}
 
@@ -2055,19 +2098,6 @@ public class LearnerQualficationRegVM extends StepAppVM
 						targetPos.add(po);
 					}
 				}
-			}
-		}
-
-		if (targetPos.isEmpty() && getSelectedLearnerId() > 0)
-		{
-			PO po = MTable	.get(Env.getCtx(), tableName).createQuery(
-																		X_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID + " = ?", trxName)
-							.setParameters(getSelectedLearnerId())
-							.setOrderBy(MTable.get(Env.getCtx(), tableName).getKeyColumns()[0] + " DESC")
-							.first();
-			if (po != null && po.get_ID() > 0)
-			{
-				targetPos.add(po);
 			}
 		}
 
@@ -2267,34 +2297,11 @@ public class LearnerQualficationRegVM extends StepAppVM
 			return;
 		}
 
-		if (tmDGDocuments != null && tmDGDocuments.getRows() != null)
+		List<String> missingDocs = getMissingMandatoryDocuments(tmDGDocuments, dgDocumentNameCol, dgUploadCol);
+		if (!missingDocs.isEmpty())
 		{
-			List<String> missingDocs = new ArrayList<>();
-			for (RowModel row : tmDGDocuments.getRows())
-			{
-				CellModel docNameCell = row.get(dgDocumentNameCol);
-				X_ZZRegistrationDocs doc = docNameCell != null && docNameCell.getValue() instanceof X_ZZRegistrationDocs
-																															? (X_ZZRegistrationDocs) docNameCell.getValue()
-																															: null;
-
-				if (doc != null && doc.isMandatory())
-				{
-					CellModel cell = row.get(dgUploadCol);
-					if (cell instanceof UploadCellModel)
-					{
-						UploadCellModel uCell = (UploadCellModel) cell;
-						if (!uCell.hasBytes() && (uCell.getFileName() == null || uCell.getFileName().isBlank()))
-						{
-							missingDocs.add(doc.getName());
-						}
-					}
-				}
-			}
-			if (!missingDocs.isEmpty())
-			{
-				MasterUtil.showInfoDialog("Please upload the following mandatory documents:\n• " + String.join("\n• ", missingDocs), null);
-				return;
-			}
+			MasterUtil.showInfoDialog("Please upload the following mandatory documents:\n• " + String.join("\n• ", missingDocs), null);
+			return;
 		}
 
 		isDgSubmit = true;
@@ -2365,6 +2372,36 @@ public class LearnerQualficationRegVM extends StepAppVM
 			}
 		}
 		return missingCols;
+	}
+
+	private List<String> getMissingMandatoryDocuments(	TableModel documentTable, ColumnModel documentNameColumn,
+													ColumnModel uploadColumn)
+	{
+		List<String> missingDocuments = new ArrayList<>();
+		if (documentTable == null || documentTable.getRows() == null || documentNameColumn == null || uploadColumn == null)
+			return missingDocuments;
+
+		for (RowModel row : documentTable.getRows())
+		{
+			CellModel documentNameCell = row.get(documentNameColumn);
+			if (documentNameCell == null || !(documentNameCell.getValue() instanceof X_ZZRegistrationDocs))
+				continue;
+
+			X_ZZRegistrationDocs document = (X_ZZRegistrationDocs) documentNameCell.getValue();
+			if (!document.isMandatory())
+				continue;
+
+			CellModel uploadCell = row.get(uploadColumn);
+			if (uploadCell instanceof UploadCellModel)
+			{
+				UploadCellModel upload = (UploadCellModel) uploadCell;
+				if (!upload.hasBytes() && (upload.getFileName() == null || upload.getFileName().isBlank()))
+				{
+					missingDocuments.add(document.getName());
+				}
+			}
+		}
+		return missingDocuments;
 	}
 
 	@Command
@@ -2444,12 +2481,6 @@ public class LearnerQualficationRegVM extends StepAppVM
 	}
 
 	@Command
-	public void prevRegTab()
-	{
-		setRegSelectedTabIndex(0);
-	}
-
-	@Command
 	public void prevDGTab()
 	{
 		setDgSelectedTabIndex(0);
@@ -2478,34 +2509,11 @@ public class LearnerQualficationRegVM extends StepAppVM
 			return;
 		}
 
-		if (tmRegistrationDocuments != null && tmRegistrationDocuments.getRows() != null)
+		List<String> missingDocs = getMissingMandatoryDocuments(tmRegistrationDocuments, regDocumentNameCol, regUploadCol);
+		if (!missingDocs.isEmpty())
 		{
-			List<String> missingDocs = new ArrayList<>();
-			for (RowModel row : tmRegistrationDocuments.getRows())
-			{
-				CellModel docNameCell = row.get(regDocumentNameCol);
-				X_ZZRegistrationDocs doc = docNameCell != null && docNameCell.getValue() instanceof X_ZZRegistrationDocs
-																															? (X_ZZRegistrationDocs) docNameCell.getValue()
-																															: null;
-
-				if (doc != null && doc.isMandatory())
-				{
-					CellModel cell = row.get(regUploadCol);
-					if (cell instanceof UploadCellModel)
-					{
-						UploadCellModel uCell = (UploadCellModel) cell;
-						if (!uCell.hasBytes() && (uCell.getFileName() == null || uCell.getFileName().isBlank()))
-						{
-							missingDocs.add(doc.getName());
-						}
-					}
-				}
-			}
-			if (!missingDocs.isEmpty())
-			{
-				MasterUtil.showInfoDialog("Please upload the following mandatory documents:\n• " + String.join("\n• ", missingDocs), null);
-				return;
-			}
+			MasterUtil.showInfoDialog("Please upload the following mandatory documents:\n• " + String.join("\n• ", missingDocs), null);
+			return;
 		}
 
 		submitApp();
@@ -2677,7 +2685,6 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 		dg.setZZ_DocStatus(docStatus != null ? docStatus : X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
 		dg.setZZRegistrationDate(new Timestamp(System.currentTimeMillis()));
-		dg.setZZRegisteredBy(Env.getAD_User_ID(Env.getCtx()));
 		dg.saveEx(trxName);
 		dgDaoManage.setDao(dg);
 
