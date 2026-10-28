@@ -1767,7 +1767,19 @@ public class LearnerQualficationRegVM extends StepAppVM
 		colFundingType.setzClass(ValueNamePair.class).required();
 		cols.add(colFundingType);
 
-		ColumnModel colContractNo = CellModel.getColModelForPhone(
+		ListColumnModel<ValueNamePair> colDisability = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name,
+						I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsDisability),
+				I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsDisability,
+				yesNoOptions,
+				ValueNamePair::getName,
+				item -> "Y".equals(item.getValue()));
+		
+		colDisability.setzClass(ValueNamePair.class)
+				.setDefaultValue(false, (cell, item) -> "N".equals(item.getValue()));
+		cols.add(colDisability);
+
+		ColumnModel colContractNo = CellModel.getColModelForText(
 																	MasterUtil.getNameOfColTranslated(	I_ZZLearnerDGProgramme.Table_Name,
 																										I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber),
 																	I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber);
@@ -2700,6 +2712,10 @@ public class LearnerQualficationRegVM extends StepAppVM
 				String ft = extractString(val);
 				if (ft != null && !ft.isBlank())
 					dg.setZZFundingType(ft);
+			}
+			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsDisability.equals(prop))
+			{
+				dg.setZZ_IsDisability(Boolean.TRUE.equals(val));
 			}
 			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop))
 			{
