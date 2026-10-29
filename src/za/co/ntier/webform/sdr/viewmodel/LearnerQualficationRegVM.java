@@ -24,7 +24,6 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.util.JRLoader;
 import org.compiere.model.I_AD_User;
 import org.compiere.model.I_C_BPartner;
 import org.compiere.model.I_C_Year;
@@ -2449,12 +2448,29 @@ public class LearnerQualficationRegVM extends StepAppVM
 		setRegSelectedTabIndex(1);
 	}
 
+	private static JasperReport learnerAgreementReport;
+
+	/** Cached per plugin class loader; a failed compile leaves the cache empty for retry. */
+	static synchronized JasperReport getLearnerAgreementReport() throws Exception
+	{
+		if (learnerAgreementReport == null)
+		{
+			try (InputStream source = LearnerQualficationRegVM.class.getResourceAsStream(
+					"/za/co/ntier/report/jrxmls/LearnerAgreement.jrxml"))
+			{
+				if (source == null) throw new IllegalStateException("Learner Agreement template is missing.");
+				learnerAgreementReport = JasperCompileManager.compileReport(source);
+			}
+		}
+		return learnerAgreementReport;
+	}
+
 	private void downloadLearnerAgreement()
 	{
 		try
 		{
-			final String reportPath = "/za/co/ntier/report/jrxmls/";
 			Map<String, Object> jasperParams = new HashMap<>();
+			jasperParams.put(LearnerAgreementData.PARAMETER, getLearnerAgreementData());
 			ClassLoader reportClassLoader = new ClassLoader(LearnerQualficationRegVM.class.getClassLoader())
 			{
 				@Override
@@ -2470,27 +2486,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			};
 			jasperParams.put(JRParameter.REPORT_CLASS_LOADER, reportClassLoader);
 
-			JasperReport jasperReport = null;
-			InputStream jasperStream = LearnerQualficationRegVM.class.getResourceAsStream(reportPath + "LearnerAgreement.jasper");
-			if (jasperStream != null)
-			{
-				try
-				{
-					jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
-				}
-				catch (Exception e)
-				{
-					log.log(Level.WARNING, "Could not load precompiled LearnerAgreement.jasper: " + e.getMessage());
-				}
-			}
-			if (jasperReport == null)
-			{
-				InputStream jrxmlStream = LearnerQualficationRegVM.class.getResourceAsStream(reportPath + "LearnerAgreement.jrxml");
-				if (jrxmlStream != null)
-				{
-					jasperReport = JasperCompileManager.compileReport(jrxmlStream);
-				}
-			}
+			JasperReport jasperReport = getLearnerAgreementReport();
 
 			if (jasperReport != null)
 			{
@@ -2510,6 +2506,66 @@ public class LearnerQualficationRegVM extends StepAppVM
 			log.log(Level.WARNING, "Could not download Learner Agreement: " + e.getMessage(), e);
 			MasterUtil.showInfoDialog("Could not generate Learner Agreement: " + e.getMessage(), null);
 		}
+	}
+
+	private Map<String, String> getLearnerAgreementData()
+	{
+		InterventionConfig config = selectedIntervention == null ? null : getInterventionConfig(selectedIntervention.getValue());
+		RowModel row = dgProgrammeActive && tmDGProgrammeDetails != null ? tmDGProgrammeDetails.getRow()
+				: tmRegistration != null ? tmRegistration.getRow() : null;
+		if (!dgProgrammeActive && tmRegistration != null && tmRegistration.getRows() != null)
+		{
+			List<RowModel> editable = new ArrayList<>();
+			for (RowModel candidate : tmRegistration.getRows())
+				if (candidate != null && candidate.isEditable()) editable.add(candidate);
+			if (editable.size() != 1)
+				throw new AdempiereException("Please select one registration row before generating the agreement.");
+			row = editable.get(0);
+		}
+		if (row == null)
+			throw new AdempiereException("Please select a registration row before generating the agreement.");
+		Map<String, Object> values = new HashMap<>();
+		String fundingType = "";
+		for (ColumnModel column : row.keySet())
+		{
+			CellModel cell = row.get(column);
+			if (cell != null && column.getDaoPropertyName() != null)
+			{
+				Object value = cell instanceof DateCellModel ? ((DateCellModel) cell).getTimestamp() : cell.getValue();
+				if (cell instanceof ListCellModel)
+					value = ((ListCellModel<?>) cell).getSelectedItem();
+				if (cell instanceof ValueAdaptCellModel && ((ValueAdaptCellModel) cell).getSelectedValue() != null)
+					value = ((ValueAdaptCellModel) cell).getSelectedValue();
+				values.put(column.getDaoPropertyName(), value);
+				if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(column.getDaoPropertyName()))
+				{
+					if (value instanceof ValueNamePair)
+						fundingType = ((ValueNamePair) value).getName();
+					else if (value != null)
+					{
+						String table = dgProgrammeActive ? I_ZZLearnerDGProgramme.Table_Name
+								: config != null ? config.learnerTable : column.getTableName();
+						MColumn metadata = table == null ? null : MTable.get(Env.getCtx(), table).getColumn(column.getDaoPropertyName());
+						if (metadata != null && metadata.getAD_Reference_Value_ID() > 0)
+							fundingType = MRefList.getListName(Env.getCtx(), metadata.getAD_Reference_Value_ID(), value.toString());
+					}
+				}
+			}
+		}
+		String type = config == null ? "" : config.displayName;
+		List<String> warnings = new ArrayList<>();
+		Map<String, String> data = LearnerAgreementData.build(new X_ZZLearner_v(Env.getCtx(), getSelectedLearnerId(), null), values,
+				config == null ? null : config.learnerProgrammeColumn, config == null ? null : config.programmeTable,
+				config == null ? null : config.programmeCodeColumn, type, warnings);
+		if (!warnings.isEmpty())
+			MasterUtil.showInfoDialog("Agreement data needs review:\n• " + String.join("\n• ", warnings), null);
+		data.put(LearnerAgreementData.FUNDING_TYPE, fundingType);
+		if (dgProgrammeActive && selectedDGProgramme != null)
+		{
+			data.put(LearnerAgreementData.QUALIFICATION_TITLE, selectedDGProgramme.getTitle());
+			data.put(LearnerAgreementData.PROGRAMME_TYPE, selectedDGProgramme.getTitle());
+		}
+		return data;
 	}
 
 	@Command

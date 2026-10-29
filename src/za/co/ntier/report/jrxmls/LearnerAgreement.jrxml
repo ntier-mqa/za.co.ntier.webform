@@ -1,11 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.20.5.final using JasperReports Library version 6.20.5-3efcf2e67f959db3888d79f73dde2dbd7acb4f8e  -->
+<?xml version='1.0' encoding='UTF-8'?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LearnerAgreement" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6fb10afe-189f-4cf9-878a-c099e1f16881">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<parameter name="ZZPerson_ID" class="java.lang.Integer"/>
-	<queryString>
-		<![CDATA[SELECT 1 FROM ZZPerson WHERE ZZPerson_ID = $P{ZZPerson_ID}]]>
-	</queryString>
+	<import value="za.co.ntier.webform.sdr.viewmodel.LearnerAgreementData"/>
+	<parameter name="AgreementData" class="java.util.Map"><defaultValueExpression><![CDATA[new java.util.HashMap()]]></defaultValueExpression></parameter>
 	<detail>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
@@ -26,12 +23,12 @@
 				</textElement>
 				<text><![CDATA[Learner Name:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="130" width="300" height="20" uuid="021a919c-dfbc-4667-b5bb-8e4e638178b0"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="160" width="200" height="20" uuid="64846a01-7d0c-4d50-a329-6152c2b4b2b3"/>
@@ -40,12 +37,12 @@
 				</textElement>
 				<text><![CDATA[Learner ID:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="160" width="300" height="20" uuid="675f32e9-5138-476d-875b-51fb45f1abcc"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_ID)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="190" width="200" height="20" uuid="04691250-d759-43a8-8ddb-1db7196f25dc"/>
@@ -54,12 +51,12 @@
 				</textElement>
 				<text><![CDATA[Type of Learnership:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="190" width="300" height="20" uuid="825283e6-4a15-4f46-bebd-a34e0fb2e896"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROGRAMME_TYPE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="220" width="200" height="20" uuid="84357fc5-e51e-42e4-a50d-671ebdd73e91"/>
@@ -68,12 +65,12 @@
 				</textElement>
 				<text><![CDATA[Learnership Code:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="220" width="300" height="20" uuid="86ccce71-572f-451a-a7f4-19fce8739fc1"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROGRAMME_CODE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="250" width="200" height="20" uuid="f91d67d2-f589-4505-98cb-1e387bec623c"/>
@@ -82,26 +79,26 @@
 				</textElement>
 				<text><![CDATA[Socio Economic Status:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="250" width="300" height="20" uuid="de4cc9f0-ce2b-4cfd-bcd9-6c9ae7c662c1"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.SOCIO_ECONOMIC_STATUS)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="280" width="200" height="20" uuid="c8e870a5-fb7a-41a6-827e-4d31e8d089c6"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Sponsored:]]></text>
+				<text><![CDATA[Funding Type:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="250" y="280" width="300" height="20" uuid="678590f0-93c4-4564-a79e-7ace67f5aee2"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.FUNDING_TYPE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="310" width="200" height="20" uuid="5933d2b6-22b4-48fd-bfef-b8ebcaaaf3d1"/>
@@ -115,7 +112,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.AGREEMENT_REFERENCE_NUMBER)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="340" width="200" height="20" uuid="72902d34-345a-473b-aeb4-b3398a0765a1"/>
@@ -124,12 +121,12 @@
 				</textElement>
 				<text><![CDATA[Disability:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="340" width="300" height="20" uuid="416a5eaf-b723-4d78-ad9d-0efa33135a22"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.DISABILITY)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="370" width="200" height="20" uuid="8e7a5ae8-e75e-40e8-95b9-1d1e56057d6d"/>
@@ -157,7 +154,7 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.FINANCIAL_YEAR)]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="677" splitType="Stretch">
@@ -477,12 +474,12 @@ institution for a SAQA registered qualification and may include vacation work .]
 				</textElement>
 				<text><![CDATA[1.1 Title:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="370" width="300" height="20" uuid="f5b054f0-fe02-46e4-982c-ceb1ddef6266"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_TITLE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="400" width="200" height="20" uuid="c4ae4e43-51d7-4b8e-8de0-a10b4ef61f31"/>
@@ -491,12 +488,12 @@ institution for a SAQA registered qualification and may include vacation work .]
 				</textElement>
 				<text><![CDATA[1.2 Full name:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="400" width="300" height="20" uuid="140d28f3-f961-4b24-84ef-2024a8e5d530"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="430" width="200" height="20" uuid="8e62ace2-7216-4ea3-b290-73fe963887e3"/>
@@ -505,12 +502,12 @@ institution for a SAQA registered qualification and may include vacation work .]
 				</textElement>
 				<text><![CDATA[1.3 Identity Number:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="430" width="300" height="20" uuid="48e76c0a-339c-483a-8144-0f3a26dd8320"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_ID)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="460" width="200" height="20" uuid="bc0c33cc-4a75-43ed-86b5-d4e6620939ac"/>
@@ -519,12 +516,12 @@ institution for a SAQA registered qualification and may include vacation work .]
 				</textElement>
 				<text><![CDATA[1.4 Date of Birth:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="460" width="300" height="20" uuid="fa0be3ae-1181-46fb-90da-82f40b978e7c"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.BIRTH_DATE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="490" width="200" height="20" uuid="92746ec9-84a1-4459-b9d6-871c5b98357c"/>
@@ -555,15 +552,11 @@ institution for a SAQA registered qualification and may include vacation work .]
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="30" y="605" width="515" height="70" uuid="4f8c9e5b-d356-4ab2-9998-ae542e240337"/>
+				<reportElement x="30" y="605" width="515" height="20" uuid="4f8c9e5b-d356-4ab2-9998-ae542e240337"/>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[1.8 Learner's residential, home and birth place addressses:
-____________________________________
-____________________________________
-____________________________________
-____________________________________]]></text>
+				<text><![CDATA[1.8 Learner's residential / home address:]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="250" y="493" width="12" height="12" uuid="9876285f-a271-4ef7-bee0-8accd03eb642"/>
@@ -633,7 +626,7 @@ ____________________________________]]></text>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[<b>Yes (specify):</b> ___________________]]></text>
+				<text><![CDATA[<b>Yes (specify):</b>]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="360" y="578" width="12" height="12" uuid="b025b034-fc9a-4fc8-9744-ee00d05f7eb5"/>
@@ -645,26 +638,7 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[<b>No</b>]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="328" y="491" width="16" height="16" uuid="30f3b377-179b-409c-9987-0a37df10c09a"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["X"]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="252" y="498" width="3" height="3" uuid="124a5e2f-85dc-43e4-97bf-8d70d06d14da"/>
-				<graphicElement>
-					<pen lineWidth="1.5"/>
-				</graphicElement>
-			</line>
-			<line direction="BottomUp">
-				<reportElement x="255" y="492" width="6" height="9" uuid="6e8d121e-9c1a-4289-aabb-3b09ebae651e"/>
-				<graphicElement>
-					<pen lineWidth="1.5"/>
-				</graphicElement>
-			</line>
-		</band>
+			<textField isBlankWhenNull="true"><reportElement x="250" y="493" width="12" height="12" uuid="bead4be9-47e5-4a0a-829d-a9584d1c3265"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Male".equalsIgnoreCase((String)$P{AgreementData}.get(LearnerAgreementData.GENDER)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="330" y="493" width="12" height="12" uuid="b9ac7b10-5fc6-4e04-9a75-a211b956c0fd"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Female".equalsIgnoreCase((String)$P{AgreementData}.get(LearnerAgreementData.GENDER)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="250" y="523" width="12" height="12" uuid="7ef88742-dfc0-4b76-bac8-5b8bfae275ca"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["African".equalsIgnoreCase((String)$P{AgreementData}.get(LearnerAgreementData.RACE)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="330" y="523" width="12" height="12" uuid="23a7a99d-50d3-4e22-90e7-ccc0935f94e2"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Indian".equalsIgnoreCase((String)$P{AgreementData}.get(LearnerAgreementData.RACE)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="410" y="523" width="12" height="12" uuid="b692ac2f-beac-463d-a73e-98b1ed9c1215"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Coloured".equalsIgnoreCase((String)$P{AgreementData}.get(LearnerAgreementData.RACE)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="500" y="523" width="12" height="12" uuid="aec30446-cd82-407b-9dcb-aa4a18ec048e"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["White".equalsIgnoreCase((String)$P{AgreementData}.get(LearnerAgreementData.RACE)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="200" y="575" width="150" height="20" uuid="2d7f95b3-0f61-48df-8d1f-b841a90dd5e1"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.DISABILITY_DESCRIPTION)]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="30" y="625" width="515" height="48" uuid="a802feff-fd09-492e-90cd-ae429def404f"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PHYSICAL_ADDRESS)]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="80" y="578" width="12" height="12" uuid="2ec67024-2616-433d-8d29-13739ea42b0d"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Yes".equals($P{AgreementData}.get(LearnerAgreementData.DISABILITY_ANSWER)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="360" y="578" width="12" height="12" uuid="9490cdee-257a-40f4-8d80-01b4ca9c4b74"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["No".equals($P{AgreementData}.get(LearnerAgreementData.DISABILITY_ANSWER)) ? "X" : ""]]></textFieldExpression></textField></band>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="dbd64204-829d-4e12-9401-0fad400fdc46"/>
@@ -677,12 +651,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[1.9 Contact Telephone Numbers:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="30" y="120" width="400" height="20" uuid="26a7a80b-cc31-4f8c-af52-b6346b37fcd0"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="140" width="400" height="20" uuid="26a7a80b-cc31-4f8c-af52-b6346b37fcd0"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.TELEPHONE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="160" width="400" height="20" uuid="80aac10a-e560-4128-848c-24d2022c3bd7"/>
@@ -698,21 +672,13 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[1.10 Postal address (if different from residential):]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="30" y="200" width="400" height="20" uuid="e32c1b02-dce1-4253-b583-edfd9ac8f660"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="225" width="515" height="55" uuid="e32c1b02-dce1-4253-b583-edfd9ac8f660"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.POSTAL_ADDRESS)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="30" y="230" width="515" height="40" uuid="0513d74e-288d-49fd-9fd2-e983bfb8ef03"/>
-				<textElement markup="styled">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[____________________________________
-____________________________________]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="30" y="290" width="160" height="20" uuid="37fca20d-ece5-4487-b25b-a62d6a46baa0"/>
 				<textElement>
@@ -720,12 +686,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[1.11 E-mail Address:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="200" y="290" width="300" height="20" uuid="43173ff0-bdac-4f37-bd6f-c0145ea73d75"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMAIL)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="340" width="250" height="20" uuid="52897d89-22a0-464a-aecd-028f01de2967"/>
@@ -740,7 +706,7 @@ ____________________________________]]></text>
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[If No (specify and attach documents indicating your status including citizenship
-and/or permanent residence, study permit, etc. Nationality: ____________________]]></text>
+and/or permanent residence, study permit, etc. Nationality:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="30" y="440" width="260" height="20" uuid="d237440b-5c16-45d7-ae86-09acc69cceae"/>
@@ -749,15 +715,15 @@ and/or permanent residence, study permit, etc. Nationality: ____________________
 				</textElement>
 				<text><![CDATA[1.13 What is the title of your highest qualification?]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="300" y="440" width="200" height="20" uuid="55effc2b-92d0-4be6-b9f2-e0879348d08b"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="460" width="515" height="20" uuid="55effc2b-92d0-4be6-b9f2-e0879348d08b"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.HIGHEST_QUALIFICATION)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="30" y="490" width="360" height="20" uuid="7887d474-cd2e-4b3a-99aa-e92eb181a718"/>
+				<reportElement x="30" y="490" width="515" height="25" uuid="7887d474-cd2e-4b3a-99aa-e92eb181a718"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
@@ -799,46 +765,46 @@ concluding this agreement?]]></text>
 				<text><![CDATA[<b>No</b>]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="400" y="493" width="12" height="12" uuid="39db8dbb-2179-448c-8072-bfaf8d34f860"/>
+				<reportElement x="150" y="518" width="12" height="12" uuid="39db8dbb-2179-448c-8072-bfaf8d34f860"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="418" y="490" width="40" height="20" uuid="6314c64e-d7f5-487d-825d-d9fe12b1241b"/>
+				<reportElement x="168" y="515" width="40" height="20" uuid="6314c64e-d7f5-487d-825d-d9fe12b1241b"/>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[<b>Yes</b>]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="480" y="493" width="12" height="12" uuid="a9c8eb9d-56e3-44f9-ae1c-b055e6fb6021"/>
+				<reportElement x="230" y="518" width="12" height="12" uuid="a9c8eb9d-56e3-44f9-ae1c-b055e6fb6021"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="498" y="490" width="40" height="20" uuid="42ce539c-7319-4da2-9908-a93875dd1f0f"/>
+				<reportElement x="248" y="515" width="40" height="20" uuid="42ce539c-7319-4da2-9908-a93875dd1f0f"/>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[<b>No</b>]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="200" y="583" width="12" height="12" uuid="e376245f-032e-4487-a877-3f847671a444"/>
+				<reportElement x="150" y="583" width="12" height="12" uuid="e376245f-032e-4487-a877-3f847671a444"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="218" y="580" width="40" height="20" uuid="76ca59b5-908a-44a8-88f4-7686e798d0a7"/>
+				<reportElement x="168" y="580" width="40" height="20" uuid="76ca59b5-908a-44a8-88f4-7686e798d0a7"/>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[<b>Yes</b>]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="280" y="583" width="12" height="12" uuid="1af63a02-b8b6-4a48-a6ec-b632c34b74bd"/>
+				<reportElement x="230" y="583" width="12" height="12" uuid="1af63a02-b8b6-4a48-a6ec-b632c34b74bd"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="298" y="580" width="40" height="20" uuid="c68a264e-a2f5-41eb-bf44-ea4526291a72"/>
+				<reportElement x="248" y="580" width="40" height="20" uuid="c68a264e-a2f5-41eb-bf44-ea4526291a72"/>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[<b>No</b>]]></text>
 			</staticText>
-		</band>
+		<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="355" y="395" width="175" height="20" uuid="596d323d-550c-451f-b765-2c34c7c191a6"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.NON_CITIZEN_DETAILS)]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="300" y="343" width="12" height="12" uuid="96bf4325-0bdf-4b77-8971-e8f82f87f016"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Yes".equals($P{AgreementData}.get(LearnerAgreementData.CITIZEN_ANSWER)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="380" y="343" width="12" height="12" uuid="37ad8ae7-2848-4dcd-b8b7-2979dc2b058f"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["No".equals($P{AgreementData}.get(LearnerAgreementData.CITIZEN_ANSWER)) ? "X" : ""]]></textFieldExpression></textField></band>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="c452d87f-70d7-482f-bdfc-82dbe1c0dec2"/>
@@ -872,12 +838,12 @@ concluding this agreement?]]></text>
 				</textElement>
 				<text><![CDATA[2.1 Full name:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="150" y="190" width="350" height="20" uuid="0f2b5b9f-1277-45c7-bdc1-f1f226405d9e"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.GUARDIAN_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="220" width="120" height="20" uuid="acffe79c-b743-4a52-9d95-ed4a49328382"/>
@@ -886,12 +852,12 @@ concluding this agreement?]]></text>
 				</textElement>
 				<text><![CDATA[2.2 Identity Number:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="150" y="220" width="350" height="20" uuid="4ae99947-21f9-4314-939d-d35b88518d1a"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.GUARDIAN_ID)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="250" width="200" height="20" uuid="36ce3e2f-6bec-41fc-beb9-8c8904bcd41e"/>
@@ -900,21 +866,13 @@ concluding this agreement?]]></text>
 				</textElement>
 				<text><![CDATA[2.3 Home Address:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="30" y="250" width="200" height="20" uuid="34b34214-e2ac-4bef-b6d0-9eddd8943180"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="270" width="515" height="45" uuid="34b34214-e2ac-4bef-b6d0-9eddd8943180"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.GUARDIAN_HOME_ADDRESS)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="30" y="270" width="515" height="40" uuid="c1c6f5ab-40ac-4121-b862-c9d4a228588b"/>
-				<textElement markup="styled">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[____________________________________
-____________________________________]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="30" y="320" width="300" height="20" uuid="763b4084-df9d-4cee-9631-32782427274a"/>
 				<textElement>
@@ -922,21 +880,13 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[2.4 Postal Address (if different from above):]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="30" y="320" width="100" height="20" uuid="dfa660d0-04ad-4174-9e3e-1f4442d79840"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="340" width="515" height="45" uuid="dfa660d0-04ad-4174-9e3e-1f4442d79840"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.GUARDIAN_POSTAL_ADDRESS)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="30" y="340" width="515" height="40" uuid="8eecf30b-2395-4446-b713-6a656e891fde"/>
-				<textElement markup="styled">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[____________________________________
-____________________________________]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="30" y="400" width="210" height="20" uuid="2fa2412c-523c-4421-93f5-82c9a296f74a"/>
 				<textElement>
@@ -944,12 +894,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[2.5 Telephone number(home and work):]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="250" y="400" width="250" height="20" uuid="c8069448-3bed-459d-b621-a59e0e80f2f8"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="420" width="515" height="20" uuid="c8069448-3bed-459d-b621-a59e0e80f2f8"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.GUARDIAN_TELEPHONE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="440" width="160" height="20" uuid="a57ae4da-3ee5-4894-ab68-61cc797d7b6b"/>
@@ -958,12 +908,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[2.6 E-mail Address:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="200" y="440" width="300" height="20" uuid="7f05285a-d20b-461e-9725-5cb12353149e"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="200" y="440" width="330" height="20" uuid="7f05285a-d20b-461e-9725-5cb12353149e"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.GUARDIAN_EMAIL)]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="677" splitType="Stretch">
@@ -992,12 +942,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.1 Legal name of employer:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="200" y="145" width="300" height="20" uuid="504e4e6e-bfca-493b-b558-651d4891937d"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="170" width="230" height="20" uuid="3f5921bb-1453-4742-aca5-e3aa8c5720a9"/>
@@ -1006,12 +956,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.2 Trading name (if different from above):]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="270" y="170" width="230" height="20" uuid="19c7c2b8-d7aa-40f0-946d-3e994ca92da0"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_TRADING_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="195" width="230" height="20" uuid="c4d057c6-2003-4830-8a3e-a524680c4075"/>
@@ -1083,12 +1033,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[<b>If yes, what is your SDL number:</b>]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="320" width="250" height="20" uuid="5f5f3004-76cf-4085-a417-4b7237c65662"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_SDL)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="345" width="260" height="20" uuid="9ec0d7fd-1269-4276-ac65-663aa1138e39"/>
@@ -1111,12 +1061,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.9 What is the Standard Industrial Classification (SIC) code that applies to your core business:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="480" y="370" width="50" height="20" uuid="5bdb5bad-f79d-4b86-b616-d6b33bcaf4ae"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="480" y="370" width="65" height="20" uuid="5bdb5bad-f79d-4b86-b616-d6b33bcaf4ae"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_SIC)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="395" width="230" height="20" uuid="11db7f66-1ba7-4e28-8234-34cb0697c70b"/>
@@ -1139,21 +1089,13 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.11 Business address:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="30" y="420" width="200" height="20" uuid="e9e395e0-ce47-4cec-a5c9-3dcdbe021288"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="440" width="515" height="40" uuid="e9e395e0-ce47-4cec-a5c9-3dcdbe021288"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_ADDRESS)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="30" y="440" width="515" height="40" uuid="622556b6-950c-4aed-8ead-ef1d0ba800d3"/>
-				<textElement markup="styled">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[____________________________________
-____________________________________]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="30" y="485" width="300" height="20" uuid="4522ee92-7add-4482-a6ec-db3798637831"/>
 				<textElement>
@@ -1161,21 +1103,13 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.12 Postal address(if different from 3.11):]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="30" y="485" width="100" height="20" uuid="9765489b-62d4-4689-ae1b-c7d36a52f8f4"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="505" width="515" height="40" uuid="9765489b-62d4-4689-ae1b-c7d36a52f8f4"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_POSTAL_ADDRESS)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="30" y="505" width="515" height="40" uuid="8a17b57d-0a1c-4154-ad65-0bc7fe830424"/>
-				<textElement markup="styled">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[____________________________________
-____________________________________]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="30" y="550" width="160" height="20" uuid="8a427e6c-d0c5-4c2a-9d2c-5991a0fc2ee4"/>
 				<textElement>
@@ -1183,12 +1117,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.13 Name of contact person:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="200" y="550" width="300" height="20" uuid="415dd1db-87f2-440c-9566-4f28342a0172"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_CONTACT)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="575" width="130" height="20" uuid="cee30fd6-ffa0-4eb3-852b-9ff45569a866"/>
@@ -1197,12 +1131,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.14 Telephone number:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="170" y="575" width="330" height="20" uuid="97327099-3b52-428a-b6af-0e57b61c246b"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_TELEPHONE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="600" width="110" height="20" uuid="c2a42b2b-f540-458b-bd8f-b0f40b81543a"/>
@@ -1211,12 +1145,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.15 Fax number:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="150" y="600" width="350" height="20" uuid="7fbd210f-b7ee-4063-ae7c-7489e97aaa56"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_FAX)]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="350" y="298" width="12" height="12" uuid="31048980-6ae5-4eef-9b0d-69f6877c17a6"/>
@@ -1238,7 +1172,7 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[<b>No</b>]]></text>
 			</staticText>
-		</band>
+		<textField isBlankWhenNull="true"><reportElement x="350" y="298" width="12" height="12" uuid="6b8f8b5f-4484-4046-815a-61375e28f49c"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Yes".equals($P{AgreementData}.get(LearnerAgreementData.EMPLOYER_LEVY)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="430" y="298" width="12" height="12" uuid="bb988905-abd6-4a9d-a9c4-42fb67049070"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["No".equals($P{AgreementData}.get(LearnerAgreementData.EMPLOYER_LEVY)) ? "X" : ""]]></textFieldExpression></textField></band>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="417e0fb7-6311-4a7a-9b10-9fb50bbee749"/>
@@ -1251,12 +1185,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.16 Cell number:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="150" y="120" width="350" height="20" uuid="cad3f610-4a88-4f23-9f22-f8f9a284afdf"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_CELL)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="150" width="110" height="20" uuid="ea8ad9f5-6b82-49c9-8510-9ce135c6af20"/>
@@ -1265,12 +1199,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[3.17 E-mail Address:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="150" y="150" width="350" height="20" uuid="48ba73e8-51f1-45e3-ae89-1b35593fb762"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_EMAIL)]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="677" splitType="Stretch">
@@ -1607,12 +1541,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.1 Legal name of provider:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="200" y="145" width="300" height="20" uuid="6c1eb490-b2aa-41a5-80fd-bd2d11db127f"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="170" width="230" height="20" uuid="92cf6af8-6ade-4ff4-9b1a-2ba9aaea810b"/>
@@ -1621,12 +1555,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.2 Trading name (if different from above):]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="270" y="170" width="230" height="20" uuid="6e2f974b-5b5b-4ef6-902c-2e4414f0f82c"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_TRADING_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="195" width="260" height="20" uuid="f57079fa-0f03-4f80-9df5-9af9cb35b73e"/>
@@ -1656,12 +1590,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[<b>If yes, what is your SDL number:</b>]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="250" y="245" width="250" height="20" uuid="609fb312-cfde-4096-b2e7-9a0cdb3ce5f9"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_SDL)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="270" width="440" height="20" uuid="65f1e116-8c92-4ebf-8d68-df2c0eb6d143"/>
@@ -1670,12 +1604,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.5 What is the Standard Industrial Classification (SIC) code that applies to your core business:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="480" y="270" width="50" height="20" uuid="699c27b6-becc-4176-a07e-5220442f5380"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="480" y="270" width="65" height="20" uuid="699c27b6-becc-4176-a07e-5220442f5380"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_SIC)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="295" width="130" height="20" uuid="25c5d9bf-1adb-4e21-94ff-55f19bf2f015"/>
@@ -1689,7 +1623,7 @@ ____________________________________]]></text>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="320" width="140" height="20" uuid="d39c31cc-c866-4b2f-928b-31efffc8c8ce"/>
@@ -1698,12 +1632,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.7 Accreditation number:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="180" y="320" width="320" height="20" uuid="25b621ec-2b0f-44fd-9656-7093ae6dabbd"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_ACCREDITATION_NUMBER)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="345" width="130" height="20" uuid="034cbf56-89d2-4ae3-953a-b0a5a9d3c005"/>
@@ -1712,12 +1646,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.8 Accreditation Status:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="170" y="345" width="330" height="20" uuid="ee418bff-19f7-4b81-892e-9bc7959ce68b"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_ACCREDITATION_STATUS)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="370" width="150" height="20" uuid="c0376486-0f3e-4df4-a301-685444d5ae8d"/>
@@ -1726,12 +1660,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.9 Accreditation Start Date:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="190" y="370" width="310" height="20" uuid="bae55f6a-e91a-407d-9a09-b31370682451"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_ACCREDITATION_START_DATE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="395" width="140" height="20" uuid="76d08f0c-2e23-4203-a5a5-1e9b2f26dbc8"/>
@@ -1740,12 +1674,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.10 Accreditation End Date:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="180" y="395" width="320" height="20" uuid="d962cbde-d6db-4e66-880f-33147a23fd5a"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_ACCREDITATION_END_DATE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="420" width="160" height="20" uuid="99cd4529-d3f1-4ab5-9714-7a5d36217030"/>
@@ -1768,21 +1702,13 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.12 Business address:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="30" y="445" width="200" height="20" uuid="cdaad6ac-2bb1-4c25-ba4d-8a4dad3c559e"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="465" width="515" height="40" uuid="cdaad6ac-2bb1-4c25-ba4d-8a4dad3c559e"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_ADDRESS)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="30" y="465" width="515" height="40" uuid="8c06bdbe-adc4-4341-a591-78b2e5bc4602"/>
-				<textElement markup="styled">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[____________________________________
-____________________________________]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="30" y="510" width="300" height="20" uuid="4cbab84c-3bd9-48e6-8fb8-0a40ada5fd36"/>
 				<textElement>
@@ -1790,21 +1716,13 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.13 Postal address(if different from above):]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="30" y="510" width="100" height="20" uuid="68b1be14-f685-4e43-9dea-2f85fc3ee472"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="530" width="515" height="40" uuid="68b1be14-f685-4e43-9dea-2f85fc3ee472"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_POSTAL_ADDRESS)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="30" y="530" width="515" height="40" uuid="d1da2d45-2c42-4449-8a0d-cd92c22d1341"/>
-				<textElement markup="styled">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[____________________________________
-____________________________________]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="30" y="575" width="160" height="20" uuid="06d7836e-732a-4fec-b728-fbaecbe372d2"/>
 				<textElement>
@@ -1812,12 +1730,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.14 Name of contact person:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="200" y="575" width="300" height="20" uuid="d313f26d-1df3-43ca-a0f2-403152a97e46"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_CONTACT)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="600" width="130" height="20" uuid="bcba3353-9811-4c86-86a0-daf61b9fa502"/>
@@ -1826,12 +1744,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.15 Telephone number:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="170" y="600" width="330" height="20" uuid="d89c59cf-0763-4f96-b12f-b85c8ae1aca8"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_TELEPHONE)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="30" y="625" width="110" height="20" uuid="1ccf3994-e255-45e5-bea3-a355939fa801"/>
@@ -1840,12 +1758,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.16 Fax number:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="150" y="625" width="350" height="20" uuid="51d32ba3-15ad-468d-adb8-df080abdaec6"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_FAX)]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="350" y="223" width="12" height="12" uuid="9a886a10-5244-44f8-bce2-b0a7f1d78606"/>
@@ -1867,7 +1785,7 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[<b>No</b>]]></text>
 			</staticText>
-		</band>
+		<textField isBlankWhenNull="true"><reportElement x="350" y="223" width="12" height="12" uuid="8cb4ffd7-ea12-4b7f-8ecb-93c3d5cd4c11"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Yes".equals($P{AgreementData}.get(LearnerAgreementData.PROVIDER_LEVY)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="430" y="223" width="12" height="12" uuid="5149a869-8fcc-4eae-b489-47cbc1d6da08"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["No".equals($P{AgreementData}.get(LearnerAgreementData.PROVIDER_LEVY)) ? "X" : ""]]></textFieldExpression></textField></band>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="b93f936b-c995-48e2-9e9b-85ebac1f827a"/>
@@ -1880,12 +1798,12 @@ ____________________________________]]></text>
 				</textElement>
 				<text><![CDATA[5.17 E-mail Address:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
 				<reportElement x="150" y="120" width="350" height="20" uuid="152f0b19-328d-440e-b20f-bb351a78e918"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROVIDER_EMAIL)]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="677" splitType="Stretch">
@@ -2408,7 +2326,7 @@ ONLY ONE TYPE]]></text>
 				</textElement>
 				<text><![CDATA[<b>No</b>]]></text>
 			</staticText>
-		</band>
+		<textField isBlankWhenNull="true"><reportElement x="380" y="400" width="150" height="25" uuid="00021471-e3dd-47a6-a9d5-e0790bf412fb"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["QCTO Artisans".equalsIgnoreCase((String)$P{AgreementData}.get(LearnerAgreementData.PROGRAMME_TYPE)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true"><reportElement x="380" y="425" width="150" height="25" uuid="258b9e34-8a47-4fbf-98c3-6e58e35a8923"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[("QCTO Learnerships".equals((String)$P{AgreementData}.get(LearnerAgreementData.PROGRAMME_TYPE)) || "Learnerships".equals((String)$P{AgreementData}.get(LearnerAgreementData.PROGRAMME_TYPE))) ? "X" : ""]]></textFieldExpression></textField><staticText><reportElement x="230" y="213" width="12" height="12" uuid="160bab7a-b4a3-499c-a180-0cf12186f6cd"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><text><![CDATA[X]]></text></staticText><staticText><reportElement x="150" y="293" width="12" height="12" uuid="9081b3d8-d938-4159-a2ce-9dc05d0c2d5b"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><text><![CDATA[X]]></text></staticText></band>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="48c9e123-c027-478f-b3ff-0fe8b2b7f022"/>
@@ -2467,6 +2385,11 @@ with agreement if applicable]]></text>
 				<text><![CDATA[QCTO appointed Assessment Quality Partner (AQP)
 associated with the workplace-based agreement]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="392" y="233" width="130" height="34" uuid="4b5ffffb-0c1b-4723-818d-5b78158daf6a"/>
+				<textElement><font fontName="DejaVu Sans" size="9"/></textElement>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.ASSESSMENT_QUALITY_PARTNER)]]></textFieldExpression>
+			</textField>
 			<rectangle>
 				<reportElement x="25" y="270" width="500" height="30" uuid="03690215-a8d6-466a-9811-4caa3e3e70e5"/>
 			</rectangle>
@@ -2477,6 +2400,7 @@ associated with the workplace-based agreement]]></text>
 				</textElement>
 				<text><![CDATA[Agreement Start Date (date SETA registers the agreement)]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="392" y="275" width="130" height="20" uuid="f3f374f4-5133-4b15-97fa-20fe28550bbf"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.AGREEMENT_START_DATE)]]></textFieldExpression></textField>
 			<rectangle>
 				<reportElement x="25" y="300" width="500" height="45" uuid="1914c65c-3a4d-4069-a49b-3e4cd51f94c6"/>
 			</rectangle>
@@ -2533,12 +2457,12 @@ to (as per the Organizing Framework of Occupations(OFO))]]></text>
 				</textElement>
 				<text><![CDATA[<b>Learner Full Name:</b>]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="250" y="480" width="0" height="20" uuid="23d41228-df0f-462f-8ded-c28ab2f2fcf1"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="30" y="507" width="235" height="18" uuid="23d41228-df0f-462f-8ded-c28ab2f2fcf1"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="300" y="480" width="250" height="20" uuid="3c676749-e1c4-4075-8c86-62d0a3184e1d"/>
@@ -2547,12 +2471,12 @@ to (as per the Organizing Framework of Occupations(OFO))]]></text>
 				</textElement>
 				<text><![CDATA[<b>Parent or Guardian's Full Name:</b>]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="250" y="480" width="0" height="20" uuid="ca62141b-ef97-4e3e-bc35-344d550d8603"/>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
+				<reportElement x="300" y="507" width="235" height="18" uuid="ca62141b-ef97-4e3e-bc35-344d550d8603"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.GUARDIAN_SIGNATORY_NAME)]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="300" y="495" width="200" height="20" uuid="0a7269a4-c496-46e0-8578-f97a72e2e4e6"/>
@@ -2689,7 +2613,7 @@ Signature:]]></text>
 				</textElement>
 				<text><![CDATA[____________________________]]></text>
 			</staticText>
-		</band>
+		<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="392" y="118" width="130" height="40" uuid="a43645d7-3bea-4e88-be7a-ba8e0d2dec7b"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.QUALIFICATION_TITLE)]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="392" y="163" width="130" height="34" uuid="82aa119c-7254-4128-a4da-7243de067dec"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.SAQA_ID)]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="392" y="303" width="130" height="38" uuid="f4d9eac4-7dcf-4a94-9ba9-2986ccd1709b"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EXPECTED_END_DATE)]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="392" y="378" width="130" height="52" uuid="95b80e67-571e-444e-8f52-ca4191ec67c3"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.OCCUPATION)]]></textFieldExpression></textField><staticText><reportElement x="392" y="90" width="130" height="20" uuid="f00193b3-d42c-4ae4-b546-959874c4854e"/><textElement><font fontName="DejaVu Sans" size="9"/></textElement><text><![CDATA[MQA]]></text></staticText></band>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="290498cc-e952-4393-9909-48c77bfcfd42"/>
