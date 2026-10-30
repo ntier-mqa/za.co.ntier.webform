@@ -8,6 +8,7 @@ import org.compiere.model.PO;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 
 public interface ISaveApp {
 	
@@ -64,5 +65,17 @@ public interface ISaveApp {
 	
 	public default String getBtSaveLabel() {
 		return "Save & Exit";
+	}
+
+	public default String getBtNextLabel(NavTab navTab) {
+		return "Next";
+	}
+
+	public default String getBtNextIcon(NavTab navTab) {
+		return "z-icon-arrow-right";
+	}
+
+	public default boolean onNextTab(NavTab navTab) {
+		return false;
 	}
 }

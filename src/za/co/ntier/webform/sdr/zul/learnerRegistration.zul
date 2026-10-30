@@ -5,6 +5,67 @@
     sclass="sdrForm"
     viewModel="@id('vmLearner') @init('za.co.ntier.webform.sdr.viewmodel.LearnerRegistrationVM')">
 
+  <style>
+    /* Compact search button styling strictly for SEARCH_CELL (cellType15) fields */
+    .cell.cellType15 .cell-content {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
+    .cell.cellType15 .cell-content .z-textbox,
+    .cell.cellType15 .cell-content input[type="text"] {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      width: auto !important;
+    }
+    .search-icon-btn,
+    .cell.cellType15 .cell-content .z-textbox ~ .z-button,
+    .cell.cellType15 .cell-content input[type="text"] ~ .z-button {
+      flex: 0 0 auto !important;
+      width: 34px !important;
+      min-width: 34px !important;
+      height: 32px !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      font-size: 0 !important;
+    }
+    .search-icon-btn .z-button-label,
+    .cell.cellType15 .cell-content .z-textbox ~ .z-button .z-button-label,
+    .cell.cellType15 .cell-content input[type="text"] ~ .z-button .z-button-label {
+      display: none !important;
+    }
+    .search-icon-btn i,
+    .cell.cellType15 .cell-content .z-textbox ~ .z-button i,
+    .cell.cellType15 .cell-content input[type="text"] ~ .z-button i {
+      font-size: 14px !important;
+    }
+    .cell.cellType15 .cell-content > .z-button:only-child,
+    .cell.cellType15 .cell-content > .z-button:first-child:last-child {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      height: 32px !important;
+      padding: 4px 14px !important;
+      width: auto !important;
+      font-size: 13px !important;
+      white-space: nowrap !important;
+    }
+    .cell.cellType15 .cell-content > .z-button:only-child .z-button-label,
+    .cell.cellType15 .cell-content > .z-button:first-child:last-child .z-button-label {
+      display: inline-block !important;
+      font-size: 13px !important;
+    }
+    .cell.cellType15 .cell-content > .z-button:only-child i,
+    .cell.cellType15 .cell-content > .z-button:first-child:last-child i {
+      font-size: 14px !important;
+    }
+  </style>
+
   <!-- Always Visible Form Header -->
   <div style="display:flex; padding:5px 0 20px 0; flex-direction: column; align-items: center;">
     <label style="font-weight: bold;font-size: x-large;" value="@init(vmLearner.formInfo.formHeader)" />
@@ -45,11 +106,45 @@
           </div>
         </div>
       </div>
-      <div style="padding:10px 0;">
+
+      <!-- DG Programme and Qualification Selection -->
+      <div sclass="grid-formview two-col" style="@load(vmLearner.enterQualificationRequired ? 'grid-template-columns: 1fr 1fr; margin-top: 15px;' : 'grid-template-columns: 1fr; margin-top: 15px;')">
+        <div sclass="cell cellType1">
+          <div sclass="cell-title">
+            <label sclass="label" value="DG Programme" />
+            <label sclass="required" value="*" />
+          </div>
+          <div sclass="cell-content cell-content15" style="display:flex; gap:6px; align-items:center;">
+            <textbox value="@load(vmLearner.selectedDGProgrammeTitle)" readonly="true" hflex="1" placeholder="Select DG Programme..." />
+            <button iconSclass="z-icon-search" onClick="@command('openDGProgrammeLookup')" sclass="z-button search-icon-btn" tooltiptext="Choose DG Programme" />
+          </div>
+        </div>
+
+        <div sclass="cell cellType1" visible="@load(vmLearner.enterQualificationRequired)">
+          <div sclass="cell-title">
+            <label sclass="label" value="Qualification / Programme" />
+            <label sclass="required" value="*" />
+          </div>
+          <div sclass="cell-content cell-content15" style="display:flex; gap:6px; align-items:center;">
+            <listbox mold="select" model="@load(vmLearner.interventionTypeList)"
+                     selectedItem="@bind(vmLearner.selectedInterventionType)"
+                     onSelect="@command('onSelectInterventionType')"
+                     width="170px">
+              <template name="model">
+                <listitem label="@load(each)" />
+              </template>
+            </listbox>
+            <textbox value="@load(vmLearner.selectedQualificationTitle)" readonly="true" hflex="1" placeholder="Choose Qualification..." />
+            <button iconSclass="z-icon-search" onClick="@command('openQualificationLookup')" sclass="z-button search-icon-btn" tooltiptext="Choose Qualification" />
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:15px 0 10px 0;">
         <button label="VALIDATE" onClick="@command('onValidateIdentity')" 
                 sclass="z-button"
                 visible="@load(!vmLearner.identityValidated)"
-                style="font-weight:bold;" />
+                style="font-weight:bold; min-width: 120px;" />
       </div>
       <!-- Validation Message -->
       <hlayout visible="@load(vmLearner.validationMessage ne '')" style="padding:10px 0;">
@@ -60,7 +155,7 @@
       <hlayout visible="@load(vmLearner.showCreateNew)" style="padding:5px 0; justify-content:center;">
         <button label="CREATE NEW" onClick="@command('onCreateNew')" 
                 sclass="z-button"
-                style="font-weight:bold; background:#1976D2; color:white;" />
+                style="font-weight:bold; background:#1976D2; color:white; padding:8px 20px;" />
       </hlayout>
     </div>
   </div>
@@ -78,6 +173,7 @@
       menuContextInfo="@init(vmLearner.menuContextInfo)"
       src="@load((WebForm.getBundleResourcePath('sdr/component/tab/zul/navTab.zul')))" />
       
+
     <include
       saveApp="@init(vmLearner)"
       navTab="@init(vmLearner.mainTab)"

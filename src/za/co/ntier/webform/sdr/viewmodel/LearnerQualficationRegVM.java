@@ -115,7 +115,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 	public static final String								UU_LEARNERSHIPS				= "58f0fbf5-f57e-48f9-af65-4910a01a045a";
 	public static final String								UU_SKILLS_PROGRAMMES		= "2832696b-6133-4d56-898b-73b67ae62c12";
 
-	private static final List<InterventionConfig> INTERVENTION_CONFIGS = List.of(
+	static final List<InterventionConfig> INTERVENTION_CONFIGS = List.of(
 		new InterventionConfig(
 			INTERVENTION_QCTO_ARTISANS,
 			X_ZZLearnerQCTOArtisans.Table_Name,
@@ -176,24 +176,24 @@ public class LearnerQualficationRegVM extends StepAppVM
 			id -> new X_ZZSkillsProgramme(Env.getCtx(), id, null),
 			INTERVENTION_SKILL));
 
-	private static final class InterventionConfig
+	static final class InterventionConfig
 	{
-		private final String displayName;
-		private final String learnerTable;
-		private final String learnerKeyColumn;
-		private final String learnerProgrammeColumn;
-		private final String programmeTable;
-		private final String programmeKeyColumn;
-		private final String programmeCodeColumn;
-		private final String programmeTitleColumn;
-		private final String programmeMasterUuid;
-		private final Function<Integer, PO> programmeLoader;
-		private final List<String> aliases;
+		final String displayName;
+		final String learnerTable;
+		final String learnerKeyColumn;
+		final String learnerProgrammeColumn;
+		final String programmeTable;
+		final String programmeKeyColumn;
+		final String programmeCodeColumn;
+		final String programmeTitleColumn;
+		final String programmeMasterUuid;
+		final Function<Integer, PO> programmeLoader;
+		final List<String> aliases;
 
-		private InterventionConfig(	String displayName, String learnerTable, String learnerKeyColumn,
-									String learnerProgrammeColumn, String programmeTable, String programmeKeyColumn,
-									String programmeCodeColumn, String programmeTitleColumn, String programmeMasterUuid,
-									Function<Integer, PO> programmeLoader, String... aliases)
+		InterventionConfig(	String displayName, String learnerTable, String learnerKeyColumn,
+							String learnerProgrammeColumn, String programmeTable, String programmeKeyColumn,
+							String programmeCodeColumn, String programmeTitleColumn, String programmeMasterUuid,
+							Function<Integer, PO> programmeLoader, String... aliases)
 		{
 			this.displayName = displayName;
 			this.learnerTable = learnerTable;
@@ -208,7 +208,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			this.aliases = Arrays.asList(aliases);
 		}
 
-		private boolean matches(String interventionValue)
+		boolean matches(String interventionValue)
 		{
 			if (interventionValue == null)
 				return false;
@@ -217,7 +217,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			return aliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(interventionValue));
 		}
 
-		private String getJoinClause()
+		String getJoinClause()
 		{
 			String alias = programmeTable.startsWith("ZZQcto") ? "q" : "p";
 			return "LEFT JOIN " + programmeTable + " " + alias + " ON " + alias + "." + programmeKeyColumn + " = "
@@ -554,6 +554,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 																								null,
 																								CellModel.SEARCH_CELL);
 		chooseLearnerCol.setShowTitle(false);
+		chooseLearnerCol.setBtText("Learner");
 		cols.add(chooseLearnerCol);
 
 		chooseLearnerCol.setEventHandle((event, cellModel) -> {
@@ -710,7 +711,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		});
 	}
 
-	private InterventionConfig getInterventionConfig(String interventionValue)
+	static InterventionConfig getInterventionConfig(String interventionValue)
 	{
 		for (InterventionConfig config : INTERVENTION_CONFIGS)
 		{
@@ -720,7 +721,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		return null;
 	}
 
-	private String getTableNameForIntervention(String interventionValue)
+	static String getTableNameForIntervention(String interventionValue)
 	{
 		InterventionConfig config = getInterventionConfig(interventionValue);
 		return config != null ? config.learnerTable : null;
@@ -1567,6 +1568,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			}
 		}
 
+
 		// Post notify change on all cells in the row so ZK refreshes every field
 		if (tmDGProgrammeDetails.getRow() != null)
 		{
@@ -1722,27 +1724,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 																											CellModel.SEARCH_CELL);
 		cols.add(colSecondaryEmployerContact);
 
-		MColumn socioCol = MTable	.get(Env.getCtx(), I_ZZLearnerDGProgramme.Table_Name)
-									.getColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZSocioEconomicStatus);
-		int socioRefId = socioCol != null ? socioCol.getAD_Reference_Value_ID() : 1000250;
-		ValueNamePair[] socioPairs = MRefList.getList(Env.getCtx(), socioRefId, false);
-		List<ValueNamePair> socioList = socioPairs != null && socioPairs.length > 0
-																					? Arrays.asList(socioPairs)
-																					: List.of(
-																								new ValueNamePair(	X_ZZLearnerDGProgramme.ZZSOCIOECONOMICSTATUS_Employed,
-																													"Employed"),
-																								new ValueNamePair(	X_ZZLearnerDGProgramme.ZZSOCIOECONOMICSTATUS_Unemployed,
-																													"Unemployed"));
 
-		ListColumnModel<ValueNamePair> colSocio = ListCellModel.getListColumnModel(
-																					MasterUtil.getNameOfColTranslated(	I_ZZLearnerDGProgramme.Table_Name,
-																														I_ZZLearnerDGProgramme.COLUMNNAME_ZZSocioEconomicStatus),
-																					I_ZZLearnerDGProgramme.COLUMNNAME_ZZSocioEconomicStatus,
-																					socioList,
-																					ValueNamePair::getName,
-																					ValueNamePair::getValue);
-		colSocio.setzClass(ValueNamePair.class).required();
-		cols.add(colSocio);
 
 		MColumn fundingCol = MTable	.get(Env.getCtx(), I_ZZLearnerDGProgramme.Table_Name)
 									.getColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType);
@@ -1765,18 +1747,6 @@ public class LearnerQualficationRegVM extends StepAppVM
 																							ValueNamePair::getValue);
 		colFundingType.setzClass(ValueNamePair.class).required();
 		cols.add(colFundingType);
-
-		ListColumnModel<ValueNamePair> colDisability = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZLearnerDGProgramme.Table_Name,
-						I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsDisability),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsDisability,
-				yesNoOptions,
-				ValueNamePair::getName,
-				item -> "Y".equals(item.getValue()));
-		
-		colDisability.setzClass(ValueNamePair.class)
-				.setDefaultValue(false, (cell, item) -> "N".equals(item.getValue()));
-		cols.add(colDisability);
 
 		ColumnModel colContractNo = CellModel.getColModelForText(
 																	MasterUtil.getNameOfColTranslated(	I_ZZLearnerDGProgramme.Table_Name,
@@ -1941,6 +1911,23 @@ public class LearnerQualficationRegVM extends StepAppVM
 		int programmeMasterId = selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0;
 		List<X_ZZRegistrationDocs> docUploads = loadRegistrationDocumentDefinitions(programmeMasterId, false);
 
+		boolean hasDisabilityLetter = false;
+		for (X_ZZRegistrationDocs doc : docUploads)
+		{
+			if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter"))
+			{
+				hasDisabilityLetter = true;
+				break;
+			}
+		}
+		if (!hasDisabilityLetter)
+		{
+			X_ZZRegistrationDocs disDoc = new X_ZZRegistrationDocs(Env.getCtx(), 0, null);
+			disDoc.setName("Doctor - Disability Letter");
+			disDoc.setIsMandatory(isDisabilitySelected());
+			docUploads.add(disDoc);
+		}
+
 		if (docUploads.isEmpty())
 		{
 			tmDGDocuments.resetMultiPo(new ArrayList<>());
@@ -1963,6 +1950,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 																selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0,
 																null);
 
+		boolean isDisabilityYes = isDisabilitySelected();
 		for (int i = 0; i < docUploads.size() && i < tmDGDocuments.getRows().size(); i++)
 		{
 			X_ZZRegistrationDocs doc = docUploads.get(i);
@@ -1971,7 +1959,13 @@ public class LearnerQualficationRegVM extends StepAppVM
 			if (uploadCell instanceof UploadCellModel)
 			{
 				UploadCellModel uCell = (UploadCellModel) uploadCell;
-				uCell.setBtText(doc.isMandatory() ? "Upload Document *" : "Upload Document");
+				boolean isMandatory = doc.isMandatory();
+				if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter"))
+				{
+					isMandatory = isDisabilityYes;
+					doc.setIsMandatory(isMandatory);
+				}
+				uCell.setBtText(isMandatory ? "Upload Document *" : "Upload Document");
 				if (existingDg != null)
 				{
 					String existingFile = AttachmentUtil.getFileNameFromAttachmentEntries(existingDg, doc.getName(), null);
@@ -2055,6 +2049,23 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 		List<X_ZZRegistrationDocs> docUploads = loadRegistrationDocumentDefinitions(pmdId, true);
 
+		boolean hasDisabilityLetter = false;
+		for (X_ZZRegistrationDocs doc : docUploads)
+		{
+			if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter"))
+			{
+				hasDisabilityLetter = true;
+				break;
+			}
+		}
+		if (!hasDisabilityLetter)
+		{
+			X_ZZRegistrationDocs disDoc = new X_ZZRegistrationDocs(Env.getCtx(), 0, null);
+			disDoc.setName("Doctor - Disability Letter");
+			disDoc.setIsMandatory(isDisabilitySelected());
+			docUploads.add(disDoc);
+		}
+
 		if (docUploads.isEmpty())
 		{
 			tmRegistrationDocuments.resetMultiPo(new ArrayList<>());
@@ -2083,6 +2094,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			}
 		}
 
+		boolean isDisabilityYes = isDisabilitySelected();
 		for (int i = 0; i < docUploads.size() && i < tmRegistrationDocuments.getRows().size(); i++)
 		{
 			X_ZZRegistrationDocs doc = docUploads.get(i);
@@ -2091,7 +2103,13 @@ public class LearnerQualficationRegVM extends StepAppVM
 			if (uploadCell instanceof UploadCellModel)
 			{
 				UploadCellModel uCell = (UploadCellModel) uploadCell;
-				uCell.setBtText(doc.isMandatory() ? "Upload Document *" : "Upload Document");
+				boolean isMandatory = doc.isMandatory();
+				if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter"))
+				{
+					isMandatory = isDisabilityYes;
+					doc.setIsMandatory(isMandatory);
+				}
+				uCell.setBtText(isMandatory ? "Upload Document *" : "Upload Document");
 				if (existingRecord != null && existingRecord.get_ID() > 0)
 				{
 					String existingFile = AttachmentUtil.getFileNameFromAttachmentEntries(existingRecord, doc.getName(), null);
@@ -2404,6 +2422,11 @@ public class LearnerQualficationRegVM extends StepAppVM
 		return missingCols;
 	}
 
+	private boolean isDisabilitySelected()
+	{
+		return personSelected != null && personSelected.getZZ_LI_Disability_ID() > 1000000;
+	}
+
 	private List<String> getMissingMandatoryDocuments(	TableModel documentTable, ColumnModel documentNameColumn,
 													ColumnModel uploadColumn)
 	{
@@ -2418,8 +2441,15 @@ public class LearnerQualficationRegVM extends StepAppVM
 				continue;
 
 			X_ZZRegistrationDocs document = (X_ZZRegistrationDocs) documentNameCell.getValue();
-			if (!document.isMandatory())
+			if (document.getName() != null && document.getName().trim().equalsIgnoreCase("Doctor - Disability Letter"))
+			{
+				if (!isDisabilitySelected())
+					continue;
+			}
+			else if (!document.isMandatory())
+			{
 				continue;
+			}
 
 			CellModel uploadCell = row.get(uploadColumn);
 			if (uploadCell instanceof UploadCellModel)
@@ -2768,10 +2798,6 @@ public class LearnerQualficationRegVM extends StepAppVM
 				String ft = extractString(val);
 				if (ft != null && !ft.isBlank())
 					dg.setZZFundingType(ft);
-			}
-			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsDisability.equals(prop))
-			{
-				dg.setZZ_IsDisability(Boolean.TRUE.equals(val));
 			}
 			else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop))
 			{

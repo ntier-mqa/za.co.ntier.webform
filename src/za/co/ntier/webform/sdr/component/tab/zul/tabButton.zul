@@ -26,8 +26,8 @@
 
 		<button
 			visible="@load(vmTabButton.showNext)" 
-			label="Next" sclass="icon-on-right"
-			iconSclass="z-icon-arrow-right"
+			label="@load(vmTabButton.btNextLabel)" sclass="icon-on-right"
+			iconSclass="@load(vmTabButton.btNextIcon)"
 			onClick="@command('nextTab')" />
 		
 		<button
