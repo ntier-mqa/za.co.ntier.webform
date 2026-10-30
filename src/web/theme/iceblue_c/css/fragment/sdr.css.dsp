@@ -650,61 +650,7 @@
 	height:unset !important;
 }
 
-/***** Allocation Offer and Intake Plan (BUC 9A) *****/
-.mqaWebForm .sdrForm .allocation-form-wrapper {
-  height: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-}
-
-.mqaWebForm .sdrForm .allocation-scroll-content {
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  padding-right: 10px !important;
-  padding-bottom: 30px !important;
-}
-
-.mqaWebForm .sdrForm .mqa-intake-table {
-  border: 1px solid #cbd5e1 !important;
-  border-radius: 6px !important;
-  overflow: hidden !important;
-  width: 100% !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-.mqaWebForm .sdrForm .mqa-intake-table .z-column {
-  background: #1b2a6b !important;
-  color: #ffffff !important;
-  border-right: 1px solid #2d3e8c !important;
-}
-
-.mqaWebForm .sdrForm .mqa-intake-table .z-column-content {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  font-size: 12px !important;
-  padding: 8px 10px !important;
-  line-height: 1.3 !important;
-}
-
-.mqaWebForm .sdrForm .mqa-intake-table .z-row-inner {
-  padding: 8px 10px !important;
-  background: #ffffff !important;
-  border-bottom: 1px solid #f1f5f9 !important;
-}
-
-.mqaWebForm .sdrForm .mqa-intake-table .z-row:hover .z-row-inner {
-  background: #f8fafc !important;
-}
-
-.mqaWebForm .sdrForm .mqa-intake-table .z-foot .z-footer {
-  background: #f1f5f9 !important;
-  border-top: 2px solid #cbd5e1 !important;
-  padding: 10px 12px !important;
-}
-
+/* Shared SDR row actions. */
 .mqaWebForm .sdrForm .btn-circle.delrow {
   background: #ef4444 !important;
   color: #ffffff !important;
@@ -725,3 +671,143 @@
   background: #dc2626 !important;
 }
 
+/***** Allocation Offer and Intake Plan (BUC 9A) *****/
+.mqaWebForm .allocation-offer-form,
+.mqaWebForm .allocation-offer-form .allocation-form-wrapper {
+  min-height: 0;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-scroll-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-heading {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-heading .formHeader {
+  padding-bottom: 8px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-overview {
+  gap: 16px 32px;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #dce0e7;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-overview > .z-vlayout {
+  min-width: 120px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-overview-value {
+  color: var(--mqa-blue);
+  font-weight: bold;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-readonly,
+.mqaWebForm .allocation-offer-form .allocation-radio-options {
+  padding: 10px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  margin: 12px 0;
+  border-left: 3px solid var(--mqa-blue);
+  background: #f8fafc;
+  overflow-wrap: anywhere;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-notice-title {
+  font-weight: bold;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-query {
+  border-color: var(--mqa-orange);
+  background: #fffbeb;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-query-comments {
+  white-space: pre-wrap;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-error {
+  border-color: #b3261e;
+  color: #92221c;
+  background: #fff4f3;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-success,
+.mqaWebForm .allocation-offer-form .allocation-total {
+  border-color: var(--mqa-green);
+  background: #f1f8f2;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-file-name {
+  flex: 1 1 200px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-intake-heading {
+  justify-content: space-between;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-table-scroll {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.mqaWebForm .allocation-offer-form .mqa-intake-table {
+  min-width: 740px;
+  width: 100%;
+}
+
+.mqaWebForm .allocation-offer-form .mqa-intake-table .z-column {
+  background: var(--mqa-blue);
+}
+
+.mqaWebForm .allocation-offer-form .mqa-intake-table .z-column-content {
+  color: white;
+  white-space: normal;
+}
+
+.mqaWebForm .allocation-offer-form .mqa-intake-table .z-footer-content {
+  font-weight: bold;
+  white-space: normal;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-action-panel {
+  flex-shrink: 0;
+  max-height: 45%;
+  overflow-y: auto;
+}
+
+@media (max-width: 700px) {
+  .mqaWebForm .allocation-offer-form .grid-formview.two-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
