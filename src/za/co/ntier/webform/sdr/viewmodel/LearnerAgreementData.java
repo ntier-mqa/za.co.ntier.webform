@@ -1,6 +1,7 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.compiere.model.MBPartner;
+import org.compiere.model.I_C_Location;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
@@ -33,7 +35,11 @@ import za.co.ntier.api.model.X_C_BP_AC;
 import za.co.ntier.api.model.I_ZZPerson;
 import za.co.ntier.api.model.I_ZZPersonAddress;
 import za.co.ntier.api.model.I_ZZQualification;
+import za.co.ntier.api.model.I_ZZLearnership;
+import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZQctoLearnership;
+import za.co.ntier.api.model.I_ZZQctoQualification;
+import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.I_ZZ_ParentDetails;
 import za.co.ntier.api.model.I_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.api.model.X_ZZLearner_v;
@@ -43,7 +49,7 @@ import za.co.ntier.api.model.X_ZZ_ParentDetails;
 import za.co.ntier.api.model.X_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
-/** Report values from the confirmed learner tabs and the current registration row. */
+/** Report values from learner details and the selected registration, including unsaved form values. */
 public final class LearnerAgreementData
 {
 	private LearnerAgreementData()
@@ -94,6 +100,14 @@ public final class LearnerAgreementData
 	public static final String	POSTAL_ADDRESS						= "PostalAddress";
 	public static final String	PROGRAMME_CODE						= "ProgrammeCode";
 	public static final String	PROGRAMME_TYPE						= "ProgrammeType";
+	public static final String PROGRAMME_TITLE = "ProgrammeTitle";
+	public static final String SECONDARY_EMPLOYER = "SecondaryEmployer";
+	public static final String SECONDARY_PROVIDER = "SecondaryProvider";
+	public static final String SUFFIX_LEAD = "Lead";
+	public static final String SUFFIX_ACCREDITATION_NUMBER = "AccreditationNumber";
+	public static final String SUFFIX_ACCREDITATION_STATUS = "AccreditationStatus";
+	public static final String SUFFIX_ACCREDITATION_START_DATE = "AccreditationStartDate";
+	public static final String SUFFIX_ACCREDITATION_END_DATE = "AccreditationEndDate";
 	public static final String	PROVIDER_ACCREDITATION_END_DATE		= "ProviderAccreditationEndDate";
 	public static final String	PROVIDER_ACCREDITATION_NUMBER		= "ProviderAccreditationNumber";
 	public static final String	PROVIDER_ACCREDITATION_START_DATE	= "ProviderAccreditationStartDate";
@@ -195,6 +209,88 @@ public final class LearnerAgreementData
 		else if (education.isEmpty())
 			data.put(LearnerAgreementData.HIGHEST_QUALIFICATION, display(learner, I_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID));
 
+		int programmeId = id(registration.get(programmeColumn));
+		PO programme = programmeId > 0 && programmeTable != null
+				? MTable.get(Env.getCtx(), programmeTable).getPO(programmeId, null) : null;
+		registration(data, registration, programme, codeColumn, programmeType, warnings);
+		return data;
+	}
+
+	/** Build from the merged form before save; do not reload learner or child rows. */
+	static Map<String, String> buildFromForm(Map<String, Object> learner, Map<String, Object> physical,
+			Map<String, Object> postal, Map<String, Object> parent, Map<String, Object> education,
+			Map<String, Object> registration, PO programme, String codeColumn, String programmeType,
+			boolean disability, List<String> warnings)
+	{
+		Map<String, String> data = new LinkedHashMap<>();
+		data.put(LEARNER_TITLE, text(learner.get(I_ZZPerson.COLUMNNAME_ZZLkpTitle)));
+		data.put(LEARNER_NAME, join(text(learner.get(I_ZZPerson.COLUMNNAME_ZZFirstName)),
+				text(learner.get(I_ZZPerson.COLUMNNAME_ZZMiddleName)), text(learner.get(I_ZZPerson.COLUMNNAME_Surname))));
+		data.put(LEARNER_ID, first(text(learner.get(I_ZZPerson.COLUMNNAME_ZZ_ID_Passport_No)),
+				text(learner.get(I_ZZPerson.COLUMNNAME_ZZOtherIDNo))));
+		data.put(BIRTH_DATE, date(learner.get(I_ZZPerson.COLUMNNAME_Birthday)));
+		data.put(GENDER, text(learner.get(I_ZZPerson.COLUMNNAME_ZZGender)));
+		data.put(RACE, text(learner.get(I_ZZPerson.COLUMNNAME_ZZEquity)));
+		data.put(DISABILITY, disability ? "Yes" : "No");
+		data.put(DISABILITY_ANSWER, data.get(DISABILITY));
+		// The merged form captures Yes/No, without a disability diagnosis.
+		data.put(DISABILITY_DESCRIPTION, "");
+		String status = text(learner.get(I_ZZPerson.COLUMNNAME_ZZ_LI_CitizenResidentialStatus_ID));
+		String citizen = citizenAnswer(status);
+		data.put(CITIZEN_ANSWER, citizen);
+		data.put(NON_CITIZEN_DETAILS, "No".equals(citizen)
+				? join(status, text(learner.get(I_ZZPerson.COLUMNNAME_ZZ_Nationality_ID))) : "");
+		data.put(SOCIO_ECONOMIC_STATUS, text(learner.get(I_ZZPerson.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID)));
+		data.put(PHYSICAL_ADDRESS, formAddress(physical));
+		String postalAddress = formAddress(postal);
+		data.put(POSTAL_ADDRESS, postalAddress.equals(data.get(PHYSICAL_ADDRESS)) ? "" : postalAddress);
+		data.put(TELEPHONE, join(text(learner.get(I_ZZPerson.COLUMNNAME_Phone)), text(learner.get(I_ZZPerson.COLUMNNAME_Phone2))));
+		data.put(EMAIL, text(learner.get(I_ZZPerson.COLUMNNAME_EMail)));
+		// The Highest Education selector stores the current display name in Qualification.
+		String qualification = first(text(education.get(I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Qualification)),
+				text(education.get(I_ZZ_PostSchoolEducation_Details.COLUMNNAME_Name)));
+		data.put(HIGHEST_QUALIFICATION, first(qualification, text(learner.get(I_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID))));
+		data.put(GUARDIAN_NAME, join(text(parent.get(I_ZZ_ParentDetails.COLUMNNAME_ZZFirstName)),
+				text(parent.get(I_ZZ_ParentDetails.COLUMNNAME_ZZMiddleName)), text(parent.get(I_ZZ_ParentDetails.COLUMNNAME_Surname))));
+		Object guardian = parent.get(I_ZZ_ParentDetails.COLUMNNAME_ZZParentPerson_ID);
+		if (guardian instanceof X_ZZPerson)
+		{
+			X_ZZPerson person = (X_ZZPerson) guardian;
+			data.put(GUARDIAN_ID, first(person.getZZ_ID_Passport_No(), person.getZZOtherIDNo()));
+			data.put(GUARDIAN_HOME_ADDRESS, address(person.getZZPhysicalLocation_ID()));
+			data.put(GUARDIAN_POSTAL_ADDRESS, person.getZZPostalLocation_ID() == person.getZZPhysicalLocation_ID()
+					? "" : address(person.getZZPostalLocation_ID()));
+			data.put(GUARDIAN_TELEPHONE, join(person.getPhone(), person.getPhone2()));
+			data.put(GUARDIAN_EMAIL, person.getEMail());
+		}
+		Object birthday = learner.get(I_ZZPerson.COLUMNNAME_Birthday);
+		if (birthday instanceof Timestamp
+				&& ((Timestamp) birthday).toLocalDateTime().toLocalDate().plusYears(18).isAfter(LocalDate.now()))
+			data.put(GUARDIAN_SIGNATORY_NAME, data.get(GUARDIAN_NAME));
+		registration(data, registration, programme, codeColumn, programmeType, warnings);
+		data.put(FUNDING_TYPE, text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType)));
+		return data;
+	}
+
+	private static String formAddress(Map<String, Object> values)
+	{
+		return Stream.of(I_C_Location.COLUMNNAME_Address1, I_C_Location.COLUMNNAME_Address2,
+				I_C_Location.COLUMNNAME_C_City_ID, I_C_Location.COLUMNNAME_Postal, I_C_Location.COLUMNNAME_C_Region_ID)
+				.map(column -> text(values.get(column))).filter(value -> !value.isBlank()).collect(Collectors.joining(", "));
+	}
+
+	private static String text(Object value)
+	{
+		if (value instanceof ValueNamePair)
+			return ((ValueNamePair) value).getName();
+		if (value instanceof PO)
+			return value((PO) value, I_C_BPartner.COLUMNNAME_Name);
+		return value == null ? "" : value.toString();
+	}
+
+	private static void registration(Map<String, String> data, Map<String, Object> registration,
+			PO programme, String codeColumn, String programmeType, List<String> warnings)
+	{
 		party(data, "Employer", id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID)));
 		partyDetails(	data, registration, "Employer", I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID,
 						I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID, I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy);
@@ -202,7 +298,17 @@ public final class LearnerAgreementData
 		partyDetails(	data, registration, "Provider", I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID,
 						I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID, I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy);
 
+		party(data, SECONDARY_EMPLOYER, id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID)));
+		partyDetails(data, registration, SECONDARY_EMPLOYER, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID,
+				I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy);
+		party(data, SECONDARY_PROVIDER, id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID)));
+		partyDetails(data, registration, SECONDARY_PROVIDER, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID,
+				I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy);
+		providerAccreditation(data, SECONDARY_PROVIDER,
+				id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID)), warnings);
+
 		data.put(LearnerAgreementData.PROGRAMME_TYPE, programmeType);
+		data.put(PROGRAMME_TITLE, programmeType);
 		int financialYearId = id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID));
 		if (financialYearId <= 0)
 			financialYearId = id(registration.get(I_ZZLearnerLearnership.COLUMNNAME_ZZ_FinYear_ID));
@@ -210,37 +316,104 @@ public final class LearnerAgreementData
 		Object agreementReference = registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber);
 		data.put(LearnerAgreementData.AGREEMENT_REFERENCE_NUMBER, agreementReference == null ? "" : agreementReference.toString());
 		data.put(LearnerAgreementData.EXPECTED_END_DATE, date(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate)));
-		data.put(LearnerAgreementData.AGREEMENT_START_DATE, date(LocalDate.now()));
-		int programmeId = id(registration.get(programmeColumn));
-		if (programmeId > 0 && programmeTable != null)
+		data.put(LearnerAgreementData.AGREEMENT_START_DATE, date(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate)));
+		if (programme != null)
 		{
-			PO programme = MTable.get(Env.getCtx(), programmeTable).getPO(programmeId, null);
-			if (programme != null)
+			data.put(LearnerAgreementData.PROGRAMME_CODE, value(programme, codeColumn));
+			data.put(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL, display(programme, I_ZZQualification.COLUMNNAME_ZZQualityAssuranceBody));
+			data.put(LearnerAgreementData.OCCUPATION, display(programme, I_ZZQualification.COLUMNNAME_ZZLkpOfoOccupationTree_ID));
+			PO qualification = putQualificationDetails(data, programme);
+			PO aqpQualification = linked(programme, I_ZZQualification.COLUMNNAME_ZZQualification_ID);
+			if (aqpQualification == null && qualification != null)
+				aqpQualification = linked(qualification, I_ZZQualification.COLUMNNAME_ZZQualification_ID);
+			if (aqpQualification != null)
+				data.put(LearnerAgreementData.ASSESSMENT_QUALITY_PARTNER, display(aqpQualification, I_ZZQualification.COLUMNNAME_ZZQualityAssuranceBody));
+			if (qualification != null)
 			{
-				data.put(LearnerAgreementData.PROGRAMME_CODE, value(programme, codeColumn));
-				data.put(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL, display(programme, I_ZZQualification.COLUMNNAME_ZZQualityAssuranceBody));
-				data.put(LearnerAgreementData.OCCUPATION, display(programme, I_ZZQualification.COLUMNNAME_ZZLkpOfoOccupationTree_ID));
-				PO qualification = linked(programme, I_ZZQctoLearnership.COLUMNNAME_ZZQctoQualification_ID);
-				if (qualification == null)
-					qualification = linked(programme, I_ZZQualification.COLUMNNAME_ZZQualification_ID);
-				PO aqpQualification = linked(programme, I_ZZQualification.COLUMNNAME_ZZQualification_ID);
-				if (aqpQualification == null && qualification != null)
-					aqpQualification = linked(qualification, I_ZZQualification.COLUMNNAME_ZZQualification_ID);
-				if (aqpQualification != null)
-					data.put(LearnerAgreementData.ASSESSMENT_QUALITY_PARTNER, display(aqpQualification, I_ZZQualification.COLUMNNAME_ZZQualityAssuranceBody));
-				if (qualification != null)
-				{
-					if (data.get(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL) == null || data	.get(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL)
-																									.isBlank())
-						data.put(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL, display(qualification,
-																							I_ZZQualification.COLUMNNAME_ZZQualityAssuranceBody));
-					data.put(LearnerAgreementData.QUALIFICATION_TITLE, value(qualification, I_ZZQualification.COLUMNNAME_ZZSaqaQualificationTitle));
-					data.put(LearnerAgreementData.SAQA_ID, value(qualification, I_ZZQualification.COLUMNNAME_ZZSaqaQualificationCode));
-				}
+				if (data.get(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL) == null || data	.get(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL)
+																								.isBlank())
+					data.put(LearnerAgreementData.PROVIDER_ACCREDITING_COUNCIL, display(qualification,
+																						I_ZZQualification.COLUMNNAME_ZZQualityAssuranceBody));
 			}
 		}
-		providerAccreditation(data, id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID)), warnings);
-		return data;
+		providerAccreditation(data, "Provider", id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID)), warnings);
+	}
+
+	static void putProgrammeDefinition(Map<String, String> data, boolean enterQualification,
+			String selectedProgrammeType, String dgProgrammeTitle)
+	{
+		data.put(PROGRAMME_TITLE, enterQualification ? first(selectedProgrammeType, dgProgrammeTitle) : dgProgrammeTitle);
+		if (!enterQualification)
+		{
+			data.put(QUALIFICATION_TITLE, dgProgrammeTitle);
+			data.put(SAQA_ID, "");
+		}
+		else if (selectedProgrammeType == null || selectedProgrammeType.isBlank())
+			data.put(QUALIFICATION_TITLE, first(data.get(QUALIFICATION_TITLE), dgProgrammeTitle));
+	}
+
+	/** Use the programme's actual qualification relationship, independent of lookup/view metadata. */
+	static PO putQualificationDetails(Map<String, String> data, PO programme)
+	{
+		PO qualification = null;
+		String programmeTitle = "";
+		String agreementCode = "";
+		if (programme instanceof I_ZZQctoLearnership)
+		{
+			I_ZZQctoLearnership selected = (I_ZZQctoLearnership) programme;
+			programmeTitle = selected.getZZLearnershipTitle();
+			agreementCode = selected.getZZLearnershipCode();
+			if (selected.getZZQctoQualification_ID() > 0)
+				qualification = (PO) selected.getZZQctoQualification();
+			if (qualification == null && selected.getZZQualification_ID() > 0)
+				qualification = (PO) selected.getZZQualification();
+		}
+		else if (programme instanceof I_ZZLearnership)
+		{
+			I_ZZLearnership selected = (I_ZZLearnership) programme;
+			programmeTitle = selected.getZZLearnershipTitle();
+			agreementCode = selected.getZZLearnershipCode();
+			if (selected.getZZQualification_ID() > 0)
+				qualification = (PO) selected.getZZQualification();
+		}
+		else if (programme instanceof I_ZZSkillsProgramme)
+		{
+			I_ZZSkillsProgramme selected = (I_ZZSkillsProgramme) programme;
+			programmeTitle = selected.getZZSkillsProgrammeTitle();
+			agreementCode = selected.getZZSkillsProgrammeCode();
+			if (selected.getZZQualification_ID() > 0)
+				qualification = (PO) selected.getZZQualification();
+		}
+		else if (programme instanceof I_ZZQctoSkillsProgramme)
+		{
+			I_ZZQctoSkillsProgramme selected = (I_ZZQctoSkillsProgramme) programme;
+			programmeTitle = selected.getZZSkillsProgrammeTitle();
+			agreementCode = selected.getZZSkillsProgrammeCode();
+			if (selected.getZZQualification_ID() > 0)
+				qualification = (PO) selected.getZZQualification();
+		}
+		else if (programme instanceof I_ZZQualification || programme instanceof I_ZZQctoQualification)
+			qualification = programme;
+
+		String title = "";
+		if (qualification instanceof I_ZZQualification)
+		{
+			I_ZZQualification selected = (I_ZZQualification) qualification;
+			title = selected.getZZSaqaQualificationTitle();
+			if (qualification == programme)
+				agreementCode = selected.getZZSaqaQualificationCode();
+		}
+		else if (qualification instanceof I_ZZQctoQualification)
+		{
+			I_ZZQctoQualification selected = (I_ZZQctoQualification) qualification;
+			title = selected.getZZSaqaQualificationTitle();
+			if (qualification == programme)
+				agreementCode = selected.getZZSaqaQualificationCode();
+		}
+		data.put(QUALIFICATION_TITLE, first(title, programmeTitle));
+		// The agreement's SAQA row uses the selected programme's code when qualification entry is enabled.
+		data.put(SAQA_ID, agreementCode == null ? "" : agreementCode);
+		return qualification;
 	}
 
 	private static void party(Map<String, String> data, String prefix, int partnerId)
@@ -248,6 +421,7 @@ public final class LearnerAgreementData
 		if (partnerId <= 0)
 			return;
 		MBPartner partner = new MBPartner(Env.getCtx(), partnerId, null);
+		data.put(prefix + SUFFIX_LEAD, prefix.startsWith("Secondary") ? "No" : "Yes");
 		data.put(prefix + LearnerAgreementData.SUFFIX_NAME, partner.getName());
 		String tradingName = partner.getName2();
 		data.put(prefix + LearnerAgreementData.SUFFIX_TRADING_NAME, tradingName != null && partner.getName() != null
@@ -291,7 +465,7 @@ public final class LearnerAgreementData
 		{
 			data.put(prefix + LearnerAgreementData.SUFFIX_CONTACT, contact.getName());
 			// Organisation Contact Details labels Phone as Cell and Phone2 as Telephone.
-			data.put(prefix + LearnerAgreementData.SUFFIX_TELEPHONE, "Provider".equals(prefix)
+			data.put(prefix + LearnerAgreementData.SUFFIX_TELEPHONE, prefix.endsWith("Provider")
 																								? join(contact.getPhone2(), contact.getPhone())
 																								: contact.getPhone2());
 			data.put(prefix + LearnerAgreementData.SUFFIX_CELL, contact.getPhone());
@@ -324,7 +498,7 @@ public final class LearnerAgreementData
 						.filter(s -> s != null && !s.isBlank()).distinct().collect(Collectors.joining(", "));
 	}
 
-	private static void providerAccreditation(Map<String, String> data, int partnerId, List<String> warnings)
+	private static void providerAccreditation(Map<String, String> data, String prefix, int partnerId, List<String> warnings)
 	{
 		if (partnerId <= 0)
 			return;
@@ -335,15 +509,15 @@ public final class LearnerAgreementData
 											"Multiple active accreditation records for the selected SDP: accreditation fields were left blank. Please identify the applicable record.",
 											warnings);
 		if (accreditation != null)
-			putAccreditation(data, accreditation);
+			putAccreditation(data, prefix, accreditation);
 	}
 
-	private static void putAccreditation(Map<String, String> data, X_C_BP_AC accreditation)
+	private static void putAccreditation(Map<String, String> data, String prefix, X_C_BP_AC accreditation)
 	{
-		data.put(LearnerAgreementData.PROVIDER_ACCREDITATION_NUMBER, accreditation.getZZ_AccreditationNumber());
-		data.put(LearnerAgreementData.PROVIDER_ACCREDITATION_STATUS, display(accreditation, I_C_BP_AC.COLUMNNAME_ZZ_Status));
-		data.put(LearnerAgreementData.PROVIDER_ACCREDITATION_START_DATE, date(accreditation.getStartDate()));
-		data.put(LearnerAgreementData.PROVIDER_ACCREDITATION_END_DATE, date(accreditation.getEndDate()));
+		data.put(prefix + SUFFIX_ACCREDITATION_NUMBER, accreditation.getZZ_AccreditationNumber());
+		data.put(prefix + SUFFIX_ACCREDITATION_STATUS, display(accreditation, I_C_BP_AC.COLUMNNAME_ZZ_Status));
+		data.put(prefix + SUFFIX_ACCREDITATION_START_DATE, date(accreditation.getStartDate()));
+		data.put(prefix + SUFFIX_ACCREDITATION_END_DATE, date(accreditation.getEndDate()));
 	}
 
 	private static String financialYear(int yearId)

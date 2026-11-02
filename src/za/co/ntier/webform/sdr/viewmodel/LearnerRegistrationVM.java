@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -46,6 +47,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import za.co.ntier.api.model.I_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.I_ZZRegistrationDocs;
+import za.co.ntier.api.model.I_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.X_ZZLearnerDGProgramme;
@@ -54,7 +56,6 @@ import za.co.ntier.api.model.X_ZZLearnerQCTOArtisans;
 import za.co.ntier.api.model.X_ZZLearnerQCTOLearnership;
 import za.co.ntier.api.model.X_ZZLearnerQCTOSkillsProgramme;
 import za.co.ntier.api.model.X_ZZLearnerSkillsProgramme;
-import za.co.ntier.api.model.X_ZZLearner_v;
 import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZPerson;
@@ -101,6 +102,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	private TableModel tmNames;
 	private TableModel tmGeneralDetail;
+	private TableModel tmContactDetail;
+	private TableModel tmPhysicalAddress;
+	private TableModel tmPostalAddress;
 	private TableModel tmParentDetails;
 	private TableModel tmEducationDetail;
 	private TableModel tmPostSchoolEducation;
@@ -931,7 +935,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				X_ZZPerson.COLUMNNAME_EMail).required();
 		cols.add(emailCol);
 
-		TableModel tmContactDetail = TableModel.getTableBean(TableModel.class, cols, false, X_ZZPerson.Table_Name);
+		tmContactDetail = TableModel.getTableBean(TableModel.class, cols, false, X_ZZPerson.Table_Name);
 		tmContactDetail.setSclass("srd-contact srd-contact-learner");
 		tmContactDetail.setDaoManage(daoManage);
 		tmContactDetail.init();
@@ -943,10 +947,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	}
 
 	private void initAddresss() {
-		TableModel tmPostalAddress = BuildFormUtil.getAddressDetailComp(SettingTableMode.getSimple("Postal"),
+		tmPostalAddress = BuildFormUtil.getAddressDetailComp(SettingTableMode.getSimple("Postal"),
 				SettingAddress.getSimple("Postal"));
 
-		TableModel tmPhysicalAddress = BuildFormUtil.getAddressDetailComp(SettingTableMode.getSimple("Physical"),
+		tmPhysicalAddress = BuildFormUtil.getAddressDetailComp(SettingTableMode.getSimple("Physical"),
 				SettingAddress.getSimple("Physical", tmPostalAddress));
 
 		NavTabPanel addressDetailTab = new NavTabPanel(mainTab);
@@ -2995,52 +2999,69 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	}
 
 	private Map<String, String> getLearnerAgreementData() {
-		InterventionConfig config = enterQualificationRequired ? getInterventionConfig(selectedInterventionType) : null;
-		RowModel row = tmRegistration != null ? tmRegistration.getRow() : null;
-		if (row == null && tmRegistration != null && tmRegistration.getRows() != null && !tmRegistration.getRows().isEmpty()) {
-			row = tmRegistration.getRows().get(0);
-		}
-		if (row == null) {
+		if (tmRegistration == null || tmRegistration.getRow() == null) {
 			throw new AdempiereException("Please complete the registration details before generating the agreement.");
 		}
-		Map<String, Object> values = new HashMap<>();
-		String fundingType = "";
-		for (ColumnModel column : row.keySet()) {
-			CellModel cell = row.get(column);
-			if (cell != null && column.getDaoPropertyName() != null) {
-				Object value = cell instanceof DateCellModel ? ((DateCellModel) cell).getTimestamp() : cell.getValue();
-				if (cell instanceof ListCellModel)
-					value = ((ListCellModel<?>) cell).getSelectedItem();
-				if (cell instanceof ValueAdaptCellModel && ((ValueAdaptCellModel) cell).getSelectedValue() != null)
-					value = ((ValueAdaptCellModel) cell).getSelectedValue();
-				values.put(column.getDaoPropertyName(), value);
-				if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(column.getDaoPropertyName())) {
-					if (value instanceof ValueNamePair)
-						fundingType = ((ValueNamePair) value).getName();
-					else if (value != null) {
-						String table = I_ZZLearnerDGProgramme.Table_Name;
-						MColumn metadata = table == null ? null : MTable.get(Env.getCtx(), table).getColumn(column.getDaoPropertyName());
-						if (metadata != null && metadata.getAD_Reference_Value_ID() > 0)
-							fundingType = MRefList.getListName(Env.getCtx(), metadata.getAD_Reference_Value_ID(), value.toString());
-					}
-				}
-			}
-		}
-		String type = config == null ? "" : config.displayName;
+		InterventionConfig config = enterQualificationRequired ? getInterventionConfig(selectedInterventionType) : null;
+		Map<String, Object> learnerValues = agreementLearnerValues(person,
+				tmNames, tmGeneralDetail, tmContactDetail, tmEducationDetail);
 		List<String> warnings = new ArrayList<>();
-		int learnerId = learner != null ? learner.get_ID() : 0;
-		Map<String, String> data = LearnerAgreementData.build(new X_ZZLearner_v(Env.getCtx(), learnerId, null), values,
-				config == null ? null : config.learnerProgrammeColumn, config == null ? null : config.programmeTable,
-				config == null ? null : config.programmeCodeColumn, type, warnings);
+		Map<String, String> data = LearnerAgreementData.buildFromForm(learnerValues,
+				agreementValues(tmPhysicalAddress), agreementValues(tmPostalAddress),
+				agreementValues(tmParentDetails), agreementValues(tmPostSchoolEducation),
+				agreementValues(tmRegistration), config == null ? null : selectedQualification,
+				config == null ? null : config.programmeCodeColumn,
+				config == null ? "" : config.displayName, isDisabilitySelected(), warnings);
+		if (selectedDGProgramme != null) {
+			LearnerAgreementData.putProgrammeDefinition(data, enterQualificationRequired,
+					selectedInterventionType, selectedDGProgramme.getTitle());
+		}
 		if (!warnings.isEmpty()) {
 			MasterUtil.showInfoDialog("Agreement data needs review:\n• " + String.join("\n• ", warnings), null);
 		}
-		data.put(LearnerAgreementData.FUNDING_TYPE, fundingType);
-		if (selectedDGProgramme != null) {
-			data.put(LearnerAgreementData.QUALIFICATION_TITLE, selectedDGProgramme.getTitle());
-			data.put(LearnerAgreementData.PROGRAMME_TYPE, selectedDGProgramme.getTitle());
-		}
 		return data;
+	}
+
+	static Map<String, Object> agreementLearnerValues(X_ZZPerson person, TableModel... tables) {
+		Map<String, Object> values = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+		for (TableModel table : tables) {
+			values.putAll(agreementValues(table));
+		}
+		// Highest education has no input in this form. Preserve the stored value only when absent from the UI.
+		if (!values.containsKey(X_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID)
+				&& person != null && person.getZZ_LI_HighestEducation_ID() > 0) {
+			I_ZZ_LI_HighestEducation highest = person.getZZ_LI_HighestEducation();
+			values.put(X_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID, highest == null ? "" : highest.getName());
+		}
+		return values;
+	}
+
+	/** Capture selected objects as well as text so report lookups use the current UI labels. */
+	static Map<String, Object> agreementValues(TableModel table) {
+		// ColumnModel uses Java bean names (birthday/address1); report keys use database names.
+		Map<String, Object> values = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+		RowModel row = table == null ? null : table.getRow();
+		if (row == null) {
+			return values;
+		}
+		for (ColumnModel column : row.keySet()) {
+			CellModel cell = row.get(column);
+			if (cell == null || column.getDaoPropertyName() == null) {
+				continue;
+			}
+			Object value;
+			if (cell instanceof DateCellModel) {
+				value = ((DateCellModel) cell).getTimestamp();
+			} else if (cell instanceof ListCellModel) {
+				value = ((ListCellModel<?>) cell).getSelectedItem();
+			} else if (cell instanceof ValueAdaptCellModel) {
+				value = ((ValueAdaptCellModel) cell).getSelectedValue();
+			} else {
+				value = cell.getValue();
+			}
+			values.put(column.getDaoPropertyName(), value);
+		}
+		return values;
 	}
 
 	public TableModel getTmParentDetails() {

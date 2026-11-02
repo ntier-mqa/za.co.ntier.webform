@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.logging.Level;
 
@@ -2635,7 +2636,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		}
 		if (row == null)
 			throw new AdempiereException("Please select a registration row before generating the agreement.");
-		Map<String, Object> values = new HashMap<>();
+		Map<String, Object> values = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		String fundingType = "";
 		for (ColumnModel column : row.keySet())
 		{
@@ -2673,8 +2674,8 @@ public class LearnerQualficationRegVM extends StepAppVM
 		data.put(LearnerAgreementData.FUNDING_TYPE, fundingType);
 		if (dgProgrammeActive && selectedDGProgramme != null)
 		{
-			data.put(LearnerAgreementData.QUALIFICATION_TITLE, selectedDGProgramme.getTitle());
-			data.put(LearnerAgreementData.PROGRAMME_TYPE, selectedDGProgramme.getTitle());
+			LearnerAgreementData.putProgrammeDefinition(data, selectedDGProgramme.isEnterQualification(),
+					type, selectedDGProgramme.getTitle());
 		}
 		return data;
 	}
