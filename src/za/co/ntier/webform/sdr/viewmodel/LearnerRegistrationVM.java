@@ -58,7 +58,7 @@ import za.co.ntier.api.model.X_ZZLearner_v;
 import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZPerson;
-import za.co.ntier.api.model.X_ZZQualification_v;
+import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZRegistrationDocs;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_EmploymentHistory;
@@ -1509,34 +1509,42 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		qualificationCol.setBtText("");
 
 		qualificationCol.setEventHandle((event, cellModel) -> {
-			showInfoPanel(
-				InfoPanelPara.getInstance(X_ZZQualification_v.Table_Name, X_ZZQualification_v.COLUMNNAME_ZZQualification_v_UU),
-				(obj, infoPanel) -> {
-					Object[] objs = (Object[]) obj;
-					if (objs == null || objs.length == 0 || objs[0] == null) {
-						return;
+			InfoPanelPara para = InfoPanelPara.getInstance(
+					X_ZZ_LI_HighestEducation.Table_Name,
+					X_ZZ_LI_HighestEducation.COLUMNNAME_ZZ_LI_HighestEducation_ID);
+			para.setWhereClause(X_ZZ_LI_HighestEducation.Table_Name + ".IsActive = 'Y'");
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] objs = (Object[]) obj;
+				if (objs == null || objs.length == 0 || objs[0] == null) {
+					return;
+				}
+				X_ZZ_LI_HighestEducation selected = null;
+				if (objs[0] instanceof Number) {
+					selected = new X_ZZ_LI_HighestEducation(Env.getCtx(), ((Number) objs[0]).intValue(), null);
+				} else if (objs[0] instanceof String) {
+					String val = (String) objs[0];
+					if (val.matches("\\d+")) {
+						selected = new X_ZZ_LI_HighestEducation(Env.getCtx(), Integer.parseInt(val), null);
+					} else {
+						selected = new Query(Env.getCtx(), X_ZZ_LI_HighestEducation.Table_Name,
+								X_ZZ_LI_HighestEducation.COLUMNNAME_ZZ_LI_HighestEducation_UU + "=?", null)
+								.setParameters(val)
+								.first();
 					}
-					X_ZZQualification_v selected = null;
-					if (objs[0] instanceof Number) {
-						selected = new X_ZZQualification_v(Env.getCtx(), ((Number) objs[0]).intValue(), null);
-					} else if (objs[0] instanceof String) {
-						String val = (String) objs[0];
-						if (val.matches("\\d+")) {
-							selected = new X_ZZQualification_v(Env.getCtx(), Integer.parseInt(val), null);
-						} else {
-							selected = new X_ZZQualification_v(Env.getCtx(), val, null);
-						}
+				}
+				if (selected != null) {
+					String qualName = selected.getName();
+					if (qualName == null || qualName.isBlank()) {
+						qualName = selected.getValue();
 					}
-					if (selected != null) {
-						String qualCode = selected.getZZSaqaQualificationCode();
-						String qualTitle = selected.getZZSaqaQualificationTitle();
-						cellModel.setValue(qualCode != null && !qualCode.isBlank() ? qualCode : qualTitle);
-						RowModel rm = cellModel.getRowModel();
-						if (rm.get(qualificationNameCol) != null) {
-							rm.get(qualificationNameCol).setValue(qualTitle);
-						}
+					cellModel.setValue(qualName);
+					BindUtils.postNotifyChange(null, null, cellModel, "value");
+					BindUtils.postNotifyChange(null, null, cellModel, "displayValue");
+					if (person != null && selected.getZZ_LI_HighestEducation_ID() > 0) {
+						person.setZZ_LI_HighestEducation_ID(selected.getZZ_LI_HighestEducation_ID());
 					}
-				});
+				}
+			});
 		});
 
 		qualificationCol.setDisplayAdaptHandle(value -> value != null ? value.toString() : null);
