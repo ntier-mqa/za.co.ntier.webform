@@ -852,6 +852,18 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		disabilityCol.setzClass(ValueNamePair.class).required();
 		disabilityCol.setDefaultValue(new ValueNamePair("N", "No"), (cell, item) -> "N".equals(item.getValue()));
 		disabilityCol.setEventHandle((event, cellModel) -> {
+			if (person != null && cellModel != null) {
+				Object val = cellModel.getValue();
+				boolean isYes = false;
+				if (val instanceof ValueNamePair) {
+					isYes = "Y".equalsIgnoreCase(((ValueNamePair) val).getValue());
+				} else if (val != null) {
+					isYes = "Y".equalsIgnoreCase(val.toString()) || "Yes".equalsIgnoreCase(val.toString());
+				}
+				if (person.get_ColumnIndex("ZZ_IsDisability") >= 0) {
+					person.set_ValueOfColumn("ZZ_IsDisability", isYes ? "Y" : "N");
+				}
+			}
 			updateDisabilityLetterMandatoryState();
 		});
 		cols.add(disabilityCol);
@@ -1058,14 +1070,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		super.doSave(trxName);
 
 		boolean disabilitySelected = isDisabilitySelected();
-		if (disabilitySelected) {
-			if (person.getZZ_LI_Disability_ID() <= 1000000) {
-				person.setZZ_LI_Disability_ID(1000008); // Disabled but unspecified
+		if (person != null) {
+			if (person.get_ColumnIndex("ZZ_IsDisability") >= 0) {
+				person.set_ValueOfColumn("ZZ_IsDisability", disabilitySelected ? "Y" : "N");
 			}
-		} else {
-			person.setZZ_LI_Disability_ID(1000000); // None
+			person.saveEx(trxName);
 		}
-		person.saveEx(trxName);
 
 		int alternateIdTypeId = person.getZZ_AlternateIDType_ID();
 		if (alternateIdTypeId > 0) {
@@ -1635,6 +1645,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_ExperianceWork);
 		expCols.add(experienceWorkCol);
 
+		ColumnModel natureOfWorkCol = CellModel.getColModelForText(
+				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
+						X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork),
+				X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork);
+		expCols.add(natureOfWorkCol);
+
 		ColumnModel expDateFromCol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
 						X_ZZ_ExperientialLearning.COLUMNNAME_DateFrom),
@@ -1646,12 +1662,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						X_ZZ_ExperientialLearning.COLUMNNAME_DateTo),
 				X_ZZ_ExperientialLearning.COLUMNNAME_DateTo);
 		expCols.add(expDateToCol);
-
-		ColumnModel natureOfWorkCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(X_ZZ_ExperientialLearning.Table_Name,
-						X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork),
-				X_ZZ_ExperientialLearning.COLUMNNAME_ZZ_NameWork);
-		expCols.add(natureOfWorkCol);
 
 		tmExperientialLearning = TableModel.getTableBean(TableModel.class, expCols, false,
 				X_ZZ_ExperientialLearning.Table_Name);
@@ -2534,6 +2544,46 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			uploadDetailTabPanel.getCompModel().clear();
 			uploadDetailTabPanel.getCompModel().add(tmDocumentUpload);
 		}
+
+		if (tmDocumentUpload != null && tmDocumentUpload.getRow() != null && targetRegistrationPo != null && targetRegistrationPo.get_ID() > 0) {
+			for (Map.Entry<ColumnModel, CellModel> entry : tmDocumentUpload.getRow().entrySet()) {
+				ColumnModel col = entry.getKey();
+				CellModel cell = entry.getValue();
+				if (cell instanceof UploadCellModel) {
+					UploadCellModel uCell = (UploadCellModel) cell;
+					String docTitle = col.getTitle();
+					String fileName = AttachmentUtil.getFileNameFromAttachmentEntries(targetRegistrationPo, docTitle, null);
+					if (fileName != null && !fileName.isBlank()) {
+						uCell.setFileName(fileName);
+					}
+				}
+			}
+		}
+	}
+
+	private boolean isPersonDisability(X_ZZPerson p) {
+		if (p == null) return false;
+		if (p.get_ColumnIndex("ZZ_IsDisability") >= 0) {
+			Object val = p.get_Value("ZZ_IsDisability");
+			if (val instanceof Boolean) {
+				return (Boolean) val;
+			} else if (val != null) {
+				String s = val.toString().trim();
+				if ("Y".equalsIgnoreCase(s) || "true".equalsIgnoreCase(s)) {
+					return true;
+				} else if ("N".equalsIgnoreCase(s) || "false".equalsIgnoreCase(s)) {
+					return false;
+				}
+			}
+		}
+		if (p.getZZPerson_ID() > 0) {
+			String flag = DB.getSQLValueString(p.get_TrxName(),
+					"SELECT ZZ_IsDisability FROM ZZPerson WHERE ZZPerson_ID = ?", p.getZZPerson_ID());
+			if (flag != null) {
+				return "Y".equalsIgnoreCase(flag.trim()) || "true".equalsIgnoreCase(flag.trim());
+			}
+		}
+		return false;
 	}
 
 	private boolean isDisabilitySelected() {
@@ -2550,10 +2600,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				}
 			}
 		}
-		if (person != null && person.getZZ_LI_Disability_ID() > 1000000) {
-			return true;
-		}
-		return false;
+		return isPersonDisability(person);
 	}
 
 	private void updateDisabilityLetterMandatoryState() {
@@ -2599,8 +2646,25 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			return;
 		}
 		CellModel cell = tmGeneralDetail.getRow().get(disabilityCol);
-		if (cell != null) {
-			boolean hasDisability = person != null && person.getZZ_LI_Disability_ID() > 1000000;
+		if (cell instanceof ListCellModel) {
+			@SuppressWarnings("unchecked")
+			ListCellModel<ValueNamePair> listCell = (ListCellModel<ValueNamePair>) cell;
+			boolean hasDisability = isPersonDisability(person);
+			String targetVal = hasDisability ? "Y" : "N";
+			listCell.setValue(targetVal);
+			if (listCell.getDataProvider() != null) {
+				for (ValueNamePair item : listCell.getDataProvider()) {
+					if (targetVal.equalsIgnoreCase(item.getValue())) {
+						listCell.getModel().clearSelection();
+						listCell.getModel().addToSelection(item);
+						break;
+					}
+				}
+			}
+			BindUtils.postNotifyChange(null, null, listCell, "selectedItem");
+			BindUtils.postNotifyChange(null, null, listCell, "value");
+		} else if (cell != null) {
+			boolean hasDisability = isPersonDisability(person);
 			ValueNamePair pair = hasDisability ? new ValueNamePair("Y", "Yes") : new ValueNamePair("N", "No");
 			cell.setValue(pair);
 			BindUtils.postNotifyChange(null, null, cell, "value");
@@ -2997,6 +3061,39 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	public TableModel getTmDocumentUpload() {
 		return tmDocumentUpload;
+	}
+
+	private List<String> getMissingMandatoryDocuments() {
+		List<String> missing = new ArrayList<>();
+		if (tmDocumentUpload != null && tmDocumentUpload.getRow() != null) {
+			boolean isDisabilityYes = isDisabilitySelected();
+			for (Map.Entry<ColumnModel, CellModel> entry : tmDocumentUpload.getRow().entrySet()) {
+				ColumnModel col = entry.getKey();
+				CellModel cell = entry.getValue();
+				boolean isDocMandatory = col.isMandatory();
+				if (col.getTitle() != null && col.getTitle().trim().equalsIgnoreCase("Doctor - Disability Letter")) {
+					isDocMandatory = isDisabilityYes;
+				}
+				if (isDocMandatory && cell instanceof UploadCellModel) {
+					UploadCellModel uCell = (UploadCellModel) cell;
+					if (!uCell.hasBytes() && (uCell.getFileName() == null || uCell.getFileName().isBlank())) {
+						missing.add(col.getTitle() != null ? col.getTitle() : "Document");
+					}
+				}
+			}
+		}
+		return missing;
+	}
+
+	@Command
+	@Override
+	public void submitApp() {
+		List<String> missingDocs = getMissingMandatoryDocuments();
+		if (!missingDocs.isEmpty()) {
+			MasterUtil.showInfoDialog("Please upload the following mandatory documents:\n• " + String.join("\n• ", missingDocs), null);
+			return;
+		}
+		super.submitApp();
 	}
 
 	@Override

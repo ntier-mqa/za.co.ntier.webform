@@ -435,6 +435,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 		BindUtils.postNotifyChange(null, null, this, "dgProgrammeActive");
 		BindUtils.postNotifyChange(null, null, this, "selectedDGProgramme");
 
+		updateDisabilityLetterMandatoryState();
 		BindUtils.postNotifyChange(null, null, this, "*");
 	}
 
@@ -2424,7 +2425,87 @@ public class LearnerQualficationRegVM extends StepAppVM
 
 	private boolean isDisabilitySelected()
 	{
-		return personSelected != null && personSelected.getZZ_LI_Disability_ID() > 1000000;
+		if (personSelected == null && learner != null && learner.getZZPerson_ID() > 0)
+		{
+			personSelected = new X_ZZPerson(Env.getCtx(), learner.getZZPerson_ID(), null);
+		}
+		if (personSelected == null)
+			return false;
+		if (personSelected.get_ColumnIndex("ZZ_IsDisability") >= 0)
+		{
+			Object val = personSelected.get_Value("ZZ_IsDisability");
+			if (val instanceof Boolean)
+				return (Boolean) val;
+			else if (val != null)
+			{
+				String s = val.toString().trim();
+				if ("Y".equalsIgnoreCase(s) || "true".equalsIgnoreCase(s))
+					return true;
+				else if ("N".equalsIgnoreCase(s) || "false".equalsIgnoreCase(s))
+					return false;
+			}
+		}
+		if (personSelected.getZZPerson_ID() > 0)
+		{
+			String flag = DB.getSQLValueString(personSelected.get_TrxName(),
+					"SELECT ZZ_IsDisability FROM ZZPerson WHERE ZZPerson_ID = ?", personSelected.getZZPerson_ID());
+			if (flag != null)
+			{
+				return "Y".equalsIgnoreCase(flag.trim()) || "true".equalsIgnoreCase(flag.trim());
+			}
+		}
+		return false;
+	}
+
+	private void updateDisabilityLetterMandatoryState()
+	{
+		boolean isDisabilityYes = isDisabilitySelected();
+		if (tmDGDocuments != null && tmDGDocuments.getRows() != null && dgDocumentNameCol != null && dgUploadCol != null)
+		{
+			for (RowModel row : tmDGDocuments.getRows())
+			{
+				CellModel nameCell = row.get(dgDocumentNameCol);
+				if (nameCell != null && nameCell.getValue() instanceof X_ZZRegistrationDocs)
+				{
+					X_ZZRegistrationDocs doc = (X_ZZRegistrationDocs) nameCell.getValue();
+					if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter"))
+					{
+						doc.setIsMandatory(isDisabilityYes);
+						CellModel uploadCell = row.get(dgUploadCol);
+						if (uploadCell instanceof UploadCellModel)
+						{
+							UploadCellModel uCell = (UploadCellModel) uploadCell;
+							uCell.setBtText(isDisabilityYes ? "Upload Document *" : "Upload Document");
+							BindUtils.postNotifyChange(null, null, uCell, "btText");
+						}
+					}
+				}
+			}
+			BindUtils.postNotifyChange(null, null, tmDGDocuments, "rows");
+		}
+		if (tmRegistrationDocuments != null && tmRegistrationDocuments.getRows() != null && regDocumentNameCol != null && regUploadCol != null)
+		{
+			for (RowModel row : tmRegistrationDocuments.getRows())
+			{
+				CellModel nameCell = row.get(regDocumentNameCol);
+				if (nameCell != null && nameCell.getValue() instanceof X_ZZRegistrationDocs)
+				{
+					X_ZZRegistrationDocs doc = (X_ZZRegistrationDocs) nameCell.getValue();
+					if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter"))
+					{
+						doc.setIsMandatory(isDisabilityYes);
+						CellModel uploadCell = row.get(regUploadCol);
+						if (uploadCell instanceof UploadCellModel)
+						{
+							UploadCellModel uCell = (UploadCellModel) uploadCell;
+							uCell.setBtText(isDisabilityYes ? "Upload Document *" : "Upload Document");
+							BindUtils.postNotifyChange(null, null, uCell, "btText");
+						}
+					}
+				}
+			}
+			BindUtils.postNotifyChange(null, null, tmRegistrationDocuments, "rows");
+		}
 	}
 
 	private List<String> getMissingMandatoryDocuments(	TableModel documentTable, ColumnModel documentNameColumn,
