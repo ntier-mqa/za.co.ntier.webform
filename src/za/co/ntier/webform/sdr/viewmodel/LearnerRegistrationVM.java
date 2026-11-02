@@ -16,6 +16,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.panel.RegistrationWindow;
+import org.compiere.model.I_AD_Menu;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
@@ -82,13 +83,17 @@ import za.co.ntier.webform.sdr.component.bean.ISaveForm;
 import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
+import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
+import za.co.ntier.webform.sdr.component.bean.TableModel.ViewType;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDTypeCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
+import za.co.ntier.webform.sdr.component.bean.cell.PresetTitleCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ValueAdaptCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
+import za.co.ntier.webform.sdr.component.bean.column.PresetTitleColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.UploadColumnModel;
 import za.co.ntier.webform.sdr.component.bean.column.ValueAdaptColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
@@ -112,6 +117,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	private TableModel tmContactableReference;
 	private TableModel tmEmploymentHistory;
 	private TableModel tmDocumentUpload;
+	private PresetTitleColumnModel<X_ZZRegistrationDocs> documentNameCol;
+	private UploadColumnModel documentUploadCol;
 	private NavTab mainTab;
 	X_ZZLearner learner;
 
@@ -2508,7 +2515,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 
 	private void initUploadDocument() {
-		List<ColumnModel> cols = new ArrayList<>();
 		int pmdId = selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0;
 		List<X_ZZRegistrationDocs> docUploads = loadRegistrationDocumentDefinitions(pmdId, true);
 
@@ -2528,25 +2534,11 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		boolean isDisabilityYes = isDisabilitySelected();
 		for (X_ZZRegistrationDocs doc : docUploads) {
-			String docName = doc.getName() != null ? doc.getName() : "Document";
-			boolean isMandatory = doc.isMandatory();
-			if (docName.trim().equalsIgnoreCase("Doctor - Disability Letter")) {
-				isMandatory = isDisabilityYes;
-				doc.setIsMandatory(isMandatory);
+			if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter")) {
+				doc.setIsMandatory(isDisabilityYes);
 			}
-			UploadColumnModel upCol = UploadCellModel.getUploadColumnModel(
-					docName,
-					null,
-					null,
-					isMandatory ? "Upload Document *" : "Upload Document");
-			upCol.setMandatory(isMandatory);
-			cols.add(upCol);
 		}
-
-		String targetTable = X_ZZLearnerDGProgramme.Table_Name;
-		tmDocumentUpload = TableModel.getTableBean(TableModel.class, cols, false, targetTable);
-		tmDocumentUpload.setDaoManage(daoManage);
-		tmDocumentUpload.init();
+		initDocumentUploadTable(docUploads);
 
 		if (uploadDetailTabPanel == null) {
 			uploadDetailTabPanel = new NavTabPanel(mainTab);
@@ -2557,20 +2549,40 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			uploadDetailTabPanel.getCompModel().add(tmDocumentUpload);
 		}
 
-		if (tmDocumentUpload != null && tmDocumentUpload.getRow() != null && targetRegistrationPo != null && targetRegistrationPo.get_ID() > 0) {
-			for (Map.Entry<ColumnModel, CellModel> entry : tmDocumentUpload.getRow().entrySet()) {
-				ColumnModel col = entry.getKey();
-				CellModel cell = entry.getValue();
-				if (cell instanceof UploadCellModel) {
-					UploadCellModel uCell = (UploadCellModel) cell;
-					String docTitle = col.getTitle();
-					String fileName = AttachmentUtil.getFileNameFromAttachmentEntries(targetRegistrationPo, docTitle, null);
-					if (fileName != null && !fileName.isBlank()) {
-						uCell.setFileName(fileName);
-					}
+		if (targetRegistrationPo != null && targetRegistrationPo.get_ID() > 0) {
+			for (RowModel row : tmDocumentUpload.getRows()) {
+				X_ZZRegistrationDocs doc = getUploadDocument(row);
+				String fileName = AttachmentUtil.getFileNameFromAttachmentEntries(targetRegistrationPo, doc.getName(), null);
+				if (fileName != null && !fileName.isBlank()) {
+					((UploadCellModel) row.get(documentUploadCol)).setFileName(fileName);
 				}
 			}
 		}
+	}
+
+	private void initDocumentUploadTable(List<X_ZZRegistrationDocs> documents) {
+		documentNameCol = PresetTitleCellModel.getPresetTitleColumnModel(
+				MasterUtil.getNameOfColTranslated(I_ZZRegistrationDocs.Table_Name, I_ZZRegistrationDocs.COLUMNNAME_Name),
+				doc -> doc != null ? doc.getName() + (doc.isMandatory() ? " *" : "") : "");
+		documentUploadCol = UploadCellModel.getUploadColumnModel(
+				MasterUtil.getNameOfColTranslated(I_AD_Menu.Table_Name, I_AD_Menu.COLUMNNAME_Action),
+				null, null, "Upload Document");
+		documentUploadCol.setRefDocUploadDefCol(documentNameCol);
+
+		tmDocumentUpload = TableModel.getTableBean(TableModel.class,
+				List.of(documentNameCol, documentUploadCol), false, I_ZZRegistrationDocs.Table_Name);
+		tmDocumentUpload.setViewModel(ViewType.VIEW_GRID);
+		tmDocumentUpload.setSclass("srd-dg-documents");
+		tmDocumentUpload.setCreateNewRowWhenEmpty(false);
+		List<Map<ColumnModel, Object>> rowTitles = new ArrayList<>();
+		for (X_ZZRegistrationDocs doc : documents) {
+			rowTitles.add(Map.of(documentNameCol, doc));
+		}
+		tmDocumentUpload.init(null, TitleInfo.createTitleInfo(rowTitles));
+	}
+
+	private X_ZZRegistrationDocs getUploadDocument(RowModel row) {
+		return (X_ZZRegistrationDocs) row.get(documentNameCol).getValue();
 	}
 
 	private boolean isPersonDisability(X_ZZPerson p) {
@@ -2616,41 +2628,17 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	}
 
 	private void updateDisabilityLetterMandatoryState() {
+		if (tmDocumentUpload == null)
+			return;
+
 		boolean isDisabilityYes = isDisabilitySelected();
-		if (tmDocumentUpload != null) {
-			if (tmDocumentUpload.getRow() != null) {
-				for (Map.Entry<ColumnModel, CellModel> entry : tmDocumentUpload.getRow().entrySet()) {
-					ColumnModel col = entry.getKey();
-					if (col.getTitle() != null && col.getTitle().trim().equalsIgnoreCase("Doctor - Disability Letter")) {
-						col.setMandatory(isDisabilityYes);
-						CellModel cell = entry.getValue();
-						if (cell instanceof UploadCellModel) {
-							UploadCellModel uCell = (UploadCellModel) cell;
-							uCell.setBtText(isDisabilityYes ? "Upload Document *" : "Upload Document");
-							BindUtils.postNotifyChange(null, null, uCell, "btText");
-						}
-					}
-				}
+		for (RowModel row : tmDocumentUpload.getRows()) {
+			X_ZZRegistrationDocs doc = getUploadDocument(row);
+			if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter")) {
+				doc.setIsMandatory(isDisabilityYes);
 			}
-			if (tmDocumentUpload.getRows() != null) {
-				for (RowModel row : tmDocumentUpload.getRows()) {
-					for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
-						ColumnModel col = entry.getKey();
-						if (col.getTitle() != null && col.getTitle().trim().equalsIgnoreCase("Doctor - Disability Letter")) {
-							col.setMandatory(isDisabilityYes);
-							CellModel cell = entry.getValue();
-							if (cell instanceof UploadCellModel) {
-								UploadCellModel uCell = (UploadCellModel) cell;
-								uCell.setBtText(isDisabilityYes ? "Upload Document *" : "Upload Document");
-								BindUtils.postNotifyChange(null, null, uCell, "btText");
-							}
-						}
-					}
-				}
-			}
-			BindUtils.postNotifyChange(null, null, tmDocumentUpload, "row");
-			BindUtils.postNotifyChange(null, null, tmDocumentUpload, "rows");
 		}
+		BindUtils.postNotifyChange(null, null, tmDocumentUpload, "rows");
 	}
 
 	private void populateDisabilityFromPerson() {
@@ -2930,21 +2918,23 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			targetChildPo = qualPo;
 		}
 
-		if (tmDocumentUpload != null && tmDocumentUpload.getRow() != null) {
-			for (Map.Entry<ColumnModel, CellModel> entry : tmDocumentUpload.getRow().entrySet()) {
-				CellModel cell = entry.getValue();
-				if (cell instanceof UploadCellModel) {
-					UploadCellModel uCell = (UploadCellModel) cell;
-					byte[] bytes = uCell.getBytes();
-					String fileName = uCell.getFileName();
-					String docTitle = entry.getKey().getTitle();
-					if (bytes != null && bytes.length > 0 && fileName != null && !fileName.isBlank()) {
-						AttachmentUtil.addOrReplaceAttachmentEntry(dg, fileName, bytes, docTitle, trxName);
-						uCell.setBytes(null);
-					} else if (fileName == null || fileName.isBlank()) {
-						AttachmentUtil.removeAttachmentEntry(dg, docTitle, trxName);
-					}
-				}
+		saveRegistrationDocuments(dg, trxName);
+	}
+
+	private void saveRegistrationDocuments(PO target, String trxName) {
+		if (tmDocumentUpload == null)
+			return;
+
+		for (RowModel row : tmDocumentUpload.getRows()) {
+			UploadCellModel cell = (UploadCellModel) row.get(documentUploadCol);
+			String docTitle = getUploadDocument(row).getName();
+			byte[] bytes = cell.getBytes();
+			String fileName = cell.getFileName();
+			if (bytes != null && bytes.length > 0 && fileName != null && !fileName.isBlank()) {
+				AttachmentUtil.addOrReplaceAttachmentEntry(target, fileName, bytes, docTitle, trxName);
+				cell.setBytes(null);
+			} else if (fileName == null || fileName.isBlank()) {
+				AttachmentUtil.removeAttachmentEntry(target, docTitle, trxName);
 			}
 		}
 	}
@@ -3094,21 +3084,19 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	private List<String> getMissingMandatoryDocuments() {
 		List<String> missing = new ArrayList<>();
-		if (tmDocumentUpload != null && tmDocumentUpload.getRow() != null) {
-			boolean isDisabilityYes = isDisabilitySelected();
-			for (Map.Entry<ColumnModel, CellModel> entry : tmDocumentUpload.getRow().entrySet()) {
-				ColumnModel col = entry.getKey();
-				CellModel cell = entry.getValue();
-				boolean isDocMandatory = col.isMandatory();
-				if (col.getTitle() != null && col.getTitle().trim().equalsIgnoreCase("Doctor - Disability Letter")) {
-					isDocMandatory = isDisabilityYes;
-				}
-				if (isDocMandatory && cell instanceof UploadCellModel) {
-					UploadCellModel uCell = (UploadCellModel) cell;
-					if (!uCell.hasBytes() && (uCell.getFileName() == null || uCell.getFileName().isBlank())) {
-						missing.add(col.getTitle() != null ? col.getTitle() : "Document");
-					}
-				}
+		if (tmDocumentUpload == null)
+			return missing;
+
+		boolean isDisabilityYes = isDisabilitySelected();
+		for (RowModel row : tmDocumentUpload.getRows()) {
+			X_ZZRegistrationDocs doc = getUploadDocument(row);
+			boolean isDocMandatory = doc.isMandatory();
+			if (doc.getName() != null && doc.getName().trim().equalsIgnoreCase("Doctor - Disability Letter")) {
+				isDocMandatory = isDisabilityYes;
+			}
+			UploadCellModel cell = (UploadCellModel) row.get(documentUploadCol);
+			if (isDocMandatory && !cell.hasBytes() && (cell.getFileName() == null || cell.getFileName().isBlank())) {
+				missing.add(doc.getName() != null ? doc.getName() : "Document");
 			}
 		}
 		return missing;
