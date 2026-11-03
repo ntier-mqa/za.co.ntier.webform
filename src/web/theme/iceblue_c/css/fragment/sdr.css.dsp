@@ -844,11 +844,13 @@
 }
 
 .mqaWebForm .allocation-offer-form .allocation-readonly,
-.mqaWebForm .allocation-offer-form .allocation-radio-options {
+.mqaWebForm .allocation-offer-form .allocation-radio-options,
+.mqaWebForm .learner-change-request .request-readonly {
   padding: 10px;
 }
 
-.mqaWebForm .allocation-offer-form .allocation-notice {
+.mqaWebForm .allocation-offer-form .allocation-notice,
+.mqaWebForm .learner-change-request .request-notice {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -872,14 +874,16 @@
   white-space: pre-wrap;
 }
 
-.mqaWebForm .allocation-offer-form .allocation-error {
+.mqaWebForm .allocation-offer-form .allocation-error,
+.mqaWebForm .learner-change-request .request-error {
   border-color: #b3261e;
   color: #92221c;
   background: #fff4f3;
 }
 
 .mqaWebForm .allocation-offer-form .allocation-success,
-.mqaWebForm .allocation-offer-form .allocation-total {
+.mqaWebForm .allocation-offer-form .allocation-total,
+.mqaWebForm .learner-change-request .request-success {
   border-color: var(--mqa-green);
   background: #f1f8f2;
 }
@@ -924,8 +928,24 @@
   overflow-y: auto;
 }
 
+.mqaWebForm .learner-change-request .grid-formview.two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mqaWebForm .learner-change-request .request-reason.z-textbox {
+  height: auto;
+  min-height: 120px;
+  resize: vertical;
+}
+
+.mqaWebForm .learner-change-request .formBottomPanel {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 @media (max-width: 700px) {
-  .mqaWebForm .allocation-offer-form .grid-formview.two-col {
+  .mqaWebForm .allocation-offer-form .grid-formview.two-col,
+  .mqaWebForm .learner-change-request .grid-formview.two-col {
     grid-template-columns: minmax(0, 1fr);
   }
 }

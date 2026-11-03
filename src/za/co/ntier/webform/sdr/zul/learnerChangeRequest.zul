@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idspace sclass="sdrForm learner-change-request"
+    viewModel="@id('vm') @init('za.co.ntier.webform.sdr.viewmodel.LearnerChangeRequestVM')">
+  <label sclass="formHeader" value="Learner Registration Change Request" />
+  <div sclass="sectionSeparator">
+    <label value="Select the request type, organisation, programme and learner." />
+  </div>
+
+  <label sclass="request-notice request-error" visible="@load(!empty vm.validationMessage)" value="@load(vm.validationMessage)" />
+  <label sclass="request-notice" visible="@load(empty vm.organisations and !vm.unavailable)"
+      value="Your account has no linked organisation. Contact your administrator to link your employer or training provider." />
+
+  <div visible="@load(!empty vm.organisations and !vm.unavailable)">
+    <div sclass="sectionHeader"><label sclass="sectionHeaderTitle" value="Request Details" /></div>
+    <div sclass="grid-formview two-col">
+      <div sclass="cell cellType3">
+        <div sclass="cell-title"><label sclass="label" value="Request Type" /></div>
+        <div sclass="cell-content">
+          <listbox mold="select" width="100%" disabled="@load(vm.confirmationPending)"
+              onSelect="@command('selectRequestType', type=self.selectedItem.value)">
+            <listitem label="Termination" value="TE" selected="true" />
+            <listitem label="Transfer" value="TR" />
+            <listitem label="Replacement" value="RP" />
+            <listitem label="Extension" value="EX" />
+          </listbox>
+        </div>
+      </div>
+      <div sclass="cell cellType3">
+        <div sclass="cell-title"><label sclass="label" value="@load(vm.labels.organisation)" /></div>
+        <div sclass="cell-content">
+          <listbox mold="select" width="100%" model="@load(vm.organisations)"
+              selectedItem="@load(vm.organisation)" disabled="@load(vm.selectionLocked)"
+              onSelect="@command('selectOrganisation', organisation=self.selectedItem.value)">
+            <template name="model" var="org">
+              <listitem label="@load(org.name)" value="@load(org)" />
+            </template>
+          </listbox>
+        </div>
+        <label sclass="help-error" visible="@load(!empty vm.fieldErrors.organisation)" value="@load(vm.fieldErrors.organisation)" />
+      </div>
+      <div sclass="cell cellType3">
+        <div sclass="cell-title"><label sclass="label" value="@load(vm.labels.programme)" /></div>
+        <div sclass="cell-content">
+          <listbox mold="select" width="100%" model="@load(vm.programmes)"
+              selectedItem="@load(vm.programme)" disabled="@load(vm.selectionLocked or empty vm.programmes)"
+              onSelect="@command('selectProgramme', programme=self.selectedItem.value)">
+            <template name="model" var="prog">
+              <listitem label="@load(vm.getProgrammeName(prog))" value="@load(prog)" />
+            </template>
+          </listbox>
+        </div>
+        <label sclass="help-error" visible="@load(!empty vm.fieldErrors.programme)" value="@load(vm.fieldErrors.programme)" />
+      </div>
+      <div sclass="cell" visible="@load(vm.programme ne null and vm.learner eq null)">
+        <div sclass="cell-title"><label sclass="label" value="Registered Learners" /></div>
+        <div sclass="cell-content request-readonly"><label value="@load(vm.learnerCount)" /></div>
+      </div>
+    </div>
+    <label sclass="request-notice" visible="@load(vm.organisation ne null and empty vm.programmes)"
+        value="No programmes with registered learners are available for this organisation." />
+
+    <label sclass="request-notice" visible="@load(!vm.terminationRequest)"
+        value="This request type is not available yet." />
+
+    <div visible="@load(vm.programme ne null and vm.terminationRequest)">
+      <div sclass="sectionHeader"><label sclass="sectionHeaderTitle" value="Learner Verification" /></div>
+      <div sclass="grid-formview two-col">
+        <div sclass="cell cellType15">
+          <div sclass="cell-title"><label sclass="label" value="@load(vm.labels.identity)" /></div>
+          <div sclass="cell-content">
+            <textbox value="@bind(vm.identityNumber)" readonly="@load(vm.selectionLocked)"
+                onOK="@command('searchLearner')" />
+            <button label="Find Learner" tooltiptext="Find Learner"
+                iconSclass="z-icon-fw z-icon-magnifying-glass z-icon-solid" onClick="@command('searchLearner')"
+                visible="@load(vm.learner eq null)" />
+          </div>
+          <label sclass="help-error" visible="@load(!empty vm.fieldErrors.identity)" value="@load(vm.fieldErrors.identity)" />
+        </div>
+        <div sclass="cell" visible="@load(vm.learner ne null)">
+          <div sclass="cell-title"><label sclass="label" value="@load(vm.labels.learner)" /></div>
+          <div sclass="cell-content request-readonly">
+            <label value="@load(vm.learnerName)" />
+          </div>
+        </div>
+      </div>
+
+      <div visible="@load(vm.learner ne null)">
+        <div sclass="grid-formview two-col" visible="@load(vm.viewingRequest)">
+          <div sclass="cell">
+            <div sclass="cell-title"><label sclass="label" value="@load(vm.labels.reference)" /></div>
+            <div sclass="cell-content request-readonly"><label value="@load(vm.referenceNumber)" /></div>
+          </div>
+          <div sclass="cell">
+            <div sclass="cell-title"><label sclass="label" value="@load(vm.labels.status)" /></div>
+            <div sclass="cell-content request-readonly"><label value="@load(vm.statusLabel)" /></div>
+          </div>
+        </div>
+
+        <div sclass="sectionHeader"><label sclass="sectionHeaderTitle" value="Termination Details" /></div>
+        <div sclass="grid-formview one-col">
+          <div sclass="cell">
+            <div sclass="cell-content checkboxContent">
+              <checkbox label="I confirm that these are the correct learner and programme details."
+                  checked="@bind(vm.learnerConfirmed)" disabled="@load(!vm.editable or vm.confirmationPending)" />
+            </div>
+            <label sclass="help-error" visible="@load(!empty vm.fieldErrors.confirmation)" value="@load(vm.fieldErrors.confirmation)" />
+          </div>
+          <div sclass="cell cellType2">
+            <div sclass="cell-title">
+              <label sclass="label" value="@load(vm.labels.reason)" />
+              <label sclass="required" value="*" />
+            </div>
+            <div sclass="cell-content">
+              <textbox sclass="request-reason" value="@bind(vm.reason)" multiline="true" rows="5" width="100%"
+                  maxlength="@load(vm.reasonMaxLength)" readonly="@load(!vm.editable or vm.confirmationPending)" />
+              <label sclass="help-error" visible="@load(!empty vm.fieldErrors.reason)" value="@load(vm.fieldErrors.reason)" />
+              <label sclass="help-text" value="Explain why this learner's registration should be terminated. Required before submission." />
+            </div>
+          </div>
+        </div>
+        <label sclass="request-notice" value="MQA must approve this request before the learner's registration is terminated."
+            visible="@load(vm.editable)" />
+        <label sclass="request-notice" value="This request is read-only while MQA processes it."
+            visible="@load(!vm.editable)" />
+        <label sclass="request-notice request-success" visible="@load(!empty vm.feedbackMessage)" value="@load(vm.feedbackMessage)" />
+        <div sclass="formBottomPanel">
+          <button label="Change Learner / Programme" iconSclass="z-icon-arrow-left" onClick="@command('changeSelection')"
+              disabled="@load(vm.confirmationPending)" />
+          <button label="Save Draft" sclass="icon-on-right" iconSclass="z-icon-floppy-disk" onClick="@command('saveDraft')"
+              visible="@load(vm.editable)" disabled="@load(vm.confirmationPending)" />
+          <button label="Submit Termination Request" sclass="icon-on-right" iconSclass="z-icon-gear" onClick="@command('submitRequest')"
+              visible="@load(vm.editable)" disabled="@load(vm.confirmationPending)" />
+        </div>
+      </div>
+    </div>
+  </div>
+</idspace>
