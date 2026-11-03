@@ -1551,6 +1551,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					cellModel.setValue(qualName);
 					BindUtils.postNotifyChange(null, null, cellModel, "value");
 					BindUtils.postNotifyChange(null, null, cellModel, "displayValue");
+					RowModel rm = cellModel.getRowModel();
+					if (rm != null && rm.get(qualificationNameCol) != null) {
+						CellModel qualNameCell = rm.get(qualificationNameCol);
+						qualNameCell.setValue(qualName);
+						BindUtils.postNotifyChange(null, null, qualNameCell, "value");
+						BindUtils.postNotifyChange(null, null, qualNameCell, "displayValue");
+					}
 					if (person != null && selected.getZZ_LI_HighestEducation_ID() > 0) {
 						person.setZZ_LI_HighestEducation_ID(selected.getZZ_LI_HighestEducation_ID());
 					}
@@ -1642,6 +1649,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						.setParameters(learner.getZZLearner_ID())
 						.setOnlyActiveRecords(true)
 						.firstOnly();
+				if (ps != null && (ps.getName() == null || ps.getName().isBlank()) && ps.getQualification() != null && !ps.getQualification().isBlank()) {
+					ps.setName(ps.getQualification());
+				}
 				tm.getRow().setDataOneRow(ps);
 			} else {
 				tm.getRow().setDataOneRow(null);
@@ -1764,8 +1774,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		X_ZZLearnerDGProgramme dg = null;
 		if (pmdId > 0) {
-			dg = new Query(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name, "ZZLearner_ID = ? AND ZZ_Program_Master_Data_ID = ?", null)
-					.setParameters(learnerId, pmdId)
+			dg = new Query(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name, "ZZLearner_ID = ? AND (ZZ_Program_Master_Data_ID = ? OR ZZ_DGProgram_ID = ?)", null)
+					.setParameters(learnerId, pmdId, pmdId)
 					.setOnlyActiveRecords(true)
 					.setOrderBy("ZZLearnerDGProgramme_ID DESC")
 					.first();
@@ -1780,8 +1790,14 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		if (dg != null) {
 			targetRegistrationPo = dg;
 			daoManage.setDao(dg);
-			if (selectedDGProgramme == null && dg.getZZ_Program_Master_Data_ID() > 0) {
-				loadDGProgramme(dg.getZZ_Program_Master_Data_ID());
+			if (selectedDGProgramme == null) {
+				int dgProgId = dg.getZZ_DGProgram_ID();
+				if (dgProgId <= 0) {
+					dgProgId = dg.getZZ_Program_Master_Data_ID();
+				}
+				if (dgProgId > 0) {
+					loadDGProgramme(dgProgId);
+				}
 			}
 		} else {
 			targetRegistrationPo = null;
@@ -1828,6 +1844,28 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					}
 				}
 				break;
+			}
+		}
+
+		if (selectedQualification == null && dg != null && dg.getzzlearnerprogram_id() != null && !dg.getzzlearnerprogram_id().isBlank()) {
+			try {
+				int progId = Integer.parseInt(dg.getzzlearnerprogram_id().trim());
+				if (progId > 0) {
+					String type = dg.getZZProgramType() != null && !dg.getZZProgramType().isBlank() ? dg.getZZProgramType() : selectedInterventionType;
+					InterventionConfig cfg = getInterventionConfig(type);
+					if (cfg != null && cfg.programmeLoader != null) {
+						selectedQualification = cfg.programmeLoader.apply(progId);
+						if (selectedQualification != null) {
+							if (selectedInterventionType == null || selectedInterventionType.isBlank()) {
+								selectedInterventionType = cfg.displayName;
+							}
+							Object code = selectedQualification.get_Value(cfg.programmeCodeColumn);
+							Object title = selectedQualification.get_Value(cfg.programmeTitleColumn);
+							selectedQualificationTitle = (code != null ? code.toString() : "") + " - " + (title != null ? title.toString() : "");
+						}
+					}
+				}
+			} catch (Exception ignored) {
 			}
 		}
 	}
@@ -2757,8 +2795,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			dg = (X_ZZLearnerDGProgramme) targetRegistrationPo;
 		}
 		if (dg == null && learnerId > 0 && pmdId > 0) {
-			dg = new Query(Env.getCtx(), tableName, "ZZLearner_ID = ? AND ZZ_Program_Master_Data_ID = ?", trxName)
-					.setParameters(learnerId, pmdId)
+			dg = new Query(Env.getCtx(), tableName, "ZZLearner_ID = ? AND (ZZ_Program_Master_Data_ID = ? OR ZZ_DGProgram_ID = ?)", trxName)
+					.setParameters(learnerId, pmdId, pmdId)
 					.setOnlyActiveRecords(true)
 					.setOrderBy("ZZLearnerDGProgramme_ID DESC")
 					.first();
@@ -2780,6 +2818,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		dg.setZZLearner_ID(learnerId);
 		if (pmdId > 0) {
 			dg.setZZ_Program_Master_Data_ID(pmdId);
+			dg.setZZ_DGProgram_ID(pmdId);
 		}
 
 		RowModel row = tmRegistration.getRow();
@@ -2839,84 +2878,102 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
+		// When DG Program and Qualification is set, set Program type, Program ID, Program code, Program Title
+		if (selectedQualification != null) {
+			// 1. Program Type
+			String progType = selectedInterventionType;
+			if ("Learnerships".equalsIgnoreCase(progType)) {
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_Learnership;
+			} else if ("QCTO Learnerships".equalsIgnoreCase(progType)) {
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOLearnership;
+			} else if ("QCTO Artisans".equalsIgnoreCase(progType) || "Artisans".equalsIgnoreCase(progType)) {
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOArtisans;
+			} else if ("QCTO Skills Programme".equalsIgnoreCase(progType) || "QCTO Skills Programmes".equalsIgnoreCase(progType)) {
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOSkillsProgramme;
+			} else if ("Skills Programme".equalsIgnoreCase(progType) || "Skills Programmes".equalsIgnoreCase(progType)) {
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_SkillsProgramme;
+			}
+			if (progType != null && !progType.isBlank()) {
+				dg.setZZProgramType(progType);
+			}
+
+			// 2. Program ID
+			int qualProgId = selectedQualification.get_ID();
+			if (qualProgId > 0) {
+				dg.setzzlearnerprogram_id(String.valueOf(qualProgId));
+			}
+
+			// 3. Program Code
+			InterventionConfig config = getInterventionConfig(selectedInterventionType);
+			String progCode = null;
+			if (config != null && config.programmeCodeColumn != null) {
+				Object c = selectedQualification.get_Value(config.programmeCodeColumn);
+				if (c != null) {
+					progCode = c.toString().trim();
+				}
+			}
+			if (progCode == null || progCode.isBlank()) {
+				if (selectedQualification.get_ColumnIndex("Value") >= 0) {
+					progCode = selectedQualification.get_ValueAsString("Value");
+				} else if (selectedQualification.get_ColumnIndex("ZZ_Saqa_ID") >= 0) {
+					progCode = selectedQualification.get_ValueAsString("ZZ_Saqa_ID");
+				} else if (selectedQualification.get_ColumnIndex("ZZ_Code") >= 0) {
+					progCode = selectedQualification.get_ValueAsString("ZZ_Code");
+				}
+			}
+			if (progCode != null && !progCode.isBlank()) {
+				dg.setZZProgramCode(progCode);
+			}
+
+			// 4. Program Title
+			String progTitle = null;
+			if (config != null && config.programmeTitleColumn != null) {
+				Object t = selectedQualification.get_Value(config.programmeTitleColumn);
+				if (t != null) {
+					progTitle = t.toString().trim();
+				}
+			}
+			if (progTitle == null || progTitle.isBlank()) {
+				if (selectedQualification.get_ColumnIndex("Name") >= 0) {
+					progTitle = selectedQualification.get_ValueAsString("Name");
+				} else if (selectedQualification.get_ColumnIndex("Description") >= 0) {
+					progTitle = selectedQualification.get_ValueAsString("Description");
+				} else if (selectedQualificationTitle != null && !selectedQualificationTitle.isBlank()) {
+					progTitle = selectedQualificationTitle;
+				}
+			}
+			if (progTitle != null && !progTitle.isBlank()) {
+				dg.setZZProgramTitle(progTitle);
+			}
+		} else if (selectedDGProgramme != null) {
+			// If DG Program is only present, DG Program ID is saved in ZZ_DGProgram_ID column (and ZZ_Program_Master_Data_ID)
+			if (pmdId > 0) {
+				dg.setZZ_DGProgram_ID(pmdId);
+				dg.setZZ_Program_Master_Data_ID(pmdId);
+			}
+			if (selectedDGProgrammeTitle != null && !selectedDGProgrammeTitle.isBlank()) {
+				if (dg.getZZProgramTitle() == null || dg.getZZProgramTitle().isBlank()) {
+					dg.setZZProgramTitle(selectedDGProgrammeTitle);
+				}
+			}
+			if (selectedDGProgramme.getDocumentNo() != null && !selectedDGProgramme.getDocumentNo().isBlank()) {
+				if (dg.getZZProgramCode() == null || dg.getZZProgramCode().isBlank()) {
+					dg.setZZProgramCode(selectedDGProgramme.getDocumentNo());
+				}
+			}
+		}
+
 		String currentDocStatus = dg.getZZ_DocStatus();
 		if (Util.isEmpty(currentDocStatus)) {
-			dg.setZZ_DocStatus(X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
+			dg.setZZ_DocStatus(X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Created);
 		}
 
 		if (dg.get_ColumnIndex("ZZ_IsDisability") >= 0) {
-			dg.setZZ_IsDisability(isDisabilitySelected());
+			safeSetPOValue(dg, "ZZ_IsDisability", isDisabilitySelected());
 		}
 		dg.saveEx(trxName);
 		targetRegistrationPo = dg;
-
-		// Save into Qualification table as well (ensuring data is saved on both Program DG and Qualification)
-		InterventionConfig config = getInterventionConfig(selectedInterventionType);
-		if (config != null) {
-			PO qualPo = targetChildPo;
-			if (qualPo == null && selectedQualification != null && config.learnerProgrammeColumn != null && !config.learnerProgrammeColumn.isBlank()) {
-				qualPo = new Query(Env.getCtx(), config.learnerTable, "ZZLearner_ID = ? AND " + config.learnerProgrammeColumn + " = ?", trxName)
-						.setParameters(learnerId, selectedQualification.get_ID())
-						.setOnlyActiveRecords(true)
-						.setOrderBy(config.learnerTable + "_ID DESC")
-						.first();
-			}
-			if (qualPo == null && pmdId > 0 && MTable.get(Env.getCtx(), config.learnerTable).getColumn("ZZ_Program_Master_Data_ID") != null) {
-				qualPo = new Query(Env.getCtx(), config.learnerTable, "ZZLearner_ID = ? AND ZZ_Program_Master_Data_ID = ?", trxName)
-						.setParameters(learnerId, pmdId)
-						.setOnlyActiveRecords(true)
-						.setOrderBy(config.learnerTable + "_ID DESC")
-						.first();
-			}
-			if (qualPo == null) {
-				qualPo = MTable.get(Env.getCtx(), config.learnerTable).getPO(0, trxName);
-			} else if (trxName != null) {
-				qualPo.set_TrxName(trxName);
-			}
-
-			safeSetPOValue(qualPo, "ZZLearner_ID", learnerId);
-			if (selectedQualification != null && config.learnerProgrammeColumn != null) {
-				safeSetPOValue(qualPo, config.learnerProgrammeColumn, selectedQualification.get_ID());
-			}
-			if (pmdId > 0) {
-				safeSetPOValue(qualPo, "ZZ_Program_Master_Data_ID", pmdId);
-			}
-			if (dg.getZZ_SDP_ID() > 0) {
-				safeSetPOValue(qualPo, "ZZ_SDP_ID", dg.getZZ_SDP_ID());
-			}
-			if (dg.getZZ_Employer_ID() > 0) {
-				safeSetPOValue(qualPo, "ZZ_Employer_ID", dg.getZZ_Employer_ID());
-			}
-			if (dg.getZZStudentNumber() != null) {
-				safeSetPOValue(qualPo, "ZZStudentNumber", dg.getZZStudentNumber());
-			}
-			if (dg.getZZFundingType() != null) {
-				safeSetPOValue(qualPo, "ZZFundingType", dg.getZZFundingType());
-			}
-			if (dg.getZZCommencementDate() != null) {
-				safeSetPOValue(qualPo, "ZZCommencementDate", dg.getZZCommencementDate());
-			}
-			if (dg.getZZCompletionDate() != null) {
-				safeSetPOValue(qualPo, "ZZCompletionDate", dg.getZZCompletionDate());
-			}
-			if (dg.getZZFinancialYear_ID() > 0) {
-				safeSetPOValue(qualPo, "ZZFinancialYear_ID", dg.getZZFinancialYear_ID());
-			}
-			if (dg.getZZContractNumber() != null) {
-				safeSetPOValue(qualPo, "ZZContractNumber", dg.getZZContractNumber());
-			}
-			if (dg.getZZAgreementReferenceNumber() != null) {
-				safeSetPOValue(qualPo, "ZZAgreementReferenceNumber", dg.getZZAgreementReferenceNumber());
-			}
-			if (qualPo.get_ColumnIndex("ZZ_DocStatus") >= 0) {
-				String qStatus = qualPo.get_ValueAsString("ZZ_DocStatus");
-				if (Util.isEmpty(qStatus)) {
-					safeSetPOValue(qualPo, "ZZ_DocStatus", X_ZZLearner.ZZ_DOCSTATUS_Draft);
-				}
-			}
-			qualPo.saveEx(trxName);
-			targetChildPo = qualPo;
-		}
+		targetChildPo = null;
 
 		saveRegistrationDocuments(dg, trxName);
 	}

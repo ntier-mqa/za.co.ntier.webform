@@ -2765,6 +2765,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			if (selectedDGProgramme != null)
 			{
 				dg.setZZ_Program_Master_Data_ID(selectedDGProgramme.getZZ_Program_Master_Data_ID());
+				dg.setZZ_DGProgram_ID(selectedDGProgramme.getZZ_Program_Master_Data_ID());
 			}
 		}
 		else if (trxName != null)
@@ -2889,6 +2890,55 @@ public class LearnerQualficationRegVM extends StepAppVM
 			}
 		}
 
+		if (selectedDGProgramme != null)
+		{
+			int pmdId = selectedDGProgramme.getZZ_Program_Master_Data_ID();
+			if (pmdId > 0)
+			{
+				dg.setZZ_Program_Master_Data_ID(pmdId);
+				dg.setZZ_DGProgram_ID(pmdId);
+			}
+		}
+
+		if (selectedIntervention != null)
+		{
+			String progType = selectedIntervention.getName();
+			if ("Learnerships".equalsIgnoreCase(progType))
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_Learnership;
+			else if ("QCTO Learnerships".equalsIgnoreCase(progType))
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOLearnership;
+			else if ("QCTO Artisans".equalsIgnoreCase(progType) || "Artisans".equalsIgnoreCase(progType))
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOArtisans;
+			else if ("QCTO Skills Programme".equalsIgnoreCase(progType) || "QCTO Skills Programmes".equalsIgnoreCase(progType))
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOSkillsProgramme;
+			else if ("Skills Programme".equalsIgnoreCase(progType) || "Skills Programmes".equalsIgnoreCase(progType))
+				progType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_SkillsProgramme;
+			if (progType != null && !progType.isBlank())
+				dg.setZZProgramType(progType);
+		}
+		InterventionConfig qualConfig = selectedIntervention != null ? getInterventionConfig(selectedIntervention.getValue()) : null;
+		if (qualConfig != null && tmRegistration != null && tmRegistration.getRow() != null)
+		{
+			PO draftPo = tmRegistration.getRow().getRowData() != null
+					? tmRegistration.getRow().getRowData().getDataNullable(qualConfig.learnerTable)
+					: null;
+			int qualProgId = draftPo != null ? draftPo.get_ValueAsInt(qualConfig.learnerProgrammeColumn) : 0;
+			if (qualProgId > 0)
+			{
+				dg.setzzlearnerprogram_id(String.valueOf(qualProgId));
+				PO qualPo = qualConfig.programmeLoader != null ? qualConfig.programmeLoader.apply(qualProgId) : null;
+				if (qualPo != null)
+				{
+					Object c = qualPo.get_Value(qualConfig.programmeCodeColumn);
+					if (c != null && !c.toString().isBlank())
+						dg.setZZProgramCode(c.toString().trim());
+					Object t = qualPo.get_Value(qualConfig.programmeTitleColumn);
+					if (t != null && !t.toString().isBlank())
+						dg.setZZProgramTitle(t.toString().trim());
+				}
+			}
+		}
+
 		dg.setZZ_DocStatus(docStatus != null ? docStatus : X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
 		dg.setZZRegistrationDate(new Timestamp(System.currentTimeMillis()));
 		dg.saveEx(trxName);
@@ -2933,10 +2983,11 @@ public class LearnerQualficationRegVM extends StepAppVM
 	{
 		if (learnerId <= 0 || progId <= 0)
 			return null;
-		String whereClause = I_ZZLearnerDGProgramme.COLUMNNAME_ZZLearner_ID + " = ? AND "
-								+ I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?";
+		String whereClause = I_ZZLearnerDGProgramme.COLUMNNAME_ZZLearner_ID + " = ? AND ("
+								+ I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? OR "
+								+ I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DGProgram_ID + " = ?)";
 		return new Query(Env.getCtx(), I_ZZLearnerDGProgramme.Table_Name, whereClause, trxName)
-																								.setParameters(learnerId, progId)
+																								.setParameters(learnerId, progId, progId)
 																								.setOrderBy(I_ZZLearnerDGProgramme.COLUMNNAME_ZZLearnerDGProgramme_ID
 																											+ " DESC")
 																								.first();
