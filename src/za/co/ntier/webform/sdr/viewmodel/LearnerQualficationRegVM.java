@@ -25,9 +25,6 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import org.compiere.model.I_AD_User;
-import org.compiere.model.I_C_BPartner;
-import org.compiere.model.I_C_Year;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MRefList;
@@ -1776,9 +1773,9 @@ public class LearnerQualficationRegVM extends StepAppVM
 																			I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate).required();
 		cols.add(colCompletionDate);
 
-		String sdpWhere = I_C_BPartner.Table_Name	+ "." + I_C_BPartner.COLUMNNAME_IsActive + " = 'Y' AND "
-							+ I_C_BPartner.Table_Name + ".ZZ_Is_SDP = 'Y'";
-		String empWhere = I_C_BPartner.Table_Name + "." + I_C_BPartner.COLUMNNAME_IsActive + " = 'Y'";
+		String sdpWhere = MBPartner.Table_Name	+ "." + MBPartner.COLUMNNAME_IsActive + " = 'Y' AND "
+							+ MBPartner.Table_Name + ".ZZ_Is_SDP = 'Y'";
+		String empWhere = MBPartner.Table_Name + "." + MBPartner.COLUMNNAME_IsActive + " = 'Y'";
 		configureBPartnerSearch(colLeadSdp, sdpWhere, colLeadSdpContact);
 		configureBPartnerSearch(colSecondarySdp, sdpWhere, colSecondarySdpContact);
 		configureBPartnerSearch(colLeadEmployer, empWhere, colLeadEmployerContact);
@@ -3001,7 +2998,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			if (value instanceof MBPartner)
 				return ((MBPartner) value).getName();
 			if (value instanceof PO)
-				return ((PO) value).get_ValueAsString(I_C_BPartner.COLUMNNAME_Name);
+				return ((PO) value).get_ValueAsString(MBPartner.COLUMNNAME_Name);
 			return value.toString();
 		});
 		colBp.setValueAdaptHandle(value -> {
@@ -3020,7 +3017,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			return id > 0 ? new MBPartner(Env.getCtx(), id, null) : null;
 		});
 		colBp.setEventHandle((event, cellModel) -> {
-			InfoPanelPara para = InfoPanelPara.getInstance(I_C_BPartner.Table_Name, I_C_BPartner.COLUMNNAME_C_BPartner_ID);
+			InfoPanelPara para = InfoPanelPara.getInstance(MBPartner.Table_Name, MBPartner.COLUMNNAME_C_BPartner_ID);
 			para.setWhereClause(whereClause);
 			showInfoPanel(para, (obj, infoPanel) -> {
 				Object[] values = (Object[]) obj;
@@ -3047,9 +3044,9 @@ public class LearnerQualficationRegVM extends StepAppVM
 					}
 					else
 					{
-						String userWhere = I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_C_BPartner_ID + " = ? AND "
-											+ I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_IsActive + " = 'Y'";
-						PO adUser = MTable	.get(Env.getCtx(), I_AD_User.Table_Name)
+						String userWhere = MUser.Table_Name + "." + MUser.COLUMNNAME_C_BPartner_ID + " = ? AND "
+											+ MUser.Table_Name + "." + MUser.COLUMNNAME_IsActive + " = 'Y'";
+						PO adUser = MTable	.get(Env.getCtx(), MUser.Table_Name)
 											.createQuery(userWhere, null)
 											.setParameters(bpId)
 											.first();
@@ -3078,7 +3075,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			if (value instanceof MUser)
 				return ((MUser) value).getName();
 			if (value instanceof PO)
-				return ((PO) value).get_ValueAsString(I_AD_User.COLUMNNAME_Name);
+				return ((PO) value).get_ValueAsString(MUser.COLUMNNAME_Name);
 			return value.toString();
 		});
 		colContact.setValueAdaptHandle(value -> {
@@ -3097,7 +3094,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			return id > 0 ? new MUser(Env.getCtx(), id, null) : null;
 		});
 		colContact.setEventHandle((event, cellModel) -> {
-			InfoPanelPara para = InfoPanelPara.getInstance(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_AD_User_ID);
+			InfoPanelPara para = InfoPanelPara.getInstance(MUser.Table_Name, MUser.COLUMNNAME_AD_User_ID);
 			int bpId = 0;
 			if (parentBpCol != null && cellModel.getRowModel() != null)
 			{
@@ -3111,10 +3108,10 @@ public class LearnerQualficationRegVM extends StepAppVM
 					}
 				}
 			}
-			String baseWhere = I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_IsActive + " = 'Y'";
+			String baseWhere = MUser.Table_Name + "." + MUser.COLUMNNAME_IsActive + " = 'Y'";
 			if (bpId > 0)
 			{
-				para.setWhereClause(baseWhere + " AND " + I_AD_User.Table_Name + "." + I_AD_User.COLUMNNAME_C_BPartner_ID + " = " + bpId);
+				para.setWhereClause(baseWhere + " AND " + MUser.Table_Name + "." + MUser.COLUMNNAME_C_BPartner_ID + " = " + bpId);
 			}
 			else
 			{
@@ -3144,8 +3141,8 @@ public class LearnerQualficationRegVM extends StepAppVM
 			}
 			if (value instanceof PO)
 			{
-				String desc = ((PO) value).get_ValueAsString(I_C_Year.COLUMNNAME_Description);
-				return (desc != null && !desc.isBlank()) ? desc : ((PO) value).get_ValueAsString(I_C_Year.COLUMNNAME_FiscalYear);
+				String desc = ((PO) value).get_ValueAsString(MYear.COLUMNNAME_Description);
+				return (desc != null && !desc.isBlank()) ? desc : ((PO) value).get_ValueAsString(MYear.COLUMNNAME_FiscalYear);
 			}
 			if (value instanceof Number)
 			{
@@ -3178,7 +3175,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 					catch (Exception ignored)
 					{}
 				}
-				MYear y = new Query(Env.getCtx(), I_C_Year.Table_Name, I_C_Year.COLUMNNAME_FiscalYear + " = ?", null)
+				MYear y = new Query(Env.getCtx(), MYear.Table_Name, MYear.COLUMNNAME_FiscalYear + " = ?", null)
 																														.setParameters(s)
 																														.first();
 				if (y != null)
@@ -3207,8 +3204,8 @@ public class LearnerQualficationRegVM extends StepAppVM
 			return id > 0 ? new MYear(Env.getCtx(), id, null) : null;
 		});
 		colFinancialYear.setEventHandle((event, cellModel) -> {
-			InfoPanelPara para = InfoPanelPara.getInstance(I_C_Year.Table_Name, I_C_Year.COLUMNNAME_C_Year_ID);
-			para.setWhereClause(I_C_Year.Table_Name + "." + I_C_Year.COLUMNNAME_IsActive + " = 'Y'");
+			InfoPanelPara para = InfoPanelPara.getInstance(MYear.Table_Name, MYear.COLUMNNAME_C_Year_ID);
+			para.setWhereClause(MYear.Table_Name + "." + MYear.COLUMNNAME_IsActive + " = 'Y'");
 			showInfoPanel(para, (obj, infoPanel) -> {
 				Object[] values = (Object[]) obj;
 				if (values == null || values.length == 0 || values[0] == null)

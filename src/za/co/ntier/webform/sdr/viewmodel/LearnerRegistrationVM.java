@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.panel.RegistrationWindow;
 import org.compiere.model.I_AD_Menu;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
@@ -46,10 +47,6 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import za.co.ntier.api.model.I_ZZLearnerDGProgramme;
-import za.co.ntier.api.model.I_ZZRegistrationDocs;
-import za.co.ntier.api.model.I_ZZ_LI_HighestEducation;
-import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.X_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
@@ -218,10 +215,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	@NotifyChange({ "selectedDGProgrammeTitle", "enterQualificationRequired", "selectedQualificationTitle" })
 	public void openDGProgrammeLookup() {
 		InfoPanelPara para = InfoPanelPara.getInstance(
-				I_ZZ_Program_Master_Data.Table_Name,
-				I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID);
-		StringBuilder sql = new StringBuilder(I_ZZ_Program_Master_Data.Table_Name + "." + I_ZZ_Program_Master_Data.COLUMNNAME_IsActive + " = 'Y'");
-		sql.append(" AND ").append(I_ZZ_Program_Master_Data.Table_Name).append(".").append(I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_IsLearnerRegistration).append(" = 'Y'");
+				X_ZZ_Program_Master_Data.Table_Name,
+				X_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID);
+		StringBuilder sql = new StringBuilder(X_ZZ_Program_Master_Data.Table_Name + "." + X_ZZ_Program_Master_Data.COLUMNNAME_IsActive + " = 'Y'");
+		sql.append(" AND ").append(X_ZZ_Program_Master_Data.Table_Name).append(".").append(X_ZZ_Program_Master_Data.COLUMNNAME_ZZ_IsLearnerRegistration).append(" = 'Y'");
 		para.setWhereClause(sql.toString());
 
 		showInfoPanel(para, (obj, infoPanel) -> {
@@ -259,7 +256,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		} catch (Exception ignored) {
 		}
 		if (!enterQual) {
-			Object enterQualVal = selectedDGProgramme.get_Value(I_ZZ_Program_Master_Data.COLUMNNAME_IsEnterQualification);
+			Object enterQualVal = selectedDGProgramme.get_Value(X_ZZ_Program_Master_Data.COLUMNNAME_IsEnterQualification);
 			if (enterQualVal == null) {
 				enterQualVal = selectedDGProgramme.get_Value("ZZ_EnterQualification");
 			}
@@ -286,6 +283,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				populateRegistrationDefaults();
 			}
 		}
+		initUploadDocument();
+		BindUtils.postNotifyChange(null, null, this, "tmDocumentUpload");
 	}
 
 	@Command
@@ -1570,9 +1569,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		qualificationCol.setValueFromDaoAdaptHandle(obj -> obj != null ? obj.toString() : null);
 		cols.add(qualificationCol);
 
-		qualificationNameCol = CellModel.getColModelForText(
-				"Qualification Name",
-				X_ZZ_PostSchoolEducation_Details.COLUMNNAME_Name).setReadonly(true);
+		qualificationNameCol = CellModel.getColModelForText("Qualification Name", X_ZZ_PostSchoolEducation_Details.COLUMNNAME_Name).setReadonly(true);
 		cols.add(qualificationNameCol);
 
 		ColumnModel dateAchievedCol = DateCellModel.getDateColumnModel(
@@ -1582,8 +1579,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(dateAchievedCol);
 
 		ValueAdaptColumnModel linkedOfoCodeCol = ValueAdaptCellModel.getValueAdaptColumnModel(
-				"Linked OFO Code",
-				X_ZZ_PostSchoolEducation_Details.COLUMNNAME_OFO_Occupation_ID,
+				"Linked OFO Code",				X_ZZ_PostSchoolEducation_Details.COLUMNNAME_OFO_Occupation_ID,
 				CellModel.SEARCH_CELL);
 		linkedOfoCodeCol.setBtText("");
 
@@ -1972,19 +1968,19 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		// 1. Program Master Data (Read-only)
 		progCol = CellModel.getColModelForLabel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID))
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID))
 				.setTableName(learnerTable).setReadonly(true);
 
 		// 2. Financial Year (Required)
 		ValueAdaptColumnModel colFinancialYear = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID, CellModel.SEARCH_CELL);
 		colFinancialYear.setTableName(learnerTable).required();
 		colFinancialYear.setBtText("");
 
 		// 3. Funding Type (Required)
-		MColumn fundingCol = MTable.get(Env.getCtx(), I_ZZLearnerDGProgramme.Table_Name)
-				.getColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType);
+		MColumn fundingCol = MTable.get(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name)
+				.getColumn(X_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType);
 		int fundingRefId = fundingCol != null ? fundingCol.getAD_Reference_Value_ID() : 1000367;
 		ValueNamePair[] fundingPairs = MRefList.getList(Env.getCtx(), fundingRefId, false);
 		List<ValueNamePair> fundingTypeList = fundingPairs != null && fundingPairs.length > 0
@@ -1993,105 +1989,105 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						new ValueNamePair(X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_IndustryFunded, "Industry Funded"),
 						new ValueNamePair(X_ZZLearnerDGProgramme.ZZFUNDINGTYPE_SETAFunded, "SETA Funded"));
 		ListColumnModel<ValueNamePair> colFundingType = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType, fundingTypeList, ValueNamePair::getName, ValueNamePair::getValue);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType, fundingTypeList, ValueNamePair::getName, ValueNamePair::getValue);
 		colFundingType.setzClass(ValueNamePair.class).required();
 		colFundingType.setTableName(learnerTable);
 
 		// 4. Agreement Reference Number
 		ColumnModel colRefNo = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber);
 
 		// 5. Contract Number
 		ColumnModel colContractNo = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber);
 
 		// 6. Student Number
-		ColumnModel colStudentNumber = text(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZStudentNumber);
+		ColumnModel colStudentNumber = text(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZStudentNumber);
 
 		// 7. Start Date (Required)
-		ColumnModel startDateCol = editableDate(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate).required();
+		ColumnModel startDateCol = editableDate(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate).required();
 		startDateCol.setTitle("Start Date");
 
 		// 8. End Date (Required)
-		ColumnModel endDateCol = editableDate(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate).required();
+		ColumnModel endDateCol = editableDate(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate).required();
 		endDateCol.setTitle("End Date");
 
 		// --- Lead Skills Development Provider (SDP) ---
 		ValueAdaptColumnModel colLeadSdp = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID, CellModel.SEARCH_CELL);
 		colLeadSdp.setTableName(learnerTable).required();
 		colLeadSdp.setBtText("");
 
 		ValueAdaptColumnModel colLeadSdpContact = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID, CellModel.SEARCH_CELL);
 		colLeadSdpContact.setTableName(learnerTable).required();
 		colLeadSdpContact.setBtText("");
 
 		ListColumnModel<ValueNamePair> colLeadSdpLevy = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
 		colLeadSdpLevy.setzClass(ValueNamePair.class).required();
 		colLeadSdpLevy.setTableName(learnerTable);
 
 		// --- Lead Workplace Approval (Employer) ---
 		ValueAdaptColumnModel colLeadEmployer = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID, CellModel.SEARCH_CELL);
 		colLeadEmployer.setTableName(learnerTable).required();
 		colLeadEmployer.setBtText("");
 
 		ValueAdaptColumnModel colLeadEmployerContact = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID, CellModel.SEARCH_CELL);
 		colLeadEmployerContact.setTableName(learnerTable).required();
 		colLeadEmployerContact.setBtText("");
 
 		ListColumnModel<ValueNamePair> colLeadEmployerLevy = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
 		colLeadEmployerLevy.setzClass(ValueNamePair.class).required();
 		colLeadEmployerLevy.setTableName(learnerTable);
 
 		// --- Secondary Skills Development Provider (Optional) ---
 		ValueAdaptColumnModel colSecondarySdp = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID, CellModel.SEARCH_CELL);
 		colSecondarySdp.setTableName(learnerTable);
 		colSecondarySdp.setBtText("");
 
 		ValueAdaptColumnModel colSecondarySdpContact = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID, CellModel.SEARCH_CELL);
 		colSecondarySdpContact.setTableName(learnerTable);
 		colSecondarySdpContact.setBtText("");
 
 		ListColumnModel<ValueNamePair> colSecondarySdpLevy = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
 		colSecondarySdpLevy.setzClass(ValueNamePair.class);
 		colSecondarySdpLevy.setTableName(learnerTable);
 
 		// --- Secondary Workplace Approval (Optional) ---
 		ValueAdaptColumnModel colSecondaryEmployer = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID, CellModel.SEARCH_CELL);
 		colSecondaryEmployer.setTableName(learnerTable);
 		colSecondaryEmployer.setBtText("");
 
 		ValueAdaptColumnModel colSecondaryEmployerContact = ValueAdaptCellModel.getValueAdaptColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID, CellModel.SEARCH_CELL);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID, CellModel.SEARCH_CELL);
 		colSecondaryEmployerContact.setTableName(learnerTable);
 		colSecondaryEmployerContact.setBtText("");
 
 		ListColumnModel<ValueNamePair> colSecondaryEmployerLevy = ListCellModel.getListColumnModel(
-				MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy),
-				I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
 		colSecondaryEmployerLevy.setzClass(ValueNamePair.class);
 		colSecondaryEmployerLevy.setTableName(learnerTable);
 
@@ -2158,13 +2154,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			CellModel cell = entry.getValue();
 			String prop = col.getDaoPropertyName();
 
-			if ((col == progCol || I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID.equals(prop))
+			if ((col == progCol || X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID.equals(prop))
 					&& (selectedDGProgramme != null || (selectedDGProgrammeTitle != null && !selectedDGProgrammeTitle.isBlank()))) {
 				cell.setValue(selectedDGProgrammeTitle);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop) && adminBpId > 0 && cell.getValue() == null) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop) && adminBpId > 0 && cell.getValue() == null) {
 				MBPartner sdpBp = new MBPartner(Env.getCtx(), adminBpId, null);
 				cell.setValue(sdpBp);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop) && loginId > 0 && cell.getValue() == null) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop) && loginId > 0 && cell.getValue() == null) {
 				MUser sdpUser = new MUser(Env.getCtx(), loginId, null);
 				cell.setValue(sdpUser);
 			}
@@ -2182,13 +2178,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				String prop = col.getDaoPropertyName();
 				if (prop == null) continue;
 
-				if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber.equals(prop)) {
+				if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber.equals(prop)) {
 					String val = dg != null ? dg.getZZAgreementReferenceNumber() : null;
 					if ((val == null || val.isBlank()) && child != null && child.get_ColumnIndex("ZZAgreementReferenceNumber") >= 0) {
 						val = child.get_ValueAsString("ZZAgreementReferenceNumber");
 					}
 					if (val != null) cell.setValue(val);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop)) {
 					int sdpId = dg != null ? dg.getZZ_SDP_ID() : 0;
 					if (sdpId <= 0 && child != null && child.get_ColumnIndex("ZZ_SDP_ID") >= 0) {
 						sdpId = child.get_ValueAsInt("ZZ_SDP_ID");
@@ -2197,7 +2193,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						sdpId = child.get_ValueAsInt("ZZSDProvider_ID");
 					}
 					if (sdpId > 0) cell.setValue(new MBPartner(Env.getCtx(), sdpId, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(prop)) {
 					int empId = dg != null ? dg.getZZ_Employer_ID() : 0;
 					if (empId <= 0 && child != null && child.get_ColumnIndex("ZZ_Employer_ID") >= 0) {
 						empId = child.get_ValueAsInt("ZZ_Employer_ID");
@@ -2209,67 +2205,67 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						empId = child.get_ValueAsInt("Employer_ID");
 					}
 					if (empId > 0) cell.setValue(new MBPartner(Env.getCtx(), empId, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy.equals(prop)) {
 					String val = dg != null ? dg.getZZLeadSDProviderLevy() : null;
 					if (val != null) cell.setValue(val);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy.equals(prop)) {
 					String val = dg != null ? dg.getZZWALevy() : null;
 					if (val != null) cell.setValue(val);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop)) {
 					int id = dg != null ? dg.getZZLeadSDProviderContact_ID() : 0;
 					if (id > 0) cell.setValue(new MUser(Env.getCtx(), id, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID.equals(prop)) {
 					int id = dg != null ? dg.getZZWAContact_ID() : 0;
 					if (id > 0) cell.setValue(new MUser(Env.getCtx(), id, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID.equals(prop)) {
 					int id = dg != null ? dg.getZZSecondarySDProvider_ID() : 0;
 					if (id > 0) cell.setValue(new MBPartner(Env.getCtx(), id, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID.equals(prop)) {
 					int id = dg != null ? dg.getZZSecondaryWA_ID() : 0;
 					if (id > 0) cell.setValue(new MBPartner(Env.getCtx(), id, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy.equals(prop)) {
 					String val = dg != null ? dg.getZZSecondarySDProviderLevy() : null;
 					if (val != null) cell.setValue(val);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy.equals(prop)) {
 					String val = dg != null ? dg.getZZSecondaryWALevy() : null;
 					if (val != null) cell.setValue(val);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID.equals(prop)) {
 					int id = dg != null ? dg.getZZSecondarySDProviderContact_ID() : 0;
 					if (id > 0) cell.setValue(new MUser(Env.getCtx(), id, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID.equals(prop)) {
 					int id = dg != null ? dg.getZZSecondaryWAContact_ID() : 0;
 					if (id > 0) cell.setValue(new MUser(Env.getCtx(), id, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZStudentNumber.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZStudentNumber.equals(prop)) {
 					String val = dg != null ? dg.getZZStudentNumber() : null;
 					if ((val == null || val.isBlank()) && child != null && child.get_ColumnIndex("ZZStudentNumber") >= 0) {
 						val = child.get_ValueAsString("ZZStudentNumber");
 					}
 					if (val != null) cell.setValue(val);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(prop)) {
 					String ft = dg != null ? dg.getZZFundingType() : null;
 					if ((ft == null || ft.isBlank()) && child != null && child.get_ColumnIndex("ZZFundingType") >= 0) {
 						ft = child.get_ValueAsString("ZZFundingType");
 					}
 					if (ft != null && !ft.isBlank()) cell.setValue(ft);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber.equals(prop)) {
 					String val = dg != null ? dg.getZZContractNumber() : null;
 					if ((val == null || val.isBlank()) && child != null && child.get_ColumnIndex("ZZContractNumber") >= 0) {
 						val = child.get_ValueAsString("ZZContractNumber");
 					}
 					if (val != null) cell.setValue(val);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop)) {
 					int fyId = dg != null ? dg.getZZFinancialYear_ID() : 0;
 					if (fyId <= 0 && child != null && child.get_ColumnIndex("ZZFinancialYear_ID") >= 0) {
 						fyId = child.get_ValueAsInt("ZZFinancialYear_ID");
 					}
 					if (fyId > 0) cell.setValue(new MYear(Env.getCtx(), fyId, null));
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate.equals(prop)) {
 					Object dt = dg != null ? dg.getZZCommencementDate() : null;
 					if (dt == null && child != null && child.get_ColumnIndex("ZZCommencementDate") >= 0) {
 						dt = child.get_Value("ZZCommencementDate");
 					}
 					if (dt != null) cell.setValue(dt);
-				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate.equals(prop)) {
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate.equals(prop)) {
 					Object dt = dg != null ? dg.getZZCompletionDate() : null;
 					if (dt == null && child != null && child.get_ColumnIndex("ZZCompletionDate") >= 0) {
 						dt = child.get_Value("ZZCompletionDate");
@@ -2588,9 +2584,29 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		}
 
 		if (targetRegistrationPo != null && targetRegistrationPo.get_ID() > 0) {
+			int viewTableId = MTable.getTable_ID("ZZ_LearnerInfo_V");
+			if (viewTableId <= 0) {
+				viewTableId = MTable.getTable_ID("ZZ_LearnerInfo_T_V");
+			}
+			int viewRecordId = (viewTableId > 0) ? getLearnerInfoViewRecordId(targetRegistrationPo, null) : 0;
+			String recordUU = targetRegistrationPo.get_UUID();
+
 			for (RowModel row : tmDocumentUpload.getRows()) {
 				X_ZZRegistrationDocs doc = getUploadDocument(row);
-				String fileName = AttachmentUtil.getFileNameFromAttachmentEntries(targetRegistrationPo, doc.getName(), null);
+				String fileName = null;
+				// First try to get attachment from ZZ_LearnerInfo_V
+				if (viewTableId > 0 && viewRecordId > 0) {
+					fileName = getFileNameFromAttachmentEntries(
+							viewTableId, viewRecordId, recordUU, doc.getName(), null);
+				}
+				// If not found in ZZ_LearnerInfo_V, try ZZLearnerDGProgramme
+				if (fileName == null || fileName.isBlank()) {
+					fileName = getFileNameFromAttachmentEntries(
+							targetRegistrationPo.get_Table_ID(), targetRegistrationPo.get_ID(), recordUU, doc.getName(), null);
+				}
+				if (fileName == null || fileName.isBlank()) {
+					fileName = AttachmentUtil.getFileNameFromAttachmentEntries(targetRegistrationPo, doc.getName(), null);
+				}
 				if (fileName != null && !fileName.isBlank()) {
 					((UploadCellModel) row.get(documentUploadCol)).setFileName(fileName);
 				}
@@ -2600,7 +2616,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	private void initDocumentUploadTable(List<X_ZZRegistrationDocs> documents) {
 		documentNameCol = PresetTitleCellModel.getPresetTitleColumnModel(
-				MasterUtil.getNameOfColTranslated(I_ZZRegistrationDocs.Table_Name, I_ZZRegistrationDocs.COLUMNNAME_Name),
+				MasterUtil.getNameOfColTranslated(X_ZZRegistrationDocs.Table_Name, X_ZZRegistrationDocs.COLUMNNAME_Name),
 				doc -> doc != null ? doc.getName() + (doc.isMandatory() ? " *" : "") : "");
 		documentUploadCol = UploadCellModel.getUploadColumnModel(
 				MasterUtil.getNameOfColTranslated(I_AD_Menu.Table_Name, I_AD_Menu.COLUMNNAME_Action),
@@ -2608,7 +2624,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		documentUploadCol.setRefDocUploadDefCol(documentNameCol);
 
 		tmDocumentUpload = TableModel.getTableBean(TableModel.class,
-				List.of(documentNameCol, documentUploadCol), false, I_ZZRegistrationDocs.Table_Name);
+				List.of(documentNameCol, documentUploadCol), false, X_ZZRegistrationDocs.Table_Name);
 		tmDocumentUpload.setViewModel(ViewType.VIEW_GRID);
 		tmDocumentUpload.setSclass("srd-dg-documents");
 		tmDocumentUpload.setCreateNewRowWhenEmpty(false);
@@ -2716,18 +2732,18 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		String programmeFilter;
 		if (programmeMasterId > 0 && includeSharedDocuments) {
-			programmeFilter = "(" + I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? OR "
-					+ I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL)";
+			programmeFilter = "(" + X_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? OR "
+					+ X_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL)";
 		} else if (programmeMasterId > 0) {
-			programmeFilter = I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?";
+			programmeFilter = X_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?";
 		} else {
-			programmeFilter = I_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL";
+			programmeFilter = X_ZZRegistrationDocs.COLUMNNAME_ZZ_Program_Master_Data_ID + " IS NULL";
 		}
 
-		String sql = "SELECT * FROM " + I_ZZRegistrationDocs.Table_Name
-				+ " WHERE " + programmeFilter + " AND " + I_ZZRegistrationDocs.COLUMNNAME_IsActive + " = 'Y' "
-				+ "ORDER BY " + I_ZZRegistrationDocs.COLUMNNAME_Name + ", "
-				+ I_ZZRegistrationDocs.COLUMNNAME_ZZRegistrationDocs_ID;
+		String sql = "SELECT * FROM " + X_ZZRegistrationDocs.Table_Name
+				+ " WHERE " + programmeFilter + " AND " + X_ZZRegistrationDocs.COLUMNNAME_IsActive + " = 'Y' "
+				+ "ORDER BY " + X_ZZRegistrationDocs.COLUMNNAME_Name + ", "
+				+ X_ZZRegistrationDocs.COLUMNNAME_ZZRegistrationDocs_ID;
 
 		Map<String, X_ZZRegistrationDocs> uniqueDocuments = new LinkedHashMap<>();
 		PreparedStatement pstmt = null;
@@ -2829,50 +2845,50 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			if (prop == null) continue;
 			Object val = cell != null ? cell.getValue() : null;
 
-			if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber.equals(prop)) {
+			if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber.equals(prop)) {
 				dg.setZZAgreementReferenceNumber(extractString(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate.equals(prop)) {
 				Timestamp ts = extractTimestamp(cell, val);
 				if (ts != null) dg.setZZCommencementDate(ts);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate.equals(prop)) {
 				Timestamp ts = extractTimestamp(cell, val);
 				if (ts != null) dg.setZZCompletionDate(ts);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZContractNumber.equals(prop)) {
 				dg.setZZContractNumber(extractString(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZStudentNumber.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZStudentNumber.equals(prop)) {
 				dg.setZZStudentNumber(extractString(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop)) {
 				int id = extractId(val);
 				if (id > 0) dg.setZZ_SDP_ID(id);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy.equals(prop)) {
 				dg.setZZLeadSDProviderLevy(extractString(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop)) {
 				int id = extractId(val);
 				if (id > 0) dg.setZZLeadSDProviderContact_ID(id);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID.equals(prop)) {
 				dg.setZZSecondarySDProvider_ID(extractId(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy.equals(prop)) {
 				dg.setZZSecondarySDProviderLevy(extractString(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID.equals(prop)) {
 				dg.setZZSecondarySDProviderContact_ID(extractId(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(prop)) {
 				int id = extractId(val);
 				if (id > 0) dg.setZZ_Employer_ID(id);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy.equals(prop)) {
 				dg.setZZWALevy(extractString(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID.equals(prop)) {
 				int id = extractId(val);
 				if (id > 0) dg.setZZWAContact_ID(id);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID.equals(prop)) {
 				dg.setZZSecondaryWA_ID(extractId(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy.equals(prop)) {
 				dg.setZZSecondaryWALevy(extractString(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWAContact_ID.equals(prop)) {
 				dg.setZZSecondaryWAContact_ID(extractId(val));
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(prop)) {
 				String ft = extractString(val);
 				if (ft != null && !ft.isBlank()) dg.setZZFundingType(ft);
-			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop)) {
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop)) {
 				int id = extractId(val);
 				if (id > 0) dg.setZZFinancialYear_ID(id);
 			}
@@ -2912,15 +2928,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					progCode = c.toString().trim();
 				}
 			}
-			if (progCode == null || progCode.isBlank()) {
-				if (selectedQualification.get_ColumnIndex("Value") >= 0) {
-					progCode = selectedQualification.get_ValueAsString("Value");
-				} else if (selectedQualification.get_ColumnIndex("ZZ_Saqa_ID") >= 0) {
-					progCode = selectedQualification.get_ValueAsString("ZZ_Saqa_ID");
-				} else if (selectedQualification.get_ColumnIndex("ZZ_Code") >= 0) {
-					progCode = selectedQualification.get_ValueAsString("ZZ_Code");
-				}
-			}
 			if (progCode != null && !progCode.isBlank()) {
 				dg.setZZProgramCode(progCode);
 			}
@@ -2956,11 +2963,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					dg.setZZProgramTitle(selectedDGProgrammeTitle);
 				}
 			}
-			if (selectedDGProgramme.getDocumentNo() != null && !selectedDGProgramme.getDocumentNo().isBlank()) {
-				if (dg.getZZProgramCode() == null || dg.getZZProgramCode().isBlank()) {
-					dg.setZZProgramCode(selectedDGProgramme.getDocumentNo());
-				}
-			}
 		}
 
 		String currentDocStatus = dg.getZZ_DocStatus();
@@ -2978,9 +2980,65 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		saveRegistrationDocuments(dg, trxName);
 	}
 
+	private int getLearnerInfoViewRecordId(PO target, String trxName) {
+		if (target == null) {
+			return 0;
+		}
+		String uuid = target.get_UUID();
+		int targetId = target.get_ID();
+		if (Util.isEmpty(uuid) && targetId <= 0) {
+			return 0;
+		}
+
+		// Try ZZ_LearnerInfo_V first
+		if (!Util.isEmpty(uuid)) {
+			int id = DB.getSQLValue(trxName,
+					"SELECT zz_learnerinfo_v_id FROM zz_learnerinfo_v WHERE zz_learnerinfo_v_uu = ? ORDER BY zz_learnerinfo_v_id DESC",
+					uuid);
+			if (id > 0) {
+				return id;
+			}
+		}
+		if (targetId > 0) {
+			int id = DB.getSQLValue(trxName,
+					"SELECT zz_learnerinfo_v_id FROM zz_learnerinfo_v WHERE zzlearnerdgprogramme_id = ? ORDER BY zz_learnerinfo_v_id DESC",
+					targetId);
+			if (id > 0) {
+				return id;
+			}
+		}
+
+		// Fallback to zz_learnerinfo_t_v if table was created with new name
+		if (!Util.isEmpty(uuid)) {
+			int id = DB.getSQLValue(trxName,
+					"SELECT zz_learnerinfo_t_v_id FROM zz_learnerinfo_t_v WHERE zz_learnerinfo_t_v_uu = ? ORDER BY zz_learnerinfo_t_v_id DESC",
+					uuid);
+			if (id > 0) {
+				return id;
+			}
+		}
+		if (targetId > 0) {
+			int id = DB.getSQLValue(trxName,
+					"SELECT zz_learnerinfo_t_v_id FROM zz_learnerinfo_t_v WHERE zzlearnerdgprogramme_id = ? ORDER BY zz_learnerinfo_t_v_id DESC",
+					targetId);
+			if (id > 0) {
+				return id;
+			}
+		}
+
+		return 0;
+	}
+
 	private void saveRegistrationDocuments(PO target, String trxName) {
-		if (tmDocumentUpload == null)
+		if (tmDocumentUpload == null || target == null || target.get_ID() <= 0)
 			return;
+
+		int viewTableId = MTable.getTable_ID("ZZ_LearnerInfo_V");
+		if (viewTableId <= 0) {
+			viewTableId = MTable.getTable_ID("ZZ_LearnerInfo_T_V");
+		}
+		int viewRecordId = (viewTableId > 0) ? getLearnerInfoViewRecordId(target, trxName) : 0;
+		String recordUU = target.get_UUID();
 
 		for (RowModel row : tmDocumentUpload.getRows()) {
 			UploadCellModel cell = (UploadCellModel) row.get(documentUploadCol);
@@ -2988,12 +3046,130 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			byte[] bytes = cell.getBytes();
 			String fileName = cell.getFileName();
 			if (bytes != null && bytes.length > 0 && fileName != null && !fileName.isBlank()) {
-				AttachmentUtil.addOrReplaceAttachmentEntry(target, fileName, bytes, docTitle, trxName);
+				boolean uploadedInView = false;
+				// First try to upload in ZZ_LearnerInfo_V
+				if (viewTableId > 0 && viewRecordId > 0) {
+					try {
+						addOrReplaceAttachmentEntry(
+								viewTableId, viewRecordId, recordUU, fileName, bytes, docTitle, trxName);
+						uploadedInView = true;
+						log.info("Document '" + docTitle + "' uploaded to ZZ_LearnerInfo_V (ID=" + viewRecordId + ", UU=" + recordUU + ")");
+					} catch (Exception e) {
+						log.log(Level.WARNING, "Failed to upload to ZZ_LearnerInfo_V, falling back to " + target.get_TableName(), e);
+					}
+				}
+				// If not able to upload in ZZ_LearnerInfo_V, upload in ZZLearnerDGProgramme
+				if (!uploadedInView) {
+					addOrReplaceAttachmentEntry(
+							target.get_Table_ID(), target.get_ID(), recordUU, fileName, bytes, docTitle, trxName);
+					log.info("Document '" + docTitle + "' uploaded to " + target.get_TableName() + " (ID=" + target.get_ID() + ", UU=" + recordUU + ")");
+				}
 				cell.setBytes(null);
 			} else if (fileName == null || fileName.isBlank()) {
-				AttachmentUtil.removeAttachmentEntry(target, docTitle, trxName);
+				// If removed, clean up both ZZ_LearnerInfo_V and target table
+				if (viewTableId > 0 && viewRecordId > 0) {
+					try {
+						removeAttachmentEntry(viewTableId, viewRecordId, recordUU, docTitle, trxName);
+					} catch (Exception ignored) {}
+				}
+				removeAttachmentEntry(target.get_Table_ID(), target.get_ID(), recordUU, docTitle, trxName);
 			}
 		}
+	}
+
+	private record AttachmentEntryNames(String normalizedPrefix, String newEntryName) {}
+
+	private AttachmentEntryNames normalizedAttachmentEntryNames(String btText, String fileName) {
+		String rawPrefix = btText == null ? "" : btText.trim().replace("/", "");
+		String normalizedPrefix = rawPrefix.isEmpty() ? "" : (rawPrefix + ":");
+		String newEntryName = normalizedPrefix.isEmpty() ? fileName : (rawPrefix + ": " + fileName);
+		return new AttachmentEntryNames(normalizedPrefix, newEntryName);
+	}
+
+	private int findAttachmentEntryIndexByPrefix(MAttachment att, String prefix) {
+		if (att == null) return -1;
+		String want = prefix == null ? "" : prefix.trim();
+		if (!want.isEmpty() && !want.endsWith(":")) want = want + ":";
+
+		for (int i = 0, n = att.getEntryCount(); i < n; i++) {
+			String name = att.getEntryName(i) == null ? "" : att.getEntryName(i);
+			String normalized = name.replaceFirst("^([^:]+):\\s*", "$1:");
+			normalized = normalized.replace("/", "");
+			if (normalized.startsWith(want)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private void addOrReplaceAttachmentEntry(
+			int tableId, int recordId, String recordUU, String fileName, byte[] bytes, String btText, String trxName) {
+		if (tableId <= 0 || (recordId <= 0 && Util.isEmpty(recordUU)))
+			throw new IllegalArgumentException("Invalid table or record identifier");
+		if (bytes == null || bytes.length == 0)
+			throw new IllegalArgumentException("Empty attachment data");
+
+		AttachmentEntryNames entryNames = normalizedAttachmentEntryNames(btText, fileName);
+
+		MAttachment att = MAttachment.get(Env.getCtx(), tableId, recordId, recordUU, trxName);
+		if (att == null) {
+			att = new MAttachment(Env.getCtx(), tableId, recordId, recordUU, trxName);
+		}
+		if (!Util.isEmpty(recordUU) && Util.isEmpty(att.getRecord_UU())) {
+			att.setRecord_UU(recordUU);
+		}
+
+		int idx = findAttachmentEntryIndexByPrefix(att, entryNames.normalizedPrefix);
+		if (idx >= 0) {
+			String currentName = att.getEntryName(idx) == null ? "" : att.getEntryName(idx);
+			if (currentName.equals(entryNames.newEntryName)) {
+				att.updateEntry(idx, bytes);
+			} else {
+				att.deleteEntry(idx);
+				att.addEntry(entryNames.newEntryName, bytes);
+			}
+		} else {
+			att.addEntry(entryNames.newEntryName, bytes);
+		}
+		att.saveEx(trxName);
+	}
+
+	private void removeAttachmentEntry(
+			int tableId, int recordId, String recordUU, String btText, String trxName) {
+		if (tableId <= 0 || (recordId <= 0 && Util.isEmpty(recordUU)))
+			return;
+
+		AttachmentEntryNames entryNames = normalizedAttachmentEntryNames(btText, null);
+		MAttachment att = MAttachment.get(Env.getCtx(), tableId, recordId, recordUU, trxName);
+		if (att != null) {
+			int idx = findAttachmentEntryIndexByPrefix(att, entryNames.normalizedPrefix);
+			if (idx >= 0) {
+				att.deleteEntry(idx);
+				att.saveEx(trxName);
+			}
+		}
+	}
+
+	private String getFileNameFromAttachmentEntries(
+			int tableId, int recordId, String recordUU, String btText, String trxName) {
+		if (tableId <= 0 || (recordId <= 0 && Util.isEmpty(recordUU))) return null;
+
+		MAttachment att = MAttachment.get(Env.getCtx(), tableId, recordId, recordUU, trxName);
+		if (att == null || att.getEntryCount() == 0) return null;
+
+		final String rawPrefix = btText == null ? "" : btText.trim().replace("/", "");
+		final String want = rawPrefix.isEmpty() ? "" : (rawPrefix + ":");
+
+		int idx = findAttachmentEntryIndexByPrefix(att, want);
+		if (idx < 0 && !Util.isEmpty(btText)) {
+			return null;
+		} else if (idx < 0) {
+			idx = 0;
+		}
+
+		String entryName = att.getEntryName(idx) == null ? "" : att.getEntryName(idx);
+		String base = entryName.replaceFirst("^([^:]+):\\s*", "");
+		return Util.isEmpty(base) ? entryName : base;
 	}
 
 	private static JasperReport learnerAgreementReport;
@@ -3077,7 +3253,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		// Highest education has no input in this form. Preserve the stored value only when absent from the UI.
 		if (!values.containsKey(X_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID)
 				&& person != null && person.getZZ_LI_HighestEducation_ID() > 0) {
-			I_ZZ_LI_HighestEducation highest = person.getZZ_LI_HighestEducation();
+			X_ZZ_LI_HighestEducation highest = (X_ZZ_LI_HighestEducation) person.getZZ_LI_HighestEducation();
 			values.put(X_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID, highest == null ? "" : highest.getName());
 		}
 		return values;
