@@ -105,6 +105,17 @@
             </div>
             <label sclass="help-error" visible="@load(!empty vm.fieldErrors.confirmation)" value="@load(vm.fieldErrors.confirmation)" />
           </div>
+          <div sclass="cell">
+            <div sclass="cell-title">
+              <label sclass="label" value="@load(vm.labels.terminationDate)" />
+              <label sclass="required" value="*" />
+            </div>
+            <div sclass="cell-content">
+              <datebox value="@bind(vm.terminationDate)" format="dd/MM/yyyy" width="100%"
+                  disabled="@load(!vm.editable or vm.confirmationPending)" />
+            </div>
+            <label sclass="help-error" visible="@load(!empty vm.fieldErrors.terminationDate)" value="@load(vm.fieldErrors.terminationDate)" />
+          </div>
           <div sclass="cell cellType2">
             <div sclass="cell-title">
               <label sclass="label" value="@load(vm.labels.reason)" />
@@ -117,8 +128,14 @@
               <label sclass="help-text" value="Explain why this learner's registration should be terminated. Required before submission." />
             </div>
           </div>
+          <div sclass="cell">
+            <div sclass="cell-content checkboxContent">
+              <checkbox label="I hereby declare that I have resigned from the programme due to permanent employment with another company or the company that hosted me on the programme."
+                  checked="@bind(vm.permanentEmployment)" disabled="@load(!vm.editable or vm.confirmationPending)" />
+            </div>
+          </div>
         </div>
-        <label sclass="request-notice" value="MQA must approve this request before the learner's registration is terminated."
+        <label sclass="request-notice" value="MQA must approve this request before the learner's registration is terminated. The application PDF will be attached to this request on submission."
             visible="@load(vm.editable)" />
         <label sclass="request-notice" value="This request is read-only while MQA processes it."
             visible="@load(!vm.editable)" />

@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import za.co.ntier.api.model.X_ZZLearnerTermination;
 import za.co.ntier.api.model.X_ZZLearner_v;
 import za.co.ntier.api.model.X_ZZSdfOrganisation_v;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
+import za.co.ntier.report.LearnerTerminationReport;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
 import za.co.ntier.webform.form.WebForm;
@@ -54,6 +56,8 @@ public class LearnerChangeRequestVM implements Serializable
 	private X_ZZLearnerTermination					request;
 	private String									identityNumber		= "";
 	private String									reason				= "";
+	private Date									terminationDate;
+	private boolean									permanentEmployment;
 	private String									validationMessage	= "";
 	private String									feedbackMessage		= "";
 	private boolean									learnerConfirmed;
@@ -267,7 +271,7 @@ public class LearnerChangeRequestVM implements Serializable
 		learner = selected;
 		request = existing.isEmpty() ? null : existing.get(0);
 		viewingRequest = request != null;
-		reason = request == null ? "" : text(request.getZZ_Reason());
+		loadRequestDetails(request);
 		learnerConfirmed = false;
 		notifyForm();
 	}
@@ -300,8 +304,8 @@ public class LearnerChangeRequestVM implements Serializable
 			clearLearner();
 			selectOrganisation(organisation);
 			if (previousProgramme != null)
-				programmes.stream().filter(item -> item.get_ID() == previousProgramme.get_ID())
-						.findFirst().ifPresent(this::selectProgramme);
+				programmes	.stream().filter(item -> item.get_ID() == previousProgramme.get_ID())
+							.findFirst().ifPresent(this::selectProgramme);
 			return;
 		}
 		MasterUtil.showConfirmDialog(	"dialog", "Change learner or programme",
@@ -318,6 +322,8 @@ public class LearnerChangeRequestVM implements Serializable
 		viewingRequest = false;
 		identityNumber = "";
 		reason = "";
+		terminationDate = null;
+		permanentEmployment = false;
 		learnerConfirmed = false;
 		clearValidation();
 		feedbackMessage = "";
@@ -341,6 +347,8 @@ public class LearnerChangeRequestVM implements Serializable
 		}
 		int requestId = request.get_ID();
 		String savedReason = reason.trim();
+		Timestamp savedTerminationDate = terminationTimestamp();
+		boolean savedPermanentEmployment = permanentEmployment;
 		confirmationPending = true;
 		feedbackMessage = "Draft saved. Reference: " + getReferenceNumber();
 		notifyForm();
@@ -349,7 +357,9 @@ public class LearnerChangeRequestVM implements Serializable
 												"Programme: " + getProgrammeName(programme),
 												"MQA will review the request before the learner's registration is terminated."), ignored -> {
 													confirmationPending = false;
-													if (request == null || request.get_ID() != requestId || !Objects.equals(reason.trim(), savedReason))
+													if (request == null || request.get_ID() != requestId || !Objects.equals(reason.trim(), savedReason)
+														|| !Objects.equals(terminationTimestamp(), savedTerminationDate)
+														|| permanentEmployment != savedPermanentEmployment)
 														validationMessage = "The request changed. Review the details and submit again.";
 													else if (validate(true) && persist(true))
 														feedbackMessage = "Termination request submitted to MQA for approval. Reference: "
@@ -381,6 +391,8 @@ public class LearnerChangeRequestVM implements Serializable
 		{
 			if (!learnerConfirmed)
 				fieldErrors.put("confirmation", "Confirm that the learner details are correct.");
+			if (submitting && terminationDate == null)
+				fieldErrors.put("terminationDate", "Enter the termination effective date.");
 			if (submitting && !hasText(reason))
 				fieldErrors.put("reason", "Enter the reason for termination.");
 			else if (reason.length() > reasonMaxLength)
@@ -416,9 +428,12 @@ public class LearnerChangeRequestVM implements Serializable
 				|| !X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Registered.equals(registrations.get(0).getZZ_DocStatus()))
 				throw new IllegalStateException("The learner's registration changed. Select the learner again.");
 			X_ZZ_Program_Master_Data currentProgramme = new Query(
-					Env.getCtx(), I_ZZ_Program_Master_Data.Table_Name,
-					I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?", trx.getTrxName())
-					.setParameters(programme.get_ID()).setClient_ID().setOnlyActiveRecords(true).first();
+																	Env.getCtx(), I_ZZ_Program_Master_Data.Table_Name,
+																	I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ?", trx.getTrxName())
+																																								.setParameters(programme.get_ID())
+																																								.setClient_ID()
+																																								.setOnlyActiveRecords(true)
+																																								.first();
 			if (currentProgramme == null)
 				throw new IllegalStateException("The programme is no longer available. Select the learner and programme again.");
 			List<X_ZZLearnerTermination> requests = requestQuery(	learner.getZZLearner_ID(), programme.get_ID(),
@@ -442,12 +457,16 @@ public class LearnerChangeRequestVM implements Serializable
 			}
 			saved.setAD_Org_ID(currentProgramme.getAD_Org_ID());
 			saved.setZZ_Reason(reason.trim());
+			saved.setZZTerminationDate(terminationTimestamp());
+			saved.setZZIsPermanentEmployment(permanentEmployment);
 			if (submitting)
 			{
 				saved.setZZ_SubmittedBy_ID(Env.getAD_User_ID(Env.getCtx()));
 				saved.setZZ_DocStatus(X_ZZLearnerTermination.ZZ_DOCSTATUS_Submitted);
 			}
 			saved.saveEx(trx.getTrxName());
+			if (submitting)
+				LearnerTerminationReport.attach(saved, registrations.get(0), currentProgramme, trx.getTrxName());
 			trx.commit(true);
 		}
 		catch (Exception ex)
@@ -464,7 +483,7 @@ public class LearnerChangeRequestVM implements Serializable
 		}
 		saved.set_TrxName(null);
 		request = saved;
-		reason = text(saved.getZZ_Reason());
+		loadRequestDetails(saved);
 		return true;
 	}
 
@@ -506,13 +525,25 @@ public class LearnerChangeRequestVM implements Serializable
 				identityNumber = getLearnerIdentity();
 				request = saved;
 				viewingRequest = true;
-				reason = text(saved.getZZ_Reason());
+				loadRequestDetails(saved);
 				return;
 			}
 		}
 		organisation = null;
 		unavailable = true;
 		validationMessage = "The registration linked to this request is no longer available. Contact MQA for assistance.";
+	}
+
+	private void loadRequestDetails(X_ZZLearnerTermination saved)
+	{
+		reason = saved == null ? "" : text(saved.getZZ_Reason());
+		terminationDate = saved == null ? null : saved.getZZTerminationDate();
+		permanentEmployment = saved != null && saved.isZZIsPermanentEmployment();
+	}
+
+	private Timestamp terminationTimestamp()
+	{
+		return terminationDate == null ? null : new Timestamp(terminationDate.getTime());
 	}
 
 	private void notifyForm()
@@ -633,6 +664,28 @@ public class LearnerChangeRequestVM implements Serializable
 		return reasonMaxLength;
 	}
 
+	public Date getTerminationDate()
+	{
+		return terminationDate;
+	}
+
+	public void setTerminationDate(Date value)
+	{
+		terminationDate = value;
+		if (value != null && fieldErrors.remove("terminationDate") != null)
+			BindUtils.postNotifyChange(null, null, this, "fieldErrors");
+	}
+
+	public boolean isPermanentEmployment()
+	{
+		return permanentEmployment;
+	}
+
+	public void setPermanentEmployment(boolean value)
+	{
+		permanentEmployment = value;
+	}
+
 	public int getLearnerCount()
 	{
 		return learnerCount;
@@ -699,6 +752,8 @@ public class LearnerChangeRequestVM implements Serializable
 																I_ZZLearnerTermination.COLUMNNAME_ZZLearner_ID));
 		labels.put("reason", MasterUtil.getNameOfColTranslated(	I_ZZLearnerTermination.Table_Name,
 																I_ZZLearnerTermination.COLUMNNAME_ZZ_Reason));
+		labels.put("terminationDate", MasterUtil.getNameOfColTranslated(I_ZZLearnerTermination.Table_Name,
+																		I_ZZLearnerTermination.COLUMNNAME_ZZTerminationDate));
 		labels.put("identity", MasterUtil.getNameOfColTranslated(	I_ZZLearner_v.Table_Name,
 																	I_ZZLearner_v.COLUMNNAME_ZZ_ID_Passport_No));
 		labels.put("reference", MasterUtil.getNameOfColTranslated(	I_ZZLearnerTermination.Table_Name,
