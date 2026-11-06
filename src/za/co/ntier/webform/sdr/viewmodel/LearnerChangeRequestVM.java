@@ -463,6 +463,7 @@ public class LearnerChangeRequestVM implements Serializable
 			{
 				saved.setZZ_SubmittedBy_ID(Env.getAD_User_ID(Env.getCtx()));
 				saved.setZZ_DocStatus(X_ZZLearnerTermination.ZZ_DOCSTATUS_Submitted);
+				saved.setZZ_DocAction(X_ZZLearnerTermination.ZZ_DOCACTION_ApproveDoNotApprove);
 			}
 			saved.saveEx(trx.getTrxName());
 			if (submitting)
