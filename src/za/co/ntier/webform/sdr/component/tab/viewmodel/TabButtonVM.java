@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.component.tab.viewmodel;
 
 import java.io.IOException;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
@@ -19,6 +20,18 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 			return saveApp.getBtSaveLabel();
 		
 		return "Save & Exit";
+	}
+
+	public String getBtNextLabel() {
+		if (saveApp != null)
+			return saveApp.getBtNextLabel(navTab);
+		return "Next";
+	}
+
+	public String getBtNextIcon() {
+		if (saveApp != null)
+			return saveApp.getBtNextIcon(navTab);
+		return "z-icon-arrow-right";
 	}
 	
 	private NavTab navTab;
@@ -88,14 +101,17 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 	}
 	
 	@Command
-	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp", "showSaveApp"})
+	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp", "showSaveApp", "btNextLabel", "btNextIcon"})
 	public void nextTab() {
+		if (saveApp != null && saveApp.onNextTab(navTab)) {
+			return;
+		}
 		if (navTab != null) 
 			navTab.doNextTab();
 	}
 
 	@Command
-	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp", "showSaveApp"})
+	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp", "showSaveApp", "btNextLabel", "btNextIcon"})
 	public void prevTab() {
 		if (navTab != null)
 			navTab.doPrevTab();

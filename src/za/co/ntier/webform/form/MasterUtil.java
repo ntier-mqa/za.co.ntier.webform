@@ -7,11 +7,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.LocalDate;
-import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +55,6 @@ import org.compiere.model.X_C_Bank;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.compiere.util.ValueNamePair;
@@ -125,6 +124,9 @@ public class MasterUtil {
 	}
 	
 	public static X_C_BP_Group getBPGroup(String bpGroupUU) {
+		if (bpGroupUU.indexOf(",") > 0) {
+			bpGroupUU = bpGroupUU.split(",")[0];// get first item
+		}
 		Query queryBpGroup = new Query(Env.getCtx(), I_C_BP_Group.Table_Name,
 				String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_C_BP_Group_UU), null);
 		queryBpGroup.setParameters(bpGroupUU);//"Z-CET"
@@ -135,7 +137,7 @@ public class MasterUtil {
 		List<X_C_BPartner> bpartners = s_CetTvetCollege.get(bpGroupUU);
 		if (bpartners == null) {
 			Query queryCetColleges = new Query(Env.getCtx(), I_C_BPartner.Table_Name,
-					String.format("%s.%s = ?", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_C_BP_Group_UU), null);
+					String.format("%s.%s = ANY(string_to_array(?, ','))", I_C_BP_Group.Table_Name, I_C_BP_Group.COLUMNNAME_C_BP_Group_UU), null);
 			queryCetColleges.addTableDirectJoin(I_C_BP_Group.Table_Name);
 			queryCetColleges.setParameters(bpGroupUU);//"Z-CET"
 			queryCetColleges.setOrderBy(I_C_BPartner.COLUMNNAME_Name + " ASC");

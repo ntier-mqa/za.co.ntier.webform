@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idspace sclass="sdrForm allocation-offer-form"
+    viewModel="@id('vm') @init('za.co.ntier.webform.sdr.viewmodel.AllocationOfferIntakeVM')">
+
+  <div sclass="allocation-form-wrapper">
+    <div sclass="allocation-scroll-content">
+      <vlayout sclass="allocation-heading" spacing="0">
+        <label sclass="formHeader" value="ALLOCATION OFFER AND INTAKE PLAN" />
+        <label value="Review your allocation, respond to the offer and plan your learner intake." />
+      </vlayout>
+
+      <div sclass="allocation-notice" visible="@load(!vm.organisationLinked)">
+        <label sclass="allocation-notice-title" value="Organisation link required" />
+        <label value="Your user account is not linked to an organisation. Contact your administrator to link your company before responding to an allocation offer." />
+      </div>
+      <div sclass="allocation-notice" visible="@load(vm.organisationLinked and !vm.hasAllocations)">
+        <label sclass="allocation-notice-title" value="No allocation offers available" />
+        <label value="@load(vm.orgName)" />
+        <label value="There are no active allocations for your organisation. Contact MQA if you were expecting an offer." />
+      </div>
+
+      <div visible="@load(vm.hasAllocations)">
+        <div sclass="allocation-overview allocation-row">
+          <vlayout>
+            <label value="Offer status" />
+            <label sclass="allocation-overview-value" value="@load(vm.statusLabel)" />
+          </vlayout>
+          <vlayout>
+            <label value="Reference" />
+            <label sclass="allocation-overview-value" value="@load(vm.referenceNumber)" />
+          </vlayout>
+          <vlayout>
+            <label value="Financial year" />
+            <label sclass="allocation-overview-value" value="@load(vm.financialYearString)" />
+          </vlayout>
+        </div>
+
+        <div sclass="allocation-notice allocation-query" visible="@load(vm.inQueryState)">
+          <label sclass="allocation-notice-title" value="@load(vm.queryBannerTitle)" />
+          <label sclass="allocation-query-comments" value="@load(vm.queryComments)" />
+          <label value="Review the response below. You can update your decision, amend your intake plan or replace the signed PDF before submitting again." />
+        </div>
+        <div sclass="allocation-notice" visible="@load(!vm.editable)">
+          <label sclass="allocation-notice-title" value="@load(vm.statusLabel)" />
+          <label value="This offer is read-only. You can review the submitted details and download your signed document. MQA will contact you if changes are required." />
+        </div>
+
+        <div sclass="sectionHeader">
+          <label sclass="sectionHeaderTitle" value="1. Organisation &amp; Allocation Information" />
+        </div>
+        <div sclass="grid-formview two-col">
+          <div sclass="cell cellType1">
+            <div sclass="cell-title"><label sclass="label" value="Organisation / Company" /></div>
+            <div sclass="cell-content allocation-readonly"><label value="@load(vm.orgName)" /></div>
+          </div>
+          <div sclass="cell cellType1">
+            <div sclass="cell-title"><label sclass="label" value="SDL Number" /></div>
+            <div sclass="cell-content allocation-readonly"><label value="@load(vm.sdlNo)" /></div>
+          </div>
+          <div sclass="cell cellType1">
+            <div sclass="cell-title"><label sclass="label" value="Programme / Allocation" /></div>
+            <div sclass="cell-content">
+              <div sclass="allocation-readonly" visible="@load(!vm.hasMultipleAllocations)">
+                <label value="@load(vm.programDisplayName)" />
+              </div>
+              <listbox mold="select" visible="@load(vm.hasMultipleAllocations)" width="100%"
+                  model="@load(vm.availableAllocations)" selectedItem="@load(vm.selectedApplication)"
+                  onSelect="@command('onSelectApplication', app=self.selectedItem.value)">
+                <template name="model" var="appItem">
+                  <listitem label="@load(vm.getAppDisplayName(appItem))" value="@load(appItem)" />
+                </template>
+              </listbox>
+            </div>
+          </div>
+          <div sclass="cell cellType1">
+            <div sclass="cell-title"><label sclass="label" value="Total Allocated Learners" /></div>
+            <div sclass="cell-content allocation-readonly"><label value="@load(vm.allocatedLearners)" /></div>
+          </div>
+        </div>
+        <label visible="@load(vm.hasMultipleAllocations)"
+            value="Each offer has its own response. You can switch offers without losing edits during this session. Save a draft before closing." />
+
+        <div sclass="allocation-notice">
+          <label sclass="allocation-notice-title" value="Intake plan guidance" />
+          <label value="@load(vm.intakeNote)" />
+          <label value="@load(vm.intakeDatesLabel)" />
+        </div>
+
+        <div sclass="sectionHeader">
+          <label sclass="sectionHeaderTitle" value="2. Allocation Offer Decision" />
+        </div>
+        <div sclass="grid-formview one-col">
+          <div sclass="cell cellType1">
+            <div sclass="cell-title">
+              <label sclass="label" value="Does your organisation accept this allocation offer?" />
+              <label sclass="required" value=" *" />
+            </div>
+            <div sclass="cell-content">
+              <radiogroup selectedIndex="@load(vm.offerDecision eq 'D' ? 1 : 0)"
+                  onCheck="@command('onDecisionChanged', decision=self.selectedItem.value)">
+                <div sclass="allocation-radio-options allocation-row">
+                  <radio label="Accept Allocation Offer" value="A" disabled="@load(!vm.editable)" />
+                  <radio label="Decline Allocation Offer" value="D" disabled="@load(!vm.editable)" />
+                </div>
+              </radiogroup>
+            </div>
+          </div>
+          <div sclass="cell cellType1" visible="@load(vm.offerDecision eq 'D')">
+            <div sclass="cell-title">
+              <label sclass="label" value="Reason for Declining" />
+              <label sclass="required" value=" *" />
+            </div>
+            <div sclass="cell-content">
+              <textbox multiline="true" rows="4" width="100%" maxlength="2000" readonly="@load(!vm.editable)"
+                  value="@bind(vm.declineReason)" onChange="@command('onFieldChanged')"
+                  placeholder="Explain why your organisation cannot accept this allocation offer." />
+            </div>
+          </div>
+        </div>
+
+        <div visible="@load(vm.offerDecision eq 'A')">
+          <div sclass="sectionHeader">
+            <label sclass="sectionHeaderTitle" value="3. Signed Allocation Offer / SLA" />
+          </div>
+          <div sclass="grid-formview one-col">
+            <div sclass="cell cellType6">
+              <div sclass="cell-title">
+                <label sclass="label" value="Signed Allocation Offer / Service Level Agreement (PDF)" />
+                <label sclass="required" value=" *" />
+              </div>
+              <vlayout sclass="cell-content" spacing="10px">
+                <label value="Upload the signed PDF before submitting. You can save a draft and attach it later." />
+                <div sclass="allocation-row" visible="@load(not empty vm.uploadedFileName)">
+                  <span sclass="z-icon-file-pdf-o" />
+                  <label sclass="allocation-file-name" value="@load(vm.uploadedFileName)" />
+                  <hlayout spacing="8px">
+                    <button label="Download" iconSclass="z-icon-download" onClick="@command('downloadDocument')" />
+                    <button label="Remove" iconSclass="z-icon-trash" visible="@load(vm.editable)"
+                        onClick="@command('removeUploadedDocument')" />
+                  </hlayout>
+                </div>
+                <label visible="@load(empty vm.uploadedFileName)" value="No signed PDF attached yet." />
+                <fileupload visible="@load(vm.editable)" upload="@load(vm.uploadSetting)"
+                    label="@load(empty vm.uploadedFileName ? 'Upload Signed PDF' : 'Replace Signed PDF')"
+                    iconSclass="z-icon-upload" onUpload="@command('onUploadDocument', media=event.media)" />
+              </vlayout>
+            </div>
+          </div>
+
+          <div sclass="sectionHeader allocation-intake-heading allocation-row">
+            <label sclass="sectionHeaderTitle" value="4. Intake Plan" />
+            <button label="Add Intake Line" iconSclass="z-icon-plus" visible="@load(vm.editable)"
+                onClick="@command('addIntakeRow')" />
+          </div>
+          <label value="Add a line for each qualification or trade and intake date. Learner counts must be positive whole numbers." />
+          <div sclass="allocation-table-scroll">
+            <grid model="@load(vm.intakeRows)" sclass="mqa-intake-table"
+                emptyMessage="No intake lines. Use Add Intake Line to create your schedule.">
+              <columns>
+                <column label="@load(vm.lineNumberLabel)" width="55px" align="center" />
+                <column label="@load(vm.tradeNameLabel)" hflex="1" />
+                <column label="@load(vm.learnerCountLabel)" width="135px" align="center" />
+                <column label="@load(vm.intakeDateLabel)" width="165px" />
+                <column label="" width="65px" align="center" />
+              </columns>
+              <template name="model" var="each">
+                <row>
+                  <label value="@load(each.lineNo)" />
+                  <combobox model="@load(vm.tradeSuggestions)" value="@bind(each.tradeName)" width="100%"
+                      autocomplete="true" autodrop="true" maxlength="255" disabled="@load(!vm.editable)"
+                      onChange="@command('onFieldChanged')" placeholder="Select or type a qualification / trade"
+                      tooltiptext="Qualification or trade name (required)">
+                    <template name="model" var="tradeItem">
+                      <comboitem label="@load(tradeItem)" value="@load(tradeItem)" />
+                    </template>
+                  </combobox>
+                  <intbox value="@bind(each.numberOfLearners)" onChange="@command('onFieldChanged')"
+                      width="100%" constraint="no negative" disabled="@load(!vm.editable)"
+                      tooltiptext="Number of learners (positive whole number)" />
+                  <datebox value="@bind(each.intakeDate)" format="dd/MM/yyyy" width="100%"
+                      disabled="@load(!vm.editable)"
+                      onChange="@command('onFieldChanged')" tooltiptext="@load(vm.financialYearRange)" />
+                  <button iconSclass="z-icon-trash" sclass="btn-circle delrow" visible="@load(vm.editable)"
+                      tooltiptext="@load(each.deleteTooltip)"
+                      onClick="@command('removeIntakeRow', row=each)" />
+                </row>
+              </template>
+              <foot>
+                <footer span="2"><label value="TOTAL NUMBER OF LEARNERS TO BE REGISTERED" /></footer>
+                <footer align="center"><label value="@load(vm.totalLearners)" /></footer>
+                <footer span="2" />
+              </foot>
+            </grid>
+          </div>
+          <div sclass="@load(vm.overAllocation ? 'allocation-notice allocation-error' : 'allocation-notice allocation-total')">
+            <label value="@load(vm.learnerTotalLabel)" sclass="allocation-notice-title" />
+            <label value="@load(vm.learnerSummary)" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div sclass="allocation-action-panel" visible="@load(vm.hasAllocations)">
+      <div sclass="allocation-notice allocation-error" visible="@load(not empty vm.validationMessage)">
+        <label sclass="allocation-notice-title" value="Please check your response" />
+        <label value="@load(vm.validationMessage)" />
+      </div>
+      <div sclass="allocation-notice allocation-success" visible="@load(not empty vm.feedbackMessage)">
+        <label value="@load(vm.feedbackMessage)" />
+      </div>
+      <div sclass="formBottomPanel allocation-row" visible="@load(vm.editable)">
+        <label value="@load(vm.dirty ? 'You have unsaved changes.' : 'Required fields are marked with *.')" />
+        <div sclass="allocation-row">
+          <button label="Save Draft" iconSclass="z-icon-floppy-disk" sclass="icon-on-right"
+              visible="@load(vm.offerDecision eq 'A')" onClick="@command('saveDraft')" />
+          <button label="@load(vm.submitLabel)" iconSclass="z-icon-gear" sclass="icon-on-right"
+              visible="@load(vm.offerDecision eq 'A')" onClick="@command('submitAccept')" />
+          <button label="Submit Non-Acceptance Decision" iconSclass="z-icon-gear" sclass="icon-on-right"
+              visible="@load(vm.offerDecision eq 'D')" onClick="@command('submitDecline')" />
+        </div>
+      </div>
+    </div>
+  </div>
+</idspace>

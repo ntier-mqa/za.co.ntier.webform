@@ -15,6 +15,7 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.UploadEvent;
 
 import za.co.ntier.api.model.I_ZZDocumentUpload;
+import za.co.ntier.api.model.I_ZZRegistrationDocs;
 import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
@@ -111,7 +112,7 @@ public class UploadCellModel extends CellModel {
 
 			// free memory for this row after persisting
 			setBytes(null);
-		}else {
+		} else if (org.apache.commons.lang3.StringUtils.isBlank(fileName)) {
 			AttachmentUtil.removeAttachmentEntry(data, getBtText(), trxName);
 		}
 		
@@ -165,6 +166,8 @@ public class UploadCellModel extends CellModel {
 		if (refDocUploadDefObj !=null && refDocUploadDefObj instanceof I_ZZDocumentUpload) {
 			I_ZZDocumentUpload refDocUploadDefPo = (I_ZZDocumentUpload)refDocUploadDefObj;
 			return refDocUploadDefPo.isMandatory();
+		}else if (refDocUploadDefObj instanceof I_ZZRegistrationDocs) {
+			return ((I_ZZRegistrationDocs) refDocUploadDefObj).isMandatory();
 		}else if (refDocUploadDefObj !=null && !(refDocUploadDefObj instanceof I_ZZDocumentUpload)) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZWrongValueForDocUploadDef"));
 		}else {

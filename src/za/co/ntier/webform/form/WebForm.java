@@ -32,6 +32,9 @@ public class WebForm extends ADForm {
 	public static final String bpGroupMenuContextKey = "+bpGroupUU";
 	public static final String bpGroupMenuContextKeyNonPlus = "bpGroupUU";
 	
+	public static final String bpGroupTitleMenuContextKey = "+bpGroupTitle";
+	public static final String bpGroupTitleMenuContextKeyNonPlus = "bpGroupTitle";
+	
 	public static final String programMasterDataUUMenuContextKey = "+"
 			+ I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_Program_Master_Data_UU;
 	public static final String programTypeMenuContextKey = "+programType";
@@ -129,6 +132,9 @@ public class WebForm extends ADForm {
 		
 		String bpGroupValue = Env.getContext(Env.getCtx(), m_WindowNo, bpGroupMenuContextKey);
 		menuContextInfo.getMoreContext().put(bpGroupMenuContextKeyNonPlus, bpGroupValue);
+		
+		String bpGroupTitleValue = Env.getContext(Env.getCtx(), m_WindowNo, bpGroupTitleMenuContextKey);
+		menuContextInfo.getMoreContext().put(bpGroupTitleMenuContextKeyNonPlus, bpGroupTitleValue);
 		
 		return menuContextInfo;
 	}

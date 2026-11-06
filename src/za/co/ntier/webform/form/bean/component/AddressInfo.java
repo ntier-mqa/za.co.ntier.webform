@@ -117,10 +117,18 @@ public class AddressInfo implements ISaveForm {
 		return addressLineTitle;
 	}
 
+	private String addressTitle = null;
 	public String getAddressTitle() {
-		return addressCategory.getAddressTitle(programType, isAlternate);
+		if (addressTitle == null) {
+			addressTitle = addressCategory.getAddressTitle(programType, isAlternate);
+		}
+		return addressTitle;
 	}
 
+	public void setAddressTitle(String addressTitle) {
+		this.addressTitle = addressTitle;
+	}
+	
 	/**
 	 * @return the sdf
 	 */

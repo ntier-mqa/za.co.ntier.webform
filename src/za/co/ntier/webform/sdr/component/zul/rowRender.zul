@@ -13,7 +13,7 @@
       <!-- template to generate a title/component per col -->
       <template name="children" var="col">
         <!-- group title/content -->
-        <div sclass="@init(( 'cell cellType' += vmRowRender.row[col].cellType ))"
+        <div sclass="@init(( 'cell cellType' += vmRowRender.row[col].cellType += (col.daoPropertyName ne null ? ' col-' += col.daoPropertyName : '') ))"
         	style="@load(vmRowRender.row.getRowStyle(col))"
         	visible="@load(vmRowRender.row[col].visible)">
           <!-- title part, show description, error message -->
@@ -77,7 +77,7 @@
             
             <button if="${ vmRowRender.row[col].cellType eq CellModel.SEARCH_CELL }"
 			  iconSclass="z-icon-fw z-icon-magnifying-glass z-icon-solid"
-			  label="@bind(col.title)"
+			  label="@bind(col.btText ne null ? col.btText : col.title)"
               onClick="@command('cmdBtClick', tableModel = vmRowRender.tableModel, row = vmRowRender.row, col = col)"/>
             
             <!-- list - Area - province -->

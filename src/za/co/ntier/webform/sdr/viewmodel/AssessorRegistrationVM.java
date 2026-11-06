@@ -1087,7 +1087,6 @@ public class AssessorRegistrationVM extends StepAppVM{
 		});
 		
 		lastSchoolEmisCol.addCellPropertyChangeListener(evt -> {
-			CellModel srcEvt = (CellModel)evt.getSource();
 			X_ZZLkpSchoolEmis schoolEmisSelected = (X_ZZLkpSchoolEmis)evt.getNewValue();
 			if (schoolEmisSelected == null) {
 				lastSchoolEmisTextCol.setReadonly(true);

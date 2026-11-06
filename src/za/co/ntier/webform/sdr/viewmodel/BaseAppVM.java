@@ -13,6 +13,7 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.desktop.WindowRegistry;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
@@ -419,6 +420,11 @@ public abstract class BaseAppVM implements ISaveApp{
 						adInfoWindowId, 
 						infoPanelPara.isLookup())
 			);
+		}
+		
+		if (ip == null) {
+			Dialog.warn(winNo, "Warning", "No active Info Window found for: " + infoPanelPara.getTableName());
+			return;
 		}
 		
 		// set layout for info window

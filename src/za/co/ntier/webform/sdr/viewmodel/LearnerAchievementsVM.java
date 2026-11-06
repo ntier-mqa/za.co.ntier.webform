@@ -29,6 +29,11 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Listitem;
+import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.window.Dialog;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Window;
 
 import za.co.ntier.api.model.I_ZZCompletedAssessments_v;
 import za.co.ntier.api.model.I_ZZLearnerLearnership;
@@ -457,12 +462,102 @@ public class LearnerAchievementsVM extends StepAppVM
 	void showInfoPanelForIntervention(String tableName, String columnId)
 	{
 		String whereClause = I_ZZLearnerQCTOArtisans.COLUMNNAME_ZZLearner_ID + " = " + learnerSelected.getZZLearner_ID();
-		showInfoPanel(
-						InfoPanelPara.getInstance(tableName, columnId).setWhereClause(whereClause), (obj, infoPanel) -> {
-							Object[] objs = (Object[]) obj;
-							showAssessmentSteo((int) objs[0]);
+		List<PO> records = new Query(Env.getCtx(), tableName, whereClause, null)
+				.setOnlyActiveRecords(true)
+				.list();
+		if (records == null || records.isEmpty())
+		{
+			Dialog.warn(0, "Warning", "No enrolled record found for this learner and intervention.");
+			return;
+		}
 
-						});
+		if (records.size() == 1)
+		{
+			showAssessmentSteo(records.get(0).get_ID());
+			return;
+		}
+
+		showProgramSelectionPopup(records);
+	}
+
+	private void showProgramSelectionPopup(List<PO> records)
+	{
+		Window win = new Window();
+		win.setTitle("Select Program");
+		win.setWidth("550px");
+		win.setClosable(true);
+		win.setBorder("normal");
+		win.setPosition("center");
+
+		Listbox listbox = new Listbox();
+		listbox.setEmptyMessage("No programs available");
+		for (PO record : records)
+		{
+			String label = getProgramLabel(record);
+			Listitem item = new Listitem(label, record.get_ID());
+			listbox.appendChild(item);
+		}
+		listbox.addEventListener(Events.ON_SELECT, evt -> {
+			Listitem selected = listbox.getSelectedItem();
+			if (selected != null)
+			{
+				int selectedId = (Integer) selected.getValue();
+				win.detach();
+				showAssessmentSteo(selectedId);
+			}
+		});
+		win.appendChild(listbox);
+		AEnv.showWindow((org.adempiere.webui.component.Window) win);
+	}
+
+	private String getProgramLabel(PO record)
+	{
+		if (record == null)
+			return "";
+		try
+		{
+			if (isInterventionQCTOArtisans() || isInterventionQCTOLearnerships())
+			{
+				int progId = record.get_ValueAsInt("ZZQctoLearnership_ID");
+				if (progId > 0)
+				{
+					X_ZZQctoLearnership prog = new X_ZZQctoLearnership(Env.getCtx(), progId, null);
+					return prog.getZZLearnershipCode() + " - " + prog.getZZLearnershipTitle();
+				}
+			}
+			else if (isInterventionQCTOSkills())
+			{
+				int progId = record.get_ValueAsInt("ZZQctoSkillsProgramme_ID");
+				if (progId > 0)
+				{
+					X_ZZQctoSkillsProgramme prog = new X_ZZQctoSkillsProgramme(Env.getCtx(), progId, null);
+					return prog.getZZSkillsProgrammeCode() + " - " + prog.getZZSkillsProgrammeTitle();
+				}
+			}
+			else if (isInterventionSkillsProgrammes())
+			{
+				int progId = record.get_ValueAsInt("ZZSkillsProgramme_ID");
+				if (progId > 0)
+				{
+					X_ZZSkillsProgramme prog = new X_ZZSkillsProgramme(Env.getCtx(), progId, null);
+					return prog.getZZSkillsProgrammeCode() + " - " + prog.getZZSkillsProgrammeTitle();
+				}
+			}
+			else if (isInterventionLearnerships())
+			{
+				int progId = record.get_ValueAsInt("ZZLearnership_ID");
+				if (progId > 0)
+				{
+					X_ZZLearnership prog = new X_ZZLearnership(Env.getCtx(), progId, null);
+					return prog.getZZLearnershipCode() + " - " + prog.getZZLearnershipTitle();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			// fallback
+		}
+		return record.toString();
 	}
 
 	void showAssessmentSteo(int id)

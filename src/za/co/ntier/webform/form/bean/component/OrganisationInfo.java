@@ -117,6 +117,11 @@ public class OrganisationInfo implements ISaveForm {
 	
 	public String getCetTvetNameTitle() {
 		if (StringUtils.isNoneBlank(menuContextInfo.getContextParam(WebForm.bpGroupMenuContextKeyNonPlus))) {
+			// in case combine multi bpGroup like Unemployed Bursars for Public Universities and TVET Support
+			if (StringUtils.isNoneBlank(menuContextInfo.getContextParam(WebForm.bpGroupTitleMenuContextKeyNonPlus))) {
+				return menuContextInfo.getContextParam(WebForm.bpGroupTitleMenuContextKeyNonPlus);
+			}
+			
 			X_C_BP_Group group = MasterUtil.getBPGroup(menuContextInfo.getContextParam(WebForm.bpGroupMenuContextKeyNonPlus));
 			return group.getDescription();
 		}else

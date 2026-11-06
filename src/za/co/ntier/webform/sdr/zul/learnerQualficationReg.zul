@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import za.co.ntier.webform.form.WebForm ?>
-<idspace xmlns:n="native" sclass="sdrForm" viewModel="@id(&apos;vmLearner&apos;) @init(&apos;za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM&apos;)">
+<idspace xmlns:n="native" sclass="sdrForm" viewModel="@id('vmLearner') @init('za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM')">
   <style>
-    /* Compact Grid layout for Learner Qualification registration tabs */
+    /* Compact Grid layout for Learner Qualification registration */
     .outter-view_grid,
     .mqaWebForm .sdrForm .outter-view_grid {
       overflow: visible !important;
     }
 
+    .expand-tabbox .z-tabpanel {
+      overflow: hidden !important;
+    }
+
+    /* Disable direct tab clicking - user must use Next button */
+    .expand-tabbox > .z-tabs .z-tab,
+    .expand-tabbox .z-tabs-content .z-tab {
+      pointer-events: none !important;
+      cursor: default !important;
+    }
+
     .grid-listView[class*="srd-ZZLearner"],
     .grid-listView[class*="srd-learner"] {
       display: grid !important;
-      grid-template-columns: minmax(135px, 1.1fr) minmax(160px, 1.45fr) minmax(160px, 1.45fr) minmax(140px, 1.2fr) minmax(95px, 0.75fr) minmax(110px, 0.85fr) minmax(110px, 0.85fr) 40px !important;
+      grid-template-columns: minmax(180px, 1.3fr) minmax(180px, 1.3fr) minmax(180px, 1.3fr) minmax(180px, 1.3fr) minmax(120px, 0.9fr) minmax(170px, 1.2fr) minmax(150px, 1.0fr) minmax(150px, 1.0fr) !important;
       width: 100% !important;
+      max-width: 100% !important;
       gap: 1px !important;
       background-color: #F0F0F0 !important;
       border-radius: 6px !important;
       max-height: calc(100vh - 250px) !important;
+      overflow-x: auto !important;
       overflow-y: auto !important;
       position: relative !important;
       box-sizing: border-box !important;
@@ -115,64 +128,256 @@
       max-width: 100% !important;
     }
 
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .z-button:hover,
-    .grid-listView[class*=&quot;srd-learner&quot;] .z-button:hover {
+    .grid-listView[class*="srd-ZZLearner"] .z-button:hover,
+    .grid-listView[class*="srd-learner"] .z-button:hover {
       background: #243b6b !important;
     }
 
     /* Datebox Controls */
-    .grid-listView[class*=&quot;srd-ZZLearner&quot;] .cell-content .z-datebox,
-    .grid-listView[class*=&quot;srd-learner&quot;] .cell-content .z-datebox {
+    .grid-listView[class*="srd-ZZLearner"] .cell-content .z-datebox,
+    .grid-listView[class*="srd-learner"] .cell-content .z-datebox {
       width: 100% !important;
       height: 30px !important;
     }
-  </style><!-- Always Visible Form Header -->
+
+    /* DG Programme and Documents View Styling */
+    .srd-dg-programme .cell-content .z-textbox[readonly],
+    .srd-dg-programme .cell-content input[readonly],
+    .col-ZZ_SDP_ID .cell-content .z-textbox[readonly],
+    .col-ZZ_SDP_ID .cell-content input[readonly] {
+      background-color: #f1f5f9 !important;
+      color: #334155 !important;
+      cursor: default !important;
+    }
+
+    /* DG Programme search buttons: compact icon-only beside input */
+    .srd-dg-programme .cell-content15,
+    [class*="srd-dg-programme"] .cell-content15,
+    .srd-dg-programme .cellType15 .cell-content,
+    [class*="srd-dg-programme"] .cellType15 .cell-content {
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .srd-dg-programme .cell-content15 .z-textbox,
+    [class*="srd-dg-programme"] .cell-content15 .z-textbox,
+    .srd-dg-programme .cell-content15 input[type="text"],
+    [class*="srd-dg-programme"] .cell-content15 input[type="text"] {
+      flex: 1 1 auto !important;
+      width: auto !important;
+    }
+
+    .srd-dg-programme .cell-content15 .z-button,
+    [class*="srd-dg-programme"] .cell-content15 .z-button,
+    .srd-dg-programme .cellType15 .z-button,
+    [class*="srd-dg-programme"] .cellType15 .z-button {
+      flex: 0 0 auto !important;
+      width: 34px !important;
+      min-width: 34px !important;
+      height: 30px !important;
+      padding: 0 !important;
+      margin-left: 5px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 0 !important;
+    }
+
+    .srd-dg-programme .cell-content15 .z-button i,
+    [class*="srd-dg-programme"] .cell-content15 .z-button i,
+    .srd-dg-programme .cellType15 .z-button i,
+    [class*="srd-dg-programme"] .cellType15 .z-button i {
+      font-size: 14px !important;
+    }
+
+    .srd-dg-programme .cell-content15 .z-button .z-button-label,
+    [class*="srd-dg-programme"] .cell-content15 .z-button .z-button-label,
+    .srd-dg-programme .cellType15 .z-button .z-button-label,
+    [class*="srd-dg-programme"] .cellType15 .z-button .z-button-label {
+      display: none !important;
+    }
+
+    /* SDP search button: compact icon-only beside input */
+    .col-ZZ_SDP_ID .cell-content,
+    .col-ZZ_SDP_ID.cellType15 .cell-content {
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .col-ZZ_SDP_ID .cell-content .z-textbox,
+    .col-ZZ_SDP_ID .cell-content input[type="text"] {
+      flex: 1 1 auto !important;
+      width: auto !important;
+    }
+
+    .col-ZZ_SDP_ID .z-button {
+      flex: 0 0 auto !important;
+      width: 34px !important;
+      min-width: 34px !important;
+      height: 30px !important;
+      padding: 0 !important;
+      margin-left: 5px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 0 !important;
+    }
+
+    .col-ZZ_SDP_ID .z-button i {
+      font-size: 14px !important;
+    }
+
+    .col-ZZ_SDP_ID .z-button .z-button-label {
+      display: none !important;
+    }
+
+    .srd-dg-documents .header-cell {
+      background: #1b2a6b !important;
+      color: #ffffff !important;
+      font-weight: 600 !important;
+      font-size: 12px !important;
+    }
+    .expand-tabbox .z-tab:nth-child(2),
+    .expand-tabbox .z-tab-disabled {
+      pointer-events: none !important;
+      cursor: default !important;
+    }
+  </style>
+
+  <!-- Always Visible Form Header -->
   <div style="display:flex; padding:5px 0 20px 0; flex-direction: column; align-items: center;">
-    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLearner.formInfo.formHeader)"/>
+    <label style="font-weight: bold;font-size: x-large;" value="@init(vmLearner.formInfo.formHeader)" />
     <div style="padding-bottom:10px;font-size:smaller">
       <html content="@init(( vmLearner.menuContextInfo.programMasterData.getZZSupportInfo() ))"/>
     </div>
-  </div><!-- Phase 1: Identity Details -->
-  <div visible="@load(!vmLearner.identityValidated)">
-    <div sclass="sectionHeader" style="margin: 0 20px;">
-      <label sclass="sectionHeaderTitle" value="Identity Details"/>
-    </div>
-    <div style="margin: 0 20px 20px 20px;">
-      <div sclass="grid-formview two-col" style="grid-template-columns: 1fr 1fr;">
-        <div sclass="cell cellType2">
-          <div sclass="cell-title">
-            <label sclass="label" value="ID Type"/>
-            <label sclass="required" value="*"/>
-          </div>
-          <div sclass="cell-content cell-content15">
-            <listbox mold="select" model="@load(vmLearner.alternateIdTypes)" selectedItem="@bind(vmLearner.selectedIdType)">
-              <template name="model">
-                <listitem label="@load(each.name)"/>
-              </template>
-            </listbox>
-          </div>
-        </div>
-        <div sclass="cell cellType1">
-          <div sclass="cell-title">
-            <label sclass="label" value="ID Number"/>
-            <label sclass="required" value=" *"/>
-          </div>
-          <div sclass="cell-content cell-content15">
-            <textbox value="@bind(vmLearner.idNumber)"/>
-          </div>
+  </div>
+
+  <nodom children="@load(vmLearner.steps) @template(each)">
+    <template name="selectRegistration">
+      <include
+        component="@init(vmLearner.tmLearnerSelection)"
+        menuContextInfo="@init(vmLearner.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+        
+      <include
+        component="@init(vmLearner.tmLearnerSelectionInfo)"
+        menuContextInfo="@init(vmLearner.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+
+      <div visible="@load(vmLearner.dgProgrammeActive)" style="margin-top: 15px;">
+        <tabbox sclass="expand-tabbox" selectedIndex="@load(vmLearner.dgSelectedTabIndex)">
+          <tabs>
+            <tab label="Programme" />
+            <tab label="Documents" disabled="true" style="pointer-events: none !important; cursor: default !important;" />
+          </tabs>
+          <tabpanels>
+            <tabpanel>
+              <include
+                component="@load(vmLearner.tmDGProgrammeDetails)"
+                menuContextInfo="@init(vmLearner.menuContextInfo)"
+                src="@load(vmLearner.dgProgrammeActive ? (WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')) : null)" />
+            </tabpanel>
+            <tabpanel>
+              <include
+                component="@load(vmLearner.tmDGDocuments)"
+                menuContextInfo="@init(vmLearner.menuContextInfo)"
+                src="@load(vmLearner.dgProgrammeActive ? (WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')) : null)" />
+            </tabpanel>
+          </tabpanels>
+        </tabbox>
+        <div sclass="formBottomPanel" style="margin-top: 15px;">
+          <button
+            label="Cancel"
+            iconSclass="z-icon-xmark"
+            onClick="@command('cancelApp')" />
+          <button
+            visible="@load(vmLearner.dgSelectedTabIndex eq 1)"
+            label="Previous"
+            iconSclass="z-icon-arrow-left"
+            onClick="@command('prevDGTab')" />
+          <button
+            label="Save &amp; Exit"
+            iconSclass="z-icon-floppy-disk"
+            sclass="icon-on-right"
+            onClick="@command('saveDGAppDraft')" />
+          <button
+            visible="@load(vmLearner.dgSelectedTabIndex eq 0)"
+            label="Generate Agreement &amp; Next"
+            iconSclass="z-icon-arrow-right"
+            sclass="icon-on-right"
+            onClick="@command('nextDGTab')" />
+          <button
+            visible="@load(vmLearner.dgSelectedTabIndex eq 1)"
+            label="Submit"
+            iconSclass="z-icon-gear"
+            sclass="icon-on-right"
+            onClick="@command('submitDGApp')" />
         </div>
       </div>
-      <div style="padding:10px 0;">
-        <button label="VALIDATE" onClick="@command(&apos;onValidateIdentity&apos;)" sclass="z-button" visible="@load(!vmLearner.identityValidated)" style="font-weight:bold;"/>
+    </template>
+
+    <template name="registration">
+      <include
+        component="@init(vmLearner.tmLearnerSelectionInfo)"
+        menuContextInfo="@init(vmLearner.menuContextInfo)"
+        src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+
+      <div style="margin: 10px 0 5px 0;">
+        <button
+          label="Back"
+          iconSclass="z-icon-arrow-left"
+          onClick="@command('backToSelection')" />
       </div>
-      <hlayout visible="@load(vmLearner.validationMessage ne &apos;&apos;)" style="padding:10px 0;">
-        <label value="@load(vmLearner.validationMessage)" style="padding:8px 12px; border:1px solid #ccc; background:#f9f9f9; display:block; width:100%;"/>
-      </hlayout>
-    </div>
-  </div>
-  <div visible="@load(vmLearner.identityValidated)">
-    <include component="@init(vmLearner.tmNames)" menuContextInfo="@init(vmLearner.menuContextInfo)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/zul/dataFormView.zul&apos;)))"/>
-    <include sclass="navTabOuter" component="@init(vmLearner.mainTab)" menuContextInfo="@init(vmLearner.menuContextInfo)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/tab/zul/navTab.zul&apos;)))"/>
-    <include saveApp="@init(vmLearner)" navTab="@init(vmLearner.mainTab)" src="@load((WebForm.getBundleResourcePath(&apos;sdr/component/tab/zul/tabButton.zul&apos;)))"/>
-  </div>
+
+      <tabbox sclass="expand-tabbox" selectedIndex="@bind(vmLearner.regSelectedTabIndex)">
+        <tabs>
+          <tab label="Programme" />
+          <tab label="Documents" />
+        </tabs>
+        <tabpanels>
+          <tabpanel>
+            <include
+              component="@load(vmLearner.tmRegistration)"
+              menuContextInfo="@init(vmLearner.menuContextInfo)"
+              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataFormView.zul')))" />
+          </tabpanel>
+          <tabpanel>
+            <include
+              component="@load(vmLearner.tmRegistrationDocuments)"
+              menuContextInfo="@init(vmLearner.menuContextInfo)"
+              src="@load((WebForm.getBundleResourcePath('sdr/component/zul/dataListView.zul')))" />
+          </tabpanel>
+        </tabpanels>
+      </tabbox>
+
+      <div sclass="formBottomPanel" style="margin-top: 15px;">
+        <button
+          label="Cancel"
+          iconSclass="z-icon-xmark"
+          onClick="@command('cancelApp')" />
+        <button
+          visible="@load(vmLearner.regSelectedTabIndex eq 1)"
+          label="Previous"
+          iconSclass="z-icon-arrow-left"
+          onClick="@command('prevRegTab')" />
+        <button
+          label="Save &amp; Exit"
+          iconSclass="z-icon-floppy-disk"
+          sclass="icon-on-right"
+          onClick="@command('saveRegAppDraft')" />
+        <button
+          visible="@load(vmLearner.regSelectedTabIndex eq 0)"
+          label="Generate Agreement &amp; Next"
+          iconSclass="z-icon-arrow-right"
+          sclass="icon-on-right"
+          onClick="@command('nextRegTab')" />
+        <button
+          visible="@load(vmLearner.regSelectedTabIndex eq 1)"
+          label="Submit"
+          iconSclass="z-icon-gear"
+          sclass="icon-on-right"
+          onClick="@command('submitRegApp')" />
+      </div>
+    </template>
+  </nodom>
 </idspace>

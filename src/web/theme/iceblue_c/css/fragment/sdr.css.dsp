@@ -250,8 +250,72 @@
 }
 
 .mqaWebForm .grid-formview .cell-content15 {
-	display:inline-flex;
+	display: inline-flex;
 }
+
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 4px;
+}
+
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content .z-textbox,
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content input[type="text"] {
+	flex: 1 1 auto;
+	min-width: 0;
+	width: auto;
+}
+
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content .z-textbox ~ .z-button,
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content input[type="text"] ~ .z-button {
+	flex: 0 0 auto;
+	width: 34px;
+	min-width: 34px;
+	height: 32px;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-size: 0 !important;
+}
+
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content .z-textbox ~ .z-button .z-button-label,
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content input[type="text"] ~ .z-button .z-button-label {
+	display: none !important;
+}
+
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content .z-textbox ~ .z-button i,
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content input[type="text"] ~ .z-button i {
+	font-size: 14px !important;
+}
+
+/* Standalone search button in form view (e.g., Learner chooser without input textbox) */
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content > .z-button:only-child,
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content > .z-button:first-child:last-child {
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 6px !important;
+	height: 32px !important;
+	padding: 4px 14px !important;
+	width: auto !important;
+	font-size: 13px !important;
+	white-space: nowrap !important;
+}
+
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content > .z-button:only-child .z-button-label,
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content > .z-button:first-child:last-child .z-button-label {
+	display: inline-block !important;
+	font-size: 13px !important;
+}
+
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content > .z-button:only-child i,
+.mqaWebForm .grid-formview .cell.cellType15 .cell-content > .z-button:first-child:last-child i {
+	font-size: 14px !important;
+}
+
 
 
 .mqaWebForm .container .grid-container .form-field select,
@@ -330,6 +394,46 @@
 /* person education */
 .mqaWebForm .grid-formview.two-col.srd-education > :nth-child(7) {
   grid-column: span 2;
+}
+
+/* parent details */
+.mqaWebForm .grid-formview.srd-parent-details,
+.mqaWebForm .grid-formview.two-col.srd-parent-details {
+  grid-template-columns: repeat(6, 1fr);
+}
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(1),
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(2),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(1),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(2) {
+  grid-column: span 3;
+}
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(3),
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(4),
+.mqaWebForm .grid-formview.srd-parent-details > :nth-child(5),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(3),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(4),
+.mqaWebForm .grid-formview.two-col.srd-parent-details > :nth-child(5) {
+  grid-column: span 2;
+}
+
+/* post school education */
+.mqaWebForm .grid-formview.two-col.srd-post-school-education > :nth-child(5) {
+  grid-column: span 2;
+}
+
+/* experiential learning */
+.mqaWebForm .grid-formview.two-col.srd-experiential-learning,
+.mqaWebForm .grid-formview.two-col.srd-contactable-reference {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* employment history */
+.mqaWebForm .grid-formview.two-col.srd-employment-history > :nth-child(5) {
+  grid-column: span 2;
+}
+
+.mqaWebForm .grid-formview.two-col.srd-employment-history > :nth-child(6) .fileUploadContent {
+  align-items: flex-start;
 }
 
 /* person detail */
@@ -608,4 +712,240 @@
 
 .mqaWebForm .sdrForm .z-include{
 	height:unset !important;
+}
+
+/* Shared SDR row actions. */
+.mqaWebForm .sdrForm .btn-circle.delrow {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.mqaWebForm .sdrForm .btn-circle.delrow:hover {
+  background: #dc2626 !important;
+}
+
+/***** Allocation Offer and Intake Plan (BUC 9A) *****/
+.mqaWebForm .sdrForm .allocation-form-wrapper {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.mqaWebForm .sdrForm .allocation-scroll-content {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 10px !important;
+  padding-bottom: 30px !important;
+}
+
+.mqaWebForm .sdrForm .mqa-intake-table {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.mqaWebForm .sdrForm .mqa-intake-table .z-column {
+  background: #1b2a6b !important;
+  color: #ffffff !important;
+  border-right: 1px solid #2d3e8c !important;
+}
+
+.mqaWebForm .sdrForm .mqa-intake-table .z-column-content {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  padding: 8px 10px !important;
+  line-height: 1.3 !important;
+}
+
+.mqaWebForm .sdrForm .mqa-intake-table .z-row-inner {
+  padding: 8px 10px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.mqaWebForm .sdrForm .mqa-intake-table .z-row:hover .z-row-inner {
+  background: #f8fafc !important;
+}
+
+.mqaWebForm .sdrForm .mqa-intake-table .z-foot .z-footer {
+  background: #f1f5f9 !important;
+  border-top: 2px solid #cbd5e1 !important;
+  padding: 10px 12px !important;
+}
+
+.mqaWebForm .allocation-offer-form,
+.mqaWebForm .allocation-offer-form .allocation-form-wrapper {
+  min-height: 0;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-scroll-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-heading {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-heading .formHeader {
+  padding-bottom: 8px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-overview {
+  gap: 16px 32px;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #dce0e7;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-overview > .z-vlayout {
+  min-width: 120px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-overview-value {
+  color: var(--mqa-blue);
+  font-weight: bold;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-readonly,
+.mqaWebForm .allocation-offer-form .allocation-radio-options,
+.mqaWebForm .learner-change-request .request-readonly {
+  padding: 10px;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-notice,
+.mqaWebForm .learner-change-request .request-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  margin: 12px 0;
+  border-left: 3px solid var(--mqa-blue);
+  background: #f8fafc;
+  overflow-wrap: anywhere;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-notice-title {
+  font-weight: bold;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-query {
+  border-color: var(--mqa-orange);
+  background: #fffbeb;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-query-comments {
+  white-space: pre-wrap;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-error,
+.mqaWebForm .learner-change-request .request-error {
+  border-color: #b3261e;
+  color: #92221c;
+  background: #fff4f3;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-success,
+.mqaWebForm .allocation-offer-form .allocation-total,
+.mqaWebForm .learner-change-request .request-success {
+  border-color: var(--mqa-green);
+  background: #f1f8f2;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-file-name {
+  flex: 1 1 200px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-intake-heading {
+  justify-content: space-between;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-table-scroll {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.mqaWebForm .allocation-offer-form .mqa-intake-table {
+  min-width: 740px;
+  width: 100%;
+}
+
+.mqaWebForm .allocation-offer-form .mqa-intake-table .z-column {
+  background: var(--mqa-blue);
+}
+
+.mqaWebForm .allocation-offer-form .mqa-intake-table .z-column-content {
+  color: white;
+  white-space: normal;
+}
+
+.mqaWebForm .allocation-offer-form .mqa-intake-table .z-footer-content {
+  font-weight: bold;
+  white-space: normal;
+}
+
+.mqaWebForm .allocation-offer-form .allocation-action-panel {
+  flex-shrink: 0;
+  max-height: 45%;
+  overflow-y: auto;
+}
+
+.mqaWebForm .learner-change-request .grid-formview.two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mqaWebForm .learner-change-request .request-reason.z-textbox {
+  height: auto;
+  min-height: 120px;
+  resize: vertical;
+}
+
+.mqaWebForm .learner-change-request .formBottomPanel {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 700px) {
+  .mqaWebForm .allocation-offer-form .grid-formview.two-col,
+  .mqaWebForm .learner-change-request .grid-formview.two-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
