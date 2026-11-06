@@ -3,6 +3,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 import java.text.SimpleDateFormat;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -357,12 +358,10 @@ public final class LearnerAgreementData
 	{
 		PO qualification = null;
 		String programmeTitle = "";
-		String agreementCode = "";
 		if (programme instanceof I_ZZQctoLearnership)
 		{
 			I_ZZQctoLearnership selected = (I_ZZQctoLearnership) programme;
 			programmeTitle = selected.getZZLearnershipTitle();
-			agreementCode = selected.getZZLearnershipCode();
 			if (selected.getZZQctoQualification_ID() > 0)
 				qualification = (PO) selected.getZZQctoQualification();
 			if (qualification == null && selected.getZZQualification_ID() > 0)
@@ -372,7 +371,6 @@ public final class LearnerAgreementData
 		{
 			I_ZZLearnership selected = (I_ZZLearnership) programme;
 			programmeTitle = selected.getZZLearnershipTitle();
-			agreementCode = selected.getZZLearnershipCode();
 			if (selected.getZZQualification_ID() > 0)
 				qualification = (PO) selected.getZZQualification();
 		}
@@ -380,7 +378,6 @@ public final class LearnerAgreementData
 		{
 			I_ZZSkillsProgramme selected = (I_ZZSkillsProgramme) programme;
 			programmeTitle = selected.getZZSkillsProgrammeTitle();
-			agreementCode = selected.getZZSkillsProgrammeCode();
 			if (selected.getZZQualification_ID() > 0)
 				qualification = (PO) selected.getZZQualification();
 		}
@@ -388,7 +385,6 @@ public final class LearnerAgreementData
 		{
 			I_ZZQctoSkillsProgramme selected = (I_ZZQctoSkillsProgramme) programme;
 			programmeTitle = selected.getZZSkillsProgrammeTitle();
-			agreementCode = selected.getZZSkillsProgrammeCode();
 			if (selected.getZZQualification_ID() > 0)
 				qualification = (PO) selected.getZZQualification();
 		}
@@ -396,23 +392,21 @@ public final class LearnerAgreementData
 			qualification = programme;
 
 		String title = "";
+		String saqaId = "";
 		if (qualification instanceof I_ZZQualification)
 		{
 			I_ZZQualification selected = (I_ZZQualification) qualification;
 			title = selected.getZZSaqaQualificationTitle();
-			if (qualification == programme)
-				agreementCode = selected.getZZSaqaQualificationCode();
+			saqaId = selected.getZZSaqaQualificationCode();
 		}
 		else if (qualification instanceof I_ZZQctoQualification)
 		{
 			I_ZZQctoQualification selected = (I_ZZQctoQualification) qualification;
 			title = selected.getZZSaqaQualificationTitle();
-			if (qualification == programme)
-				agreementCode = selected.getZZSaqaQualificationCode();
+			saqaId = selected.getZZSaqaQualificationCode();
 		}
 		data.put(QUALIFICATION_TITLE, first(title, programmeTitle));
-		// The agreement's SAQA row uses the selected programme's code when qualification entry is enabled.
-		data.put(SAQA_ID, agreementCode == null ? "" : agreementCode);
+		data.put(SAQA_ID, first(saqaId, ""));
 		return qualification;
 	}
 
@@ -428,10 +422,6 @@ public final class LearnerAgreementData
 																	&& partner.getName().trim().equalsIgnoreCase(tradingName.trim()) ? "" : tradingName);
 		// The agreement asks for the stored SIC reference value (code), not its display name.
 		data.put(prefix + LearnerAgreementData.SUFFIX_SIC, value(partner, I_C_BPartner.COLUMNNAME_ZZSicCode));
-		MBPartnerLocation[] locations = partner.getLocations(false);
-		if (locations.length == 1)
-			data.put(prefix + LearnerAgreementData.SUFFIX_ADDRESS, address(locations[0].getC_Location_ID()));
-		// Multiple locations or contacts require selection; never choose an arbitrary first record.
 	}
 
 	private static void partyDetails(	Map<String, String> data, Map<String, Object> registration, String prefix,
@@ -440,13 +430,9 @@ public final class LearnerAgreementData
 		int partnerId = id(registration.get(partnerColumn));
 		if (partnerId <= 0)
 			return;
-		String physical = organisationAddress(partnerId, "Physical");
-		String postal = organisationAddress(partnerId, "Postal");
-		if (!physical.isBlank())
-			data.put(prefix + LearnerAgreementData.SUFFIX_ADDRESS, physical);
-		if (!postal.isBlank() && !postal.equals(data.get(prefix + LearnerAgreementData.SUFFIX_ADDRESS)))
-			data.put(prefix + LearnerAgreementData.SUFFIX_POSTAL_ADDRESS, postal);
 		MBPartner partner = new MBPartner(Env.getCtx(), partnerId, null);
+		putPartyAddresses(data, prefix, partner,
+				organisationAddress(partnerId, "Physical"), organisationAddress(partnerId, "Postal"));
 		MUser contact = null;
 		int contactId = id(registration.get(contactColumn));
 		if (contactId > 0)
@@ -482,6 +468,46 @@ public final class LearnerAgreementData
 		else if (X_C_BPartner.ZZLEVYNUMBERTYPE_LNumber.equals(value(partner, I_C_BPartner.COLUMNNAME_ZZLevyNumberType)))
 			data.put(prefix + LearnerAgreementData.SUFFIX_LEVY, "Yes");
 		data.put(prefix + LearnerAgreementData.SUFFIX_SDL, "Yes".equals(data.get(prefix + LearnerAgreementData.SUFFIX_LEVY)) ? partner.getValue() : "");
+	}
+
+	static void putPartyAddresses(Map<String, String> data, String prefix, MBPartner partner,
+			String physical, String postal)
+	{
+		MBPartnerLocation[] locations = partner.getLocations(false);
+		boolean leadEmployer = "Employer".equals(prefix);
+		if (leadEmployer)
+		{
+			String business = namedPartnerAddress(locations, "Business Address");
+			if (business.isBlank())
+				business = partnerAddress(partner.getLocation(0));
+			physical = first(business, physical);
+			postal = first(namedPartnerAddress(locations, "Postal Address"), postal);
+		}
+		else if (physical.isBlank() && locations.length == 1)
+			physical = address(locations[0].getC_Location_ID());
+
+		if (!physical.isBlank())
+			data.put(prefix + SUFFIX_ADDRESS, physical);
+		boolean sameAddress = leadEmployer ? postal.equalsIgnoreCase(physical) : postal.equals(physical);
+		if (!postal.isBlank() && !sameAddress)
+			data.put(prefix + SUFFIX_POSTAL_ADDRESS, postal);
+	}
+
+	private static String namedPartnerAddress(MBPartnerLocation[] locations, String name)
+	{
+		return Arrays.stream(locations).filter(location -> name.equalsIgnoreCase(location.getName()))
+				.map(LearnerAgreementData::partnerAddress)
+				.filter(address -> !address.isBlank()).findFirst().orElse("");
+	}
+
+	private static String partnerAddress(MBPartnerLocation partnerLocation)
+	{
+		MLocation location = partnerLocation == null ? null : partnerLocation.getLocation(false);
+		if (location == null)
+			return "";
+		return Stream.of(location.getAddress1(), location.getAddress2(), location.getAddress3(),
+				location.getAddress4(), location.getCity(), location.getPostal(), location.getRegionName(true))
+				.filter(line -> line != null && !line.isBlank()).map(String::strip).collect(Collectors.joining(", "));
 	}
 
 	private static String organisationAddress(int partnerId, String type)
