@@ -81,6 +81,10 @@ public abstract class BaseAppVM implements ISaveApp{
 	}
 	
 	private boolean isSubmit = false;
+
+	protected boolean isSubmitting() {
+		return isSubmit;
+	}
 	
 	/**
 	 * override to change doc status

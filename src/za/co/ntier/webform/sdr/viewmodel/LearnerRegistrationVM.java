@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
@@ -102,6 +103,12 @@ import za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM.InterventionCo
 
 public class LearnerRegistrationVM extends BaseAppVM {
 
+	private static final String STATUS_CANCELLED = "CA";
+	private static final String STATUS_TERMINATED = "TR";
+	private static final String OPEN_REGISTRATION_MESSAGE =
+			"This learner already has an open registration. A new registration cannot be started.";
+	private static final String DRAFT_ONLY_MESSAGE = "Only draft learner registrations can be edited.";
+
 	private TableModel tmNames;
 	private TableModel tmGeneralDetail;
 	private TableModel tmContactDetail;
@@ -172,7 +179,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	private TableModel tmRegistration;
 	private NavTabPanel registrationTabPanel;
 	private NavTabPanel uploadDetailTabPanel;
-	private PO targetRegistrationPo;
+	private X_ZZLearnerDGProgramme draftRegistration;
+	private final DaoManage registrationDao = new DaoManage();
+	private boolean showResumeDraft;
 	private PO targetChildPo;
 
 	public String getSelectedDGProgrammeTitle() {
@@ -277,12 +286,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		BindUtils.postNotifyChange(null, null, this, "enterQualificationRequired");
 		BindUtils.postNotifyChange(null, null, this, "selectedQualificationTitle");
 
-		if (learner != null && learner.getZZLearner_ID() > 0) {
-			loadExistingRegistration(learner.getZZLearner_ID(), progId);
-			if (tmRegistration != null && tmRegistration.getRow() != null) {
-				populateRegistrationDefaults();
-			}
-		}
 		initUploadDocument();
 		BindUtils.postNotifyChange(null, null, this, "tmDocumentUpload");
 	}
@@ -292,13 +295,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	public void onSelectInterventionType() {
 		selectedQualification = null;
 		selectedQualificationTitle = "";
-		if (learner != null && learner.getZZLearner_ID() > 0) {
-			int pmdId = selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0;
-			loadExistingRegistration(learner.getZZLearner_ID(), pmdId);
-			if (tmRegistration != null && tmRegistration.getRow() != null) {
-				populateRegistrationDefaults();
-			}
-		}
 	}
 
 	@Command
@@ -330,13 +326,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				Object code = selectedQualification.get_Value(finalConfig.programmeCodeColumn);
 				Object title = selectedQualification.get_Value(finalConfig.programmeTitleColumn);
 				selectedQualificationTitle = (code != null ? code.toString() : "") + " - " + (title != null ? title.toString() : "");
-			}
-			if (learner != null && learner.getZZLearner_ID() > 0) {
-				int pmdId = selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0;
-				loadExistingRegistration(learner.getZZLearner_ID(), pmdId);
-				if (tmRegistration != null && tmRegistration.getRow() != null) {
-					populateRegistrationDefaults();
-				}
 			}
 			BindUtils.postNotifyChange(null, null, this, "selectedQualificationTitle");
 		});
@@ -395,6 +384,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	public boolean isShowCreateNew() {
 		return showCreateNew;
+	}
+
+	public boolean isShowResumeDraft() {
+		return showResumeDraft;
 	}
 
 	public boolean isIdentityValidated() {
@@ -459,32 +452,39 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		});
 		initForm();
 
-		if (menuContextInfo.getRecordID() > 0) {
+		if (menuContextInfo != null && menuContextInfo.getRecordID() > 0) {
 			loadForEdit();
 		}
 	}
 
 	@Command
-	@NotifyChange({ "validationMessage", "showCreateNew", "identityValidated", "selectedDGProgrammeTitle", "selectedQualificationTitle" })
+	@NotifyChange({ "validationMessage", "showCreateNew", "showResumeDraft", "identityValidated" })
 	public void onValidateIdentity() {
+		validateIdentity(false);
+	}
+
+	@Command
+	@NotifyChange({ "validationMessage", "showCreateNew", "showResumeDraft", "identityValidated" })
+	public void onResumeDraft() {
+		validateIdentity(true);
+	}
+
+	private void validateIdentity(boolean resumeDraft) {
+		if (identityValidated) {
+			return;
+		}
+		showCreateNew = false;
+		showResumeDraft = false;
 		if (idNumber == null || idNumber.isBlank()) {
 			validationMessage = "Please enter an ID Number.";
-			showCreateNew = false;
 			return;
 		}
 		if (selectedIdType == null) {
 			validationMessage = "Please select an ID Type.";
-			showCreateNew = false;
 			return;
 		}
 		if (selectedDGProgramme == null) {
 			validationMessage = "Please choose a DG Programme.";
-			showCreateNew = false;
-			return;
-		}
-		if (enterQualificationRequired && selectedQualification == null) {
-			validationMessage = "Please choose a Qualification / Programme.";
-			showCreateNew = false;
 			return;
 		}
 
@@ -493,7 +493,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				RegistrationWindow.validateIdNo(null, idNumber);
 			} catch (WrongValueException e) {
 				validationMessage = e.getMessage();
-				showCreateNew = false;
 				return;
 			}
 		}
@@ -504,42 +503,50 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		// Lookup ZZPerson by ID No
 		loadSaved(idNumber, selectedIdType.getZZ_AlternateIDType_ID());
 
-		if (person != null) {
-			// Person found
-			if (learner != null) {
-				validationMessage = "Person and learner record found. You may edit the details below.";
-				int pmdId = selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0;
-				loadExistingRegistration(learner.getZZLearner_ID(), pmdId);
-			} else {
-				validationMessage = "Person found. A new learner record will be created upon save.";
-				targetRegistrationPo = null;
-				targetChildPo = null;
+		int learnerId = learner == null ? 0 : learner.getZZLearner_ID();
+		if (resumeDraft || hasOpenRegistration(learnerId, null)) {
+			X_ZZLearnerDGProgramme draft = learnerId > 0
+					? findDraftRegistration(learnerId, selectedDGProgramme.getZZ_Program_Master_Data_ID())
+					: null;
+			if (!resumeDraft || draft == null) {
+				showResumeDraft = draft != null;
+				validationMessage = resumeDraft ? DRAFT_ONLY_MESSAGE : OPEN_REGISTRATION_MESSAGE;
+				return;
 			}
-			showCreateNew = false;
-			identityValidated = true;
-			alternateIDTypeCol.setReadonly(true);
-			//idNoCol.setReadonly(true);
-			setupPhase2Tabs();
-		} else {
-			// Person NOT found
+			loadDraftRegistration(draft);
+			validationMessage = "";
+		} else if (enterQualificationRequired && selectedQualification == null) {
+			validationMessage = "Please choose a Qualification / Programme.";
+			return;
+		} else if (person == null) {
 			validationMessage = "A person with " + selectedIdType.getName() + " " + idNumber
 					+ " does not exist in the system.";
 			showCreateNew = true;
-			identityValidated = false;
-			targetRegistrationPo = null;
-			targetChildPo = null;
+			return;
+		} else {
+			validationMessage = learner != null
+					? "Learner found. Fill in the details for the new registration."
+					: "Person found. A new learner record will be created upon save.";
 		}
+
+		identityValidated = true;
+		alternateIDTypeCol.setReadonly(true);
+		setupPhase2Tabs();
 	}
 
 	@Command
-	@NotifyChange({ "identityValidated", "showCreateNew", "validationMessage" })
+	@NotifyChange({ "identityValidated", "showCreateNew", "showResumeDraft", "validationMessage" })
 	public void onCreateNew() {
+		if (!showCreateNew || identityValidated) {
+			return;
+		}
+		validateIdentity(false);
+		if (!showCreateNew) {
+			return;
+		}
 		identityValidated = true;
 		showCreateNew = false;
 		validationMessage = "Creating new learner record. Please fill in all required fields.";
-		targetRegistrationPo = null;
-		targetChildPo = null;
-
 		// Reset DAOs for new person
 		daoManage.resetDao(X_ZZPerson.Table_Name);
 		daoManage.resetDao(X_ZZLearner.Table_Name);
@@ -608,12 +615,20 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				.getPO(getMenuContextInfo().getRecordID(), null);
 		if (learner == null) {
 			MasterUtil.showInfoDialog("ZZLearnerNotFoundLearner", MasterUtil.fCloseActiveWindow);
-		} else {
-			person = (X_ZZPerson) MTable.get(Env.getCtx(), X_ZZPerson.Table_Name).getPO(learner.getZZPerson_ID(), null);
+			return;
 		}
 
+		int programmeId = selectedDGProgramme == null ? 0 : selectedDGProgramme.getZZ_Program_Master_Data_ID();
+		X_ZZLearnerDGProgramme draft = findDraftRegistration(learner.getZZLearner_ID(), programmeId);
+		if (draft == null) {
+			MasterUtil.showInfoDialog(DRAFT_ONLY_MESSAGE, MasterUtil.fCloseActiveWindow);
+			return;
+		}
+
+		person = (X_ZZPerson) MTable.get(Env.getCtx(), X_ZZPerson.Table_Name).getPO(learner.getZZPerson_ID(), null);
 		if (person == null) {
 			MasterUtil.showInfoDialog("ZZLearnerNotFoundUser", MasterUtil.fCloseActiveWindow);
+			return;
 		}
 
 		daoManage.setDao(learner);
@@ -631,8 +646,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		showCreateNew = false;
 
 		isNew = false;
-		int pmdId = selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0;
-		loadExistingRegistration(learner != null ? learner.getZZLearner_ID() : 0, pmdId);
+		loadDraftRegistration(draft);
 		loadData();
 		setupPhase2Tabs();
 	}
@@ -661,13 +675,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		if (person != null) {
 			daoManage.setDao(person);
-			Query savedDataQuery = MTable.get(Env.getCtx(), X_ZZLearner.Table_Name)
-					.createQuery(String.format("%s = ?", X_ZZLearner.COLUMNNAME_ZZPerson_ID), null);
-
-			savedDataQuery.setParameters(person.getZZPerson_ID());
-			savedDataQuery.setOnlyActiveRecords(true);
-
-			learnerSaved = savedDataQuery.firstOnly();
+			learnerSaved = findLearnerForPerson(person.getZZPerson_ID(), null);
 
 			firstNameCol.setDefaultValue(person.getZZFirstName());
 		} else {
@@ -684,6 +692,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		learner = learnerSaved;
 
 		loadData();
+	}
+
+	private X_ZZLearner findLearnerForPerson(int personId, String trxName) {
+		return new Query(Env.getCtx(), X_ZZLearner.Table_Name, X_ZZLearner.COLUMNNAME_ZZPerson_ID + " = ?", trxName)
+				.setParameters(personId)
+				.setOnlyActiveRecords(true)
+				.firstOnly();
 	}
 
 	private void loadData() {
@@ -1070,6 +1085,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	@Override
 	public void doSave(String trxName) {
+		if (!identityValidated) {
+			throw new AdempiereException("Validate the learner before saving the registration.");
+		}
+		X_ZZLearnerDGProgramme draft = checkRegistrationBeforeSave(trxName);
 		if (learner == null) {
 			learner = (X_ZZLearner) daoManage.getDaoForSave(X_ZZLearner.Table_Name);
 		}
@@ -1077,7 +1096,16 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			person = (X_ZZPerson) daoManage.getDaoForSave(X_ZZPerson.Table_Name);
 		}
 
-		super.doSave(trxName);
+		if (draft != null) {
+			registrationDao.setDao(draft);
+		}
+		try {
+			super.doSave(trxName);
+		} finally {
+			if (draftRegistration != null) {
+				registrationDao.setDao(draftRegistration);
+			}
+		}
 
 		boolean disabilitySelected = isDisabilitySelected();
 		if (person != null) {
@@ -1121,7 +1149,55 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		learner.saveEx(trxName);
 
 		saveChildTables(trxName, learner.getZZLearner_ID());
-		saveRegistrationRecord(trxName, learner.getZZLearner_ID());
+		saveRegistrationRecord(trxName, learner.getZZLearner_ID(), draft);
+	}
+
+	private X_ZZLearnerDGProgramme checkRegistrationBeforeSave(String trxName) {
+		int learnerId = learner == null ? 0 : learner.getZZLearner_ID();
+		if (learnerId <= 0) {
+			if (person != null && person.get_ID() > 0) {
+				// An existing person may be registered for the first time in two sessions.
+				boolean personExists = new Query(Env.getCtx(), X_ZZPerson.Table_Name,
+						X_ZZPerson.COLUMNNAME_ZZPerson_ID + " = ?", trxName)
+						.setParameters(person.get_ID())
+						.setForUpdate(true)
+						.match();
+				if (!personExists || findLearnerForPerson(person.get_ID(), trxName) != null) {
+					throw new AdempiereException("The learner's details have changed. Open the form and validate again.");
+				}
+			}
+			return null;
+		}
+
+		// Serialize registrations for the same learner, even if there is no registration row to lock yet.
+		boolean learnerExists = new Query(Env.getCtx(), X_ZZLearner.Table_Name,
+				X_ZZLearner.COLUMNNAME_ZZLearner_ID + " = ?", trxName)
+				.setParameters(learnerId)
+				.setForUpdate(true)
+				.match();
+		if (!learnerExists) {
+			throw new AdempiereException("The learner is no longer available. Open the form again.");
+		}
+		if (draftRegistration == null) {
+			if (hasOpenRegistration(learnerId, trxName)) {
+				throw new AdempiereException(OPEN_REGISTRATION_MESSAGE);
+			}
+			return null;
+		}
+
+		X_ZZLearnerDGProgramme draft = registrationQuery(
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZLearnerDGProgramme_ID + " = ?", trxName)
+				.setParameters(learnerId, draftRegistration.get_ID())
+				.setOnlyActiveRecords(true)
+				.setForUpdate(true)
+				.first();
+		if (draft == null || !X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft.equals(draft.getZZ_DocStatus())) {
+			throw new AdempiereException(DRAFT_ONLY_MESSAGE);
+		}
+		if (!Objects.equals(draft.getUpdated(), draftRegistration.getUpdated())) {
+			throw new AdempiereException("This draft has changed since it was opened. Open the form again.");
+		}
+		return draft;
 	}
 
 	private void saveChildTables(String trxName, int learnerId) {
@@ -1765,72 +1841,89 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		}
 	}
 
-	private void loadExistingRegistration(int learnerId, int pmdId) {
-		if (learnerId <= 0) return;
+	private Query registrationQuery(String conditions, String trxName) {
+		return new Query(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name,
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZLearner_ID + " = ? AND " + conditions, trxName);
+	}
 
-		X_ZZLearnerDGProgramme dg = null;
-		if (pmdId > 0) {
-			dg = new Query(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name, "ZZLearner_ID = ? AND (ZZ_Program_Master_Data_ID = ? OR ZZ_DGProgram_ID = ?)", null)
-					.setParameters(learnerId, pmdId, pmdId)
-					.setOnlyActiveRecords(true)
-					.setOrderBy("ZZLearnerDGProgramme_ID DESC")
-					.first();
+	private boolean hasOpenRegistration(int learnerId, String trxName) {
+		String status = X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus;
+		return learnerId > 0 && registrationQuery(
+				"(" + status + " IS NULL OR " + status + " NOT IN (?, ?, ?))", trxName)
+				.setParameters(learnerId, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Completed,
+						STATUS_CANCELLED, STATUS_TERMINATED)
+				.match();
+	}
+
+	private X_ZZLearnerDGProgramme findDraftRegistration(int learnerId, int programmeId) {
+		String where = X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DocStatus + " = ?";
+		List<Object> params = new ArrayList<>(List.of(learnerId, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft));
+		if (programmeId > 0) {
+			where += " AND (" + X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID + " = ? OR "
+					+ X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_DGProgram_ID + " = ?)";
+			params.add(programmeId);
+			params.add(programmeId);
 		}
-		if (dg == null) {
-			dg = new Query(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name, "ZZLearner_ID = ?", null)
-					.setParameters(learnerId)
-					.setOnlyActiveRecords(true)
-					.setOrderBy("ZZLearnerDGProgramme_ID DESC")
-					.first();
+		List<X_ZZLearnerDGProgramme> drafts = registrationQuery(where, null)
+				.setParameters(params)
+				.setOnlyActiveRecords(true)
+				.setPage(2, 0)
+				.list();
+		return drafts.size() == 1 ? drafts.get(0) : null;
+	}
+
+	private void loadDraftRegistration(X_ZZLearnerDGProgramme dg) {
+		draftRegistration = dg;
+		registrationDao.setDao(dg);
+		int pmdId = dg.getZZ_Program_Master_Data_ID();
+		if (pmdId <= 0) {
+			pmdId = dg.getZZ_DGProgram_ID();
 		}
-		if (dg != null) {
-			targetRegistrationPo = dg;
-			daoManage.setDao(dg);
-			if (selectedDGProgramme == null) {
-				int dgProgId = dg.getZZ_DGProgram_ID();
-				if (dgProgId <= 0) {
-					dgProgId = dg.getZZ_Program_Master_Data_ID();
+		if (pmdId > 0 && (selectedDGProgramme == null || selectedDGProgramme.get_ID() != pmdId)) {
+			loadDGProgramme(pmdId);
+		}
+		int learnerId = dg.getZZLearner_ID();
+
+		InterventionConfig savedConfig = getInterventionConfig(dg.getZZProgramType());
+		String savedProgrammeId = dg.getzzlearnerprogram_id();
+		if (selectedQualification == null && savedConfig != null && savedProgrammeId != null && !savedProgrammeId.isBlank()) {
+			try {
+				int qualificationId = Integer.parseInt(savedProgrammeId.trim());
+				if (qualificationId > 0) {
+					selectedInterventionType = savedConfig.displayName;
+					selectedQualification = savedConfig.programmeLoader.apply(qualificationId);
+					if (selectedQualification != null) {
+						Object code = selectedQualification.get_Value(savedConfig.programmeCodeColumn);
+						Object title = selectedQualification.get_Value(savedConfig.programmeTitleColumn);
+						selectedQualificationTitle = Objects.toString(code, "") + " - " + Objects.toString(title, "");
+					}
 				}
-				if (dgProgId > 0) {
-					loadDGProgramme(dgProgId);
-				}
+			} catch (NumberFormatException ignored) {
+				// Some older registrations have a nonnumeric programme ID.
 			}
-		} else {
-			targetRegistrationPo = null;
 		}
 
 		targetChildPo = null;
 		for (InterventionConfig cfg : LearnerQualficationRegVM.INTERVENTION_CONFIGS) {
-			PO reg = null;
-			if (selectedQualification != null && cfg.learnerProgrammeColumn != null && !cfg.learnerProgrammeColumn.isBlank()) {
-				reg = new Query(Env.getCtx(), cfg.learnerTable, "ZZLearner_ID = ? AND " + cfg.learnerProgrammeColumn + " = ?", null)
-						.setParameters(learnerId, selectedQualification.get_ID())
-						.setOnlyActiveRecords(true)
-						.setOrderBy(cfg.learnerTable + "_ID DESC")
-						.first();
+			if (selectedQualification != null && cfg != getInterventionConfig(selectedInterventionType)) {
+				continue;
 			}
-			if (reg == null && pmdId > 0 && MTable.get(Env.getCtx(), cfg.learnerTable).getColumn("ZZ_Program_Master_Data_ID") != null) {
-				reg = new Query(Env.getCtx(), cfg.learnerTable, "ZZLearner_ID = ? AND ZZ_Program_Master_Data_ID = ?", null)
-						.setParameters(learnerId, pmdId)
-						.setOnlyActiveRecords(true)
-						.setOrderBy(cfg.learnerTable + "_ID DESC")
-						.first();
+			String programmeColumn = X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID;
+			if (pmdId <= 0 || MTable.get(Env.getCtx(), cfg.learnerTable).getColumn(programmeColumn) == null) {
+				continue;
 			}
-			if (reg == null && selectedInterventionType != null && selectedInterventionType.equalsIgnoreCase(cfg.displayName)) {
-				reg = new Query(Env.getCtx(), cfg.learnerTable, "ZZLearner_ID = ?", null)
-						.setParameters(learnerId)
-						.setOnlyActiveRecords(true)
-						.setOrderBy(cfg.learnerTable + "_ID DESC")
-						.first();
-			}
+			PO reg = new Query(Env.getCtx(), cfg.learnerTable,
+					X_ZZLearnerDGProgramme.COLUMNNAME_ZZLearner_ID + " = ? AND " + programmeColumn + " = ?", null)
+					.setParameters(learnerId, pmdId)
+					.setOnlyActiveRecords(true)
+					.setOrderBy(cfg.learnerKeyColumn + " DESC")
+					.first();
 			if (reg != null) {
 				targetChildPo = reg;
-				if (selectedInterventionType == null || selectedInterventionType.isBlank()) {
-					selectedInterventionType = cfg.displayName;
-				}
 				if (selectedQualification == null && cfg.learnerProgrammeColumn != null) {
 					int progId = reg.get_ValueAsInt(cfg.learnerProgrammeColumn);
 					if (progId > 0) {
+						selectedInterventionType = cfg.displayName;
 						selectedQualification = cfg.programmeLoader.apply(progId);
 						if (selectedQualification != null) {
 							Object code = selectedQualification.get_Value(cfg.programmeCodeColumn);
@@ -1840,28 +1933,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					}
 				}
 				break;
-			}
-		}
-
-		if (selectedQualification == null && dg != null && dg.getzzlearnerprogram_id() != null && !dg.getzzlearnerprogram_id().isBlank()) {
-			try {
-				int progId = Integer.parseInt(dg.getzzlearnerprogram_id().trim());
-				if (progId > 0) {
-					String type = dg.getZZProgramType() != null && !dg.getZZProgramType().isBlank() ? dg.getZZProgramType() : selectedInterventionType;
-					InterventionConfig cfg = getInterventionConfig(type);
-					if (cfg != null && cfg.programmeLoader != null) {
-						selectedQualification = cfg.programmeLoader.apply(progId);
-						if (selectedQualification != null) {
-							if (selectedInterventionType == null || selectedInterventionType.isBlank()) {
-								selectedInterventionType = cfg.displayName;
-							}
-							Object code = selectedQualification.get_Value(cfg.programmeCodeColumn);
-							Object title = selectedQualification.get_Value(cfg.programmeTitleColumn);
-							selectedQualificationTitle = (code != null ? code.toString() : "") + " - " + (title != null ? title.toString() : "");
-						}
-					}
-				}
-			} catch (Exception ignored) {
 			}
 		}
 	}
@@ -1942,7 +2013,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		List<ColumnModel> cols = buildDGProgrammeColumns();
 
 		tmRegistration = TableModel.getTableBean(TableModel.class, cols, false, tableName);
-		tmRegistration.setDaoManage(daoManage);
+		tmRegistration.setDaoManage(registrationDao);
 		tmRegistration.setRowSaveFilter(row -> false);
 		tmRegistration.init();
 
@@ -2166,9 +2237,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
-		X_ZZLearnerDGProgramme dg = (targetRegistrationPo instanceof X_ZZLearnerDGProgramme)
-				? (X_ZZLearnerDGProgramme) targetRegistrationPo
-				: null;
+		X_ZZLearnerDGProgramme dg = draftRegistration;
 		PO child = targetChildPo;
 
 		if (dg != null || child != null) {
@@ -2583,13 +2652,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			uploadDetailTabPanel.getCompModel().add(tmDocumentUpload);
 		}
 
-		if (targetRegistrationPo != null && targetRegistrationPo.get_ID() > 0) {
+		if (draftRegistration != null && draftRegistration.get_ID() > 0) {
 			int viewTableId = MTable.getTable_ID("ZZ_LearnerInfo_V");
 			if (viewTableId <= 0) {
 				viewTableId = MTable.getTable_ID("ZZ_LearnerInfo_T_V");
 			}
-			int viewRecordId = (viewTableId > 0) ? getLearnerInfoViewRecordId(targetRegistrationPo, null) : 0;
-			String recordUU = targetRegistrationPo.get_UUID();
+			int viewRecordId = (viewTableId > 0) ? getLearnerInfoViewRecordId(draftRegistration, null) : 0;
+			String recordUU = draftRegistration.get_UUID();
 
 			for (RowModel row : tmDocumentUpload.getRows()) {
 				X_ZZRegistrationDocs doc = getUploadDocument(row);
@@ -2602,10 +2671,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				// If not found in ZZ_LearnerInfo_V, try ZZLearnerDGProgramme
 				if (fileName == null || fileName.isBlank()) {
 					fileName = getFileNameFromAttachmentEntries(
-							targetRegistrationPo.get_Table_ID(), targetRegistrationPo.get_ID(), recordUU, doc.getName(), null);
+							draftRegistration.get_Table_ID(), draftRegistration.get_ID(), recordUU, doc.getName(), null);
 				}
 				if (fileName == null || fileName.isBlank()) {
-					fileName = AttachmentUtil.getFileNameFromAttachmentEntries(targetRegistrationPo, doc.getName(), null);
+					fileName = AttachmentUtil.getFileNameFromAttachmentEntries(draftRegistration, doc.getName(), null);
 				}
 				if (fileName != null && !fileName.isBlank()) {
 					((UploadCellModel) row.get(documentUploadCol)).setFileName(fileName);
@@ -2798,38 +2867,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		po.set_ValueOfColumn(columnName, value);
 	}
 
-	private void saveRegistrationRecord(String trxName, int learnerId) {
+	private void saveRegistrationRecord(String trxName, int learnerId, X_ZZLearnerDGProgramme draft) {
 		if (tmRegistration == null || tmRegistration.getRow() == null) {
-			return;
+			throw new AdempiereException("The registration details are unavailable.");
 		}
 
-		String tableName = X_ZZLearnerDGProgramme.Table_Name;
 		int pmdId = selectedDGProgramme != null ? selectedDGProgramme.getZZ_Program_Master_Data_ID() : 0;
-
-		X_ZZLearnerDGProgramme dg = null;
-		if (targetRegistrationPo instanceof X_ZZLearnerDGProgramme) {
-			dg = (X_ZZLearnerDGProgramme) targetRegistrationPo;
-		}
-		if (dg == null && learnerId > 0 && pmdId > 0) {
-			dg = new Query(Env.getCtx(), tableName, "ZZLearner_ID = ? AND (ZZ_Program_Master_Data_ID = ? OR ZZ_DGProgram_ID = ?)", trxName)
-					.setParameters(learnerId, pmdId, pmdId)
-					.setOnlyActiveRecords(true)
-					.setOrderBy("ZZLearnerDGProgramme_ID DESC")
-					.first();
-		}
-		if (dg == null && learnerId > 0) {
-			dg = new Query(Env.getCtx(), tableName, "ZZLearner_ID = ?", trxName)
-					.setParameters(learnerId)
-					.setOnlyActiveRecords(true)
-					.setOrderBy("ZZLearnerDGProgramme_ID DESC")
-					.first();
-		}
-
-		if (dg == null) {
-			dg = new X_ZZLearnerDGProgramme(Env.getCtx(), 0, trxName);
-		} else if (trxName != null) {
-			dg.set_TrxName(trxName);
-		}
+		X_ZZLearnerDGProgramme dg = draft != null ? draft : new X_ZZLearnerDGProgramme(Env.getCtx(), 0, trxName);
 
 		dg.setZZLearner_ID(learnerId);
 		if (pmdId > 0) {
@@ -2965,18 +3009,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
-		String currentDocStatus = dg.getZZ_DocStatus();
-		if (Util.isEmpty(currentDocStatus)) {
-			dg.setZZ_DocStatus(X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Created);
-		}
-
+		dg.setZZ_DocStatus(isSubmitting()
+				? X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Created
+				: X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Draft);
 		if (dg.get_ColumnIndex("ZZ_IsDisability") >= 0) {
 			safeSetPOValue(dg, "ZZ_IsDisability", isDisabilitySelected());
 		}
 		dg.saveEx(trxName);
-		targetRegistrationPo = dg;
-		targetChildPo = null;
-
 		saveRegistrationDocuments(dg, trxName);
 	}
 
@@ -3344,19 +3383,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			return;
 		}
 		super.submitApp();
-	}
-
-	@Override
-	public void doSubmit(String trxName) {
-		if (targetRegistrationPo != null && targetRegistrationPo.get_ColumnIndex("ZZ_DocStatus") >= 0) {
-			safeSetPOValue(targetRegistrationPo, "ZZ_DocStatus", X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Created);
-			targetRegistrationPo.saveEx(trxName);
-		}
-		if (targetChildPo != null && targetChildPo.get_ColumnIndex("ZZ_DocStatus") >= 0) {
-			safeSetPOValue(targetChildPo, "ZZ_DocStatus", X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Created);
-			targetChildPo.saveEx(trxName);
-		}
-		super.doSubmit(trxName);
 	}
 
 	@Override

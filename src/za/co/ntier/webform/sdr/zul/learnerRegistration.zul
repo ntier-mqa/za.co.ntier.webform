@@ -151,6 +151,9 @@
         <label value="@load(vmLearner.validationMessage)" 
                style="padding:8px 12px; border:1px solid #ccc; background:#f9f9f9; display:block; width:100%;" />
       </hlayout>
+      <hlayout visible="@load(vmLearner.showResumeDraft)" style="padding:5px 0; justify-content:center;">
+        <button label="Resume Draft" onClick="@command('onResumeDraft')" sclass="z-button" />
+      </hlayout>
       <!-- CREATE NEW button -->
       <hlayout visible="@load(vmLearner.showCreateNew)" style="padding:5px 0; justify-content:center;">
         <button label="CREATE NEW" onClick="@command('onCreateNew')" 
