@@ -1,5 +1,6 @@
 package za.co.ntier.webform.sdr.component.util;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -11,6 +12,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
+import org.compiere.util.ValueNamePair;
 
 import za.co.ntier.api.model.I_ZZPersonAddress;
 import za.co.ntier.api.model.I_ZZ_FormContact;
@@ -378,5 +380,40 @@ public class BuildFormUtil {
 		addressDetailBean.init();
 	
 		return addressDetailBean;
+	}
+
+	/**
+	 * Populate date of birth and gender from a 13-digit RSA ID number.
+	 * Shared by the SDF, Learner and Assessor forms.
+	 * @param lockFields when true, a populated column is made read-only
+	 */
+	public static void autoPopulateDobAndGender(String idNumber, RowModel rowModel,
+			ColumnModel dobCol, ColumnModel genderCol, boolean lockFields) {
+		if (idNumber == null || rowModel == null)
+			return;
+		String idString = idNumber.trim();
+
+		Timestamp dob = MasterUtil.getDobFromId(idString);
+		if (dob != null && dobCol != null) {
+			CellModel dobCell = rowModel.get(dobCol);
+			if (dobCell != null) {
+				dobCell.setValue(dob);
+				if (lockFields)
+					dobCol.setReadonly(true);
+			}
+		}
+
+		String genderCode = MasterUtil.getGenderFromId(idString);
+		if (genderCode != null && genderCol != null) {
+			ValueNamePair genderVal = MasterUtil.getLkpGenders().stream()
+					.filter(v -> v.getValue().equals(genderCode))
+					.findFirst().orElse(null);
+			CellModel genderCell = rowModel.get(genderCol);
+			if (genderCell != null && genderVal != null) {
+				genderCell.setValue(genderVal);
+				if (lockFields)
+					genderCol.setReadonly(true);
+			}
+		}
 	}
 }

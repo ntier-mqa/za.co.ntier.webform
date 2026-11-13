@@ -30,6 +30,7 @@ import za.co.ntier.webform.sdr.component.bean.CellModel;
 import za.co.ntier.webform.sdr.component.bean.CellModel.InputCheckResult;
 import za.co.ntier.webform.sdr.component.bean.ColumnModel;
 import za.co.ntier.webform.sdr.component.bean.ISaveForm;
+import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
@@ -88,7 +89,7 @@ public class MainSrdFormVM extends BaseAppVM {
 
 		// new pannel
 		NavTabPanel contactDetailTab = new NavTabPanel(mainTab);
-		contactDetailTab.setTabTitle("Contact Details");
+		contactDetailTab.setTabTitle("Other Contact Details");
 		// new component
 		contactDetailTab.getCompModel().add(getContactDetailComp(personManage));
 
@@ -274,8 +275,15 @@ public class MainSrdFormVM extends BaseAppVM {
 		ColumnModel greettingCol = ListCellModel.getLkpTitleColumnModel();
 		cols.add(greettingCol);
 
-		ColumnModel idNoCol = IDCellModel.getIDColumnModel()
+		idNoCol = IDCellModel.getIDColumnModel()
 					.required().setTableName(I_AD_User.Table_Name);
+		idNoCol.setTitle("ID/Passport No.");
+		idNoCol.setEventHandle((event, cellModel) -> {
+			Object idValue = cellModel.getDirtyValue();
+			if (idValue != null && isRsaIdSelected(cellModel.getRowModel())) {
+				BuildFormUtil.autoPopulateDobAndGender(idValue.toString(), cellModel.getRowModel(), dateOfBirthCol, genderCol, true);
+			}
+		});
 		cols.add(idNoCol);
 
 		ColumnModel initialsCol = CellModel.getColModelForText(
@@ -284,14 +292,14 @@ public class MainSrdFormVM extends BaseAppVM {
 			).required();
 		cols.add(initialsCol);
 
-		ColumnModel dateOfBirthCol = DateCellModel.getDateColumnModel(
+		dateOfBirthCol = DateCellModel.getDateColumnModel(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Birthday)
 				, I_AD_User.COLUMNNAME_Birthday
 			).required()
 			.setTableName(I_AD_User.Table_Name);
 		cols.add(dateOfBirthCol);
 
-		ColumnModel genderCol = ListCellModel.getListColumnModel(
+		genderCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZGender)
 				, I_ZZSdf.COLUMNNAME_ZZGender
 				, MasterUtil.getLkpGenders()
@@ -348,7 +356,29 @@ public class MainSrdFormVM extends BaseAppVM {
 		cols.add(citizenResidentialStatusCol);
 
 		
-		ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
+		alternateIDTypeCol = IDTypeCellModel.getIDTypeCol();
+		alternateIDTypeCol.setTitle("ID Type");
+		// ID Type is captured at registration; only let the user pick one if it was never stored
+		alternateIDTypeCol.setReadonly(person.get_ValueAsInt(I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID) > 0);
+		alternateIDTypeCol.setEventHandle((event, cellModel) -> {
+			@SuppressWarnings("unchecked")
+			ListCellModel<X_ZZ_AlternateIDType> idTypeCell = (ListCellModel<X_ZZ_AlternateIDType>) cellModel;
+			if (idTypeCell.getSelectedItem() != null) {
+				// keep the user's choice when the form reloads data
+				idTypeCell.getColModel().setDefaultValue(idTypeCell.getSelectedItem().getName(), MasterUtil.nameAlternateIdTypeCompare);
+			}
+			RowModel row = cellModel.getRowModel();
+			if (isRsaIdSelected(row)) {
+				CellModel idCell = row.get(idNoCol);
+				Object idValue = idCell.getDirtyValue() != null ? idCell.getDirtyValue() : idCell.getValue();
+				if (idValue != null)
+					BuildFormUtil.autoPopulateDobAndGender(idValue.toString(), row, dateOfBirthCol, genderCol, true);
+			} else {
+				dateOfBirthCol.setReadonly(false);
+				genderCol.setReadonly(false);
+			}
+			((IDCellModel) row.get(idNoCol)).validate();
+		});
 		cols.add(alternateIDTypeCol);
 		
 		
@@ -381,8 +411,29 @@ public class MainSrdFormVM extends BaseAppVM {
 		personDetailBean.setDaoManage(personManage);
 		
 		personDetailBean.init(null, null);
-		
+
+		// RSA ID: derive birthday and gender from the ID number and lock them
+		RowModel row = personDetailBean.getRow();
+		if (isRsaIdSelected(row)) {
+			Object idValue = row.get(idNoCol).getValue();
+			if (idValue != null) {
+				BuildFormUtil.autoPopulateDobAndGender(idValue.toString(), row, dateOfBirthCol, genderCol, true);
+			}
+		}
+
 		return personDetailBean;
+	}
+
+	private ColumnModel idNoCol;
+	private ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
+	private ColumnModel dateOfBirthCol;
+	private ColumnModel genderCol;
+
+	private boolean isRsaIdSelected(RowModel row) {
+		@SuppressWarnings("unchecked")
+		ListCellModel<X_ZZ_AlternateIDType> idTypeCell = (ListCellModel<X_ZZ_AlternateIDType>) row.get(alternateIDTypeCol);
+		return idTypeCell != null && idTypeCell.getSelectedItem() != null
+				&& IDCellModel.idTypeRSA_ID.equals(idTypeCell.getSelectedItem().getName());
 	}
 
 	public NavTab getMainTab() {

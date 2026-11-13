@@ -746,32 +746,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	private void autoPopulateDobAndGender(String idNumber, RowModel rowModel)
 	{
-		String idString = idNumber.trim();
-		Timestamp dob = MasterUtil.getDobFromId(idString);
-		if (dob != null)
-		{
-			CellModel dobCell = rowModel.get(dateOfBirthCol);
-			if (dobCell != null)
-			{
-				dobCell.setValue(dob);
-				dateOfBirthCol.setReadonly(true);
-				//BindUtils.postNotifyChange(null, null, dobCell, "value");
-			}
-		}
-		String genderCode = MasterUtil.getGenderFromId(idString);
-		if (genderCode != null)
-		{
-			ValueNamePair genderVal = MasterUtil.getLkpGenders().stream()
-												.filter(v -> v.getValue().equals(genderCode))
-												.findFirst().orElse(null);
-			CellModel genderCell = rowModel.get(genderCol);
-			if (genderCell != null && genderVal != null)
-			{
-				genderCell.setValue(genderVal);
-				genderCol.setReadonly(true);
-				//BindUtils.postNotifyChange(null, null, genderCell, "value");
-			}
-		}
+		BuildFormUtil.autoPopulateDobAndGender(idNumber, rowModel, dateOfBirthCol, genderCol, true);
 	}
 
 	private void initGeneralDetail() {

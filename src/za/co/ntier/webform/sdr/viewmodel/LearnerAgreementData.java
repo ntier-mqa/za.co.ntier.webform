@@ -663,6 +663,8 @@ public final class LearnerAgreementData
 	{
 		if (statusName == null || statusName.isBlank())
 			return "";
-		return "South Africa".equalsIgnoreCase(statusName.trim()) ? "Yes" : "No";
+		String status = statusName.trim();
+		// value renamed from "South Africa" to "South African"; accept both
+		return "South African".equalsIgnoreCase(status) || "South Africa".equalsIgnoreCase(status) ? "Yes" : "No";
 	}
 }

@@ -162,21 +162,24 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				}).setzClass(ValueNamePair.class);
 		cols.add(sdfFunctionCol);
 
-		ColumnModel appointmentProcedureCol = ListCellModel.getListColumnModel(
+		// Method of appointment is restricted to "Appointed by Employer" only
+		List<ValueNamePair> appointmentOptions = MasterUtil.getLkpAppointment().stream()
+				.filter(a -> X_ZZSdfOrganisation.ZZAPPOINTMENTPROCEDURE_AppointedByEmployer.equals(a.getValue()))
+				.toList();
+		ListColumnModel<ValueNamePair> appointmentProcedureCol = ListCellModel.getListColumnModel(
 				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
 						I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedure),
-				I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedure, MasterUtil.getLkpAppointment(), appointment -> {
+				I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedure, appointmentOptions, appointment -> {
 					return appointment.getName();
 				}, appointment -> {
 					return appointment.getValue();
-				}).setzClass(ValueNamePair.class);
+				});
+		appointmentProcedureCol.setzClass(ValueNamePair.class);
+		appointmentProcedureCol.setDefaultValue(X_ZZSdfOrganisation.ZZAPPOINTMENTPROCEDURE_AppointedByEmployer,
+				(cell, item) -> item.getValue().equals(cell.getColModel().getDefaultValue()));
+		appointmentProcedureCol.required();
 		cols.add(appointmentProcedureCol);
-
-		ColumnModel appointmentOtherCol = CellModel.getColModelForText(
-				MasterUtil.getDescOfColTranslated(I_ZZSdfOrganisation.Table_Name,
-						I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther),
-				I_ZZSdfOrganisation.COLUMNNAME_ZZAppointmentProcedureOther);
-		cols.add(appointmentOtherCol);
+		// "Other (please specify)" can no longer be selected, so its free-text field is not shown
 		
 		sdrRoleTyleCol = ListCellModel.getListColumnModel(
 				"SDF Role", 
@@ -317,6 +320,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 								I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number),
 						I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number)
 				.required();
+		branchCodeCol.setValidateHandle(digitsOnlyValidator);
 		cols.add(branchCodeCol);
 		
 		ColumnModel branchNameCol = CellModel
@@ -331,6 +335,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				.getColModelForText(MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
 						I_ZZBankingDetails.COLUMNNAME_AccountNo), I_ZZBankingDetails.COLUMNNAME_AccountNo)
 				.required();
+		accountNoCol.setValidateHandle(digitsOnlyValidator);
 		cols.add(accountNoCol);
 
 		ColumnModel accountTypeCol = ListCellModel.getListColumnModel(
@@ -537,5 +542,12 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		super.doSave(trxName);
 	}
-	
+
+	/** Branch No and Account No accept digits only (kept as text so leading zeros are preserved). */
+	private static final BiConsumer<CellModel, List<String>> digitsOnlyValidator = (cellModel, msgs) -> {
+		Object value = cellModel.getDirtyValue();
+		if (value != null && !StringUtils.isBlank(value.toString()) && !value.toString().trim().matches("\\d+")) {
+			msgs.add("Only numeric values are allowed.");
+		}
+	};
 }
