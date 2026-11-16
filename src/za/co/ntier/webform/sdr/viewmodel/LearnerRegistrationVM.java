@@ -48,6 +48,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import za.co.ntier.api.model.I_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.X_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
@@ -1042,24 +1043,231 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		return "z-icon-arrow-right";
 	}
 
+	private int getActiveTabIndex(NavTab navTab) {
+		if (navTab == null || navTab.getTabPanelModel() == null || navTab.getTabPanelModel().isEmpty()) {
+			return 0;
+		}
+		java.util.Set<NavTabPanel> selection = navTab.getTabPanelModel().getSelection();
+		if (selection != null && !selection.isEmpty()) {
+			NavTabPanel active = selection.iterator().next();
+			int idx = navTab.getTabPanelModel().indexOf(active);
+			if (idx >= 0) return idx;
+		}
+		return 0;
+	}
+
+	private int getRegistrationTabIndex() {
+		if (registrationTabPanel != null && mainTab != null && mainTab.getTabPanelModel() != null) {
+			int idx = mainTab.getTabPanelModel().indexOf(registrationTabPanel);
+			if (idx >= 0) return idx;
+		}
+		if (mainTab != null && mainTab.getTabPanelModel() != null) {
+			for (int i = 0; i < mainTab.getTabPanelModel().size(); i++) {
+				NavTabPanel p = mainTab.getTabPanelModel().get(i);
+				if (p != null && "Registration".equalsIgnoreCase(p.getTabTitle())) {
+					return i;
+				}
+			}
+		}
+		return 7;
+	}
+
 	@Override
 	public boolean onNextTab(NavTab navTab) {
-		if (isRegistrationTabActive()) {
-			if (tmRegistration != null && !tmRegistration.validate(null)) {
-				return true;
-			}
-			boolean downloaded = downloadLearnerAgreement();
-			if (downloaded && navTab != null) {
-				navTab.doNextTab();
-				BindUtils.postNotifyChange(null, null, this, "registrationTabActive");
-			}
+		if (navTab == null) {
+			return false;
+		}
+
+		int activeIndex = getActiveTabIndex(navTab);
+		List<NavTabPanel> tabPanels = navTab.getTabPanelModel();
+
+		// 1. Validate header tmNames (Title, First Name, Surname, etc.)
+		if (tmNames != null && !tmNames.validate(null)) {
 			return true;
 		}
-		return false;
+
+		// 2. Validate ONLY details of tabs from 0 up to activeIndex (till this tab)
+		// Do NOT check for other tabs' mandatory fields (> activeIndex)
+		boolean allValidTillCurrent = true;
+		if (tabPanels != null) {
+			for (int i = 0; i <= activeIndex && i < tabPanels.size(); i++) {
+				NavTabPanel panel = tabPanels.get(i);
+				if (panel != null) {
+					if (!panel.validate(null)) {
+						allValidTillCurrent = false;
+					}
+				}
+			}
+		}
+
+		if (!allValidTillCurrent) {
+			return true; // Stop: mandatory fields on tabs up to this tab are missing
+		}
+
+		// 3. Save details of tabs up to activeIndex
+		if (!saveTillTabOnNext(activeIndex)) {
+			return true;
+		}
+
+		// 4. Special handling if on Registration tab: download agreement
+		int regIndex = getRegistrationTabIndex();
+		if (activeIndex == regIndex || isRegistrationTabActive()) {
+			boolean downloaded = downloadLearnerAgreement();
+			if (!downloaded) {
+				return true;
+			}
+		}
+
+		// 5. Advance to the next tab
+		navTab.doNextTab();
+		BindUtils.postNotifyChange(null, null, this, "registrationTabActive");
+		return true;
+	}
+
+	private boolean saveTillTabOnNext(int activeIndex) {
+		try {
+			trxWrapperFunc(trxName -> {
+				doSaveTillTab(activeIndex, trxName);
+			}, getClass().getName() + "_onNextSave", this);
+
+			if (draftRegistration != null && draftRegistration.get_ID() > 0) {
+				draftRegistration = new X_ZZLearnerDGProgramme(Env.getCtx(), draftRegistration.get_ID(), null);
+			}
+			if (learner != null && learner.get_ID() > 0) {
+				learner = new X_ZZLearner(Env.getCtx(), learner.get_ID(), null);
+			}
+			if (person != null && person.get_ID() > 0) {
+				person = new X_ZZPerson(Env.getCtx(), person.get_ID(), null);
+			}
+			return true;
+		} catch (Exception e) {
+			log.log(Level.WARNING, "Failed to save record on Next: " + e.getMessage(), e);
+			showException(e);
+			return false;
+		}
+	}
+
+	private void doSaveTillTab(int activeIndex, String trxName) {
+		if (!identityValidated) {
+			throw new AdempiereException("Validate the learner before saving the registration.");
+		}
+		X_ZZLearnerDGProgramme draft = checkRegistrationBeforeSave(trxName);
+		if (learner == null) {
+			learner = (X_ZZLearner) daoManage.getDaoForSave(X_ZZLearner.Table_Name);
+		}
+		if (person == null) {
+			person = (X_ZZPerson) daoManage.getDaoForSave(X_ZZPerson.Table_Name);
+		}
+
+		if (draft != null) {
+			registrationDao.setDao(draft);
+		}
+
+		// 1. Sync and save tmNames (header)
+		if (tmNames != null) {
+			tmNames.syncUIToDao(trxName);
+			tmNames.saveToDb(trxName);
+		}
+
+		// 2. Sync and save only tab panels from 0 up to activeIndex
+		if (mainTab != null && mainTab.getTabPanelModel() != null) {
+			List<NavTabPanel> tabPanels = mainTab.getTabPanelModel();
+			for (int i = 0; i <= activeIndex && i < tabPanels.size(); i++) {
+				NavTabPanel panel = tabPanels.get(i);
+				if (panel != null) {
+					panel.syncUIToDao(trxName);
+					panel.saveToDb(trxName);
+					processAfterAppSave(panel, trxName);
+				}
+			}
+		}
+
+		// 3. Save DAOs in daoManage
+		daoManage.setTrxName(trxName);
+		daoManage.saveDao(trxName);
+
+		// 4. Update disability flag and save person
+		boolean disabilitySelected = isDisabilitySelected();
+		if (person != null) {
+			if (person.get_ColumnIndex("ZZ_IsDisability") >= 0) {
+				person.set_ValueOfColumn("ZZ_IsDisability", disabilitySelected ? "Y" : "N");
+			}
+			validatePersonUniqueId(person, trxName);
+			person.saveEx(trxName);
+		}
+
+		// 5. Save learner
+		if (learner != null && person != null && person.get_ID() > 0) {
+			learner.setZZPerson_ID(person.getZZPerson_ID());
+			int currentUserId = Env.getAD_User_ID(Env.getCtx());
+			if (currentUserId > 0) {
+				learner.setZZ_SDPAdmin_ID(currentUserId);
+			}
+			learner.saveEx(trxName);
+		}
+
+		// 6. Save child tables up to activeIndex
+		if (learner != null && learner.getZZLearner_ID() > 0) {
+			saveChildTablesTillTab(trxName, learner.getZZLearner_ID(), activeIndex);
+		}
+
+		// 7. Save registration record ONLY if activeIndex reaches the Registration tab
+		int regIndex = getRegistrationTabIndex();
+		if (activeIndex >= regIndex && learner != null && learner.getZZLearner_ID() > 0) {
+			saveRegistrationRecord(trxName, learner.getZZLearner_ID(), draft);
+		}
+	}
+
+	private void processAfterAppSave(ISaveForm form, String trxName) {
+		if (form == null) return;
+		if (form.getAfterAppSave() != null) {
+			form.getAfterAppSave().apply(form, trxName);
+		}
+		List<ISaveForm> children = form.getChildren();
+		if (children != null) {
+			for (ISaveForm child : children) {
+				processAfterAppSave(child, trxName);
+			}
+		}
+	}
+
+	private void validatePersonUniqueId(X_ZZPerson person, String trxName) {
+		if (person == null) return;
+		int alternateIdTypeId = person.getZZ_AlternateIDType_ID();
+		if (alternateIdTypeId > 0) {
+			X_ZZ_AlternateIDType altType = new X_ZZ_AlternateIDType(Env.getCtx(), alternateIdTypeId, null);
+			if (IDCellModel.idTypeRSA_ID.equals(altType.getName())) {
+				String idPassportNo = person.getZZ_ID_Passport_No();
+				if (idPassportNo != null && !idPassportNo.isBlank()) {
+					String sql = "SELECT COUNT(1) FROM ZZPerson WHERE ZZ_ID_Passport_No = ? AND ZZ_AlternateIDType_ID = ? AND ZZPerson_ID != ? AND IsActive='Y'";
+					int count = DB.getSQLValue(trxName, sql, idPassportNo, alternateIdTypeId, person.get_ID());
+					if (count > 0) {
+						throw new AdempiereException(
+								"A person with this ID Type and ID Number already exists in the system.");
+					}
+				}
+			} else {
+				String otherIdNo = person.getZZOtherIDNo();
+				if (otherIdNo != null && !otherIdNo.isBlank()) {
+					String sql = "SELECT COUNT(1) FROM ZZPerson WHERE ZZOtherIDNo = ? AND ZZ_AlternateIDType_ID = ? AND ZZPerson_ID != ? AND IsActive='Y'";
+					int count = DB.getSQLValue(trxName, sql, otherIdNo, alternateIdTypeId, person.get_ID());
+					if (count > 0) {
+						throw new AdempiereException(
+								"A person with this ID Type and ID Number already exists in the system.");
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public void doSave(String trxName) {
+		if (!isSubmitting()) {
+			int activeIndex = getActiveTabIndex(mainTab);
+			doSaveTillTab(activeIndex, trxName);
+			return;
+		}
+
 		if (!identityValidated) {
 			throw new AdempiereException("Validate the learner before saving the registration.");
 		}
@@ -1087,33 +1295,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			if (person.get_ColumnIndex("ZZ_IsDisability") >= 0) {
 				person.set_ValueOfColumn("ZZ_IsDisability", disabilitySelected ? "Y" : "N");
 			}
+			validatePersonUniqueId(person, trxName);
 			person.saveEx(trxName);
-		}
-
-		int alternateIdTypeId = person.getZZ_AlternateIDType_ID();
-		if (alternateIdTypeId > 0) {
-			X_ZZ_AlternateIDType altType = new X_ZZ_AlternateIDType(Env.getCtx(), alternateIdTypeId, null);
-			if (IDCellModel.idTypeRSA_ID.equals(altType.getName())) {
-				String idPassportNo = person.getZZ_ID_Passport_No();
-				if (idPassportNo != null && !idPassportNo.isBlank()) {
-					String sql = "SELECT COUNT(1) FROM ZZPerson WHERE ZZ_ID_Passport_No = ? AND ZZ_AlternateIDType_ID = ? AND ZZPerson_ID != ? AND IsActive='Y'";
-					int count = DB.getSQLValue(trxName, sql, idPassportNo, alternateIdTypeId, person.get_ID());
-					if (count > 0) {
-						throw new AdempiereException(
-								"A person with this ID Type and ID Number already exists in the system.");
-					}
-				}
-			} else {
-				String otherIdNo = person.getZZOtherIDNo();
-				if (otherIdNo != null && !otherIdNo.isBlank()) {
-					String sql = "SELECT COUNT(1) FROM ZZPerson WHERE ZZOtherIDNo = ? AND ZZ_AlternateIDType_ID = ? AND ZZPerson_ID != ? AND IsActive='Y'";
-					int count = DB.getSQLValue(trxName, sql, otherIdNo, alternateIdTypeId, person.get_ID());
-					if (count > 0) {
-						throw new AdempiereException(
-								"A person with this ID Type and ID Number already exists in the system.");
-					}
-				}
-			}
 		}
 
 		learner.setZZPerson_ID(person.getZZPerson_ID());
@@ -1176,8 +1359,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	}
 
 	private void saveChildTables(String trxName, int learnerId) {
-		// 1. Parent/Guardian Details
-		if (tmParentDetails != null && tmParentDetails.getRow() != null) {
+		saveChildTablesTillTab(trxName, learnerId, Integer.MAX_VALUE);
+	}
+
+	private void saveChildTablesTillTab(String trxName, int learnerId, int maxTabIndex) {
+		// 1. Parent/Guardian Details (Tab 3)
+		if (maxTabIndex >= 3 && tmParentDetails != null && tmParentDetails.getRow() != null) {
 			X_ZZ_ParentDetails pd = tmParentDetails.getRow().getDataOneRow(X_ZZ_ParentDetails.class, X_ZZ_ParentDetails.Table_Name);
 			boolean hasPd = pd != null && (pd.getZZParentPerson_ID() > 0
 					|| (pd.getZZFirstName() != null && !pd.getZZFirstName().isBlank())
@@ -1190,8 +1377,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
-		// 2. Post School Educational Details
-		if (tmPostSchoolEducation != null && tmPostSchoolEducation.getRow() != null) {
+		// 2. Post School Educational Details (Tab 5)
+		if (maxTabIndex >= 5 && tmPostSchoolEducation != null && tmPostSchoolEducation.getRow() != null) {
 			X_ZZ_PostSchoolEducation_Details ps = tmPostSchoolEducation.getRow()
 					.getDataOneRow(X_ZZ_PostSchoolEducation_Details.class, X_ZZ_PostSchoolEducation_Details.Table_Name);
 			boolean hasPs = ps != null && ((ps.getQualification() != null && !ps.getQualification().isBlank())
@@ -1215,8 +1402,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
-		// 3. Experiential Learning
-		if (tmExperientialLearning != null && tmExperientialLearning.getRow() != null) {
+		// 3. Experiential Learning (Tab 6)
+		if (maxTabIndex >= 6 && tmExperientialLearning != null && tmExperientialLearning.getRow() != null) {
 			X_ZZ_ExperientialLearning exp = tmExperientialLearning.getRow()
 					.getDataOneRow(X_ZZ_ExperientialLearning.class, X_ZZ_ExperientialLearning.Table_Name);
 			if (tmContactableReference != null && tmContactableReference.getRow() != null) {
@@ -2012,6 +2199,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				new ValueNamePair("N", "No"),
 				new ValueNamePair("Y", "Yes"));
 
+		List<ValueNamePair> yesNoRadioOptions = List.of(
+				new ValueNamePair("Y", "Yes"),
+				new ValueNamePair("N", "No"));
+
 		// 1. Program Master Data (Read-only)
 		progCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID))
@@ -2172,6 +2363,30 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(startDateCol);
 		cols.add(endDateCol);
 
+		// Row 8: Agreement Questions (1.14 & 1.15)
+		ListColumnModel<ValueNamePair> colEmployedBeforeAgreement = ListCellModel.getListColumnModel(
+				" Were you employed by your employer before concluding this Agreement ?",
+				I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement,
+				yesNoRadioOptions,
+				ValueNamePair::getName,
+				ValueNamePair::getValue,
+				CellModel.RADIO_CELL);
+		colEmployedBeforeAgreement.setzClass(ValueNamePair.class);
+		colEmployedBeforeAgreement.setTableName(learnerTable);
+
+		ListColumnModel<ValueNamePair> colPastWorkplaceAgreement = ListCellModel.getListColumnModel(
+				" Were you party to a workplace-based learning programme agreement at any time in the past before concluding this agreement?",
+				I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement,
+				yesNoRadioOptions,
+				ValueNamePair::getName,
+				ValueNamePair::getValue,
+				CellModel.RADIO_CELL);
+		colPastWorkplaceAgreement.setzClass(ValueNamePair.class);
+		colPastWorkplaceAgreement.setTableName(learnerTable);
+
+		cols.add(colEmployedBeforeAgreement);
+		cols.add(colPastWorkplaceAgreement);
+
 		// Wire search handlers
 		String sdpWhere = MBPartner.Table_Name + "." + MBPartner.COLUMNNAME_IsActive + " = 'Y' AND "
 				+ MBPartner.Table_Name + ".ZZ_Is_SDP = 'Y'";
@@ -2315,6 +2530,50 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						dt = child.get_Value("ZZCompletionDate");
 					}
 					if (dt != null) cell.setValue(dt);
+				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement.equals(prop)
+						|| "ZZLearnerEmployed".equals(prop)) {
+					String val = null;
+					if (dg != null && dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement) >= 0) {
+						val = dg.get_ValueAsString(I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement);
+					}
+					if ((val == null || val.isBlank()) && dg != null && dg.get_ColumnIndex("ZZLearnerEmployed") >= 0) {
+						val = dg.get_ValueAsString("ZZLearnerEmployed");
+					}
+					if ((val == null || val.isBlank()) && child != null && child.get_ColumnIndex("ZZLearnerEmployed") >= 0) {
+						val = child.get_ValueAsString("ZZLearnerEmployed");
+					}
+					if ((val == null || val.isBlank()) && child != null && child.get_ColumnIndex("Learner_Employed") >= 0) {
+						val = child.get_ValueAsString("Learner_Employed");
+					}
+					if (val != null && !val.isBlank()) {
+						String fVal = val.trim();
+						ValueNamePair pair = ("Y".equalsIgnoreCase(fVal) || "Yes".equalsIgnoreCase(fVal))
+								? new ValueNamePair("Y", "Yes")
+								: (("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal)) ? new ValueNamePair("N", "No") : null);
+						if (pair != null) cell.setValue(pair);
+					}
+				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement.equals(prop)
+						|| "ZZPreviousEmployed".equals(prop)) {
+					String val = null;
+					if (dg != null && dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement) >= 0) {
+						val = dg.get_ValueAsString(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement);
+					}
+					if ((val == null || val.isBlank()) && dg != null && dg.get_ColumnIndex("ZZPreviousEmployed") >= 0) {
+						val = dg.get_ValueAsString("ZZPreviousEmployed");
+					}
+					if ((val == null || val.isBlank()) && child != null && child.get_ColumnIndex("ZZPreviousEmployed") >= 0) {
+						val = child.get_ValueAsString("ZZPreviousEmployed");
+					}
+					if ((val == null || val.isBlank()) && child != null && child.get_ColumnIndex("Previous_Employed") >= 0) {
+						val = child.get_ValueAsString("Previous_Employed");
+					}
+					if (val != null && !val.isBlank()) {
+						String fVal = val.trim();
+						ValueNamePair pair = ("Y".equalsIgnoreCase(fVal) || "Yes".equalsIgnoreCase(fVal))
+								? new ValueNamePair("Y", "Yes")
+								: (("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal)) ? new ValueNamePair("N", "No") : null);
+						if (pair != null) cell.setValue(pair);
+					}
 				}
 			}
 		}
@@ -2910,6 +3169,24 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop)) {
 				int id = extractId(val);
 				if (id > 0) dg.setZZFinancialYear_ID(id);
+			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement.equals(prop)
+					|| "ZZLearnerEmployed".equals(prop)) {
+				String emp = extractString(val);
+				if (dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement) >= 0) {
+					safeSetPOValue(dg, I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement, emp);
+				}
+				if (dg.get_ColumnIndex("ZZLearnerEmployed") >= 0) {
+					safeSetPOValue(dg, "ZZLearnerEmployed", emp);
+				}
+			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement.equals(prop)
+					|| "ZZPreviousEmployed".equals(prop)) {
+				String past = extractString(val);
+				if (dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement) >= 0) {
+					safeSetPOValue(dg, I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement, past);
+				}
+				if (dg.get_ColumnIndex("ZZPreviousEmployed") >= 0) {
+					safeSetPOValue(dg, "ZZPreviousEmployed", past);
+				}
 			}
 		}
 
@@ -2991,6 +3268,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			safeSetPOValue(dg, "ZZ_IsDisability", isDisabilitySelected());
 		}
 		dg.saveEx(trxName);
+		draftRegistration = dg;
 		saveRegistrationDocuments(dg, trxName);
 	}
 

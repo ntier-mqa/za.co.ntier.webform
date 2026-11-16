@@ -60,6 +60,8 @@ public final class LearnerAgreementData
 	// Shared Java/JRXML report keys.
 	public static final String	PARAMETER							= "AgreementData";
 	public static final String	AGREEMENT_REFERENCE_NUMBER			= "AgreementReferenceNumber";
+	public static final String	EMPLOYED_BEFORE_AGREEMENT			= "EmployedBeforeAgreement";
+	public static final String	PAST_WORKPLACE_AGREEMENT			= "PastWorkplaceAgreement";
 	public static final String	ASSESSMENT_QUALITY_PARTNER			= "AssessmentQualityPartner";
 	public static final String	BIRTH_DATE							= "BirthDate";
 	public static final String	CITIZEN_ANSWER						= "CitizenAnswer";
@@ -270,6 +272,13 @@ public final class LearnerAgreementData
 			data.put(GUARDIAN_SIGNATORY_NAME, data.get(GUARDIAN_NAME));
 		registration(data, registration, programme, codeColumn, programmeType, warnings);
 		data.put(FUNDING_TYPE, text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType)));
+		String empBefore = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement));
+		if (empBefore.isBlank()) empBefore = text(registration.get("ZZLearnerEmployed"));
+		data.put(EMPLOYED_BEFORE_AGREEMENT, "Y".equalsIgnoreCase(empBefore) || "Yes".equalsIgnoreCase(empBefore) ? "Yes" : ("N".equalsIgnoreCase(empBefore) || "No".equalsIgnoreCase(empBefore) ? "No" : ""));
+
+		String pastWp = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement));
+		if (pastWp.isBlank()) pastWp = text(registration.get("ZZPreviousEmployed"));
+		data.put(PAST_WORKPLACE_AGREEMENT, "Y".equalsIgnoreCase(pastWp) || "Yes".equalsIgnoreCase(pastWp) ? "Yes" : ("N".equalsIgnoreCase(pastWp) || "No".equalsIgnoreCase(pastWp) ? "No" : ""));
 		return data;
 	}
 
