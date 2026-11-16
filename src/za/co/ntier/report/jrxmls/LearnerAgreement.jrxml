@@ -353,7 +353,7 @@ institution for a SAQA registered qualification and may include vacation work .]
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="20" y="80" width="515" height="597" uuid="be2682bd-1a83-4826-856f-556468780902"/>
+				<reportElement x="20" y="80" width="515" height="180" uuid="be2682bd-1a83-4826-856f-556468780902"/>
 				<textElement markup="styled">
 					<font size="9"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
@@ -375,8 +375,25 @@ institution for a SAQA registered qualification and may include vacation work .]
                                   employee.
 
                       2.4.7.6 submit the signed learning programme agreement to the SETA for registration .
-
-     <b>2.5     Rights of the Provider</b>
+]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true" textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="20" y="260" width="515" height="20" isRemoveLineWhenBlank="true" uuid="eb5e4946-93f1-446b-be57-02707a751a56">
+					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85" firstLineIndent="-37" leftIndent="70" spacingAfter="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["2.4.9   " + ($P{AgreementData}.get(LearnerAgreementData.EMPLOYER_FINANCIAL_OBLIGATION) == null ? "" : (String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_FINANCIAL_OBLIGATION))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="20" y="280" width="515" height="300" uuid="785ded76-c0aa-4e66-9a6f-5fe777ca823c"/>
+				<textElement markup="styled">
+					<font size="9"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
+				</textElement>
+				<text><![CDATA[     <b>2.5     Rights of the Provider</b>
 
              The provider has the right to access the learner's work experience records.
 

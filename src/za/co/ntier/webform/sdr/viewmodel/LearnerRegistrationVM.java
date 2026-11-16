@@ -3531,6 +3531,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			LearnerAgreementData.putProgrammeDefinition(data, enterQualificationRequired,
 					selectedInterventionType, selectedDGProgramme.getTitle());
 		}
+		LearnerAgreementData.putEmployerFinancialObligation(data, selectedDGProgramme);
 		if (!warnings.isEmpty()) {
 			MasterUtil.showInfoDialog("Agreement data needs review:\n• " + String.join("\n• ", warnings), null);
 		}

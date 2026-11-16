@@ -2674,6 +2674,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 			LearnerAgreementData.putProgrammeDefinition(data, selectedDGProgramme.isEnterQualification(),
 					type, selectedDGProgramme.getTitle());
 		}
+		LearnerAgreementData.putEmployerFinancialObligation(data, dgProgrammeActive ? selectedDGProgramme : null);
 		return data;
 	}
 

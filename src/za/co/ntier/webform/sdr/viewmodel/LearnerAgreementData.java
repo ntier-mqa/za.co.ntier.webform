@@ -42,6 +42,7 @@ import za.co.ntier.api.model.I_ZZQctoLearnership;
 import za.co.ntier.api.model.I_ZZQctoQualification;
 import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.I_ZZ_ParentDetails;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.I_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.api.model.X_ZZLearner_v;
 import za.co.ntier.api.model.X_C_BPartner;
@@ -144,6 +145,8 @@ public final class LearnerAgreementData
 	public static final String	SUFFIX_SIC							= "Sic";
 	public static final String	SUFFIX_TELEPHONE					= "Telephone";
 	public static final String	SUFFIX_TRADING_NAME					= "TradingName";
+	public static final String	IS_EMPLOYER_BASED					= "IsEmployerBased";
+	public static final String	EMPLOYER_FINANCIAL_OBLIGATION		= "EmployerFinancialObligation";
 
 	static Map<String, String> build(	X_ZZLearner_v learner, Map<String, Object> registration, String programmeColumn,
 										String programmeTable, String codeColumn, String programmeType, List<String> warnings)
@@ -360,6 +363,14 @@ public final class LearnerAgreementData
 		}
 		else if (selectedProgrammeType == null || selectedProgrammeType.isBlank())
 			data.put(QUALIFICATION_TITLE, first(data.get(QUALIFICATION_TITLE), dgProgrammeTitle));
+	}
+
+	/** Clause 2.4.9: employer financial obligation, printed only for employer-based programmes. */
+	static void putEmployerFinancialObligation(Map<String, String> data, I_ZZ_Program_Master_Data programMasterData)
+	{
+		boolean isEmployerBased = programMasterData != null && programMasterData.isZZ_Is_Employer_Based();
+		data.put(IS_EMPLOYER_BASED, isEmployerBased ? "Y" : "N");
+		data.put(EMPLOYER_FINANCIAL_OBLIGATION, isEmployerBased ? text(programMasterData.getZZ_Comp_Fin_Oblig()).trim() : "");
 	}
 
 	/** Use the programme's actual qualification relationship, independent of lookup/view metadata. */
