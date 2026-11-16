@@ -381,7 +381,7 @@ institution for a SAQA registered qualification and may include vacation work .]
 				<reportElement positionType="Float" x="20" y="260" width="515" height="20" isRemoveLineWhenBlank="true" uuid="eb5e4946-93f1-446b-be57-02707a751a56">
 					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
 				</reportElement>
-				<textElement>
+				<textElement markup="html">
 					<font size="9"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85" firstLineIndent="-37" leftIndent="70" spacingAfter="9"/>
 				</textElement>
