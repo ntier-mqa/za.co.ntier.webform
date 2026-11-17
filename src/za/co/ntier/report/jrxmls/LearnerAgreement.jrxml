@@ -397,7 +397,9 @@ institution for a SAQA registered qualification and may include vacation work .]
 				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_FINANCIAL_OBLIGATION)]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="20" y="261" width="515" height="20" uuid="785ded76-c0aa-4e66-9a6f-5fe777ca823c"/>
+				<reportElement positionType="Float" x="20" y="261" width="515" height="20" uuid="785ded76-c0aa-4e66-9a6f-5fe777ca823c">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="9"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
@@ -1216,6 +1218,7 @@ concluding this agreement?]]></text>
 			</textField>
 		</band>
 		<band height="677" splitType="Stretch">
+			<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="79751f16-cf2a-4341-8362-47f3f3b8c0e4"/>
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
@@ -1508,6 +1511,7 @@ concluding this agreement?]]></text>
 			</staticText>
 		<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="30" y="435" width="515" height="40" uuid="1a9b4cf1-d332-4641-834b-ca90d08ca6d7"/><textElement verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.SECONDARY_EMPLOYER + LearnerAgreementData.SUFFIX_ADDRESS)]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="30" y="500" width="515" height="40" uuid="0f27815f-2570-4dbf-b399-780ad055dd91"/><textElement verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.SECONDARY_EMPLOYER + LearnerAgreementData.SUFFIX_POSTAL_ADDRESS)]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="100" y="318" width="12" height="12" uuid="db072ef1-9e9c-4b9e-950f-62e044543e90"/><textElement verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Yes".equals((String)$P{AgreementData}.get(LearnerAgreementData.SECONDARY_EMPLOYER + LearnerAgreementData.SUFFIX_LEVY)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="180" y="318" width="12" height="12" uuid="6b921498-c0e7-4499-9dd5-54f220747dd5"/><textElement verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["No".equals((String)$P{AgreementData}.get(LearnerAgreementData.SECONDARY_EMPLOYER + LearnerAgreementData.SUFFIX_LEVY)) ? "X" : ""]]></textFieldExpression></textField></band>
 		<band height="677" splitType="Stretch">
+			<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="45b6925a-6413-426a-8dfc-b0357db66da9"/>
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
@@ -1779,6 +1783,7 @@ concluding this agreement?]]></text>
 			</staticText>
 		<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="350" y="223" width="12" height="12" uuid="8cb4ffd7-ea12-4b7f-8ecb-93c3d5cd4c11"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["Yes".equals($P{AgreementData}.get(LearnerAgreementData.PROVIDER_LEVY)) ? "X" : ""]]></textFieldExpression></textField><textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="430" y="223" width="12" height="12" uuid="5149a869-8fcc-4eae-b489-47cbc1d6da08"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="9"/></textElement><textFieldExpression><![CDATA["No".equals($P{AgreementData}.get(LearnerAgreementData.PROVIDER_LEVY)) ? "X" : ""]]></textFieldExpression></textField></band>
 		<band height="677" splitType="Stretch">
+			<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="b93f936b-c995-48e2-9e9b-85ebac1f827a"/>
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
@@ -1799,6 +1804,7 @@ concluding this agreement?]]></text>
 			</textField>
 		</band>
 		<band height="677" splitType="Stretch">
+			<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="0" width="555" height="70" uuid="47a4ecfe-9b27-4367-835a-05b8ae9a121b"/>
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
@@ -2075,14 +2081,18 @@ concluding this agreement?]]></text>
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="30" y="120" width="110" height="20" uuid="e20ead90-a937-478e-bb45-a6cebd5c96ac"/>
+				<reportElement x="30" y="120" width="110" height="20" uuid="e20ead90-a937-478e-bb45-a6cebd5c96ac">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[6.17 E-mail Address:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true" textAdjust="ScaleFont">
-				<reportElement x="150" y="120" width="350" height="20" uuid="ad8347f0-e70b-4745-89ee-d72075925c9a"/>
+				<reportElement x="150" y="120" width="350" height="20" uuid="ad8347f0-e70b-4745-89ee-d72075925c9a">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
