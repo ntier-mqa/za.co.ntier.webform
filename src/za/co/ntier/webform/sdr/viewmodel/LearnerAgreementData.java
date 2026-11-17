@@ -215,7 +215,8 @@ public final class LearnerAgreementData
 		else if (education.isEmpty())
 			data.put(LearnerAgreementData.HIGHEST_QUALIFICATION, display(learner, I_ZZPerson.COLUMNNAME_ZZ_LI_HighestEducation_ID));
 
-		int programmeId = id(registration.get(programmeColumn));
+		// Registration map is a case-insensitive TreeMap, which rejects null keys (no config for DG-only programmes).
+		int programmeId = programmeColumn == null ? 0 : id(registration.get(programmeColumn));
 		PO programme = programmeId > 0 && programmeTable != null
 				? MTable.get(Env.getCtx(), programmeTable).getPO(programmeId, null) : null;
 		registration(data, registration, programme, codeColumn, programmeType, warnings);
@@ -370,7 +371,30 @@ public final class LearnerAgreementData
 	{
 		boolean isEmployerBased = programMasterData != null && programMasterData.isZZ_Is_Employer_Based();
 		data.put(IS_EMPLOYER_BASED, isEmployerBased ? "Y" : "N");
-		data.put(EMPLOYER_FINANCIAL_OBLIGATION, isEmployerBased ? text(programMasterData.getZZ_Comp_Fin_Oblig()).trim() : "");
+		data.put(EMPLOYER_FINANCIAL_OBLIGATION, isEmployerBased ? plainTextToHtml(programMasterData.getZZ_Comp_Fin_Oblig()) : "");
+	}
+
+	/**
+	 * The report field uses HTML markup; the column holds plain text. Escape it, keep line breaks
+	 * (including blank lines) and keep leading spaces/tabs so users can indent sub-items.
+	 */
+	static String plainTextToHtml(String value)
+	{
+		if (value == null || value.isBlank())
+			return "";
+		String[] lines = value.strip().replace("\r\n", "\n").replace('\r', '\n').split("\n", -1);
+		StringBuilder html = new StringBuilder();
+		for (int i = 0; i < lines.length; i++)
+		{
+			if (i > 0)
+				html.append("<br/>");
+			String line = lines[i].stripTrailing();
+			int indent = 0;
+			while (indent < line.length() && (line.charAt(indent) == ' ' || line.charAt(indent) == '\t'))
+				html.append(line.charAt(indent++) == '\t' ? "&nbsp;&nbsp;&nbsp;&nbsp;" : "&nbsp;");
+			html.append(line.substring(indent).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"));
+		}
+		return html.toString();
 	}
 
 	/** Use the programme's actual qualification relationship, independent of lookup/view metadata. */

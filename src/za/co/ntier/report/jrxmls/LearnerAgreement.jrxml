@@ -353,15 +353,15 @@ institution for a SAQA registered qualification and may include vacation work .]
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="20" y="80" width="515" height="180" uuid="be2682bd-1a83-4826-856f-556468780902"/>
+				<reportElement x="20" y="80" width="515" height="240" uuid="be2682bd-1a83-4826-856f-556468780902"/>
 				<textElement markup="styled">
 					<font size="9"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
 				</textElement>
-				<text><![CDATA[2.4.6   keep up to date records of workplace learning and periodically discuss progress with the learner and the provider;
+				<text><![CDATA[        2.4.6    keep up to date records of workplace learning and periodically discuss progress with the learner and the provider;
 
-             2.4.7   if the learner was not in the employment of the employer at the time of concluding this agreement, the employer
-                     must:
+        2.4.7    if the learner was not in the employment of the employer at the time of concluding this agreement, the employer
+                 must:
 
                      2.4.7.1   enter into a contract of employment with the learner for the duration of the learning programme;
 
@@ -377,51 +377,33 @@ institution for a SAQA registered qualification and may include vacation work .]
                       2.4.7.6 submit the signed learning programme agreement to the SETA for registration .
 ]]></text>
 			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="40" y="247" width="30" height="14" isRemoveLineWhenBlank="true" uuid="16048ac7-cd00-4618-8ef3-fc9e2e5ae245">
+					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[2.4.9]]></text>
+			</staticText>
 			<textField isBlankWhenNull="true" textAdjust="StretchHeight">
-				<reportElement positionType="Float" x="20" y="260" width="515" height="20" isRemoveLineWhenBlank="true" uuid="eb5e4946-93f1-446b-be57-02707a751a56">
+				<reportElement positionType="Float" x="70" y="247" width="465" height="12" isRemoveLineWhenBlank="true" uuid="eb5e4946-93f1-446b-be57-02707a751a56">
 					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED))]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="html">
 					<font size="9"/>
-					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85" firstLineIndent="-37" leftIndent="70" spacingAfter="9"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85" spacingAfter="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["2.4.9   " + ($P{AgreementData}.get(LearnerAgreementData.EMPLOYER_FINANCIAL_OBLIGATION) == null ? "" : (String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_FINANCIAL_OBLIGATION))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_FINANCIAL_OBLIGATION)]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="20" y="280" width="515" height="300" uuid="785ded76-c0aa-4e66-9a6f-5fe777ca823c"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" x="20" y="261" width="515" height="20" uuid="785ded76-c0aa-4e66-9a6f-5fe777ca823c"/>
 				<textElement markup="styled">
 					<font size="9"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
 				</textElement>
-				<text><![CDATA[     <b>2.5     Rights of the Provider</b>
-
-             The provider has the right to access the learner's work experience records.
-
-     <b>2.6     Duties of the Provider</b>
-
-             The provider must:
-
-             2.6.1   provide the knowledge and practical skills components specified in the work-based learning programme;
-
-             2.6.2   provide the learner support as required by the workplace-based learning programme;
-
-             2.6.3    record, monitor and retain details of the education and training provided to the learner in terms of the workplace
-                      based learning programme and periodically discuss and record progress with the learner and the employer;
-
-             2.6.4    conduct internal assessments for the knowledge and practical skills components specified in the workplace-
-                      based learning programme; and
-
-             2.6.5    issue statements of results.
-
-<b>3.     Completion or termination of this agreement</b>
-
-3.1 This workplace based learning programme agreement is completed:
-
-       3.1.1     on the date as stipulated in this agreement as completion date; or
-
-       3.1.2     on an earlier date if the learner has successfully completed the final external summative assessment and fulfilled
-                 all requirements associated with the specified workplace experience activities of the work-based learning programme.]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["     <b>2.5     Rights of the Provider</b>\n\n             The provider has the right to access the learner's work experience records.\n\n     <b>2.6     Duties of the Provider</b>\n\n             The provider must:\n\n             2.6.1   provide the knowledge and practical skills components specified in the work-based learning programme;\n\n             2.6.2   provide the learner support as required by the workplace-based learning programme;\n\n             2.6.3    record, monitor and retain details of the education and training provided to the learner in terms of the workplace\n                      based learning programme and periodically discuss and record progress with the learner and the employer;\n\n             2.6.4    conduct internal assessments for the knowledge and practical skills components specified in the workplace-\n                      based learning programme; and\n\n             2.6.5    issue statements of results."]]></textFieldExpression>
+			</textField>
 		</band>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">
@@ -434,7 +416,16 @@ institution for a SAQA registered qualification and may include vacation work .]
 					<font size="9"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
 				</textElement>
-				<text><![CDATA[3.2 This workplace based learning programme agreement is terminated if:
+				<text><![CDATA[<b>3.     Completion or termination of this agreement</b>
+
+3.1 This workplace based learning programme agreement is completed:
+
+       3.1.1     on the date as stipulated in this agreement as completion date; or
+
+       3.1.2     on an earlier date if the learner has successfully completed the final external summative assessment and fulfilled
+                 all requirements associated with the specified workplace experience activities of the work-based learning programme.
+
+3.2 This workplace based learning programme agreement is terminated if:
 
     3.2.1     the learner is fairly dismissed by the employer for a reason related to the learner ’s conduct or capacity as an
               employee; or
