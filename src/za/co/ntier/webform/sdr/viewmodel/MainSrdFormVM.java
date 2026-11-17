@@ -394,15 +394,22 @@ public class MainSrdFormVM extends BaseAppVM {
 			.required();
 		cols.add(nationalityCol);
 
-		ColumnModel socioEconomicStatusCol = ListCellModel.getListColumnModel(
+		socioEconomicStatusCol = ListCellModel.getListColumnModel(
 				MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID)
 				, I_ZZSdf.COLUMNNAME_ZZ_LI_SocioEconomicStatus_ID
 				, MasterUtil.getSocioEconomicStatus()
 				, title -> {return title.getName();}
 				, title -> {return title.getZZ_LI_SocioEconomicStatus_ID();}
 			).setzClass(X_ZZ_LI_SocioEconomicStatus.class)
-			.setUseForID(true)
-			.required();
+			.setUseForID(true);
+		socioEconomicStatusCol.required();
+		// an SDF is always employed: lock Socio Economic Status to "Employed"
+		X_ZZ_LI_SocioEconomicStatus employed = getEmployedSocioEconomicStatus();
+		if (employed != null) {
+			socioEconomicStatusCol.setDefaultValue(employed,
+					(cell, item) -> item.getZZ_LI_SocioEconomicStatus_ID() == employed.getZZ_LI_SocioEconomicStatus_ID());
+			socioEconomicStatusCol.setReadonly(true);
+		}
 		cols.add(socioEconomicStatusCol);
 
 		TableModel personDetailBean = TableModel.getTableBean(TableModel.class, cols, false, I_ZZSdf.Table_Name);
@@ -421,9 +428,30 @@ public class MainSrdFormVM extends BaseAppVM {
 			}
 		}
 
+		// existing SDFs may have another status saved; show "Employed" regardless
+		if (employed != null) {
+			row.get(socioEconomicStatusCol).setValue(employed);
+		}
+
 		return personDetailBean;
 	}
 
+	/**
+	 * @return the "Employed" Socio Economic Status record, or null (with a warning) if it is not configured
+	 */
+	private X_ZZ_LI_SocioEconomicStatus getEmployedSocioEconomicStatus() {
+		X_ZZ_LI_SocioEconomicStatus employed = MasterUtil.getSocioEconomicStatus().stream()
+				.filter(status -> status.getName() != null && SOCIO_ECONOMIC_STATUS_EMPLOYED.equalsIgnoreCase(status.getName().trim()))
+				.findFirst().orElse(null);
+		if (employed == null) {
+			log.warning("Socio Economic Status '" + SOCIO_ECONOMIC_STATUS_EMPLOYED + "' not found; SDF field left editable");
+		}
+		return employed;
+	}
+
+	private static final String SOCIO_ECONOMIC_STATUS_EMPLOYED = "Employed";
+
+	private ListColumnModel<X_ZZ_LI_SocioEconomicStatus> socioEconomicStatusCol;
 	private ColumnModel idNoCol;
 	private ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
 	private ColumnModel dateOfBirthCol;
@@ -497,6 +525,11 @@ public class MainSrdFormVM extends BaseAppVM {
 			}
 		}
 		sdf.setZZMaintainStatus(maintainSrdStatus);
+		// safety net: an SDF is always stored as "Employed"
+		X_ZZ_LI_SocioEconomicStatus employed = getEmployedSocioEconomicStatus();
+		if (employed != null) {
+			sdf.setZZ_LI_SocioEconomicStatus_ID(employed.getZZ_LI_SocioEconomicStatus_ID());
+		}
 		sdf.saveEx(trxName);
 		
 	}
