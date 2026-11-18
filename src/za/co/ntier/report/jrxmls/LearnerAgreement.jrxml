@@ -5,6 +5,7 @@
 	<parameter name="AgreementData" class="java.util.Map"><defaultValueExpression><![CDATA[new java.util.HashMap()]]></defaultValueExpression></parameter>
 	<detail>
 		<band height="677" splitType="Stretch">
+			<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.CANDIDACY_ANNEXURE_SUMMARY))]]></printWhenExpression>
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="40" width="555" height="70" uuid="d8a146f2-f510-426f-8dba-48e9ca856748"/>
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
@@ -183,6 +184,27 @@
 				</textElement>
 				<text><![CDATA[AGREEMENT]]></text>
 			</staticText>
+			<frame>
+				<reportElement x="0" y="0" width="555" height="677" uuid="f108baef-e9eb-4ecd-863f-63fc34aa9e0c">
+					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.CANDIDACY_ANNEXURE_SUMMARY))]]></printWhenExpression>
+				</reportElement>
+			<staticText><reportElement x="0" y="230" width="200" height="20" uuid="2dab8e83-cc6f-4bb9-909b-1cf40ecaa5d1"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Learner Name:]]></text></staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="230" width="345" height="20" uuid="9d911bab-6d4c-4387-8abd-71afc6d607a6"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_NAME)]]></textFieldExpression></textField>
+			<staticText><reportElement x="0" y="260" width="200" height="20" uuid="26bd09fd-3e36-4c0d-9b74-59a7c2d33d9a"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Learner ID:]]></text></staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="260" width="345" height="20" uuid="c2201a60-c8aa-4cdb-b993-8406445947e4"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_ID)]]></textFieldExpression></textField>
+			<staticText><reportElement x="0" y="290" width="200" height="20" uuid="bd3cedf8-b853-4ce5-99a5-bbdb75ee3173"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Name of Programme:]]></text></staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="290" width="345" height="20" uuid="7562f5f0-2226-4cc2-9b87-a0d5f696c9c9"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.PROGRAMME_TITLE)]]></textFieldExpression></textField>
+			<staticText><reportElement x="0" y="320" width="200" height="20" uuid="ca8e815e-1083-4c13-a0f2-941e463d5f5a"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Start Date:]]></text></staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="320" width="345" height="20" uuid="6486396d-a59a-486c-a457-1391e36d09fe"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.AGREEMENT_START_DATE)]]></textFieldExpression></textField>
+			<staticText><reportElement x="0" y="350" width="200" height="20" uuid="cf70bd3d-cf62-48f8-a914-875e4454c1e1"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[End Date:]]></text></staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="350" width="345" height="20" uuid="b54d24a3-0ef0-475a-9d2f-d3e8cf6598a5"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EXPECTED_END_DATE)]]></textFieldExpression></textField>
+			<staticText><reportElement x="0" y="380" width="200" height="20" uuid="b297ac40-66b3-4d48-a902-252b1a0597f6"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Qualification:]]></text></staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="380" width="345" height="20" uuid="9c71da9d-f8c7-4554-bca7-364a5c99409a"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.QUALIFICATION_TITLE)]]></textFieldExpression></textField>
+			<staticText><reportElement x="0" y="410" width="200" height="20" uuid="6e62cfc3-33cc-4885-a815-e97662e239f6"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Employer Name:]]></text></staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="410" width="345" height="20" uuid="6537c7af-3fe8-49ca-92b7-0f14ddbb9d1f"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_NAME)]]></textFieldExpression></textField>
+			<staticText><reportElement x="0" y="440" width="200" height="20" uuid="5cbf1ba4-63d5-46f5-a08d-00d6156a18a0"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Employer SDL:]]></text></staticText>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="440" width="345" height="20" uuid="2a4e8eff-a042-4833-b36f-0dffccce4aeb"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_SDL)]]></textFieldExpression></textField>
+			</frame>
 		</band>
 		<band height="677" splitType="Stretch">
 			<image scaleImage="RetainShape" hAlign="Center">

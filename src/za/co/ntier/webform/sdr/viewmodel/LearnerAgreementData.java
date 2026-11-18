@@ -147,6 +147,9 @@ public final class LearnerAgreementData
 	public static final String	SUFFIX_TRADING_NAME					= "TradingName";
 	public static final String	IS_EMPLOYER_BASED					= "IsEmployerBased";
 	public static final String	EMPLOYER_FINANCIAL_OBLIGATION		= "EmployerFinancialObligation";
+	/** Shows the Annexure A summary only for the requested Candidacy programme definition. */
+	public static final String	CANDIDACY_ANNEXURE_SUMMARY			= "CandidacyAnnexureSummary";
+	private static final String	CANDIDACY_PROGRAM_MASTER_DATA_UU	= "ca8b4d40-76c3-4d21-b507-5d1724e9cc83";
 
 	static Map<String, String> build(	X_ZZLearner_v learner, Map<String, Object> registration, String programmeColumn,
 										String programmeTable, String codeColumn, String programmeType, List<String> warnings)
@@ -372,6 +375,9 @@ public final class LearnerAgreementData
 		boolean isEmployerBased = programMasterData != null && programMasterData.isZZ_Is_Employer_Based();
 		data.put(IS_EMPLOYER_BASED, isEmployerBased ? "Y" : "N");
 		data.put(EMPLOYER_FINANCIAL_OBLIGATION, isEmployerBased ? plainTextToHtml(programMasterData.getZZ_Comp_Fin_Oblig()) : "");
+		boolean isCandidacy = programMasterData != null
+				&& CANDIDACY_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(programMasterData.getZZ_Program_Master_Data_UU());
+		data.put(CANDIDACY_ANNEXURE_SUMMARY, isCandidacy ? "Y" : "N");
 	}
 
 	/**
