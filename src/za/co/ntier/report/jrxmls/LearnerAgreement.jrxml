@@ -203,7 +203,7 @@
 			<staticText><reportElement x="0" y="410" width="200" height="20" uuid="6e62cfc3-33cc-4885-a815-e97662e239f6"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Employer Name:]]></text></staticText>
 			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="410" width="345" height="20" uuid="6537c7af-3fe8-49ca-92b7-0f14ddbb9d1f"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_NAME)]]></textFieldExpression></textField>
 			<staticText><reportElement x="0" y="440" width="200" height="20" uuid="5cbf1ba4-63d5-46f5-a08d-00d6156a18a0"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Employer SDL:]]></text></staticText>
-			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="440" width="345" height="20" uuid="2a4e8eff-a042-4833-b36f-0dffccce4aeb"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_SDL)]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="440" width="345" height="20" uuid="2a4e8eff-a042-4833-b36f-0dffccce4aeb"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.EMPLOYER_VALUE)]]></textFieldExpression></textField>
 			</frame>
 		</band>
 		<band height="677" splitType="Stretch">

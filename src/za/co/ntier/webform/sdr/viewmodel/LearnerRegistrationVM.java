@@ -1036,7 +1036,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	@Override
 	public String getBtNextLabel(NavTab navTab) {
-		if (isRegistrationTabActive() && isLPOpsProgram(selectedDGProgramme)) {
+		if (isRegistrationTabActive()) {
 			return "Download Agreement & Next";
 		}
 		return "Next";
@@ -1044,7 +1044,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	@Override
 	public String getBtNextIcon(NavTab navTab) {
-		if (isRegistrationTabActive() && isLPOpsProgram(selectedDGProgramme)) {
+		if (isRegistrationTabActive()) {
 			return "z-icon-file-pdf";
 		}
 		return "z-icon-arrow-right";
@@ -1116,9 +1116,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			return true;
 		}
 
-		// 4. Special handling if on Registration tab: download agreement (LP-Ops only)
+		// 4. Special handling if on Registration tab: download the agreement.
 		int regIndex = getRegistrationTabIndex();
-		if ((activeIndex == regIndex || isRegistrationTabActive()) && isLPOpsProgram(selectedDGProgramme)) {
+		if (activeIndex == regIndex || isRegistrationTabActive()) {
 			boolean downloaded = downloadLearnerAgreement();
 			if (!downloaded) {
 				return true;

@@ -79,6 +79,8 @@ public final class LearnerAgreementData
 	public static final String	EMPLOYER_NAME						= "EmployerName";
 	public static final String	EMPLOYER_POSTAL_ADDRESS				= "EmployerPostalAddress";
 	public static final String	EMPLOYER_SDL						= "EmployerSdl";
+	/** Employer business-partner Value, used as the SDL value on the Candidacy Annexure summary. */
+	public static final String	EMPLOYER_VALUE						= "EmployerValue";
 	public static final String	EMPLOYER_SIC						= "EmployerSic";
 	public static final String	EMPLOYER_TELEPHONE					= "EmployerTelephone";
 	public static final String	EMPLOYER_TRADING_NAME				= "EmployerTradingName";
@@ -481,6 +483,8 @@ public final class LearnerAgreementData
 		if (partnerId <= 0)
 			return;
 		MBPartner partner = new MBPartner(Env.getCtx(), partnerId, null);
+		if ("Employer".equals(prefix))
+			data.put(EMPLOYER_VALUE, partner.getValue());
 		putPartyAddresses(data, prefix, partner,
 				organisationAddress(partnerId, "Physical"), organisationAddress(partnerId, "Postal"));
 		MUser contact = null;
@@ -517,7 +521,8 @@ public final class LearnerAgreementData
 			data.put(prefix + LearnerAgreementData.SUFFIX_LEVY, "No");
 		else if (X_C_BPartner.ZZLEVYNUMBERTYPE_LNumber.equals(value(partner, I_C_BPartner.COLUMNNAME_ZZLevyNumberType)))
 			data.put(prefix + LearnerAgreementData.SUFFIX_LEVY, "Yes");
-		data.put(prefix + LearnerAgreementData.SUFFIX_SDL, "Yes".equals(data.get(prefix + LearnerAgreementData.SUFFIX_LEVY)) ? partner.getValue() : "");
+		data.put(prefix + LearnerAgreementData.SUFFIX_SDL,
+				"Yes".equals(data.get(prefix + LearnerAgreementData.SUFFIX_LEVY)) ? partner.getValue() : "");
 	}
 
 	static void putPartyAddresses(Map<String, String> data, String prefix, MBPartner partner,
