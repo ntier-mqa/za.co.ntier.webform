@@ -33,6 +33,7 @@ import za.co.ntier.api.model.I_ZZLearnerLearnership;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_C_BP_AC;
 import za.co.ntier.api.model.X_C_BP_AC;
+import za.co.ntier.api.model.I_ZZ_Institution_Qualifications;
 import za.co.ntier.api.model.I_ZZPerson;
 import za.co.ntier.api.model.I_ZZPersonAddress;
 import za.co.ntier.api.model.I_ZZQualification;
@@ -440,7 +441,8 @@ public final class LearnerAgreementData
 			if (selected.getZZQualification_ID() > 0)
 				qualification = (PO) selected.getZZQualification();
 		}
-		else if (programme instanceof I_ZZQualification || programme instanceof I_ZZQctoQualification)
+		else if (programme instanceof I_ZZQualification || programme instanceof I_ZZQctoQualification
+				|| programme instanceof I_ZZ_Institution_Qualifications)
 			qualification = programme;
 
 		String title = "";
@@ -456,6 +458,12 @@ public final class LearnerAgreementData
 			I_ZZQctoQualification selected = (I_ZZQctoQualification) qualification;
 			title = selected.getZZSaqaQualificationTitle();
 			saqaId = selected.getZZSaqaQualificationCode();
+		}
+		else if (qualification instanceof I_ZZ_Institution_Qualifications)
+		{
+			I_ZZ_Institution_Qualifications selected = (I_ZZ_Institution_Qualifications) qualification;
+			title = selected.getName();
+			saqaId = selected.getSaqa_Code();
 		}
 		data.put(QUALIFICATION_TITLE, first(title, programmeTitle));
 		data.put(SAQA_ID, first(saqaId, ""));
