@@ -13,8 +13,28 @@ import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 public class IDTypeCellModel extends ListCellModel<X_ZZ_AlternateIDType>{
 	@Override
 	public void setValueFromDao(PO daoPerCol) {
-		// TODO Auto-generated method stub
 		super.setValueFromDao(daoPerCol);
+		
+		// Self-registration stores no ID Type. If the user registered with a passport
+		// (passport number, no SA ID number), default the type to Passport instead of RSA ID.
+		if (daoPerCol.get_ColumnIndex(I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID) > -1
+				&& daoPerCol.get_ValueAsInt(I_AD_User.COLUMNNAME_ZZ_AlternateIDType_ID) <= 0
+				&& isBlank(daoPerCol, I_AD_User.COLUMNNAME_ZZ_ID_Passport_No)
+				&& !isBlank(daoPerCol, IDCellModel.COLUMNNAME_ZZ_Passport_No)) {
+			for (X_ZZ_AlternateIDType type : MasterUtil.getAlternateIDType()) {
+				if (type.getName() != null && type.getName().toLowerCase().contains("passport")) {
+					setValue(type.getZZ_AlternateIDType_ID());
+					break;
+				}
+			}
+		}
+	}
+	
+	private static boolean isBlank(PO po, String columnName) {
+		if (po.get_ColumnIndex(columnName) < 0)
+			return true;
+		Object value = po.get_Value(columnName);
+		return value == null || value.toString().trim().isEmpty();
 	}
 	public IDTypeCellModel(TableModel tableModel, RowModel rowModel, ListColumnModel<X_ZZ_AlternateIDType> colModel) {
 		super(tableModel, rowModel, colModel);
