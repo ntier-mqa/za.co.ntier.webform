@@ -50,6 +50,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import za.co.ntier.api.model.X_ZZLearner;
+import za.co.ntier.api.model.I_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
 import za.co.ntier.api.model.X_ZZLearnerQCTOArtisans;
@@ -2581,15 +2582,27 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			cols.add(colQual);
 		}
 
-		// 2. Funding Year search (only if ZZ_IsIncludeFundYear is 'Y')
+		// 2. Funding Year list (only if ZZ_IsIncludeFundYear is 'Y')
 		if (showFundYear) {
-			ValueAdaptColumnModel colFinancialYear = ValueAdaptCellModel.getValueAdaptColumnModel(
-					"Funding Year",
-					X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID, CellModel.SEARCH_CELL);
-			colFinancialYear.setTableName(learnerTable).required();
-			colFinancialYear.setBtText("");
-			configureYearSearch(colFinancialYear);
-			cols.add(colFinancialYear);
+			MColumn fundingYearCol = MTable.get(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name)
+					.getColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year);
+			int fundingYearRefId = fundingYearCol != null ? fundingYearCol.getAD_Reference_Value_ID() : X_ZZLearnerDGProgramme.ZZ_FUNDING_YEAR_AD_Reference_ID;
+			ValueNamePair[] fundingYearPairs = MRefList.getList(Env.getCtx(), fundingYearRefId, false);
+			List<ValueNamePair> fundingYearList = fundingYearPairs != null ? Arrays.asList(fundingYearPairs) : List.of();
+
+			String fundingYearTitle = MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year);
+			if (fundingYearTitle == null || fundingYearTitle.isBlank()) {
+				fundingYearTitle = "Funding Year";
+			}
+			ListColumnModel<ValueNamePair> colFundingYear = ListCellModel.getListColumnModel(
+					fundingYearTitle,
+					I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year,
+					fundingYearList,
+					ValueNamePair::getName,
+					ValueNamePair::getValue);
+			colFundingYear.setzClass(ValueNamePair.class).required();
+			colFundingYear.setTableName(learnerTable);
+			cols.add(colFundingYear);
 		}
 
 		// If only one of Qualification or Funding Year is shown, add an empty placeholder to keep the 2-col row balanced
@@ -3086,6 +3099,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						val = child.get_ValueAsString("ZZContractNumber");
 					}
 					if (val != null) cell.setValue(val);
+				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year.equals(prop)) {
+					String fy = dg != null ? dg.getZZ_Funding_Year() : null;
+					if ((fy == null || fy.isBlank()) && child != null && child.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year) >= 0) {
+						fy = child.get_ValueAsString(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year);
+					}
+					if (fy != null && !fy.isBlank()) cell.setValue(fy);
 				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop)) {
 					int fyId = dg != null ? dg.getZZFinancialYear_ID() : 0;
 					if (fyId <= 0 && child != null && child.get_ColumnIndex("ZZFinancialYear_ID") >= 0) {
@@ -3875,6 +3894,15 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType.equals(prop)) {
 				String ft = extractString(val);
 				if (ft != null && !ft.isBlank()) dg.setZZFundingType(ft);
+			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year.equals(prop)) {
+				String fy = extractString(val);
+				if (fy != null && !fy.isBlank()) {
+					if (dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year) >= 0) {
+						dg.setZZ_Funding_Year(fy);
+					}
+				} else if (dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year) >= 0) {
+					dg.setZZ_Funding_Year(null);
+				}
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID.equals(prop)) {
 				int id = extractId(val);
 				if (id > 0) dg.setZZFinancialYear_ID(id);

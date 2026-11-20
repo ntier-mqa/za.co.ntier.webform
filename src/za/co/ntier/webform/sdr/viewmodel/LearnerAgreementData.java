@@ -333,6 +333,10 @@ public final class LearnerAgreementData
 		if (financialYearId <= 0)
 			financialYearId = id(registration.get(I_ZZLearnerLearnership.COLUMNNAME_ZZ_FinYear_ID));
 		data.put(LearnerAgreementData.FINANCIAL_YEAR, financialYear(financialYearId));
+		String fundingYear = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year));
+		if (!fundingYear.isBlank()) {
+			data.put("FundingYear", fundingYear);
+		}
 		Object agreementReference = registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZAgreementReferenceNumber);
 		data.put(LearnerAgreementData.AGREEMENT_REFERENCE_NUMBER, agreementReference == null ? "" : agreementReference.toString());
 		data.put(LearnerAgreementData.EXPECTED_END_DATE, date(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate)));
