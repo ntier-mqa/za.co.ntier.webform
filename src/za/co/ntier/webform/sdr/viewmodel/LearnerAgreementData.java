@@ -232,6 +232,7 @@ public final class LearnerAgreementData
 		PO programme = programmeId > 0 && programmeTable != null
 				? MTable.get(Env.getCtx(), programmeTable).getPO(programmeId, null) : null;
 		registration(data, registration, programme, codeColumn, programmeType, warnings);
+		checkCandidacyAqp(data);
 		putDynamicSectionSequences(data);
 		return data;
 	}
@@ -296,6 +297,7 @@ public final class LearnerAgreementData
 		String pastWp = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement));
 		if (pastWp.isBlank()) pastWp = text(registration.get("ZZPreviousEmployed"));
 		data.put(PAST_WORKPLACE_AGREEMENT, "Y".equalsIgnoreCase(pastWp) || "Yes".equalsIgnoreCase(pastWp) ? "Yes" : ("N".equalsIgnoreCase(pastWp) || "No".equalsIgnoreCase(pastWp) ? "No" : ""));
+		checkCandidacyAqp(data);
 		putDynamicSectionSequences(data);
 		return data;
 	}
@@ -401,6 +403,7 @@ public final class LearnerAgreementData
 		}
 		else if (selectedProgrammeType == null || selectedProgrammeType.isBlank())
 			data.put(QUALIFICATION_TITLE, first(data.get(QUALIFICATION_TITLE), dgProgrammeTitle));
+		checkCandidacyAqp(data);
 	}
 
 	/** Clause 2.4.9: employer financial obligation, printed only for employer-based programmes. */
@@ -412,7 +415,34 @@ public final class LearnerAgreementData
 		boolean isCandidacy = programMasterData != null
 				&& CANDIDACY_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(programMasterData.getZZ_Program_Master_Data_UU());
 		data.put(CANDIDACY_ANNEXURE_SUMMARY, isCandidacy ? "Y" : "N");
+		checkCandidacyAqp(data);
 		putDynamicSectionSequences(data);
+	}
+
+	static boolean isCandidacy(Map<String, String> data)
+	{
+		if ("Y".equals(data.get(CANDIDACY_ANNEXURE_SUMMARY)))
+			return true;
+		String progType = data.get(PROGRAMME_TYPE);
+		if (progType != null && progType.trim().equalsIgnoreCase("Candidacy"))
+			return true;
+		String progTitle = data.get(PROGRAMME_TITLE);
+		if (progTitle != null && progTitle.trim().equalsIgnoreCase("Candidacy"))
+			return true;
+		String qualTitle = data.get(QUALIFICATION_TITLE);
+		if (qualTitle != null && qualTitle.trim().equalsIgnoreCase("Candidacy"))
+			return true;
+		return false;
+	}
+
+	static void checkCandidacyAqp(Map<String, String> data)
+	{
+		if (isCandidacy(data))
+		{
+			String aqp = data.get(ASSESSMENT_QUALITY_PARTNER);
+			if (aqp == null || aqp.isBlank())
+				data.put(ASSESSMENT_QUALITY_PARTNER, "MQA");
+		}
 	}
 
 	static void putDynamicSectionSequences(Map<String, String> data)
@@ -600,8 +630,8 @@ public final class LearnerAgreementData
 		if (contact != null && contact.getFax() != null && !contact.getFax().isBlank())
 			data.put(prefix + LearnerAgreementData.SUFFIX_FAX, contact.getFax());
 
-		String cPhone = contact != null ? contact.getPhone() : "";
-		String cPhone2 = contact != null ? contact.getPhone2() : "";
+		String cPhone = contact != null && contact.getPhone() != null ? contact.getPhone() : "";
+		String cPhone2 = contact != null && contact.getPhone2() != null ? contact.getPhone2() : "";
 		putContactNumbers(data, prefix, regContactNo, regAltContactNo, cPhone, cPhone2);
 		Object levy = registration.get(levyColumn);
 		if (levy instanceof ValueNamePair)
@@ -786,9 +816,14 @@ public final class LearnerAgreementData
 		return value instanceof LocalDate ? value.toString().replace('-', '/') : "";
 	}
 
-	private static void putContactNumbers(Map<String, String> data, String prefix,
+	static void putContactNumbers(Map<String, String> data, String prefix,
 			String regNo, String regAltNo, String contactPhone, String contactPhone2)
 	{
+		regNo = regNo == null ? "" : regNo.strip();
+		regAltNo = regAltNo == null ? "" : regAltNo.strip();
+		contactPhone = contactPhone == null ? "" : contactPhone.strip();
+		contactPhone2 = contactPhone2 == null ? "" : contactPhone2.strip();
+
 		String tel = "";
 		String cell = "";
 		if (!regNo.isBlank())
@@ -827,7 +862,7 @@ public final class LearnerAgreementData
 		}
 		else
 		{
-			tel = prefix.endsWith("Provider") ? join(contactPhone2, contactPhone) : contactPhone2;
+			tel = prefix != null && prefix.endsWith("Provider") ? join(contactPhone2, contactPhone) : contactPhone2;
 			cell = contactPhone;
 			if (tel.isBlank() && !cell.isBlank())
 				tel = cell;
