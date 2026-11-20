@@ -2134,19 +2134,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
-		// Load regQualification if ZZ_Institution_Qualifications_ID or savedProgrammeId is present for non-LP-Ops
+		// Load regQualification if ZZ_Institution_Qualifications_ID is present
 		if (regQualification == null && dg != null) {
 			int qualId = dg.get_ColumnIndex(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID) >= 0
 					? dg.get_ValueAsInt(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID) : 0;
-			if (qualId <= 0 && !isLPOpsProgram(selectedDGProgramme) && savedProgrammeId != null && !savedProgrammeId.isBlank()) {
-				try {
-					qualId = Integer.parseInt(savedProgrammeId.trim());
-				} catch (Exception ignored) {
-				}
-			}
-			if (qualId <= 0 && dg.get_ColumnIndex(I_ZZQualification.COLUMNNAME_ZZQualification_ID) >= 0) {
-				qualId = dg.get_ValueAsInt(I_ZZQualification.COLUMNNAME_ZZQualification_ID);
-			}
 			if (qualId > 0) {
 				try {
 					X_ZZ_Institution_Qualifications q = new X_ZZ_Institution_Qualifications(Env.getCtx(), qualId, null);
@@ -2571,7 +2562,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		// 1. Qualification search (only if ZZ_IsIncludeQual is 'Y')
 		if (showQual) {
-			String qualTitle = MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_ZZQualification_ID);
+			String qualTitle = MasterUtil.getNameOfColTranslated(I_ZZ_Institution_Qualifications.Table_Name, I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID);
 			if (qualTitle == null || qualTitle.isBlank()) {
 				qualTitle = "Qualification";
 			}
@@ -3125,22 +3116,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						ft = child.get_ValueAsString("ZZFundingType");
 					}
 					if (ft != null && !ft.isBlank()) cell.setValue(ft);
-				} else if (I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID.equals(prop)
-						|| I_ZZQualification.COLUMNNAME_ZZQualification_ID.equals(prop)) {
+				} else if (I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID.equals(prop)) {
 					if (regQualification != null) {
 						cell.setValue(regQualification);
 					} else {
 						int qId = dg != null && dg.get_ColumnIndex(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID) >= 0
 								? dg.get_ValueAsInt(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID) : 0;
-						if (qId <= 0 && dg != null && dg.getzzlearnerprogram_id() != null && !isLPOpsProgram(selectedDGProgramme)) {
-							try {
-								qId = Integer.parseInt(dg.getzzlearnerprogram_id().trim());
-							} catch (Exception ignored) {
-							}
-						}
-						if (qId <= 0 && dg != null && dg.get_ColumnIndex(I_ZZQualification.COLUMNNAME_ZZQualification_ID) >= 0) {
-							qId = dg.get_ValueAsInt(I_ZZQualification.COLUMNNAME_ZZQualification_ID);
-						}
 						if (qId > 0) {
 							try {
 								X_ZZ_Institution_Qualifications q = new X_ZZ_Institution_Qualifications(Env.getCtx(), qId, null);
@@ -3930,6 +3911,24 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		}
 
 		RowModel row = tmRegistration.getRow();
+		int regQualId = 0;
+		boolean institutionQualificationInRow = false;
+		for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
+			if (I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID.equals(entry.getKey().getDaoPropertyName())) {
+				institutionQualificationInRow = true;
+				regQualId = extractId(entry.getValue() != null ? entry.getValue().getValue() : null);
+				break;
+			}
+		}
+		if (!institutionQualificationInRow && regQualification != null) {
+			regQualId = regQualification.get_ID();
+		}
+		if (!institutionQualificationInRow && regQualId <= 0
+				&& dg.get_ColumnIndex(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID) >= 0) {
+			regQualId = dg.get_ValueAsInt(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID);
+		}
+		boolean hasInstitutionQualification = regQualId > 0;
+
 		for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
 			ColumnModel col = entry.getKey();
 			CellModel cell = entry.getValue();
@@ -4064,12 +4063,13 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			dg.setZZ_Institution_ID(0);
 		}
 
-		// When Initial Intervention Qualification is set in Phase 1, set Program type, Program ID, Program code, Program Title
+		// When Initial Intervention Qualification is set in Phase 1, set Program ID, Program code, Program Title
 		if (selectedQualification != null) {
-			// 1. Program Type
-			String progType = resolveProgramType(selectedInterventionType);
-			if (progType != null && !progType.isBlank()) {
-				dg.setZZProgramType(progType);
+			if (!hasInstitutionQualification) {
+				String progType = resolveProgramType(selectedInterventionType);
+				if (progType != null && !progType.isBlank()) {
+					dg.setZZProgramType(progType);
+				}
 			}
 
 			// 2. Program ID
@@ -4118,18 +4118,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
-		// Save Registration Tab Qualification
-		int regQualId = regQualification != null ? regQualification.get_ID() : 0;
-		if (regQualId <= 0 && row != null) {
-			for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
-				if (I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID.equals(entry.getKey().getDaoPropertyName())
-						|| I_ZZQualification.COLUMNNAME_ZZQualification_ID.equals(entry.getKey().getDaoPropertyName())) {
-					regQualId = extractId(entry.getValue() != null ? entry.getValue().getValue() : null);
-					break;
-				}
-			}
-		}
-		if (regQualId > 0) {
+		if (hasInstitutionQualification) {
 			if (dg.get_ColumnIndex(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID) >= 0) {
 				safeSetPOValue(dg, I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID, regQualId);
 			}
@@ -4182,14 +4171,19 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		}
 
-		// Ensure ZZProgramType is always valid according to Reference 1000531
-		String currentProgType = dg.getZZProgramType();
-		if (currentProgType == null || currentProgType.isBlank() || !isValidProgramType(currentProgType)) {
-			String validProgType = resolveProgramType(selectedInterventionType);
-			if (validProgType == null || validProgType.isBlank()) {
-				validProgType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOSkillsProgramme;
+		if (hasInstitutionQualification) {
+			if (dg.getZZProgramType() != null) {
+				dg.setZZProgramType(null);
 			}
-			dg.setZZProgramType(validProgType);
+		} else {
+			String currentProgType = dg.getZZProgramType();
+			if (currentProgType == null || currentProgType.isBlank() || !isValidProgramType(currentProgType)) {
+				String validProgType = resolveProgramType(selectedInterventionType);
+				if (validProgType == null || validProgType.isBlank()) {
+					validProgType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOSkillsProgramme;
+				}
+				dg.setZZProgramType(validProgType);
+			}
 		}
 		if (dg.get_ColumnIndex("ZZQCTO") >= 0) {
 			String pt = dg.getZZProgramType();
