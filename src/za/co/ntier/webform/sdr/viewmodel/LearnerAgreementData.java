@@ -232,7 +232,7 @@ public final class LearnerAgreementData
 		PO programme = programmeId > 0 && programmeTable != null
 				? MTable.get(Env.getCtx(), programmeTable).getPO(programmeId, null) : null;
 		registration(data, registration, programme, codeColumn, programmeType, warnings);
-		checkCandidacyAqp(data);
+		checkEmployerBasedAqp(data);
 		putDynamicSectionSequences(data);
 		return data;
 	}
@@ -297,7 +297,7 @@ public final class LearnerAgreementData
 		String pastWp = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement));
 		if (pastWp.isBlank()) pastWp = text(registration.get("ZZPreviousEmployed"));
 		data.put(PAST_WORKPLACE_AGREEMENT, "Y".equalsIgnoreCase(pastWp) || "Yes".equalsIgnoreCase(pastWp) ? "Yes" : ("N".equalsIgnoreCase(pastWp) || "No".equalsIgnoreCase(pastWp) ? "No" : ""));
-		checkCandidacyAqp(data);
+		checkEmployerBasedAqp(data);
 		putDynamicSectionSequences(data);
 		return data;
 	}
@@ -403,7 +403,7 @@ public final class LearnerAgreementData
 		}
 		else if (selectedProgrammeType == null || selectedProgrammeType.isBlank())
 			data.put(QUALIFICATION_TITLE, first(data.get(QUALIFICATION_TITLE), dgProgrammeTitle));
-		checkCandidacyAqp(data);
+		checkEmployerBasedAqp(data);
 	}
 
 	/** Clause 2.4.9: employer financial obligation, printed only for employer-based programmes. */
@@ -415,7 +415,7 @@ public final class LearnerAgreementData
 		boolean isCandidacy = programMasterData != null
 				&& CANDIDACY_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(programMasterData.getZZ_Program_Master_Data_UU());
 		data.put(CANDIDACY_ANNEXURE_SUMMARY, isCandidacy ? "Y" : "N");
-		checkCandidacyAqp(data);
+		checkEmployerBasedAqp(data);
 		putDynamicSectionSequences(data);
 	}
 
@@ -435,9 +435,10 @@ public final class LearnerAgreementData
 		return false;
 	}
 
-	static void checkCandidacyAqp(Map<String, String> data)
+	static void checkEmployerBasedAqp(Map<String, String> data)
 	{
-		if (isCandidacy(data))
+		boolean isEmployerBased = "Y".equals(data.get(IS_EMPLOYER_BASED)) || isCandidacy(data);
+		if (isEmployerBased)
 		{
 			String aqp = data.get(ASSESSMENT_QUALITY_PARTNER);
 			if (aqp == null || aqp.isBlank())
