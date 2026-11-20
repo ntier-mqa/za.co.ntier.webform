@@ -33,6 +33,8 @@ import za.co.ntier.api.model.I_ZZLearnerLearnership;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_C_BP_AC;
 import za.co.ntier.api.model.X_C_BP_AC;
+import za.co.ntier.api.model.I_ZZ_Institution;
+import za.co.ntier.api.model.X_ZZ_Institution;
 import za.co.ntier.api.model.I_ZZ_Institution_Qualifications;
 import za.co.ntier.api.model.I_ZZPerson;
 import za.co.ntier.api.model.I_ZZPersonAddress;
@@ -311,9 +313,28 @@ public final class LearnerAgreementData
 	private static void registration(Map<String, String> data, Map<String, Object> registration,
 			PO programme, String codeColumn, String programmeType, List<String> warnings)
 	{
-		party(data, "Employer", id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID)));
-		partyDetails(	data, registration, "Employer", I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID,
-						I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID, I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy);
+		int instId = id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID));
+		if (instId > 0) {
+			X_ZZ_Institution inst = new X_ZZ_Institution(Env.getCtx(), instId, null);
+			data.put("Employer" + SUFFIX_LEAD, "Yes");
+			data.put("Employer" + LearnerAgreementData.SUFFIX_NAME, inst.getName());
+			String contactPerson = first(text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactPerson)),
+					text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_AltContactPerson)));
+			if (!contactPerson.isBlank()) {
+				data.put("Employer" + LearnerAgreementData.SUFFIX_CONTACT, contactPerson);
+			}
+			String contactEmail = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactEmail));
+			if (!contactEmail.isBlank()) {
+				data.put("Employer" + LearnerAgreementData.SUFFIX_EMAIL, contactEmail);
+			}
+			String contactPhone = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactNo));
+			String altPhone = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_AltContactNumber));
+			putContactNumbers(data, "Employer", contactPhone, altPhone, "", "");
+		} else {
+			party(data, "Employer", id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID)));
+			partyDetails(	data, registration, "Employer", I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID,
+							I_ZZLearnerDGProgramme.COLUMNNAME_ZZWAContact_ID, I_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy);
+		}
 		party(data, "Provider", id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID)));
 		partyDetails(	data, registration, "Provider", I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID,
 						I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID, I_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy);
@@ -492,13 +513,25 @@ public final class LearnerAgreementData
 										String partnerColumn, String contactColumn, String levyColumn)
 	{
 		int partnerId = id(registration.get(partnerColumn));
-		if (partnerId <= 0)
-			return;
-		MBPartner partner = new MBPartner(Env.getCtx(), partnerId, null);
-		if ("Employer".equals(prefix))
-			data.put(EMPLOYER_VALUE, partner.getValue());
-		putPartyAddresses(data, prefix, partner,
-				organisationAddress(partnerId, "Physical"), organisationAddress(partnerId, "Postal"));
+		MBPartner partner = partnerId > 0 ? new MBPartner(Env.getCtx(), partnerId, null) : null;
+		if (partner != null)
+		{
+			if ("Employer".equals(prefix))
+				data.put(EMPLOYER_VALUE, partner.getValue());
+			putPartyAddresses(data, prefix, partner,
+					organisationAddress(partnerId, "Physical"), organisationAddress(partnerId, "Postal"));
+		}
+		String regContactPerson = "Employer".equals(prefix)
+				? first(text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactPerson)),
+						text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_AltContactPerson)))
+				: "";
+		String regContactNo = "Employer".equals(prefix)
+				? text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactNo)) : "";
+		String regAltContactNo = "Employer".equals(prefix)
+				? text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_AltContactNumber)) : "";
+		String regContactEmail = "Employer".equals(prefix)
+				? text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactEmail)) : "";
+
 		MUser contact = null;
 		int contactId = id(registration.get(contactColumn));
 		if (contactId > 0)
@@ -507,23 +540,49 @@ public final class LearnerAgreementData
 			if (selected.isActive() && selected.getC_BPartner_ID() == partnerId)
 				contact = selected;
 		}
-		if (contact == null)
+		MUser[] contacts = partner != null ? partner.getContacts(false) : null;
+		if (contact == null && !regContactPerson.isBlank() && contacts != null)
 		{
-			MUser[] contacts = partner.getContacts(false);
-			if (contacts.length == 1)
+			for (MUser u : contacts)
+			{
+				if (u.isActive() && regContactPerson.equalsIgnoreCase(u.getName()))
+				{
+					contact = u;
+					break;
+				}
+			}
+		}
+		if (contact == null && contacts != null)
+		{
+			if (contacts.length == 1 && contacts[0].isActive())
 				contact = contacts[0];
+			else if (contacts.length > 1)
+			{
+				for (MUser u : contacts)
+				{
+					if (u.isActive())
+					{
+						contact = u;
+						break;
+					}
+				}
+			}
 		}
-		if (contact != null)
-		{
-			data.put(prefix + LearnerAgreementData.SUFFIX_CONTACT, contact.getName());
-			// Organisation Contact Details labels Phone as Cell and Phone2 as Telephone.
-			data.put(prefix + LearnerAgreementData.SUFFIX_TELEPHONE, prefix.endsWith("Provider")
-																								? join(contact.getPhone2(), contact.getPhone())
-																								: contact.getPhone2());
-			data.put(prefix + LearnerAgreementData.SUFFIX_CELL, contact.getPhone());
+
+		String contactName = first(regContactPerson, contact != null ? contact.getName() : "");
+		if (!contactName.isBlank())
+			data.put(prefix + LearnerAgreementData.SUFFIX_CONTACT, contactName);
+
+		String contactEmail = first(regContactEmail, contact != null ? contact.getEMail() : "");
+		if (!contactEmail.isBlank())
+			data.put(prefix + LearnerAgreementData.SUFFIX_EMAIL, contactEmail);
+
+		if (contact != null && contact.getFax() != null && !contact.getFax().isBlank())
 			data.put(prefix + LearnerAgreementData.SUFFIX_FAX, contact.getFax());
-			data.put(prefix + LearnerAgreementData.SUFFIX_EMAIL, contact.getEMail());
-		}
+
+		String cPhone = contact != null ? contact.getPhone() : "";
+		String cPhone2 = contact != null ? contact.getPhone2() : "";
+		putContactNumbers(data, prefix, regContactNo, regAltContactNo, cPhone, cPhone2);
 		Object levy = registration.get(levyColumn);
 		if (levy instanceof ValueNamePair)
 			levy = ((ValueNamePair) levy).getValue();
@@ -531,10 +590,10 @@ public final class LearnerAgreementData
 			data.put(prefix + LearnerAgreementData.SUFFIX_LEVY, "Yes");
 		else if (Boolean.FALSE.equals(levy) || "N".equals(levy))
 			data.put(prefix + LearnerAgreementData.SUFFIX_LEVY, "No");
-		else if (X_C_BPartner.ZZLEVYNUMBERTYPE_LNumber.equals(value(partner, I_C_BPartner.COLUMNNAME_ZZLevyNumberType)))
+		else if (partner != null && X_C_BPartner.ZZLEVYNUMBERTYPE_LNumber.equals(value(partner, I_C_BPartner.COLUMNNAME_ZZLevyNumberType)))
 			data.put(prefix + LearnerAgreementData.SUFFIX_LEVY, "Yes");
 		data.put(prefix + LearnerAgreementData.SUFFIX_SDL,
-				"Yes".equals(data.get(prefix + LearnerAgreementData.SUFFIX_LEVY)) ? partner.getValue() : "");
+				"Yes".equals(data.get(prefix + LearnerAgreementData.SUFFIX_LEVY)) && partner != null ? partner.getValue() : "");
 	}
 
 	static void putPartyAddresses(Map<String, String> data, String prefix, MBPartner partner,
@@ -681,7 +740,7 @@ public final class LearnerAgreementData
 
 	private static String value(PO record, String column)
 	{
-		return column == null || record.get_ColumnIndex(column) < 0 ? "" : record.get_ValueAsString(column);
+		return record == null || column == null || record.get_ColumnIndex(column) < 0 ? "" : record.get_ValueAsString(column);
 	}
 
 	private static int id(Object value)
@@ -707,9 +766,79 @@ public final class LearnerAgreementData
 		return value instanceof LocalDate ? value.toString().replace('-', '/') : "";
 	}
 
-	private static String first(String primary, String fallback)
+	private static void putContactNumbers(Map<String, String> data, String prefix,
+			String regNo, String regAltNo, String contactPhone, String contactPhone2)
 	{
-		return primary == null || primary.isBlank() ? fallback : primary;
+		String tel = "";
+		String cell = "";
+		if (!regNo.isBlank())
+		{
+			if (!regAltNo.isBlank())
+			{
+				if (isMobile(regNo) && !isMobile(regAltNo))
+				{
+					cell = regNo;
+					tel = regAltNo;
+				}
+				else if (!isMobile(regNo) && isMobile(regAltNo))
+				{
+					tel = regNo;
+					cell = regAltNo;
+				}
+				else
+				{
+					cell = regNo;
+					tel = regAltNo;
+				}
+			}
+			else
+			{
+				if (isMobile(regNo))
+				{
+					cell = regNo;
+					tel = first(contactPhone2, regNo);
+				}
+				else
+				{
+					tel = regNo;
+					cell = first(contactPhone, regNo);
+				}
+			}
+		}
+		else
+		{
+			tel = prefix.endsWith("Provider") ? join(contactPhone2, contactPhone) : contactPhone2;
+			cell = contactPhone;
+			if (tel.isBlank() && !cell.isBlank())
+				tel = cell;
+			else if (cell.isBlank() && !tel.isBlank())
+				cell = tel;
+		}
+
+		if (!tel.isBlank())
+			data.put(prefix + LearnerAgreementData.SUFFIX_TELEPHONE, tel);
+		if (!cell.isBlank())
+			data.put(prefix + LearnerAgreementData.SUFFIX_CELL, cell);
+	}
+
+	static boolean isMobile(String phone)
+	{
+		if (phone == null || phone.isBlank())
+			return false;
+		String digits = phone.replaceAll("[^0-9]", "");
+		if (digits.startsWith("27"))
+			digits = "0" + digits.substring(2);
+		return digits.startsWith("06") || digits.startsWith("07") || digits.startsWith("08");
+	}
+
+	private static String first(String... values)
+	{
+		for (String value : values)
+		{
+			if (value != null && !value.isBlank())
+				return value;
+		}
+		return "";
 	}
 
 	private static String join(String... values)

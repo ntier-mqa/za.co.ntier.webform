@@ -73,6 +73,8 @@ import za.co.ntier.api.model.X_ZZ_ParentDetails;
 import za.co.ntier.api.model.X_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.I_ZZQualification;
+import za.co.ntier.api.model.I_ZZ_Institution;
+import za.co.ntier.api.model.X_ZZ_Institution;
 import za.co.ntier.api.model.I_ZZ_Institution_Qualifications;
 import za.co.ntier.api.model.X_ZZ_Institution_Qualifications;
 import za.co.ntier.api.model.X_ZZQualification;
@@ -2623,10 +2625,11 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		// 5. Employer / Employer (Institution) (Required)
 		boolean isInst = isInstitutionProgram(selectedDGProgramme);
+		String empCol = isInst ? I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID : X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID;
 		String empTitle = isInst ? "Employer (Institution)" : MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID);
 		ValueAdaptColumnModel colEmployer = ValueAdaptCellModel.getValueAdaptColumnModel(
 				empTitle,
-				X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID, CellModel.SEARCH_CELL);
+				empCol, CellModel.SEARCH_CELL);
 		colEmployer.setTableName(learnerTable).required();
 		colEmployer.setBtText("");
 		cols.add(colEmployer);
@@ -2666,8 +2669,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		colAltContactNumber.setTableName(learnerTable);
 		cols.add(colAltContactNumber);
 
-		// Wire search handler for Employer
-		configureSimpleEmployerSearch(colEmployer, colEmpContactPerson, colEmpContactNumber, colEmpContactEmail);
+		// Wire search handler for Employer / Institution
+		if (isInst) {
+			configureSimpleInstitutionSearch(colEmployer);
+		} else {
+			configureSimpleEmployerSearch(colEmployer, colEmpContactPerson, colEmpContactNumber, colEmpContactEmail);
+		}
 
 		return cols;
 	}
@@ -2868,6 +2875,73 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		});
 	}
 
+	private void configureSimpleInstitutionSearch(ValueAdaptColumnModel colInst) {
+		String instWhere = I_ZZ_Institution.Table_Name + "." + I_ZZ_Institution.COLUMNNAME_IsActive + " = 'Y'";
+		colInst.setDisplayAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof I_ZZ_Institution)
+				return ((I_ZZ_Institution) value).getName();
+			if (value instanceof PO)
+				return ((PO) value).get_ValueAsString(I_ZZ_Institution.COLUMNNAME_Name);
+			if (value instanceof Number || (value instanceof String && ((String) value).trim().matches("\\d+"))) {
+				try {
+					int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(((String) value).trim());
+					if (id > 0) {
+						X_ZZ_Institution inst = new X_ZZ_Institution(Env.getCtx(), id, null);
+						if (inst.get_ID() > 0) {
+							return inst.getName();
+						}
+					}
+				} catch (Exception ignored) {
+				}
+			}
+			return value.toString();
+		});
+		colInst.setValueAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			if (value instanceof PO)
+				return ((PO) value).get_ID();
+			if (value instanceof Number)
+				return ((Number) value).intValue();
+			if (value instanceof String) {
+				try {
+					return Integer.parseInt(((String) value).trim());
+				} catch (Exception ignored) {
+					return null;
+				}
+			}
+			return value;
+		});
+		colInst.setValueFromDaoAdaptHandle(value -> {
+			if (value == null)
+				return null;
+			int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
+			return id > 0 ? new X_ZZ_Institution(Env.getCtx(), id, null) : null;
+		});
+		colInst.setEventHandle((event, cellModel) -> {
+			if (cellModel.getRowModel() != null && !cellModel.getRowModel().isEditable()) {
+				return;
+			}
+			InfoPanelPara para = InfoPanelPara.getInstance(I_ZZ_Institution.Table_Name, I_ZZ_Institution.COLUMNNAME_ZZ_Institution_ID);
+			para.setWhereClause(instWhere);
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] values = (Object[]) obj;
+				if (values == null || values.length == 0 || values[0] == null)
+					return;
+				int instId = values[0] instanceof Number ? ((Number) values[0]).intValue() : Integer.parseInt(values[0].toString());
+				if (instId <= 0)
+					return;
+				X_ZZ_Institution inst = new X_ZZ_Institution(Env.getCtx(), instId, null);
+				cellModel.setValue(inst);
+				cellModel.resetValidate();
+				BindUtils.postNotifyChange(null, null, cellModel, "value");
+				BindUtils.postNotifyChange(null, null, cellModel, "displayValue");
+			});
+		});
+	}
+
 	private boolean isLPOpsProgram(X_ZZ_Program_Master_Data prog) {
 		if (prog == null) return false;
 		int orgId = prog.getAD_Org_ID();
@@ -2985,6 +3059,18 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						sdpId = child.get_ValueAsInt("ZZSDProvider_ID");
 					}
 					if (sdpId > 0) cell.setValue(new MBPartner(Env.getCtx(), sdpId, null));
+				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID.equals(prop)) {
+					int instId = dg != null && dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID) >= 0
+							? dg.getZZ_Institution_ID() : 0;
+					if (instId <= 0 && child != null && child.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID) >= 0) {
+						instId = child.get_ValueAsInt(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID);
+					}
+					if (instId > 0) {
+						X_ZZ_Institution inst = new X_ZZ_Institution(Env.getCtx(), instId, null);
+						if (inst.get_ID() > 0) {
+							cell.setValue(inst);
+						}
+					}
 				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(prop)) {
 					int empId = dg != null ? dg.getZZ_Employer_ID() : 0;
 					if (empId <= 0 && child != null && child.get_ColumnIndex("ZZ_Employer_ID") >= 0) {
@@ -3877,6 +3963,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				dg.setZZSecondarySDProviderLevy(extractString(val));
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderContact_ID.equals(prop)) {
 				dg.setZZSecondarySDProviderContact_ID(extractId(val));
+			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID.equals(prop)) {
+				int id = extractId(val);
+				dg.setZZ_Institution_ID(id);
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(prop)) {
 				int id = extractId(val);
 				if (id > 0) dg.setZZ_Employer_ID(id);
@@ -3967,6 +4056,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					dg.setzzlearnerprogram_id(String.valueOf(id));
 				}
 			}
+		}
+
+		if (isInstitutionProgram(selectedDGProgramme)) {
+			dg.setZZ_Employer_ID(0);
+		} else {
+			dg.setZZ_Institution_ID(0);
 		}
 
 		// When Initial Intervention Qualification is set in Phase 1, set Program type, Program ID, Program code, Program Title
