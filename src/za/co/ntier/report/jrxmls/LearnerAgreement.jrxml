@@ -2120,13 +2120,13 @@ concluding this agreement?]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.SECONDARY_PROVIDER + LearnerAgreementData.SUFFIX_EMAIL)]]></textFieldExpression>
 			</textField>
-			<staticText>
+			<textField isBlankWhenNull="true">
 				<reportElement x="20" y="160" width="500" height="20" uuid="038d0127-4f33-4a78-9f9b-a60057b55c33"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[7. Contract of Employment]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.SECTION_CONTRACT_OF_EMPLOYMENT)]]></textFieldExpression>
+			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="250" y="160" width="0" height="20" uuid="a938b484-8a57-4b36-b3e1-231422177e0b"/>
 				<textElement>
@@ -2134,13 +2134,13 @@ concluding this agreement?]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
-			<staticText>
+			<textField isBlankWhenNull="true">
 				<reportElement x="30" y="190" width="500" height="20" uuid="e6f378a4-6c16-4dd3-a01b-c3d4788dbe5f"/>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[7.1 Is the learner's contract of employment specific to the period of the agreement?]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.POINT_CONTRACT_SPECIFIC)]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement x="30" y="210" width="10" height="20" uuid="6808102b-1bee-4752-a534-adee27dfe8b1"/>
 				<textElement>
@@ -2155,13 +2155,13 @@ concluding this agreement?]]></text>
 				</textElement>
 				<text><![CDATA[If yes, attach a copy of the contract of employment]]></text>
 			</staticText>
-			<staticText>
+			<textField isBlankWhenNull="true">
 				<reportElement x="30" y="270" width="500" height="20" uuid="cb79e3eb-5c96-43e6-974a-414b1d08df5e"/>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[7.2 Does the learner have a copy of the contract of employment?]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.POINT_CONTRACT_COPY)]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement x="30" y="290" width="10" height="20" uuid="9b52d288-0565-44f2-8f19-d29cc5ca16ce"/>
 				<textElement>
@@ -2169,13 +2169,13 @@ concluding this agreement?]]></text>
 				</textElement>
 				<text><![CDATA[]]></text>
 			</staticText>
-			<staticText>
+			<textField isBlankWhenNull="true">
 				<reportElement x="20" y="340" width="500" height="20" uuid="40d84d95-a40a-46c6-8fff-ca2c932b34a8"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[8. Workplace Based Learning Programme Selection:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.SECTION_PROGRAMME_SELECTION)]]></textFieldExpression>
+			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="250" y="340" width="0" height="20" uuid="bb4e19a9-d705-4398-91dc-fec14d10c886"/>
 				<textElement>
@@ -2459,13 +2459,13 @@ to (as per the Organizing Framework of Occupations(OFO))]]></text>
 			<rectangle>
 				<reportElement x="385" y="85" width="1" height="335" uuid="747e6450-9ee8-4457-be77-6e9e0858ad63"/>
 			</rectangle>
-			<staticText>
+			<textField isBlankWhenNull="true">
 				<reportElement x="20" y="450" width="200" height="20" uuid="b0ad0dd0-56ba-4dde-a2b8-11d2f6bc1de1"/>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[9. Signatories]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.SECTION_SIGNATORIES)]]></textFieldExpression>
+			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="250" y="450" width="0" height="20" uuid="96b694b4-facf-4b1d-a9e2-fa0c67725095"/>
 				<textElement>

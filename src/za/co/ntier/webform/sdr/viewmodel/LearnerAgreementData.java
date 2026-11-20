@@ -1,55 +1,54 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
-import java.text.SimpleDateFormat;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.compiere.model.MBPartner;
 import org.compiere.model.I_C_Location;
+import org.compiere.model.I_C_Period;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
-import org.compiere.model.I_C_Period;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
-import org.compiere.util.DisplayType;
 
+import za.co.ntier.api.model.I_C_BP_AC;
+import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.I_ZZLearnerLearnership;
-import za.co.ntier.api.model.I_C_BPartner;
-import za.co.ntier.api.model.I_C_BP_AC;
-import za.co.ntier.api.model.X_C_BP_AC;
-import za.co.ntier.api.model.I_ZZ_Institution;
-import za.co.ntier.api.model.X_ZZ_Institution;
-import za.co.ntier.api.model.I_ZZ_Institution_Qualifications;
+import za.co.ntier.api.model.I_ZZLearnership;
 import za.co.ntier.api.model.I_ZZPerson;
 import za.co.ntier.api.model.I_ZZPersonAddress;
-import za.co.ntier.api.model.I_ZZQualification;
-import za.co.ntier.api.model.I_ZZLearnership;
-import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZQctoLearnership;
 import za.co.ntier.api.model.I_ZZQctoQualification;
 import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
+import za.co.ntier.api.model.I_ZZQualification;
+import za.co.ntier.api.model.I_ZZSkillsProgramme;
+import za.co.ntier.api.model.I_ZZ_Institution_Qualifications;
 import za.co.ntier.api.model.I_ZZ_ParentDetails;
-import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.I_ZZ_PostSchoolEducation_Details;
-import za.co.ntier.api.model.X_ZZLearner_v;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.X_C_BP_AC;
 import za.co.ntier.api.model.X_C_BPartner;
+import za.co.ntier.api.model.X_ZZLearner_v;
 import za.co.ntier.api.model.X_ZZPerson;
+import za.co.ntier.api.model.X_ZZ_Institution;
 import za.co.ntier.api.model.X_ZZ_ParentDetails;
 import za.co.ntier.api.model.X_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
@@ -151,6 +150,11 @@ public final class LearnerAgreementData
 	public static final String	SUFFIX_TELEPHONE					= "Telephone";
 	public static final String	SUFFIX_TRADING_NAME					= "TradingName";
 	public static final String	IS_EMPLOYER_BASED					= "IsEmployerBased";
+	public static final String	SECTION_CONTRACT_OF_EMPLOYMENT		= "SectionContractOfEmployment";
+	public static final String	POINT_CONTRACT_SPECIFIC				= "PointContractSpecific";
+	public static final String	POINT_CONTRACT_COPY					= "PointContractCopy";
+	public static final String	SECTION_PROGRAMME_SELECTION			= "SectionProgrammeSelection";
+	public static final String	SECTION_SIGNATORIES					= "SectionSignatories";
 	public static final String	EMPLOYER_FINANCIAL_OBLIGATION		= "EmployerFinancialObligation";
 	/** Shows the Annexure A summary only for the requested Candidacy programme definition. */
 	public static final String	CANDIDACY_ANNEXURE_SUMMARY			= "CandidacyAnnexureSummary";
@@ -228,6 +232,7 @@ public final class LearnerAgreementData
 		PO programme = programmeId > 0 && programmeTable != null
 				? MTable.get(Env.getCtx(), programmeTable).getPO(programmeId, null) : null;
 		registration(data, registration, programme, codeColumn, programmeType, warnings);
+		putDynamicSectionSequences(data);
 		return data;
 	}
 
@@ -291,6 +296,7 @@ public final class LearnerAgreementData
 		String pastWp = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement));
 		if (pastWp.isBlank()) pastWp = text(registration.get("ZZPreviousEmployed"));
 		data.put(PAST_WORKPLACE_AGREEMENT, "Y".equalsIgnoreCase(pastWp) || "Yes".equalsIgnoreCase(pastWp) ? "Yes" : ("N".equalsIgnoreCase(pastWp) || "No".equalsIgnoreCase(pastWp) ? "No" : ""));
+		putDynamicSectionSequences(data);
 		return data;
 	}
 
@@ -406,6 +412,20 @@ public final class LearnerAgreementData
 		boolean isCandidacy = programMasterData != null
 				&& CANDIDACY_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(programMasterData.getZZ_Program_Master_Data_UU());
 		data.put(CANDIDACY_ANNEXURE_SUMMARY, isCandidacy ? "Y" : "N");
+		putDynamicSectionSequences(data);
+	}
+
+	static void putDynamicSectionSequences(Map<String, String> data)
+	{
+		boolean isEmployerBased = "Y".equals(data.get(IS_EMPLOYER_BASED));
+		int sec = isEmployerBased ? 4 : 7;
+		data.put(SECTION_CONTRACT_OF_EMPLOYMENT, sec + ". Contract of Employment");
+		data.put(POINT_CONTRACT_SPECIFIC, sec + ".1 Is the learner's contract of employment specific to the period of the agreement?");
+		data.put(POINT_CONTRACT_COPY, sec + ".2 Does the learner have a copy of the contract of employment?");
+		sec++;
+		data.put(SECTION_PROGRAMME_SELECTION, sec + ". Workplace Based Learning Programme Selection:");
+		sec++;
+		data.put(SECTION_SIGNATORIES, sec + ". Signatories");
 	}
 
 	/**
