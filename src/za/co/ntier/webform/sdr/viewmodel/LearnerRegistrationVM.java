@@ -2562,7 +2562,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		// 1. Qualification search (only if ZZ_IsIncludeQual is 'Y')
 		if (showQual) {
-			String qualTitle = MasterUtil.getNameOfColTranslated(I_ZZ_Institution_Qualifications.Table_Name, I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID);
+			String qualTitle = MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_ZZQualification_ID);
 			if (qualTitle == null || qualTitle.isBlank()) {
 				qualTitle = "Qualification";
 			}
