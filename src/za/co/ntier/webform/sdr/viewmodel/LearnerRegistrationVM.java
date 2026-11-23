@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,11 +16,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.panel.RegistrationWindow;
+import org.compiere.model.I_C_BPartner_Location;
+import org.compiere.model.I_C_Location;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
 import org.compiere.model.MMenu;
@@ -41,6 +48,9 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Filedownload;
+
+import za.co.ntier.api.model.I_ZZPerson;
+import za.co.ntier.report.MDPContractReport;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRParameter;
@@ -317,6 +327,32 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		initUploadDocument();
 		BindUtils.postNotifyChange(null, null, this, "tmDocumentUpload");
+	}
+
+	public static final String MDP_PROGRAM_MASTER_DATA_UU = "d01cfbff-fd46-4626-823e-3c77ec401ec4";
+
+	public boolean isMDPProgramme() {
+		return isMDPProgramme(selectedDGProgramme);
+	}
+
+	public boolean isMDPProgramme(X_ZZ_Program_Master_Data prog) {
+		if (prog != null) {
+			if (MDP_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(prog.getZZ_Program_Master_Data_UU())) {
+				return true;
+			}
+			String title = prog.getTitle();
+			if (title != null && (title.equalsIgnoreCase("MDP") || (title.toLowerCase().contains("management") && title.toLowerCase().contains("development")))) {
+				return true;
+			}
+			String name = prog.getName();
+			if (name != null && (name.equalsIgnoreCase("MDP") || (name.toLowerCase().contains("management") && name.toLowerCase().contains("development")))) {
+				return true;
+			}
+		}
+		if (selectedDGProgrammeTitle != null && (selectedDGProgrammeTitle.equalsIgnoreCase("MDP") || (selectedDGProgrammeTitle.toLowerCase().contains("management") && selectedDGProgrammeTitle.toLowerCase().contains("development")))) {
+			return true;
+		}
+		return false;
 	}
 
 	@Command
@@ -2973,6 +3009,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	{
 		if (prog == null)
 			return false;
+		if (isMDPProgramme(prog))
+			return false;
 		if (prog.get_ColumnIndex(X_ZZ_Program_Master_Data.COLUMNNAME_ZZ_IsInstitution) >= 0)
 			return prog.isZZ_IsInstitution();
 		if (prog.get_ColumnIndex("ZZ_IsInstitution") >= 0)
@@ -4408,6 +4446,17 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	@Command
 	public boolean downloadLearnerAgreement() {
 		try {
+			if (isMDPProgramme()) {
+				Map<String, Object> data = getMDPContractData();
+				byte[] pdfBytes = MDPContractReport.render(data);
+				if (pdfBytes != null && pdfBytes.length > 0) {
+					Filedownload.save(pdfBytes, "application/pdf", MDPContractReport.getContractFileName(data));
+					return true;
+				}
+				MasterUtil.showInfoDialog("Could not generate MDP Contract.", null);
+				return false;
+			}
+
 			Map<String, String> agreementData = getLearnerAgreementData();
 			Map<String, Object> jasperParams = new HashMap<>();
 			jasperParams.put(LearnerAgreementData.PARAMETER, agreementData);
@@ -4611,5 +4660,241 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	@Override
 	public boolean isSupportSubmit() {
 		return true;
+	}
+
+	private Map<String, Object> getMDPContractData() {
+		if (tmRegistration == null || tmRegistration.getRow() == null) {
+			throw new AdempiereException("Please complete the registration details before generating the agreement.");
+		}
+
+		Map<String, Object> data = new LinkedHashMap<>();
+		Map<String, Object> learnerValues = agreementLearnerValues(person,
+				tmNames, tmGeneralDetail, tmContactDetail, tmEducationDetail);
+		Map<String, Object> physicalValues = agreementValues(tmPhysicalAddress);
+		Map<String, Object> regValues = agreementValues(tmRegistration);
+
+		// Learner Name
+		String fullName = String.join(" ",
+				safeString(learnerValues.get(I_ZZPerson.COLUMNNAME_ZZFirstName)),
+				safeString(learnerValues.get(I_ZZPerson.COLUMNNAME_ZZMiddleName)),
+				safeString(learnerValues.get(I_ZZPerson.COLUMNNAME_Surname))).replaceAll(" +", " ").trim();
+		data.put("EmployeeName", fullName);
+		data.put("LearnerName", fullName);
+		data.put("LearnerAttention", fullName);
+
+		// Learner ID
+		String id = idNumber != null && !idNumber.isBlank() ? idNumber.trim()
+				: (person != null && person.getZZ_ID_Passport_No() != null ? person.getZZ_ID_Passport_No().trim() : "");
+		data.put("IDNumber", id);
+		data.put("LearnerId", id);
+
+		// Learner Address
+		String learnerAddress = formatAddressFromMap(physicalValues);
+		if (learnerAddress.isBlank() && person != null && person.getZZPhysicalLocation_ID() > 0) {
+			learnerAddress = formatLocationAddress(person.getZZPhysicalLocation_ID());
+		}
+		data.put("LearnerPhysicalAddress", learnerAddress);
+
+		// Learner Email & Phone
+		String lEmail = safeString(learnerValues.get(I_ZZPerson.COLUMNNAME_EMail));
+		if (lEmail.isBlank() && person != null && person.getEMail() != null) {
+			lEmail = person.getEMail();
+		}
+		data.put("LearnerEmail", lEmail);
+
+		String lPhone = safeString(learnerValues.get(I_ZZPerson.COLUMNNAME_Phone));
+		if (lPhone.isBlank() && person != null && person.getPhone() != null) {
+			lPhone = person.getPhone();
+		}
+		data.put("LearnerContact", lPhone);
+
+		// Employer / Institution Details
+		int empId = getIntFromMap(regValues, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID);
+		if (empId <= 0 && draftRegistration != null
+				&& draftRegistration.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID) >= 0) {
+			empId = draftRegistration.get_ValueAsInt(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID);
+		}
+
+		int instId = getIntFromMap(regValues, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID);
+		if (instId <= 0 && draftRegistration != null
+				&& draftRegistration.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID) >= 0) {
+			instId = draftRegistration.get_ValueAsInt(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID);
+		}
+
+		boolean isInst = !isMDPProgramme() && isInstitutionProgram(selectedDGProgramme);
+		if (isInst || (empId <= 0 && instId > 0)) {
+			String instName = "";
+			Object instObj = regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID);
+			if (instObj instanceof I_ZZ_Institution) {
+				instName = safeString(((I_ZZ_Institution) instObj).getName());
+			} else if (instObj instanceof PO) {
+				instName = safeString(((PO) instObj).get_ValueAsString(I_ZZ_Institution.COLUMNNAME_Name));
+			} else if (instId > 0) {
+				try {
+					X_ZZ_Institution inst = new X_ZZ_Institution(Env.getCtx(), instId, null);
+					if (inst.get_ID() > 0) {
+						instName = safeString(inst.getName());
+					}
+				} catch (Exception ignored) {
+				}
+			}
+
+			data.put("CompanyName", instName);
+			data.put("EmployerName", instName);
+			data.put("SDLNumber", "");
+			data.put("EmployerSdl", "");
+			data.put("EmployerPhysicalAddress", "");
+			data.put("EmployerAttention", "");
+			data.put("EmployerEmail", "");
+			data.put("EmployerContact", "");
+		} else if (empId > 0) {
+			MBPartner employer = new MBPartner(Env.getCtx(), empId, null);
+			String empName = safeString(employer.getName());
+			data.put("CompanyName", empName);
+			data.put("EmployerName", empName);
+
+			String sdl = firstNonEmpty(employer.getTaxID(), employer.getValue());
+			data.put("SDLNumber", sdl);
+			data.put("EmployerSdl", sdl);
+
+			data.put("EmployerPhysicalAddress", formatPartnerLocationAddress(employer));
+
+			String contactPerson = safeString(regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactPerson));
+			String contactEmail = safeString(regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactEmail));
+			String contactPhone = safeString(regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactNo));
+
+			if (contactEmail.isBlank() || contactPhone.isBlank()) {
+				MUser[] contacts = employer.getContacts(false);
+				if (contacts != null && contacts.length > 0) {
+					MUser best = contacts[0];
+					for (MUser u : contacts) {
+						if (u.isActive() && u.getEMail() != null && !u.getEMail().isBlank()) {
+							best = u;
+							break;
+						}
+					}
+					if (contactPerson.isBlank()) contactPerson = best.getName();
+					if (contactEmail.isBlank()) contactEmail = safeString(best.getEMail());
+					if (contactPhone.isBlank()) contactPhone = firstNonEmpty(best.getPhone(), best.getPhone2());
+				}
+			}
+			data.put("EmployerAttention", contactPerson.isBlank() ? empName : contactPerson);
+			data.put("EmployerEmail", contactEmail);
+			data.put("EmployerContact", contactPhone);
+		} else {
+			data.put("CompanyName", "");
+			data.put("EmployerName", "");
+			data.put("SDLNumber", "");
+			data.put("EmployerSdl", "");
+			data.put("EmployerPhysicalAddress", "");
+			data.put("EmployerAttention", "");
+			data.put("EmployerEmail", "");
+			data.put("EmployerContact", "");
+		}
+
+		// Dates
+		Object startObj = regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate);
+		String startDate = formatAgreementDate(startObj);
+		data.put("CommencementDate", startDate);
+		data.put("AgreementStartDate", startDate);
+
+		Object endObj = regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate);
+		String endDate = formatAgreementDate(endObj);
+		data.put("CompletionDate", endDate);
+		data.put("ExpectedEndDate", endDate);
+
+		// Financial Year
+		String finYear = safeString(regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year));
+		if (finYear.isBlank()) {
+			int fyId = getIntFromMap(regValues, I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID);
+			if (fyId > 0) {
+				MYear y = new MYear(Env.getCtx(), fyId, null);
+				finYear = safeString(y.getFiscalYear());
+			}
+		}
+		if (finYear.isBlank() && selectedDGProgramme != null && selectedDGProgramme.getC_Year_ID() > 0) {
+			MYear y = new MYear(Env.getCtx(), selectedDGProgramme.getC_Year_ID(), null);
+			finYear = safeString(y.getFiscalYear());
+		}
+		if (finYear.isBlank()) {
+			finYear = "2026/2027";
+		}
+		data.put("FinancialYear", finYear);
+
+		return data;
+	}
+
+	private static String formatAddressFromMap(Map<String, Object> values) {
+		if (values == null || values.isEmpty()) return "";
+		return Stream.of(I_C_Location.COLUMNNAME_Address1, I_C_Location.COLUMNNAME_Address2,
+				I_C_Location.COLUMNNAME_Address3, I_C_Location.COLUMNNAME_Address4,
+				I_C_Location.COLUMNNAME_C_City_ID, I_C_Location.COLUMNNAME_Postal, I_C_Location.COLUMNNAME_C_Region_ID)
+				.map(column -> safeString(values.get(column))).filter(value -> !value.isBlank()).collect(Collectors.joining("\n"));
+	}
+
+	private static String formatLocationAddress(int locationId) {
+		if (locationId <= 0) return "";
+		MLocation loc = MLocation.getCopy(Env.getCtx(), locationId, null);
+		if (loc == null) return "";
+		return Stream.of(loc.getAddress1(), loc.getAddress2(), loc.getAddress3(), loc.getAddress4(),
+				loc.getCity(), loc.getPostal(), loc.getRegionName(true))
+				.filter(s -> s != null && !s.isBlank())
+				.collect(Collectors.joining("\n"));
+	}
+
+	private static String formatPartnerLocationAddress(MBPartner partner) {
+		if (partner == null) return "";
+		MBPartnerLocation bpl = new Query(partner.getCtx(), I_C_BPartner_Location.Table_Name,
+				I_C_BPartner_Location.COLUMNNAME_C_BPartner_ID + " = ?", null)
+				.setParameters(partner.get_ID())
+				.setClient_ID()
+				.setOnlyActiveRecords(true)
+				.first();
+		if (bpl != null && bpl.getC_Location_ID() > 0) {
+			return formatLocationAddress(bpl.getC_Location_ID());
+		}
+		return "";
+	}
+
+	private static String formatAgreementDate(Object obj) {
+		if (obj == null) return "";
+		if (obj instanceof Timestamp) {
+			return ((Timestamp) obj).toLocalDateTime().toLocalDate().format(DateTimeFormatter.ofPattern("dd MMMM uuuu", Locale.ENGLISH));
+		}
+		if (obj instanceof java.util.Date) {
+			return new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH).format((java.util.Date) obj);
+		}
+		return obj.toString().trim();
+	}
+
+	private static int getIntFromMap(Map<String, Object> map, String key) {
+		if (map == null) return 0;
+		Object val = map.get(key);
+		if (val == null) return 0;
+		if (val instanceof PO) return ((PO) val).get_ID();
+		if (val instanceof Number) return ((Number) val).intValue();
+		if (val instanceof ValueNamePair) {
+			String s = ((ValueNamePair) val).getValue();
+			try { return Integer.parseInt(s); } catch (Exception ignored) {}
+		}
+		try { return Integer.parseInt(val.toString().trim()); } catch (Exception ignored) {}
+		return 0;
+	}
+
+	private static String safeString(Object obj) {
+		if (obj == null) return "";
+		if (obj instanceof ValueNamePair) {
+			return safeString(((ValueNamePair) obj).getName());
+		}
+		return obj.toString().trim();
+	}
+
+	private static String firstNonEmpty(String... values) {
+		for (String v : values) {
+			if (v != null && !v.trim().isEmpty()) {
+				return v.trim();
+			}
+		}
+		return "";
 	}
 }
