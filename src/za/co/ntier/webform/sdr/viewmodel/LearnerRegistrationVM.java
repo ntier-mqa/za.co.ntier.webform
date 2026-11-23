@@ -51,6 +51,7 @@ import org.zkoss.zul.Filedownload;
 
 import za.co.ntier.api.model.I_ZZPerson;
 import za.co.ntier.report.MDPContractReport;
+import za.co.ntier.report.WorkplaceCoachContractReport;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRParameter;
@@ -330,6 +331,31 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	}
 
 	public static final String MDP_PROGRAM_MASTER_DATA_UU = "d01cfbff-fd46-4626-823e-3c77ec401ec4";
+	public static final String WORKPLACE_COACH_PROGRAM_MASTER_DATA_UU = "1523fb8e-fc86-49b1-91de-0548b236d870";
+
+	public boolean isWorkplaceCoachProgramme() {
+		return isWorkplaceCoachProgramme(selectedDGProgramme);
+	}
+
+	public boolean isWorkplaceCoachProgramme(X_ZZ_Program_Master_Data prog) {
+		if (prog != null) {
+			if (WORKPLACE_COACH_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(prog.getZZ_Program_Master_Data_UU())) {
+				return true;
+			}
+			String title = prog.getTitle();
+			if (title != null && (title.toLowerCase().contains("coach") || title.toLowerCase().contains("workplace coach"))) {
+				return true;
+			}
+			String name = prog.getName();
+			if (name != null && (name.toLowerCase().contains("coach") || name.toLowerCase().contains("workplace coach"))) {
+				return true;
+			}
+		}
+		if (selectedDGProgrammeTitle != null && (selectedDGProgrammeTitle.toLowerCase().contains("coach") || selectedDGProgrammeTitle.toLowerCase().contains("workplace coach"))) {
+			return true;
+		}
+		return false;
+	}
 
 	public boolean isMDPProgramme() {
 		return isMDPProgramme(selectedDGProgramme);
@@ -3009,7 +3035,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	{
 		if (prog == null)
 			return false;
-		if (isMDPProgramme(prog))
+		if (isMDPProgramme(prog) || isWorkplaceCoachProgramme(prog))
 			return false;
 		if (prog.get_ColumnIndex(X_ZZ_Program_Master_Data.COLUMNNAME_ZZ_IsInstitution) >= 0)
 			return prog.isZZ_IsInstitution();
@@ -4446,6 +4472,17 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	@Command
 	public boolean downloadLearnerAgreement() {
 		try {
+			if (isWorkplaceCoachProgramme()) {
+				Map<String, Object> data = getWorkplaceCoachContractData();
+				byte[] pdfBytes = WorkplaceCoachContractReport.render(data);
+				if (pdfBytes != null && pdfBytes.length > 0) {
+					Filedownload.save(pdfBytes, "application/pdf", WorkplaceCoachContractReport.getContractFileName(data));
+					return true;
+				}
+				MasterUtil.showInfoDialog("Could not generate Workplace Coach Contract.", null);
+				return false;
+			}
+
 			if (isMDPProgramme()) {
 				Map<String, Object> data = getMDPContractData();
 				byte[] pdfBytes = MDPContractReport.render(data);
@@ -4721,7 +4758,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			instId = draftRegistration.get_ValueAsInt(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID);
 		}
 
-		boolean isInst = !isMDPProgramme() && isInstitutionProgram(selectedDGProgramme);
+		boolean isInst = !isMDPProgramme() && !isWorkplaceCoachProgramme() && isInstitutionProgram(selectedDGProgramme);
 		if (isInst || (empId <= 0 && instId > 0)) {
 			String instName = "";
 			Object instObj = regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID);
@@ -4822,6 +4859,30 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		data.put("FinancialYear", finYear);
 
 		return data;
+	}
+
+	private Map<String, Object> getWorkplaceCoachContractData() {
+		Map<String, Object> data = getMDPContractData();
+		String name = safeString(firstNonEmpty(
+				safeString(data.get("EmployeeName")),
+				safeString(data.get("LearnerName"))));
+		data.put("CoachName", name);
+		data.put("CoachAttention", name);
+		data.put("CoachPhysicalAddress", formatSingleLineAddress(data.get("LearnerPhysicalAddress")));
+		data.put("CoachEmail", safeString(data.get("LearnerEmail")));
+		data.put("CoachContact", safeString(data.get("LearnerContact")));
+
+		data.put("EmployerPhysicalAddress", formatSingleLineAddress(data.get("EmployerPhysicalAddress")));
+		return data;
+	}
+
+	private static String formatSingleLineAddress(Object obj) {
+		if (obj == null) return "";
+		String str = obj.toString().trim();
+		return Stream.of(str.split("[\r\n]+"))
+				.map(String::trim)
+				.filter(s -> !s.isEmpty())
+				.collect(Collectors.joining(", "));
 	}
 
 	private static String formatAddressFromMap(Map<String, Object> values) {

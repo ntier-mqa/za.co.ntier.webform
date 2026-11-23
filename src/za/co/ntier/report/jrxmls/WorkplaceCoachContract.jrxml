@@ -1,0 +1,1355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="WorkplaceCoachContract" pageWidth="595" pageHeight="842" columnWidth="487" leftMargin="54" rightMargin="54" topMargin="40" bottomMargin="25" uuid="a642db4a-cbc8-41de-bdb4-f0dc0746ae6e">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Default" isDefault="true" fontName="DejaVu Sans" fontSize="10"/>
+	<parameter name="ContractData" class="java.util.Map">
+		<defaultValueExpression><![CDATA[new java.util.HashMap()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CoachName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EmployeeName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LearnerName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDNumber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CompanyName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EmployerName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SDLNumber" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CommencementDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CompletionDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FinancialYear" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GrantAmount" class="java.lang.String">
+		<defaultValueExpression><![CDATA["R240 000"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MonthlyAllowance" class="java.lang.String">
+		<defaultValueExpression><![CDATA["R18 000"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DurationMonths" class="java.lang.String">
+		<defaultValueExpression><![CDATA["12"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CoachPhysicalAddress" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LearnerPhysicalAddress" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CoachEmail" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LearnerEmail" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CoachAttention" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LearnerAttention" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CoachContact" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LearnerContact" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EmployerPhysicalAddress" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EmployerEmail" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EmployerAttention" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EmployerContact" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DocNumber" class="java.lang.String">
+		<defaultValueExpression><![CDATA["MQA/COM/00/000"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Revision" class="java.lang.String">
+		<defaultValueExpression><![CDATA["01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ApprovedBy" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ESMR"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PrintDate" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="HeaderImage" class="java.lang.Object"/>
+	<parameter name="FooterImage" class="java.lang.Object"/>
+	<detail>
+		<!-- PAGE 1 -->
+		<band height="712" splitType="Stretch">
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="0" y="0" width="487" height="72" uuid="3c29d89f-4023-42d5-aea9-84715c4a034e"/>
+				<imageExpression><![CDATA[$P{HeaderImage} != null ? $P{HeaderImage} : ($P{REPORT_CLASS_LOADER} != null && $P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/MQA_Address_Logo_Header.png") != null ? $P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/MQA_Address_Logo_Header.png") : ($P{REPORT_CLASS_LOADER} != null && $P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/MQA-Logo.png") != null ? $P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/MQA-Logo.png") : this.getClass().getResourceAsStream("/za/co/ntier/report/jrxmls/MQA_Address_Logo_Header.png")))]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="86" width="487" height="22" uuid="467605dd-a1f4-452a-81f4-a2840bb0e335"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["WORKPLACE COACHES PROGRAMME" + ($P{ContractData} != null && $P{ContractData}.get("FinancialYear") != null && !((String)$P{ContractData}.get("FinancialYear")).isBlank() ? " - " + $P{ContractData}.get("FinancialYear") : ($P{FinancialYear} != null && !$P{FinancialYear}.isBlank() ? " - " + $P{FinancialYear} : ""))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="118" width="487" height="20" uuid="6c45590c-4d22-4dec-a2f0-045d6a72b69e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONTRACT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="152" width="487" height="18" uuid="65db32d4-d540-48da-85f8-a863429d6e18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Between]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="184" width="487" height="18" uuid="882a0bad-43d7-4572-8080-76d961f68b11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Sans" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[THE MINING QUALIFICATIONS AUTHORITY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="206" width="487" height="18" uuid="5f85c514-bb9e-46d8-9a9d-7447480d80c9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(hereinafter referred to as " the MQA")]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="234" width="487" height="18" uuid="b6206429-3024-40c0-a2cc-4094d8ced917"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[and]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="274" width="135" height="18" uuid="2e1bd017-a727-4838-a514-2f317775225c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of the Coach:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="135" y="274" width="352" height="18" uuid="817a5da3-0eb9-4698-aced-16446b2c30b6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("CoachName") != null ? $P{ContractData}.get("CoachName") : ($P{CoachName} != null && !$P{CoachName}.isBlank() ? $P{CoachName} : ($P{ContractData} != null && $P{ContractData}.get("EmployeeName") != null ? $P{ContractData}.get("EmployeeName") : ($P{EmployeeName} != null && !$P{EmployeeName}.isBlank() ? $P{EmployeeName} : ($P{ContractData} != null && $P{ContractData}.get("LearnerName") != null ? $P{ContractData}.get("LearnerName") : $P{LearnerName}))))]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="135" y="293" width="352" height="1" uuid="9be0b41e-9062-4add-8a93-a536bbece522"/>
+				<graphicElement><pen lineWidth="0.75"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="312" width="135" height="18" uuid="f7684e60-0bb3-404f-b591-2018290d8096"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ID Number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="135" y="312" width="352" height="18" uuid="7794bc34-a826-4a53-bf08-015f82d464b3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("IDNumber") != null ? $P{ContractData}.get("IDNumber") : $P{IDNumber}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="135" y="331" width="352" height="1" uuid="27ca170a-1aea-4bf4-b761-7fb7fb6acef9"/>
+				<graphicElement><pen lineWidth="0.75"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="348" width="487" height="18" uuid="7114702e-543f-4b73-9f4e-5fa595b22358"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(hereinafter referred to as " the Coach")]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="374" width="487" height="18" uuid="85449224-e15e-414f-8c63-5ca282f893b9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[and]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="412" width="135" height="18" uuid="ab531177-fe2f-4f4b-a888-18080cbdfff5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of company:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="135" y="412" width="352" height="18" uuid="915f27b9-9ea4-4f1c-9473-d7ee7ed70d7b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("CompanyName") != null ? $P{ContractData}.get("CompanyName") : ($P{CompanyName} != null && !$P{CompanyName}.isBlank() ? $P{CompanyName} : ($P{ContractData} != null && $P{ContractData}.get("EmployerName") != null ? $P{ContractData}.get("EmployerName") : $P{EmployerName}))]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="135" y="431" width="352" height="1" uuid="2d186ea6-207c-4895-8291-d51db5b8226f"/>
+				<graphicElement><pen lineWidth="0.75"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="450" width="135" height="18" uuid="3beb3dc4-d90a-409d-88f6-742e26247fd2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SDL Number:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="135" y="450" width="352" height="18" uuid="b1e68413-05b5-4866-a6e6-4e92786af75c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("SDLNumber") != null ? $P{ContractData}.get("SDLNumber") : $P{SDLNumber}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="135" y="469" width="352" height="1" uuid="42097e94-72bc-4f41-8470-75871d45fc10"/>
+				<graphicElement><pen lineWidth="0.75"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="486" width="487" height="18" uuid="5097adf0-4263-4c8b-b25c-1cfdd064c6ad"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(hereinafter referred to as " the Host Company")]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="534" width="267" height="18" uuid="ab533657-730d-4884-afc7-a9690ae68790"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("CommencementDate") != null ? $P{ContractData}.get("CommencementDate") : $P{CommencementDate}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="110" y="553" width="267" height="1" uuid="f5cd0816-806f-41da-9c6d-bc1f241a98b5"/>
+				<graphicElement><pen lineWidth="0.75"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="557" width="487" height="18" uuid="31350784-7e00-4730-a902-71ed1a432ff7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(Workplace Coaches Programme commencement date)]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="110" y="604" width="267" height="18" uuid="9dd33ea5-7b3f-42b0-b1a7-681f1eafeb86"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("CompletionDate") != null ? $P{ContractData}.get("CompletionDate") : $P{CompletionDate}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="110" y="623" width="267" height="1" uuid="db849682-7c06-4c52-83fe-8be3873a1099"/>
+				<graphicElement><pen lineWidth="0.75"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="627" width="487" height="18" uuid="47e63983-6630-44bc-ba6c-7f4f43ef4798"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[(Workplace Coaches Programme completion date)]]></text>
+			</staticText>
+		</band>
+
+		<!-- PAGE 2 -->
+		<band height="712" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="25" width="487" height="18" uuid="75ade12a-b770-42e3-8d7c-8f5168c879b0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[WHEREAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="48" width="487" height="35" uuid="0ca0d6a6-267c-4fb5-bc72-95d8fb0a99db"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[The MQA wishes to support the development of employees in the Mining and Minerals Sector by funding the coaches within companies for the purpose of transferring skills to learner within the workplace.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="92" width="487" height="18" uuid="d4376f77-bb6a-40e1-9298-1f92f296645e"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOW THEREFORE IT IS AGREED AS FOLLOWS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="118" width="487" height="18" uuid="92a7f49b-0634-480c-90e2-c12751b2987a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1.  The Coach]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="138" width="469" height="16" uuid="9c86f0c3-2c40-434f-8226-f307ea9e27cd"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1.1 undertakes:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="158" width="45" height="18" uuid="e694ad83-ea10-4a7e-be26-2146ec101db5"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.1.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="158" width="397" height="18" uuid="580e856e-8af0-486f-bb0d-aa79e91bfb81"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[transfer skills and knowledge to learners;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="178" width="45" height="18" uuid="35368076-bdc1-42e7-94bc-f76ec0cbd80c"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.1.2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="178" width="397" height="18" uuid="2ff91556-0143-4801-a9a8-1e5580aa5498"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[to apply himself / herself diligently and conscientiously to this programme;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="198" width="45" height="18" uuid="94d3588d-a107-482c-8883-79b26695c167"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.1.3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="198" width="397" height="28" uuid="40557389-fac8-4065-b178-c4d42adab60e"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[to observe and comply with all relevant and applicable conditions of employement and training of the company;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="228" width="45" height="18" uuid="e81cec46-95db-4a6e-bf3a-666f2956ad4a"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.1.4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="228" width="397" height="28" uuid="4597ba78-898d-4107-9bbc-be80f2bd17f7"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[to notify the MQA forthwith should he/she at any time cease to be a South African citizen in terms of the South African Citizenship Act, No 88 of 1995;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="258" width="45" height="18" uuid="b4167684-beeb-47b9-ad85-a28dbc6cdac8"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.1.5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="258" width="397" height="28" uuid="83726933-8e3b-4113-950f-ad10326a265f"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[to undergo from time to time whatever medical examinations that may be required of him/her by the company;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="294" width="469" height="18" uuid="25d937e5-3661-42d8-84ed-ea8852176b78"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1.2 The MQA undertakes:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="314" width="45" height="18" uuid="ccba006c-761c-4f97-8d6e-141d82b5b220"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[1.2.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="314" width="397" height="28" uuid="fca20ca5-5c57-449c-84d8-342e3ced7995"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[To Pay the company on behalf of the Coach an amount as determined by the MQA in its sole discretion which shall not exceed a stipulated amount;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="344" width="397" height="38" uuid="ce199fa7-1fbc-4b95-8030-7662c23b6b4c"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Notwithstanding 1.2.1 above, no payments will be made by the MQA on behalf of the Coach unless the Coach has returned this Agreement properly signed and completed by the Coach ;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="390" width="487" height="18" uuid="cd8ca22c-590f-4e0c-ae16-4158834d82b8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2.  The Host Company undertakes:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="414" width="35" height="18" uuid="5feb2b9a-9a0d-489b-8c6c-af93444741a7"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="53" y="414" width="434" height="28" uuid="91bea7d4-fe1f-4afe-8e09-eb228d07174d"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[To implement, apply and strictly adhere to the MQA's Workplace Coaches Programme as per the Memorandum of Agreement deliverables;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="444" width="35" height="18" uuid="4cb6915c-a9a0-417f-ab66-99169f904217"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="53" y="444" width="434" height="28" uuid="e35bf32a-7c58-438f-92d0-030728956949"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[to recruit, suitably qualified coaches who will train mentor, coach, conduct assessment and compile progress reports for the learners;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="474" width="35" height="18" uuid="70d2a68e-68e6-46c4-8988-dbd949f0d307"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="53" y="474" width="434" height="28" uuid="b9a2d7f4-fb70-4c42-a170-808e198662bd"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[to provide each individual Coach with all the tools of trades and consumables for their training and development;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="504" width="35" height="18" uuid="32192af7-719e-4498-8951-ff6e5deec150"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[2.4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="53" y="504" width="434" height="38" uuid="21642af9-568d-42f5-8f37-aa0b1a55bb52"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[to explain the contents and terms and conditions of this agreement to the Coach and furher give them sufficient time to read through it before signature and upon signature provide the Coach with a copy;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="550" width="487" height="18" uuid="cd5c6709-3e1a-4c6e-9d10-4bc1ea3e4d2c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3.  Financial Obligations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="575" width="469" height="18" uuid="95fafcd4-53d3-48a7-a713-c1a317c28805"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3.1 The MQA's Financial Obligations]]></text>
+			</staticText>
+		</band>
+
+		<!-- PAGE 3 -->
+		<band height="712" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="25" width="442" height="25" uuid="02a96d46-4f9b-4242-8602-1fb6ac6b7db4"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["The MQA undertakes to pay to the Host Company the amount not exceeding " + ($P{ContractData} != null && $P{ContractData}.get("GrantAmount") != null ? (String)$P{ContractData}.get("GrantAmount") : ($P{GrantAmount} != null && !$P{GrantAmount}.isBlank() ? $P{GrantAmount} : "R240 000")) + " per annum."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="55" width="487" height="18" uuid="765593ca-3a56-46f1-b0d8-b021b0361cd3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[The Host Company's financial obligations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="487" height="18" uuid="9fa17ff2-1ce7-4187-9dbe-082cc88e3637"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[The Host Company undertakes -]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="102" width="487" height="18" uuid="2180988f-049a-47e1-adb6-4fd05c0a2261"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[To pay a monthly allowance to the Coach as follows:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="125" width="45" height="18" uuid="d02ac2e3-6af1-424a-a07c-6aaed441ae33"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3.1.1]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="63" y="125" width="424" height="30" uuid="d72879ce-f6fd-4be1-a0d9-5f8386d5be95"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["At least " + ($P{ContractData} != null && $P{ContractData}.get("MonthlyAllowance") != null ? (String)$P{ContractData}.get("MonthlyAllowance") : ($P{MonthlyAllowance} != null && !$P{MonthlyAllowance}.isBlank() ? $P{MonthlyAllowance} : "R18 000")) + " per month, to be paid to the coach as allowance for the duration of " + ($P{ContractData} != null && $P{ContractData}.get("DurationMonths") != null ? (String)$P{ContractData}.get("DurationMonths") : ($P{DurationMonths} != null && !$P{DurationMonths}.isBlank() ? $P{DurationMonths} : "12")) + " months;"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="18" y="160" width="45" height="18" uuid="21c96b69-1821-43bf-8806-18fdc42d7506"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3.1.2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="63" y="160" width="424" height="32" uuid="22f8e9b1-1b25-45cd-a2b2-e1773198c148"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[To provider the coach will all necessary tools of trade and personal protective equipment for his or her training and development of the learners;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="200" width="487" height="18" uuid="3233248f-6b02-4b4f-bffc-39bbc8cab712"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4.  The MQA shall be entitled to terminate the placement forthwith]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="222" width="469" height="18" uuid="eaf50ca4-876b-48a3-9d76-df3bc90b9d6d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.1 if the Coach:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="242" width="45" height="18" uuid="2d63fb32-d12f-42a6-9c7e-a523ff85f2f5"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.1.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="242" width="397" height="28" uuid="ee48b1e2-961e-4c8f-884d-4a013cab49bf"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[either ceases to pursue or fails to meet the minimum performance requirements of the programme referred to in 1.1.1;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="274" width="45" height="18" uuid="0426aaf1-28a1-4826-a736-b72bf9ffdb7a"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.1.2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="274" width="397" height="18" uuid="4053a3e5-2898-40ac-966f-f5297cf30eab"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[ceases to be a South African citizen in terms of 1.1.11;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="296" width="45" height="18" uuid="45bd189d-9b83-4d1f-8b74-e0819e7a5664"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.1.3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="296" width="397" height="18" uuid="5977a559-f8f6-432f-a9ae-90f4bb37fbe6"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[is convicted of a criminal offence; and]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="320" width="469" height="25" uuid="3f5fa9b0-d4e9-488c-8bee-7190c92b15c7"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[4.2 the MQA is not satisfied with any report from the company on the Coach's progress and conduct;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="352" width="487" height="18" uuid="ed9ed7f7-6e73-4bac-9f93-4c4baaa00d90"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5.  Whole Agreement]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="374" width="469" height="58" uuid="295d2722-bf51-4570-adfc-a65fadabbde9"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[5.1 This Agreement constitutes the entire agreement between the parties and supersedes all prior representations, negotiationsm, memoranda and agreements. No modification or alteration of this Agreement shall be of any force or effect unless reduced to writing and signed by the three parties;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="440" width="487" height="18" uuid="d31a9e2c-53c7-4aea-aef2-d69d0b881e58"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[6.  Domicilium Citandi Et Executandi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="462" width="469" height="32" uuid="33e5ee2f-d505-42bc-be96-518c94a673a3"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.1 The parties choose as their domicilia citandi et executandi ("domicilium") for all purposes under this Agreement, the following addresses -]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="502" width="452" height="18" uuid="0dda93e8-89bd-4fd6-a15f-9c2f465dacd4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MQA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="55" y="524" width="115" height="18" uuid="4dab0d09-efe6-4bfb-aeb6-623e0e4347f3"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Physical Address:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="170" y="524" width="317" height="55" uuid="63fa6e33-29cb-496c-8e75-5f960f03057d"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7 Anerley Road
+Parktown
+Johannesburg
+South Africa]]></text>
+			</staticText>
+		</band>
+
+												<!-- PAGE 4 -->
+		<band height="712" splitType="Stretch">
+			<!-- COACH Domicilium Heading -->
+			<staticText>
+				<reportElement x="35" y="10" width="452" height="18" uuid="bc634282-0d88-4d2b-84c7-892453f8a459"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COACH]]></text>
+			</staticText>
+
+			<!-- Coach Physical Address Frame -->
+			<frame>
+				<reportElement positionType="Float" x="35" y="30" width="452" height="18" uuid="ff03277c-5b27-4610-a9b4-b118933b6af9"/>
+				<staticText>
+					<reportElement x="20" y="0" width="115" height="18" uuid="ac0b7ace-01f3-4269-9616-7fceaab2be63"/>
+					<textElement verticalAlignment="Top">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Physical Address:]]></text>
+				</staticText>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="135" y="0" width="317" height="18" uuid="66b8c33e-e0b5-41b7-96d2-b3629855b88f"/>
+					<textElement verticalAlignment="Top">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("CoachPhysicalAddress") != null ? (String)$P{ContractData}.get("CoachPhysicalAddress") : ($P{CoachPhysicalAddress} != null && !$P{CoachPhysicalAddress}.isBlank() ? $P{CoachPhysicalAddress} : ($P{ContractData} != null && $P{ContractData}.get("LearnerPhysicalAddress") != null ? (String)$P{ContractData}.get("LearnerPhysicalAddress") : $P{LearnerPhysicalAddress}))]]></textFieldExpression>
+				</textField>
+			</frame>
+
+			<!-- Coach E-mail Frame -->
+			<frame>
+				<reportElement positionType="Float" x="35" y="52" width="452" height="18" uuid="cd6af731-64bd-4fea-a9ef-e60731dba63b"/>
+				<staticText>
+					<reportElement x="20" y="0" width="115" height="18" uuid="5bc0d3c3-2cef-4f31-aa60-f244f5bb7436"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[E-mail:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="135" y="0" width="317" height="18" uuid="e95f245a-706a-4f6f-bd21-a29e9d0bb5ef"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("CoachEmail") != null ? (String)$P{ContractData}.get("CoachEmail") : ($P{CoachEmail} != null && !$P{CoachEmail}.isBlank() ? $P{CoachEmail} : ($P{ContractData} != null && $P{ContractData}.get("LearnerEmail") != null ? (String)$P{ContractData}.get("LearnerEmail") : $P{LearnerEmail}))]]></textFieldExpression>
+				</textField>
+			</frame>
+
+			<!-- Coach Attention Frame -->
+			<frame>
+				<reportElement positionType="Float" x="35" y="72" width="452" height="18" uuid="cf055e77-fd67-435f-976c-0970f06f9ced"/>
+				<staticText>
+					<reportElement x="20" y="0" width="115" height="18" uuid="1faca2dd-e548-42a7-9853-f8d367645c21"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Attention:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="135" y="0" width="317" height="18" uuid="9a3b03bf-9ba1-4f74-8d84-0a9cd9a72cc8"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("CoachAttention") != null ? (String)$P{ContractData}.get("CoachAttention") : ($P{CoachAttention} != null && !$P{CoachAttention}.isBlank() ? $P{CoachAttention} : ($P{ContractData} != null && $P{ContractData}.get("LearnerAttention") != null ? (String)$P{ContractData}.get("LearnerAttention") : $P{LearnerAttention}))]]></textFieldExpression>
+				</textField>
+			</frame>
+
+			<!-- Coach Contact Details Frame -->
+			<frame>
+				<reportElement positionType="Float" x="35" y="92" width="452" height="18" uuid="bf915019-e4d2-482b-80e0-d3f326b421f6"/>
+				<staticText>
+					<reportElement x="20" y="0" width="115" height="18" uuid="c996411a-5bbf-4bd1-a198-6a73e82ae2bc"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Contact Details:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="135" y="0" width="317" height="18" uuid="c7b38232-f751-4a3a-85fe-3c06d2c87009"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("CoachContact") != null ? (String)$P{ContractData}.get("CoachContact") : ($P{CoachContact} != null && !$P{CoachContact}.isBlank() ? $P{CoachContact} : ($P{ContractData} != null && $P{ContractData}.get("LearnerContact") != null ? (String)$P{ContractData}.get("LearnerContact") : $P{LearnerContact}))]]></textFieldExpression>
+				</textField>
+			</frame>
+
+			<!-- HOST COMPANY Heading -->
+			<staticText>
+				<reportElement positionType="Float" x="35" y="118" width="452" height="18" uuid="99889edf-eb86-4e1e-95ea-1e3f7b42edd0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HOST COMPANY]]></text>
+			</staticText>
+
+			<!-- Host Company Physical Address Frame -->
+			<frame>
+				<reportElement positionType="Float" x="35" y="138" width="452" height="18" uuid="b53463df-5036-44a4-9283-7f213b849ab7"/>
+				<staticText>
+					<reportElement x="20" y="0" width="115" height="18" uuid="20db14e3-d2d1-4a60-91fa-baff8eb3b448"/>
+					<textElement verticalAlignment="Top">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Physical Address:]]></text>
+				</staticText>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="135" y="0" width="317" height="18" uuid="fb1e7f81-a396-4a78-872f-7c9b5e76d2ab"/>
+					<textElement verticalAlignment="Top">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("EmployerPhysicalAddress") != null ? (String)$P{ContractData}.get("EmployerPhysicalAddress") : ($P{EmployerPhysicalAddress} != null && !$P{EmployerPhysicalAddress}.isBlank() ? $P{EmployerPhysicalAddress} : ($P{ContractData} != null && $P{ContractData}.get("CompanyPhysicalAddress") != null ? (String)$P{ContractData}.get("CompanyPhysicalAddress") : ""))]]></textFieldExpression>
+				</textField>
+			</frame>
+
+			<!-- Host Company E-mail Frame -->
+			<frame>
+				<reportElement positionType="Float" x="35" y="160" width="452" height="18" uuid="9f1e8133-fd4e-460b-a0b5-51c5b8caefbf"/>
+				<staticText>
+					<reportElement x="20" y="0" width="115" height="18" uuid="174fd3d1-5912-417e-a6eb-5c4ba4008f5a"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[E-mail:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="135" y="0" width="317" height="18" uuid="b37927a1-a768-4f55-beef-4d844ca6aca3"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("EmployerEmail") != null ? (String)$P{ContractData}.get("EmployerEmail") : ($P{EmployerEmail} != null && !$P{EmployerEmail}.isBlank() ? $P{EmployerEmail} : ($P{ContractData} != null && $P{ContractData}.get("CompanyEmail") != null ? (String)$P{ContractData}.get("CompanyEmail") : ""))]]></textFieldExpression>
+				</textField>
+			</frame>
+
+			<!-- Host Company Attention Frame -->
+			<frame>
+				<reportElement positionType="Float" x="35" y="180" width="452" height="18" uuid="50c0f21d-70f2-404d-b247-a7c820dd5fc8"/>
+				<staticText>
+					<reportElement x="20" y="0" width="115" height="18" uuid="27c7c873-400d-49d9-9d56-06fe53dcd427"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Attention:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="135" y="0" width="317" height="18" uuid="9e5d7d72-1336-4c73-86f8-3be1128c13d5"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("EmployerAttention") != null ? (String)$P{ContractData}.get("EmployerAttention") : ($P{EmployerAttention} != null && !$P{EmployerAttention}.isBlank() ? $P{EmployerAttention} : ($P{ContractData} != null && $P{ContractData}.get("CompanyAttention") != null ? (String)$P{ContractData}.get("CompanyAttention") : ""))]]></textFieldExpression>
+				</textField>
+			</frame>
+
+			<!-- Host Company Contact Details Frame -->
+			<frame>
+				<reportElement positionType="Float" x="35" y="200" width="452" height="18" uuid="92f97b66-7f62-40b6-b7e1-6ec30cef871f"/>
+				<staticText>
+					<reportElement x="20" y="0" width="115" height="18" uuid="b178b66b-2c73-40ce-8d0c-0b47fba78411"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Contact Details:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="135" y="0" width="317" height="18" uuid="95f188fa-2167-4515-b6b7-1d8aa06a4c3a"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("EmployerContact") != null ? (String)$P{ContractData}.get("EmployerContact") : ($P{EmployerContact} != null && !$P{EmployerContact}.isBlank() ? $P{EmployerContact} : ($P{ContractData} != null && $P{ContractData}.get("CompanyContact") != null ? (String)$P{ContractData}.get("CompanyContact") : ""))]]></textFieldExpression>
+				</textField>
+			</frame>
+
+			<!-- 6.2 -->
+			<staticText>
+				<reportElement positionType="Float" x="0" y="226" width="487" height="28" uuid="f5167320-795f-4966-bcdc-c01b1be8a9e9"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.2 Any notice or communication required or permitted to be given in terms of this Agreement is valid and effective only if in writing and delivered by pre-paid registered post, hand, telefax or e-mail;]]></text>
+			</staticText>
+
+			<!-- 6.3 -->
+			<staticText>
+				<reportElement positionType="Float" x="0" y="258" width="487" height="30" uuid="8f15ac6e-736b-45e6-acc9-1152623609fc"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.3 Any party may by notice to the other parties change its domicillium, provided that the change is effective vis-à-vis that addressee only 10 business days after receipt of the notice by the addressee;]]></text>
+			</staticText>
+
+			<!-- 6.4 -->
+			<staticText>
+				<reportElement positionType="Float" x="0" y="292" width="487" height="18" uuid="95334809-da4a-467a-92ce-ae418ff463c4"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.4 Any notice to a party -]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement positionType="Float" x="18" y="312" width="35" height="18" uuid="995354f5-a2d2-4180-8b4f-e591bafd2e6d"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.4.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="53" y="312" width="434" height="30" uuid="36c8a7ce-353d-4613-91a1-6f8c52a70c3d"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[sent by pre-paid registered post to the stipulated physical address is deemed to have been received 10 business after posting (unless the contraty is proved);]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement positionType="Float" x="18" y="346" width="35" height="18" uuid="cc6ccd07-b592-47bf-aac9-eebb632b5c73"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.4.2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="53" y="346" width="434" height="30" uuid="b1bf8f32-d80a-4e09-9382-7b4427045541"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[delivered by hand to a responsible person at the stipulated physical address during ordinary business hours is deemed to have been received on the day of delivery;]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement positionType="Float" x="18" y="380" width="35" height="18" uuid="52f3e385-a638-4871-8a68-ed905ab4c400"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.4.3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="53" y="380" width="434" height="30" uuid="6fd5f7de-3b2b-4ef3-a3da-13cf40b10dd1"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[sent by telefax to the stipulated telefax number is deemed to have been received on the date of dispatch (unless the contrary is proved); or]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement positionType="Float" x="18" y="414" width="35" height="18" uuid="7b86efba-9c11-4044-97ba-c43af902534c"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.4.4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="53" y="414" width="434" height="30" uuid="632f67ce-1309-41cc-957f-6db25fce735b"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[sent by e-mail to the stipulated e-mail address is deemed to have been received on the date of dispatch (unless the contrary is proved);]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement positionType="Float" x="18" y="448" width="35" height="18" uuid="5889d340-db1c-4c8f-b0a6-85ebcd715963"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[6.4.5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="53" y="448" width="434" height="42" uuid="dd30dba6-4a96-4725-b8dc-a9a52efd5773"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Despite this claise, a written notice or communication actually received by a party is adequate written notice or communication to it notwithstanding that it was not sent to or delivered at its stipulated domicillim;]]></text>
+			</staticText>
+
+			<!-- 7. Breach And Termination -->
+			<staticText>
+				<reportElement positionType="Float" x="0" y="496" width="487" height="18" uuid="5653a2e9-f63b-4c33-ba06-63a2cda31c4f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[7.  Breach And Termination]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="18" y="516" width="469" height="72" uuid="81a3a18a-13c0-4c5b-b541-423220983359"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.1 If any of the parties breach or otherwise default on any of its obligations under this Agreement, or remain in default or fail to remedy such breach within 10 business days of receipt of a written notice calling upon it to do so, the other party is entitled, an addition to any other rights it may have, or remedies which may be available, to cancel this agreement forthwith, or to obtain an order for specific performance, or to claim damages together with any amounts owing under this Agreement.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="18" y="592" width="469" height="24" uuid="5740b68a-6827-4e2a-9402-b1edc35f769d"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.2 In addition to any other legal remedies the parties may have, this Agreement may be terminated with immediate]]></text>
+			</staticText>
+		</band>
+
+<!-- PAGE 5 -->
+		<band height="712" splitType="Stretch">
+			<staticText>
+				<reportElement x="18" y="10" width="469" height="26" uuid="08cbb05e-b9fc-46aa-a146-0aed3e2a4357"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[effect if a party commits a material breach of the Agreement. The following will amongst other constitute matrial breach of this Agreement -]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="40" width="45" height="18" uuid="069c9e10-7341-4d6f-8626-30e98fb6ad48"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.2.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="40" width="397" height="18" uuid="0c69a61b-548a-499a-8883-dfc8e2a9f589"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[failure to comply with a party's obligations in terms of this agreement;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="60" width="45" height="18" uuid="b981a790-1cd5-414d-b100-451196d63c63"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.2.2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="60" width="397" height="32" uuid="718d6217-a23e-44d4-a108-de9b608823bf"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[the Host Company is placed under the provisional or final liquidation, whether voluntary or compulsory, or is placed under judicial management;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="94" width="45" height="18" uuid="c7221744-bed8-4ed6-8530-e2fc2fe66fcb"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.2.3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="94" width="397" height="18" uuid="322140f6-c812-4679-9ec4-62f1415b950b"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[failure to adhere to agreed time frames; or]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="114" width="45" height="18" uuid="2c1423d6-69a6-465b-abb5-8dea523c3dd2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[7.2.4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="114" width="397" height="24" uuid="3c4a379e-e08e-4f44-916e-02fb7ecf0264"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[use of the MQA grant funding for any purpose except for the purpose provided;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="144" width="487" height="18" uuid="1705695e-901a-4fc5-b0d7-711b2f778b2c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[8.  Dispute Resolution]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="164" width="469" height="42" uuid="4f3f7c94-5dc4-43a7-8515-d2f027214a00"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[8.1 Any dispute that arises between any of the parties in connection with the interpretation, application or termination of this Agreement must, unless resolved between the parties as contemplated below, be determined by arbitration in terms of this clause.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="210" width="469" height="52" uuid="f27284df-1c7a-48d6-99bf-6d43edb26461"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[8.2 Any party to the dispute may deliver a notice of dispute to the other parties for consideration by a committee consisting of nominated representatives of the parties in dispute, which must convene and use its best endeavours to resolve the dispute within 10 business days of delivery of the notice.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="266" width="469" height="68" uuid="444cd08e-fa4e-405e-9b97-f52b48cf3422"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[8.3 If the committee is unable to meet or to resolve the dispute within that period, any party to the dispute may by written notice to the other parties, setting out the particulars of the dispute, refer the dispute for arbitration under the auspices of the Arbitration Foundation of South Africa ("AFSA"), each party to pay its own costs and the costs of the arbitrator to be shared by the parties to the dispute.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="338" width="469" height="68" uuid="19ab082b-5ba5-4739-ae87-25aa23169109"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[8.4 The arbitration must be held in Gauteng in accordance with the formalities and procedures determined by the arbitrator and, subject to exceptional circumstances, must be concluded within 20 business days of the arbitrator's appointment. Any decision (including an award) made by the arbitrator is final and binding on the parties and may be made an order of any court of competent jurisdiction.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="410" width="469" height="36" uuid="6d080939-dfb8-4415-a4f8-9ee9b3f51459"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[8.5 This clause does not preclude any party from obtaining interim relief on an urgent basis from a court of competent jurisdiction, pending the decision of the arbitrator.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="450" width="487" height="18" uuid="e3c28d30-b50e-46c0-8723-eca9db16d5c1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[9.  General Provisions]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="470" width="469" height="16" uuid="21407c7e-44c5-439b-b1b7-9c21423b25b7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Whole Agreement]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="488" width="452" height="44" uuid="664ebe33-4fe2-425c-b67c-bc24b04e56f8"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[This Agreement constitutes the whole agreement between the parties and no party is bound by any express or implied term, representation, warranty, promise or the like not recorded in this Agreement.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="536" width="469" height="16" uuid="362ba045-24df-4e10-969d-3404414b73c5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Amendment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="554" width="452" height="34" uuid="c086c373-a5e4-4dec-bd40-ef2f2789e446"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[No amendment or any consensual cancellation of this Agreement or any part thereof is binding on the parties unless recorded in writing and signed by the parties.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="592" width="469" height="16" uuid="e8adbb51-df9b-4328-8b91-b9d734b67908"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Waiver]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="610" width="452" height="34" uuid="2607a6b7-81f7-4d2c-a4ac-e9fc1c113db7"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[No relaxation or indulgence which a party may show to another party in any way prejudices or constitutes a waiver of its rights under this Agreement.]]></text>
+			</staticText>
+		</band>
+
+		<!-- PAGE 6 -->
+		<band height="712" splitType="Stretch">
+			<staticText>
+				<reportElement x="18" y="20" width="469" height="18" uuid="648c57d5-07f7-4e00-bf6c-16de865fbacd"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cession and delegation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="40" width="452" height="35" uuid="1738ba37-083a-4164-998a-706b03d0668e"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[No party may cede, assign or otherwise encumber any of its rights or delegate any of its obligations under this Agreement without the prior written consent of the other parties.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="80" width="469" height="18" uuid="a4138e26-a7cb-49e2-b7f6-fe5c13e7c5b7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Severability]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="100" width="452" height="35" uuid="cfe386f6-02e5-448e-8680-5a9dfa507e30"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[If any of the provisions of this Agreement are found to be invalid, unlawful or unenforceable, these terms will be severable from the remaining terms, which continue to be valid and enforceable.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="140" width="469" height="18" uuid="31859411-11c4-4669-8bfb-5fbeab7d81c4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Governing law and courts]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="160" width="452" height="20" uuid="5e7db229-e0a4-41c9-92c5-25876a120cac"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[This Agreement will in all respects be governed by South African law.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="185" width="469" height="18" uuid="ab3ff0a8-c4dd-4eb3-825d-8de9c78d057f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Execution of the Agreement]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="205" width="452" height="35" uuid="2dca8081-13ef-48ee-a939-582e4974b305"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[This Agreement may be executed in one or more counterparts and in separate counterparts, each of which when executed is deemed to be an original but when taken together constitute one and the same Agreement.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="250" width="487" height="18" uuid="ac9c0580-6105-4af7-b9f7-735e673c7aca"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SIGNATURES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="278" width="487" height="18" uuid="18fd3cc1-7b65-4f67-98d4-8c6f78af7c80"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPANY SIGNATURE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="300" width="487" height="18" uuid="4df461cb-c4c9-427f-9475-87447c7c6725"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9.5"/>
+				</textElement>
+				<text><![CDATA[Signed at ............................................. on this .................... day of ................................ 20......]]></text>
+			</staticText>
+			<line>
+				<reportElement x="240" y="365" width="247" height="1" uuid="06fa2c5a-c2b6-418e-877e-844143b3e089"/>
+				<graphicElement><pen lineWidth="1.0"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="240" y="370" width="247" height="30" uuid="5dfc5fa7-b611-468d-9af7-72d466575e86"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[For and on behalf of the HOST COMPANY,
+duly authorised thereto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="415" width="487" height="18" uuid="e5c69482-9e2c-4012-930d-d9e52ec48433"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COACH SIGNATURE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="437" width="487" height="18" uuid="7da34da8-0d10-45c5-9d61-f474bd6f14a1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9.5"/>
+				</textElement>
+				<text><![CDATA[Signed at ............................................. on this .................... day of ................................ 20......]]></text>
+			</staticText>
+			<line>
+				<reportElement x="240" y="498" width="247" height="1" uuid="88bf305e-ea3e-4ee8-bb5a-a573d11e45f2"/>
+				<graphicElement><pen lineWidth="1.0"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="240" y="504" width="247" height="18" uuid="c977841d-bcb8-4a83-9c6f-233f01764b1f"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[The COACH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="540" width="487" height="18" uuid="e0485f34-beda-4f3a-bf14-b461979c580b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MQA SIGNATURE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="562" width="487" height="18" uuid="8321b290-5552-48ca-a5ba-ae5ba64b9fc0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9.5"/>
+				</textElement>
+				<text><![CDATA[Signed at ............................................. on this .................... day of ................................ 20......]]></text>
+			</staticText>
+		</band>
+
+		<!-- PAGE 7 -->
+		<band height="712" splitType="Stretch">
+			<line>
+				<reportElement x="240" y="30" width="247" height="1" uuid="0ae93fcf-5f26-410d-85b1-5a1482b5ed44"/>
+				<graphicElement><pen lineWidth="1.0"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="240" y="40" width="247" height="18" uuid="843f6394-3c0f-41dd-bec5-85adf2ee490f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Chief Executive Officer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="58" width="247" height="30" uuid="b27e96d8-6f14-46c2-9bfa-e75706c88583"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[For and on behalf of the MQA duly authorised thereto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="100" height="18" uuid="799c1abe-40de-436a-ad09-6dad54dbbd10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Witness:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="20" height="18" uuid="13a55f91-e314-47d1-af6e-02b0243823ea"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="20" y="90" width="200" height="1" uuid="26d7916e-bef8-4e06-a4eb-b240de400391"/>
+				<graphicElement><pen lineWidth="1.0"/></graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="130" width="20" height="18" uuid="150c972b-3bb9-4d9c-af78-e0d9e2809801"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="20" y="140" width="200" height="1" uuid="3838056c-0f70-402b-b3c4-033922e83989"/>
+				<graphicElement><pen lineWidth="1.0"/></graphicElement>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="65" splitType="Stretch">
+			<image scaleImage="FillFrame" hAlign="Center" onErrorType="Blank">
+				<reportElement x="0" y="0" width="487" height="35" uuid="5b13d1b4-f977-415b-8404-6d00175fa2e7"/>
+				<imageExpression><![CDATA[$P{FooterImage} != null ? $P{FooterImage} : ($P{REPORT_CLASS_LOADER} != null && $P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Footer_Mining_Future_Skills.png") != null ? $P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Footer_Mining_Future_Skills.png") : ($P{REPORT_CLASS_LOADER} != null && $P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/MQA-Footer.png") != null ? $P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/MQA-Footer.png") : this.getClass().getResourceAsStream("/za/co/ntier/report/jrxmls/Footer_Mining_Future_Skills.png")))]]></imageExpression>
+			</image>
+			<frame>
+				<reportElement x="0" y="37" width="487" height="28" uuid="b8d4f548-3823-439e-a221-c309b96f4f56"/>
+				<!-- Row 1 Texts -->
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="130" height="14" uuid="135907d1-473c-457c-8e70-8382fd1153bf"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="DejaVu Sans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ContractData} != null && $P{ContractData}.get("DocNumber") != null ? (String)$P{ContractData}.get("DocNumber") : $P{DocNumber}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="130" y="0" width="100" height="14" uuid="77548d84-76dc-4f45-95f6-d023595b7731"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="DejaVu Sans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Revision: " + ($P{ContractData} != null && $P{ContractData}.get("Revision") != null ? ((String)$P{ContractData}.get("Revision")).replaceFirst("^Revision:\\s*", "") : $P{Revision}.replaceFirst("^Revision:\\s*", ""))]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="235" y="0" width="120" height="14" uuid="9c6a594b-e75f-4181-9428-7b01349ac79d"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="DejaVu Sans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Approved: " + ($P{ContractData} != null && $P{ContractData}.get("ApprovedBy") != null ? ((String)$P{ContractData}.get("ApprovedBy")).replaceFirst("^Approved:\\s*", "") : $P{ApprovedBy}.replaceFirst("^Approved:\\s*", ""))]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="355" y="0" width="132" height="14" uuid="e97af577-2c97-4198-88d1-1bc8b8c5027b"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="DejaVu Sans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Print Date:    " + ($P{ContractData} != null && $P{ContractData}.get("PrintDate") != null ? (String)$P{ContractData}.get("PrintDate") : ($P{PrintDate} != null && !$P{PrintDate}.isBlank() ? $P{PrintDate} : new java.text.SimpleDateFormat("yyyy/MM/dd").format(new java.util.Date())))]]></textFieldExpression>
+				</textField>
+				<!-- Row 2 Page number (only pages 2 to 7) -->
+				<textField>
+					<reportElement x="355" y="14" width="132" height="14" uuid="d17c9db0-4997-4147-9823-e5f7bcbbfad8">
+						<printWhenExpression><![CDATA[$V{PAGE_NUMBER} > 1]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="DejaVu Sans" size="9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of 7"]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+</jasperReport>
