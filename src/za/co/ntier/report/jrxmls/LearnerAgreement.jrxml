@@ -5,7 +5,7 @@
 	<parameter name="AgreementData" class="java.util.Map"><defaultValueExpression><![CDATA[new java.util.HashMap()]]></defaultValueExpression></parameter>
 	<detail>
 		<band height="677" splitType="Stretch">
-			<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.CANDIDACY_ANNEXURE_SUMMARY))]]></printWhenExpression>
+			<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED)) && !"Y".equals($P{AgreementData}.get(LearnerAgreementData.CANDIDACY_ANNEXURE_SUMMARY))]]></printWhenExpression>
 			<image scaleImage="RetainShape" hAlign="Center">
 				<reportElement x="0" y="40" width="555" height="70" uuid="d8a146f2-f510-426f-8dba-48e9ca856748"/>
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
@@ -186,7 +186,7 @@
 			</staticText>
 			<frame>
 				<reportElement x="0" y="0" width="555" height="677" uuid="f108baef-e9eb-4ecd-863f-63fc34aa9e0c">
-					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.CANDIDACY_ANNEXURE_SUMMARY))]]></printWhenExpression>
+					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_EMPLOYER_BASED)) || "Y".equals($P{AgreementData}.get(LearnerAgreementData.CANDIDACY_ANNEXURE_SUMMARY))]]></printWhenExpression>
 				</reportElement>
 			<staticText><reportElement x="0" y="230" width="200" height="20" uuid="2dab8e83-cc6f-4bb9-909b-1cf40ecaa5d1"/><textElement><font fontName="DejaVu Sans" size="10" isBold="true"/></textElement><text><![CDATA[Learner Name:]]></text></staticText>
 			<textField isBlankWhenNull="true" textAdjust="ScaleFont"><reportElement x="210" y="230" width="345" height="20" uuid="9d911bab-6d4c-4387-8abd-71afc6d607a6"/><textElement><font fontName="DejaVu Sans" size="10"/></textElement><textFieldExpression><![CDATA[(String)$P{AgreementData}.get(LearnerAgreementData.LEARNER_NAME)]]></textFieldExpression></textField>
@@ -406,7 +406,7 @@ institution for a SAQA registered qualification and may include vacation work .]
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[2.4.9]]></text>
+				<text><![CDATA[2.4.8]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true" textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="70" y="247" width="465" height="12" isRemoveLineWhenBlank="true" uuid="eb5e4946-93f1-446b-be57-02707a751a56">

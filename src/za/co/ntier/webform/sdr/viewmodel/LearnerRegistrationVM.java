@@ -4408,8 +4408,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 	@Command
 	public boolean downloadLearnerAgreement() {
 		try {
+			Map<String, String> agreementData = getLearnerAgreementData();
 			Map<String, Object> jasperParams = new HashMap<>();
-			jasperParams.put(LearnerAgreementData.PARAMETER, getLearnerAgreementData());
+			jasperParams.put(LearnerAgreementData.PARAMETER, agreementData);
 			ClassLoader reportClassLoader = new ClassLoader(LearnerRegistrationVM.class.getClassLoader()) {
 				@Override
 				public InputStream getResourceAsStream(String name) {
@@ -4428,7 +4429,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				JasperPrint print = JasperFillManager.fillReport(jasperReport, jasperParams, new JREmptyDataSource(1));
 				byte[] pdfBytes = JasperExportManager.exportReportToPdf(print);
 				if (pdfBytes != null && pdfBytes.length > 0) {
-					Filedownload.save(pdfBytes, "application/pdf", "Learner_Agreement.pdf");
+					Filedownload.save(pdfBytes, "application/pdf", LearnerAgreementData.getAgreementFileName(agreementData));
 					return true;
 				}
 			}
@@ -4448,6 +4449,28 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		}
 		InterventionConfig config = enterQualificationRequired ? getInterventionConfig(selectedInterventionType) : null;
 		PO qualForAgreement = selectedQualification != null ? selectedQualification : regQualification;
+		if (qualForAgreement == null && tmRegistration != null) {
+			Object qualObj = agreementValues(tmRegistration).get(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID);
+			if (qualObj instanceof PO) {
+				qualForAgreement = (PO) qualObj;
+			} else if (qualObj != null) {
+				int qualId = 0;
+				if (qualObj instanceof Number) {
+					qualId = ((Number) qualObj).intValue();
+				} else {
+					try {
+						qualId = Integer.parseInt(qualObj.toString().trim());
+					} catch (Exception ignored) {
+					}
+				}
+				if (qualId > 0) {
+					try {
+						qualForAgreement = new X_ZZ_Institution_Qualifications(Env.getCtx(), qualId, null);
+					} catch (Exception ignored) {
+					}
+				}
+			}
+		}
 		String progCodeCol = config != null ? config.programmeCodeColumn
 				: (qualForAgreement instanceof I_ZZ_Institution_Qualifications
 						? I_ZZ_Institution_Qualifications.COLUMNNAME_Saqa_Code

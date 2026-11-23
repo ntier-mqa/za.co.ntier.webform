@@ -2578,8 +2578,9 @@ public class LearnerQualficationRegVM extends StepAppVM
 	{
 		try
 		{
+			Map<String, String> agreementData = getLearnerAgreementData();
 			Map<String, Object> jasperParams = new HashMap<>();
-			jasperParams.put(LearnerAgreementData.PARAMETER, getLearnerAgreementData());
+			jasperParams.put(LearnerAgreementData.PARAMETER, agreementData);
 			ClassLoader reportClassLoader = new ClassLoader(LearnerQualficationRegVM.class.getClassLoader())
 			{
 				@Override
@@ -2603,7 +2604,7 @@ public class LearnerQualficationRegVM extends StepAppVM
 				byte[] pdfBytes = JasperExportManager.exportReportToPdf(print);
 				if (pdfBytes != null && pdfBytes.length > 0)
 				{
-					Filedownload.save(pdfBytes, "application/pdf", "Learner_Agreement.pdf");
+					Filedownload.save(pdfBytes, "application/pdf", LearnerAgreementData.getAgreementFileName(agreementData));
 					return;
 				}
 			}

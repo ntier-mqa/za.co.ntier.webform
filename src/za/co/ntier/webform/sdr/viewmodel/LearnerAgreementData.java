@@ -41,6 +41,7 @@ import za.co.ntier.api.model.I_ZZQctoSkillsProgramme;
 import za.co.ntier.api.model.I_ZZQualification;
 import za.co.ntier.api.model.I_ZZSkillsProgramme;
 import za.co.ntier.api.model.I_ZZ_Institution_Qualifications;
+import za.co.ntier.api.model.X_ZZ_Institution_Qualifications;
 import za.co.ntier.api.model.I_ZZ_ParentDetails;
 import za.co.ntier.api.model.I_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
@@ -101,6 +102,8 @@ public final class LearnerAgreementData
 	public static final String	HIGHEST_QUALIFICATION				= "HighestQualification";
 	public static final String	LEARNER_ID							= "LearnerId";
 	public static final String	LEARNER_NAME						= "LearnerName";
+	public static final String	LEARNER_FIRST_NAME					= "LearnerFirstName";
+	public static final String	LEARNER_SURNAME						= "LearnerSurname";
 	public static final String	LEARNER_TITLE						= "LearnerTitle";
 	public static final String	NON_CITIZEN_DETAILS					= "NonCitizenDetails";
 	public static final String	OCCUPATION							= "Occupation";
@@ -166,6 +169,8 @@ public final class LearnerAgreementData
 		Map<String, String> data = new LinkedHashMap<>();
 		data.put(LearnerAgreementData.LEARNER_TITLE, display(learner, I_ZZPerson.COLUMNNAME_ZZLkpTitle));
 		data.put(LearnerAgreementData.LEARNER_NAME, join(learner.getZZFirstName(), learner.getZZMiddleName(), learner.getSurname()));
+		data.put(LearnerAgreementData.LEARNER_FIRST_NAME, text(learner.getZZFirstName()));
+		data.put(LearnerAgreementData.LEARNER_SURNAME, text(learner.getSurname()));
 		data.put(LearnerAgreementData.LEARNER_ID, first(learner.getZZ_ID_Passport_No(), learner.getZZOtherIDNo()));
 		data.put(LearnerAgreementData.BIRTH_DATE, date(learner.getBirthday()));
 		data.put(LearnerAgreementData.GENDER, display(learner, I_ZZPerson.COLUMNNAME_ZZGender));
@@ -247,6 +252,8 @@ public final class LearnerAgreementData
 		data.put(LEARNER_TITLE, text(learner.get(I_ZZPerson.COLUMNNAME_ZZLkpTitle)));
 		data.put(LEARNER_NAME, join(text(learner.get(I_ZZPerson.COLUMNNAME_ZZFirstName)),
 				text(learner.get(I_ZZPerson.COLUMNNAME_ZZMiddleName)), text(learner.get(I_ZZPerson.COLUMNNAME_Surname))));
+		data.put(LEARNER_FIRST_NAME, text(learner.get(I_ZZPerson.COLUMNNAME_ZZFirstName)));
+		data.put(LEARNER_SURNAME, text(learner.get(I_ZZPerson.COLUMNNAME_Surname)));
 		data.put(LEARNER_ID, first(text(learner.get(I_ZZPerson.COLUMNNAME_ZZ_ID_Passport_No)),
 				text(learner.get(I_ZZPerson.COLUMNNAME_ZZOtherIDNo))));
 		data.put(BIRTH_DATE, date(learner.get(I_ZZPerson.COLUMNNAME_Birthday)));
@@ -321,6 +328,26 @@ public final class LearnerAgreementData
 	private static void registration(Map<String, String> data, Map<String, Object> registration,
 			PO programme, String codeColumn, String programmeType, List<String> warnings)
 	{
+		if (programme == null)
+		{
+			Object qualObj = registration.get(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID);
+			if (qualObj instanceof PO)
+			{
+				programme = (PO) qualObj;
+				if (codeColumn == null || codeColumn.isBlank())
+					codeColumn = I_ZZ_Institution_Qualifications.COLUMNNAME_Saqa_Code;
+			}
+			else
+			{
+				int qualId = id(qualObj);
+				if (qualId > 0)
+				{
+					programme = new X_ZZ_Institution_Qualifications(Env.getCtx(), qualId, null);
+					if (codeColumn == null || codeColumn.isBlank())
+						codeColumn = I_ZZ_Institution_Qualifications.COLUMNNAME_Saqa_Code;
+				}
+			}
+		}
 		int instId = id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Institution_ID));
 		if (instId > 0) {
 			X_ZZ_Institution inst = new X_ZZ_Institution(Env.getCtx(), instId, null);
@@ -399,14 +426,14 @@ public final class LearnerAgreementData
 		if (!enterQualification)
 		{
 			data.put(QUALIFICATION_TITLE, dgProgrammeTitle);
-			data.put(SAQA_ID, "");
+			data.put(SAQA_ID, first(data.get(SAQA_ID), first(data.get(PROGRAMME_CODE), "")));
 		}
 		else if (selectedProgrammeType == null || selectedProgrammeType.isBlank())
 			data.put(QUALIFICATION_TITLE, first(data.get(QUALIFICATION_TITLE), dgProgrammeTitle));
 		checkEmployerBasedAqp(data);
 	}
 
-	/** Clause 2.4.9: employer financial obligation, printed only for employer-based programmes. */
+	/** Clause 2.4.8: employer financial obligation, printed only for employer-based programmes. */
 	static void putEmployerFinancialObligation(Map<String, String> data, I_ZZ_Program_Master_Data programMasterData)
 	{
 		boolean isEmployerBased = programMasterData != null && programMasterData.isZZ_Is_Employer_Based();
@@ -444,6 +471,34 @@ public final class LearnerAgreementData
 			if (aqp == null || aqp.isBlank())
 				data.put(ASSESSMENT_QUALITY_PARTNER, "MQA");
 		}
+	}
+
+	/** Formats download file name: Learner_Agreement_Name_Surname.pdf */
+	public static String getAgreementFileName(Map<String, String> data)
+	{
+		String firstName = data != null ? data.get(LEARNER_FIRST_NAME) : null;
+		String surname = data != null ? data.get(LEARNER_SURNAME) : null;
+		if ((firstName == null || firstName.isBlank()) && (surname == null || surname.isBlank()))
+		{
+			String fullName = data != null ? data.get(LEARNER_NAME) : null;
+			if (fullName != null && !fullName.isBlank())
+			{
+				String sanitized = fullName.trim().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]+", "");
+				if (!sanitized.isBlank())
+					return "Learner_Agreement_" + sanitized + ".pdf";
+			}
+			return "Learner_Agreement.pdf";
+		}
+		StringBuilder namePart = new StringBuilder();
+		if (firstName != null && !firstName.isBlank())
+			namePart.append(firstName.trim().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]+", ""));
+		if (surname != null && !surname.isBlank())
+		{
+			if (namePart.length() > 0)
+				namePart.append("_");
+			namePart.append(surname.trim().replaceAll("\\s+", "_").replaceAll("[^a-zA-Z0-9_]+", ""));
+		}
+		return namePart.length() > 0 ? "Learner_Agreement_" + namePart + ".pdf" : "Learner_Agreement.pdf";
 	}
 
 	static void putDynamicSectionSequences(Map<String, String> data)
