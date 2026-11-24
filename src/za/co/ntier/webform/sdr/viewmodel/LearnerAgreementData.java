@@ -18,6 +18,7 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
+import org.compiere.model.MOrg;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
@@ -159,6 +160,8 @@ public final class LearnerAgreementData
 	public static final String	SECTION_PROGRAMME_SELECTION			= "SectionProgrammeSelection";
 	public static final String	SECTION_SIGNATORIES					= "SectionSignatories";
 	public static final String	EMPLOYER_FINANCIAL_OBLIGATION		= "EmployerFinancialObligation";
+	public static final String	IS_LP_STRATEGIC						= "IsLPStrategic";
+	public static final String	LP_PROJECTS_ORG_UU					= "ca4dbcb0-53d1-4afb-80e5-dc773251568c";
 	/** Shows the Annexure A summary only for the requested Candidacy programme definition. */
 	public static final String	CANDIDACY_ANNEXURE_SUMMARY			= "CandidacyAnnexureSummary";
 	private static final String	CANDIDACY_PROGRAM_MASTER_DATA_UU	= "ca8b4d40-76c3-4d21-b507-5d1724e9cc83";
@@ -437,8 +440,28 @@ public final class LearnerAgreementData
 		boolean isCandidacy = programMasterData != null
 				&& CANDIDACY_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(programMasterData.getZZ_Program_Master_Data_UU());
 		data.put(CANDIDACY_ANNEXURE_SUMMARY, isCandidacy ? "Y" : "N");
+		data.put(IS_LP_STRATEGIC, isLPStrategicProgram(programMasterData) ? "Y" : "N");
 		checkEmployerBasedAqp(data);
 		putDynamicSectionSequences(data);
+	}
+
+	public static boolean isLPStrategicProgram(I_ZZ_Program_Master_Data prog)
+	{
+		if (prog == null)
+			return false;
+		int orgId = prog.getAD_Org_ID();
+		if (orgId <= 0)
+			return false;
+		try
+		{
+			MOrg org = MOrg.get(Env.getCtx(), orgId);
+			if (org != null)
+				return LP_PROJECTS_ORG_UU.equalsIgnoreCase(org.getAD_Org_UU());
+		}
+		catch (Exception ignored)
+		{
+		}
+		return false;
 	}
 
 	static boolean isCandidacy(Map<String, String> data)

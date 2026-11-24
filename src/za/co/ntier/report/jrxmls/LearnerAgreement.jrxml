@@ -317,7 +317,9 @@ institution for a SAQA registered qualification and may include vacation work .]
 				<imageExpression><![CDATA[$P{REPORT_CLASS_LOADER}.getResourceAsStream("/za/co/ntier/report/jrxmls/Artisan_Agreement_Header.png")]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="20" y="80" width="515" height="597" uuid="82c78bc5-8ef5-4ce9-a4ed-d221ee48b2ea"/>
+				<reportElement x="20" y="80" width="515" height="597" uuid="82c78bc5-8ef5-4ce9-a4ed-d221ee48b2ea">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="9"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
@@ -357,6 +359,59 @@ institution for a SAQA registered qualification and may include vacation work .]
                  2.4.1.5   Compensation for Occupational Injuries and Diseases Act , 1993 (Act 130 of 1993); and
 
                  2.4.1.6   Unemployment Insurance Act, 1996 (Act 30 of 1996);
+
+        2.4.2    provide the facilities and resources required for the work experience components of the workplace-based
+                 learning programme;
+
+        2.4.3    provide the learner with supervision and mentoring at work;
+
+        2.4.4    release the learner during normal working hours to attend off -the-job components of the workplace-based
+                 learning programme;
+
+        2.4.5    complete the learner’s work records;]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="80" width="515" height="597" uuid="a63e9c18-9d21-4f76-bc34-e81881b0f592">
+					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="styled">
+					<font size="9"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.85"/>
+				</textElement>
+				<text><![CDATA[workplace-based learning programme;
+
+        2.2.4    complete timesheets and projects, and participate in all internal assessment activities that are required for the
+                 final external summative assessment at the end of the workplace-based learning programme.
+
+<b>2.3     Rights of the Employer</b>
+
+        The Employer has the right to require the Learner to:
+
+        2.3.1    perform lawful duties in terms of this agreement; and
+
+        2.3.2    comply with the rules and regulations concerning the employer’s workplace policies and procedures .
+
+<b>2.4     Duties of the Employer</b>
+
+        The employer must:
+
+        2.4.1    comply with all duties in terms of the Act and applicable legislation including those listed hereunder unless other
+                 legislation exists that is applicable to the employer specifically :
+
+                 2.4.1.1     Basic Conditions of Employment Act ,1997(Act 75 of 1997);
+
+                 2.4.1.2   Labour Relations Act, 1995 (Act 66 of 1995);
+
+                 2.4.1.3   Employment Equity Act, 1998 (Act 55 of 1998);
+
+                 2.4.1.4   Occupational Health and Safety Act, 1993 (Act 85 of 1993) or Mine Health and Safety Act, 1996 (Act 27
+                           of 1996);
+
+                 2.4.1.5   Compensation for Occupational Injuries and Diseases Act , 1993 (Act 130 of 1993); and
+
+                 2.4.1.6   Unemployment Insurance Act, 1996 (Act 30 of 1996);
+
+                 2.4.1.7   Skills Development Amendment Act, (Act 37 of 2008)
 
         2.4.2    provide the facilities and resources required for the work experience components of the workplace-based
                  learning programme;
@@ -2699,7 +2754,9 @@ Signature:]]></text>
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="300" y="180" width="200" height="30" uuid="6854869c-2c5e-4bf4-8899-a39e4fa0deaa"/>
+				<reportElement x="300" y="180" width="200" height="30" uuid="6854869c-2c5e-4bf4-8899-a39e4fa0deaa">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
@@ -2728,21 +2785,27 @@ Provider's signature</b>]]></text>
 				<text><![CDATA[____________________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="230" width="80" height="20" uuid="382d0dd8-1932-44c5-afe0-d04ddfb74b90"/>
+				<reportElement x="300" y="230" width="80" height="20" uuid="382d0dd8-1932-44c5-afe0-d04ddfb74b90">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Full Name:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="250" y="230" width="0" height="20" uuid="146b500b-7237-4552-b889-d213c38fa110"/>
+				<reportElement x="250" y="230" width="0" height="20" uuid="146b500b-7237-4552-b889-d213c38fa110">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="370" y="225" width="170" height="20" uuid="9d3c4327-05cc-4c74-8a92-395bbdeadd20"/>
+				<reportElement x="370" y="225" width="170" height="20" uuid="9d3c4327-05cc-4c74-8a92-395bbdeadd20">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
@@ -2770,21 +2833,27 @@ Provider's signature</b>]]></text>
 				<text><![CDATA[____________________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="270" width="70" height="20" uuid="ee73287e-ed86-49ab-91d4-4cc367f91327"/>
+				<reportElement x="300" y="270" width="70" height="20" uuid="ee73287e-ed86-49ab-91d4-4cc367f91327">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Signature:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="250" y="270" width="0" height="20" uuid="1dd3670b-9bbd-4ee4-8e2e-9e624ced86c9"/>
+				<reportElement x="250" y="270" width="0" height="20" uuid="1dd3670b-9bbd-4ee4-8e2e-9e624ced86c9">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="365" y="265" width="175" height="20" uuid="0fd14c4e-6bd4-4c87-a21e-4be44bbe2ef3"/>
+				<reportElement x="365" y="265" width="175" height="20" uuid="0fd14c4e-6bd4-4c87-a21e-4be44bbe2ef3">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
@@ -2812,21 +2881,27 @@ Provider's signature</b>]]></text>
 				<text><![CDATA[_______________________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="310" width="50" height="20" uuid="917bfda0-abab-4f29-b886-36d0dd99f0e0"/>
+				<reportElement x="300" y="310" width="50" height="20" uuid="917bfda0-abab-4f29-b886-36d0dd99f0e0">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="250" y="310" width="0" height="20" uuid="20737957-9e0f-462d-b844-1af626c58c72"/>
+				<reportElement x="250" y="310" width="0" height="20" uuid="20737957-9e0f-462d-b844-1af626c58c72">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="350" y="305" width="190" height="20" uuid="d6a826f6-62dc-479e-9617-0e285c0b51a1"/>
+				<reportElement x="350" y="305" width="190" height="20" uuid="d6a826f6-62dc-479e-9617-0e285c0b51a1">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
@@ -2848,7 +2923,9 @@ Signature:]]></text>
 				<text><![CDATA[____________________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="350" width="100" height="30" uuid="42293699-5557-464a-aeef-623412f48163"/>
+				<reportElement x="300" y="350" width="100" height="30" uuid="42293699-5557-464a-aeef-623412f48163">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
@@ -2856,7 +2933,9 @@ Signature:]]></text>
 Signature:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="365" y="360" width="175" height="20" uuid="48856138-9223-4fb1-9ab2-8436715e1d56"/>
+				<reportElement x="365" y="360" width="175" height="20" uuid="48856138-9223-4fb1-9ab2-8436715e1d56">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
@@ -2884,21 +2963,27 @@ Signature:]]></text>
 				<text><![CDATA[_______________________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="400" width="50" height="20" uuid="c21d4579-e3ca-481c-af67-09c1215d6adc"/>
+				<reportElement x="300" y="400" width="50" height="20" uuid="c21d4579-e3ca-481c-af67-09c1215d6adc">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="250" y="400" width="0" height="20" uuid="1ab612af-46fc-4aac-804a-e562b75d5a87"/>
+				<reportElement x="250" y="400" width="0" height="20" uuid="1ab612af-46fc-4aac-804a-e562b75d5a87">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="350" y="395" width="190" height="20" uuid="83d6c891-4866-4e27-937d-b14557be1a0d"/>
+				<reportElement x="350" y="395" width="190" height="20" uuid="83d6c891-4866-4e27-937d-b14557be1a0d">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement markup="styled">
 					<font size="10"/>
 				</textElement>
@@ -3069,24 +3154,46 @@ Programme Agreements:]]></text>
 				<text><![CDATA[Employer]]></text>
 			</staticText>
 			<line>
-				<reportElement x="195" y="40" width="160" height="1" uuid="37f8ccb4-f9d5-444b-905e-654527ad4852"/>
+				<reportElement x="195" y="40" width="160" height="1" uuid="37f8ccb4-f9d5-444b-905e-654527ad4852">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 			</line>
 			<staticText>
-				<reportElement x="195" y="42" width="160" height="15" uuid="a692a1fd-bfc7-436d-872d-2eaa9af6f03c"/>
+				<reportElement x="195" y="42" width="160" height="15" uuid="a692a1fd-bfc7-436d-872d-2eaa9af6f03c">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Learner]]></text>
 			</staticText>
 			<line>
-				<reportElement x="385" y="40" width="160" height="1" uuid="4af2d3e8-b410-4a15-8fce-c5045d37f77b"/>
+				<reportElement x="385" y="40" width="160" height="1" uuid="4af2d3e8-b410-4a15-8fce-c5045d37f77b">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 			</line>
 			<staticText>
-				<reportElement x="385" y="42" width="160" height="15" uuid="e0f1ad54-5a30-4249-9ff0-6fa25863e87c"/>
+				<reportElement x="385" y="42" width="160" height="15" uuid="e0f1ad54-5a30-4249-9ff0-6fa25863e87c">
+					<printWhenExpression><![CDATA[!"Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Provider]]></text>
+			</staticText>
+			<line>
+				<reportElement x="385" y="40" width="160" height="1" uuid="9b64626c-a665-4a52-9ac6-1f39154b9115">
+					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="385" y="42" width="160" height="15" uuid="a692a1fd-bfc7-436d-872d-2eaa9af6f03d">
+					<printWhenExpression><![CDATA["Y".equals($P{AgreementData}.get(LearnerAgreementData.IS_LP_STRATEGIC))]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Learner]]></text>
 			</staticText>
 			<image scaleImage="FillFrame" hAlign="Center">
 				<reportElement x="0" y="62" width="555" height="30" uuid="e08ecfd8-2fe5-48a2-a071-72a484d36b42"/>
