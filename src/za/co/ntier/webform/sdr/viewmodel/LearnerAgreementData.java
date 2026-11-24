@@ -423,13 +423,8 @@ public final class LearnerAgreementData
 			String selectedProgrammeType, String dgProgrammeTitle)
 	{
 		data.put(PROGRAMME_TITLE, enterQualification ? first(selectedProgrammeType, dgProgrammeTitle) : dgProgrammeTitle);
-		if (!enterQualification)
-		{
-			data.put(QUALIFICATION_TITLE, dgProgrammeTitle);
-			data.put(SAQA_ID, first(data.get(SAQA_ID), first(data.get(PROGRAMME_CODE), "")));
-		}
-		else if (selectedProgrammeType == null || selectedProgrammeType.isBlank())
-			data.put(QUALIFICATION_TITLE, first(data.get(QUALIFICATION_TITLE), dgProgrammeTitle));
+		data.put(QUALIFICATION_TITLE, first(data.get(QUALIFICATION_TITLE), dgProgrammeTitle));
+		data.put(SAQA_ID, first(data.get(SAQA_ID), first(data.get(PROGRAMME_CODE), "")));
 		checkEmployerBasedAqp(data);
 	}
 

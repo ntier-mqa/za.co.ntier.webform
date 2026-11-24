@@ -4533,9 +4533,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		if (tmRegistration == null || tmRegistration.getRow() == null) {
 			throw new AdempiereException("Please complete the registration details before generating the agreement.");
 		}
-		InterventionConfig config = enterQualificationRequired ? getInterventionConfig(selectedInterventionType) : null;
-		PO qualForAgreement = selectedQualification != null ? selectedQualification : regQualification;
-		if (qualForAgreement == null && tmRegistration != null) {
+		boolean isLPOps = isLPOpsProgram(selectedDGProgramme);
+		InterventionConfig config = isLPOps && enterQualificationRequired ? getInterventionConfig(selectedInterventionType) : null;
+		PO qualForAgreement = isLPOps ? selectedQualification : regQualification;
+		if (!isLPOps && qualForAgreement == null && tmRegistration != null) {
 			Object qualObj = agreementValues(tmRegistration).get(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID);
 			if (qualObj instanceof PO) {
 				qualForAgreement = (PO) qualObj;
@@ -4554,6 +4555,16 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						qualForAgreement = new X_ZZ_Institution_Qualifications(Env.getCtx(), qualId, null);
 					} catch (Exception ignored) {
 					}
+				}
+			}
+		}
+		if (!isLPOps && qualForAgreement == null && draftRegistration != null && draftRegistration.get_ID() > 0) {
+			int qualId = draftRegistration.get_ColumnIndex(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID) >= 0
+					? draftRegistration.get_ValueAsInt(I_ZZ_Institution_Qualifications.COLUMNNAME_ZZ_Institution_Qualifications_ID) : 0;
+			if (qualId > 0) {
+				try {
+					qualForAgreement = new X_ZZ_Institution_Qualifications(Env.getCtx(), qualId, null);
+				} catch (Exception ignored) {
 				}
 			}
 		}
