@@ -343,6 +343,15 @@
   height:34px;
 }
 
+.mqaWebForm .grid-formview .cell-content textarea.z-textbox,
+.mqaWebForm .sdrForm textarea.z-textbox,
+.mqaWebForm .grid-formview .cell-content textarea,
+.mqaWebForm .sdrForm textarea{
+  height: auto;
+  min-height: 60px;
+  resize: vertical;
+}
+
 .mqaWebForm .grid-formview .cell-content .z-datebox,
 .mqaWebForm .sdrForm .z-datebox{
   height:34px;

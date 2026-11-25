@@ -125,9 +125,18 @@ public class ColumnModel implements PropertyChangeListener{
 		return rows;
 	}
 
+	public String getTextboxStyle() {
+		if (rows > 1) {
+			int minHeight = rows * 22 + 16;
+			return "height: auto; min-height: " + minHeight + "px; resize: vertical;";
+		}
+		return "";
+	}
+
 	public ColumnModel setRows(int rows) {
 		this.rows = rows;
 		BindUtils.postNotifyChange(this, "rows");
+		BindUtils.postNotifyChange(this, "textboxStyle");
 		return this;
 	}
 
