@@ -46,6 +46,7 @@ import za.co.ntier.api.model.X_ZZ_Institution_Qualifications;
 import za.co.ntier.api.model.I_ZZ_ParentDetails;
 import za.co.ntier.api.model.I_ZZ_PostSchoolEducation_Details;
 import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.X_C_BP_AC;
 import za.co.ntier.api.model.X_C_BPartner;
 import za.co.ntier.api.model.X_ZZLearner_v;
@@ -67,6 +68,11 @@ public final class LearnerAgreementData
 	public static final String	AGREEMENT_REFERENCE_NUMBER			= "AgreementReferenceNumber";
 	public static final String	EMPLOYED_BEFORE_AGREEMENT			= "EmployedBeforeAgreement";
 	public static final String	PAST_WORKPLACE_AGREEMENT			= "PastWorkplaceAgreement";
+	public static final String	CONTRACT_SPECIFIC_ANSWER			= "ContractSpecificAnswer";
+	public static final String	CONTRACT_COPY_ANSWER				= "ContractCopyAnswer";
+	public static final String	HAS_CONTRACT_SPECIFIC				= "HasContractSpecific";
+	public static final String	HAS_CONTRACT_COPY					= "HasContractCopy";
+	public static final String	HAS_CONTRACT_SECTION				= "HasContractSection";
 	public static final String	ASSESSMENT_QUALITY_PARTNER			= "AssessmentQualityPartner";
 	public static final String	BIRTH_DATE							= "BirthDate";
 	public static final String	CITIZEN_ANSWER						= "CitizenAnswer";
@@ -240,6 +246,12 @@ public final class LearnerAgreementData
 		PO programme = programmeId > 0 && programmeTable != null
 				? MTable.get(Env.getCtx(), programmeTable).getPO(programmeId, null) : null;
 		registration(data, registration, programme, codeColumn, programmeType, warnings);
+		int progMasterId = id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID));
+		if (progMasterId > 0 && !data.containsKey(HAS_CONTRACT_SPECIFIC) && !data.containsKey(HAS_CONTRACT_COPY))
+		{
+			X_ZZ_Program_Master_Data pmd = new X_ZZ_Program_Master_Data(Env.getCtx(), progMasterId, null);
+			putEmployerFinancialObligation(data, pmd);
+		}
 		checkEmployerBasedAqp(data);
 		putDynamicSectionSequences(data);
 		return data;
@@ -300,13 +312,6 @@ public final class LearnerAgreementData
 			data.put(GUARDIAN_SIGNATORY_NAME, data.get(GUARDIAN_NAME));
 		registration(data, registration, programme, codeColumn, programmeType, warnings);
 		data.put(FUNDING_TYPE, text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZFundingType)));
-		String empBefore = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement));
-		if (empBefore.isBlank()) empBefore = text(registration.get("ZZLearnerEmployed"));
-		data.put(EMPLOYED_BEFORE_AGREEMENT, "Y".equalsIgnoreCase(empBefore) || "Yes".equalsIgnoreCase(empBefore) ? "Yes" : ("N".equalsIgnoreCase(empBefore) || "No".equalsIgnoreCase(empBefore) ? "No" : ""));
-
-		String pastWp = text(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement));
-		if (pastWp.isBlank()) pastWp = text(registration.get("ZZPreviousEmployed"));
-		data.put(PAST_WORKPLACE_AGREEMENT, "Y".equalsIgnoreCase(pastWp) || "Yes".equalsIgnoreCase(pastWp) ? "Yes" : ("N".equalsIgnoreCase(pastWp) || "No".equalsIgnoreCase(pastWp) ? "No" : ""));
 		checkEmployerBasedAqp(data);
 		putDynamicSectionSequences(data);
 		return data;
@@ -326,6 +331,57 @@ public final class LearnerAgreementData
 		if (value instanceof PO)
 			return value((PO) value, I_C_BPartner.COLUMNNAME_Name);
 		return value == null ? "" : value.toString();
+	}
+
+	static String toYesNo(Object value)
+	{
+		if (value == null)
+			return "";
+		if (value instanceof Boolean)
+			return ((Boolean) value).booleanValue() ? "Yes" : "No";
+		String s = text(value).trim();
+		if ("Y".equalsIgnoreCase(s) || "Yes".equalsIgnoreCase(s) || "true".equalsIgnoreCase(s))
+			return "Yes";
+		if ("N".equalsIgnoreCase(s) || "No".equalsIgnoreCase(s) || "false".equalsIgnoreCase(s))
+			return "No";
+		return "";
+	}
+
+	private static void putAgreementAnswers(Map<String, String> data, Map<String, Object> registration)
+	{
+		if (registration == null)
+			return;
+		String empBefore = toYesNo(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement));
+		if (empBefore.isBlank())
+			empBefore = toYesNo(registration.get("ZZLearnerEmployed"));
+		if (!empBefore.isBlank())
+			data.put(EMPLOYED_BEFORE_AGREEMENT, empBefore);
+
+		String pastWp = toYesNo(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement));
+		if (pastWp.isBlank())
+			pastWp = toYesNo(registration.get("ZZPreviousEmployed"));
+		if (!pastWp.isBlank())
+			data.put(PAST_WORKPLACE_AGREEMENT, pastWp);
+
+		String contractSpecific = toYesNo(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsContractSpecificToPeriod));
+		if (!contractSpecific.isBlank())
+		{
+			data.put(CONTRACT_SPECIFIC_ANSWER, contractSpecific);
+			if (!data.containsKey(HAS_CONTRACT_SPECIFIC))
+			{
+				data.put(HAS_CONTRACT_SPECIFIC, "Y");
+			}
+		}
+
+		String contractCopy = toYesNo(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_HasContractCopy));
+		if (!contractCopy.isBlank())
+		{
+			data.put(CONTRACT_COPY_ANSWER, contractCopy);
+			if (!data.containsKey(HAS_CONTRACT_COPY))
+			{
+				data.put(HAS_CONTRACT_COPY, "Y");
+			}
+		}
 	}
 
 	private static void registration(Map<String, String> data, Map<String, Object> registration,
@@ -420,6 +476,7 @@ public final class LearnerAgreementData
 			}
 		}
 		providerAccreditation(data, "Provider", id(registration.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID)), warnings);
+		putAgreementAnswers(data, registration);
 	}
 
 	static void putProgrammeDefinition(Map<String, String> data, boolean enterQualification,
@@ -441,6 +498,23 @@ public final class LearnerAgreementData
 				&& CANDIDACY_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(programMasterData.getZZ_Program_Master_Data_UU());
 		data.put(CANDIDACY_ANNEXURE_SUMMARY, isCandidacy ? "Y" : "N");
 		data.put(IS_LP_STRATEGIC, isLPStrategicProgram(programMasterData) ? "Y" : "N");
+		if (programMasterData != null)
+		{
+			try
+			{
+				data.put(HAS_CONTRACT_SPECIFIC, programMasterData.isZZ_IsContractSpecificToPeriod() ? "Y" : "N");
+			}
+			catch (Exception ignored)
+			{
+			}
+			try
+			{
+				data.put(HAS_CONTRACT_COPY, programMasterData.isZZ_HasContractCopy() ? "Y" : "N");
+			}
+			catch (Exception ignored)
+			{
+			}
+		}
 		checkEmployerBasedAqp(data);
 		putDynamicSectionSequences(data);
 	}
@@ -522,11 +596,44 @@ public final class LearnerAgreementData
 	static void putDynamicSectionSequences(Map<String, String> data)
 	{
 		boolean isEmployerBased = "Y".equals(data.get(IS_EMPLOYER_BASED));
+		boolean hasSpecific = "Y".equals(data.get(HAS_CONTRACT_SPECIFIC));
+		boolean hasCopy = "Y".equals(data.get(HAS_CONTRACT_COPY));
+		boolean hasSection = hasSpecific || hasCopy;
+		data.put(HAS_CONTRACT_SECTION, hasSection ? "Y" : "N");
+
 		int sec = isEmployerBased ? 4 : 7;
-		data.put(SECTION_CONTRACT_OF_EMPLOYMENT, sec + ". Contract of Employment");
-		data.put(POINT_CONTRACT_SPECIFIC, sec + ".1 Is the learner's contract of employment specific to the period of the agreement?");
-		data.put(POINT_CONTRACT_COPY, sec + ".2 Does the learner have a copy of the contract of employment?");
-		sec++;
+		if (hasSection)
+		{
+			data.put(SECTION_CONTRACT_OF_EMPLOYMENT, sec + ". Contract of Employment");
+			int pt = 1;
+			if (hasSpecific)
+			{
+				data.put(POINT_CONTRACT_SPECIFIC, sec + "." + pt + " Is the learner's contract of employment specific to the period of the agreement?");
+				pt++;
+			}
+			else
+			{
+				data.put(POINT_CONTRACT_SPECIFIC, "");
+			}
+
+			if (hasCopy)
+			{
+				data.put(POINT_CONTRACT_COPY, sec + "." + pt + " Does the learner have a copy of the contract of employment?");
+				pt++;
+			}
+			else
+			{
+				data.put(POINT_CONTRACT_COPY, "");
+			}
+			sec++;
+		}
+		else
+		{
+			data.put(SECTION_CONTRACT_OF_EMPLOYMENT, "");
+			data.put(POINT_CONTRACT_SPECIFIC, "");
+			data.put(POINT_CONTRACT_COPY, "");
+		}
+
 		data.put(SECTION_PROGRAMME_SELECTION, sec + ". Workplace Based Learning Programme Selection:");
 		sec++;
 		data.put(SECTION_SIGNATORIES, sec + ". Signatories");

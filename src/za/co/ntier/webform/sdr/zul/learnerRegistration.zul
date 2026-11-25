@@ -65,17 +65,27 @@
       font-size: 14px !important;
     }
     .cell.col-ZZEmployedBeforeAgreement,
-    .cell.col-ZZPastWorkplaceAgreement {
+    .cell.col-ZZPastWorkplaceAgreement,
+    .cell.col-ZZ_IsContractSpecificToPeriod,
+    .cell.col-ZZ_HasContractCopy {
       grid-column: span 3 !important;
       margin-top: 10px !important;
     }
+    .two-col .cell.col-ZZ_IsContractSpecificToPeriod,
+    .two-col .cell.col-ZZ_HasContractCopy {
+      grid-column: span 2 !important;
+    }
     .cell.col-ZZEmployedBeforeAgreement .cell-title .label,
-    .cell.col-ZZPastWorkplaceAgreement .cell-title .label {
+    .cell.col-ZZPastWorkplaceAgreement .cell-title .label,
+    .cell.col-ZZ_IsContractSpecificToPeriod .cell-title .label,
+    .cell.col-ZZ_HasContractCopy .cell-title .label {
       font-weight: 600 !important;
       font-size: 13px !important;
     }
     .cell.col-ZZEmployedBeforeAgreement .z-radiogroup,
-    .cell.col-ZZPastWorkplaceAgreement .z-radiogroup {
+    .cell.col-ZZPastWorkplaceAgreement .z-radiogroup,
+    .cell.col-ZZ_IsContractSpecificToPeriod .z-radiogroup,
+    .cell.col-ZZ_HasContractCopy .z-radiogroup {
       display: flex !important;
       gap: 25px !important;
       align-items: center !important;

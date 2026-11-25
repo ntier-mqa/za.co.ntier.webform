@@ -82,6 +82,7 @@ import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
 import za.co.ntier.api.model.X_ZZ_ParentDetails;
 import za.co.ntier.api.model.X_ZZ_PostSchoolEducation_Details;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.I_ZZQualification;
 import za.co.ntier.api.model.I_ZZ_Institution;
@@ -123,7 +124,6 @@ import za.co.ntier.webform.sdr.viewmodel.LearnerQualficationRegVM.InterventionCo
 public class LearnerRegistrationVM extends BaseAppVM {
 
 	private static final String STATUS_CANCELLED = "CA";
-	private static final String STATUS_TERMINATED = "TR";
 	private static final String OPEN_REGISTRATION_MESSAGE =
 			"This learner already has an open registration. A new registration cannot be started.";
 	private static final String DRAFT_ONLY_MESSAGE = "Only draft learner registrations can be edited.";
@@ -2124,7 +2124,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		return learnerId > 0 && registrationQuery(
 				"(" + status + " IS NULL OR " + status + " NOT IN (?, ?, ?))", trxName)
 				.setParameters(learnerId, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Completed,
-						STATUS_CANCELLED, STATUS_TERMINATED)
+						STATUS_CANCELLED, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Terminated)
 				.match();
 	}
 
@@ -2408,10 +2408,6 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				new ValueNamePair("N", "No"),
 				new ValueNamePair("Y", "Yes"));
 
-		List<ValueNamePair> yesNoRadioOptions = List.of(
-				new ValueNamePair("Y", "Yes"),
-				new ValueNamePair("N", "No"));
-
 		// 1. Program Master Data (Read-only)
 		progCol = CellModel.getColModelForLabel(
 				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Program_Master_Data_ID))
@@ -2573,28 +2569,15 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		cols.add(endDateCol);
 
 		// Row 8: Agreement Questions (1.14 & 1.15)
-		ListColumnModel<ValueNamePair> colEmployedBeforeAgreement = ListCellModel.getListColumnModel(
-				" Were you employed by your employer before concluding this Agreement ?",
+		cols.add(createYesNoRadioColumn(learnerTable,
 				X_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement,
-				yesNoRadioOptions,
-				ValueNamePair::getName,
-				opt -> opt == null ? null : Boolean.valueOf("Y".equalsIgnoreCase(opt.getValue()) || "Yes".equalsIgnoreCase(opt.getValue())),
-				CellModel.RADIO_CELL);
-		colEmployedBeforeAgreement.setzClass(ValueNamePair.class);
-		colEmployedBeforeAgreement.setTableName(learnerTable);
-
-		ListColumnModel<ValueNamePair> colPastWorkplaceAgreement = ListCellModel.getListColumnModel(
-				" Were you party to a workplace-based learning programme agreement at any time in the past before concluding this agreement?",
+				" Were you employed by your employer before concluding this Agreement ?"));
+		cols.add(createYesNoRadioColumn(learnerTable,
 				X_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement,
-				yesNoRadioOptions,
-				ValueNamePair::getName,
-				opt -> opt == null ? null : Boolean.valueOf("Y".equalsIgnoreCase(opt.getValue()) || "Yes".equalsIgnoreCase(opt.getValue())),
-				CellModel.RADIO_CELL);
-		colPastWorkplaceAgreement.setzClass(ValueNamePair.class);
-		colPastWorkplaceAgreement.setTableName(learnerTable);
+				" Were you party to a workplace-based learning programme agreement at any time in the past before concluding this agreement?"));
 
-		cols.add(colEmployedBeforeAgreement);
-		cols.add(colPastWorkplaceAgreement);
+		// Row 9: Contract of Employment Questions (4.1 & 4.2)
+		appendContractOfEmploymentColumns(cols, learnerTable);
 
 		// Wire search handlers
 		String sdpWhere = MBPartner.Table_Name + "." + MBPartner.COLUMNNAME_IsActive + " = 'Y' AND "
@@ -2728,6 +2711,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		} else {
 			configureSimpleEmployerSearch(colEmployer, colEmpContactPerson, colEmpContactNumber, colEmpContactEmail);
 		}
+
+		appendContractOfEmploymentColumns(cols, learnerTable);
 
 		return cols;
 	}
@@ -3062,6 +3047,76 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		return false;
 	}
 
+	private boolean isContractSpecificToPeriod(X_ZZ_Program_Master_Data prog) {
+		return prog != null && prog.get_ColumnIndex(I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_IsContractSpecificToPeriod) >= 0
+				&& prog.isZZ_IsContractSpecificToPeriod();
+	}
+
+	private boolean isHasContractCopy(X_ZZ_Program_Master_Data prog) {
+		return prog != null && prog.get_ColumnIndex(I_ZZ_Program_Master_Data.COLUMNNAME_ZZ_HasContractCopy) >= 0
+				&& prog.isZZ_HasContractCopy();
+	}
+
+	private static final List<ValueNamePair> YES_NO_RADIO_OPTIONS = List.of(
+			new ValueNamePair("Y", "Yes"),
+			new ValueNamePair("N", "No"));
+
+	private ListColumnModel<ValueNamePair> createYesNoRadioColumn(String tableName, String colName, String defaultTitle) {
+		String title = MasterUtil.getNameOfColTranslated(tableName, colName);
+		if (title == null || title.isBlank()) {
+			title = defaultTitle;
+		}
+		ListColumnModel<ValueNamePair> col = ListCellModel.getListColumnModel(
+				title,
+				colName,
+				YES_NO_RADIO_OPTIONS,
+				ValueNamePair::getName,
+				opt -> opt == null ? null : Boolean.valueOf("Y".equalsIgnoreCase(opt.getValue()) || "Yes".equalsIgnoreCase(opt.getValue())),
+				CellModel.RADIO_CELL);
+		col.setzClass(ValueNamePair.class);
+		col.setTableName(tableName);
+		return col;
+	}
+
+	private void appendContractOfEmploymentColumns(List<ColumnModel> cols, String tableName) {
+		if (isContractSpecificToPeriod(selectedDGProgramme)) {
+			cols.add(createYesNoRadioColumn(tableName,
+					I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsContractSpecificToPeriod,
+					" Is the learner's contract of employment specific to the period of the agreement?"));
+		}
+		if (isHasContractCopy(selectedDGProgramme)) {
+			cols.add(createYesNoRadioColumn(tableName,
+					I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_HasContractCopy,
+					" Does the learner have a copy of the contract of employment?"));
+		}
+	}
+
+	private void populateBooleanRadioDefault(CellModel cell, PO po, PO fallbackPo, String colName) {
+		String val = null;
+		if (po != null && po.get_ColumnIndex(colName) >= 0) {
+			val = po.get_ValueAsString(colName);
+		}
+		if ((val == null || val.isBlank()) && fallbackPo != null && fallbackPo.get_ColumnIndex(colName) >= 0) {
+			val = fallbackPo.get_ValueAsString(colName);
+		}
+		if (val != null && !val.isBlank()) {
+			String fVal = val.trim();
+			ValueNamePair pair = ("Y".equalsIgnoreCase(fVal) || "Yes".equalsIgnoreCase(fVal) || "true".equalsIgnoreCase(fVal))
+					? new ValueNamePair("Y", "Yes")
+					: (("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal) || "false".equalsIgnoreCase(fVal)) ? new ValueNamePair("N", "No") : null);
+			if (pair != null) {
+				cell.setValue(pair);
+			}
+		}
+	}
+
+	private boolean extractBoolean(Object val) {
+		if (val == null) return false;
+		if (val instanceof Boolean) return ((Boolean) val).booleanValue();
+		String s = extractString(val);
+		return "Y".equalsIgnoreCase(s) || "Yes".equalsIgnoreCase(s) || "true".equalsIgnoreCase(s);
+	}
+
 	private void populateRegistrationDefaults() {
 		if (tmRegistration == null || tmRegistration.getRow() == null) return;
 		RowModel row = tmRegistration.getRow();
@@ -3298,6 +3353,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 								: (("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal)) ? new ValueNamePair("N", "No") : null);
 						if (pair != null) cell.setValue(pair);
 					}
+				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsContractSpecificToPeriod.equals(prop)
+						|| I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_HasContractCopy.equals(prop)) {
+					populateBooleanRadioDefault(cell, dg, child, prop);
 				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactPerson.equals(prop)) {
 					String val = dg != null ? dg.getZZ_EmployerContactPerson() : null;
 					if ((val == null || val.isBlank()) && child != null && child.get_ColumnIndex(X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactPerson) >= 0) {
@@ -4078,6 +4136,14 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				if (dg.get_ColumnIndex("ZZPreviousEmployed") >= 0) {
 					safeSetPOValue(dg, "ZZPreviousEmployed", pastBool ? "Y" : "N");
 				}
+			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsContractSpecificToPeriod.equals(prop)) {
+				if (dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsContractSpecificToPeriod) >= 0) {
+					dg.setZZ_IsContractSpecificToPeriod(extractBoolean(val));
+				}
+			} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_HasContractCopy.equals(prop)) {
+				if (dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_HasContractCopy) >= 0) {
+					dg.setZZ_HasContractCopy(extractBoolean(val));
+				}
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactPerson.equals(prop)) {
 				String person = extractString(val);
 				if (dg.get_ColumnIndex(X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactPerson) >= 0) {
@@ -4125,6 +4191,15 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			dg.setZZ_Employer_ID(0);
 		} else {
 			dg.setZZ_Institution_ID(0);
+		}
+
+		if (!isContractSpecificToPeriod(selectedDGProgramme)
+				&& dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsContractSpecificToPeriod) >= 0) {
+			dg.setZZ_IsContractSpecificToPeriod(false);
+		}
+		if (!isHasContractCopy(selectedDGProgramme)
+				&& dg.get_ColumnIndex(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_HasContractCopy) >= 0) {
+			dg.setZZ_HasContractCopy(false);
 		}
 
 		// When Initial Intervention Qualification is set in Phase 1, set Program ID, Program code, Program Title
