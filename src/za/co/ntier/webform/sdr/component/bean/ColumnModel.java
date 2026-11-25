@@ -119,7 +119,17 @@ public class ColumnModel implements PropertyChangeListener{
 	
 	
 	private boolean readonly = false;
+	private boolean digitsOnly = false;
 	private int rows = 1;
+
+	public boolean isDigitsOnly() {
+		return digitsOnly;
+	}
+
+	public ColumnModel setDigitsOnly(boolean digitsOnly) {
+		this.digitsOnly = digitsOnly;
+		return this;
+	}
 
 	public int getRows() {
 		return rows;

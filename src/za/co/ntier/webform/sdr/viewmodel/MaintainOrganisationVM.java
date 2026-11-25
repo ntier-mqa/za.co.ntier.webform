@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +22,6 @@ import za.co.ntier.api.model.I_AD_User;
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZOrgTrainingCommittee;
 import za.co.ntier.api.model.I_ZZOrganisationLinkage;
-import za.co.ntier.api.model.I_ZZSdf;
 import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZOrgTrainingCommittee;
@@ -107,7 +107,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		generalDetailTab.getCompModel().add(tmGeneralDetail);
 		
 		NavTabPanel contactDetailTab = new NavTabPanel(mainTab);
-		contactDetailTab.setTabTitle("CONTACT DETAILS");
+		contactDetailTab.setTabTitle("OTHER CONTACT DETAILS");
 		// new component
 		contactTableModel = initContactDetailComp();
 		contactTableModel.setViewModel(TableModel.ViewType.VIEW_CARD);
@@ -163,6 +163,7 @@ public class MaintainOrganisationVM extends BaseAppVM {
 						String.format("%s = ?", I_AD_User.COLUMNNAME_C_BPartner_ID), null);
 		contactQuery.setParameters(orgPO.getC_BPartner_ID());
 		List<PO> contacts = contactQuery.list();
+		populateLegacyContactTitles(contacts);
 		
 		contactTableModel.reset(contacts);
 		
@@ -192,14 +193,29 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		
 	}
 	
+	private void populateLegacyContactTitles(List<PO> contacts) {
+		if (contacts == null || contacts.isEmpty()) {
+			return;
+		}
+		List<ValueNamePair> titleOptions = MasterUtil.getLkpTitleLists();
+		for (PO contactPo : contacts) {
+			if (contactPo instanceof MUser_New user
+					&& StringUtils.isBlank(user.getZZLkpTitle())
+					&& StringUtils.isNotBlank(user.getTitle())) {
+				String legacyTitle = user.getTitle().trim().replaceAll("\\.+$", "");
+				titleOptions.stream()
+						.filter(v -> v.getValue().equalsIgnoreCase(legacyTitle)
+								|| v.getName().equalsIgnoreCase(legacyTitle))
+						.findFirst()
+						.ifPresent(v -> user.setZZLkpTitle(v.getValue()));
+			}
+		}
+	}
+
 	private TableModel initContactDetailComp() {
 		List<ColumnModel> cols = new ArrayList<>();
 		
-		ColumnModel titleCol = CellModel.getColModelForText(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Title)
-				, I_AD_User.COLUMNNAME_Title
-				).required()
-				;
+		ColumnModel titleCol = ListCellModel.getLkpTitleColumnModel();
 		cols.add(titleCol);
 		
 		ColumnModel firstNameCol = CellModel.getColModelForText(
@@ -299,6 +315,9 @@ public class MaintainOrganisationVM extends BaseAppVM {
 				if (user.getName() == null) {
 					user.setName(user.getZZFirstName());
 				}
+				if (StringUtils.isNotBlank(user.getZZLkpTitle())) {
+					user.setTitle(user.getZZLkpTitle());
+				}
 			}
 			
 			return true;
@@ -344,7 +363,8 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		ColumnModel sarsNumCol = CellModel.getColModelForText(
 				Msg.getElement(Env.getCtx(), "ZZPayeNumber")
 				, I_C_BPartner.COLUMNNAME_ZZSarsNumber
-			).required();
+			).setDigitsOnly(true).required();
+		sarsNumCol.setValidateHandle(BuildFormUtil.DIGITS_ONLY_VALIDATOR);
 		cols.add(sarsNumCol);
 		
 		ColumnModel numOfEmpCol = CellModel.getColModelForPositiveNumber(
@@ -744,20 +764,6 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		trainingCommitteeTabPanel.getCompModel().add(tmTrainingCommittee);
 	}
 	
-	public static record DependencyFields(CellModel legaNameCell, CellModel tradeNameCell, CellModel numOfEmployeeCell) {}
-	
-	void setDependencyField(MBPartner_New childOrg, DependencyFields dependencyFields) {
-		if (childOrg == null) {
-			dependencyFields.legaNameCell.setValue(null);
-			dependencyFields.tradeNameCell.setValue(null);
-			dependencyFields.numOfEmployeeCell.setValue(null);
-		}else {
-			dependencyFields.legaNameCell.setValue(childOrg.getName());
-			dependencyFields.tradeNameCell.setValue(childOrg.getName2());
-			dependencyFields.numOfEmployeeCell.setValue(childOrg.getZZ_Number_Of_Employees());
-		}
-	}
-	
 	NavTabPanel childTabPanel;
 	
 	DaoManage orgDaoManage = new DaoManage();
@@ -863,10 +869,125 @@ public class MaintainOrganisationVM extends BaseAppVM {
 	}
 	
 	@Override
-	public void doSave(String trxName) {
+	public boolean onNextTab(NavTab navTab) {
+		if (navTab == null) {
+			return false;
+		}
+
+		int activeIndex = navTab.getActiveTabIndex();
+		if (!validateTabsUpTo(activeIndex) || !saveTillTab(activeIndex)) {
+			return true;
+		}
+
+		navTab.doNextTab();
+		return true;
+	}
+
+	@Override
+	public boolean onPrevTab(NavTab navTab) {
+		if (navTab == null) {
+			return false;
+		}
+
+		int activeIndex = navTab.getActiveTabIndex();
+		List<NavTabPanel> tabPanels = mainTab != null ? mainTab.getTabPanelModel() : null;
+		if (tabPanels != null && activeIndex >= 0 && activeIndex < tabPanels.size()) {
+			NavTabPanel currentPanel = tabPanels.get(activeIndex);
+			if (currentPanel != null && hasTabChanges(currentPanel)) {
+				boolean isHeaderValid = names == null || names.validate(null);
+				if (isHeaderValid && currentPanel.validate(null)) {
+					saveTillTab(activeIndex);
+				}
+			}
+		}
+
+		navTab.doPrevTab();
+		return true;
+	}
+
+	private boolean hasTabChanges(NavTabPanel panel) {
+		InputCheckResult check = panel.parseInputState();
+		if (check != null && !check.getNotChange()) {
+			return true;
+		}
+		// VIEW_CARD edits live in virtualRow until synced, so check it explicitly on Back.
+		for (Object comp : panel.getCompModel()) {
+			if (comp instanceof TableModel tm && tm.isUsed() && tm.isCardView() && tm.getVirtualRow() != null) {
+				InputCheckResult virtualCheck = tm.getVirtualRow().parseInputState();
+				if (virtualCheck != null && !virtualCheck.getNotChange()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean validateTabsUpTo(int activeIndex) {
+		if (names != null && !names.validate(null)) {
+			return false;
+		}
+		if (mainTab != null && mainTab.getTabPanelModel() != null) {
+			List<NavTabPanel> tabPanels = mainTab.getTabPanelModel();
+			for (int i = 0; i <= activeIndex && i < tabPanels.size(); i++) {
+				NavTabPanel panel = tabPanels.get(i);
+				if (panel != null && !panel.validate(null)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean saveTillTab(int activeIndex) {
+		try {
+			trxWrapperFunc(trxName -> doSaveTillTab(activeIndex, trxName),
+					getClass().getName() + "_onTabSave", this);
+			return true;
+		} catch (Exception e) {
+			log.log(Level.WARNING, "Failed to save record on tab transition: " + e.getMessage(), e);
+			showException(e);
+			return false;
+		}
+	}
+
+	private void doSaveTillTab(int activeIndex, String trxName) {
 		checkOrg();
-		super.doSave(trxName);
-		
+
+		if (names != null) {
+			names.syncUIToDao(trxName);
+		}
+
+		List<NavTabPanel> tabPanels = mainTab != null ? mainTab.getTabPanelModel() : null;
+		if (tabPanels != null) {
+			for (int i = 0; i <= activeIndex && i < tabPanels.size(); i++) {
+				NavTabPanel panel = tabPanels.get(i);
+				if (panel != null) {
+					panel.syncUIToDao(trxName);
+				}
+			}
+		}
+
+		orgDaoManage.setTrxName(trxName);
+		orgDaoManage.saveDao(trxName);
+
+		if (names != null) {
+			names.saveToDb(trxName);
+		}
+
+		if (tabPanels != null) {
+			for (int i = 0; i <= activeIndex && i < tabPanels.size(); i++) {
+				NavTabPanel panel = tabPanels.get(i);
+				if (panel != null) {
+					panel.saveToDb(trxName);
+					panel.saveAttachment(trxName);
+				}
+			}
+		}
+
+		updateMaintainStatus(trxName);
+	}
+
+	private void updateMaintainStatus(String trxName) {
 		String maintainOrgStatus = MBPartner_New.ZZMAINTAINSTATUS_Yes;
 		for (NavTabPanel tabPanel : mainTab.getTabPanelModel()) {
 			if (tmTrainingCommittee == tabPanel.getCompModel().get(0)) {
@@ -880,6 +1001,12 @@ public class MaintainOrganisationVM extends BaseAppVM {
 		}
 		orgPO.setZZMaintainStatus(maintainOrgStatus);
 		orgPO.saveEx(trxName);
-		
+	}
+
+	@Override
+	public void doSave(String trxName) {
+		checkOrg();
+		super.doSave(trxName);
+		updateMaintainStatus(trxName);
 	}
 }

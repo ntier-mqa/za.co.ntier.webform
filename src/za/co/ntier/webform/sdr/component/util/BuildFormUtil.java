@@ -3,7 +3,7 @@ package za.co.ntier.webform.sdr.component.util;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +32,14 @@ import za.co.ntier.webform.sdr.component.bean.cell.PostalCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ProvinceCellModel;
 
 public class BuildFormUtil {
+	/** Digits-only validator for text fields that must remain String (e.g. preserving leading zeros). */
+	public static final BiConsumer<CellModel, List<String>> DIGITS_ONLY_VALIDATOR = (cellModel, msgs) -> {
+		Object value = cellModel.getDirtyValue();
+		if (value != null && !StringUtils.isBlank(value.toString()) && !value.toString().trim().matches("\\d+")) {
+			msgs.add("Only numeric values are allowed.");
+		}
+	};
+
 	public static TableModel buildFormContact(ProgramType programType, AddressType addressType, 
 			X_ZZ_Application_Form applicationForm,
 			Function<RowModel, PO> poSupplier, Function<RowDbEventArgs, Boolean> beforeSave,

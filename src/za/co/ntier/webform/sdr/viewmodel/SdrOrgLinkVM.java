@@ -42,6 +42,7 @@ import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
+import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
 public class SdrOrgLinkVM extends BaseAppVM {
 	private X_ZZSdf sdfPo;
@@ -326,7 +327,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 								I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number),
 						I_ZZBankingDetails.COLUMNNAME_ZZ_Branch_Number)
 				.required();
-		branchCodeCol.setValidateHandle(digitsOnlyValidator);
+		branchCodeCol.setValidateHandle(BuildFormUtil.DIGITS_ONLY_VALIDATOR);
 		cols.add(branchCodeCol);
 		
 		ColumnModel branchNameCol = CellModel
@@ -341,7 +342,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 				.getColModelForText(MasterUtil.getNameOfColTranslated(I_ZZBankingDetails.Table_Name,
 						I_ZZBankingDetails.COLUMNNAME_AccountNo), I_ZZBankingDetails.COLUMNNAME_AccountNo)
 				.required();
-		accountNoCol.setValidateHandle(digitsOnlyValidator);
+		accountNoCol.setValidateHandle(BuildFormUtil.DIGITS_ONLY_VALIDATOR);
 		cols.add(accountNoCol);
 
 		ColumnModel accountTypeCol = ListCellModel.getListColumnModel(
@@ -552,14 +553,6 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		super.doSave(trxName);
 	}
-
-	/** Branch No and Account No accept digits only (kept as text so leading zeros are preserved). */
-	private static final BiConsumer<CellModel, List<String>> digitsOnlyValidator = (cellModel, msgs) -> {
-		Object value = cellModel.getDirtyValue();
-		if (value != null && !StringUtils.isBlank(value.toString()) && !value.toString().trim().matches("\\d+")) {
-			msgs.add("Only numeric values are allowed.");
-		}
-	};
 
 	public static boolean isChildWithParentUploads(PO org) {
 		if (org == null) {

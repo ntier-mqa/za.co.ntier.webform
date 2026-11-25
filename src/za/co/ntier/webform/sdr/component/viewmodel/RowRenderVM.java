@@ -18,6 +18,7 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zul.Textbox;
 
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.sdr.component.bean.CellModel;
@@ -89,6 +90,28 @@ public class RowRenderVM extends BaseComponentVM<RowModel>{
 	}
 
 	
+	private static final String DIGITS_ONLY_BIND_SCRIPT =
+			"var inp = this.getInputNode();"
+			+ "if (inp && !inp._digitsOnlyBound) {"
+			+ "inp._digitsOnlyBound = true;"
+			+ "inp.setAttribute('inputmode', 'numeric');"
+			+ "inp.addEventListener('keydown', function(e) {"
+			+ "if (e.ctrlKey || e.metaKey || e.altKey) return;"
+			+ "if (e.key && e.key.length === 1 && !/[0-9]/.test(e.key)) e.preventDefault();"
+			+ "});"
+			+ "inp.addEventListener('input', function() {"
+			+ "var cleaned = inp.value.replace(/\\D/g, '');"
+			+ "if (inp.value !== cleaned) inp.value = cleaned;"
+			+ "});"
+			+ "}";
+
+	@Command
+	public void initTextbox(@BindingParam("comp") Component comp, @BindingParam("col") ColumnModel col) {
+		if (col != null && col.isDigitsOnly() && comp instanceof Textbox tb) {
+			tb.setWidgetListener("onBind", DIGITS_ONLY_BIND_SCRIPT);
+		}
+	}
+
 	@Command
 	public void cmdValueChanged(
 			@BindingParam("tableModel") TableModel tableModel
