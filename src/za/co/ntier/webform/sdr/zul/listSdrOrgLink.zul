@@ -47,13 +47,36 @@
         
         <button if = "${ vm.isOrgEditable(item) }"
         	sclass="@load(( vm.getSclassOrgMaintain(item) ))" 
-          	label="Organisation Details"
+          	label="Org. Details"
           	onClick="@command('editOrganisation', row=item)"/>
+
+        <button if = "${ vm.isStatementAvailable(item) }"
+          	label="Statement"
+          	onClick="@command('openStatement', row=item)"/>
         </div>
         
       </row>
     </template>
   </rows>
 </grid>
+
+<window mode="modal" title="Grant Statement" position="center,center" width="380px"
+        visible="@load(vm.statementVisible)">
+  <div style="display:flex;flex-direction:column;gap:10px;padding:10px;">
+    <label style="font-weight:bold" value="@load(vm.statementOrgName)"/>
+    <hlayout valign="middle">
+      <label value="Start Date" style="display:inline-block;width:90px"/>
+      <datebox value="@bind(vm.statementDateFrom)" format="dd/MM/yyyy" width="200px"/>
+    </hlayout>
+    <hlayout valign="middle">
+      <label value="End Date" style="display:inline-block;width:90px"/>
+      <datebox value="@bind(vm.statementDateTo)" format="dd/MM/yyyy" width="200px"/>
+    </hlayout>
+  </div>
+  <div sclass="modal-footer">
+    <button sclass="btn btn-primary" label="Generate" onClick="@command('generateStatement')"/>
+    <button sclass="btn btn-primary" label="Cancel" onClick="@command('cancelStatement')"/>
+  </div>
+</window>
 
 </idspace>
