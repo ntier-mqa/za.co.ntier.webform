@@ -119,6 +119,17 @@ public class ColumnModel implements PropertyChangeListener{
 	
 	
 	private boolean readonly = false;
+	private int rows = 1;
+
+	public int getRows() {
+		return rows;
+	}
+
+	public ColumnModel setRows(int rows) {
+		this.rows = rows;
+		BindUtils.postNotifyChange(this, "rows");
+		return this;
+	}
 
 	/**
 	 * @return the title

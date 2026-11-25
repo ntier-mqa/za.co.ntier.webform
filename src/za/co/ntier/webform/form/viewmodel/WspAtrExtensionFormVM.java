@@ -1,12 +1,11 @@
 package za.co.ntier.webform.form.viewmodel;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -19,13 +18,15 @@ import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 
 import za.co.ntier.api.model.I_AD_User;
-import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
+import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION;
 import za.co.ntier.api.model.I_ZZ_WSP_ATR_EXTENSION_BATCH;
+import za.co.ntier.api.model.MBPartner_New;
 import za.co.ntier.api.model.MUser_New;
 import za.co.ntier.api.model.X_ZZ_WSP_ATR_EXTENSION;
 import za.co.ntier.api.model.X_ZZ_WSP_ATR_EXTENSION_BATCH;
@@ -40,7 +41,6 @@ import za.co.ntier.webform.sdr.component.bean.RowModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.TableModel.DaoManage;
 import za.co.ntier.webform.sdr.component.bean.TableModel.TitleInfo;
-import za.co.ntier.webform.sdr.component.bean.cell.OrganisationCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
@@ -68,7 +68,6 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	private DaoManage					formManage;
 	private MUser_New					loggedInUser;
 	private X_ZZ_WSP_ATR_EXTENSION		extensionData;
-	private List<Map<String, Object>>	linkedOrganisationsList;
 
 	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey)
@@ -77,7 +76,6 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		int loginUserId = Env.getAD_User_ID(ctx);
 		loggedInUser = new MUser_New(ctx, loginUserId, null);
 
-		loadLinkedOrganisations();
 		initExtensionData();
 
 		formManage = new DaoManage();
@@ -127,87 +125,6 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		}
 	}
 
-	private void loadLinkedOrganisations()
-	{
-		try
-		{
-			List<List<Object>> linkedOrganisationsPo = DB.getSQLArrayObjectsEx(null, buildOrganisationQuery(),
-					Env.getAD_User_ID(ctx));
-
-			if (linkedOrganisationsPo == null)
-			{
-				linkedOrganisationsList = new ArrayList<>();
-				return;
-			}
-
-			linkedOrganisationsList = new ArrayList<>();
-			linkedOrganisationsPo.forEach(row -> {
-				linkedOrganisationsList.add(mapOrganisationRow(row));
-			});
-
-		}
-		catch (Exception e)
-		{
-			log.severe("Error loading linked organisations: " + e.getMessage());
-			linkedOrganisationsList = new ArrayList<>();
-		}
-	}
-
-	private String buildOrganisationQuery()
-	{
-		return String.format("""
-				SELECT
-				    sdo.%s,
-				    sdo.%s,
-				    %s AS %s,
-				    sdo.%s,
-				    sdo.%s,
-				    sdo.%s,
-				    bp.Value AS %s,
-				    bp.ZZ_Number_Of_Employees AS %s
-				FROM %s sdo
-				LEFT JOIN C_BPartner bp ON sdo.C_BPartner_ID = bp.C_BPartner_ID AND bp.IsActive='Y'
-				WHERE sdo.CreatedBy = ?
-				""", I_ZZSdfOrganisation_v.COLUMNNAME_OrgName, I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No,
-				I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfRoleType, WspAtrExtensionConstants.SDF_ROLE,
-				I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus, I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID,
-				WspAtrExtensionConstants.BP_ID, WspAtrExtensionConstants.BP_SEARCH_KEY,
-				WspAtrExtensionConstants.BP_NUMBER_OF_EMPLOYEES, I_ZZSdfOrganisation_v.Table_Name);
-	}
-
-	private Map<String, Object> mapOrganisationRow(List<Object> row)
-	{
-		Map<String, Object> linkedOrganisation = new HashMap<>();
-		linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_OrgName, row.get(0));
-		linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_SDL_No, row.get(1));
-		linkedOrganisation.put(WspAtrExtensionConstants.SDF_ROLE, row.get(2));
-		linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus,
-				row.get(3) != null ? row.get(3) : WspAtrExtensionConstants.DOC_STATUS_DRAFTED);
-		linkedOrganisation.put(I_ZZSdfOrganisation_v.COLUMNNAME_ZZSdfOrganisation_ID, row.get(4));
-		linkedOrganisation.put(WspAtrExtensionConstants.BP_ID, row.get(5));
-		linkedOrganisation.put(WspAtrExtensionConstants.BP_SEARCH_KEY, row.get(6));
-		linkedOrganisation.put(WspAtrExtensionConstants.BP_NUMBER_OF_EMPLOYEES, row.get(7));
-		return linkedOrganisation;
-	}
-
-	private List<Map<String, Object>> getApprovedPrimarySDFOrganisations()
-	{
-		List<Map<String, Object>> approvedOrgs = new ArrayList<>();
-		for (Map<String, Object> org : linkedOrganisationsList)
-		{
-//			String docStatus = (String) org.get(I_ZZSdfOrganisation_v.COLUMNNAME_ZZ_DocStatus);
-			String role = (String) org.get(WspAtrExtensionConstants.SDF_ROLE);
-
-			if (
-//					WspAtrExtensionConstants.DOC_STATUS_APPROVED.equalsIgnoreCase(docStatus) && 
-			WspAtrExtensionConstants.SDF_ROLE_PRIMARY.equalsIgnoreCase(role))
-			{
-				approvedOrgs.add(org);
-			}
-		}
-		return approvedOrgs;
-	}
-
 	private TableModel getSdfDetailsComp(DaoManage formManage)
 	{
 		List<ColumnModel> cols = new ArrayList<>();
@@ -229,19 +146,122 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	private TableModel getOrganisationDetailsComp(DaoManage formManage)
 	{
 		List<ColumnModel> cols = new ArrayList<>();
-		List<Map<String, Object>> approvedOrganisations = getApprovedPrimarySDFOrganisations();
 
-		ColumnModel organisationCol = OrganisationCellModel.getOrganisationColumnModel(
-				getTranslatedColumnName(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Organisation_Name),
-				I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Organisation_Name, approvedOrganisations);
-		organisationCol.required().setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
-		cols.add(organisationCol);
+		ColumnModel sdlNoCol = CellModel.getColModelForText(
+				getTranslatedColumnName(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDL_No),
+				I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDL_No);
+		sdlNoCol.required().setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
+		sdlNoCol.setEventHandle((event, cellModel) -> handleSdlNoChange(cellModel));
+		cols.add(sdlNoCol);
 
-		cols.add(createReadOnlyColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_SDL_No));
+		cols.add(createReadOnlyColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Organisation_Name));
 		cols.add(createReadOnlyNumberColumn(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Number_Of_Employees));
 
 		return createTableModel(cols, formManage,
 				WspAtrExtensionConstants.CSS_TWO_COL + " " + WspAtrExtensionConstants.CSS_ORG_SECTION);
+	}
+
+	private void handleSdlNoChange(CellModel cellModel)
+	{
+		Object val = cellModel.getValue();
+		String sdlNo = val != null ? val.toString().trim() : "";
+
+		if (sdlNo.isEmpty())
+		{
+			clearOrganisationFields();
+			return;
+		}
+
+		MBPartner_New bp = new Query(ctx, I_C_BPartner.Table_Name,
+				"UPPER(" + I_C_BPartner.COLUMNNAME_Value + ")=? AND " + I_C_BPartner.COLUMNNAME_IsActive + "='Y'", null)
+				.setParameters(sdlNo.toUpperCase())
+				.setClient_ID()
+				.first();
+
+		if (bp == null)
+		{
+			clearOrganisationFields();
+			cellModel.setValue(null);
+			BindUtils.postNotifyChange(cellModel, "value");
+			MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", t -> {});
+			return;
+		}
+
+		String orgName = bp.getName();
+		Object empCountObj = bp.get_Value(I_C_BPartner.COLUMNNAME_ZZ_Number_Of_Employees);
+		BigDecimal empCount = convertToEmployeeCount(empCountObj);
+
+		extensionData.setZZ_SDL_No(bp.getValue());
+		extensionData.setZZ_Organisation_Name(orgName);
+		extensionData.setZZ_Number_Of_Employees(empCount);
+
+		updateOrganisationCell(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Organisation_Name, orgName);
+		updateOrganisationCell(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Number_Of_Employees, empCount);
+	}
+
+	private void clearOrganisationFields()
+	{
+		extensionData.setZZ_SDL_No(null);
+		extensionData.setZZ_Organisation_Name(null);
+		extensionData.setZZ_Number_Of_Employees(null);
+
+		updateOrganisationCell(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Organisation_Name, null);
+		updateOrganisationCell(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Number_Of_Employees, null);
+	}
+
+	private void updateOrganisationCell(String columnName, Object value)
+	{
+		CellModel cell = findCellByColumnName(organisationDetails, columnName);
+		if (cell != null)
+		{
+			cell.setValue(value);
+			BindUtils.postNotifyChange(cell, "value");
+		}
+	}
+
+	private CellModel findCellByColumnName(TableModel tableModel, String columnName)
+	{
+		if (tableModel == null || tableModel.getRow() == null)
+		{
+			return null;
+		}
+
+		for (CellModel cell : tableModel.getRow().values())
+		{
+			if (cell.getColModel() != null && columnName.equals(cell.getColModel().getDaoPropertyName()))
+			{
+				return cell;
+			}
+		}
+
+		return null;
+	}
+
+	private BigDecimal convertToEmployeeCount(Object employees)
+	{
+		if (employees == null)
+		{
+			return null;
+		}
+		if (employees instanceof BigDecimal)
+		{
+			return (BigDecimal) employees;
+		}
+		else if (employees instanceof Number)
+		{
+			return BigDecimal.valueOf(((Number) employees).longValue());
+		}
+		else
+		{
+			try
+			{
+				return new BigDecimal(employees.toString());
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+		}
 	}
 
 	private TableModel getExtensionRequestComp(DaoManage formManage)
@@ -251,12 +271,13 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 		ColumnModel reasonCol = CellModel
 				.getColModelForText(getTranslatedColumnName(I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Reason_For_Extension),
 						I_ZZ_WSP_ATR_EXTENSION.COLUMNNAME_ZZ_Reason_For_Extension)
+				.setRows(2)
 				.required().setTableName(I_ZZ_WSP_ATR_EXTENSION.Table_Name);
 
 		cols.add(reasonCol);
 
 		ColumnModel uploadFormCol = UploadCellModel.getUploadColumnModel("", null, null,
-				"UPLOAD EXTENSION FORM")
+				"UPLOAD LETTER OF APPOINTMENT")
 			.required()
 			.setShowTitle(false);
 		cols.add(uploadFormCol);
@@ -596,7 +617,13 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 	 */
 	private String resolveSDLNoFromSelectedOrganisation()
 	{
-		RowModel row = organisationDetails.getRow();
+		String sdlNo = extensionData != null ? extensionData.getZZ_SDL_No() : null;
+		if (sdlNo != null && !sdlNo.isBlank())
+		{
+			return sdlNo.trim();
+		}
+
+		RowModel row = organisationDetails != null ? organisationDetails.getRow() : null;
 		if (row == null)
 		{
 			return null;
@@ -609,7 +636,7 @@ public class WspAtrExtensionFormVM extends BaseAppVM
 				CellModel cell = row.get(col);
 				if (cell != null && cell.getValue() != null)
 				{
-					return cell.getValue().toString();
+					return cell.getValue().toString().trim();
 				}
 			}
 		}

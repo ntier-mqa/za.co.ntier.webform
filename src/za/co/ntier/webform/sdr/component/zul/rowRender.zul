@@ -59,6 +59,7 @@
             <textbox
               if="${ vmRowRender.row[col].textfield }"
               readonly="@bind(col.readonly)"
+              rows="@load(col.rows)"
               type="@init(vmRowRender.row[col].cellType eq CellModel.PHONE_CELL ? 'tel' : 'text')"
               value="
               	@bind(vmRowRender.row[col].value)
