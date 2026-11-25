@@ -12,7 +12,6 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
-import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_Bank;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -23,10 +22,13 @@ import org.zkoss.zk.ui.event.Event;
 
 import za.co.ntier.api.model.I_C_BPartner;
 import za.co.ntier.api.model.I_ZZBankingDetails;
+import za.co.ntier.api.model.I_ZZOrganisationLinkage;
 import za.co.ntier.api.model.I_ZZSdfOrganisation;
 import za.co.ntier.api.model.I_ZZSdfOrganisation_v;
 import za.co.ntier.api.model.MBPartner_New;
+import za.co.ntier.api.model.X_C_BPartner;
 import za.co.ntier.api.model.X_ZZBankingDetails;
+import za.co.ntier.api.model.X_ZZOrganisationLinkage;
 import za.co.ntier.api.model.X_ZZSdf;
 import za.co.ntier.api.model.X_ZZSdfOrganisation;
 import za.co.ntier.webform.form.MasterUtil;
@@ -50,7 +52,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 
 	private TableModel bankDetailModel;
 		
-	private X_C_BPartner orgPo;
+	private MBPartner_New orgPo;
 	
 	@Override
 	public List<ISaveForm> getSaveComponents() {
@@ -95,6 +97,8 @@ public class SdrOrgLinkVM extends BaseAppVM {
 
 	}
 	
+	public static final String MSG_CHILD_ORG_PARENT_UPLOADS = "ZZOrgLinkChildParentUploads";
+
 	BiConsumer<Event, CellModel> sdlnoChangeHandle = (event, cellModel) -> {
 		if (StringUtils.isBlank((String)cellModel.getValue())) {
 			return;
@@ -107,7 +111,13 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		
 		if (sOrgPo == null) {
 			MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
-		}else {
+		} else if (isChildWithParentUploads(sOrgPo)) {
+			orgPo = null;
+			cellModel.setValue(null);
+			orgSearchModel.getRow().setDataOneRow(new MBPartner_New(Env.getCtx(), 0, null));
+			orgSearchModel.reloadDao();
+			MasterUtil.showInfoDialog(MSG_CHILD_ORG_PARENT_UPLOADS, t -> {});
+		} else {
 			orgPo = sOrgPo;
 			orgSearchModel.getRow().setDataOneRow(orgPo);
 			orgSearchModel.reloadDao();
@@ -291,10 +301,6 @@ public class SdrOrgLinkVM extends BaseAppVM {
 	
 	private TableModel initBankDetailModel() {
 		List<ColumnModel> cols = new ArrayList<>();
-
-		ColumnModel warningBankDetailUploadCol = CellModel.getColModelForLabel(
-				"Banking details uploaded must be signed off by the Organsation CFO as true and correct");
-		cols.add(warningBankDetailUploadCol);
 
 		ColumnModel accountHolderCol = CellModel
 				.getColModelForText(
@@ -499,6 +505,10 @@ public class SdrOrgLinkVM extends BaseAppVM {
 		if (orgPo == null) {
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ZZOrgLinksMissingOrg"));
 		}
+
+		if (isChildWithParentUploads(orgPo)) {
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), MSG_CHILD_ORG_PARENT_UPLOADS));
+		}
 		
 		int sdfOrganisationID = isEditModel? getMenuContextInfo().getRecordID():0;
 		
@@ -550,4 +560,38 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			msgs.add("Only numeric values are allowed.");
 		}
 	};
+
+	public static boolean isChildWithParentUploads(PO org) {
+		if (org == null) {
+			return false;
+		}
+		String orgType = org.get_ValueAsString(I_C_BPartner.COLUMNNAME_ZZOrganisationType);
+		if (!X_C_BPartner.ZZORGANISATIONTYPE_Child.equalsIgnoreCase(orgType)) {
+			return false;
+		}
+		int parentId = org.get_ValueAsInt(I_C_BPartner.COLUMNNAME_BPartner_Parent_ID);
+		int childId = org.get_ValueAsInt(I_C_BPartner.COLUMNNAME_C_BPartner_ID);
+		String whereClause;
+		Object[] params;
+		if (parentId > 0) {
+			whereClause = String.format(
+					"%s = ? AND %s = ? AND %s = 'Y' AND COALESCE(%s, ?) = ?",
+					I_ZZOrganisationLinkage.COLUMNNAME_C_BPartner_ID,
+					I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID,
+					I_ZZOrganisationLinkage.COLUMNNAME_IsActive,
+					I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads);
+			params = new Object[] { childId, parentId, X_ZZOrganisationLinkage.ZZ_PARENT_UPLOADS_No, X_ZZOrganisationLinkage.ZZ_PARENT_UPLOADS_Yes };
+		} else {
+			whereClause = String.format(
+					"%s = ? AND %s IS NOT NULL AND %s = 'Y' AND COALESCE(%s, ?) = ?",
+					I_ZZOrganisationLinkage.COLUMNNAME_C_BPartner_ID,
+					I_ZZOrganisationLinkage.COLUMNNAME_BPartner_Parent_ID,
+					I_ZZOrganisationLinkage.COLUMNNAME_IsActive,
+					I_ZZOrganisationLinkage.COLUMNNAME_ZZ_Parent_Uploads);
+			params = new Object[] { childId, X_ZZOrganisationLinkage.ZZ_PARENT_UPLOADS_No, X_ZZOrganisationLinkage.ZZ_PARENT_UPLOADS_Yes };
+		}
+		return new Query(Env.getCtx(), I_ZZOrganisationLinkage.Table_Name, whereClause, null)
+				.setParameters(params)
+				.match();
+	}
 }

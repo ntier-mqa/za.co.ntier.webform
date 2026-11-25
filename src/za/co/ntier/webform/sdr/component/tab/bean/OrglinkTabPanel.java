@@ -10,6 +10,7 @@ import org.compiere.model.Query;
 import org.compiere.model.X_C_BPartner;
 import org.compiere.model.X_C_Bank;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
 import za.co.ntier.api.model.I_C_BPartner;
@@ -29,6 +30,7 @@ import za.co.ntier.webform.sdr.component.bean.TableModel;
 import za.co.ntier.webform.sdr.component.bean.cell.CheckboxCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
+import za.co.ntier.webform.sdr.viewmodel.SdrOrgLinkVM;
 
 public class OrglinkTabPanel extends NavTabPanel {
 
@@ -104,7 +106,13 @@ public class OrglinkTabPanel extends NavTabPanel {
 			
 			if (sOrgPo == null) {
 				MasterUtil.showInfoDialog("ZZOrgLinksNotFoundOrg", MasterUtil.fCloseActiveWindow);
-			}else {
+			} else if (SdrOrgLinkVM.isChildWithParentUploads(sOrgPo)) {
+				orgPo = null;
+				cellModel.setValue(null);
+				orgSearchModel.getRow().setDataOneRow(new X_C_BPartner(Env.getCtx(), 0, null));
+				orgSearchModel.reloadDao();
+				MasterUtil.showInfoDialog(SdrOrgLinkVM.MSG_CHILD_ORG_PARENT_UPLOADS, t -> {});
+			} else {
 				orgPo = sOrgPo;
 				orgSearchModel.getRow().setDataOneRow(orgPo);
 				orgSearchModel.reloadDao();
@@ -200,10 +208,6 @@ public class OrglinkTabPanel extends NavTabPanel {
 
 	private TableModel initBankDetailModel(MUser_New person, X_ZZSdf sdf) {
 		List<ColumnModel> cols = new ArrayList<>();
-
-		ColumnModel warningBankDetailUploadCol = CellModel.getColModelForLabel(
-				"Banking details uploaded must be signed off by the Organsation CFO as true and correct");
-		cols.add(warningBankDetailUploadCol);
 
 		ColumnModel accountHolderCol = CellModel
 				.getColModelForText(

@@ -101,16 +101,8 @@
     grid-template-columns: repeat(2, 1fr);
 }
 
-.mqaWebForm .sdrForm .bankDetails > :nth-child(1) .label{
-  color:red;
-}
-
-.mqaWebForm .sdrForm .bankDetails > :nth-child(1) .cell-title{
-  background-color:unset;
-}
-
-.mqaWebForm .sdrForm .bankDetails > :nth-child(2)
-, .mqaWebForm .sdrForm .bankDetails > :nth-child(3){
+.mqaWebForm .sdrForm .bankDetails > :nth-child(1)
+, .mqaWebForm .sdrForm .bankDetails > :nth-child(2){
   grid-column: span 2;
   width:50%;
 }
@@ -706,9 +698,6 @@
 	grid-column: span 2;
   	width:50%;
 } 
-.mqaWebForm .sdrForm .bankDetails > :nth-child(2){
-  
-}
 
 .mqaWebForm .sdrForm .z-include{
 	height:unset !important;
