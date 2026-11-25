@@ -288,7 +288,7 @@ public class SdrOrgLinkVM extends BaseAppVM {
 			X_ZZSdfOrganisation sdfOrgPo = new X_ZZSdfOrganisation(Env.getCtx(), getMenuContextInfo().getRecordID(), null);
 			savedSdrOrgLinks = List.of(sdfOrgPo);
 			
-			orgPo =  MBPartner_New.get(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
+			orgPo = new MBPartner_New(Env.getCtx(), sdfOrgPo.getC_BPartner_ID(), null);
 			
 			orgSearchModel.getRow().setDataOneRow(orgPo);
 			orgSearchModel.reloadDao();
