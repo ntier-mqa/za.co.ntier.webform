@@ -37,7 +37,6 @@ import za.co.ntier.webform.sdr.component.bean.cell.DateCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.IDTypeCellModel;
 import za.co.ntier.webform.sdr.component.bean.cell.ListCellModel;
-import za.co.ntier.webform.sdr.component.bean.cell.UploadCellModel;
 import za.co.ntier.webform.sdr.component.bean.column.ListColumnModel;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTab;
 import za.co.ntier.webform.sdr.component.tab.bean.NavTabPanel;
@@ -216,6 +215,7 @@ public class MainSrdFormVM extends BaseAppVM {
 						MasterUtil.getNameOfColTranslated(I_ZZSdf.Table_Name, I_ZZSdf.COLUMNNAME_ZZYearsInOccupation)
 						, I_ZZSdf.COLUMNNAME_ZZYearsInOccupation
 						).required();
+		yearInOccupationCol.setTitle("Years in Current Occupation");
 		cols.add(yearInOccupationCol);
 
 		ColumnModel generalCommentsCol = 
@@ -268,9 +268,6 @@ public class MainSrdFormVM extends BaseAppVM {
 	private TableModel getPersonDetailComp(DaoManage personManage) {
 
 		List<ColumnModel> cols = new ArrayList<>();
-
-		ColumnModel idDocUploadCol = UploadCellModel.getUploadColumnModel("ID Document Upload", null, null, "UPLOAD FILE");
-		cols.add(idDocUploadCol);
 
 		ColumnModel greettingCol = ListCellModel.getLkpTitleColumnModel();
 		cols.add(greettingCol);
