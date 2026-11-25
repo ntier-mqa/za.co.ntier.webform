@@ -78,4 +78,8 @@ public interface ISaveApp {
 	public default boolean onNextTab(NavTab navTab) {
 		return false;
 	}
+
+	public default boolean onPrevTab(NavTab navTab) {
+		return false;
+	}
 }

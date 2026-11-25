@@ -40,6 +40,10 @@ public class NavTab implements ListDataListener, ISaveForm{
 
 	private int activeTabIndex;
 
+	public int getActiveTabIndex() {
+		return activeTabIndex;
+	}
+
 	/**
 	 * emptyAsValid = true mean return true if nothing input to active tab. use for prev tab
 	 * emptyAsValid = false mean validate active tab, use for next, save, submit

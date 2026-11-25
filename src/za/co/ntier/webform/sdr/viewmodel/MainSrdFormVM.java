@@ -2,6 +2,7 @@ package za.co.ntier.webform.sdr.viewmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
@@ -44,12 +45,21 @@ import za.co.ntier.webform.sdr.component.util.BuildFormUtil;
 
 public class MainSrdFormVM extends BaseAppVM {
 	
+	private static final String SOCIO_ECONOMIC_STATUS_EMPLOYED = "Employed";
+
 	private NavTab mainTab;
 	private TableModel names;
-	X_ZZSdf sdf;
-	MUser_New person;
+	private X_ZZSdf sdf;
+	private MUser_New person;
+	private final DaoManage personManage = new DaoManage();
+	private boolean isNewSdf = true;
+
+	private ListColumnModel<X_ZZ_LI_SocioEconomicStatus> socioEconomicStatusCol;
+	private ColumnModel idNoCol;
+	private ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
+	private ColumnModel dateOfBirthCol;
+	private ColumnModel genderCol;
 	
-	DaoManage personManage = new DaoManage();
 	@Init(superclass = true)
 	public void init(@ExecutionArgParam(WebForm.menuContextInfoKey) MenuContextInfo menuContextInfo){
 		
@@ -121,17 +131,11 @@ public class MainSrdFormVM extends BaseAppVM {
 		postalAddress.reloadDao();
 		
 		addressDetailTab.getCompModel().add(physicalAddress);
-		//addressDetailTab.getCompModel().add(BuildFormUtil.getAddressControlComp(physicalAddress, postalAddress));
 		addressDetailTab.getCompModel().add(postalAddress);
 
 		NavTabPanel educationDetailTab = new NavTabPanel(mainTab);
 		educationDetailTab.setTabTitle("Education & Experience");
-		// new component
 		educationDetailTab.getCompModel().add(getEducationComp(personManage));
-
-		
-		//OrglinkTabPanel orgLinkTab = new OrglinkTabPanel(mainTab, sdf);
-		//orgLinkTab.setTabTitle("Org Link");
 	}
 
 	
@@ -238,17 +242,17 @@ public class MainSrdFormVM extends BaseAppVM {
 	private TableModel getContactDetailComp(DaoManage personManage) {
 		List<ColumnModel> cols = new ArrayList<>();
 
-		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
-				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
-				, I_AD_User.COLUMNNAME_Phone2
-				);
-		cols.add(telephoneNumberCol);
-
 		ColumnModel cellPhoneNumberCol = CellModel.getColModelForPhone(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone)
 				, I_AD_User.COLUMNNAME_Phone
 				).required();
 		cols.add(cellPhoneNumberCol);
+
+		ColumnModel telephoneNumberCol = CellModel.getColModelForPhone(
+				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_Phone2)
+				, I_AD_User.COLUMNNAME_Phone2
+				);
+		cols.add(telephoneNumberCol);
 
 		ColumnModel emailCol = CellModel.getColModelForEmail(
 				MasterUtil.getNameOfColTranslated(I_AD_User.Table_Name, I_AD_User.COLUMNNAME_EMail)
@@ -446,14 +450,6 @@ public class MainSrdFormVM extends BaseAppVM {
 		return employed;
 	}
 
-	private static final String SOCIO_ECONOMIC_STATUS_EMPLOYED = "Employed";
-
-	private ListColumnModel<X_ZZ_LI_SocioEconomicStatus> socioEconomicStatusCol;
-	private ColumnModel idNoCol;
-	private ListColumnModel<X_ZZ_AlternateIDType> alternateIDTypeCol;
-	private ColumnModel dateOfBirthCol;
-	private ColumnModel genderCol;
-
 	private boolean isRsaIdSelected(RowModel row) {
 		@SuppressWarnings("unchecked")
 		ListCellModel<X_ZZ_AlternateIDType> idTypeCell = (ListCellModel<X_ZZ_AlternateIDType>) row.get(alternateIDTypeCol);
@@ -482,8 +478,6 @@ public class MainSrdFormVM extends BaseAppVM {
 	public void setNames(TableModel names) {
 		this.names = names;
 	}
-	
-	private boolean isNewSdf = true;
 
 	@Override
 	public List<DaoManage> getDaoManages() {
@@ -510,24 +504,139 @@ public class MainSrdFormVM extends BaseAppVM {
 	}
 
 	@Override
-	public void doSave(String trxName) {
-		super.doSave(trxName);
-		
-		String maintainSrdStatus = X_ZZSdf.ZZMAINTAINSTATUS_Yes;
-		for (NavTabPanel tabPanel : mainTab.getTabPanelModel()) {
-			InputCheckResult inputCheckResult = tabPanel.parseInputState();
-			if (!inputCheckResult.getFillMandatory()) {
-				maintainSrdStatus = X_ZZSdf.ZZMAINTAINSTATUS_No;
-				break;
+	public boolean onNextTab(NavTab navTab) {
+		if (navTab == null) {
+			return false;
+		}
+
+		int activeIndex = navTab.getActiveTabIndex();
+		if (!validateTabsUpTo(activeIndex) || !saveTillTab(activeIndex)) {
+			return true;
+		}
+
+		navTab.doNextTab();
+		return true;
+	}
+
+	@Override
+	public boolean onPrevTab(NavTab navTab) {
+		if (navTab == null) {
+			return false;
+		}
+
+		int activeIndex = navTab.getActiveTabIndex();
+		if (mainTab != null && mainTab.getTabPanelModel() != null && activeIndex >= 0 && activeIndex < mainTab.getTabPanelModel().size()) {
+			NavTabPanel currentPanel = mainTab.getTabPanelModel().get(activeIndex);
+			if (currentPanel != null) {
+				InputCheckResult check = currentPanel.parseInputState();
+				if (check != null && !check.getNotChange()) {
+					boolean isHeaderValid = names == null || names.validate(null);
+					if (isHeaderValid && currentPanel.validate(null)) {
+						saveTillTab(activeIndex);
+					}
+				}
 			}
 		}
-		sdf.setZZMaintainStatus(maintainSrdStatus);
-		// safety net: an SDF is always stored as "Employed"
-		X_ZZ_LI_SocioEconomicStatus employed = getEmployedSocioEconomicStatus();
-		if (employed != null) {
-			sdf.setZZ_LI_SocioEconomicStatus_ID(employed.getZZ_LI_SocioEconomicStatus_ID());
+
+		navTab.doPrevTab();
+		return true;
+	}
+
+	private boolean validateTabsUpTo(int activeIndex) {
+		if (names != null && !names.validate(null)) {
+			return false;
 		}
-		sdf.saveEx(trxName);
-		
+		if (mainTab != null && mainTab.getTabPanelModel() != null) {
+			List<NavTabPanel> tabPanels = mainTab.getTabPanelModel();
+			for (int i = 0; i <= activeIndex && i < tabPanels.size(); i++) {
+				NavTabPanel panel = tabPanels.get(i);
+				if (panel != null && !panel.validate(null)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean saveTillTab(int activeIndex) {
+		try {
+			trxWrapperFunc(trxName -> {
+				doSaveTillTab(activeIndex, trxName);
+			}, getClass().getName() + "_onTabSave", this);
+
+			return true;
+		} catch (Exception e) {
+			log.log(Level.WARNING, "Failed to save record on tab transition: " + e.getMessage(), e);
+			showException(e);
+			return false;
+		}
+	}
+
+	private void doSaveTillTab(int activeIndex, String trxName) {
+		// 1. Sync and save names (header)
+		if (names != null) {
+			names.syncUIToDao(trxName);
+			names.saveToDb(trxName);
+		}
+
+		// 2. Sync and save tab panels up to activeIndex
+		if (mainTab != null && mainTab.getTabPanelModel() != null) {
+			List<NavTabPanel> tabPanels = mainTab.getTabPanelModel();
+			for (int i = 0; i <= activeIndex && i < tabPanels.size(); i++) {
+				NavTabPanel panel = tabPanels.get(i);
+				if (panel != null) {
+					panel.syncUIToDao(trxName);
+					panel.saveToDb(trxName);
+					panel.saveAttachment(trxName);
+				}
+			}
+		}
+
+		// 3. Save DAOs in personManage
+		personManage.setTrxName(trxName);
+		personManage.saveDao(trxName);
+
+		// 4. Update SDF record
+		updateSdfRecord(trxName);
+	}
+
+	private void updateSdfRecord(String trxName) {
+		if (sdf == null) {
+			sdf = (X_ZZSdf) personManage.getDao(I_ZZSdf.Table_Name);
+		}
+		if (sdf != null) {
+			if (isNewSdf && sdf.getAD_User_ID() == 0) {
+				sdf.setAD_User_ID(person.getAD_User_ID());
+			}
+			sdf.setZZMaintainStatus(calculateMaintainStatus());
+			X_ZZ_LI_SocioEconomicStatus employed = getEmployedSocioEconomicStatus();
+			if (employed != null) {
+				sdf.setZZ_LI_SocioEconomicStatus_ID(employed.getZZ_LI_SocioEconomicStatus_ID());
+			}
+			sdf.saveEx(trxName);
+			isNewSdf = false;
+			personManage.setDao(sdf);
+		}
+	}
+
+	private String calculateMaintainStatus() {
+		if (mainTab != null && mainTab.getTabPanelModel() != null) {
+			for (NavTabPanel tabPanel : mainTab.getTabPanelModel()) {
+				InputCheckResult inputCheckResult = tabPanel.parseInputState();
+				if (inputCheckResult != null && !inputCheckResult.getFillMandatory()) {
+					return X_ZZSdf.ZZMAINTAINSTATUS_No;
+				}
+			}
+		}
+		return X_ZZSdf.ZZMAINTAINSTATUS_Yes;
+	}
+
+	@Override
+	public void doSave(String trxName) {
+		int maxIndex = (mainTab != null && mainTab.getTabPanelModel() != null)
+				? mainTab.getTabPanelModel().size() - 1
+				: 0;
+		int activeIndex = isSubmitting() ? maxIndex : (mainTab != null ? mainTab.getActiveTabIndex() : maxIndex);
+		doSaveTillTab(activeIndex, trxName);
 	}
 }

@@ -113,6 +113,9 @@ public class TabButtonVM extends ComponentVMWrapper<Object> {
 	@Command
 	@NotifyChange({"showDel", "showPrev", "showNext", "showSubmitApp", "showSaveApp", "btNextLabel", "btNextIcon"})
 	public void prevTab() {
+		if (saveApp != null && saveApp.onPrevTab(navTab)) {
+			return;
+		}
 		if (navTab != null)
 			navTab.doPrevTab();
 	}

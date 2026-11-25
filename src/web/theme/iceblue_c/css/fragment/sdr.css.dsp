@@ -428,13 +428,7 @@
   align-items: flex-start;
 }
 
-/* person detail */
-.mqaWebForm .grid-formview.srd-person-detail > :nth-child(1){
-  grid-column: span 3;
-}
-
-.mqaWebForm .grid-formview.srd-person-detail > :nth-child(1) .fileUploadContent
-, .mqaWebForm .grid-formview.srd-address .checkboxContent {
+.mqaWebForm .grid-formview.srd-address .checkboxContent {
 
   align-items:flex-start;
 }
