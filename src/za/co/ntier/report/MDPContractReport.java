@@ -3,7 +3,9 @@ package za.co.ntier.report;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -20,6 +22,7 @@ import org.compiere.model.MYear;
 import org.compiere.model.Query;
 import org.compiere.util.Util;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
@@ -28,9 +31,14 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.SimpleJasperReportsContext;
+import net.sf.jasperreports.engine.fonts.FontFamily;
+import net.sf.jasperreports.engine.fonts.SimpleFontFamily;
 import za.co.ntier.api.model.I_ZZLearner_v;
 import za.co.ntier.api.model.X_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearner_v;
+import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 
 /**
  * Management Development Programme (MDP) Contract report generator.
@@ -38,11 +46,40 @@ import za.co.ntier.api.model.X_ZZLearner_v;
 public final class MDPContractReport
 {
 	private static final String REPORT_PATH = "/za/co/ntier/report/jrxmls/MDPContract.jrxml";
+	private static final String FONT_DIR = "za/co/ntier/report/fonts/";
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMMM uuuu", Locale.ENGLISH);
 	private static JasperReport cachedReport;
+	private static JasperReportsContext reportContext;
 
 	private MDPContractReport()
 	{
+	}
+
+	private static synchronized JasperReportsContext getReportContext()
+	{
+		if (reportContext == null)
+		{
+			SimpleJasperReportsContext ctx = new SimpleJasperReportsContext(DefaultJasperReportsContext.getInstance());
+			List<FontFamily> families = new ArrayList<>();
+			List<FontFamily> parentFamilies = DefaultJasperReportsContext.getInstance().getExtensions(FontFamily.class);
+			if (parentFamilies != null)
+			{
+				families.addAll(parentFamilies);
+			}
+			// Map Arial to bundled metric-compatible Liberation Sans so PDF export works cleanly on Linux without MS Core Fonts.
+			SimpleFontFamily arialFamily = new SimpleFontFamily(ctx);
+			arialFamily.setName("Arial");
+			arialFamily.setNormal(FONT_DIR + "LiberationSans-Regular.ttf");
+			arialFamily.setBold(FONT_DIR + "LiberationSans-Bold.ttf");
+			arialFamily.setItalic(FONT_DIR + "LiberationSans-Italic.ttf");
+			arialFamily.setBoldItalic(FONT_DIR + "LiberationSans-BoldItalic.ttf");
+			arialFamily.setPdfEncoding("Identity-H");
+			arialFamily.setPdfEmbedded(Boolean.TRUE);
+			families.add(arialFamily);
+			ctx.setExtensions(FontFamily.class, families);
+			reportContext = ctx;
+		}
+		return reportContext;
 	}
 
 	/**
@@ -58,7 +95,7 @@ public final class MDPContractReport
 				{
 					throw new IllegalStateException("MDP Contract report template not found: " + REPORT_PATH);
 				}
-				cachedReport = JasperCompileManager.compileReport(source);
+				cachedReport = JasperCompileManager.getInstance(getReportContext()).compile(source);
 			}
 			catch (IOException ex)
 			{
@@ -103,8 +140,18 @@ public final class MDPContractReport
 			parameters.put("FooterImage", MDPContractReport.class.getResource("/za/co/ntier/report/jrxmls/Footer_Mining_Future_Skills.png"));
 		}
 
-		JasperPrint print = JasperFillManager.fillReport(getReport(), parameters, new JREmptyDataSource(1));
-		return JasperExportManager.exportReportToPdf(print);
+		JasperReportsContext jrContext = getReportContext();
+		ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(reportClassLoader);
+		try
+		{
+			JasperPrint print = JasperFillManager.getInstance(jrContext).fill(getReport(), parameters, new JREmptyDataSource(1));
+			return JasperExportManager.getInstance(jrContext).exportToPdf(print);
+		}
+		finally
+		{
+			Thread.currentThread().setContextClassLoader(prevCl);
+		}
 	}
 
 	/**
@@ -225,12 +272,17 @@ public final class MDPContractReport
 			data.put("ExpectedEndDate", endDate);
 		}
 
-		// Financial year (from funding year, financial year model, or fallback)
-		String finYear = registration.getZZ_Funding_Year();
-		if (Util.isEmpty(finYear) && registration.getZZFinancialYear_ID() > 0)
+		// Financial year from program master data, with fallback
+		String finYear = "";
+		if (registration.getZZ_Program_Master_Data_ID() > 0)
 		{
-			MYear year = new MYear(ctx, registration.getZZFinancialYear_ID(), trxName);
-			finYear = year.getFiscalYear();
+			X_ZZ_Program_Master_Data programMasterData = new X_ZZ_Program_Master_Data(
+					ctx, registration.getZZ_Program_Master_Data_ID(), trxName);
+			if (programMasterData.getC_Year_ID() > 0)
+			{
+				MYear year = new MYear(ctx, programMasterData.getC_Year_ID(), trxName);
+				finYear = firstNonEmpty(year.getDescription(), year.getFiscalYear());
+			}
 		}
 		if (Util.isEmpty(finYear))
 		{

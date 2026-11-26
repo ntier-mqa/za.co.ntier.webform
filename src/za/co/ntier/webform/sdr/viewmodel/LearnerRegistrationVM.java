@@ -4926,18 +4926,18 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		data.put("CompletionDate", endDate);
 		data.put("ExpectedEndDate", endDate);
 
-		// Financial Year
-		String finYear = safeString(regValues.get(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year));
-		if (finYear.isBlank()) {
+		// Financial Year (MDP always uses program definition; others use registration Financial Year, then program definition)
+		String finYear = "";
+		if (!isMDPProgramme()) {
 			int fyId = getIntFromMap(regValues, I_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID);
 			if (fyId > 0) {
 				MYear y = new MYear(Env.getCtx(), fyId, null);
-				finYear = safeString(y.getFiscalYear());
+				finYear = safeString(firstNonEmpty(y.getDescription(), y.getFiscalYear()));
 			}
 		}
 		if (finYear.isBlank() && selectedDGProgramme != null && selectedDGProgramme.getC_Year_ID() > 0) {
 			MYear y = new MYear(Env.getCtx(), selectedDGProgramme.getC_Year_ID(), null);
-			finYear = safeString(y.getFiscalYear());
+			finYear = safeString(firstNonEmpty(y.getDescription(), y.getFiscalYear()));
 		}
 		if (finYear.isBlank()) {
 			finYear = "2026/2027";

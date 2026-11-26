@@ -31,6 +31,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import za.co.ntier.api.model.I_ZZLearner_v;
 import za.co.ntier.api.model.X_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearner_v;
+import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
 
 /**
  * Workplace Coaches Programme Contract report generator.
@@ -262,12 +263,22 @@ public final class WorkplaceCoachContractReport
 			data.put("ExpectedEndDate", endDate);
 		}
 
-		// Financial year (from funding year or financial year model)
-		String finYear = registration.getZZ_Funding_Year();
-		if (Util.isEmpty(finYear) && registration.getZZFinancialYear_ID() > 0)
+		// Financial year (from registration Financial Year, or program master data)
+		String finYear = "";
+		if (registration.getZZFinancialYear_ID() > 0)
 		{
 			MYear year = new MYear(ctx, registration.getZZFinancialYear_ID(), trxName);
-			finYear = year.getFiscalYear();
+			finYear = firstNonEmpty(year.getDescription(), year.getFiscalYear());
+		}
+		if (Util.isEmpty(finYear) && registration.getZZ_Program_Master_Data_ID() > 0)
+		{
+			X_ZZ_Program_Master_Data programMasterData = new X_ZZ_Program_Master_Data(
+					ctx, registration.getZZ_Program_Master_Data_ID(), trxName);
+			if (programMasterData.getC_Year_ID() > 0)
+			{
+				MYear year = new MYear(ctx, programMasterData.getC_Year_ID(), trxName);
+				finYear = firstNonEmpty(year.getDescription(), year.getFiscalYear());
+			}
 		}
 		if (!Util.isEmpty(finYear))
 		{

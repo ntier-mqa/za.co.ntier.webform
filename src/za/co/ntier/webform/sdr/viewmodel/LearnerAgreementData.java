@@ -23,6 +23,7 @@ import org.compiere.model.MPeriod;
 import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.MYear;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.DisplayType;
@@ -505,6 +506,11 @@ public final class LearnerAgreementData
 		data.put(IS_LP_STRATEGIC, isLPStrategicProgram(programMasterData) ? "Y" : "N");
 		if (programMasterData != null)
 		{
+			String existingFinYear = data.get(FINANCIAL_YEAR);
+			if ((existingFinYear == null || existingFinYear.isBlank()) && programMasterData.getC_Year_ID() > 0)
+			{
+				data.put(FINANCIAL_YEAR, financialYear(programMasterData.getC_Year_ID()));
+			}
 			try
 			{
 				data.put(HAS_CONTRACT_SPECIFIC, programMasterData.isZZ_IsContractSpecificToPeriod() ? "Y" : "N");
@@ -946,7 +952,10 @@ public final class LearnerAgreementData
 				end = period.getEndDate();
 		}
 		if (start == null || end == null)
-			return "";
+		{
+			MYear year = new MYear(Env.getCtx(), yearId, null);
+			return first(year.getDescription(), year.getFiscalYear());
+		}
 		SimpleDateFormat format = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
 		return format.format(start) + " - " + format.format(end);
 	}
