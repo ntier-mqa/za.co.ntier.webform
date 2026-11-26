@@ -166,6 +166,7 @@ public final class LearnerAgreementData
 	public static final String	SECTION_PROGRAMME_SELECTION			= "SectionProgrammeSelection";
 	public static final String	SECTION_SIGNATORIES					= "SectionSignatories";
 	public static final String	EMPLOYER_FINANCIAL_OBLIGATION		= "EmployerFinancialObligation";
+	public static final String	IS_INTERNSHIP						= "IsInternship";
 	public static final String	IS_LP_STRATEGIC						= "IsLPStrategic";
 	public static final String	LP_PROJECTS_ORG_UU					= "ca4dbcb0-53d1-4afb-80e5-dc773251568c";
 	/** Shows the Annexure A summary only for the requested Candidacy programme definition. */
@@ -497,6 +498,10 @@ public final class LearnerAgreementData
 		boolean isCandidacy = programMasterData != null
 				&& CANDIDACY_PROGRAM_MASTER_DATA_UU.equalsIgnoreCase(programMasterData.getZZ_Program_Master_Data_UU());
 		data.put(CANDIDACY_ANNEXURE_SUMMARY, isCandidacy ? "Y" : "N");
+		boolean isInternshipProg = programMasterData != null
+				&& (containsIgnoreCase(programMasterData.getTitle(), "internship")
+						|| containsIgnoreCase(programMasterData.getName(), "internship"));
+		data.put(IS_INTERNSHIP, isInternshipProg ? "Y" : "N");
 		data.put(IS_LP_STRATEGIC, isLPStrategicProgram(programMasterData) ? "Y" : "N");
 		if (programMasterData != null)
 		{
@@ -536,6 +541,24 @@ public final class LearnerAgreementData
 		{
 		}
 		return false;
+	}
+
+	public static boolean isInternship(Map<?, ?> data)
+	{
+		if (data == null || "Y".equals(data.get(CANDIDACY_ANNEXURE_SUMMARY)))
+			return false;
+		if ("Y".equals(data.get(IS_INTERNSHIP)))
+			return true;
+		Object progType = data.get(PROGRAMME_TYPE);
+		if (progType != null && containsIgnoreCase(progType.toString(), "internship"))
+			return true;
+		Object progTitle = data.get(PROGRAMME_TITLE);
+		return progTitle != null && containsIgnoreCase(progTitle.toString(), "internship");
+	}
+
+	private static boolean containsIgnoreCase(String value, String needle)
+	{
+		return value != null && value.toLowerCase(Locale.ROOT).contains(needle);
 	}
 
 	static boolean isCandidacy(Map<String, String> data)
