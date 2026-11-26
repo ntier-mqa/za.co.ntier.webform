@@ -15,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -317,6 +318,8 @@ public class MasterUtil {
 	public static final Entry<String, Integer> YesNoIdentify = new AbstractMap.SimpleEntry<>("de0c3f82-e8fa-4118-939a-9876ec70f1a8", null);
 	
 	public static final Entry<String, Integer> SdfRoleType = new AbstractMap.SimpleEntry<>("b484436e-4fef-4c93-99f7-1c392e33969e", null);
+	public static final Entry<String, Integer> LkpSETA = new AbstractMap.SimpleEntry<>("8a5748ec-7ca3-4bac-bb20-06ac69422877", null);
+	public static final Entry<String, Integer> LkpSetaAlt = new AbstractMap.SimpleEntry<>("f22f4f59-17d7-442b-841d-496a74c2aae7", null);
 	
 	
 	
@@ -415,10 +418,25 @@ public class MasterUtil {
 	public static List<ValueNamePair> getLkpAltID() {
 		return getRefList(LkpAlternateIDIdentify);
 	}
+
+	public static List<ValueNamePair> getLkpSETA() {
+		List<ValueNamePair> list = getRefList(LkpSETA);
+		if (list == null || list.isEmpty()) {
+			list = getRefList(LkpSetaAlt);
+		}
+		return list != null ? list : Collections.emptyList();
+	}
+
 	private static int getIdFromUU(Entry<String, Integer> identify) {
 		if (identify.getValue() == null) {
 			MReference ref = MReference.get(Env.getCtx(), identify.getKey());
-			identify.setValue(ref.getAD_Reference_ID());
+			if (ref == null) {
+				ref = new Query(Env.getCtx(), MReference.Table_Name, "AD_Reference_UU = ?", null)
+						.setParameters(identify.getKey())
+						.setOnlyActiveRecords(true)
+						.firstOnly();
+			}
+			identify.setValue(ref != null ? ref.getAD_Reference_ID() : 0);
 		}
 		
 		return identify.getValue();
@@ -429,7 +447,12 @@ public class MasterUtil {
 		List<ValueNamePair> lkpList = lkpCache.get(identify);
 		if (lkpList == null) {
 			int id = MasterUtil.getIdFromUU(identify);
-			lkpList = List.of(MRefList.getList(Env.getCtx(), id, false));
+			if (id > 0) {
+				ValueNamePair[] pairs = MRefList.getList(Env.getCtx(), id, false);
+				lkpList = pairs != null ? Arrays.asList(pairs) : Collections.emptyList();
+			} else {
+				lkpList = Collections.emptyList();
+			}
 			lkpCache.put(identify, lkpList);
 		}
 		
@@ -566,11 +589,53 @@ public class MasterUtil {
 
 	public static void setObjectProperty(Object obj, String propertyName, Object value) {
 		try {
-			PropertyUtils.setSimpleProperty(obj, propertyName, value);
+			java.beans.PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(obj, propertyName);
+			if (pd != null && pd.getWriteMethod() != null) {
+				Class<?> targetType = pd.getPropertyType();
+				Object coercedValue = coercePropertyValue(value, targetType);
+				PropertyUtils.setSimpleProperty(obj, propertyName, coercedValue);
+			} else if (obj instanceof PO && ((PO) obj).get_ColumnIndex(propertyName) >= 0) {
+				((PO) obj).set_ValueOfColumn(propertyName, value);
+			} else {
+				PropertyUtils.setSimpleProperty(obj, propertyName, value);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AdempiereException(e.getMessage(), e);
 		}
+	}
+
+	private static Object coercePropertyValue(Object value, Class<?> targetType) {
+		if (value == null || targetType == null || targetType.isInstance(value)) {
+			return value;
+		}
+		if (targetType == int.class || targetType == Integer.class) {
+			if (value instanceof Number) {
+				return ((Number) value).intValue();
+			}
+			if (value instanceof PO) {
+				return ((PO) value).get_ID();
+			}
+			if (value instanceof ValueNamePair) {
+				String v = ((ValueNamePair) value).getValue();
+				return (v == null || v.isBlank()) ? 0 : Integer.parseInt(v.trim());
+			}
+			if (value instanceof String) {
+				String s = ((String) value).trim();
+				return s.isEmpty() ? 0 : Integer.parseInt(s);
+			}
+		} else if (targetType == String.class) {
+			if (value instanceof ValueNamePair) {
+				return ((ValueNamePair) value).getValue();
+			}
+			return value.toString();
+		} else if (targetType == boolean.class || targetType == Boolean.class) {
+			if (value instanceof String) {
+				String s = ((String) value).trim();
+				return "Y".equalsIgnoreCase(s) || "true".equalsIgnoreCase(s);
+			}
+		}
+		return value;
 	}
 	
 	public static Object getObjectPropertyValue(Object dao, String propertyName) {

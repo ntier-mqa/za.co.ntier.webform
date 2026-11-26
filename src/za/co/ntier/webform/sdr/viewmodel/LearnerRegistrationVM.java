@@ -31,6 +31,7 @@ import org.compiere.model.MLocation;
 import org.compiere.model.MMenu;
 import org.compiere.model.MOrg;
 import org.compiere.model.MRefList;
+import org.compiere.model.MReference;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MYear;
@@ -38,6 +39,7 @@ import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
@@ -49,10 +51,6 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Filedownload;
 
-import za.co.ntier.api.model.I_ZZPerson;
-import za.co.ntier.report.MDPContractReport;
-import za.co.ntier.report.WorkplaceCoachContractReport;
-
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -60,8 +58,15 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.I_ZZLearnerDGProgramme;
+import za.co.ntier.api.model.I_ZZPerson;
+import za.co.ntier.api.model.I_ZZQualification;
+import za.co.ntier.api.model.I_ZZSkillsProgramme;
+import za.co.ntier.api.model.I_ZZ_Institution;
+import za.co.ntier.api.model.I_ZZ_Institution_Qualifications;
+import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
+import za.co.ntier.api.model.I_ZZ_SETA_Master;
+import za.co.ntier.api.model.X_ZZLearner;
 import za.co.ntier.api.model.X_ZZLearnerDGProgramme;
 import za.co.ntier.api.model.X_ZZLearnerLearnership;
 import za.co.ntier.api.model.X_ZZLearnerQCTOArtisans;
@@ -71,25 +76,25 @@ import za.co.ntier.api.model.X_ZZLearnerSkillsProgramme;
 import za.co.ntier.api.model.X_ZZLkpSchoolEmis;
 import za.co.ntier.api.model.X_ZZLkpStatssaAreaCode;
 import za.co.ntier.api.model.X_ZZPerson;
-import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
+import za.co.ntier.api.model.X_ZZQualification;
 import za.co.ntier.api.model.X_ZZRegistrationDocs;
+import za.co.ntier.api.model.X_ZZSkillsProgramme;
 import za.co.ntier.api.model.X_ZZ_AlternateIDType;
 import za.co.ntier.api.model.X_ZZ_EmploymentHistory;
 import za.co.ntier.api.model.X_ZZ_ExperientialLearning;
+import za.co.ntier.api.model.X_ZZ_Institution;
+import za.co.ntier.api.model.X_ZZ_Institution_Qualifications;
 import za.co.ntier.api.model.X_ZZ_LI_CitizenResidentialStatus;
+import za.co.ntier.api.model.X_ZZ_LI_HighestEducation;
 import za.co.ntier.api.model.X_ZZ_LI_HomeLanguage;
 import za.co.ntier.api.model.X_ZZ_LI_SocioEconomicStatus;
 import za.co.ntier.api.model.X_ZZ_Nationality;
 import za.co.ntier.api.model.X_ZZ_ParentDetails;
 import za.co.ntier.api.model.X_ZZ_PostSchoolEducation_Details;
-import za.co.ntier.api.model.I_ZZ_Program_Master_Data;
 import za.co.ntier.api.model.X_ZZ_Program_Master_Data;
-import za.co.ntier.api.model.I_ZZQualification;
-import za.co.ntier.api.model.I_ZZ_Institution;
-import za.co.ntier.api.model.X_ZZ_Institution;
-import za.co.ntier.api.model.I_ZZ_Institution_Qualifications;
-import za.co.ntier.api.model.X_ZZ_Institution_Qualifications;
-import za.co.ntier.api.model.X_ZZQualification;
+import za.co.ntier.api.model.X_ZZ_SETA_Master;
+import za.co.ntier.report.MDPContractReport;
+import za.co.ntier.report.WorkplaceCoachContractReport;
 import za.co.ntier.webform.form.AttachmentUtil;
 import za.co.ntier.webform.form.MasterUtil;
 import za.co.ntier.webform.form.MenuContextInfo;
@@ -1130,7 +1135,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			if (selection != null && !selection.isEmpty()) {
 				NavTabPanel active = selection.iterator().next();
 				if (active != null) {
-					return active == registrationTabPanel || "Registration".equalsIgnoreCase(active.getTabTitle());
+					return active == registrationTabPanel || "Registration".equalsIgnoreCase(active.getTabTitle())
+							|| (active.getTabTitle() != null && active.getTabTitle().endsWith("DETAILS"));
 				}
 			}
 			return false;
@@ -1175,7 +1181,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		if (mainTab != null && mainTab.getTabPanelModel() != null) {
 			for (int i = 0; i < mainTab.getTabPanelModel().size(); i++) {
 				NavTabPanel p = mainTab.getTabPanelModel().get(i);
-				if (p != null && "Registration".equalsIgnoreCase(p.getTabTitle())) {
+				if (p != null && ("Registration".equalsIgnoreCase(p.getTabTitle())
+						|| (p.getTabTitle() != null && p.getTabTitle().endsWith("DETAILS")))) {
 					return i;
 				}
 			}
@@ -2124,7 +2131,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		return learnerId > 0 && registrationQuery(
 				"(" + status + " IS NULL OR " + status + " NOT IN (?, ?, ?))", trxName)
 				.setParameters(learnerId, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Completed,
-						STATUS_CANCELLED, X_ZZLearnerDGProgramme.ZZ_DOCSTATUS_Terminated)
+						STATUS_CANCELLED, "TE")
 				.match();
 	}
 
@@ -2377,8 +2384,16 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 	private void initRegistrationTab() {
 		String tableName = X_ZZLearnerDGProgramme.Table_Name;
+		boolean isAgentProg = isHasAgentProgram(selectedDGProgramme);
 		boolean isLPOps = isLPOpsProgram(selectedDGProgramme);
-		List<ColumnModel> cols = isLPOps ? buildDGProgrammeColumns() : buildSimpleRegistrationColumns();
+		List<ColumnModel> cols;
+		if (isAgentProg) {
+			cols = buildAgentProgrammeColumns();
+		} else if (isLPOps) {
+			cols = buildDGProgrammeColumns();
+		} else {
+			cols = buildSimpleRegistrationColumns();
+		}
 
 		tmRegistration = TableModel.getTableBean(TableModel.class, cols, false, tableName);
 		if (!isLPOps) {
@@ -2390,14 +2405,415 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		populateRegistrationDefaults();
 
+		String tabTitle = "Registration";
+
 		if (registrationTabPanel == null) {
 			registrationTabPanel = new NavTabPanel(mainTab);
-			registrationTabPanel.setTabTitle("Registration");
+			registrationTabPanel.setTabTitle(tabTitle);
 			registrationTabPanel.getCompModel().add(tmRegistration);
 		} else {
+			registrationTabPanel.setTabTitle(tabTitle);
 			registrationTabPanel.getCompModel().clear();
 			registrationTabPanel.getCompModel().add(tmRegistration);
 		}
+	}
+
+	private List<ColumnModel> buildAgentProgrammeColumns() {
+		List<ColumnModel> cols = new ArrayList<>();
+		String learnerTable = X_ZZLearnerDGProgramme.Table_Name;
+
+		List<ValueNamePair> yesNoOptions = List.of(
+				new ValueNamePair("Y", "Yes"),
+				new ValueNamePair("N", "No"));
+
+		// Row 1 - Left: Financial Year (Required) - Dropdown loaded directly from C_Year
+		List<KeyNamePair> yearPairs = new ArrayList<>();
+		String yearSql = "SELECT " + MYear.COLUMNNAME_C_Year_ID + ", "
+				+ MYear.COLUMNNAME_FiscalYear + ", "
+				+ MYear.COLUMNNAME_Description
+				+ " FROM " + MYear.Table_Name
+				+ " WHERE " + MYear.COLUMNNAME_IsActive + " = 'Y'"
+				+ " AND (AD_Client_ID = 0 OR AD_Client_ID = ?)"
+				+ " ORDER BY " + MYear.COLUMNNAME_FiscalYear + " DESC";
+		try (PreparedStatement pstmt = DB.prepareStatement(yearSql, null)) {
+			pstmt.setInt(1, Env.getAD_Client_ID(Env.getCtx()));
+			try (ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					int yearId = rs.getInt(1);
+					String fiscalYear = rs.getString(2);
+					String desc = rs.getString(3);
+					String label = (desc != null && !desc.isBlank()) ? desc : fiscalYear;
+					if (yearId > 0 && label != null && !label.isBlank()) {
+						yearPairs.add(new KeyNamePair(yearId, label));
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.log(Level.WARNING, "Failed to load Financial Years from C_Year", e);
+		}
+		if (yearPairs.isEmpty()) {
+			String fallbackSql = "SELECT " + MYear.COLUMNNAME_C_Year_ID + ", "
+					+ MYear.COLUMNNAME_FiscalYear + ", "
+					+ MYear.COLUMNNAME_Description
+					+ " FROM " + MYear.Table_Name
+					+ " WHERE " + MYear.COLUMNNAME_IsActive + " = 'Y'"
+					+ " ORDER BY " + MYear.COLUMNNAME_FiscalYear + " DESC";
+			try (PreparedStatement pstmt = DB.prepareStatement(fallbackSql, null);
+					ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					int yearId = rs.getInt(1);
+					String fiscalYear = rs.getString(2);
+					String desc = rs.getString(3);
+					String label = (desc != null && !desc.isBlank()) ? desc : fiscalYear;
+					if (yearId > 0 && label != null && !label.isBlank()) {
+						yearPairs.add(new KeyNamePair(yearId, label));
+					}
+				}
+			} catch (Exception e) {
+				log.log(Level.WARNING, "Fallback load of Financial Years from C_Year failed", e);
+			}
+		}
+		ListColumnModel<KeyNamePair> colFinancialYear = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZFinancialYear_ID,
+				yearPairs,
+				KeyNamePair::getName,
+				KeyNamePair::getKey);
+		colFinancialYear.setzClass(KeyNamePair.class).setUseForID(true).required();
+		colFinancialYear.setTableName(learnerTable);
+
+		// Row 1 - Right: Programme Type (Required) - Dropdown: 'Non MQA Skills Programme', 'MQA Skills Programme'
+		List<ValueNamePair> progTypeList = getAgentProgrammeTypeList();
+		ListColumnModel<ValueNamePair> colProgrammeType = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZProgramType),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZProgramType,
+				progTypeList, ValueNamePair::getName, ValueNamePair::getValue);
+		colProgrammeType.setzClass(ValueNamePair.class).required();
+		colProgrammeType.setTableName("");
+
+		// Row 2 - Left: Quality Assuring SETA (Required) - Dropdown from ZZ_SETA_Master saved in ZZ_SETA_Master_ID
+		List<KeyNamePair> setaList = getSetaMasterList();
+		String setaTitle = getColLabel(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SETA_Master_ID,
+				getColLabel(X_ZZLearnerSkillsProgramme.Table_Name, X_ZZLearnerSkillsProgramme.COLUMNNAME_ZZSeta, "Quality Assuring SETA"));
+		ListColumnModel<KeyNamePair> colSeta = ListCellModel.getListColumnModel(
+				setaTitle,
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SETA_Master_ID,
+				setaList, KeyNamePair::getName, KeyNamePair::getKey);
+		colSeta.setzClass(KeyNamePair.class).setUseForID(true).required();
+		colSeta.setTableName(learnerTable);
+
+		// Row 2 - Right: Agent (Search cell: C_BPartner where ZZ_Agent = 'Y') - Mandatory if Non MQA, Optional if MQA
+		String agentTitle = getColLabel(MBPartner.Table_Name, "ZZ_Agent", "Agent");
+		ValueAdaptColumnModel colAgent = ValueAdaptCellModel.getValueAdaptColumnModel(
+				agentTitle,
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Agent_ID, CellModel.SEARCH_CELL);
+		colAgent.setTableName(learnerTable);
+		colAgent.setBtText("");
+
+		// Row 3 - Left: Lead Provider (Search cell: C_BPartner where ZZ_Is_SDP = 'Y') - Mandatory if MQA, Optional if Non MQA
+		ValueAdaptColumnModel colLeadSdp = ValueAdaptCellModel.getValueAdaptColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID, CellModel.SEARCH_CELL);
+		colLeadSdp.setTableName(learnerTable);
+		colLeadSdp.setBtText("");
+
+		// Row 3 - Right: Lead Employer (Search cell: C_BPartner)
+		ValueAdaptColumnModel colLeadEmployer = ValueAdaptCellModel.getValueAdaptColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID, CellModel.SEARCH_CELL);
+		colLeadEmployer.setTableName(learnerTable).required();
+		colLeadEmployer.setBtText("");
+
+		// Row 4 - Left: Lead Provider Skills Levy
+		ListColumnModel<ValueNamePair> colLeadSdpLevy = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
+		colLeadSdpLevy.setzClass(ValueNamePair.class);
+		colLeadSdpLevy.setTableName(learnerTable);
+
+		// Row 4 - Right: Lead Employer Skills Levy
+		ListColumnModel<ValueNamePair> colLeadEmployerLevy = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
+		colLeadEmployerLevy.setzClass(ValueNamePair.class);
+		colLeadEmployerLevy.setTableName(learnerTable);
+
+		// Row 5 - Left: Secondary Provider (Optional)
+		ValueAdaptColumnModel colSecondarySdp = ValueAdaptCellModel.getValueAdaptColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProvider_ID, CellModel.SEARCH_CELL);
+		colSecondarySdp.setTableName(learnerTable);
+		colSecondarySdp.setBtText("");
+
+		// Row 5 - Right: Secondary Employer (Optional)
+		ValueAdaptColumnModel colSecondaryEmployer = ValueAdaptCellModel.getValueAdaptColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWA_ID, CellModel.SEARCH_CELL);
+		colSecondaryEmployer.setTableName(learnerTable);
+		colSecondaryEmployer.setBtText("");
+
+		// Row 6 - Left: Secondary Provider Skills Levy
+		ListColumnModel<ValueNamePair> colSecondarySdpLevy = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondarySDProviderLevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
+		colSecondarySdpLevy.setzClass(ValueNamePair.class);
+		colSecondarySdpLevy.setTableName(learnerTable);
+
+		// Row 6 - Right: Secondary Employer Skills Levy
+		ListColumnModel<ValueNamePair> colSecondaryEmployerLevy = ListCellModel.getListColumnModel(
+				MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy),
+				X_ZZLearnerDGProgramme.COLUMNNAME_ZZSecondaryWALevy, yesNoOptions, ValueNamePair::getName, ValueNamePair::getValue);
+		colSecondaryEmployerLevy.setzClass(ValueNamePair.class);
+		colSecondaryEmployerLevy.setTableName(learnerTable);
+
+		// Row 7 - Left: Skills Programme (Required)
+		String skillsTitle = getColLabel(X_ZZSkillsProgramme.Table_Name, X_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID, "Skills Programme");
+		ValueAdaptColumnModel colSkillsProgramme = ValueAdaptCellModel.getValueAdaptColumnModel(
+				skillsTitle,
+				"ZZSkillsProgramme_ID", CellModel.SEARCH_CELL);
+		colSkillsProgramme.setTableName("").required();
+		colSkillsProgramme.setBtText("");
+
+		// Row 7 - Right: Spacer to balance row 7
+		ColumnModel colSpacer = CellModel.getColModelForLabel("", null);
+		colSpacer.setShowTitle(false);
+
+		// Row 8 - Left: Commencement Date (Required)
+		ColumnModel startDateCol = editableDate(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate).required();
+		startDateCol.setTitle(getColLabel(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate, "Commencement Date"));
+
+		// Row 8 - Right: Envisaged Completion Date
+		ColumnModel endDateCol = editableDate(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate);
+		String endDateTitle = getColLabel(learnerTable, "ZZ_Envisaged_Completion_Date", null);
+		if (endDateTitle == null || endDateTitle.isBlank()) {
+			endDateTitle = getColLabel(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate, "Envisaged Completion Date");
+		}
+		endDateCol.setTitle(endDateTitle);
+
+		// Dynamic validation handler:
+		// Non MQA Skills Programme -> Agent mandatory, Lead Provider optional
+		// MQA Skills Programme -> Lead Provider mandatory, Agent optional
+		colProgrammeType.setEventHandle((event, cellModel) -> {
+			applyProgrammeTypeValidation(cellModel, colAgent, colLeadSdp);
+		});
+
+		// Wire search handlers
+		configureAgentSearch(colAgent);
+		configureSkillsProgrammeSearch(colSkillsProgramme);
+
+		String sdpWhere = MBPartner.Table_Name + "." + MBPartner.COLUMNNAME_IsActive + " = 'Y' AND "
+				+ MBPartner.Table_Name + ".ZZ_Is_SDP = 'Y'";
+		String empWhere = MBPartner.Table_Name + "." + MBPartner.COLUMNNAME_IsActive + " = 'Y'";
+		configureBPartnerSearch(colLeadSdp, sdpWhere, null);
+		configureBPartnerSearch(colSecondarySdp, sdpWhere, null);
+		configureBPartnerSearch(colLeadEmployer, empWhere, null);
+		configureBPartnerSearch(colSecondaryEmployer, empWhere, null);
+
+		// Add columns in alternating 2-column order:
+		// Row 1: Financial Year | Programme Type
+		cols.add(colFinancialYear);
+		cols.add(colProgrammeType);
+		// Row 2: Quality Assuring SETA | Agent
+		cols.add(colSeta);
+		cols.add(colAgent);
+		// Row 3: Lead Provider | Lead Employer
+		cols.add(colLeadSdp);
+		cols.add(colLeadEmployer);
+		// Row 4: Lead Provider Skills Levy | Lead Employer Skills Levy
+		cols.add(colLeadSdpLevy);
+		cols.add(colLeadEmployerLevy);
+		// Row 5: Secondary Provider | Secondary Employer
+		cols.add(colSecondarySdp);
+		cols.add(colSecondaryEmployer);
+		// Row 6: Secondary Provider Skills Levy | Secondary Employer Skills Levy
+		cols.add(colSecondarySdpLevy);
+		cols.add(colSecondaryEmployerLevy);
+		// Row 7: Skills Programme | Spacer
+		cols.add(colSkillsProgramme);
+		cols.add(colSpacer);
+		// Row 8: Commencement Date | Envisaged Completion Date
+		cols.add(startDateCol);
+		cols.add(endDateCol);
+
+		return cols;
+	}
+
+	private void applyProgrammeTypeValidation(CellModel cellModel, ValueAdaptColumnModel colAgent, ValueAdaptColumnModel colLeadSdp) {
+		if (cellModel == null) return;
+		Object val = cellModel.getValue();
+		String typeVal = "";
+		String typeName = "";
+		if (cellModel instanceof ListCellModel) {
+			Object sel = ((ListCellModel<?>) cellModel).getSelectedItem();
+			if (sel instanceof ValueNamePair) {
+				typeVal = ((ValueNamePair) sel).getValue() != null ? ((ValueNamePair) sel).getValue() : "";
+				typeName = ((ValueNamePair) sel).getName() != null ? ((ValueNamePair) sel).getName() : "";
+			}
+		}
+		if (typeVal.isBlank() && val instanceof ValueNamePair) {
+			typeVal = ((ValueNamePair) val).getValue() != null ? ((ValueNamePair) val).getValue() : "";
+			typeName = ((ValueNamePair) val).getName() != null ? ((ValueNamePair) val).getName() : "";
+		} else if (typeVal.isBlank() && val != null) {
+			typeVal = val.toString();
+		}
+		String combined = (typeVal + " " + typeName).trim().toLowerCase();
+		boolean isNonMqa = "NMS".equalsIgnoreCase(typeVal) || "NON_MQA".equalsIgnoreCase(typeVal)
+				|| combined.contains("non mqa") || combined.contains("non-mqa");
+		boolean isMqa = !isNonMqa && ("MS".equalsIgnoreCase(typeVal) || "MQA".equalsIgnoreCase(typeVal)
+				|| combined.contains("mqa"));
+
+		if (isNonMqa) {
+			colAgent.setMandatory(true);
+			colLeadSdp.setMandatory(false);
+		} else if (isMqa) {
+			colLeadSdp.setMandatory(true);
+			colAgent.setMandatory(false);
+		}
+		if (cellModel.getRowModel() != null) {
+			CellModel agentCell = cellModel.getRowModel().get(colAgent);
+			if (agentCell != null) {
+				agentCell.resetValidate();
+				BindUtils.postNotifyChange(null, null, agentCell, "validState");
+				BindUtils.postNotifyChange(null, null, agentCell, "message");
+			}
+			CellModel leadSdpCell = cellModel.getRowModel().get(colLeadSdp);
+			if (leadSdpCell != null) {
+				leadSdpCell.resetValidate();
+				BindUtils.postNotifyChange(null, null, leadSdpCell, "validState");
+				BindUtils.postNotifyChange(null, null, leadSdpCell, "message");
+			}
+		}
+		BindUtils.postNotifyChange(null, null, colAgent, "mandatory");
+		BindUtils.postNotifyChange(null, null, colLeadSdp, "mandatory");
+	}
+
+	private void configureAgentSearch(ValueAdaptColumnModel colAgent) {
+		String agentWhere = MBPartner.Table_Name + "." + MBPartner.COLUMNNAME_IsActive + " = 'Y' AND "
+				+ MBPartner.Table_Name + ".ZZ_Agent = 'Y'";
+		colAgent.setDisplayAdaptHandle(value -> {
+			if (value == null) return null;
+			if (value instanceof MBPartner) {
+				MBPartner bp = (MBPartner) value;
+				String val = bp.getValue();
+				return (val != null && !val.isBlank()) ? bp.getName() + " - " + val : bp.getName();
+			}
+			if (value instanceof PO) {
+				PO po = (PO) value;
+				String name = po.get_ValueAsString(MBPartner.COLUMNNAME_Name);
+				String val = po.get_ValueAsString(MBPartner.COLUMNNAME_Value);
+				return (val != null && !val.isBlank()) ? name + " - " + val : name;
+			}
+			if (value instanceof Number || (value instanceof String && ((String) value).trim().matches("\\d+"))) {
+				int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(((String) value).trim());
+				if (id > 0) {
+					MBPartner bp = new MBPartner(Env.getCtx(), id, null);
+					if (bp.get_ID() > 0) {
+						String val = bp.getValue();
+						return (val != null && !val.isBlank()) ? bp.getName() + " - " + val : bp.getName();
+					}
+				}
+			}
+			return value.toString();
+		});
+		colAgent.setValueAdaptHandle(value -> {
+			if (value == null) return null;
+			if (value instanceof PO) return ((PO) value).get_ID();
+			if (value instanceof Number) return ((Number) value).intValue();
+			if (value instanceof String) {
+				try {
+					return Integer.parseInt(((String) value).trim());
+				} catch (Exception ignored) {
+					return null;
+				}
+			}
+			return value;
+		});
+		colAgent.setValueFromDaoAdaptHandle(value -> {
+			if (value == null) return null;
+			int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
+			return id > 0 ? new MBPartner(Env.getCtx(), id, null) : null;
+		});
+		colAgent.setEventHandle((event, cellModel) -> {
+			if (cellModel.getRowModel() != null && !cellModel.getRowModel().isEditable()) return;
+			InfoPanelPara para = InfoPanelPara.getInstance(MBPartner.Table_Name, MBPartner.COLUMNNAME_C_BPartner_ID);
+			para.setWhereClause(agentWhere);
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] values = (Object[]) obj;
+				if (values == null || values.length == 0 || values[0] == null) return;
+				int bpId = values[0] instanceof Number ? ((Number) values[0]).intValue() : Integer.parseInt(values[0].toString());
+				if (bpId <= 0) return;
+				MBPartner bp = new MBPartner(Env.getCtx(), bpId, null);
+				cellModel.setValue(bp);
+				cellModel.resetValidate();
+				BindUtils.postNotifyChange(null, null, cellModel, "value");
+				BindUtils.postNotifyChange(null, null, cellModel, "displayValue");
+			});
+		});
+	}
+
+	private void configureSkillsProgrammeSearch(ValueAdaptColumnModel colSp) {
+		String spWhere = I_ZZSkillsProgramme.Table_Name + "." + I_ZZSkillsProgramme.COLUMNNAME_IsActive + " = 'Y'";
+		colSp.setDisplayAdaptHandle(value -> {
+			if (value == null) return null;
+			if (value instanceof X_ZZSkillsProgramme) {
+				X_ZZSkillsProgramme sp = (X_ZZSkillsProgramme) value;
+				String title = sp.getZZ_SkillsProgCodeAndTitle();
+				if (title != null && !title.isBlank()) return title;
+				return sp.getZZSkillsProgrammeCode() + " - " + sp.getZZSkillsProgrammeTitle();
+			}
+			if (value instanceof PO) {
+				PO po = (PO) value;
+				String title = po.get_ValueAsString("ZZ_SkillsProgCodeAndTitle");
+				if (title != null && !title.isBlank()) return title;
+				return po.get_ValueAsString("ZZSkillsProgrammeCode") + " - " + po.get_ValueAsString("ZZSkillsProgrammeTitle");
+			}
+			if (value instanceof Number || (value instanceof String && ((String) value).trim().matches("\\d+"))) {
+				int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(((String) value).trim());
+				if (id > 0) {
+					X_ZZSkillsProgramme sp = new X_ZZSkillsProgramme(Env.getCtx(), id, null);
+					if (sp.get_ID() > 0) {
+						String title = sp.getZZ_SkillsProgCodeAndTitle();
+						if (title != null && !title.isBlank()) return title;
+						return sp.getZZSkillsProgrammeCode() + " - " + sp.getZZSkillsProgrammeTitle();
+					}
+				}
+			}
+			return value.toString();
+		});
+		colSp.setValueAdaptHandle(value -> {
+			if (value == null) return null;
+			if (value instanceof PO) return ((PO) value).get_ID();
+			if (value instanceof Number) return ((Number) value).intValue();
+			if (value instanceof String) {
+				try {
+					return Integer.parseInt(((String) value).trim());
+				} catch (Exception ignored) {
+					return null;
+				}
+			}
+			return value;
+		});
+		colSp.setValueFromDaoAdaptHandle(value -> {
+			if (value == null) return null;
+			int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
+			return id > 0 ? new X_ZZSkillsProgramme(Env.getCtx(), id, null) : null;
+		});
+		colSp.setEventHandle((event, cellModel) -> {
+			if (cellModel.getRowModel() != null && !cellModel.getRowModel().isEditable()) return;
+			InfoPanelPara para = InfoPanelPara.getInstance(I_ZZSkillsProgramme.Table_Name, I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgramme_ID);
+			para.setWhereClause(spWhere);
+			showInfoPanel(para, (obj, infoPanel) -> {
+				Object[] values = (Object[]) obj;
+				if (values == null || values.length == 0 || values[0] == null) return;
+				int spId = values[0] instanceof Number ? ((Number) values[0]).intValue() : Integer.parseInt(values[0].toString());
+				if (spId <= 0) return;
+				X_ZZSkillsProgramme sp = new X_ZZSkillsProgramme(Env.getCtx(), spId, null);
+				cellModel.setValue(sp);
+				cellModel.resetValidate();
+				BindUtils.postNotifyChange(null, null, cellModel, "value");
+				BindUtils.postNotifyChange(null, null, cellModel, "displayValue");
+			});
+		});
 	}
 
 	private List<ColumnModel> buildDGProgrammeColumns() {
@@ -2607,8 +3023,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 
 		// 1. Qualification search (only if ZZ_IsIncludeQual is 'Y')
 		if (showQual) {
-			String qualTitle = MasterUtil.getNameOfColTranslated(I_ZZQualification.Table_Name, I_ZZQualification.COLUMNNAME_ZZQualification_ID);
-			if (qualTitle == null || qualTitle.isBlank()) {
+			String qualTitle = getColLabel(X_ZZQualification.Table_Name, X_ZZQualification.COLUMNNAME_ZZQualification_ID, "Qualification");
+			if (qualTitle == null || qualTitle.isBlank() || qualTitle.toLowerCase().contains("institution")) {
 				qualTitle = "Qualification";
 			}
 			ValueAdaptColumnModel colQual = ValueAdaptCellModel.getValueAdaptColumnModel(
@@ -2624,8 +3040,9 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		if (showFundYear) {
 			MColumn fundingYearCol = MTable.get(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name)
 					.getColumn(I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year);
-			int fundingYearRefId = fundingYearCol != null ? fundingYearCol.getAD_Reference_Value_ID() : X_ZZLearnerDGProgramme.ZZ_FUNDING_YEAR_AD_Reference_ID;
-			ValueNamePair[] fundingYearPairs = MRefList.getList(Env.getCtx(), fundingYearRefId, false);
+			int fundingYearRefId = fundingYearCol != null ? fundingYearCol.getAD_Reference_Value_ID() : 0;
+			ValueNamePair[] fundingYearPairs = fundingYearRefId > 0
+					? MRefList.getList(Env.getCtx(), fundingYearRefId, false) : null;
 			List<ValueNamePair> fundingYearList = fundingYearPairs != null ? Arrays.asList(fundingYearPairs) : List.of();
 
 			String fundingYearTitle = MasterUtil.getNameOfColTranslated(learnerTable, I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Funding_Year);
@@ -3117,9 +3534,100 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		return "Y".equalsIgnoreCase(s) || "Yes".equalsIgnoreCase(s) || "true".equalsIgnoreCase(s);
 	}
 
+	private boolean isHasAgentProgram(X_ZZ_Program_Master_Data prog) {
+		if (prog == null) return false;
+		if (prog.get_ColumnIndex(X_ZZ_Program_Master_Data.COLUMNNAME_ZZ_HasAgent) >= 0) {
+			return prog.get_ValueAsBoolean(X_ZZ_Program_Master_Data.COLUMNNAME_ZZ_HasAgent);
+		}
+		return false;
+	}
+
+	private static String getColLabel(String table, String colName, String fallback) {
+		try {
+			MColumn col = MColumn.get(Env.getCtx(), table, colName);
+			if (col != null) {
+				String trl = col.get_Translation(MColumn.COLUMNNAME_Name);
+				if (trl != null && !trl.isBlank()) return trl;
+				String name = col.getName();
+				if (name != null && !name.isBlank()) return name;
+			}
+		} catch (Exception ignored) {
+		}
+		return fallback;
+	}
+
+	public static final String REF_UU_LKSETA = "8a5748ec-7ca3-4bac-bb20-06ac69422877";
+	public static final String REF_UU_LKSETA_ALT = "f22f4f59-17d7-442b-841d-496a74c2aae7";
+
+	private List<KeyNamePair> getSetaMasterList() {
+		List<KeyNamePair> setaList = new ArrayList<>();
+		try {
+			List<X_ZZ_SETA_Master> masters = MasterUtil.getSetaMaster();
+			if (masters != null) {
+				for (X_ZZ_SETA_Master s : masters) {
+					int id = s.getZZ_SETA_Master_ID();
+					String name = s.getName();
+					if (id > 0 && name != null && !name.isBlank()) {
+						setaList.add(new KeyNamePair(id, name));
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.log(Level.WARNING, "Failed to load SETA list from MasterUtil.getSetaMaster()", e);
+		}
+
+		if (setaList.isEmpty()) {
+			String sql = "SELECT " + I_ZZ_SETA_Master.COLUMNNAME_ZZ_SETA_Master_ID + ", " + I_ZZ_SETA_Master.COLUMNNAME_Name
+					+ " FROM " + I_ZZ_SETA_Master.Table_Name
+					+ " WHERE " + I_ZZ_SETA_Master.COLUMNNAME_IsActive + " = 'Y'"
+					+ " ORDER BY " + I_ZZ_SETA_Master.COLUMNNAME_Name;
+			try (PreparedStatement pstmt = DB.prepareStatement(sql, null);
+					ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					int id = rs.getInt(1);
+					String name = rs.getString(2);
+					if (id > 0 && name != null && !name.isBlank()) {
+						setaList.add(new KeyNamePair(id, name));
+					}
+				}
+			} catch (Exception e) {
+				log.log(Level.WARNING, "Failed to load SETA list from SETA Master", e);
+			}
+		}
+
+		setaList.sort((a, b) -> {
+			String na = a.getName() != null ? a.getName() : "";
+			String nb = b.getName() != null ? b.getName() : "";
+			return na.compareToIgnoreCase(nb);
+		});
+		return setaList;
+	}
+
+	private List<ValueNamePair> getAgentProgrammeTypeList() {
+		List<ValueNamePair> defaultList = List.of(
+				new ValueNamePair("Non MQA Skills Programme", "Non MQA Skills Programme"),
+				new ValueNamePair("MQA Skills Programme", "MQA Skills Programme"));
+
+		try {
+			MReference ref = new Query(Env.getCtx(), MReference.Table_Name, "Name IN ('ZZ_Agent_Programme_Type', 'ZZAgentProgrammeType', 'Agent Programme Type')", null)
+					.setOnlyActiveRecords(true)
+					.firstOnly();
+			if (ref != null && ref.getAD_Reference_ID() > 0) {
+				ValueNamePair[] pairs = MRefList.getList(Env.getCtx(), ref.getAD_Reference_ID(), false);
+				if (pairs != null && pairs.length > 0) {
+					return Arrays.asList(pairs);
+				}
+			}
+		} catch (Exception ignored) {
+		}
+
+		return defaultList;
+	}
+
 	private void populateRegistrationDefaults() {
 		if (tmRegistration == null || tmRegistration.getRow() == null) return;
 		RowModel row = tmRegistration.getRow();
+
 
 		for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
 			ColumnModel col = entry.getKey();
@@ -3141,6 +3649,22 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					|| I_ZZQualification.COLUMNNAME_ZZQualification_ID.equals(prop))
 					&& regQualification != null && cell.getValue() == null) {
 				cell.setValue(regQualification);
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SETA_Master_ID.equals(prop) && cell.getValue() == null) {
+				if (cell instanceof ListCellModel) {
+					ListCellModel<?> lc = (ListCellModel<?>) cell;
+					List<?> list = lc.getDataProvider();
+					if (list != null) {
+						for (Object item : list) {
+							if (item instanceof KeyNamePair) {
+								KeyNamePair pair = (KeyNamePair) item;
+								if ("MQA".equalsIgnoreCase(pair.getName())) {
+									cell.setValue(pair.getKey());
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -3148,7 +3672,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		PO child = targetChildPo;
 
 		if (dg != null || child != null) {
-			for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
+
+		for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
 				ColumnModel col = entry.getKey();
 				CellModel cell = entry.getValue();
 				String prop = col.getDaoPropertyName();
@@ -3296,7 +3821,53 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					if (fyId <= 0 && child != null && child.get_ColumnIndex("ZZFinancialYear_ID") >= 0) {
 						fyId = child.get_ValueAsInt("ZZFinancialYear_ID");
 					}
-					if (fyId > 0) cell.setValue(new MYear(Env.getCtx(), fyId, null));
+					if (fyId <= 0 && selectedDGProgramme != null) {
+						fyId = selectedDGProgramme.getC_Year_ID();
+					}
+					if (fyId > 0) {
+						if (col instanceof ListColumnModel) {
+							cell.setValue(fyId);
+						} else {
+							cell.setValue(new MYear(Env.getCtx(), fyId, null));
+						}
+					}
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZProgramType.equals(prop)
+						|| "ZZ_Agent_Programme_Type".equals(prop)) {
+					String pt = null;
+					if (dg != null && dg.get_ColumnIndex("ZZ_Agent_Programme_Type") >= 0) {
+						pt = dg.get_ValueAsString("ZZ_Agent_Programme_Type");
+					}
+					if ((pt == null || pt.isBlank()) && dg != null) {
+						pt = dg.getZZProgramType();
+					}
+					if (col instanceof ListColumnModel) {
+						ListColumnModel<?> lc = (ListColumnModel<?>) col;
+						Object matched = null;
+						if (pt != null && !pt.isBlank() && lc.getDataProvider() != null) {
+							for (Object item : lc.getDataProvider()) {
+								if (item instanceof ValueNamePair) {
+									ValueNamePair pair = (ValueNamePair) item;
+									if (pt.equalsIgnoreCase(pair.getValue()) || pt.equalsIgnoreCase(pair.getName())) {
+										matched = item;
+										break;
+									}
+								}
+							}
+						}
+						if (matched instanceof ValueNamePair) {
+							cell.setValue(((ValueNamePair) matched).getValue());
+						} else if (isHasAgentProgram(selectedDGProgramme) && cell.getValue() == null
+								&& lc.getDataProvider() != null && !lc.getDataProvider().isEmpty()) {
+							Object first = lc.getDataProvider().get(0);
+							if (first instanceof ValueNamePair) {
+								cell.setValue(((ValueNamePair) first).getValue());
+							} else {
+								cell.setValue(first);
+							}
+						}
+					} else if (pt != null && !pt.isBlank()) {
+						cell.setValue(pt);
+					}
 				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate.equals(prop)) {
 					Object dt = dg != null ? dg.getZZCommencementDate() : null;
 					if (dt == null && child != null && child.get_ColumnIndex("ZZCommencementDate") >= 0) {
@@ -3308,7 +3879,23 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					if (dt == null && child != null && child.get_ColumnIndex("ZZCompletionDate") >= 0) {
 						dt = child.get_Value("ZZCompletionDate");
 					}
+					if (dt == null && child != null && child.get_ColumnIndex("ZZEstimateCompletionDate") >= 0) {
+						dt = child.get_Value("ZZEstimateCompletionDate");
+					}
 					if (dt != null) cell.setValue(dt);
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZWALevy.equals(prop)) {
+					String val = dg != null ? dg.getZZWALevy() : null;
+					if ((val == null || val.isBlank()) && isHasAgentProgram(selectedDGProgramme)) {
+						val = "Y";
+					}
+					if (val != null && !val.isBlank()) {
+						String fVal = val.trim();
+						if ("Y".equalsIgnoreCase(fVal) || "Yes".equalsIgnoreCase(fVal)) {
+							cell.setValue("Y");
+						} else if ("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal)) {
+							cell.setValue("N");
+						}
+					}
 				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZEmployedBeforeAgreement.equals(prop)
 						|| "ZZLearnerEmployed".equals(prop)) {
 					String val = null;
@@ -3326,10 +3913,11 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					}
 					if (val != null && !val.isBlank()) {
 						String fVal = val.trim();
-						ValueNamePair pair = ("Y".equalsIgnoreCase(fVal) || "Yes".equalsIgnoreCase(fVal))
-								? new ValueNamePair("Y", "Yes")
-								: (("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal)) ? new ValueNamePair("N", "No") : null);
-						if (pair != null) cell.setValue(pair);
+						if ("Y".equalsIgnoreCase(fVal) || "Yes".equalsIgnoreCase(fVal)) {
+							cell.setValue("Y");
+						} else if ("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal)) {
+							cell.setValue("N");
+						}
 					}
 				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZPastWorkplaceAgreement.equals(prop)
 						|| "ZZPreviousEmployed".equals(prop)) {
@@ -3348,10 +3936,11 @@ public class LearnerRegistrationVM extends BaseAppVM {
 					}
 					if (val != null && !val.isBlank()) {
 						String fVal = val.trim();
-						ValueNamePair pair = ("Y".equalsIgnoreCase(fVal) || "Yes".equalsIgnoreCase(fVal))
-								? new ValueNamePair("Y", "Yes")
-								: (("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal)) ? new ValueNamePair("N", "No") : null);
-						if (pair != null) cell.setValue(pair);
+						if ("Y".equalsIgnoreCase(fVal) || "Yes".equalsIgnoreCase(fVal)) {
+							cell.setValue("Y");
+						} else if ("N".equalsIgnoreCase(fVal) || "No".equalsIgnoreCase(fVal)) {
+							cell.setValue("N");
+						}
 					}
 				} else if (I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_IsContractSpecificToPeriod.equals(prop)
 						|| I_ZZLearnerDGProgramme.COLUMNNAME_ZZ_HasContractCopy.equals(prop)) {
@@ -3386,14 +3975,54 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						val = child.get_ValueAsString(X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_AltContactNumber);
 					}
 					if (val != null) cell.setValue(val);
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Agent_ID.equals(prop)) {
+					int id = dg != null ? dg.getZZ_Agent_ID() : 0;
+					if (id > 0) cell.setValue(new MBPartner(Env.getCtx(), id, null));
+				} else if ("ZZSkillsProgramme_ID".equals(prop)) {
+					int id = dg != null && dg.get_ColumnIndex("ZZSkillsProgramme_ID") >= 0 ? dg.get_ValueAsInt("ZZSkillsProgramme_ID") : 0;
+					if (id > 0) cell.setValue(new X_ZZSkillsProgramme(Env.getCtx(), id, null));
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SETA_Master_ID.equals(prop)) {
+					int setaId = dg != null ? dg.getZZ_SETA_Master_ID() : 0;
+					if (setaId > 0) {
+						cell.setValue(setaId);
+					} else if (isHasAgentProgram(selectedDGProgramme) && col instanceof ListColumnModel) {
+						ListColumnModel<?> lc = (ListColumnModel<?>) col;
+						if (lc.getDataProvider() != null) {
+							for (Object item : lc.getDataProvider()) {
+								if (item instanceof KeyNamePair && "MQA".equalsIgnoreCase(((KeyNamePair) item).getName())) {
+									cell.setValue(((KeyNamePair) item).getKey());
+									break;
+								}
+							}
+						}
+					}
 				}
+			}
+		}
+
+		if (isHasAgentProgram(selectedDGProgramme) && row != null) {
+			CellModel progTypeCell = null;
+			ValueAdaptColumnModel agentCol = null;
+			ValueAdaptColumnModel leadSdpCol = null;
+		for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
+				String prop = entry.getKey().getDaoPropertyName();
+				if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZProgramType.equals(prop) || "ZZ_Agent_Programme_Type".equals(prop)) {
+					progTypeCell = entry.getValue();
+				} else if ("ZZ_Agent_ID".equals(prop) && entry.getKey() instanceof ValueAdaptColumnModel) {
+					agentCol = (ValueAdaptColumnModel) entry.getKey();
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop) && entry.getKey() instanceof ValueAdaptColumnModel) {
+					leadSdpCol = (ValueAdaptColumnModel) entry.getKey();
+				}
+			}
+			if (progTypeCell != null && agentCol != null && leadSdpCol != null) {
+				applyProgrammeTypeValidation(progTypeCell, agentCol, leadSdpCol);
 			}
 		}
 
 		// If simple registration form has an employer selected but contact person/phone/email are empty, prefill from primary AD_User
 		if (row != null && !isLPOpsProgram(selectedDGProgramme)) {
 			int empBpId = 0;
-			for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
+		for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
 				if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Employer_ID.equals(entry.getKey().getDaoPropertyName())) {
 					Object val = entry.getValue() != null ? entry.getValue().getValue() : null;
 					empBpId = extractId(val);
@@ -3408,7 +4037,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 						.setParameters(empBpId)
 						.first();
 				if (adUser != null) {
-					for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
+		for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
 						String prop = entry.getKey().getDaoPropertyName();
 						CellModel c = entry.getValue();
 						if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_EmployerContactPerson.equals(prop)
@@ -3450,10 +4079,30 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		colBp.setDisplayAdaptHandle(value -> {
 			if (value == null)
 				return null;
-			if (value instanceof MBPartner)
-				return ((MBPartner) value).getName();
-			if (value instanceof PO)
-				return ((PO) value).get_ValueAsString(MBPartner.COLUMNNAME_Name);
+			if (value instanceof MBPartner) {
+				MBPartner bp = (MBPartner) value;
+				String val = bp.getValue();
+				return (val != null && !val.isBlank()) ? bp.getName() + " - " + val : bp.getName();
+			}
+			if (value instanceof PO) {
+				PO po = (PO) value;
+				String name = po.get_ValueAsString(MBPartner.COLUMNNAME_Name);
+				String val = po.get_ValueAsString(MBPartner.COLUMNNAME_Value);
+				return (val != null && !val.isBlank()) ? name + " - " + val : name;
+			}
+			if (value instanceof Number || (value instanceof String && ((String) value).trim().matches("\\d+"))) {
+				int id = value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(((String) value).trim());
+				if (id > 0) {
+					try {
+						MBPartner bp = new MBPartner(Env.getCtx(), id, null);
+						if (bp.get_ID() > 0) {
+							String val = bp.getValue();
+							return (val != null && !val.isBlank()) ? bp.getName() + " - " + val : bp.getName();
+						}
+					} catch (Exception ignored) {
+					}
+				}
+			}
 			return value.toString();
 		});
 		colBp.setValueAdaptHandle(value -> {
@@ -3674,6 +4323,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			return 0;
 		if (val instanceof PO)
 			return ((PO) val).get_ID();
+		if (val instanceof KeyNamePair)
+			return ((KeyNamePair) val).getKey();
 		if (val instanceof ValueNamePair) {
 			try {
 				return Integer.parseInt(((ValueNamePair) val).getValue());
@@ -4051,6 +4702,8 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		}
 		boolean hasInstitutionQualification = regQualId > 0;
 
+		int agentSkillsProgId = 0;
+
 		for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
 			ColumnModel col = entry.getKey();
 			CellModel cell = entry.getValue();
@@ -4072,7 +4725,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				dg.setZZStudentNumber(extractString(val));
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SDP_ID.equals(prop)) {
 				int id = extractId(val);
-				if (id > 0) dg.setZZ_SDP_ID(id);
+				dg.setZZ_SDP_ID(id > 0 ? id : 0);
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderLevy.equals(prop)) {
 				dg.setZZLeadSDProviderLevy(extractString(val));
 			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZLeadSDProviderContact_ID.equals(prop)) {
@@ -4183,6 +4836,65 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				int id = extractId(val);
 				if (id > 0) {
 					dg.setzzlearnerprogram_id(String.valueOf(id));
+				}
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_Agent_ID.equals(prop)) {
+				int id = extractId(val);
+				dg.setZZ_Agent_ID(id > 0 ? id : 0);
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZ_SETA_Master_ID.equals(prop)) {
+				int id = extractId(val);
+				dg.setZZ_SETA_Master_ID(id > 0 ? id : 0);
+			} else if ("ZZSkillsProgramme_ID".equals(prop)) {
+				int id = extractId(val);
+				if (id > 0) {
+					agentSkillsProgId = id;
+					if (dg.get_ColumnIndex("ZZSkillsProgramme_ID") >= 0) {
+						safeSetPOValue(dg, "ZZSkillsProgramme_ID", id);
+					}
+					if (selectedQualification == null) {
+						X_ZZSkillsProgramme sp = new X_ZZSkillsProgramme(Env.getCtx(), id, null);
+						if (sp.get_ID() > 0) {
+							safeSetPOValue(dg, X_ZZLearnerDGProgramme.COLUMNNAME_zzlearnerprogram_id, String.valueOf(id));
+							if (sp.getZZSkillsProgrammeCode() != null && !sp.getZZSkillsProgrammeCode().isBlank()) {
+								dg.setZZProgramCode(sp.getZZSkillsProgrammeCode());
+							}
+							if (sp.getZZSkillsProgrammeTitle() != null && !sp.getZZSkillsProgrammeTitle().isBlank()) {
+								dg.setZZProgramTitle(sp.getZZSkillsProgrammeTitle());
+							}
+						}
+					}
+				}
+			} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZProgramType.equals(prop)
+					|| "ZZ_Agent_Programme_Type".equals(prop)) {
+				String pt = extractString(val);
+				if (pt != null && !pt.isBlank()) {
+					if (dg.get_ColumnIndex("ZZ_Agent_Programme_Type") >= 0) {
+						safeSetPOValue(dg, "ZZ_Agent_Programme_Type", pt);
+					}
+					if (isValidProgramType(pt)) {
+						dg.setZZProgramType(pt);
+					} else {
+						boolean inRef = false;
+						try {
+							MColumn c = MTable.get(Env.getCtx(), X_ZZLearnerDGProgramme.Table_Name)
+									.getColumn(X_ZZLearnerDGProgramme.COLUMNNAME_ZZProgramType);
+							if (c != null && c.getAD_Reference_Value_ID() > 0) {
+								ValueNamePair[] list = MRefList.getList(Env.getCtx(), c.getAD_Reference_Value_ID(), false);
+								if (list != null) {
+									for (ValueNamePair pair : list) {
+										if (pt.equalsIgnoreCase(pair.getValue()) || pt.equalsIgnoreCase(pair.getName())) {
+											inRef = true;
+											dg.setZZProgramType(pair.getValue());
+											break;
+										}
+									}
+								}
+							}
+						} catch (Exception ignored) {
+						}
+						if (!inRef) {
+							dg.setZZProgramType(X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_SkillsProgramme);
+						}
+					}
 				}
 			}
 		}
@@ -4316,7 +5028,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 		} else {
 			String currentProgType = dg.getZZProgramType();
-			if (currentProgType == null || currentProgType.isBlank() || !isValidProgramType(currentProgType)) {
+			if (currentProgType == null || currentProgType.isBlank()) {
 				String validProgType = resolveProgramType(selectedInterventionType);
 				if (validProgType == null || validProgType.isBlank()) {
 					validProgType = X_ZZLearnerDGProgramme.ZZPROGRAMTYPE_QCTOSkillsProgramme;
@@ -4337,6 +5049,31 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		}
 		dg.saveEx(trxName);
 		draftRegistration = dg;
+
+		if (targetChildPo != null && targetChildPo.get_ID() > 0) {
+			try {
+				if (dg.getZZCommencementDate() != null && targetChildPo.get_ColumnIndex("ZZCommencementDate") >= 0) {
+					targetChildPo.set_ValueOfColumn("ZZCommencementDate", dg.getZZCommencementDate());
+				}
+				if (dg.getZZCompletionDate() != null) {
+					if (targetChildPo.get_ColumnIndex("ZZCompletionDate") >= 0) {
+						targetChildPo.set_ValueOfColumn("ZZCompletionDate", dg.getZZCompletionDate());
+					}
+					if (targetChildPo.get_ColumnIndex("ZZEstimateCompletionDate") >= 0) {
+						targetChildPo.set_ValueOfColumn("ZZEstimateCompletionDate", dg.getZZCompletionDate());
+					}
+				}
+				if (targetChildPo.get_ColumnIndex("ZZSkillsProgramme_ID") >= 0) {
+					int spId = agentSkillsProgId > 0 ? agentSkillsProgId : dg.get_ValueAsInt("ZZSkillsProgramme_ID");
+					if (spId > 0) {
+						targetChildPo.set_ValueOfColumn("ZZSkillsProgramme_ID", spId);
+					}
+				}
+				targetChildPo.saveEx(trxName);
+			} catch (Exception ignored) {
+			}
+		}
+
 		saveRegistrationDocuments(dg, trxName);
 	}
 
@@ -4643,11 +5380,37 @@ public class LearnerRegistrationVM extends BaseAppVM {
 				}
 			}
 		}
+		if (!isLPOps && qualForAgreement == null && tmRegistration != null) {
+			Object spObj = agreementValues(tmRegistration).get("ZZSkillsProgramme_ID");
+			if (spObj instanceof PO) {
+				qualForAgreement = (PO) spObj;
+			} else if (spObj != null) {
+				int spId = extractId(spObj);
+				if (spId > 0) {
+					try {
+						qualForAgreement = new X_ZZSkillsProgramme(Env.getCtx(), spId, null);
+					} catch (Exception ignored) {
+					}
+				}
+			}
+		}
+		if (!isLPOps && qualForAgreement == null && draftRegistration != null && draftRegistration.get_ID() > 0) {
+			int spId = draftRegistration.get_ColumnIndex("ZZSkillsProgramme_ID") >= 0
+					? draftRegistration.get_ValueAsInt("ZZSkillsProgramme_ID") : 0;
+			if (spId > 0) {
+				try {
+					qualForAgreement = new X_ZZSkillsProgramme(Env.getCtx(), spId, null);
+				} catch (Exception ignored) {
+				}
+			}
+		}
 		String progCodeCol = config != null ? config.programmeCodeColumn
 				: (qualForAgreement instanceof I_ZZ_Institution_Qualifications
 						? I_ZZ_Institution_Qualifications.COLUMNNAME_Saqa_Code
 						: (qualForAgreement instanceof X_ZZQualification
-								? X_ZZQualification.COLUMNNAME_ZZSaqaQualificationCode : null));
+								? X_ZZQualification.COLUMNNAME_ZZSaqaQualificationCode
+								: (qualForAgreement instanceof X_ZZSkillsProgramme
+										? I_ZZSkillsProgramme.COLUMNNAME_ZZSkillsProgrammeCode : null)));
 		String progDispName = config != null ? config.displayName
 				: (selectedDGProgramme != null && selectedDGProgramme.getTitle() != null && !selectedDGProgramme.getTitle().isBlank()
 						? selectedDGProgramme.getTitle()
@@ -4658,7 +5421,10 @@ public class LearnerRegistrationVM extends BaseAppVM {
 										? (((X_ZZQualification) qualForAgreement).getName() != null
 												? ((X_ZZQualification) qualForAgreement).getName()
 												: ((X_ZZQualification) qualForAgreement).getZZSaqaQualificationTitle())
-										: "")));
+										: (qualForAgreement instanceof X_ZZSkillsProgramme
+												? (((X_ZZSkillsProgramme) qualForAgreement).getZZSkillsProgrammeTitle() != null
+														? ((X_ZZSkillsProgramme) qualForAgreement).getZZSkillsProgrammeTitle() : "")
+												: ""))));
 		Map<String, Object> learnerValues = agreementLearnerValues(person,
 				tmNames, tmGeneralDetail, tmContactDetail, tmEducationDetail);
 		List<String> warnings = new ArrayList<>();
