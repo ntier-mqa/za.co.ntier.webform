@@ -1,9 +1,11 @@
 package za.co.ntier.webform.sdr.viewmodel;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -2589,6 +2591,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			endDateTitle = getColLabel(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate, "Envisaged Completion Date");
 		}
 		endDateCol.setTitle(endDateTitle);
+		configureFixedDurationDates(startDateCol, endDateCol);
 
 		// Dynamic validation handler:
 		// Non MQA Skills Programme -> Agent mandatory, Lead Provider optional
@@ -2872,6 +2875,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		// 8. End Date (Required)
 		ColumnModel endDateCol = editableDate(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate).required();
 		endDateCol.setTitle("End Date");
+		configureFixedDurationDates(startDateCol, endDateCol);
 
 		// --- Lead Skills Development Provider (SDP) ---
 		ValueAdaptColumnModel colLeadSdp = ValueAdaptCellModel.getValueAdaptColumnModel(
@@ -3074,6 +3078,7 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		// 4. Completion Date (Required)
 		ColumnModel endDateCol = editableDate(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate).required();
 		endDateCol.setTitle(MasterUtil.getNameOfColTranslated(learnerTable, X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate));
+		configureFixedDurationDates(startDateCol, endDateCol);
 		cols.add(endDateCol);
 
 		// 5. Employer / Employer (Institution) (Required)
@@ -3540,6 +3545,51 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			return prog.get_ValueAsBoolean(X_ZZ_Program_Master_Data.COLUMNNAME_ZZ_HasAgent);
 		}
 		return false;
+	}
+
+	private BigDecimal getFixedDurationMonths(X_ZZ_Program_Master_Data prog)
+	{
+		if (prog == null)
+			return null;
+		BigDecimal duration = prog.getZZ_FixedDuration();
+		return (duration != null && duration.compareTo(BigDecimal.ZERO) > 0) ? duration : null;
+	}
+
+	private Timestamp computeCompletionDate(LocalDate startDate, BigDecimal fixedDurationMonths) {
+		if (startDate == null || fixedDurationMonths == null || fixedDurationMonths.compareTo(BigDecimal.ZERO) <= 0) {
+			return null;
+		}
+		int wholeMonths = fixedDurationMonths.intValue();
+		LocalDate end = startDate.plusMonths(wholeMonths);
+		double fraction = fixedDurationMonths.doubleValue() - wholeMonths;
+		if (fraction > 0.0001) {
+			end = end.plusDays(Math.round(fraction * 30.0));
+		}
+		return Timestamp.valueOf(end.atStartOfDay());
+	}
+
+	private void configureFixedDurationDates(ColumnModel startDateCol, ColumnModel endDateCol) {
+		BigDecimal fixedDuration = getFixedDurationMonths(selectedDGProgramme);
+		if (fixedDuration == null) {
+			return;
+		}
+		endDateCol.setReadonly(true);
+		startDateCol.setEventHandle((event, cellModel) -> {
+			if (cellModel == null || cellModel.getRowModel() == null) return;
+			LocalDate startLocal = null;
+			if (cellModel instanceof DateCellModel) {
+				startLocal = ((DateCellModel) cellModel).getLocalDate();
+			}
+			if (startLocal == null && cellModel.getValue() instanceof Timestamp) {
+				startLocal = ((Timestamp) cellModel.getValue()).toLocalDateTime().toLocalDate();
+			}
+			CellModel endCell = cellModel.getRowModel().get(endDateCol);
+			if (endCell != null) {
+				Timestamp endTs = computeCompletionDate(startLocal, fixedDuration);
+				endCell.setValue(endTs);
+				endCell.resetValidate();
+			}
+		});
 	}
 
 	private static String getColLabel(String table, String colName, String fallback) {
@@ -4016,6 +4066,32 @@ public class LearnerRegistrationVM extends BaseAppVM {
 			}
 			if (progTypeCell != null && agentCol != null && leadSdpCol != null) {
 				applyProgrammeTypeValidation(progTypeCell, agentCol, leadSdpCol);
+			}
+		}
+
+		BigDecimal fixedDuration = getFixedDurationMonths(selectedDGProgramme);
+		if (fixedDuration != null && row != null) {
+			CellModel startCell = null;
+			CellModel endCell = null;
+			ColumnModel endCol = null;
+			for (Map.Entry<ColumnModel, CellModel> entry : row.entrySet()) {
+				String prop = entry.getKey().getDaoPropertyName();
+				if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZCommencementDate.equals(prop)) {
+					startCell = entry.getValue();
+				} else if (X_ZZLearnerDGProgramme.COLUMNNAME_ZZCompletionDate.equals(prop)) {
+					endCol = entry.getKey();
+					endCell = entry.getValue();
+				}
+			}
+			if (endCol != null) {
+				endCol.setReadonly(true);
+				BindUtils.postNotifyChange(null, null, endCol, "readonly");
+			}
+			if (startCell != null && endCell != null) {
+				Timestamp startTs = extractTimestamp(startCell, startCell.getValue());
+				if (startTs != null) {
+					endCell.setValue(computeCompletionDate(startTs.toLocalDateTime().toLocalDate(), fixedDuration));
+				}
 			}
 		}
 
@@ -5039,6 +5115,12 @@ public class LearnerRegistrationVM extends BaseAppVM {
 		if (dg.get_ColumnIndex("ZZQCTO") >= 0) {
 			String pt = dg.getZZProgramType();
 			dg.setZZQCTO(pt != null && pt.startsWith("QCTO"));
+		}
+
+		BigDecimal fixedDuration = getFixedDurationMonths(selectedDGProgramme);
+		if (fixedDuration != null && dg.getZZCommencementDate() != null) {
+			dg.setZZCompletionDate(computeCompletionDate(
+					dg.getZZCommencementDate().toLocalDateTime().toLocalDate(), fixedDuration));
 		}
 
 		dg.setZZ_DocStatus(isSubmitting()
