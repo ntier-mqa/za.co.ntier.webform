@@ -53,19 +53,27 @@
   <label sclass="sectionHeaderTitle" value="Learner Dashboard"/>
 </div>
 
-<div style="padding: 10px; margin-bottom: 10px;">
-  <hlayout spacing="15px" valign="middle">
-    <textbox value="@bind(vm.searchFirstName)" placeholder="First Name" width="150px" onOK="@command('cmdRefreshList')"/>
-    <textbox value="@bind(vm.searchSurname)" placeholder="Surname" width="150px" onOK="@command('cmdRefreshList')"/>
-    <textbox value="@bind(vm.searchIdNumber)" placeholder="ID/Passport No" width="180px" onOK="@command('cmdRefreshList')"/>
-    <button label="Search" onClick="@command('cmdRefreshList')" />
-    <button label="Clear" onClick="@command('cmdClearSearch')" />
-  </hlayout>
+<div style="padding: 10px; margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+  <textbox value="@bind(vm.searchFirstName)" placeholder="First Name" width="150px" onOK="@command('cmdRefreshList')"/>
+  <textbox value="@bind(vm.searchSurname)" placeholder="Surname" width="150px" onOK="@command('cmdRefreshList')"/>
+  <textbox value="@bind(vm.searchIdNumber)" placeholder="ID/Passport No" width="180px" onOK="@command('cmdRefreshList')"/>
+  <button label="Search" onClick="@command('cmdRefreshList')" />
+  <button label="Clear" onClick="@command('cmdClearSearch')" />
+  <button label="@load(vm.printButtonLabel)"
+          visible="@load(vm.canPrintRegistrationLetter)"
+          onClick="@command('cmdPrintRegistrationLetter')" />
+  <button label="Clear Selection"
+          visible="@load(vm.canPrintRegistrationLetter and vm.selectedCount gt 0)"
+          onClick="@command('cmdClearSelection')" />
 </div>
 
 <paging sclass="custom-paging" totalSize="@load(vm.totalSize)" pageSize="@load(vm.pageSize)" activePage="@bind(vm.activePage)" onPaging="@command('cmdPaging')" detailed="true" mold="os" />
 <grid vflex="1" model="@load(vm.learners)" sizedByContent="true" emptyMessage="No learners found">
   <columns sizable="true">
+  	<column visible="@load(vm.canPrintRegistrationLetter)" width="45px" align="center">
+  		<checkbox checked="@load(vm.allPageSelected)"
+  		          onCheck="@command('cmdToggleSelectAllPage', checked=self.checked)" />
+  	</column>
   	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_ZZFirstName) ))" width="150px"/>
   	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_Surname) ))" width="150px"/>
   	<column label="@init(( MasterUtil.getNameOfColTranslated(I_ZZLearner_v.Table_Name, I_ZZLearner_v.COLUMNNAME_EMail) ))" width="200px"/>
@@ -76,6 +84,9 @@
   <rows>
     <template name="model" var="item">
       <row>
+      	<checkbox visible="@load(vm.canPrintRegistrationLetter)"
+      	          checked="@load(vm.isLearnerSelected(item))"
+      	          onCheck="@command('cmdToggleSelectLearner', row=item, checked=self.checked)" />
       	<label value="@init(item.ZZFirstName)"/>
         <label value="@init(item.surname)"/>
         <label value="@init(item.EMail)"/>
